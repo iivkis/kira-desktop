@@ -1,24 +1,22 @@
-/** Canonical Kira Default palette. Five colors supplied by the project owner.
- * CSS semantic tokens and contrast combinations are contract-tested.
- */
+/** Canonical fully opaque Kira Default palette; CSS and GTK must match. */
 export const kiraDefaultPalette = Object.freeze({
-  black: '#0a0908',
-  nightBordeaux: '#49111c',
-  whiteSmoke: '#f2f4f3',
-  dustyTaupe: '#a9927d',
-  stoneBrown: '#5e503f',
+  black: '#000000ff',
+  prussianBlue: '#14213dff',
+  orange: '#fca311ff',
+  alabasterGrey: '#e5e5e5ff',
+  white: '#ffffffff',
 } as const);
 
-/** Semantic roles, including safe reuse of Dusty Taupe as both secondary text
- * and focus accent. Stone Brown is for structural borders, never small text.
+/** Semantic roles keep color usage accessible. The legacy earth role is
+ * preserved as a structural alias for compatibility with older widgets.
  */
 export const kiraDefaultRoles = Object.freeze({
   background: kiraDefaultPalette.black,
-  surface: kiraDefaultPalette.nightBordeaux,
-  muted: kiraDefaultPalette.dustyTaupe,
-  accent: kiraDefaultPalette.dustyTaupe,
-  text: kiraDefaultPalette.whiteSmoke,
-  earth: kiraDefaultPalette.stoneBrown,
+  surface: kiraDefaultPalette.prussianBlue,
+  muted: kiraDefaultPalette.alabasterGrey,
+  accent: kiraDefaultPalette.orange,
+  text: kiraDefaultPalette.white,
+  earth: kiraDefaultPalette.prussianBlue,
 } as const);
 
 export type KiraThemeRole = keyof typeof kiraDefaultRoles;

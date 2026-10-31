@@ -154,7 +154,7 @@ fn main() {
             .web_context(&context)
             .user_content_manager(&manager)
             .build();
-        view.set_background_color(&gtk::gdk::RGBA::new(10.0 / 255.0, 9.0 / 255.0, 8.0 / 255.0, 1.0));
+        view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
 
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
