@@ -53,10 +53,10 @@ fn language_preferences() -> Vec<String> {
         if !preferred.contains(&locale) {
             preferred.push(locale.clone());
         }
-        if let Some((language, _)) = locale.split_once('_') {
-            if !preferred.contains(&language.to_string()) {
-                preferred.push(language.to_string());
-            }
+        if let Some((language, _)) = locale.split_once('_')
+            && !preferred.contains(&language.to_string())
+        {
+            preferred.push(language.to_string());
         }
     }
     preferred
@@ -181,15 +181,15 @@ fn parse_entry(
         return None;
     }
     let try_exec = keys.get("TryExec").copied();
-    if let Some(command) = try_exec {
-        if !executable_exists(command, path_env) {
-            return Some(DesktopEntry {
-                hidden,
-                visible: false,
-                name: String::new(),
-                icon: None,
-            });
-        }
+    if let Some(command) = try_exec
+        && !executable_exists(command, path_env)
+    {
+        return Some(DesktopEntry {
+            hidden,
+            visible: false,
+            name: String::new(),
+            icon: None,
+        });
     }
     let name = locales
         .iter()
@@ -400,7 +400,7 @@ mod tests {
             "foo/bar.desktop",
             "[Desktop Entry]\nType=Application\nName=Normal\nName[ru]=Терминал\nExec=terminal\n",
         );
-        let apps = scan(&[root.clone()], &["ru".into()], None);
+        let apps = scan(std::slice::from_ref(&root), &["ru".into()], None);
         assert_eq!(apps[0].app.id, "foo-bar.desktop");
         assert_eq!(apps[0].app.name, "Терминал");
         fs::remove_dir_all(root).unwrap();
@@ -449,7 +449,7 @@ mod tests {
             "[Desktop Entry]\nType=Application\nName=Empty\n",
         );
         write(&root, "valid.desktop", APP);
-        let apps = scan(&[root.clone()], &[], None);
+        let apps = scan(std::slice::from_ref(&root), &[], None);
         assert_eq!(apps.len(), 1);
         fs::remove_dir_all(root).unwrap();
     }
@@ -470,7 +470,7 @@ mod tests {
     #[test]
     fn handles_empty_dirs_long_names_and_limits() {
         let root = fixture();
-        assert!(scan(&[root.clone()], &[], None).is_empty());
+        assert!(scan(std::slice::from_ref(&root), &[], None).is_empty());
         for i in 0..190 {
             write(
                 &root,
@@ -481,7 +481,7 @@ mod tests {
                 ),
             );
         }
-        let apps = scan(&[root.clone()], &[], None);
+        let apps = scan(std::slice::from_ref(&root), &[], None);
         assert_eq!(apps.len(), MAX_APPS);
         assert!(apps.iter().all(|item| item.app.name.len() <= 120));
         fs::remove_dir_all(root).unwrap();
