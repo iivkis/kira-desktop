@@ -1,7 +1,13 @@
 <script lang="ts">
   import type { WorkspaceState } from '../sdk/core';
 
-  let { state, showNames, limit }: { state: WorkspaceState | null; showNames: boolean; limit: number } = $props();
+  let { state, showNames, limit, onFocus, pending }: {
+    state: WorkspaceState | null;
+    showNames: boolean;
+    limit: number;
+    onFocus: (id: string) => void;
+    pending: boolean;
+  } = $props();
 
   // Limit visible chips without hiding the active/focused workspace when
   // there are many outputs. This never changes Niri's actual workspaces.
@@ -20,29 +26,34 @@
 {:else if state.workspaces.length === 0}
   <span class="workspace-status" role="status" aria-live="polite">NO WORKSPACES</span>
 {:else}
-  <ol class="workspace-preview" aria-label="Niri workspaces (read-only)">
+  <ol class="workspace-preview" aria-label="Niri workspaces">
     {#each visible as workspace (workspace.id)}
       <li
         class="workspace-preview__item"
         class:preview-selected={workspace.is_focused}
         class:preview-active={workspace.is_active}
         class:preview-urgent={workspace.is_urgent}
-        aria-label={'Workspace ' + (workspace.name || workspace.idx)
-          + (workspace.output ? ' on ' + workspace.output : '')
-          + (workspace.is_focused ? ', focused' : '')
-          + (workspace.is_active ? ', active' : '')
-          + (workspace.is_urgent ? ', urgent' : '')}
-        title={'Workspace ' + (workspace.name || workspace.idx)
-          + (workspace.output ? ' on ' + workspace.output : '')
-          + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
-          + (workspace.is_urgent ? ' (urgent)' : '')}
       >
-        <span class="workspace-preview__label">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
-        {#if workspace.is_focused}
-          <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
-        {:else if workspace.is_urgent}
-          <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
-        {/if}
+        <button
+          type="button"
+          class="workspace-preview__button"
+          aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
+            + (workspace.output ? ' on ' + workspace.output : '')}
+          aria-pressed={workspace.is_focused}
+          title={'Workspace ' + (workspace.name || workspace.idx)
+            + (workspace.output ? ' on ' + workspace.output : '')
+            + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
+            + (workspace.is_urgent ? ' (urgent)' : '')}
+          disabled={pending || workspace.is_focused}
+          onclick={() => onFocus(workspace.id)}
+        >
+          <span class="workspace-preview__label">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
+          {#if workspace.is_focused}
+            <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
+          {:else if workspace.is_urgent}
+            <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
+          {/if}
+        </button>
       </li>
     {/each}
   </ol>
@@ -90,10 +101,37 @@
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     letter-spacing: 0.02em;
-    cursor: default;
     transition:
       background-color var(--kira-motion-fast) var(--kira-motion-easing),
       color var(--kira-motion-fast) var(--kira-motion-easing);
+  }
+
+  .workspace-preview__button {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+
+  .workspace-preview__button:disabled {
+    cursor: default;
+  }
+
+  .workspace-preview__button:focus-visible {
+    outline: 2px solid var(--kira-color-accent);
+    outline-offset: 2px;
+  }
+
+  .workspace-preview__item:not(.preview-selected):has(.workspace-preview__button:not(:disabled):hover) {
+    background: var(--kira-color-surface-subtle);
   }
 
   .workspace-preview__label {
