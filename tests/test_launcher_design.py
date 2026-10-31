@@ -16,7 +16,11 @@ class LauncherDesignContract(unittest.TestCase):
     def test_palette_uses_only_approved_base_colors(self):
         allowed = {"#0a0908", "#49111c", "#f2f4f3", "#a9927d", "#5e503f"}
         used = set(re.findall(r"#[0-9a-f]{6}\b", CSS))
-        self.assertEqual(used, allowed)
+        self.assertTrue(used.issubset(allowed), f"Unapproved base color: {used - allowed}")
+        # Bordeaux and Brown appear only as translucent RGB layers. They
+        # still represent the canonical palette, not extra base colors.
+        for rgb in ["rgba(73, 17, 28,", "rgba(94, 80, 63,"]:
+            self.assertIn(rgb, CSS)
 
     def test_launcher_is_scoped_floating_surface(self):
         for selector in [
