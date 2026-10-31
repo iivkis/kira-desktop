@@ -36,10 +36,49 @@ export function onWorkspaceUpdate(callback: (state: WorkspaceState) => void): ()
   return () => window.removeEventListener('kira:workspaces', listener);
 }
 
+export interface UiConfig {
+  compact: boolean;
+  title: string;
+  show_seconds: boolean;
+  show_names: boolean;
+  max_workspaces: number;
+}
+
+export interface ConfigState {
+  config: UiConfig;
+  error: string | null;
+}
+
+export const defaultUiConfig: UiConfig = {
+  compact: false,
+  title: 'KIRA DESKTOP',
+  show_seconds: false,
+  show_names: true,
+  max_workspaces: 12,
+};
+
+/** Subscribe to Core's validated KDL config snapshots, without polling. */
+export function onConfigUpdate(callback: (state: ConfigState) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const state = (event as CustomEvent<ConfigState>).detail;
+    const cfg = state?.config;
+    if (!cfg || typeof cfg.compact !== 'boolean' ||
+        typeof cfg.title !== 'string' || typeof cfg.show_seconds !== 'boolean' ||
+        typeof cfg.show_names !== 'boolean' || typeof cfg.max_workspaces !== 'number' ||
+        !Number.isInteger(cfg.max_workspaces) || cfg.max_workspaces < 1 ||
+        cfg.max_workspaces > 32) return;
+    callback(state);
+  };
+  window.addEventListener('kira:config', listener);
+  return () => window.removeEventListener('kira:config', listener);
+}
+
 type Methods = {
   ping: string;
   get_state: CoreState;
   get_workspaces: WorkspaceState;
+  get_config: ConfigState;
 };
 
 type RpcReply = {
