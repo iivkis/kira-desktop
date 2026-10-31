@@ -99,6 +99,8 @@ stdenv.mkDerivation {
   # copied into the final package.
   preFixup = ''
     gappsWrapperArgs+=(--set KIRA_UI_DIR "$out/share/kira-desktop/ui")
+    # GIO owns freedesktop Exec field parsing; Core never passes commands to a shell.
+    gappsWrapperArgs+=(--set KIRA_GIO_BIN "${glib.bin}/bin/gio")
   '';
 
   passthru = {

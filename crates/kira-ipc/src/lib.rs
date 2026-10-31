@@ -51,6 +51,14 @@ pub struct WorkspaceState {
     pub workspaces: Vec<Workspace>,
 }
 
+/// A bounded, display-only entry. Never contains an Exec command or local path.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DesktopApplication {
+    pub id: String,
+    pub name: String,
+    pub icon: Option<String>,
+}
+
 /// Validated KDL appearance settings sent to the trusted frontend.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UiConfig {

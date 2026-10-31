@@ -1,5 +1,6 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
+mod launcher;
 mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};
@@ -8,7 +9,9 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
+use kira_ipc::{
+    ConfigState, DesktopApplication, PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState,
+};
 use webkit6::prelude::*;
 
 const BAR_HEIGHT: i32 = 42;
@@ -20,6 +23,9 @@ enum ShellDelivery {
     Rpc(String),
     Workspaces(WorkspaceState),
     Config(ConfigState),
+    LauncherToggle,
+    LauncherCatalog(Result<Vec<DesktopApplication>, String>),
+    LauncherLaunched(Result<(), String>),
 }
 
 fn ui_index() -> PathBuf {
@@ -196,11 +202,30 @@ fn main() {
                 }
             });
         }
+        let launcher_sender = sender.clone();
+        let launcher_socket = socket.clone();
         manager.connect_script_message_received(Some("kira"), move |_, value| {
             let message = value.to_string().to_string();
             let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
             let sender = sender.clone();
             let socket = socket.clone();
+            // Only a narrow UI toggle is processed by the host. All filesystem
+            // reads and launches remain Core operations, never JS-provided Exec.
+            if message.len() <= MAX_BRIDGE_MESSAGE_BYTES {
+                if let Ok(request) = serde_json::from_str::<RpcRequest>(&message) {
+                    if request.jsonrpc == PROTOCOL_VERSION
+                        && request.method == "toggle_launcher"
+                        && request.params.is_none()
+                    {
+                        let _ = sender.send(ShellDelivery::LauncherToggle);
+                        let reply = RpcResponse::success(request.id, serde_json::json!({"accepted": true}));
+                        if let Ok(serialized) = serde_json::to_string(&reply) {
+                            let _ = sender.send(ShellDelivery::Rpc(serialized));
+                        }
+                        return;
+                    }
+                }
+            }
             std::thread::spawn(move || {
                 let response = if message.len() > MAX_BRIDGE_MESSAGE_BYTES {
                     RpcResponse::failure(id, -32600, "Bridge message too large")
@@ -246,11 +271,30 @@ fn main() {
             }
         });
 
+        let launcher_ui = launcher::create(app, &view, launcher_socket.clone(), launcher_sender.clone());
         let webview = view.clone();
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
             while let Ok(delivery) = receiver.try_recv() {
                 // Double encoding ensures payload content cannot become JS.
                 let (event, payload) = match delivery {
+                    ShellDelivery::LauncherToggle => {
+                        if launcher_ui.window.is_visible() {
+                            launcher_ui.window.set_visible(false);
+                            webview.grab_focus();
+                        } else {
+                            launcher_ui.show_loading();
+                            launcher::open_catalog(launcher_socket.clone(), launcher_sender.clone());
+                        }
+                        continue;
+                    }
+                    ShellDelivery::LauncherCatalog(result) => {
+                        launcher_ui.set_catalog(result);
+                        continue;
+                    }
+                    ShellDelivery::LauncherLaunched(result) => {
+                        launcher_ui.launch_finished(result, &webview);
+                        continue;
+                    }
                     ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
                     ShellDelivery::Workspaces(state) => {
                         let Ok(serialized) = serde_json::to_string(&state) else {
@@ -376,6 +420,21 @@ mod tests {
             assert!(!permitted_ui_page("https://evil.example/", local));
             assert!(!permitted_ui_page("kira-ui://app/index.html.evil", local));
             assert!(!permitted_ui_page("file:///etc/passwd", local));
+        }
+    }
+
+    #[test]
+    fn browser_bridge_cannot_run_commands_or_activate_apps_directly() {
+        for method in [
+            "launch_application",
+            "execute",
+            "get_applications",
+            "gio_launch",
+        ] {
+            let request = format!(
+                r#"{{"jsonrpc":"2.0","id":11,"method":"{method}","params":{{"id":"foo.desktop"}}}}"#
+            );
+            assert_eq!(process_message(&request, None).error.unwrap().code, -32601);
         }
     }
 

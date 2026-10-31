@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate } from './core';
+import { deliverReply, request, focusWorkspace, toggleLauncher, onWorkspaceUpdate, onConfigUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -52,6 +52,19 @@ describe('Core SDK JSON-RPC bridge', () => {
       method: 'focus_workspace', params: { id: '18446744073709551615' },
     });
     expect(payload.params.id).toBe('18446744073709551615');
+    deliverReply({ jsonrpc: '2.0', id: payload.id, result: { accepted: true } });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it('toggles only the native application surface without an Exec argument', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = toggleLauncher();
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as {
+      id: number; jsonrpc: string; method: string; params?: unknown;
+    };
+    expect(payload).toEqual({ jsonrpc: '2.0', id: expect.any(Number), method: 'toggle_launcher' });
+    expect(payload.params).toBeUndefined();
     deliverReply({ jsonrpc: '2.0', id: payload.id, result: { accepted: true } });
     await expect(pending).resolves.toBeUndefined();
   });
