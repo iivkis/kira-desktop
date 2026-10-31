@@ -63,7 +63,10 @@ impl CivilDate {
         let iso_year = Self::from_days(thursday).map_or(self.year, |d| d.year);
         let jan4 = Self::new(iso_year, 1, 4).expect("valid ISO year");
         let week1_monday = jan4.days() - jan4.weekday();
-        (iso_year, u8::try_from((self.days() - self.weekday() - week1_monday) / 7 + 1).unwrap_or(1))
+        (
+            iso_year,
+            u8::try_from((self.days() - self.weekday() - week1_monday) / 7 + 1).unwrap_or(1),
+        )
     }
 
     pub fn iso(self) -> String {
@@ -93,9 +96,7 @@ pub fn month_grid(year: i32, month: u8) -> [[Option<CivilDate>; 7]; 6] {
     let first = CivilDate::new(year, month, 1).expect("valid calendar month");
     let monday = first.days() - first.weekday();
     std::array::from_fn(|row| {
-        std::array::from_fn(|column| {
-            CivilDate::from_days(monday + (row * 7 + column) as i64)
-        })
+        std::array::from_fn(|column| CivilDate::from_days(monday + (row * 7 + column) as i64))
     })
 }
 
@@ -114,8 +115,12 @@ mod tests {
     #[test]
     fn dates_round_trip_across_gregorian_boundaries() {
         for date in [
-            (1, 1, 1), (1900, 3, 1), (1970, 1, 1), (2000, 2, 29),
-            (2026, 11, 1), (9999, 12, 31),
+            (1, 1, 1),
+            (1900, 3, 1),
+            (1970, 1, 1),
+            (2000, 2, 29),
+            (2026, 11, 1),
+            (9999, 12, 31),
         ] {
             let original = CivilDate::new(date.0, date.1, date.2).unwrap();
             assert_eq!(CivilDate::from_days(original.days()), Some(original));

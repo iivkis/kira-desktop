@@ -8,7 +8,7 @@ use std::sync::Once;
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
-use crate::calendar_model::{month_grid, shift_month, CivilDate};
+use crate::calendar_model::{CivilDate, month_grid, shift_month};
 
 const TITLE: &str = "Kira Calendar";
 
@@ -27,7 +27,12 @@ fn format_date(date: &gtk::glib::DateTime, pattern: &str) -> String {
 
 fn local_datetime(date: CivilDate) -> Option<gtk::glib::DateTime> {
     gtk::glib::DateTime::new_local(
-        date.year, i32::from(date.month), i32::from(date.day), 12, 0, 0.0,
+        date.year,
+        i32::from(date.month),
+        i32::from(date.day),
+        12,
+        0,
+        0.0,
     )
     .ok()
 }
@@ -35,10 +40,12 @@ fn local_datetime(date: CivilDate) -> Option<gtk::glib::DateTime> {
 fn today() -> CivilDate {
     gtk::glib::DateTime::now_local()
         .ok()
-        .and_then(|now| {
-            CivilDate::new(now.year(), now.month() as u8, now.day_of_month() as u8)
+        .and_then(|now| CivilDate::new(now.year(), now.month() as u8, now.day_of_month() as u8))
+        .unwrap_or(CivilDate {
+            year: 1970,
+            month: 1,
+            day: 1,
         })
-        .unwrap_or(CivilDate { year: 1970, month: 1, day: 1 })
 }
 
 fn locale_date(date: CivilDate, pattern: &str) -> String {
@@ -102,15 +109,23 @@ impl Picker {
         let month_start = CivilDate::new(state.year, state.month, 1).expect("valid month");
         self.month_text.set_text(&locale_date(month_start, "%B"));
         self.year_text.set_text(&state.year.to_string());
-        self.prev_month.set_sensitive(shift_month(state.year, state.month, -1).is_some());
-        self.next_month.set_sensitive(shift_month(state.year, state.month, 1).is_some());
-        self.prev_year.set_sensitive(shift_month(state.year, state.month, -12).is_some());
-        self.next_year.set_sensitive(shift_month(state.year, state.month, 12).is_some());
-        self.selected_text.set_text(&locale_date(state.selected, "%A, %d %B %Y"));
+        self.prev_month
+            .set_sensitive(shift_month(state.year, state.month, -1).is_some());
+        self.next_month
+            .set_sensitive(shift_month(state.year, state.month, 1).is_some());
+        self.prev_year
+            .set_sensitive(shift_month(state.year, state.month, -12).is_some());
+        self.next_year
+            .set_sensitive(shift_month(state.year, state.month, 12).is_some());
+        self.selected_text
+            .set_text(&locale_date(state.selected, "%A, %d %B %Y"));
         let (iso_year, iso_week) = state.selected.iso_week();
         self.meta_text.set_text(&format!(
             "ISO WEEK {:02}  /  {}    DAY {:03} / {}",
-            iso_week, iso_year, state.selected.day_of_year(), state.selected.year
+            iso_week,
+            iso_year,
+            state.selected.day_of_year(),
+            state.selected.year
         ));
         self.copy.set_label("COPY DATE");
         while let Some(child) = self.grid.first_child() {
@@ -143,7 +158,6 @@ impl Picker {
                 if let Some(date) = date {
                     button.set_label(&date.day.to_string());
                     button.set_tooltip_text(Some(&locale_date(*date, "%A, %d %B %Y")));
-                    button.set_accessible_role(gtk::AccessibleRole::Button);
                     if date.month != state.month || date.year != state.year {
                         button.add_css_class("kira-day-adjacent");
                     }
@@ -153,7 +167,8 @@ impl Picker {
                     if *date == state.selected {
                         button.add_css_class("kira-day-selected");
                         button.set_tooltip_text(Some(&format!(
-                            "{} / SELECTED", locale_date(*date, "%A, %d %B %Y")
+                            "{} / SELECTED",
+                            locale_date(*date, "%A, %d %B %Y")
                         )));
                         selected_button = Some(button.clone());
                     }
@@ -167,7 +182,8 @@ impl Picker {
                 } else {
                     button.set_sensitive(false);
                 }
-                self.grid.attach(&button, column as i32 + 1, row as i32 + 1, 1, 1);
+                self.grid
+                    .attach(&button, column as i32 + 1, row as i32 + 1, 1, 1);
             }
         }
 
@@ -253,8 +269,12 @@ pub fn toggle(application: &gtk::Application) {
     hero_top.append(&eyebrow);
     let close = navigation_button("×", "Close calendar (Esc)");
     close.add_css_class("kira-calendar-close");
-    let close_window = window.clone();
-    close.connect_clicked(move |_| close_window.close());
+    let close_window = window.downgrade();
+    close.connect_clicked(move |_| {
+        if let Some(window) = close_window.upgrade() {
+            window.close();
+        }
+    });
     hero_top.append(&close);
     hero.append(&hero_top);
 
@@ -342,9 +362,16 @@ pub fn toggle(application: &gtk::Application) {
             selected: date,
             today: date,
         }),
-        grid, month_text, year_text, selected_text, meta_text, copy: copy.clone(),
-        prev_month: prev_month.clone(), next_month: next_month.clone(),
-        prev_year: prev_year.clone(), next_year: next_year.clone(),
+        grid,
+        month_text,
+        year_text,
+        selected_text,
+        meta_text,
+        copy: copy.clone(),
+        prev_month: prev_month.clone(),
+        next_month: next_month.clone(),
+        prev_year: prev_year.clone(),
+        next_year: next_year.clone(),
     });
     picker.render(false);
 
@@ -416,10 +443,12 @@ pub fn toggle(application: &gtk::Application) {
     let keys = gtk::EventControllerKey::new();
     keys.set_propagation_phase(gtk::PropagationPhase::Capture);
     let key_picker = Rc::downgrade(&picker);
-    let key_window = window.clone();
+    let key_window = window.downgrade();
     keys.connect_key_pressed(move |_, key, _, modifiers| {
         if key == gtk::gdk::Key::Escape {
-            key_window.close();
+            if let Some(window) = key_window.upgrade() {
+                window.close();
+            }
             return gtk::glib::Propagation::Stop;
         }
         let Some(picker) = key_picker.upgrade() else {
@@ -433,19 +462,23 @@ pub fn toggle(application: &gtk::Application) {
             gtk::gdk::Key::Down => selected.shift_days(7),
             gtk::gdk::Key::Home => Some(today()),
             gtk::gdk::Key::Page_Up => {
-                picker.navigate(if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
-                    -12
-                } else {
-                    -1
-                });
+                picker.navigate(
+                    if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
+                        -12
+                    } else {
+                        -1
+                    },
+                );
                 return gtk::glib::Propagation::Stop;
             }
             gtk::gdk::Key::Page_Down => {
-                picker.navigate(if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
-                    12
-                } else {
-                    1
-                });
+                picker.navigate(
+                    if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
+                        12
+                    } else {
+                        1
+                    },
+                );
                 return gtk::glib::Propagation::Stop;
             }
             _ => return gtk::glib::Propagation::Proceed,
@@ -474,10 +507,14 @@ mod tests {
     fn custom_picker_style_contract() {
         let css = include_str!("calendar.css");
         for selector in [
-            ".kira-calendar-hero", ".kira-calendar-workbench",
-            ".kira-calendar-grid", "button.kira-day",
-            ".kira-day-selected", ".kira-day-today",
-            ".kira-calendar-nav", ".kira-calendar-copy",
+            ".kira-calendar-hero",
+            ".kira-calendar-workbench",
+            ".kira-calendar-grid",
+            "button.kira-day",
+            ".kira-day-selected",
+            ".kira-day-today",
+            ".kira-calendar-nav",
+            ".kira-calendar-copy",
         ] {
             assert!(css.contains(selector), "missing {selector}");
         }
