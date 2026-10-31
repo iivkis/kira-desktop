@@ -23,14 +23,23 @@ pub fn call(socket: &Path, request: &RpcRequest) -> io::Result<RpcResponse> {
     let mut reply = Vec::new();
     reader.read_until(b'\n', &mut reply)?;
     if reply.len() as u64 > MAX_RESPONSE_BYTES {
-        return Err(io::Error::new(io::ErrorKind::InvalidData, "IPC response too large"));
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "IPC response too large",
+        ));
     }
     if !reply.ends_with(b"\n") {
-        return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Incomplete IPC response"));
+        return Err(io::Error::new(
+            io::ErrorKind::UnexpectedEof,
+            "Incomplete IPC response",
+        ));
     }
     let response: RpcResponse = serde_json::from_slice(&reply)?;
     if response.jsonrpc != crate::PROTOCOL_VERSION || response.id != Some(request.id) {
-        return Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid JSON-RPC response id/version"));
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Invalid JSON-RPC response id/version",
+        ));
     }
     Ok(response)
 }
@@ -61,9 +70,15 @@ mod tests {
             stream.write_all(b"\n").unwrap();
         });
 
-        let response = call(&path, &RpcRequest {
-            jsonrpc: PROTOCOL_VERSION.into(), id: 42, method: "ping".into()
-        }).unwrap();
+        let response = call(
+            &path,
+            &RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 42,
+                method: "ping".into(),
+            },
+        )
+        .unwrap();
         assert_eq!(response.result, Some(serde_json::json!("pong")));
         server.join().unwrap();
         std::fs::remove_file(&path).unwrap();
@@ -72,9 +87,14 @@ mod tests {
 
     #[test]
     fn missing_socket_returns_error() {
-        let response = call(Path::new("/nonexistent/kira-desktop.sock"), &RpcRequest {
-            jsonrpc: PROTOCOL_VERSION.into(), id: 1, method: "ping".into()
-        });
+        let response = call(
+            Path::new("/nonexistent/kira-desktop.sock"),
+            &RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 1,
+                method: "ping".into(),
+            },
+        );
         assert!(response.is_err());
     }
 }
