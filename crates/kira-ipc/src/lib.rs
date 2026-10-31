@@ -138,7 +138,10 @@ mod tests {
             id: 3,
             method: "get_workspaces".into(),
         });
-        assert_eq!(response.result, Some(json!({"connected": false, "workspaces": []})));
+        assert_eq!(
+            response.result,
+            Some(json!({"connected": false, "workspaces": []}))
+        );
     }
 
     #[test]
@@ -155,11 +158,14 @@ mod tests {
                 is_urgent: true,
             }],
         };
-        let response = dispatch_with_workspaces(RpcRequest {
-            jsonrpc: PROTOCOL_VERSION.into(),
-            id: 4,
-            method: "get_workspaces".into(),
-        }, &state);
+        let response = dispatch_with_workspaces(
+            RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 4,
+                method: "get_workspaces".into(),
+            },
+            &state,
+        );
         let value = response.result.unwrap();
         assert_eq!(value["workspaces"][0]["id"], u64::MAX.to_string());
         assert_eq!(value["workspaces"][0]["is_focused"], false);
