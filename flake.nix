@@ -24,6 +24,7 @@
           packages = with pkgs; [
             cargo
             rustc
+            sccache # persistent compiler cache for local cargo builds
             rustfmt
             clippy
             nodejs
@@ -37,6 +38,13 @@
             webkitgtk_6_0
             pipewire
           ];
+          # Local Cargo uses a persistent compiler cache; sandboxed nix build
+          # instead reuses Crane's immutable Rust dependency derivation.
+          shellHook = ''
+            export RUSTC_WRAPPER="${pkgs.sccache}/bin/sccache"
+            export SCCACHE_DIR="''${XDG_CACHE_HOME:-$HOME/.cache}/kira-desktop/sccache"
+            export SCCACHE_CACHE_SIZE="''${SCCACHE_CACHE_SIZE:-10G}"
+          '';
         };
       });
 
