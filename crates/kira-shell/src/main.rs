@@ -8,11 +8,18 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{PROTOCOL_VERSION, RpcRequest, RpcResponse};
+use kira_ipc::{PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
 use webkit6::prelude::*;
 
 const BAR_HEIGHT: i32 = 42;
 const MAX_BRIDGE_MESSAGE_BYTES: usize = 4096;
+
+/// Only the GTK main loop dispatches JS events; the worker threads contain
+/// no GTK/WebKit handles.
+enum ShellDelivery {
+    Rpc(String),
+    Workspaces(WorkspaceState),
+}
 
 fn ui_index() -> PathBuf {
     let directory = env::var_os("KIRA_UI_DIR")
@@ -149,8 +156,28 @@ fn main() {
 
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
-        let (sender, receiver) = mpsc::channel::<String>();
+        let (sender, receiver) = mpsc::channel::<ShellDelivery>();
         let socket = core_socket();
+
+        // One long-lived, read-only Core subscription. Core receives Niri
+        // EventStream and immediately forwards changed snapshots to this
+        // worker, avoiding the previous 1.5-second Svelte polling lag.
+        if let Some(path) = socket.clone() {
+            let updates = sender.clone();
+            std::thread::spawn(move || {
+                loop {
+                    let result = kira_ipc::client::subscribe_workspaces(&path, |state| {
+                        let _ = updates.send(ShellDelivery::Workspaces(state));
+                    });
+                    // Never show stale workspace data after a Core failure.
+                    let _ = updates.send(ShellDelivery::Workspaces(WorkspaceState::default()));
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Core workspace stream disconnected: {error}");
+                    }
+                    std::thread::sleep(Duration::from_millis(750));
+                }
+            });
+        }
         manager.connect_script_message_received(Some("kira"), move |_, value| {
             let message = value.to_string().to_string();
             let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
@@ -163,7 +190,7 @@ fn main() {
                     process_message(&message, socket.as_deref())
                 };
                 if let Ok(serialized) = serde_json::to_string(&response) {
-                    let _ = sender.send(serialized);
+                    let _ = sender.send(ShellDelivery::Rpc(serialized));
                 }
             });
         });
@@ -203,11 +230,20 @@ fn main() {
 
         let webview = view.clone();
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
-            while let Ok(response) = receiver.try_recv() {
-                // Double encoding ensures response content cannot become JS source.
-                if let Ok(encoded) = serde_json::to_string(&response) {
+            while let Ok(delivery) = receiver.try_recv() {
+                // Double encoding ensures payload content cannot become JS.
+                let (event, payload) = match delivery {
+                    ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
+                    ShellDelivery::Workspaces(state) => {
+                        let Ok(serialized) = serde_json::to_string(&state) else {
+                            continue;
+                        };
+                        ("kira:workspaces", serialized)
+                    }
+                };
+                if let Ok(encoded) = serde_json::to_string(&payload) {
                     let script = format!(
-                        "window.dispatchEvent(new CustomEvent('kira:rpc', {{ detail: JSON.parse({encoded}) }}));"
+                        "window.dispatchEvent(new CustomEvent('{event}', {{ detail: JSON.parse({encoded}) }}));"
                     );
                     webview.evaluate_javascript(
                         &script,
