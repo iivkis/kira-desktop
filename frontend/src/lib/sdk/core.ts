@@ -144,6 +144,11 @@ export function focusWorkspace(workspaceId: string): Promise<void> {
   return send('focus_workspace', { id: workspaceId }).then(() => undefined);
 }
 
+/** Opens/closes the native launcher surface; no command or path can be passed. */
+export function toggleLauncher(): Promise<void> {
+  return send('toggle_launcher').then(() => undefined);
+}
+
 function send(method: string, params?: { id: string }): Promise<unknown> {
   const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kira;
   if (!channel) return Promise.reject(new Error('Kira bridge unavailable (browser preview)'));
