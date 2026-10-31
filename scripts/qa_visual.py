@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 import socket
 import stat
@@ -160,6 +161,43 @@ def wait_for_png(path: Path, timeout: float = 8.0) -> tuple[int, int]:
     raise VisualQAError(f"Niri did not finish saving PNG screenshot: {path}")
 
 
+def verify_smoke(
+    niri: str,
+    environment: dict[str, str],
+    parent_niri_socket: str | None,
+    shell_log: Path,
+    core_socket: Path,
+) -> tuple[dict, str]:
+    """Verify nested compositor, real Core IPC and actual Svelte/DOM rendering.
+
+    Read-only: never changes display scale, takes screenshots or uses clipboard.
+    """
+    nested_socket(environment, parent_niri_socket)
+    wait_for_shell_ui(shell_log)
+    core = check_core(core_socket)
+    output, _ = sole_output(niri, environment)
+    return core, output
+
+
+def screenshot_with_grim(
+    grim: str, environment: dict[str, str], output: str, path: Path,
+) -> None:
+    """Save PNG from the nested Wayland display without touching clipboard."""
+    if not environment.get("WAYLAND_DISPLAY"):
+        raise VisualQAError("Nested WAYLAND_DISPLAY is missing")
+    try:
+        result = subprocess.run(
+            [grim, "-o", output, str(path)],
+            env=environment, capture_output=True, text=True, check=False, timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise VisualQAError(f"grim screenshot failed: {error}") from error
+    if result.returncode:
+        raise VisualQAError(
+            f"grim screenshot exited {result.returncode}: {result.stderr.strip()}"
+        )
+
+
 def capture(
     niri: str,
     environment: dict[str, str],
@@ -169,7 +207,7 @@ def capture(
     output_directory: Path,
     packaged: bool,
 ) -> Path:
-    """Capture 100/125/150/200% and write evidence; visual sign-off is manual."""
+    """Explicitly capture four scales; never touch clipboard or host Wayland."""
     nested_socket(environment, parent_niri_socket)
     output_directory = output_directory.resolve()
     output_directory.mkdir(parents=True, exist_ok=True)
@@ -189,10 +227,15 @@ def capture(
         )
 
     try:
-        wait_for_shell_ui(shell_log)
-        manifest["core"] = check_core(core_socket)
-        output, _ = sole_output(niri, environment)
+        manifest["core"], output = verify_smoke(
+            niri, environment, parent_niri_socket, shell_log, core_socket,
+        )
         manifest["niri_output"] = output
+        grim = shutil.which("grim")
+        if grim is None:
+            raise VisualQAError("grim is required for opt-in screenshots; run via nix develop")
+        print("[qa] Explicit screenshot capture: changing scale on NESTED Niri to 100/125/150/200%.", flush=True)
+        print("[qa] grim writes PNG files only; clipboard is not used.", flush=True)
 
         for scale in SCALES:
             niri_command(niri, environment, "output", output, "scale", str(scale))
@@ -201,10 +244,7 @@ def capture(
             time.sleep(0.7)
             filename = f"niri-scale-{int(scale * 100):03d}.png"
             path = session / filename
-            niri_command(
-                niri, environment, "action", "screenshot-screen",
-                "--path", str(path),
-            )
+            screenshot_with_grim(grim, environment, output, path)
             width, height = wait_for_png(path)
             manifest["screenshots"].append({
                 "file": filename,
