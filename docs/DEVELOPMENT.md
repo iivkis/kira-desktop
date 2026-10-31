@@ -33,6 +33,9 @@ Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 When adding npm dependencies, commit the updated
 `frontend/package-lock.json` and update `npmDepsHash` in
 `nix/package.nix`; otherwise `npm ci` or the Nix frontend package fails.
+`nix build .#frontend` isolates the frontend package so the npm lock/hash
+can be validated before the expensive native GTK/Rust build. The Nix
+integration CI runs this check first.
 
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibility,
 spacing, contrast and future widget conventions. The small HTML fallback in
