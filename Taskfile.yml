@@ -131,15 +131,29 @@ tasks:
       - python3 -m unittest discover -s tests -p 'test_*.py' -v
 
   qa:visual:fast:
-    desc: Capture scale screenshots from isolated debug preview; human visual review remains required.
+    desc: Run read-only Core/Svelte/Niri smoke in nested debug preview; no screenshots or scale changes.
+    cmds:
+      - task: frontend:deps
+      - task: frontend:build
+      - cargo build --locked -p kira-core -p kira-shell
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-smoke
+
+  qa:visual:release:
+    desc: Run read-only Core/Svelte/Niri smoke using the real Nix package; no screenshots.
+    cmds:
+      - task: nix:build
+      - python3 scripts/dev_preview.py --qa-smoke
+
+  qa:visual:capture:fast:
+    desc: OPT-IN four scale screenshots via grim in isolated debug preview (no clipboard).
     cmds:
       - task: frontend:deps
       - task: frontend:build
       - cargo build --locked -p kira-core -p kira-shell
       - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-output-dir artifacts/visual-qa
 
-  qa:visual:release:
-    desc: Build Nix package and smoke-test real Core/Shell/Svelte across nested Niri scales.
+  qa:visual:capture:release:
+    desc: OPT-IN four scale PNGs via grim from packaged Nix Shell (no clipboard).
     cmds:
       - task: nix:build
       - python3 scripts/dev_preview.py --qa-output-dir artifacts/visual-qa
