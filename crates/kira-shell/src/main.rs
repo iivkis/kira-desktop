@@ -179,7 +179,10 @@ mod tests {
         let local = "file:///nix/store/kira/ui/index.html";
         assert!(permitted_ui_page(local, local));
         assert!(!permitted_ui_page("https://evil.example/", local));
-        assert!(!permitted_ui_page("file:///nix/store/kira/ui/index.html.evil", local));
+        assert!(!permitted_ui_page(
+            "file:///nix/store/kira/ui/index.html.evil",
+            local
+        ));
         assert!(!permitted_ui_page("file:///etc/passwd", local));
     }
 

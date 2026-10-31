@@ -16,6 +16,18 @@ on:
       - Taskfile.yml
       - frontend/package-lock.json
       - .github/workflows/nix.yml
+  pull_request:
+    paths:
+      - flake.nix
+      - flake.lock
+      - nix/**
+      - Cargo.toml
+      - Cargo.lock
+      - crates/**
+      - scripts/**
+      - tests/**
+      - frontend/**
+      - .github/workflows/nix.yml
   workflow_dispatch:
 
 permissions:
