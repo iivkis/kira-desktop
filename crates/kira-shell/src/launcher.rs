@@ -337,7 +337,10 @@ mod tests {
         assert_eq!(visible_offset(120.0, 100.0, 0.0, 1000.0, 60.0, 100.0), 60.0);
         assert_eq!(visible_offset(60.0, 100.0, 0.0, 1000.0, 0.0, 40.0), 0.0);
         // Bottom of list is clamped to upper - page size.
-        assert_eq!(visible_offset(850.0, 100.0, 0.0, 900.0, 865.0, 910.0), 800.0);
+        assert_eq!(
+            visible_offset(850.0, 100.0, 0.0, 900.0, 865.0, 910.0),
+            800.0
+        );
         // Rows taller than the viewport align their top, not their bottom.
         assert_eq!(visible_offset(0.0, 80.0, 0.0, 800.0, 100.0, 240.0), 100.0);
     }
