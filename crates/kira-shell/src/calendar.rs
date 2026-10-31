@@ -2,6 +2,7 @@
 //! All date data is local to GLib; no arbitrary commands or network requests.
 use std::cell::Cell;
 use std::rc::Rc;
+use std::sync::Once;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
@@ -56,6 +57,21 @@ pub fn dismiss(application: &gtk::Application) -> bool {
     false
 }
 
+fn install_style() {
+    static ONCE: Once = Once::new();
+    ONCE.call_once(|| {
+        let provider = gtk::CssProvider::new();
+        provider.load_from_data(include_str!("calendar.css"));
+        if let Some(display) = gtk::gdk::Display::default() {
+            gtk::style_context_add_provider_for_display(
+                &display,
+                &provider,
+                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+            );
+        }
+    });
+}
+
 /// Clicking the Top Bar clock toggles the native surface.
 pub fn toggle(application: &gtk::Application) {
     if dismiss(application) {
@@ -65,15 +81,7 @@ pub fn toggle(application: &gtk::Application) {
     // The two transient overlays must never compete for keyboard focus.
     crate::launcher::dismiss(application);
 
-    let provider = gtk::CssProvider::new();
-    provider.load_from_data(include_str!("calendar.css"));
-    if let Some(display) = gtk::gdk::Display::default() {
-        gtk::style_context_add_provider_for_display(
-            &display,
-            &provider,
-            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-        );
-    }
+    install_style();
 
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
