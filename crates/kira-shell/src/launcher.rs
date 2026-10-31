@@ -85,6 +85,11 @@ impl LauncherUi {
     }
 }
 
+fn matches_search(app: &DesktopApplication, query: &str) -> bool {
+    let needle = query.trim().to_lowercase();
+    app.name.to_lowercase().contains(&needle) || app.id.to_lowercase().contains(&needle)
+}
+
 fn render(
     catalog: &[DesktopApplication],
     query: &str,
@@ -95,12 +100,9 @@ fn render(
     while let Some(child) = list.first_child() {
         list.remove(&child);
     }
-    let search = query.trim().to_lowercase();
     let mut ids = visible_ids.borrow_mut();
     ids.clear();
-    for app in catalog.iter().filter(|app| {
-        app.name.to_lowercase().contains(&search) || app.id.to_lowercase().contains(&search)
-    }) {
+    for app in catalog.iter().filter(|app| matches_search(app, query)) {
         let row = gtk::ListBoxRow::new();
         row.set_activatable(true);
         row.set_selectable(true);
@@ -287,6 +289,20 @@ pub fn create(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn search_is_unicode_safe_and_case_insensitive() {
+        let app = DesktopApplication {
+            id: "org.example.Terminal.desktop".into(),
+            name: "Терминал".into(),
+            icon: None,
+        };
+        assert!(matches_search(&app, "терм"));
+        assert!(matches_search(&app, "TERMINAL"));
+        assert!(matches_search(&app, "  "));
+        assert!(!matches_search(&app, "browser"));
+        assert!(!matches_search(&app, &"z".repeat(500)));
+    }
+
     #[test]
     fn native_rpc_requires_core_socket_and_no_arbitrary_command() {
         assert!(call_core(None, "launch_application", Some("ok.desktop".into())).is_err());
