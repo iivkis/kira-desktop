@@ -40,7 +40,10 @@ fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     if request.jsonrpc != PROTOCOL_VERSION {
         return RpcResponse::failure(Some(request.id), -32600, "Invalid JSON-RPC version");
     }
-    if !matches!(request.method.as_str(), "ping" | "get_state" | "get_workspaces") {
+    if !matches!(
+        request.method.as_str(),
+        "ping" | "get_state" | "get_workspaces"
+    ) {
         return RpcResponse::failure(Some(request.id), -32601, "Method not allowed");
     }
     match socket {
@@ -271,7 +274,10 @@ mod tests {
 
     #[test]
     fn allows_read_only_workspace_method_but_reports_missing_core() {
-        let result = process_message(r#"{"jsonrpc":"2.0","id":7,"method":"get_workspaces"}"#, None);
+        let result = process_message(
+            r#"{"jsonrpc":"2.0","id":7,"method":"get_workspaces"}"#,
+            None,
+        );
         assert_eq!(result.error.unwrap().code, -32000);
     }
 
