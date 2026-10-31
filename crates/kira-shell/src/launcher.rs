@@ -133,7 +133,6 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
 
     let search = gtk::SearchEntry::new();
     search.set_placeholder_text(Some("Search installed applications…"));
-    search.set_max_length(128);
     search.set_margin_start(10);
     search.set_margin_end(10);
     container.append(&search);
@@ -176,7 +175,10 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
         let filtered = filtered.clone();
         let list = list.clone();
         search.connect_search_changed(move |entry| {
-            fill(&list, &apps, entry.text().as_str(), &filtered);
+            // SearchEntry is an Editable, not an Entry/EntryBuffer: it does
+            // not have set_max_length(). Bound the query we actually process.
+            let query: String = entry.text().chars().take(128).collect();
+            fill(&list, &apps, &query, &filtered);
         });
     }
 
@@ -189,7 +191,7 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
             if let Some(app) = app {
                 // GIO launch semantics, never sh -c, and ONLY a catalog entry.
                 match app.launch(&[], None::<&gtk::gio::AppLaunchContext>) {
-                    Ok(()) => popup.hide(),
+                    Ok(()) => popup.set_visible(false),
                     Err(error) => {
                         eprintln!("kira-launcher: app launch failed: {error}");
                         feedback.set_text(&format!("Could not start application: {error}"));
@@ -215,7 +217,7 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
         let keys = gtk::EventControllerKey::new();
         keys.connect_key_pressed(move |_, key, _, _| {
             if key == gtk::gdk::Key::Escape {
-                popup.hide();
+                popup.set_visible(false);
                 return gtk::glib::Propagation::Stop;
             }
             if key == gtk::gdk::Key::Down {
@@ -247,7 +249,7 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
 
 pub fn toggle(popup: &gtk::ApplicationWindow) {
     if popup.is_visible() {
-        popup.hide();
+        popup.set_visible(false);
     } else {
         popup.present();
         if let Some(root) = popup.child()
