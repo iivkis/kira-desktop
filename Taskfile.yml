@@ -13,6 +13,12 @@ tasks:
       - task: fmt
       - task: lint
       - task: test
+      - task: config:check
+
+  config:check:
+    desc: Validate the sample KDL 2.0 config with the actual Core CLI.
+    cmds:
+      - cargo run --locked -p kira-core -- --check-config "{{.ROOT_DIR}}/config/kira.kdl.example"
 
   spec:check:
     desc: Validate required documentation and infrastructure.
@@ -34,6 +40,9 @@ tasks:
       - test -s .github/workflows/ci.yml
       - test -s scripts/dev_preview.py
       - test -s docs/PREVIEW.md
+      - test -s docs/CONFIG.md
+      - test -s config/kira.kdl.example
+      - test -s crates/kira-core/src/config.rs
 
   fmt:
     desc: Check formatting of all Rust crates.
