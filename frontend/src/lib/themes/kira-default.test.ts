@@ -64,6 +64,9 @@ describe('Kira Default Bordeaux / Taupe design tokens', () => {
   it('defines compact spacing, consistent radii and reduced motion', () => {
     expect(css).toContain('--kira-space-1: 4px;');
     expect(css).toContain('--kira-radius-md: 10px;');
+    expect(css).toContain('--kira-border-strong: 2px;');
+    expect(css).toContain('--kira-shadow-brutal:');
+    expect(css).toContain('--kira-shadow-panel:');
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
     expect(css).toContain('--kira-motion-fast: 0ms;');
   });

@@ -63,10 +63,10 @@
   .workspace-status {
     display: flex;
     align-items: center;
-    height: 27px;
+    height: 28px;
     color: var(--kira-color-muted);
     font-size: 9px;
-    font-weight: 650;
+    font-weight: 750;
     letter-spacing: 0.08em;
     white-space: nowrap;
   }
@@ -74,10 +74,10 @@
   .workspace-preview {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     max-width: min(33vw, 330px);
     margin: 0;
-    padding: 0;
+    padding: 0 3px 3px 0;
     overflow-x: auto;
     scrollbar-width: none;
     list-style: none;
@@ -90,20 +90,22 @@
     display: grid;
     flex: none;
     place-items: center;
-    min-width: 27px;
+    min-width: 30px;
     max-width: 76px;
-    height: 27px;
-    padding-inline: 5px;
+    height: 28px;
+    padding-inline: 6px;
     box-sizing: border-box;
-    border-radius: var(--kira-radius-sm);
-    color: color-mix(in srgb, var(--kira-color-text) 80%, var(--kira-color-background));
+    border: var(--kira-border-strong) solid transparent;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--kira-color-surface) 26%, var(--kira-color-background));
+    color: var(--kira-color-text);
     font-size: 11px;
     font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-weight: 700;
     transition:
+      transform var(--kira-motion-fast) var(--kira-motion-easing),
       background-color var(--kira-motion-fast) var(--kira-motion-easing),
-      color var(--kira-motion-fast) var(--kira-motion-easing);
+      border-color var(--kira-motion-fast) var(--kira-motion-easing);
   }
 
   .workspace-preview__button {
@@ -121,16 +123,15 @@
     cursor: pointer;
   }
 
-  .workspace-preview__button:disabled {
-    cursor: default;
-  }
-
+  .workspace-preview__button:disabled { cursor: default; }
   .workspace-preview__button:focus-visible {
     outline: 2px solid var(--kira-color-accent);
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 
   .workspace-preview__item:not(.preview-selected):has(.workspace-preview__button:not(:disabled):hover) {
+    transform: translate(-1px, -1px);
+    border-color: var(--kira-color-muted);
     background: var(--kira-color-surface-subtle);
   }
 
@@ -139,39 +140,38 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 66px;
+    max-width: 63px;
   }
 
   .workspace-preview__item.preview-active:not(.preview-selected) {
-    background: var(--kira-color-surface-subtle);
-    box-shadow: inset 0 0 0 1px var(--kira-color-border);
+    border-color: var(--kira-color-border);
   }
 
   .workspace-preview__item.preview-selected {
-    color: var(--kira-color-on-accent);
     background: var(--kira-color-accent);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--kira-color-background) 35%, transparent);
+    color: var(--kira-color-on-accent);
+    border-color: var(--kira-color-text);
+    box-shadow: var(--kira-shadow-brutal);
   }
 
   .workspace-preview__selected-mark {
     position: absolute;
-    bottom: 2px;
+    bottom: 1px;
     width: 8px;
     height: 2px;
-    border-radius: 2px;
     background: var(--kira-color-background);
   }
 
   .workspace-preview__item.preview-urgent:not(.preview-selected) {
-    box-shadow: inset 0 0 0 1px var(--kira-color-accent);
+    border-color: var(--kira-color-accent);
+    box-shadow: var(--kira-shadow-brutal);
   }
 
   .workspace-preview__urgent-mark {
     position: absolute;
-    bottom: 2px;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
+    bottom: 1px;
+    width: 6px;
+    height: 3px;
     background: var(--kira-color-accent);
   }
 </style>

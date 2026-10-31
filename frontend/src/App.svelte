@@ -3,7 +3,7 @@
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { openLauncher, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -11,6 +11,11 @@
   let workspaceState = $state<WorkspaceState | null>(null);
   let workspacePending = $state(false);
   let workspaceActionError = $state<string | null>(null);
+  let launcherUnavailable = $state(false);
+
+  function activateLauncher() {
+    launcherUnavailable = !openLauncher();
+  }
 
   async function activateWorkspace(id: string) {
     if (workspacePending || !workspaceState?.connected ||
@@ -95,10 +100,14 @@
 
 <main class="bar" class:compact={configState.config.compact} aria-label="Kira Desktop top bar">
   <section class="bar__start" aria-label="Kira and workspaces">
-    <div class="brand" aria-label="Kira Desktop">
+    <button type="button" class="brand" aria-label="Open applications launcher"
+      title="Open applications" onclick={activateLauncher}>
       <span class="brand__symbol" aria-hidden="true">K</span>
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
-    </div>
+    </button>
+    {#if launcherUnavailable}
+      <span class="launcher-warning" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
+    {/if}
     <span class="bar__separator" aria-hidden="true"></span>
     <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
       limit={configState.config.max_workspaces} pending={workspacePending}

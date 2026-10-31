@@ -32,32 +32,31 @@
 
 <style>
   .core-status {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 7px;
-    height: 27px;
+    gap: 8px;
+    height: 30px;
     max-width: 156px;
     padding: 0 10px;
-    border: 1px solid var(--kira-color-border);
+    border: var(--kira-border-strong) solid var(--kira-color-border);
     border-radius: var(--kira-radius-md);
     background: var(--kira-color-surface-subtle);
     color: var(--kira-color-text);
+    box-shadow: var(--kira-shadow-brutal);
     white-space: nowrap;
   }
 
   .core-status__signal {
     flex: none;
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border: 1px solid var(--kira-color-muted);
-    border-radius: 50%;
     background: transparent;
   }
 
   .core-status[data-status='connected'] .core-status__signal {
     border-color: var(--kira-color-accent);
     background: var(--kira-color-accent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--kira-color-accent) 20%, transparent);
   }
 
   .core-status[data-status='connecting'] .core-status__signal {
@@ -67,25 +66,20 @@
 
   .core-status__name {
     font-size: 9px;
-    font-weight: 750;
-    letter-spacing: 0.11em;
-    opacity: 0.86;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 
   .core-status__value {
     overflow: hidden;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 650;
     text-overflow: ellipsis;
   }
 
   @media (max-width: 490px) {
-    .core-status {
-      padding-inline: 8px;
-    }
-
-    .core-status__name {
-      display: none;
-    }
+    .core-status { padding-inline: 7px; }
+    .core-status__name { display: none; }
   }
 </style>

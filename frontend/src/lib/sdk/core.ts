@@ -94,8 +94,16 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge } };
   }
+}
+
+/** Native launcher control is a dedicated fixed-purpose channel, never a shell command. */
+export function openLauncher(): boolean {
+  const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kiraLauncher;
+  if (!channel) return false;
+  channel.postMessage('open');
+  return true;
 }
 
 let nextId = 0;

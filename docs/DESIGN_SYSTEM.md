@@ -4,18 +4,44 @@
 document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование);
 the other desktop surfaces are not implemented yet.
 
-## Visual direction
+## Kira official visual direction
 
-Kira is calm, deliberate and refined. Prefer proportion, legibility and quiet
-depth over trendy effects. A premium interface should feel cohesive even when
-reduced motion is enabled and visual effects are unavailable.
+**Neo-Brutalism + Editorial Design + Expressive Minimalism** is the
+official visual language of Kira Desktop.
 
-- Consistent 4 px spacing grid with 8 px as the preferred increment.
-- Compact, carefully aligned typography; a limited range of weights.
-- Soft corners (6–12 px), measured separators, restrained overlays.
-- State communicated with color **and** shape/position/text.
-- Micro-transitions around 150–200 ms, disabled with `prefers-reduced-motion`.
-- High-contrast text, visible keyboard focus and no fake interactive controls.
+- **Neo-Brutalism:** constructed blocks, explicit 2 px borders, meaningful
+  contrast and hard offset shadows. No generic glass or soft SaaS surfaces.
+- **Editorial Design:** a strong type hierarchy (eyebrow, heading,
+  description, metadata), measured spacing and deliberate grouping.
+- **Expressive Minimalism:** one canonical accent, every element functional,
+  short quiet motion rather than decoration.
+
+### Visual rules
+
+1. Components look constructed, not blurred. Borders express structure.
+2. Typography carries hierarchy, especially in the Launcher.
+3. Keep the palette limited and do not introduce decorative gradient colors.
+4. Focus and selection are equally evident to pointer and keyboard users.
+5. Indicate state with shape or text as well as color.
+6. Preserve accessible text contrast, useful labels and real button semantics.
+7. Respect reduced-motion settings; avoid animation-only state changes.
+
+### Component principles
+
+- **Top Bar:** a 42 px segmented control strip with structured separators,
+  a real KIRA Launcher button, workspace chips, Core badge and clock chip.
+- **Launcher:** native GTK overlay command panel with editorial header,
+  app search, icon shells, filtered catalog, selection and keycap footer.
+- **Workspace chips:** distinct selected, active, urgent and keyboard focus
+  states. Niri events remain the authoritative source.
+- **Core status:** compact high-signal editorial badge with text and indicator.
+
+### Geometry and motion
+
+Use a 4 px rhythm (prefer 8 px), 6–14 px radii, strong 2 px borders,
+120–180 ms transitions and hard offset depth. All interactions must remain
+functional when animation is disabled. The native Shell's 42 px reserved
+top-bar height is unchanged.
 
 ## Kira Default · canonical palette
 
@@ -53,7 +79,9 @@ Derived tokens: `--kira-color-on-accent`,
 `--kira-color-text-secondary`, `--kira-color-surface-subtle`
 and `--kira-color-border` blend or alias these five colors.
 Layout and motion tokens begin with `--kira-space-`,
-`--kira-radius-` and `--kira-motion-`.
+`--kira-radius-` and `--kira-motion-`. Structural tokens
+`--kira-border-strong`, `--kira-shadow-brutal` and
+`--kira-shadow-panel` define the new offset-shadow language.
 
 Example for a future Svelte widget:
 
@@ -93,7 +121,7 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
 
 ## Current component implementation
 
-- `frontend/src/App.svelte`: premium 42 px top bar, balanced left/center/right
+- `frontend/src/App.svelte`: structured 42 px top bar, balanced left/center/right
   regions, brand and local clock.
 - `frontend/src/lib/components/WorkspacePreview.svelte`: real Niri workspaces
   with accessible clickable buttons, live focus/active/urgent state, and
@@ -118,6 +146,5 @@ sizes. The automated tests verify palette constants, color contrast,
 required token names and reduced-motion support. They do **not** replace
 a screenshot or interactive accessibility test of the WebKit surface.
 
-Next design-system milestones: shared interactive primitives, complete
-keyboard accessibility, configurable KDL theme overrides, Launcher, Dock,
-notifications, and their consistent states.
+Next design-system milestones: shared interactive primitives, configurable KDL
+theme overrides, Dock, notifications and their consistent states.
