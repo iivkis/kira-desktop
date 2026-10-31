@@ -91,6 +91,21 @@ The packaged build is now split with pinned **Crane** into:
 4. Final `kira-desktop`: inexpensive output assembly and GTK wrapper
    pointing `KIRA_UI_DIR` at bundled UI.
 
+The `nix develop` shell also provides **sccache** and automatically sets
+`RUSTC_WRAPPER` for Cargo. Compiler artifacts persist under
+`${XDG_CACHE_HOME:-$HOME/.cache}/kira-desktop/sccache` (default 10 GiB
+limit) and can be reused across target directories and branches when
+compiler version and flags match. Existing `target/debug` artifacts are still
+used by Cargo itself. To inspect actual compiler-cache hits:
+
+```sh
+nix develop --command sccache --show-stats
+```
+
+`sccache` does not make unrelated build profiles interchangeable, and cannot
+reuse artifacts if Rust or native dependency versions change. The release Nix
+sandbox intentionally does not use this mutable local cache.
+
 To run a fast, **incremental local** smoke without Nix release compilation:
 
 ```sh
