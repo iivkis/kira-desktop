@@ -53,8 +53,8 @@ export async function inlineUiAssets(outputDirectory) {
   // A classic script does not use opaque module origins. Do not silently
   // inline a bundle that contains ESM-only syntax.
   new Script('(function(){\n' + js + '\n})();', { filename: jsReference });
-  html = html.replace(scriptTag, '<script>\n(function(){\n' + js + '\n})();\n</script>');
-
+  // Inspect the original Vite HTML while discovering styles: strings
+  // inside bundled JS must never count as extra stylesheet links.
   const styles = [...html.matchAll(LINK_TAG)]
     .map((match) => match[0])
     .filter((tag) => attribute(tag, 'rel')?.toLowerCase() === 'stylesheet');
@@ -69,6 +69,7 @@ export async function inlineUiAssets(outputDirectory) {
     throw new Error('Bundled CSS includes a closing style tag');
   }
   html = html.replace(styles[0], '<style>\n' + css + '\n</style>');
+  html = html.replace(scriptTag, '<script>\n(function(){\n' + js + '\n})();\n</script>');
 
   // Inspect HTML markup, not strings inside the inlined JS or CSS. Vite
   // bundles may legitimately contain literal '<link rel="stylesheet" ...>'
