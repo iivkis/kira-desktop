@@ -67,6 +67,18 @@ task nix:build       # nix build
 
 Use separate terminals for the two running processes. `XDG_RUNTIME_DIR` must point to the active user session runtime directory. The Shell returns an explicit error when its UI resources are missing. `KIRA_UI_DIR` can override the UI directory for development or packaging.
 
+## Review hardening
+
+The Shell WebView only allows navigation to its exact packaged `index.html` URI
+and ignores attempts to open a new window. The Rust bridge remains explicitly
+allowlisted to read-only methods. This is defense-in-depth for trusted UI code,
+not a security boundary for untrusted extensions.
+
+Core now bounds individual JSON-RPC messages to 4096 bytes and removes the
+Unix socket it owns after SIGINT/SIGTERM, checking inode identity first. The
+preview traps SIGTERM and terminates process groups even when their leaders
+have already exited, reducing the chance of orphaned processes.
+
 ## Core ⇄ Shell ⇄ Svelte bridge
 
 Svelte uses the typed SDK at `frontend/src/lib/sdk/core.ts`, sending JSON-RPC requests to `window.webkit.messageHandlers.kira.postMessage`. The Rust Host forwards **only `ping` and `get_state`** over Unix Domain Socket on a worker thread. Its GTK main loop returns replies as `kira:rpc` events.

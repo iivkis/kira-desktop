@@ -89,21 +89,32 @@ def await_ready(test, process: subprocess.Popen, name: str, timeout: float = TIM
 
 
 def stop_process(process: subprocess.Popen | None) -> None:
-    if process is None or process.poll() is not None:
+    if process is None:
         return
+    # Every launched child owns a new process group. Even after the leader
+    # exits, spawned descendants can remain in that group.
     try:
-        # Every launched child has its own session. Never use global pkill.
         os.killpg(process.pid, signal.SIGTERM)
     except ProcessLookupError:
-        return
-    try:
-        process.wait(timeout=3)
-    except subprocess.TimeoutExpired:
+        pass
+    if process.poll() is None:
         try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            return
-        process.wait(timeout=3)
+            process.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            pass
+    # Graceful leaders may exit while grandchildren keep running.
+    time.sleep(0.1)
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    if process.poll() is None:
+        process.wait(timeout=2)
+
+
+def interrupt_preview(_signum: int, _frame: object) -> None:
+    """Turn Taskfile's SIGTERM into the same cleanup path as Ctrl+C."""
+    raise KeyboardInterrupt
 
 
 def log_tail(path: Path) -> str:
@@ -147,7 +158,7 @@ def run_preview(package: Path) -> None:
 
         validation = subprocess.run(
             [niri_path, "validate", "--config", str(config)],
-            env=environment, capture_output=True, text=True, check=False,
+            env=environment, capture_output=True, text=True, check=False, timeout=10,
         )
         if validation.returncode:
             raise PreviewError(f"Niri rejected the preview config:\n{validation.stdout}{validation.stderr}")
@@ -166,6 +177,7 @@ def run_preview(package: Path) -> None:
             processes[name] = process
             return process
 
+        previous_sigterm_handler = signal.signal(signal.SIGTERM, interrupt_preview)
         try:
             print("[preview] Launching nested Niri as a window (without --session).", flush=True)
             niri = launch("niri", [niri_path, "--config", str(config)], environment)
@@ -228,6 +240,7 @@ def run_preview(package: Path) -> None:
                     print(f"[preview] {name} logs:\n{tail}", file=sys.stderr, flush=True)
             raise PreviewError(str(error)) from error
         finally:
+            signal.signal(signal.SIGTERM, previous_sigterm_handler)
             for name in ("shell", "core", "niri"):
                 stop_process(processes.get(name))
             for handle in handles:

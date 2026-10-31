@@ -19,6 +19,12 @@ fn ui_index() -> PathBuf {
     directory.join("index.html")
 }
 
+// Navigation is limited to the exact packaged UI document. Prefix matching
+// would allow unrelated file:// paths (or attacker-controlled remote pages).
+fn permitted_ui_page(requested_uri: &str, index_uri: &str) -> bool {
+    requested_uri == index_uri
+}
+
 fn core_socket() -> Option<PathBuf> {
     kira_ipc::core_socket_path().ok()
 }
@@ -131,6 +137,26 @@ fn main() {
         });
 
         let file_uri = gtk::gio::File::for_path(&index).uri();
+        let allowed_uri = file_uri.to_string();
+        view.connect_decide_policy(move |_, decision, kind| {
+            if kind == webkit6::PolicyDecisionType::NewWindowAction {
+                decision.ignore();
+                return true;
+            }
+            if kind == webkit6::PolicyDecisionType::NavigationAction {
+                let permitted = decision
+                    .downcast_ref::<webkit6::NavigationPolicyDecision>()
+                    .and_then(|navigation| navigation.navigation_action())
+                    .and_then(|action| action.request())
+                    .and_then(|request| request.uri())
+                    .is_some_and(|uri| permitted_ui_page(uri.as_str(), &allowed_uri));
+                if !permitted {
+                    decision.ignore();
+                    return true;
+                }
+            }
+            false
+        });
         view.load_uri(file_uri.as_str());
         window.set_child(Some(&view));
         window.present();
@@ -146,6 +172,18 @@ mod tests {
     fn rejects_unsupported_method_without_core_connection() {
         let result = process_message(r#"{"jsonrpc":"2.0","id":9,"method":"execute_shell"}"#, None);
         assert_eq!(result.error.unwrap().code, -32601);
+    }
+
+    #[test]
+    fn navigation_is_restricted_to_exact_ui_document() {
+        let local = "file:///nix/store/kira/ui/index.html";
+        assert!(permitted_ui_page(local, local));
+        assert!(!permitted_ui_page("https://evil.example/", local));
+        assert!(!permitted_ui_page(
+            "file:///nix/store/kira/ui/index.html.evil",
+            local
+        ));
+        assert!(!permitted_ui_page("file:///etc/passwd", local));
     }
 
     #[test]
