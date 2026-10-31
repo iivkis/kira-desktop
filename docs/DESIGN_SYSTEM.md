@@ -1,8 +1,8 @@
 # Kira Desktop · Design System
 
-**Status:** first implementation of Kira Default for the Svelte top bar. This
-document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование);
-the other desktop surfaces are not implemented yet.
+**Status:** implemented visual system for the Svelte Top Bar and native GTK
+Launcher. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
+Dock, notifications and other desktop surfaces remain future milestones.
 
 ## Kira official visual direction
 
