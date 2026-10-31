@@ -43,7 +43,7 @@ fn label(value: &str, class: &str) -> gtk::Label {
 fn visible_rows(list: &gtk::ListBox, count: usize) -> Vec<gtk::ListBoxRow> {
     (0..count)
         .filter_map(|index| list.row_at_index(index as i32))
-        .filter(|row| row.child_visible())
+        .filter(|row| row.is_child_visible())
         .collect()
 }
 
