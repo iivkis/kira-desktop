@@ -48,6 +48,12 @@ def preview_config(python: Path, script: Path, ready: Path, nonce: str) -> str:
         "prefer-no-csd\n"
         "binds {\n"
         "    Alt+Shift+Q { quit skip-confirmation=true; }\n"
+        "    // Explicitly nested-only preview controls; never touch host Niri.\n"
+        "    Alt+Shift+Return { spawn \"foot\"; }\n"
+        "    Alt+Shift+1 { focus-workspace 1; }\n"
+        "    Alt+Shift+2 { focus-workspace 2; }\n"
+        "    Alt+Shift+3 { focus-workspace 3; }\n"
+        "    Alt+Shift+Ctrl+2 { move-window-to-workspace 2; }\n"
         "}\n"
         f"spawn-at-startup {args}\n"
     )
@@ -254,6 +260,9 @@ def run_preview(
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
+            if not qa_smoke and qa_output_dir is None:
+                print("[preview] Nested controls: Alt+Shift+Enter opens foot; Alt+Shift+1/2/3 switches workspace.", flush=True)
+                print("[preview] Alt+Shift+Ctrl+2 moves the focused window to workspace 2.", flush=True)
 
             if qa_smoke or qa_output_dir is not None:
                 from qa_visual import capture, verify_smoke
