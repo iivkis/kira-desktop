@@ -65,6 +65,9 @@ nix develop --command cargo run --locked -p kira-core -- \
   --check-config "$(pwd)/config/kira.kdl.example"
 ```
 
+For a quick check of the committed example, `nix develop --command task config:check`
+runs that same CLI. `task check` also validates the example in CI.
+
 A valid file prints the normalized JSON UI settings and exits successfully.
 An invalid file exits nonzero with a diagnostic. This **does not bind**
 the Core socket or start Niri. For a custom file, pass its absolute path.
