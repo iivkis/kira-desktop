@@ -117,19 +117,24 @@ nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
 
 ## Visual QA before Niri IPC integration
 
-Run the isolated, packaged Shell smoke test on a graphical NixOS/Wayland
-session to capture 100%, 125%, 150% and 200% scale screenshots:
+Run **read-only** packaged Niri/Core/Svelte smoke on a graphical
+NixOS/Wayland session (no screenshots, scale changes or clipboard writes):
 
 ```sh
 nix develop --command task qa:visual:release
 ```
 
-The command verifies Core `get_state` and actual WebKit/Svelte mount,
-records PNGs plus a machine-readable manifest under ignored
-`artifacts/visual-qa/`, and cleans up preview-owned processes. **The
-screenshots require human review:** automated capture is not a visual PASS.
-See [visual QA guide](docs/QA_VISUAL.md) for narrow-window checks, acceptance
-criteria and known environmental requirements.
+To **explicitly opt in** to capturing 100%, 125%, 150% and 200% scales:
+
+```sh
+nix develop --command task qa:visual:capture:release
+```
+
+Capture uses `grim` bound to the nested Wayland display, **not** the Niri
+screenshot action (which also copies to clipboard). PNGs and manifests are
+stored locally in ignored `artifacts/visual-qa/`. Automated capture and CI
+are not substitutes for a real visual review. See
+[visual QA guide](docs/QA_VISUAL.md) for scope and acceptance criteria.
 
 ## Current limitations
 
