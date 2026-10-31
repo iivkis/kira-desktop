@@ -40,6 +40,12 @@ fn label(value: &str, class: &str) -> gtk::Label {
     label
 }
 
+// GtkListBoxRow::index() is a view position, not an application's identity.
+// Filtering and selection must always resolve a row to its original Gio entry.
+fn app_index(row: &gtk::ListBoxRow) -> Option<usize> {
+    row.widget_name().strip_prefix("kira-app-")?.parse().ok()
+}
+
 fn visible_rows(list: &gtk::ListBox, count: usize) -> Vec<gtk::ListBoxRow> {
     (0..count)
         .filter_map(|index| list.row_at_index(index as i32))
@@ -53,7 +59,7 @@ fn launch(
     window: &gtk::ApplicationWindow,
     error: &gtk::Label,
 ) {
-    let Ok(index) = usize::try_from(row.index()) else {
+    let Some(index) = app_index(row) else {
         return;
     };
     if let Some(app) = apps.get(index) {
@@ -146,9 +152,10 @@ pub fn show(application: &gtk::Application) {
     list.add_css_class("kira-app-list");
     list.set_selection_mode(gtk::SelectionMode::Single);
     list.set_activate_on_single_click(true);
-    for app in apps.iter() {
+    for (index, app) in apps.iter().enumerate() {
         let row = gtk::ListBoxRow::new();
         row.add_css_class("kira-app-row");
+        row.set_widget_name(&format!("kira-app-{index}"));
         let content = gtk::Box::new(gtk::Orientation::Horizontal, 12);
         let icon_shell = gtk::Box::new(gtk::Orientation::Horizontal, 0);
         icon_shell.add_css_class("kira-app-icon-shell");
@@ -204,8 +211,7 @@ pub fn show(application: &gtk::Application) {
     let filtered_apps = apps.clone();
     let query = filter.clone();
     list.set_filter_func(move |row| {
-        usize::try_from(row.index())
-            .ok()
+        app_index(row)
             .and_then(|index| filtered_apps.get(index))
             .is_some_and(|app| app.search.contains(query.borrow().as_str()))
     });

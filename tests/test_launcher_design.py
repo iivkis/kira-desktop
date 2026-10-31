@@ -37,6 +37,12 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('register_script_message_handler("kiraLauncher"', HOST)
         self.assertIn('launcher::show(', HOST)
 
+    def test_native_row_identity_survives_filtering(self):
+        self.assertIn('fn app_index(row: &gtk::ListBoxRow)', RUST)
+        self.assertIn('row.set_widget_name(&format!("kira-app-{index}"))', RUST)
+        self.assertNotIn('row.index()', RUST.split('fn app_index', 1)[1].split('fn visible_rows', 1)[1])
+        self.assertIn('.is_child_visible()', RUST)
+
 
 if __name__ == "__main__":
     unittest.main()
