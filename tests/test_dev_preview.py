@@ -60,7 +60,46 @@ class PreviewTests(unittest.TestCase):
         self.assertNotEqual(completed.returncode, 0)
         self.assertIn("Wayland session", completed.stderr)
 
+    def test_cleanup_kills_grandchildren_after_leader_exits(self):
+        with tempfile.TemporaryDirectory() as temp:
+            child_file = Path(temp) / "child.pid"
+            parent = subprocess.Popen(
+                [
+                    sys.executable,
+                    "-c",
+                    "import subprocess,sys; "
+                    "p=subprocess.Popen(['sleep','30'], stdout=subprocess.DEVNULL,"
+                    "stderr=subprocess.DEVNULL); "
+                    "open(sys.argv[1],'w').write(str(p.pid))",
+                    str(child_file),
+                ],
+                start_new_session=True,
+            )
+            try:
+                parent.wait(timeout=4)
+                child_pid = int(child_file.read_text())
+                preview.stop_process(parent)
+                deadline = time.monotonic() + 3
+                while time.monotonic() < deadline:
+                    state_file = Path(f"/proc/{child_pid}/stat")
+                    if not state_file.exists():
+                        break
+                    state = state_file.read_text().split(") ", 1)[1][0]
+                    if state == "Z":  # A zombie is dead but awaits reaping.
+                        break
+                    time.sleep(0.05)
+                else:
+                    self.fail("Grandchild survived cleanup after its leader exited")
+            finally:
+                preview.stop_process(parent)
+
     def test_lifecycle_with_mock_niri_core_and_shell(self):
+        self.run_mock_lifecycle(signal.SIGINT)
+
+    def test_sigterm_cleans_up_mock_preview(self):
+        self.run_mock_lifecycle(signal.SIGTERM)
+
+    def run_mock_lifecycle(self, exit_signal):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             runtime = root / "runtime"
@@ -135,7 +174,7 @@ while True: time.sleep(.1)
                 self.assertFalse((runtime / "kira-desktop.sock").exists())
             finally:
                 if process.poll() is None:
-                    process.send_signal(signal.SIGINT)
+                    process.send_signal(exit_signal)
                 stdout, stderr = process.communicate(timeout=8)
                 parent.close()
             self.assertEqual(process.returncode, 0, stdout + stderr)
