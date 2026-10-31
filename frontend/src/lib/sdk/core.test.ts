@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, onWorkspaceUpdate, onConfigUpdate } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -38,6 +38,40 @@ describe('Core SDK JSON-RPC bridge', () => {
       result: { connected: true, workspaces: [workspace] },
     });
     await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
+  });
+
+  it('sends a single focus action by stable string id, never index or unsafe JS number', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = focusWorkspace('18446744073709551615');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as {
+      jsonrpc: string; id: number; method: string; params: { id: string };
+    };
+    expect(payload).toEqual({
+      jsonrpc: '2.0', id: expect.any(Number),
+      method: 'focus_workspace', params: { id: '18446744073709551615' },
+    });
+    expect(payload.params.id).toBe('18446744073709551615');
+    deliverReply({ jsonrpc: '2.0', id: payload.id, result: { accepted: true } });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it('rejects malformed workspace IDs without sending any native request', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    for (const id of ['-1', '01', '', 'code', '18446744073709551616', '3;quit']) {
+      await expect(focusWorkspace(id)).rejects.toThrow('Invalid workspace ID');
+    }
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it('propagates Niri focus failures rather than optimistically changing workspace', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = focusWorkspace('9');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number };
+    deliverReply({ jsonrpc: '2.0', id: payload.id, error: { code: -32602, message: 'Unknown workspace id' } });
+    await expect(pending).rejects.toThrow('Unknown workspace id');
   });
 
   it('delivers live workspace events and unsubscribes without polling', () => {
