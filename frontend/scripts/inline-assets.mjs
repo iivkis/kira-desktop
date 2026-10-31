@@ -16,7 +16,7 @@ const SCRIPT_TAG = /<script\b(?=[^>]*\bsrc\s*=)[^>]*>\s*<\/script>/gi;
 const LINK_TAG = /<link\b[^>]*>/gi;
 
 function attribute(tag, name) {
-  const pattern = new RegExp('(?:^|\\s)' + name + '\\s*=\\s*(["\\'])(.*?)\\1', 'i');
+  const pattern = new RegExp("(?:^|\\s)" + name + "\\s*=\\s*(['\"])(.*?)\\1", "i");
   return pattern.exec(tag)?.[2] ?? null;
 }
 
