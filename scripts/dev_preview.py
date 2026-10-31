@@ -142,6 +142,7 @@ def run_preview(
     bin_dir: Path | None = None,
     ui_dir: Path | None = None,
     debug: bool = False,
+    qa_output_dir: Path | None = None,
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
@@ -253,6 +254,21 @@ def run_preview(
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
 
+            if qa_output_dir is not None:
+                # QA only queries the verified child compositor and never the host.
+                from qa_visual import capture
+                try:
+                    evidence = capture(
+                        niri_path, isolated, os.environ.get("NIRI_SOCKET"),
+                        logs["shell"], socket_file, qa_output_dir,
+                        packaged=(bin_dir is None),
+                    )
+                except Exception as error:
+                    raise PreviewError(f"QA capture failed: {error}") from error
+                print(f"[preview] QA evidence captured: {evidence}", flush=True)
+                print("[preview] Visual review is still pending.", flush=True)
+                return
+
             while True:
                 if debug:
                     for name in ("core", "shell"):
@@ -326,6 +342,7 @@ def main() -> int:
     parser.add_argument("--bin-dir", type=Path, help="Cargo debug binaries directory")
     parser.add_argument("--ui-dir", type=Path, help="Compiled frontend assets directory")
     parser.add_argument("--debug", action="store_true", help="Stream Core and WebKit Shell logs")
+    parser.add_argument("--qa-output-dir", type=Path, help="Capture nested-Niri QA scale screenshots, then exit")
     parser.add_argument("--validate-config", action="store_true")
     parser.add_argument("mode", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("ready_path", nargs="?", help=argparse.SUPPRESS)
@@ -337,7 +354,7 @@ def main() -> int:
         elif args.mode == "report" and args.ready_path and args.nonce:
             report_ready(Path(args.ready_path), args.nonce)
         elif args.mode is None:
-            run_preview(args.package_dir, args.bin_dir, args.ui_dir, args.debug)
+            run_preview(args.package_dir, args.bin_dir, args.ui_dir, args.debug, args.qa_output_dir)
         else:
             parser.error("Unknown preview mode")
     except PreviewError as error:
