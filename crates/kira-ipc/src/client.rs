@@ -125,23 +125,27 @@ pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
             .read_until(b'\n', &mut line)?;
         if line.is_empty() {
             return Err(io::Error::new(
-                io::ErrorKind::UnexpectedEof, "Core config stream closed",
+                io::ErrorKind::UnexpectedEof,
+                "Core config stream closed",
             ));
         }
         if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
             return Err(io::Error::new(
-                io::ErrorKind::InvalidData, "Invalid config frame",
+                io::ErrorKind::InvalidData,
+                "Invalid config frame",
             ));
         }
         let reply: RpcResponse = serde_json::from_slice(&line)?;
-        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some() {
+        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some()
+        {
             return Err(io::Error::new(
-                io::ErrorKind::InvalidData, "Invalid config response",
+                io::ErrorKind::InvalidData,
+                "Invalid config response",
             ));
         }
-        let value = reply.result.ok_or_else(|| {
-            io::Error::new(io::ErrorKind::InvalidData, "Config result missing")
-        })?;
+        let value = reply
+            .result
+            .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Config result missing"))?;
         on_state(serde_json::from_value(value)?);
     }
 }
@@ -236,7 +240,10 @@ mod tests {
             assert_eq!(request.method, "subscribe_config");
             let mut socket = reader.into_inner();
             let state = crate::ConfigState {
-                config: crate::UiConfig { compact: true, ..Default::default() },
+                config: crate::UiConfig {
+                    compact: true,
+                    ..Default::default()
+                },
                 error: None,
             };
             let reply = crate::RpcResponse::success(0, serde_json::to_value(state).unwrap());
