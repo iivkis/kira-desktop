@@ -111,6 +111,11 @@ tasks:
     cmds:
       - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist
 
+  dev:preview:debug:
+    desc: Reopen existing preview and stream WebKit/JavaScript logs without compiling.
+    cmds:
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --debug
+
   dev:preview:release:
     desc: Verify the full Nix package in a nested Niri compositor.
     cmds:
