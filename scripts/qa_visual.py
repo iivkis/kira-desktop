@@ -116,6 +116,37 @@ def check_core(core_socket: Path) -> dict:
     return response["result"]
 
 
+def check_niri_workspaces(core_socket: Path, timeout: float = 5.0) -> dict:
+    """Assert real Core→Niri EventStream data is ready, without compositor actions."""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        request = {"jsonrpc": "2.0", "id": 2, "method": "get_workspaces"}
+        try:
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
+                connection.settimeout(3)
+                connection.connect(str(core_socket))
+                connection.sendall((json.dumps(request) + "\n").encode("utf-8"))
+                with connection.makefile("rb") as stream:
+                    line = stream.readline(65537)
+            if len(line) > 65536 or not line.endswith(b"\n"):
+                raise VisualQAError("Invalid Core workspace response boundary")
+            response = json.loads(line)
+        except (OSError, ValueError) as error:
+            raise VisualQAError(f"Core get_workspaces failed: {error}") from error
+        if response.get("jsonrpc") != "2.0" or response.get("id") != 2 or response.get("error"):
+            raise VisualQAError("Core get_workspaces returned an error")
+        state = response.get("result")
+        if not isinstance(state, dict) or not isinstance(state.get("connected"), bool) or not isinstance(state.get("workspaces"), list):
+            raise VisualQAError("Core get_workspaces returned a malformed state")
+        if state["connected"]:
+            if any(not isinstance(ws, dict) or not isinstance(ws.get("id"), str)
+                   or not isinstance(ws.get("idx"), int) for ws in state["workspaces"]):
+                raise VisualQAError("Core get_workspaces included an invalid workspace")
+            return state
+        time.sleep(0.15)
+    raise VisualQAError("Niri EventStream did not produce an initial workspace snapshot")
+
+
 def wait_for_scale(
     niri: str, environment: dict[str, str], output: str, expected: float,
     timeout: float = 8.0,
@@ -175,6 +206,9 @@ def verify_smoke(
     nested_socket(environment, parent_niri_socket)
     wait_for_shell_ui(shell_log)
     core = check_core(core_socket)
+    # Distinguish a mounted UI from actual Niri workspace integration.
+    workspaces = check_niri_workspaces(core_socket)
+    print(f"[qa] Niri workspaces connected: {len(workspaces['workspaces'])} workspace(s)", flush=True)
     output, _ = sole_output(niri, environment)
     return core, output
 
