@@ -12,6 +12,14 @@ const MAX_VISIBLE: usize = 64;
 
 type Catalog = Vec<(String, gtk::gio::AppInfo)>;
 
+/// Keep the search widget directly; do not depend on fragile child traversal
+/// when the popup is shown a second time.
+pub struct Launcher {
+    window: gtk::ApplicationWindow,
+    search: gtk::SearchEntry,
+    feedback: gtk::Label,
+}
+
 fn catalog() -> Catalog {
     let mut seen = std::collections::HashSet::new();
     let mut apps = Vec::new();
@@ -45,9 +53,9 @@ fn fill(
     apps: &Catalog,
     query: &str,
     selected: &Rc<RefCell<Vec<gtk::gio::AppInfo>>>,
+    count: &gtk::Label,
 ) {
-    // Remove rows only. The ListBox's placeholder widget is not a row
-    // and would otherwise cause an infinite first_child/remove loop.
+    // Remove only rows, never the empty-state placeholder.
     while let Some(row) = list.row_at_index(0) {
         list.remove(&row);
     }
@@ -58,15 +66,64 @@ fn fill(
             continue;
         }
         let row = gtk::ListBoxRow::new();
-        row.add_css_class("kira-launcher-row");
-        let label = gtk::Label::new(Some(name));
-        label.set_xalign(0.0);
-        label.set_ellipsize(gtk::pango::EllipsizeMode::End);
-        label.set_margin_start(14);
-        label.set_margin_end(14);
-        label.set_margin_top(9);
-        label.set_margin_bottom(9);
-        row.set_child(Some(&label));
+        row.add_css_class("kira-app-row");
+        row.set_tooltip_text(Some(name));
+
+        let content = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+        content.set_margin_start(11);
+        content.set_margin_end(11);
+        content.set_margin_top(7);
+        content.set_margin_bottom(7);
+
+        let icon_shell = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        icon_shell.add_css_class("kira-app-icon-shell");
+        icon_shell.set_halign(gtk::Align::Center);
+        icon_shell.set_valign(gtk::Align::Center);
+        let icon = app
+            .icon()
+            .map(|gicon| gtk::Image::from_gicon(&gicon))
+            .unwrap_or_else(|| gtk::Image::from_icon_name("application-x-executable-symbolic"));
+        icon.add_css_class("kira-app-icon");
+        icon.set_pixel_size(26);
+        icon.set_halign(gtk::Align::Center);
+        icon.set_valign(gtk::Align::Center);
+        icon_shell.append(&icon);
+        content.append(&icon_shell);
+
+        let text = gtk::Box::new(gtk::Orientation::Vertical, 3);
+        text.set_hexpand(true);
+        text.set_valign(gtk::Align::Center);
+        let primary = gtk::Label::new(Some(name));
+        primary.set_xalign(0.0);
+        primary.set_ellipsize(gtk::pango::EllipsizeMode::End);
+        primary.add_css_class("kira-app-name");
+        text.append(&primary);
+
+        let detail = app
+            .description()
+            .map(|description| description.to_string())
+            .filter(|description| !description.trim().is_empty())
+            .unwrap_or_else(|| {
+                app.id()
+                    .map(|id| id.trim_end_matches(".desktop").to_string())
+                    .unwrap_or_else(|| "Installed application".into())
+            });
+        let detail: String = detail.chars().take(90).collect();
+        let secondary = gtk::Label::new(Some(&detail));
+        secondary.set_xalign(0.0);
+        secondary.set_ellipsize(gtk::pango::EllipsizeMode::End);
+        secondary.set_max_width_chars(45);
+        secondary.add_css_class("kira-app-detail");
+        text.append(&secondary);
+        content.append(&text);
+
+        let arrow = gtk::Image::from_icon_name("go-next-symbolic");
+        arrow.add_css_class("kira-app-arrow");
+        arrow.set_pixel_size(14);
+        arrow.set_valign(gtk::Align::Center);
+        content.append(&arrow);
+
+        row.set_child(Some(&content));
         list.append(&row);
         filtered.push(app.clone());
         if filtered.len() >= MAX_VISIBLE {
@@ -74,10 +131,9 @@ fn fill(
         }
     }
 
-    if !filtered.is_empty() {
-        if let Some(first) = list.row_at_index(0) {
-            list.select_row(Some(&first));
-        }
+    count.set_text(&format!("{} shown", filtered.len()));
+    if let Some(first) = list.row_at_index(0) {
+        list.select_row(Some(&first));
     }
     *selected.borrow_mut() = filtered;
 }
@@ -135,32 +191,30 @@ fn ensure_selected_visible(
     }
 }
 
-pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
+/// A separate, floating GTK layer-shell surface, created only after the
+/// user clicks KIRA (not on normal Top Bar startup).
+pub fn create(app: &gtk::Application) -> Launcher {
     let popup = gtk::ApplicationWindow::new(app);
-    popup.set_title(Some("Kira App Launcher"));
+    popup.set_title(Some("Kira Applications"));
     popup.set_decorated(false);
     popup.set_resizable(false);
-    popup.set_default_size(420, 470);
+    popup.set_default_size(478, 558);
+    popup.add_css_class("kira-launcher-window");
     popup.init_layer_shell();
     popup.set_namespace(Some("kira-launcher"));
     popup.set_layer(Layer::Overlay);
     popup.set_anchor(Edge::Top, true);
     popup.set_anchor(Edge::Left, true);
-    popup.set_margin(Edge::Top, 50);
-    popup.set_margin(Edge::Left, 12);
+    popup.set_margin(Edge::Top, 46);
+    popup.set_margin(Edge::Left, 10);
     popup.set_exclusive_zone(0);
     popup.set_keyboard_mode(KeyboardMode::Exclusive);
 
     let provider = gtk::CssProvider::new();
-    provider.load_from_data(
-        ".kira-launcher {background:#0a0908; color:#f2f4f3; border:1px solid #5e503f;}\n\
-         .kira-launcher entry {background:#49111c; color:#f2f4f3; border:1px solid #a9927d; border-radius:8px;}\n\
-         .kira-launcher list {background:#0a0908;}\n\
-         .kira-launcher row {color:#f2f4f3;}\n\
-         .kira-launcher row:selected {background:#a9927d; color:#0a0908;}\n\
-         .kira-launcher row:hover {background:#49111c; color:#f2f4f3;}\n\
-         .kira-launcher label {color:inherit;}\n",
-    );
+    provider.connect_parsing_error(|_, _, error| {
+        eprintln!("kira-launcher: GTK theme CSS: {error}");
+    });
+    provider.load_from_data(include_str!("launcher.css"));
     if let Some(display) = gtk::gdk::Display::default() {
         #[allow(deprecated)]
         gtk::StyleContext::add_provider_for_display(
@@ -170,65 +224,132 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
         );
     }
 
-    let container = gtk::Box::new(gtk::Orientation::Vertical, 8);
-    container.add_css_class("kira-launcher");
-    container.set_margin_start(0);
-    container.set_margin_end(0);
-    container.set_margin_top(0);
-    container.set_margin_bottom(0);
+    // A transparent root leaves breathing room around the rounded card
+    // and allows its shadow to render without claiming extra exclusive zone.
+    let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    root.set_margin_start(10);
+    root.set_margin_end(10);
+    root.set_margin_top(10);
+    root.set_margin_bottom(10);
+    let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    card.add_css_class("kira-launcher-card");
 
-    let header = gtk::Label::new(Some("KIRA  /  APPLICATIONS"));
-    header.set_xalign(0.0);
-    header.set_margin_start(14);
-    header.set_margin_top(14);
-    header.set_margin_bottom(2);
-    container.append(&header);
+    let header = gtk::Box::new(gtk::Orientation::Vertical, 4);
+    header.set_margin_start(22);
+    header.set_margin_end(22);
+    header.set_margin_top(21);
+    header.set_margin_bottom(18);
+
+    let kicker = gtk::Label::new(Some("KIRA  /  DESKTOP"));
+    kicker.add_css_class("kira-eyebrow");
+    kicker.set_xalign(0.0);
+    header.append(&kicker);
+
+    let title = gtk::Label::new(Some("Applications"));
+    title.add_css_class("kira-heading");
+    title.set_xalign(0.0);
+    title.set_margin_top(4);
+    header.append(&title);
+
+    let subtitle = gtk::Label::new(Some("Find what you need, without the noise."));
+    subtitle.add_css_class("kira-subheading");
+    subtitle.set_xalign(0.0);
+    header.append(&subtitle);
+    card.append(&header);
 
     let search = gtk::SearchEntry::new();
-    search.set_placeholder_text(Some("Search installed applications…"));
-    search.set_margin_start(10);
-    search.set_margin_end(10);
-    container.append(&search);
+    search.add_css_class("kira-search-field");
+    search.set_placeholder_text(Some("Search apps..."));
+    search.set_margin_start(18);
+    search.set_margin_end(18);
+    search.set_margin_bottom(20);
+    search.set_size_request(-1, 47);
+    card.append(&search);
+
+    let section = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    section.set_margin_start(23);
+    section.set_margin_end(23);
+    section.set_margin_bottom(9);
+    let section_title = gtk::Label::new(Some("YOUR APPLICATIONS"));
+    section_title.add_css_class("kira-section-label");
+    section_title.set_xalign(0.0);
+    section_title.set_hexpand(true);
+    section.append(&section_title);
+    let count = gtk::Label::new(None);
+    count.add_css_class("kira-count");
+    section.append(&count);
+    card.append(&section);
 
     let list = gtk::ListBox::new();
+    list.add_css_class("kira-results-list");
     list.set_selection_mode(gtk::SelectionMode::Single);
-    let empty = gtk::Label::new(Some("No matching applications"));
-    empty.set_margin_top(24);
-    empty.set_margin_bottom(24);
-    list.set_placeholder(Some(&empty));
     list.set_activate_on_single_click(true);
+    let empty = gtk::Box::new(gtk::Orientation::Vertical, 6);
+    empty.set_margin_top(45);
+    empty.set_margin_bottom(45);
+    let empty_icon = gtk::Image::from_icon_name("edit-find-symbolic");
+    empty_icon.set_pixel_size(24);
+    empty.append(&empty_icon);
+    let empty_title = gtk::Label::new(Some("Nothing found"));
+    empty_title.add_css_class("kira-empty-title");
+    empty.append(&empty_title);
+    let empty_detail = gtk::Label::new(Some("Try a different application name."));
+    empty_detail.add_css_class("kira-empty-detail");
+    empty.append(&empty_detail);
+    list.set_placeholder(Some(&empty));
+
     let scroll = gtk::ScrolledWindow::new();
+    scroll.add_css_class("kira-results-scroll");
     scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
     scroll.set_vexpand(true);
+    scroll.set_margin_start(11);
+    scroll.set_margin_end(11);
     scroll.set_child(Some(&list));
     {
         let scroll = scroll.clone();
-        // Handles ↑/↓ selection as well as mouse selection and list changes.
+        // Preserve auto-scroll when ↑/↓ moves past the visible viewport.
         list.connect_row_selected(move |list, selected| {
             if let Some(row) = selected {
                 ensure_selected_visible(list, row, &scroll);
             }
         });
     }
-    container.append(&scroll);
-
-    let footer = gtk::Label::new(Some("Enter: launch  •  ↑↓: select  •  Esc: close"));
-    footer.set_xalign(0.0);
-    footer.set_margin_start(14);
-    footer.set_margin_bottom(12);
-    container.append(&footer);
-    popup.set_child(Some(&container));
+    card.append(&scroll);
 
     let feedback = gtk::Label::new(None);
+    feedback.add_css_class("kira-launch-error");
     feedback.set_xalign(0.0);
     feedback.set_wrap(true);
-    feedback.set_margin_start(14);
-    feedback.set_margin_end(14);
+    feedback.set_margin_start(19);
+    feedback.set_margin_end(19);
+    feedback.set_margin_bottom(8);
     feedback.set_visible(false);
-    container.append(&feedback);
+    card.append(&feedback);
 
-    // One read of the app catalog when the popup is created. GTK/GIO
-    // already interprets XDG desktop IDs, visibility and Exec field codes.
+    let footer = gtk::Box::new(gtk::Orientation::Horizontal, 9);
+    footer.add_css_class("kira-footer");
+    footer.set_margin_start(20);
+    footer.set_margin_end(20);
+    footer.set_margin_top(8);
+    footer.set_margin_bottom(16);
+    for (key, hint) in [
+        ("↵", "Open"),
+        ("↑ ↓", "Navigate"),
+        ("Esc", "Close"),
+    ] {
+        let key_label = gtk::Label::new(Some(key));
+        key_label.add_css_class("kira-keycap");
+        footer.append(&key_label);
+        let hint_label = gtk::Label::new(Some(hint));
+        hint_label.add_css_class("kira-footer-hint");
+        footer.append(&hint_label);
+    }
+    card.append(&footer);
+    root.append(&card);
+    popup.set_child(Some(&root));
+
+    // GIO owns visibility, icon and Exec semantics. Never accept an Exec
+    // command or app path from the WebKit bridge.
     let apps = Rc::new(catalog());
     let filtered = Rc::new(RefCell::new(Vec::new()));
 
@@ -236,11 +357,10 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
         let apps = apps.clone();
         let filtered = filtered.clone();
         let list = list.clone();
+        let count = count.clone();
         search.connect_search_changed(move |entry| {
-            // SearchEntry is an Editable, not an Entry/EntryBuffer: it does
-            // not have set_max_length(). Bound the query we actually process.
             let query: String = entry.text().chars().take(128).collect();
-            fill(&list, &apps, &query, &filtered);
+            fill(&list, &apps, &query, &filtered, &count);
         });
     }
 
@@ -251,12 +371,11 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
         list.connect_row_activated(move |_, row| {
             let app = filtered.borrow().get(row.index() as usize).cloned();
             if let Some(app) = app {
-                // GIO launch semantics, never sh -c, and ONLY a catalog entry.
                 match app.launch(&[], None::<&gtk::gio::AppLaunchContext>) {
                     Ok(()) => popup.set_visible(false),
                     Err(error) => {
                         eprintln!("kira-launcher: app launch failed: {error}");
-                        feedback.set_text(&format!("Could not start application: {error}"));
+                        feedback.set_text(&format!("Cannot open application: {error}"));
                         feedback.set_visible(true);
                     }
                 }
@@ -303,22 +422,23 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
         search.add_controller(keys);
     }
 
-    // GTK focus is re-established on every open; this popup is never shown
-    // at startup and cannot spawn any process without a user activation.
-    fill(&list, &apps, "", &filtered);
-    popup
+    fill(&list, &apps, "", &filtered, &count);
+    Launcher {
+        window: popup,
+        search,
+        feedback,
+    }
 }
 
-pub fn toggle(popup: &gtk::ApplicationWindow) {
-    if popup.is_visible() {
-        popup.set_visible(false);
+pub fn toggle(launcher: &Launcher) {
+    if launcher.window.is_visible() {
+        launcher.window.set_visible(false);
     } else {
-        popup.present();
-        if let Some(root) = popup.child()
-            && let Some(search) = root.first_child().and_then(|x| x.next_sibling())
-        {
-            search.grab_focus();
-        }
+        // Start from a clean, predictable search each time the overlay opens.
+        launcher.feedback.set_visible(false);
+        launcher.search.set_text("");
+        launcher.window.present();
+        launcher.search.grab_focus();
     }
 }
 
