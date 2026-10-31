@@ -39,6 +39,15 @@ test('inlines Vite bundles without leaving module subrequests', async () => {
   });
 });
 
+test('allows HTML-like text inside bundled JS without treating it as an external asset', async () => {
+  await fixture(async (dir) => {
+    const result = await inlineUiAssets(dir);
+    assert.ok(result.scriptBytes > 0);
+    const html = await readFile(join(dir, 'index.html'), 'utf8');
+    assert.match(html, /window\.kiraMarkup/);
+  }, { js: 'window.kiraMarkup = \'<link rel="stylesheet" href="https://example.invalid/a.css">\';' });
+});
+
 test('rejects an output that cannot run as a classic script', async () => {
   await fixture(async (dir) => {
     await assert.rejects(inlineUiAssets(dir), /Cannot use import statement|Unexpected token/);
