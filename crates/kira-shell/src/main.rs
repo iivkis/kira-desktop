@@ -343,16 +343,13 @@ mod tests {
 
     #[test]
     fn allows_read_only_config_but_rejects_writes() {
-        let response = process_message(
-            r#"{"jsonrpc":"2.0","id":8,"method":"get_config"}"#, None,
-        );
+        let response = process_message(r#"{"jsonrpc":"2.0","id":8,"method":"get_config"}"#, None);
         assert_eq!(response.error.unwrap().code, -32000);
-        let response = process_message(
-            r#"{"jsonrpc":"2.0","id":9,"method":"set_config"}"#, None,
-        );
+        let response = process_message(r#"{"jsonrpc":"2.0","id":9,"method":"set_config"}"#, None);
         assert_eq!(response.error.unwrap().code, -32601);
         let response = process_message(
-            r#"{"jsonrpc":"2.0","id":10,"method":"subscribe_config"}"#, None,
+            r#"{"jsonrpc":"2.0","id":10,"method":"subscribe_config"}"#,
+            None,
         );
         assert_eq!(response.error.unwrap().code, -32601);
     }
