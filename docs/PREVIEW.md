@@ -12,7 +12,26 @@ git pull
 nix develop --command task dev:preview
 ```
 
-Команда выполняет `nix build` и запускает три процесса:
+По умолчанию команда устанавливает frontend-зависимости только при изменении
+`frontend/package-lock.json`, запускает Vite и делает **инкрементальную
+debug-сборку Cargo** в `target/debug`. Это быстрее повторного
+`nix build` после правки Rust или Svelte. Первый запуск по-прежнему может
+потребовать полной компиляции Rust-зависимостей WebKitGTK.
+
+Для проверки именно установочного Nix-пакета используется отдельная команда:
+
+```sh
+nix develop --command task dev:preview:release
+```
+
+Если исходники и frontend уже собраны, можно открыть существующий preview
+без вызова Cargo и Vite:
+
+```sh
+nix develop --command task dev:preview:run
+```
+
+Команда запускает три процесса:
 **вложенный Niri, Kira Core и Kira Shell**. Дисплей вложенного Niri определяется
 автоматически через его `spawn-at-startup`: выбирать `wayland-1` или
 `wayland-2` самостоятельно не требуется.

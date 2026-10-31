@@ -12,10 +12,15 @@ The GitHub Actions workflows are split into fast, non-graphical checks (`.github
 nix develop --command task dev:preview
 ```
 
-This builds the pinned Nix package, validates an isolated minimal Niri KDL config,
-launches Niri **windowed without `--session`**, then receives its actual nested
+The default preview builds with Cargo in `target/debug` and Vite in
+`frontend/dist`, reusing compiled Rust dependencies. A full Nix package build
+is reserved for `task dev:preview:release`; `task dev:preview:run` launches
+already-built binaries without compiling anything.
+
+The preview validates an isolated minimal Niri KDL config, launches Niri
+**windowed without `--session`**, then receives the actual nested
 `WAYLAND_DISPLAY` from a `spawn-at-startup` handshake. Only after verifying
-the nested display is different from the parent does it start Core and Shell.
+the nested display differs from the parent does it start Core and Shell.
 
 `KIRA_CORE_SOCKET` points to a private temporary directory, so an existing
 Kira Core process cannot be touched. `KIRA_PREVIEW=1` enables the GTK
@@ -49,7 +54,7 @@ nix build
 ./result/bin/kira-shell # terminal 2
 ```
 
-Running the UI in a real graphical Niri session remains an **open manual test**; a successful Nix build alone does not validate runtime layer-shell behavior or UI rendering.
+The native Nix package build is tested in CI; verify appearance and behavior manually under Niri.
 
 ## Developer tasks
 
@@ -58,6 +63,9 @@ nix develop
 npm ci --prefix frontend
 task check           # formatting, Clippy, IPC tests, TypeScript, Vitest
 task shell:check     # compile the native GTK/WebKit Shell
+task dev:preview     # fast Cargo + Vite nested preview
+task dev:preview:run # reopen already built preview, no compilation
+task dev:preview:release # full Nix release preview
 task build           # frontend + all release binaries
 task core:run        # launch the Core daemon
 task shell:run       # rebuild frontend and launch the Shell

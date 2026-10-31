@@ -31,6 +31,18 @@ desktop session:
 nix develop --command task dev:preview
 ```
 
+The default preview uses `cargo build --locked` and a local Vite build. Cargo
+reuses `target/debug` between runs, avoiding a full Nix release rebuild after
+each Rust or Svelte edit. On first run, WebKitGTK Rust bindings must still
+compile. For the packaged release build instead, use:
+
+```sh
+nix develop --command task dev:preview:release
+```
+
+To reopen a previously built development preview with **no build step**,
+use `task dev:preview:run` inside `nix develop`.
+
 Close the window with **Alt+Shift+Q** (inside nested Niri) or press **Ctrl+C** in
 the launching terminal. This only stops preview-owned processes. No `nixos-rebuild
 switch`, global `pkill`, systemd manipulation or modification of

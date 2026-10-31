@@ -123,7 +123,11 @@ def log_tail(path: Path) -> str:
     return "\n".join(path.read_text(encoding="utf-8", errors="replace").splitlines()[-24:])
 
 
-def run_preview(package: Path) -> None:
+def run_preview(
+    package: Path,
+    bin_dir: Path | None = None,
+    ui_dir: Path | None = None,
+) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
     if not runtime_value or not parent_display:
@@ -136,10 +140,20 @@ def run_preview(package: Path) -> None:
         raise PreviewError("niri is not installed; run from 'nix develop'")
 
     package = package.resolve()
-    binaries = {name: package / "bin" / f"kira-{name}" for name in ("core", "shell")}
+    binaries_directory = (bin_dir if bin_dir is not None else package / "bin").resolve()
+    binaries = {
+        name: binaries_directory / f"kira-{name}" for name in ("core", "shell")
+    }
     for binary in binaries.values():
         if not binary.is_file() or not os.access(binary, os.X_OK):
-            raise PreviewError(f"Missing {binary}; run 'nix build' first")
+            raise PreviewError(f"Missing {binary}; build the preview binaries first")
+
+    if bin_dir is not None and ui_dir is None:
+        raise PreviewError("Debug preview requires --ui-dir with compiled frontend assets")
+    if ui_dir is not None:
+        ui_dir = ui_dir.resolve()
+        if not (ui_dir / "index.html").is_file():
+            raise PreviewError(f"Missing {ui_dir / 'index.html'}; run 'task frontend:build'")
 
     with tempfile.TemporaryDirectory(prefix="kira-preview-") as directory:
         temp = Path(directory)
@@ -153,7 +167,7 @@ def run_preview(package: Path) -> None:
         )
 
         environment = os.environ.copy()
-        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW"):
+        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW", "KIRA_UI_DIR"):
             environment.pop(key, None)
 
         validation = subprocess.run(
@@ -206,6 +220,8 @@ def run_preview(package: Path) -> None:
                 "KIRA_CORE_SOCKET": str(socket_file),
                 "KIRA_PREVIEW": "1",
             })
+            if ui_dir is not None:
+                isolated["KIRA_UI_DIR"] = str(ui_dir)
             # Future Niri IPC consumers must use the child compositor's socket.
             if isinstance(nested_niri_socket, str) and nested_niri_socket:
                 parent_niri_socket = os.environ.get("NIRI_SOCKET")
@@ -271,6 +287,8 @@ def validate_preview_config() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Isolated nested-Niri Kira Desktop preview")
     parser.add_argument("--package-dir", type=Path, default=Path("result"))
+    parser.add_argument("--bin-dir", type=Path, help="Cargo debug binaries directory")
+    parser.add_argument("--ui-dir", type=Path, help="Compiled frontend assets directory")
     parser.add_argument("--validate-config", action="store_true")
     parser.add_argument("mode", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("ready_path", nargs="?", help=argparse.SUPPRESS)
@@ -282,7 +300,7 @@ def main() -> int:
         elif args.mode == "report" and args.ready_path and args.nonce:
             report_ready(Path(args.ready_path), args.nonce)
         elif args.mode is None:
-            run_preview(args.package_dir)
+            run_preview(args.package_dir, args.bin_dir, args.ui_dir)
         else:
             parser.error("Unknown preview mode")
     except PreviewError as error:
