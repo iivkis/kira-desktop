@@ -46,11 +46,17 @@ fn language_preferences() -> Vec<String> {
     for locale in locales.join(":").split(':') {
         let locale = locale.split('.').next().unwrap_or("");
         let locale = locale.split('@').next().unwrap_or("");
-        if locale == "C" || locale == "POSIX" || locale.is_empty() { continue; }
+        if locale == "C" || locale == "POSIX" || locale.is_empty() {
+            continue;
+        }
         let locale = locale.replace('-', "_");
-        if !preferred.contains(&locale) { preferred.push(locale.clone()); }
+        if !preferred.contains(&locale) {
+            preferred.push(locale.clone());
+        }
         if let Some((language, _)) = locale.split_once('_') {
-            if !preferred.contains(&language.to_string()) { preferred.push(language.to_string()); }
+            if !preferred.contains(&language.to_string()) {
+                preferred.push(language.to_string());
+            }
         }
     }
     preferred
@@ -79,7 +85,10 @@ fn unescape_name(input: &str) -> String {
                 Some('n') => result.push(' '),
                 Some('t') => result.push(' '),
                 Some('\\') => result.push('\\'),
-                Some(other) => { result.push('\\'); result.push(other); }
+                Some(other) => {
+                    result.push('\\');
+                    result.push(other);
+                }
                 None => result.push('\\'),
             }
         } else if !c.is_control() {
@@ -90,8 +99,12 @@ fn unescape_name(input: &str) -> String {
 }
 
 fn limited_text(input: &str, bytes: usize) -> String {
-    let end = input.char_indices().map(|(i, c)| i + c.len_utf8())
-        .take_while(|end| *end <= bytes).last().unwrap_or(0);
+    let end = input
+        .char_indices()
+        .map(|(i, c)| i + c.len_utf8())
+        .take_while(|end| *end <= bytes)
+        .last()
+        .unwrap_or(0);
     input[..end].to_string()
 }
 
@@ -105,9 +118,13 @@ fn executable_exists(command: &str, path_env: Option<&OsStr>) -> bool {
     } else if command.contains('/') {
         return false;
     } else {
-        path_env.map(std::env::split_paths).into_iter().flatten()
+        path_env
+            .map(std::env::split_paths)
+            .into_iter()
+            .flatten()
             .filter(|dir| dir.is_absolute())
-            .map(|dir| dir.join(command)).collect()
+            .map(|dir| dir.join(command))
+            .collect()
     };
     candidates.iter().any(|path| {
         fs::metadata(path).is_ok_and(|m| m.is_file() && m.permissions().mode() & 0o111 != 0)
@@ -122,17 +139,25 @@ struct DesktopEntry {
     icon: Option<String>,
 }
 
-fn parse_entry(content: &str, locales: &[String], path_env: Option<&OsStr>) -> Option<DesktopEntry> {
+fn parse_entry(
+    content: &str,
+    locales: &[String],
+    path_env: Option<&OsStr>,
+) -> Option<DesktopEntry> {
     let mut section = false;
     let mut keys = std::collections::HashMap::<&str, &str>::new();
     for line in content.lines() {
         let line = line.trim();
-        if line.starts_with('#') || line.is_empty() { continue; }
+        if line.starts_with('#') || line.is_empty() {
+            continue;
+        }
         if line.starts_with('[') && line.ends_with(']') {
             section = line == "[Desktop Entry]";
             continue;
         }
-        if !section { continue; }
+        if !section {
+            continue;
+        }
         let (key, value) = line.split_once('=')?;
         keys.insert(key.trim(), value.trim());
     }
@@ -140,26 +165,44 @@ fn parse_entry(content: &str, locales: &[String], path_env: Option<&OsStr>) -> O
     let hidden = bool_field(keys.get("Hidden").copied());
     if hidden {
         return Some(DesktopEntry {
-            hidden: true, visible: false, name: String::new(), icon: None,
+            hidden: true,
+            visible: false,
+            name: String::new(),
+            icon: None,
         });
     }
-    if keys.get("Type") != Some(&"Application") { return None; }
+    if keys.get("Type") != Some(&"Application") {
+        return None;
+    }
     let visible = !bool_field(keys.get("NoDisplay").copied());
     let has_exec = keys.get("Exec").is_some_and(|value| !value.is_empty());
     let dbus = bool_field(keys.get("DBusActivatable").copied());
-    if !hidden && !has_exec && !dbus { return None; }
+    if !hidden && !has_exec && !dbus {
+        return None;
+    }
     let try_exec = keys.get("TryExec").copied();
     if let Some(command) = try_exec {
-        if !executable_exists(command, path_env) { return Some(DesktopEntry {
-            hidden, visible: false, name: String::new(), icon: None,
-        }); }
+        if !executable_exists(command, path_env) {
+            return Some(DesktopEntry {
+                hidden,
+                visible: false,
+                name: String::new(),
+                icon: None,
+            });
+        }
     }
-    let name = locales.iter()
+    let name = locales
+        .iter()
         .find_map(|lang| keys.get(format!("Name[{lang}]").as_str()).copied())
         .or_else(|| keys.get("Name").copied())
-        .map(unescape_name).unwrap_or_default();
-    if name.is_empty() && !hidden { return None; }
-    let icon = keys.get("Icon").map(|value| limited_text(value, 100))
+        .map(unescape_name)
+        .unwrap_or_default();
+    if name.is_empty() && !hidden {
+        return None;
+    }
+    let icon = keys
+        .get("Icon")
+        .map(|value| limited_text(value, 100))
         .filter(|value| !value.is_empty() && !value.chars().any(char::is_control));
     Some(DesktopEntry {
         hidden,
@@ -183,41 +226,69 @@ fn scan(roots: &[PathBuf], locales: &[String], path_env: Option<&OsStr>) -> Vec<
         let mut files = Vec::<PathBuf>::new();
         let mut directories = vec![(root.clone(), 0)];
         while let Some((dir, depth)) = directories.pop() {
-            if depth > MAX_DEPTH || visited >= MAX_FILES { break; }
-            let Ok(items) = fs::read_dir(&dir) else { continue; };
+            if depth > MAX_DEPTH || visited >= MAX_FILES {
+                break;
+            }
+            let Ok(items) = fs::read_dir(&dir) else {
+                continue;
+            };
             for item in items.flatten() {
-                if visited >= MAX_FILES { break; }
+                if visited >= MAX_FILES {
+                    break;
+                }
                 visited += 1;
                 let path = item.path();
-                let Ok(kind) = item.file_type() else { continue; };
+                let Ok(kind) = item.file_type() else {
+                    continue;
+                };
                 if kind.is_dir() && depth < MAX_DEPTH {
                     directories.push((path, depth + 1));
-                } else if path.extension().is_some_and(|ext| ext == "desktop") &&
-                          (kind.is_file() || kind.is_symlink()) {
+                } else if path.extension().is_some_and(|ext| ext == "desktop")
+                    && (kind.is_file() || kind.is_symlink())
+                {
                     files.push(path);
                 }
             }
         }
         files.sort();
         for file in files {
-            let Some(id) = desktop_id(root, &file) else { continue; };
-            if seen.contains(&id) { continue; }
-            let Ok(metadata) = fs::metadata(&file) else { continue; };
-            if metadata.len() > MAX_FILE_SIZE || !metadata.is_file() { continue; }
-            let Ok(contents) = fs::read_to_string(&file) else { continue; };
-            let Some(entry) = parse_entry(&contents, locales, path_env) else { continue; };
+            let Some(id) = desktop_id(root, &file) else {
+                continue;
+            };
+            if seen.contains(&id) {
+                continue;
+            }
+            let Ok(metadata) = fs::metadata(&file) else {
+                continue;
+            };
+            if metadata.len() > MAX_FILE_SIZE || !metadata.is_file() {
+                continue;
+            }
+            let Ok(contents) = fs::read_to_string(&file) else {
+                continue;
+            };
+            let Some(entry) = parse_entry(&contents, locales, path_env) else {
+                continue;
+            };
             // Even Hidden / NoDisplay / missing TryExec entries shadow lower-priority IDs.
             seen.insert(id.clone());
             if entry.visible && !entry.hidden {
                 all.push(Discovered {
-                    app: DesktopApplication { id, name: entry.name, icon: entry.icon },
+                    app: DesktopApplication {
+                        id,
+                        name: entry.name,
+                        icon: entry.icon,
+                    },
                     path: file,
                 });
             }
         }
     }
     all.sort_by(|a, b| {
-        a.app.name.to_lowercase().cmp(&b.app.name.to_lowercase())
+        a.app
+            .name
+            .to_lowercase()
+            .cmp(&b.app.name.to_lowercase())
             .then(a.app.id.cmp(&b.app.id))
     });
     all.truncate(MAX_APPS);
@@ -225,24 +296,47 @@ fn scan(roots: &[PathBuf], locales: &[String], path_env: Option<&OsStr>) -> Vec<
 }
 
 pub fn catalog() -> Vec<DesktopApplication> {
-    scan(&data_dirs(), &language_preferences(), std::env::var_os("PATH").as_deref())
-        .into_iter().map(|item| item.app).collect()
+    scan(
+        &data_dirs(),
+        &language_preferences(),
+        std::env::var_os("PATH").as_deref(),
+    )
+    .into_iter()
+    .map(|item| item.app)
+    .collect()
 }
 
 /// The client supplies only an exact desktop ID; the current catalog resolves
 /// its path again. Never accept a client-provided path or Exec command.
 pub fn selected_path(params: Option<&Value>) -> Result<PathBuf, &'static str> {
-    let params = params.and_then(Value::as_object).ok_or("Invalid application selection")?;
-    if params.len() != 1 { return Err("Invalid application selection"); }
-    let id = params.get("id").and_then(Value::as_str)
+    let params = params
+        .and_then(Value::as_object)
         .ok_or("Invalid application selection")?;
-    if id.is_empty() || id.len() > 100 || !id.ends_with(".desktop") ||
-        id.chars().any(char::is_control) || id.contains('/') || id.contains('\\') {
+    if params.len() != 1 {
         return Err("Invalid application selection");
     }
-    scan(&data_dirs(), &language_preferences(), std::env::var_os("PATH").as_deref())
-        .into_iter().find(|item| item.app.id == id).map(|item| item.path)
-        .ok_or("Application not in catalog")
+    let id = params
+        .get("id")
+        .and_then(Value::as_str)
+        .ok_or("Invalid application selection")?;
+    if id.is_empty()
+        || id.len() > 100
+        || !id.ends_with(".desktop")
+        || id.chars().any(char::is_control)
+        || id.contains('/')
+        || id.contains('\\')
+    {
+        return Err("Invalid application selection");
+    }
+    scan(
+        &data_dirs(),
+        &language_preferences(),
+        std::env::var_os("PATH").as_deref(),
+    )
+    .into_iter()
+    .find(|item| item.app.id == id)
+    .map(|item| item.path)
+    .ok_or("Application not in catalog")
 }
 
 pub async fn launch(path: &Path) -> std::io::Result<()> {
@@ -252,9 +346,16 @@ pub async fn launch(path: &Path) -> std::io::Result<()> {
     let result = tokio::time::timeout(
         Duration::from_secs(5),
         tokio::process::Command::new(binary)
-            .arg("launch").arg(path).kill_on_drop(true).status(),
-    ).await.map_err(|_| std::io::Error::new(std::io::ErrorKind::TimedOut, "GIO launch timed out"))??;
-    if result.success() { Ok(()) } else {
+            .arg("launch")
+            .arg(path)
+            .kill_on_drop(true)
+            .status(),
+    )
+    .await
+    .map_err(|_| std::io::Error::new(std::io::ErrorKind::TimedOut, "GIO launch timed out"))??;
+    if result.success() {
+        Ok(())
+    } else {
         Err(std::io::Error::other("GIO could not activate application"))
     }
 }
@@ -265,7 +366,11 @@ mod tests {
     use std::sync::atomic::{AtomicU64, Ordering};
     static NEXT: AtomicU64 = AtomicU64::new(0);
     fn fixture() -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("kira-apps-{}-{}", std::process::id(), NEXT.fetch_add(1, Ordering::Relaxed)));
+        let dir = std::env::temp_dir().join(format!(
+            "kira-apps-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
         fs::create_dir_all(&dir).unwrap();
         dir
     }
@@ -279,7 +384,11 @@ mod tests {
     #[test]
     fn reads_localized_names_nested_ids_and_unicode() {
         let root = fixture();
-        write(&root, "foo/bar.desktop", "[Desktop Entry]\nType=Application\nName=Normal\nName[ru]=Терминал\nExec=terminal\n");
+        write(
+            &root,
+            "foo/bar.desktop",
+            "[Desktop Entry]\nType=Application\nName=Normal\nName[ru]=Терминал\nExec=terminal\n",
+        );
         let apps = scan(&[root.clone()], &["ru".into()], None);
         assert_eq!(apps[0].app.id, "foo-bar.desktop");
         assert_eq!(apps[0].app.name, "Терминал");
@@ -290,8 +399,16 @@ mod tests {
     fn hidden_and_nodisplay_shadow_lower_priority() {
         let first = fixture();
         let second = fixture();
-        write(&first, "hidden.desktop", "[Desktop Entry]\nType=Application\nHidden=true\n");
-        write(&first, "nodisplay.desktop", "[Desktop Entry]\nType=Application\nName=No\nExec=no\nNoDisplay=true\n");
+        write(
+            &first,
+            "hidden.desktop",
+            "[Desktop Entry]\nType=Application\nHidden=true\n",
+        );
+        write(
+            &first,
+            "nodisplay.desktop",
+            "[Desktop Entry]\nType=Application\nName=No\nExec=no\nNoDisplay=true\n",
+        );
         write(&second, "hidden.desktop", APP);
         write(&second, "nodisplay.desktop", APP);
         write(&second, "present.desktop", APP);
@@ -305,9 +422,21 @@ mod tests {
     #[test]
     fn tryexec_and_malformed_entries_are_excluded() {
         let root = fixture();
-        write(&root, "missing.desktop", "[Desktop Entry]\nType=Application\nName=Missing\nExec=missing\nTryExec=/this/does/not/exist\n");
-        write(&root, "broken.desktop", "[Desktop Entry]\nType=Link\nName=Not an app\nURL=https://example.org\n");
-        write(&root, "empty.desktop", "[Desktop Entry]\nType=Application\nName=Empty\n");
+        write(
+            &root,
+            "missing.desktop",
+            "[Desktop Entry]\nType=Application\nName=Missing\nExec=missing\nTryExec=/this/does/not/exist\n",
+        );
+        write(
+            &root,
+            "broken.desktop",
+            "[Desktop Entry]\nType=Link\nName=Not an app\nURL=https://example.org\n",
+        );
+        write(
+            &root,
+            "empty.desktop",
+            "[Desktop Entry]\nType=Application\nName=Empty\n",
+        );
         write(&root, "valid.desktop", APP);
         let apps = scan(&[root.clone()], &[], None);
         assert_eq!(apps.len(), 1);
@@ -332,7 +461,14 @@ mod tests {
         let root = fixture();
         assert!(scan(&[root.clone()], &[], None).is_empty());
         for i in 0..190 {
-            write(&root, &format!("{i}.desktop"), &format!("[Desktop Entry]\nType=Application\nName={}\nExec=true\n", "🪄".repeat(100)));
+            write(
+                &root,
+                &format!("{i}.desktop"),
+                &format!(
+                    "[Desktop Entry]\nType=Application\nName={}\nExec=true\n",
+                    "🪄".repeat(100)
+                ),
+            );
         }
         let apps = scan(&[root.clone()], &[], None);
         assert_eq!(apps.len(), MAX_APPS);
