@@ -116,23 +116,23 @@ tasks:
       - task: frontend:deps
       - task: frontend:build
       - cargo build --locked -p kira-core -p kira-shell
-      - dbus-run-session -- python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist
 
   dev:preview:run:
     desc: Reopen preview with already built debug binaries and UI assets.
     cmds:
-      - dbus-run-session -- python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist
 
   dev:preview:debug:
     desc: Reopen existing preview and stream WebKit/JavaScript logs without compiling.
     cmds:
-      - dbus-run-session -- python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --debug
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --debug
 
   dev:preview:release:
     desc: Verify the full Nix package in a nested Niri compositor.
     cmds:
       - task: nix:build
-      - dbus-run-session -- python3 scripts/dev_preview.py
+      - python3 scripts/dev_preview.py
 
   dev:preview:test:
     desc: Test nested preview safety and lifecycle without a running Niri.
@@ -145,13 +145,13 @@ tasks:
       - task: frontend:deps
       - task: frontend:build
       - cargo build --locked -p kira-core -p kira-shell
-      - dbus-run-session -- python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-smoke
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-smoke
 
   qa:visual:release:
     desc: Run read-only Core/Svelte/Niri smoke using the real Nix package; no screenshots.
     cmds:
       - task: nix:build
-      - dbus-run-session -- python3 scripts/dev_preview.py --qa-smoke
+      - python3 scripts/dev_preview.py --qa-smoke
 
   qa:visual:capture:fast:
     desc: OPT-IN four scale screenshots via grim in isolated debug preview (no clipboard).
@@ -159,13 +159,13 @@ tasks:
       - task: frontend:deps
       - task: frontend:build
       - cargo build --locked -p kira-core -p kira-shell
-      - dbus-run-session -- python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-output-dir artifacts/visual-qa
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-output-dir artifacts/visual-qa
 
   qa:visual:capture:release:
     desc: OPT-IN four scale PNGs via grim from packaged Nix Shell (no clipboard).
     cmds:
       - task: nix:build
-      - dbus-run-session -- python3 scripts/dev_preview.py --qa-output-dir artifacts/visual-qa
+      - python3 scripts/dev_preview.py --qa-output-dir artifacts/visual-qa
 
   nix:check:
     desc: Check the Nix flake.
