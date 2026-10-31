@@ -49,6 +49,36 @@ pub struct WorkspaceState {
     pub workspaces: Vec<Workspace>,
 }
 
+/// Validated KDL appearance settings sent to the trusted frontend.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct UiConfig {
+    pub compact: bool,
+    pub title: String,
+    pub show_seconds: bool,
+    pub show_names: bool,
+    pub max_workspaces: u8,
+}
+
+impl Default for UiConfig {
+    fn default() -> Self {
+        Self {
+            compact: false,
+            title: "KIRA DESKTOP".into(),
+            show_seconds: false,
+            show_names: true,
+            max_workspaces: 12,
+        }
+    }
+}
+
+/// Last successfully parsed config plus an optional validation diagnostic.
+/// Invalid reloads preserve the previous working UiConfig.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct ConfigState {
+    pub config: UiConfig,
+    pub error: Option<String>,
+}
+
 impl RpcResponse {
     pub fn success(id: u64, value: Value) -> Self {
         Self {
@@ -77,6 +107,14 @@ pub fn dispatch(request: RpcRequest) -> RpcResponse {
 }
 
 pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> RpcResponse {
+    dispatch_with_state(request, state, &ConfigState::default())
+}
+
+pub fn dispatch_with_state(
+    request: RpcRequest,
+    workspaces: &WorkspaceState,
+    config: &ConfigState,
+) -> RpcResponse {
     if request.jsonrpc != PROTOCOL_VERSION {
         return RpcResponse::failure(Some(request.id), -32600, "Invalid Request");
     }
@@ -87,7 +125,8 @@ pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> 
             request.id,
             json!({ "version": env!("CARGO_PKG_VERSION"), "status": "bootstrap" }),
         ),
-        "get_workspaces" => RpcResponse::success(request.id, json!(state)),
+        "get_workspaces" => RpcResponse::success(request.id, json!(workspaces)),
+        "get_config" => RpcResponse::success(request.id, json!(config)),
         _ => RpcResponse::failure(Some(request.id), -32601, "Method not found"),
     }
 }
@@ -129,6 +168,22 @@ mod tests {
             method: "ping".into(),
         });
         assert_eq!(response.error.unwrap().code, -32600);
+    }
+
+    #[test]
+    fn default_config_is_read_only_and_typed() {
+        let req = RpcRequest {
+            jsonrpc: PROTOCOL_VERSION.into(), id: 13, method: "get_config".into(),
+        };
+        let response = dispatch(req);
+        assert_eq!(response.result.unwrap(), json!({
+            "config": {"compact": false, "title": "KIRA DESKTOP",
+              "show_seconds": false, "show_names": true, "max_workspaces": 12},
+            "error": null
+        }));
+        assert_eq!(dispatch(RpcRequest {
+            jsonrpc: PROTOCOL_VERSION.into(), id: 14, method: "set_config".into()
+        }).error.unwrap().code, -32601);
     }
 
     #[test]
