@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import socket
 import stat
@@ -17,6 +18,7 @@ import time
 
 SCALES = (1.0, 1.25, 1.5, 2.0)
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+PNG_TRAILER = b"\x00\x00\x00\x00IEND\xaeB\x60\x82"
 
 
 class VisualQAError(Exception):
@@ -144,11 +146,18 @@ def png_dimensions(path: Path) -> tuple[int, int]:
 
 def wait_for_png(path: Path, timeout: float = 8.0) -> tuple[int, int]:
     deadline = time.monotonic() + timeout
+    previous_size = -1
     while time.monotonic() < deadline:
-        if path.is_file() and path.stat().st_size >= 32:
-            return png_dimensions(path)
+        if path.is_file():
+            current_size = path.stat().st_size
+            if current_size >= 40 and current_size == previous_size:
+                with path.open("rb") as file:
+                    file.seek(-len(PNG_TRAILER), 2)
+                    if file.read() == PNG_TRAILER:
+                        return png_dimensions(path)
+            previous_size = current_size
         time.sleep(0.15)
-    raise VisualQAError(f"Niri did not save screenshot: {path}")
+    raise VisualQAError(f"Niri did not finish saving PNG screenshot: {path}")
 
 
 def capture(
@@ -164,7 +173,7 @@ def capture(
     nested_socket(environment, parent_niri_socket)
     output_directory = output_directory.resolve()
     output_directory.mkdir(parents=True, exist_ok=True)
-    session = output_directory / (time.strftime("%Y%m%d-%H%M%S") + f"-{__import__('os').getpid()}")
+    session = output_directory / (time.strftime("%Y%m%d-%H%M%S") + f"-{os.getpid()}")
     session.mkdir(exist_ok=False)
     manifest: dict = {
         "status": "in_progress",
