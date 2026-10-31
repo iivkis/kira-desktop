@@ -8,7 +8,7 @@ use std::sync::Once;
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
-use crate::calendar_model::{CivilDate, month_grid, shift_month};
+use crate::calendar_model::{CivilDate, days_in_month, month_grid, shift_month};
 
 const TITLE: &str = "Kira Calendar";
 
@@ -88,6 +88,11 @@ impl Picker {
     fn navigate(self: &Rc<Self>, months: i32) {
         let mut state = self.state.borrow_mut();
         if let Some((year, month)) = shift_month(state.year, state.month, months) {
+            // Keep selection visible and clamp February/short-month dates.
+            // Month/year navigation should never strand the highlighted day
+            // on an invisible month while the details show another date.
+            let day = state.selected.day.min(days_in_month(year, month));
+            state.selected = CivilDate::new(year, month, day).expect("valid day");
             state.year = year;
             state.month = month;
             drop(state);
