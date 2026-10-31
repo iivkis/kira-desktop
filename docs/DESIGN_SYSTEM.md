@@ -19,21 +19,29 @@ official visual language of Kira Desktop.
 
 ### Visual rules
 
-1. The Top Bar is one continuous surface, not several framed chips.
-2. Reserve the strongest orange fill for the selected workspace or list row.
-3. Make KIRA a typographic launcher control, without a nested icon frame.
-4. Core is a small status dot with readable text; clock is unboxed numerals.
-5. No ornamental center label, ruler lines, dividers or offset chip shadows.
-6. The Launcher gets one structural panel edge, not borders on every row.
-7. Keyboard focus remains as discoverable as pointer hover; state is not
-   communicated through color alone. Respect reduced motion.
+1. Organize the Top Bar as three intentionally different **materials**:
+   Prussian Blue identity, Black workspace navigation, subdued Blue system.
+2. Keep the main orange fill on the current workspace; add only a narrow
+   orange baseline/mark to connect brand and active navigation.
+3. Build a compact typographic hierarchy: wordmark, workspace kicker/title,
+   and stacked system metadata with tabular clock digits.
+4. Keep the full Top Bar at exactly 42 logical pixels; the navigation is
+   real Niri state and the text is sourced from the current KDL config.
+5. Divide the Launcher into a Black editorial intro and a Blue working area
+   for search and catalog; avoid filling the entire selected row with orange.
+6. A slim orange selection rail and orange item title identify the active
+   application; the catalog retains descriptive text and system icons.
+7. Preserve visible keyboard focus, urgent/offline states, reduced-motion,
+   and readable contrast. Decoration must not disguise function.
 
 ### Component principles
 
-- **Top Bar:** continuous 42 px strip: KIRA text button, workspace controls,
-  optional subdued title, Core indicator and plain tabular clock.
-- **Launcher:** one native GTK editorial panel, structured search and catalog
-  rows, one clear selected fill, restrained icon shells and keycap footer.
+- **Top Bar:** a 42 px strip with three continuous horizontal zones:
+  Blue brand, Black workspaces and metadata, softer Blue system status/clock.
+  Small overlines establish hierarchy without extra boxes.
+- **Launcher:** Black editorial introduction and Prussian Blue workbench.
+  Search, catalog, stable application icons, and an orange selection rail
+  communicate function without painting the entire row orange.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
   and visible keyboard focus remain distinct. Niri events are authoritative.
 - **Core status:** compact unboxed label with status dot. Offline and
@@ -42,10 +50,11 @@ official visual language of Kira Desktop.
 ### Geometry and motion
 
 Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
-controls, and a single low-contrast panel edge when truly needed. Use
-120–180 ms transitions without positional jump effects. Never put offset
-shadows on Top Bar controls. All interactions work without motion. The
-native Shell's 42 px reserved top-bar height is unchanged.
+controls, and **one deliberate surface contrast per functional region**.
+An orange line can anchor a section, but offset shadows and nested borders
+are not a shortcut to depth. Use 120–180 ms transitions without positional
+jumps. Keep interaction functional without motion. Niri's reserved 42 px
+height is unchanged, including the bottom accent rule.
 
 ## Kira Default · canonical palette
 
@@ -127,9 +136,9 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
 
 ## Current component implementation
 
-- `frontend/src/App.svelte`: continuous 42 px Top Bar with one compact
-  launcher/workspace group and a quiet Core/clock group. The configurable
-  title sits next to workspaces rather than floating in the center.
+- `frontend/src/App.svelte`: identity / workspace / system architecture.
+  The configurable title is a compact second-line workspace descriptor;
+  compact and narrow screens collapse secondary labels.
 - `frontend/src/lib/components/WorkspacePreview.svelte`: real Niri workspaces
   with accessible clickable buttons, live focus/active/urgent state, and
   stable workspace IDs for the intentional `FocusWorkspace` action.
@@ -140,8 +149,8 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
   stays 42 px tall to match the native layer-shell reservation.
 - `frontend/index.html`: uses matching fallback colors before Svelte mounts.
 - `crates/kira-shell/src/launcher.rs` and `launcher.css`: GTK layer-shell
-  application catalog, search, pointer/keyboard selection, KIRA brand action,
-  and canonical five-color Neo-Brutalist visuals.
+  editorial introduction, Blue workbench, Gio application catalog, orange
+  rail selection, pointer/keyboard activation and canonical five-color theme.
 
 The KIRA button uses the dedicated `kiraLauncher` WebKit handler, which accepts
 only the literal `open` message. Actual process launch uses registered Gio
@@ -158,10 +167,10 @@ nix develop --command task dev:preview
 ```
 
 Run a manual visual review in nested Niri at common display scales and
-sizes. The automated tests verify palette, contrast, token names, reduced motion
-and structural rules (no framed brand/clock or ornamental center control).
-They do **not** replace an actual screenshot or interactive accessibility
-test of the WebKit surface.
+sizes. The automated tests verify palette, contrast, token names, reduced motion,
+structural zones, the native row selection rail and absence of shadowed
+widget cards. They do **not** replace a screenshot or interactive GTK/WebKit
+test. Native compilation is checked by the separate Nix workflow.
 
 Next design-system milestones: shared interactive primitives, configurable KDL
 theme overrides, Dock, notifications and their consistent states.
