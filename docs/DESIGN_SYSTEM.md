@@ -97,24 +97,33 @@ Layout and motion tokens begin with `--kira-space-`,
 remain for compatibility but are **not** instructions to draw borders
 or hard shadows on every component.
 
+## Tailwind CSS v4 frontend contract
+
+`frontend/src/style.css` imports `tailwindcss` and the canonical color
+tokens, and maps semantic colors with CSS-first `@theme inline`.
+`frontend/vite.config.ts` uses `@tailwindcss/vite`. Keep utility classes
+**literal** in Svelte templates: Tailwind's scanner cannot infer runtime
+class-name concatenation. Conditionals must contain complete class strings.
+
 Example for a future Svelte widget:
 
 ```svelte
-<div class="widget">Widget content</div>
-
-<style>
-  .widget {
-    padding: var(--kira-space-3);
-    border-radius: var(--kira-radius-md);
-    background: var(--kira-color-surface);
-    color: var(--kira-color-text);
-  }
-</style>
+<div class="rounded-md bg-kira-surface p-3 text-kira-text">
+  Widget content
+</div>
 ```
 
-**Never hardcode colors in component styles.** Themes must be changed at
-the semantic token layer. User-overridable themes via KDL are still a
-future increment; the current KDL configuration only adjusts bar behavior.
+Use `bg-kira-accent text-kira-on-accent` for an active control, and explicit
+`focus-visible:outline-2 focus-visible:outline-kira-accent` for keyboard
+focus. Keep responsive and reduced-motion variants close to their markup.
+Use `frontend/src/style.css` only for global browser constraints and
+theme mapping, not for another manual component stylesheet.
+
+**Never hardcode colors in Svelte utility class values.** Theme changes
+belong to semantic tokens, not each component. GTK is a separate
+native CSS surface sharing the same five-color palette. User-overridable
+themes via KDL remain a future feature; current KDL config adjusts bar
+behavior only.
 
 ## Color contrast and accessibility
 
@@ -145,8 +154,9 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
 - `frontend/src/lib/components/CoreStatus.svelte`: unboxed status text
   and dot, tied to the real Core bridge; accessible `role="status"`
   announces transitions.
-- `frontend/src/style.css`: responsive layout and focus styling. The UI
-  stays 42 px tall to match the native layer-shell reservation.
+- `frontend/src/style.css`: Tailwind v4 import, semantic `@theme inline`
+  aliases and minimal global styles. Responsive composition and focus rules
+  live in Svelte utility classes; the native 42 px reservation is unchanged.
 - `frontend/index.html`: uses matching fallback colors before Svelte mounts.
 - `crates/kira-shell/src/launcher.rs` and `launcher.css`: GTK layer-shell
   editorial introduction, Blue workbench, Gio application catalog, orange
@@ -167,10 +177,12 @@ nix develop --command task dev:preview
 ```
 
 Run a manual visual review in nested Niri at common display scales and
-sizes. The automated tests verify palette, contrast, token names, reduced motion,
-structural zones, the native row selection rail and absence of shadowed
-widget cards. They do **not** replace a screenshot or interactive GTK/WebKit
-test. Native compilation is checked by the separate Nix workflow.
+sizes. The automated tests verify palette, contrast, semantic Tailwind v4 tokens,
+structural zones, the native row selection rail, and accessible state
+controls. The production Vite build compiles utilities into one inlined
+WebKit CSS asset. Automated tests do **not** replace screenshot or
+interactive GTK/WebKit review. Native compilation is checked by the Nix
+workflow.
 
 Next design-system milestones: shared interactive primitives, configurable KDL
 theme overrides, Dock, notifications and their consistent states.

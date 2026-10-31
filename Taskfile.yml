@@ -28,6 +28,8 @@ tasks:
       - test -s docs/DESIGN_SYSTEM.md
       - test -s frontend/src/lib/themes/kira-default.css
       - test -s frontend/src/lib/themes/kira-default.ts
+      - test -s frontend/src/style.css
+      - test -s frontend/vite.config.ts
       - test -s docs/DEVELOPMENT.md
       - test -s Cargo.toml
       - test -s crates/kira-ipc/src/lib.rs

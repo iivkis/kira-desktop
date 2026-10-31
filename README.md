@@ -18,7 +18,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 | `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded Unix socket client, unit tests |
 | `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over a configurable user-owned Unix socket |
 | `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge and a native Gio application Launcher |
-| `frontend/` | Svelte 5, TypeScript, Vite, editorial Neo-Brutalist tokens, themed top bar, native Launcher trigger, typed SDK, Core connection status, Vitest |
+| `frontend/` | Svelte 5, Tailwind CSS v4 via Vite, typed Kira Default design tokens, editorial top bar, native Launcher trigger, Core status and workspace SDK, Vitest |
 | `Taskfile.yml` | Shared commands for development and CI |
 | `flake.nix`, `nix/package.nix` | Nix development shell and installable packaged Core/Shell/frontend |
 | `Cargo.lock`, `flake.lock`, `frontend/package-lock.json` | Locked dependencies for reproducibility |

@@ -8,11 +8,31 @@ The GitHub Actions workflows are split into fast, non-graphical checks (`.github
 
 ## Kira Default visual design
 
-The premium visual baseline is implemented using semantic CSS tokens in
-`frontend/src/lib/themes/kira-default.css` and typed color metadata in
-`frontend/src/lib/themes/kira-default.ts`. `WorkspacePreview.svelte` and
-`CoreStatus.svelte` demonstrate theme-aware components without hardcoded HEX
-values. The workspace widget now receives Niri events and supports explicit mouse clicks to focus a known workspace.
+The Svelte 5 Top Bar uses **Tailwind CSS v4** through `@tailwindcss/vite`.
+`frontend/src/style.css` imports Tailwind and exposes semantic utility colors
+via `@theme inline`: `bg-kira-bg`, `bg-kira-surface`,
+`bg-kira-surface-soft`, `text-kira-muted`, `text-kira-text`,
+`bg-kira-accent`, and `text-kira-on-accent`. No JavaScript Tailwind
+configuration file, shadcn dependency, PostCSS plugin or runtime CSS engine
+is needed.
+
+The five canonical colors remain defined in
+`frontend/src/lib/themes/kira-default.css` and typed in
+`frontend/src/lib/themes/kira-default.ts`. Svelte components
+(`App.svelte`, `WorkspacePreview.svelte`, `CoreStatus.svelte`) use
+utility classes directly; their visual styling is no longer duplicated in
+component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
+focus, Core state and live KDL config updates remain behavioral concerns,
+not CSS assumptions.
+
+The **native GTK4 Launcher** cannot use Tailwind; its
+`crates/kira-shell/src/launcher.css` retains a matching GTK theme.
+The WebKit host continues to embed a single production CSS file, including
+Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
+
+When adding npm dependencies, commit the updated
+`frontend/package-lock.json` and update `npmDepsHash` in
+`nix/package.nix`; otherwise `npm ci` or the Nix frontend package fails.
 
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibility,
 spacing, contrast and future widget conventions. The small HTML fallback in
