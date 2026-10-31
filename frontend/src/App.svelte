@@ -1,15 +1,37 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { formatClock } from './lib/time';
+  import { request } from './lib/sdk/core';
 
   let now = $state(new Date());
+  let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
+  let coreVersion = $state('');
 
   onMount(() => {
-    const timer = window.setInterval(() => {
+    const clock = window.setInterval(() => {
       now = new Date();
     }, 1_000);
 
-    return () => window.clearInterval(timer);
+    let disposed = false;
+    const refresh = async () => {
+      try {
+        const state = await request('get_state');
+        if (!disposed) {
+          coreVersion = state.version;
+          coreStatus = 'connected';
+        }
+      } catch {
+        if (!disposed) coreStatus = 'unavailable';
+      }
+    };
+    void refresh();
+    const statusTimer = window.setInterval(() => void refresh(), 5_000);
+
+    return () => {
+      disposed = true;
+      window.clearInterval(clock);
+      window.clearInterval(statusTimer);
+    };
   });
 </script>
 
@@ -25,8 +47,10 @@
 
   <section class="center" aria-label="Desktop identity">Kira Desktop</section>
 
-  <section class="end" aria-label="System status">
-    <span class="status" title="Not connected to system services yet">Preview</span>
+  <section class="end" aria-label="Core and system status">
+    <span class:online={coreStatus === 'connected'} class="status" title={coreStatus === 'connected' ? `Kira Core v${coreVersion}` : 'Kira Core is unavailable'}>
+      Core: {coreStatus}
+    </span>
     <time>{formatClock(now)}</time>
   </section>
 </main>

@@ -19,6 +19,12 @@ Until `flake.lock` is committed, the first `nix develop` will resolve `nixpkgs` 
 
 Running `kira-shell` without `frontend/dist/index.html` produces a clear error and exits rather than showing a blank WebView. `KIRA_UI_DIR` can override the directory containing `index.html`.
 
+## Core ⇄ Shell ⇄ Svelte bridge
+
+The Svelte SDK in `frontend/src/lib/sdk/core.ts` sends JSON-RPC messages using `window.webkit.messageHandlers.kira.postMessage`. The GTK Shell forwards only `ping` and `get_state` through a bounded blocking Unix-socket client running off the GTK main thread. Results return as `kira:rpc` browser events and update the status label. In regular Vite browser preview, the native channel is absent and the UI shows `Core: unavailable` rather than pretending to be connected.
+
+This is a **request/response bridge only**. No subscriptions, Niri workspaces, permission isolation or untrusted extensions are implemented. A Core daemon must already be running.
+
 ## Current IPC contract
 
 One JSON-RPC 2.0 request per line, one response per line over a Unix Domain Socket.
@@ -31,7 +37,7 @@ One JSON-RPC 2.0 request per line, one response per line over a Unix Domain Sock
 {"jsonrpc":"2.0","id":1,"result":"pong"}
 ```
 
-`get_state` returns only bootstrap metadata. No Niri events, bridge, subscriptions, authentication, or plugin privileges are implemented yet. Do not expose this socket beyond the local trusted user session.
+`get_state` returns only bootstrap metadata. No Niri events, subscriptions, authentication, or plugin privileges are implemented yet. Do not expose this socket beyond the local trusted user session.
 
 ## Complete the Nix package
 

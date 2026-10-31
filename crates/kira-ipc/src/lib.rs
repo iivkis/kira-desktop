@@ -1,4 +1,6 @@
 //! Minimal newline-delimited JSON-RPC 2.0 contracts shared by Core and Shell.
+
+pub mod client;
 //! Events and typed parameter schemas will be introduced in subsequent milestones.
 
 use serde::{Deserialize, Serialize};

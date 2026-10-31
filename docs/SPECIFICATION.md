@@ -3,7 +3,7 @@
 **Техническая спецификация:** v0.1 (Draft)  
 **Целевая платформа:** NixOS / Linux / Wayland  
 **Основа:** Niri Wayland Compositor  
-**Статус:** начат bootstrap: реализуются минимальные Rust Workspace, Core, IPC, Shell Host и Svelte-превью; MVP не готов.
+**Статус:** идёт bootstrap: созданы Rust Workspace, Core, IPC, Shell Host и Svelte-превью; реализован минимальный запрос/ответ WebKit ↔ Core, но Niri и Event Bus ещё не подключены; MVP не готов.
 
 ## 1. Цель проекта
 

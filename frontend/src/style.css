@@ -35,3 +35,5 @@ html, body, #app { margin: 0; width: 100%; height: 100%; overflow: hidden; }
 .center { position: absolute; left: 50%; transform: translateX(-50%); color: #dcd8e8; }
 .status { color: #8f899a; font-size: 11px; }
 time { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+.status.online { color: #91d9bb; }

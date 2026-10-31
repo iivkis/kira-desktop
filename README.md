@@ -11,10 +11,10 @@ Kira Desktop is a modular, declarative **NixOS-first** environment targeting Nir
 
 | Component | Current scope |
 | --- | --- |
-| `crates/kira-ipc` | JSON-RPC 2.0 `ping`/`get_state` request and response contracts, unit tests |
+| `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded socket client, and unit tests |
 | `crates/kira-core` | Async Unix domain socket daemon, newline-delimited JSON-RPC |
-| `crates/kira-shell` | GTK4 layer-shell top bar hosting a local WebKitGTK 6 page |
-| `frontend/` | Svelte 5 + TypeScript + Vite, 42 px visual preview, Vitest test |
+| `crates/kira-shell` | GTK4 layer-shell top bar with WebKitGTK 6 message bridge to Core |
+| `frontend/` | Svelte 5 + TypeScript + Vite, typed SDK and visible Core connection status |
 | `Taskfile.yml` | Shared developer/CI commands |
 | `flake.nix`, `nix/package.nix` | Nix development shell and preliminary package recipe |
 | `.github/workflows/ci.yml` | Lightweight native Linux CI; no graphical E2E yet |
@@ -41,7 +41,7 @@ For a manual Core protocol smoke test (with `socat` installed):
 printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"ping"}' | socat - UNIX-CONNECT:"$XDG_RUNTIME_DIR/kira-desktop.sock"
 ```
 
-The UI is a **static preview**: workspace pills do not yet talk to Niri, and the Shell does not yet connect to Core. Never confuse a static visual with a working system integration.
+Workspace pills are still **static previews**, but the status indicator now asks the real Rust Core for its bootstrap state over the WebKit → Shell → Unix Socket bridge. Full Niri state and event subscriptions are not yet implemented.
 
 ## Known bootstrap limitations
 
