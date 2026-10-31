@@ -23,7 +23,7 @@ Kira Desktop is a modular, declarative **NixOS-first** environment targeting Nir
 
 ```bash
 nix develop
-task frontend:install
+npm ci --prefix frontend
 task check
 task build
 ```
@@ -45,4 +45,4 @@ Workspace pills are still **static previews**, but the status indicator now asks
 
 ## Known bootstrap limitations
 
-`Cargo.lock`, `frontend/package-lock.json` and `flake.lock` still need to be generated with the actual toolchains and committed. `nix/package.nix` contains a placeholder npm dependency hash. **`nix build` cannot be claimed working yet.** See [development instructions](docs/DEVELOPMENT.md) for the remaining steps.
+Dependency locks are now generated and committed using Cargo, npm and Nix. `nix/package.nix` still contains a placeholder npm dependency hash. **`nix build` cannot be claimed working until native Nix integration passes.** See [development instructions](docs/DEVELOPMENT.md) for the remaining steps.

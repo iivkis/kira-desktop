@@ -1,0 +1,46 @@
+name: NixOS integration
+
+# Native shell and package checks are intentionally separate from lightweight CI.
+on:
+  push:
+    branches: [main]
+    paths:
+      - flake.nix
+      - flake.lock
+      - nix/**
+      - Cargo.toml
+      - Cargo.lock
+      - crates/kira-shell/**
+      - frontend/package-lock.json
+      - .github/workflows/nix.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shell:
+    name: Native GTK/WebKit Shell
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check flake
+        run: nix flake check --no-build
+      - name: Compile Shell with native Nix libraries
+        run: nix develop --command cargo check --locked -p kira-shell
+
+  package:
+    name: Nix package build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build packaged Core, Shell and frontend
+        run: nix build .#default -L --show-trace

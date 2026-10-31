@@ -28,13 +28,13 @@ jobs:
           node-version: '22'
 
       - name: Install frontend dependencies
-        run: npm install --prefix frontend --no-audit --no-fund
+        run: npm ci --prefix frontend --no-audit --no-fund
 
       - name: Run code checks and tests
         run: task check
 
       - name: Compile Core
-        run: cargo build -p kira-core -p kira-ipc
+        run: cargo build --locked -p kira-core -p kira-ipc
 
       - name: Build static frontend assets
         run: task frontend:build

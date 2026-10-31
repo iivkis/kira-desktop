@@ -38,19 +38,19 @@ tasks:
   lint:
     desc: Lint Core/IPC and check Svelte/TypeScript.
     cmds:
-      - cargo clippy -p kira-ipc -p kira-core --all-targets -- -D warnings
+      - cargo clippy --locked -p kira-ipc -p kira-core --all-targets -- -D warnings
       - npm run check --prefix frontend
 
   test:
     desc: Run Core/IPC and frontend tests.
     cmds:
-      - cargo test -p kira-ipc -p kira-core --all-targets
+      - cargo test --locked -p kira-ipc -p kira-core --all-targets
       - npm run test:ci --prefix frontend
 
   shell:check:
     desc: Check GTK Shell using the native libraries provided by nix develop.
     cmds:
-      - cargo check -p kira-shell
+      - cargo check --locked -p kira-shell
 
   frontend:install:
     desc: Install frontend dependencies (generate a lockfile in a later commit).
@@ -82,7 +82,7 @@ tasks:
     desc: Build both layers and all Rust binaries.
     cmds:
       - task: frontend:build
-      - cargo build --release --workspace
+      - cargo build --locked --release --workspace
 
   nix:check:
     desc: Check the Nix flake.
