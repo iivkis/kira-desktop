@@ -39,7 +39,7 @@ fn core_socket() -> Option<PathBuf> {
     kira_ipc::core_socket_path().ok()
 }
 
-/// Only expose explicit, read-only Core operations to the Svelte page.
+/// Expose read-only Core queries and one explicit, checked focus-workspace action.
 fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     let request = match serde_json::from_str::<RpcRequest>(message) {
         Ok(value) => value,
@@ -50,7 +50,7 @@ fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     }
     if !matches!(
         request.method.as_str(),
-        "ping" | "get_state" | "get_workspaces" | "get_config"
+        "ping" | "get_state" | "get_workspaces" | "get_config" | "focus_workspace"
     ) {
         return RpcResponse::failure(Some(request.id), -32601, "Method not allowed");
     }
@@ -352,6 +352,21 @@ mod tests {
             None,
         );
         assert_eq!(response.error.unwrap().code, -32601);
+    }
+
+    #[test]
+    fn allows_exact_focus_action_only_but_not_generic_niri_actions() {
+        let focus = process_message(
+            r#"{"jsonrpc":"2.0","id":4,"method":"focus_workspace","params":{"id":"2"}}"#,
+            None,
+        );
+        // Accepted by the bridge, unavailable only because Core is absent.
+        assert_eq!(focus.error.unwrap().code, -32000);
+        for method in ["niri_action", "move_window", "focus_window", "set_config"] {
+            let request = format!(r#"{{"jsonrpc":"2.0","id":5,"method":"{method}"}}"#);
+            let result = process_message(&request, None);
+            assert_eq!(result.error.unwrap().code, -32601);
+        }
     }
 
     #[test]
