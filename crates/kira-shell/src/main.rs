@@ -279,7 +279,7 @@ fn main() {
                 let (event, payload) = match delivery {
                     ShellDelivery::LauncherToggle => {
                         if launcher_ui.window.is_visible() {
-                            launcher_ui.window.hide();
+                            launcher_ui.window.set_visible(false);
                             webview.grab_focus();
                         } else {
                             launcher_ui.show_loading();
