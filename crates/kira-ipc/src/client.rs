@@ -55,6 +55,7 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
     let mut stream = UnixStream::connect(socket)?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
     let request = RpcRequest {
+            params: None,
         jsonrpc: crate::PROTOCOL_VERSION.into(),
         id: 0,
         method: "subscribe_workspaces".into(),
@@ -108,6 +109,7 @@ pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
     let mut stream = UnixStream::connect(socket)?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
     let request = RpcRequest {
+            params: None,
         jsonrpc: crate::PROTOCOL_VERSION.into(),
         id: 0,
         method: "subscribe_config".into(),
@@ -179,6 +181,7 @@ mod tests {
         let response = call(
             &path,
             &RpcRequest {
+            params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 42,
                 method: "ping".into(),
@@ -263,6 +266,7 @@ mod tests {
         let response = call(
             Path::new("/nonexistent/kira-desktop.sock"),
             &RpcRequest {
+            params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 1,
                 method: "ping".into(),
