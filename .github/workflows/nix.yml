@@ -43,6 +43,16 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      # Optional cross-run cache. Configure KIRA_CACHIX_NAME and
+      # CACHIX_AUTH_TOKEN in repository settings to enable it.
+      # Untrusted PRs may read only; uploads occur from main pushes.
+      - name: Shared Nix cache (opt-in)
+        if: ${{ vars.KIRA_CACHIX_NAME != '' }}
+        uses: cachix/cachix-action@v17
+        with:
+          name: ${{ vars.KIRA_CACHIX_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          skipPush: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
       - name: Check flake
         run: nix flake check --no-build
       - name: Validate nested Niri preview config
@@ -59,5 +69,15 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      # Optional cross-run cache. Configure KIRA_CACHIX_NAME and
+      # CACHIX_AUTH_TOKEN in repository settings to enable it.
+      # Untrusted PRs may read only; uploads occur from main pushes.
+      - name: Shared Nix cache (opt-in)
+        if: ${{ vars.KIRA_CACHIX_NAME != '' }}
+        uses: cachix/cachix-action@v17
+        with:
+          name: ${{ vars.KIRA_CACHIX_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          skipPush: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
       - name: Build packaged Core, Shell and frontend
         run: nix build .#default -L --show-trace
