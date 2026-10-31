@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request } from './core';
+import { deliverReply, request, onWorkspaceUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -38,6 +38,29 @@ describe('Core SDK JSON-RPC bridge', () => {
       result: { connected: true, workspaces: [workspace] },
     });
     await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
+  });
+
+  it('delivers live workspace events and unsubscribes without polling', () => {
+    const handlers = new Map<string, EventListener>();
+    const addEventListener = vi.fn((name: string, listener: EventListener) => {
+      handlers.set(name, listener);
+    });
+    const removeEventListener = vi.fn();
+    globalThis.window = { addEventListener, removeEventListener } as unknown as Window & typeof globalThis;
+    const onChange = vi.fn();
+    const stop = onWorkspaceUpdate(onChange);
+    const handler = handlers.get('kira:workspaces');
+    expect(handler).toBeDefined();
+    handler!({ detail: { connected: true, workspaces: [{
+      id: '33', idx: 2, name: null, output: 'winit',
+      is_active: true, is_focused: true, is_urgent: false,
+    }] } } as unknown as Event);
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onChange.mock.calls[0][0].workspaces[0].idx).toBe(2);
+    handler!({ detail: { workspaces: [] } } as unknown as Event);
+    expect(onChange).toHaveBeenCalledOnce();
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:workspaces', handler);
   });
 
   it('rejects Core errors', async () => {
