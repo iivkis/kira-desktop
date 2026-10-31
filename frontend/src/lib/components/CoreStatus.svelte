@@ -17,7 +17,7 @@
 </script>
 
 <div
-  class="core-status"
+  class="inline-flex min-h-7 shrink-0 items-center gap-[7px] whitespace-nowrap text-kira-muted"
   data-status={status}
   role="status"
   aria-live="polite"
@@ -25,51 +25,16 @@
   aria-label={'Kira Core: ' + labels[status]}
   title={status === 'connected' ? 'Kira Core v' + version : 'Kira Core: ' + labels[status]}
 >
-  <span class="core-status__signal" aria-hidden="true"></span>
-  <span class="core-status__name">Core</span>
+  <span
+    class={`h-[7px] w-[7px] shrink-0 border ${status === 'connected'
+      ? 'rounded-full border-kira-accent bg-kira-accent'
+      : status === 'unavailable'
+        ? 'rounded-[2px] border-kira-accent bg-transparent'
+        : 'rounded-full border-kira-muted bg-transparent'}`}
+    aria-hidden="true"
+  ></span>
+  <span class="text-[11px] font-semibold">Core</span>
   {#if status !== 'connected'}
-    <span class="core-status__value">{labels[status]}</span>
+    <span class="text-[10px] font-semibold text-kira-text">{labels[status]}</span>
   {/if}
 </div>
-
-<style>
-  .core-status {
-    display: inline-flex;
-    align-items: center;
-    flex: none;
-    gap: 7px;
-    min-height: 28px;
-    color: var(--kira-color-muted);
-    white-space: nowrap;
-  }
-
-  .core-status__signal {
-    flex: none;
-    width: 7px;
-    height: 7px;
-    border: 1px solid var(--kira-color-muted);
-    border-radius: 50%;
-    background: transparent;
-  }
-
-  .core-status[data-status='connected'] .core-status__signal {
-    background: var(--kira-color-accent);
-    border-color: var(--kira-color-accent);
-  }
-
-  .core-status[data-status='unavailable'] .core-status__signal {
-    border-color: var(--kira-color-accent);
-    border-radius: 2px;
-  }
-
-  .core-status__name {
-    font-size: 11px;
-    font-weight: 650;
-  }
-
-  .core-status__value {
-    color: var(--kira-color-text);
-    font-size: 10px;
-    font-weight: 650;
-  }
-</style>
