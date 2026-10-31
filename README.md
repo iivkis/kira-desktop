@@ -85,6 +85,35 @@ task build
 
 Nix CI on Linux has successfully compiled the native Shell, built the package and run the Rust tests. **The top bar was manually rendered successfully inside a nested Niri window**; a full desktop session and packaged-system installation still require additional testing.
 
+## Compact source context for agents (RepoSpool)
+
+[`.repospool`](.repospool) is a **generated**, deterministic
+`REPOSPOOL/1.0` snapshot of committed UTF-8 sources. It provides a compact
+file/line index, the original selected file bytes, and the pinned source
+commit. It does not guess code semantics or replace GitHub source links.
+
+[`.repospoolignore`](.repospoolignore) keeps the snapshot focused on Core,
+IPC, Shell, Svelte, Nix, tests, CI and the design specification. Dependency
+lockfiles, local build/cache outputs, the bootstrap lockfile workflow and
+historical preview troubleshooting are omitted **only from the snapshot**,
+not from the repository. Missing context can still be read directly from GitHub.
+
+On each `main` source commit,
+[`Publish RepoSpool context`](.github/workflows/publish-repospool.yml)
+regenerates and verifies the snapshot using a pinned upstream RepoSpool
+revision, then publishes it in a separate artifact-only commit. Accordingly,
+the `C` source revision inside `.repospool` can differ from the current
+`main` HEAD by that publication commit. Verify origin and revision before
+using it to make repository changes.
+
+To generate or verify locally with the upstream CLI:
+
+```sh
+nix run github:iivkis/repospool -- generate .
+nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
+```
+
+
 ## Current limitations
 
 The panel can communicate with Core through a typed request/response API and display its connection status, but workspace indicators are mock UI: Niri IPC integration, KDL hot reload, event subscriptions, user-overridable themes, docks, and third-party widgets remain unimplemented.

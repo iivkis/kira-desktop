@@ -1,0 +1,47 @@
+# RepoSpool selects committed Git source; ignored files remain available in GitHub.
+# Keep architecture, Rust/Svelte implementation, important tests, CI, and design docs.
+# Dependency resolutions are useful for reproducing builds but low-value for an
+# agent's compact source context. They remain tracked in the repository.
+/Cargo.lock
+/flake.lock
+/frontend/package-lock.json
+
+# One-off bootstrap workflow and historical preview troubleshooting are
+# accessible directly in GitHub, but not required for the architecture snapshot.
+/.github/workflows/lockfiles.yml
+/docs/PREVIEW.md
+
+# Machine-local/build outputs if they ever become tracked.
+**/node_modules/
+**/target/
+**/dist/
+**/build/
+**/result/
+**/result-*/
+**/.direnv/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/coverage/
+**/.cache/
+*.pyc
+*.pyo
+*.min.js
+*.min.css
+*.map
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+.DS_Store
+Thumbs.db
+
+# Sensitive machine-specific settings must never enter a shared snapshot.
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
