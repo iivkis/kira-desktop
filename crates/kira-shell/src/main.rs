@@ -42,6 +42,14 @@ fn core_socket() -> Option<PathBuf> {
 }
 
 /// Expose read-only Core queries and one explicit, checked focus-workspace action.
+/// The browser can only toggle the native overlay; it cannot select or
+/// execute any application, even if it supplies extra fields.
+fn valid_launcher_toggle(request: &RpcRequest) -> bool {
+    request.jsonrpc == PROTOCOL_VERSION
+        && request.method == "toggle_launcher"
+        && request.params.is_none()
+}
+
 fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     let request = match serde_json::from_str::<RpcRequest>(message) {
         Ok(value) => value,
@@ -208,11 +216,7 @@ fn main() {
             let id = request.as_ref().map(|r| r.id);
             let sender = sender.clone();
             if message.len() <= MAX_BRIDGE_MESSAGE_BYTES
-                && request.as_ref().is_some_and(|request| {
-                    request.jsonrpc == PROTOCOL_VERSION
-                        && request.method == "toggle_launcher"
-                        && request.params.is_none()
-                })
+                && request.as_ref().is_some_and(valid_launcher_toggle)
             {
                 // No desktop-entry ID or Exec string comes from WebKit.
                 // Toggling the popup is the only allowed UI launcher action.
@@ -394,6 +398,25 @@ mod tests {
             let request = format!(r#"{{"jsonrpc":"2.0","id":5,"method":"{method}"}}"#);
             let result = process_message(&request, None);
             assert_eq!(result.error.unwrap().code, -32601);
+        }
+    }
+
+    #[test]
+    fn launcher_toggle_requires_exact_method_version_and_no_params() {
+        for request in [
+            r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher"}"#,
+        ] {
+            let req: RpcRequest = serde_json::from_str(request).unwrap();
+            assert!(valid_launcher_toggle(&req));
+        }
+        for request in [
+            r#"{"jsonrpc":"1.0","id":1,"method":"toggle_launcher"}"#,
+            r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher","params":{}}"#,
+            r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher","params":{"exec":"sh"}}"#,
+            r#"{"jsonrpc":"2.0","id":1,"method":"launch_app"}"#,
+        ] {
+            let req: RpcRequest = serde_json::from_str(request).unwrap();
+            assert!(!valid_launcher_toggle(&req));
         }
     }
 
