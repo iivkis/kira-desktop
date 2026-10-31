@@ -53,8 +53,8 @@ export async function inlineUiAssets(outputDirectory) {
   // A classic script does not use opaque module origins. Do not silently
   // inline a bundle that contains ESM-only syntax.
   new Script('(function(){\n' + js + '\n})();', { filename: jsReference });
-  html = html.replace(scriptTag, '<script>\n(function(){\n' + js + '\n})();\n</script>');
-
+  // Inspect the original Vite HTML while discovering styles: strings
+  // inside bundled JS must never count as extra stylesheet links.
   const styles = [...html.matchAll(LINK_TAG)]
     .map((match) => match[0])
     .filter((tag) => attribute(tag, 'rel')?.toLowerCase() === 'stylesheet');
@@ -68,9 +68,20 @@ export async function inlineUiAssets(outputDirectory) {
   if (/<\/style\b/i.test(css)) {
     throw new Error('Bundled CSS includes a closing style tag');
   }
-  html = html.replace(styles[0], '<style>\n' + css + '\n</style>');
+  // The replacement argument must be a function. A string replacement
+  // expands special dollar substitutions in minified assets, corrupting HTML.
+  // A callback inserts bundled asset bytes unchanged.
+  html = html.replace(styles[0], () => '<style>\n' + css + '\n</style>');
+  html = html.replace(scriptTag, () => '<script>\n(function(){\n' + js + '\n})();\n</script>');
 
-  if (SCRIPT_TAG.test(html) || [...html.matchAll(LINK_TAG)]
+  // Inspect HTML markup, not strings inside the inlined JS or CSS. Vite
+  // bundles may legitimately contain literal '<link rel="stylesheet" ...>'
+  // snippets, which do not create network requests when inside scripts.
+  // Closing script/style tags in bundled assets were already rejected above.
+  const markup = html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+  if (SCRIPT_TAG.test(markup) || [...markup.matchAll(LINK_TAG)]
     .some((match) => attribute(match[0], 'rel')?.toLowerCase() === 'stylesheet')) {
     throw new Error('Unexpected remaining external UI assets');
   }

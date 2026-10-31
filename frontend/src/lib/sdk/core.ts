@@ -36,10 +36,49 @@ export function onWorkspaceUpdate(callback: (state: WorkspaceState) => void): ()
   return () => window.removeEventListener('kira:workspaces', listener);
 }
 
+export interface UiConfig {
+  compact: boolean;
+  title: string;
+  show_seconds: boolean;
+  show_names: boolean;
+  max_workspaces: number;
+}
+
+export interface ConfigState {
+  config: UiConfig;
+  error: string | null;
+}
+
+export const defaultUiConfig: UiConfig = {
+  compact: false,
+  title: 'KIRA DESKTOP',
+  show_seconds: false,
+  show_names: true,
+  max_workspaces: 12,
+};
+
+/** Subscribe to Core's validated KDL config snapshots, without polling. */
+export function onConfigUpdate(callback: (state: ConfigState) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const state = (event as CustomEvent<ConfigState>).detail;
+    const cfg = state?.config;
+    if (!cfg || typeof cfg.compact !== 'boolean' ||
+        typeof cfg.title !== 'string' || typeof cfg.show_seconds !== 'boolean' ||
+        typeof cfg.show_names !== 'boolean' || typeof cfg.max_workspaces !== 'number' ||
+        !Number.isInteger(cfg.max_workspaces) || cfg.max_workspaces < 1 ||
+        cfg.max_workspaces > 32) return;
+    callback(state);
+  };
+  window.addEventListener('kira:config', listener);
+  return () => window.removeEventListener('kira:config', listener);
+}
+
 type Methods = {
   ping: string;
   get_state: CoreState;
   get_workspaces: WorkspaceState;
+  get_config: ConfigState;
 };
 
 type RpcReply = {
@@ -88,18 +127,38 @@ if (typeof window !== 'undefined') {
  * Host has returned a response; rejects if Core is unavailable or times out.
  */
 export function request<M extends keyof Methods>(method: M): Promise<Methods[M]> {
+  return send(method) as Promise<Methods[M]>;
+}
+
+/** One intentional, narrowly scoped Niri action.
+ * Uses a stable string ID, never a per-monitor workspace index.
+ * Core checks the live workspace snapshot before sending FocusWorkspace.
+ */
+export function focusWorkspace(workspaceId: string): Promise<void> {
+  // u64 is decimal and may exceed Number.MAX_SAFE_INTEGER: never coerce to JS number.
+  if (!/^(0|[1-9][0-9]*)$/.test(workspaceId) ||
+      workspaceId.length > 20 ||
+      BigInt(workspaceId) > 18446744073709551615n) {
+    return Promise.reject(new Error('Invalid workspace ID'));
+  }
+  return send('focus_workspace', { id: workspaceId }).then(() => undefined);
+}
+
+function send(method: string, params?: { id: string }): Promise<unknown> {
   const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kira;
   if (!channel) return Promise.reject(new Error('Kira bridge unavailable (browser preview)'));
 
   const id = ++nextId;
-  return new Promise<Methods[M]>((resolve, reject) => {
+  return new Promise<unknown>((resolve, reject) => {
     const timeout = setTimeout(() => {
       pending.delete(id);
       reject(new Error('Kira Core request timed out'));
     }, 3000);
-    pending.set(id, { resolve: resolve as (value: unknown) => void, reject, timeout });
+    pending.set(id, { resolve, reject, timeout });
     try {
-      channel.postMessage(JSON.stringify({ jsonrpc: '2.0', id, method }));
+      channel.postMessage(JSON.stringify({
+        jsonrpc: '2.0', id, method, ...(params ? { params } : {}),
+      }));
     } catch (error) {
       clearTimeout(timeout);
       pending.delete(id);

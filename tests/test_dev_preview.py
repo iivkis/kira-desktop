@@ -143,6 +143,7 @@ Path(os.environ['PREVIEW_AUDIT']).write_text(json.dumps({
   'core': os.environ.get('KIRA_CORE_SOCKET'),
   'preview': os.environ.get('KIRA_PREVIEW'),
   'ui': os.environ.get('KIRA_UI_DIR'),
+  'kira_config': os.environ.get('KIRA_CONFIG_FILE'),
 }))
 print('kira-shell: diagnostic probe', flush=True)
 while True: time.sleep(.1)
@@ -198,6 +199,9 @@ while True: time.sleep(.1)
                 self.assertEqual(actual["preview"], "1")
                 self.assertEqual(actual["ui"], str(ui.resolve()) if fast else None)
                 self.assertIn("kira-preview-", actual["core"])
+                self.assertIn("kira-preview-", actual["kira_config"])
+                self.assertTrue(Path(actual["kira_config"]).is_file())
+                self.assertIn("kira {", Path(actual["kira_config"]).read_text())
                 self.assertFalse((runtime / "kira-desktop.sock").exists())
             finally:
                 if process.poll() is None:

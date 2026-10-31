@@ -1,0 +1,8 @@
+// Kira Desktop settings, supported strict KDL profile (not Niri's config).
+// Place in ~/.config/kira-desktop/config.kdl, or pass KIRA_CONFIG_FILE=/absolute/path.
+// All values below are the defaults. Changes are picked up automatically.
+kira {
+    bar compact=#false title="KIRA DESKTOP"
+    clock seconds=#false
+    workspaces show-names=#true limit=12
+}

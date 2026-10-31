@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, onWorkspaceUpdate } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -40,6 +40,40 @@ describe('Core SDK JSON-RPC bridge', () => {
     await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
   });
 
+  it('sends a single focus action by stable string id, never index or unsafe JS number', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = focusWorkspace('18446744073709551615');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as {
+      jsonrpc: string; id: number; method: string; params: { id: string };
+    };
+    expect(payload).toEqual({
+      jsonrpc: '2.0', id: expect.any(Number),
+      method: 'focus_workspace', params: { id: '18446744073709551615' },
+    });
+    expect(payload.params.id).toBe('18446744073709551615');
+    deliverReply({ jsonrpc: '2.0', id: payload.id, result: { accepted: true } });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it('rejects malformed workspace IDs without sending any native request', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    for (const id of ['-1', '01', '', 'code', '18446744073709551616', '3;quit']) {
+      await expect(focusWorkspace(id)).rejects.toThrow('Invalid workspace ID');
+    }
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it('propagates Niri focus failures rather than optimistically changing workspace', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = focusWorkspace('9');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number };
+    deliverReply({ jsonrpc: '2.0', id: payload.id, error: { code: -32602, message: 'Unknown workspace id' } });
+    await expect(pending).rejects.toThrow('Unknown workspace id');
+  });
+
   it('delivers live workspace events and unsubscribes without polling', () => {
     const handlers = new Map<string, EventListener>();
     const addEventListener = vi.fn((name: string, listener: EventListener) => {
@@ -61,6 +95,35 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(onChange).toHaveBeenCalledOnce();
     stop();
     expect(removeEventListener).toHaveBeenCalledWith('kira:workspaces', handler);
+  });
+
+  it('reads validated config state through read-only JSON-RPC', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = request('get_config');
+    const data = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number; method: string };
+    expect(data.method).toBe('get_config');
+    const config = { compact: true, title: 'KIRA QA', show_seconds: true, show_names: false, max_workspaces: 3 };
+    deliverReply({ jsonrpc: '2.0', id: data.id, result: { config, error: null } });
+    await expect(pending).resolves.toEqual({ config, error: null });
+  });
+
+  it('applies pushed KDL configuration, rejects malformed updates and unsubscribes', () => {
+    const handlers = new Map<string, EventListener>();
+    const addEventListener = vi.fn((name: string, listener: EventListener) => handlers.set(name, listener));
+    const removeEventListener = vi.fn();
+    globalThis.window = { addEventListener, removeEventListener } as unknown as Window & typeof globalThis;
+    const changed = vi.fn();
+    const stop = onConfigUpdate(changed);
+    const listener = handlers.get('kira:config');
+    expect(listener).toBeDefined();
+    const config = { compact: true, title: 'Panel', show_seconds: true, show_names: false, max_workspaces: 8 };
+    listener!({ detail: { config, error: null } } as unknown as Event);
+    expect(changed).toHaveBeenCalledOnce();
+    listener!({ detail: { config: { ...config, max_workspaces: 0 }, error: null } } as unknown as Event);
+    expect(changed).toHaveBeenCalledOnce();
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:config', listener);
   });
 
   it('rejects Core errors', async () => {

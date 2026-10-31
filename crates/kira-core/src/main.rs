@@ -1,5 +1,6 @@
-//! Standalone read-only system-state daemon with Niri workspace IPC.
+//! Core state daemon: read-only subscriptions plus one checked Niri focus action.
 
+mod config;
 mod niri;
 
 use std::error::Error;
@@ -7,7 +8,7 @@ use std::io;
 use std::os::unix::fs::{FileTypeExt, MetadataExt};
 use std::path::{Path, PathBuf};
 
-use kira_ipc::{RpcRequest, RpcResponse, WorkspaceState, dispatch_with_workspaces};
+use kira_ipc::{ConfigState, RpcRequest, RpcResponse, WorkspaceState, dispatch_with_state};
 use tokio::io::{AsyncBufRead, AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::{UnixListener, UnixStream};
 use tokio::sync::watch;
@@ -109,9 +110,28 @@ async fn stream_workspaces(
     }
 }
 
+/// Internal read-only Core stream for active validated UI settings.
+async fn stream_config(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    mut config: watch::Receiver<ConfigState>,
+    id: u64,
+) -> io::Result<()> {
+    loop {
+        let snapshot = config.borrow_and_update().clone();
+        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
+        writer.write_all(&serde_json::to_vec(&response)?).await?;
+        writer.write_all(b"\n").await?;
+        if config.changed().await.is_err() {
+            return Ok(());
+        }
+    }
+}
+
 async fn serve(
     stream: UnixStream,
     workspaces: watch::Receiver<WorkspaceState>,
+    config: watch::Receiver<ConfigState>,
+    niri_socket: Option<&Path>,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     let (read_half, mut writer) = stream.into_split();
     let mut reader = BufReader::new(read_half);
@@ -126,7 +146,45 @@ async fn serve(
                 // JS RPC allowlist; one subscription per socket connection.
                 return Ok(stream_workspaces(&mut writer, workspaces, request.id).await?);
             }
-            Ok(request) => dispatch_with_workspaces(request, &workspaces.borrow().clone()),
+            Ok(request)
+                if request.method == "subscribe_config"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                return Ok(stream_config(&mut writer, config, request.id).await?);
+            }
+            Ok(request)
+                if request.method == "focus_workspace"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                // This is intentionally the sole Niri mutation available
+                // through Core. The ID must exist in a connected snapshot.
+                let state = workspaces.borrow().clone();
+                match niri::validated_focus_id(request.params.as_ref(), &state) {
+                    Err(message) => RpcResponse::failure(Some(request.id), -32602, message),
+                    Ok(id) => match niri_socket {
+                        Some(path) => match niri::focus_workspace(path, id).await {
+                            Ok(()) => RpcResponse::success(
+                                request.id,
+                                serde_json::json!({"accepted": true}),
+                            ),
+                            Err(error) => {
+                                eprintln!("kira-core: Niri workspace focus failed: {error}");
+                                RpcResponse::failure(
+                                    Some(request.id),
+                                    -32000,
+                                    "Niri workspace focus failed",
+                                )
+                            }
+                        },
+                        None => RpcResponse::failure(Some(request.id), -32000, "Niri unavailable"),
+                    },
+                }
+            }
+            Ok(request) => dispatch_with_state(
+                request,
+                &workspaces.borrow().clone(),
+                &config.borrow().clone(),
+            ),
             Err(_) => RpcResponse::failure(None, -32700, "Parse error"),
         };
         let encoded = serde_json::to_vec(&response)?;
@@ -138,14 +196,48 @@ async fn serve(
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // Pure validation command: no GUI, Core socket or compositor required.
+    let mut args = std::env::args_os().skip(1);
+    if let Some(option) = args.next() {
+        if option != "--check-config" {
+            return Err("Usage: kira-core [--check-config /absolute/path/config.kdl]".into());
+        }
+        let path = args.next().ok_or("--check-config requires a file path")?;
+        if args.next().is_some() {
+            return Err("--check-config accepts exactly one file path".into());
+        }
+        let path = PathBuf::from(path);
+        if !path.is_absolute() {
+            return Err("--check-config requires an absolute path".into());
+        }
+        let settings = config::load(&path).map_err(io::Error::other)?;
+        println!("{}", serde_json::to_string_pretty(&settings)?);
+        return Ok(());
+    }
+
     let path = kira_ipc::core_socket_path()?;
     // Binding never unlinks an existing socket: another Core may own it.
     let listener = UnixListener::bind(&path)?;
     let _guard = SocketGuard::new(&path)?;
     eprintln!("kira-core listening on {}", path.display());
 
+    let (config_sender, config_receiver) = watch::channel(ConfigState::default());
+    match config::config_path() {
+        Ok(path) => {
+            eprintln!("kira-core: watching KDL config at {}", path.display());
+            tokio::spawn(config::monitor(path, config_sender));
+        }
+        Err(error) => {
+            config_sender.send_replace(ConfigState {
+                config: Default::default(),
+                error: Some(error),
+            });
+        }
+    }
+
     let (workspace_sender, workspace_receiver) = watch::channel(WorkspaceState::default());
-    if let Some(socket) = niri::socket_path_from(std::env::var_os("NIRI_SOCKET")) {
+    let niri_socket = niri::socket_path_from(std::env::var_os("NIRI_SOCKET"));
+    if let Some(socket) = niri_socket.clone() {
         tokio::spawn(niri::monitor(socket, workspace_sender.clone()));
     } else {
         eprintln!("kira-core: no valid NIRI_SOCKET; workspace state will be offline");
@@ -157,8 +249,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             accepted = listener.accept() => {
                 let (stream, _) = accepted?;
                 let state = workspace_receiver.clone();
+                let config = config_receiver.clone();
+                let socket = niri_socket.clone();
                 tokio::spawn(async move {
-                    if let Err(error) = serve(stream, state).await {
+                    if let Err(error) = serve(stream, state, config, socket.as_deref()).await {
                         eprintln!("kira-core client error: {error}");
                     }
                 });
@@ -216,7 +310,8 @@ mod tests {
         let (tx, rx) = watch::channel(WorkspaceState::default());
         let task = tokio::spawn(async move {
             let (stream, _) = listener.accept().await.unwrap();
-            let _ = serve(stream, rx).await;
+            let (_tx_config, rx_config) = watch::channel(ConfigState::default());
+            let _ = serve(stream, rx, rx_config, None).await;
         });
         let mut conn = UnixStream::connect(&path).await.unwrap();
         conn.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"subscribe_workspaces\"}\n")
@@ -260,6 +355,87 @@ mod tests {
         assert_eq!(update.result.unwrap()["workspaces"][0]["idx"], 2);
         drop(reader);
         task.abort();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn config_subscription_delivers_latest_valid_snapshot() {
+        use tokio::io::AsyncBufReadExt;
+        let dir = std::env::temp_dir().join(format!("kira-config-sub-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("core.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_ws_tx, ws_rx) = watch::channel(WorkspaceState::default());
+        let (cfg_tx, cfg_rx) = watch::channel(ConfigState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let _ = serve(stream, ws_rx, cfg_rx, None).await;
+        });
+        let mut stream = UnixStream::connect(&path).await.unwrap();
+        stream
+            .write_all(b"{\"jsonrpc\":\"2.0\",\"id\":88,\"method\":\"subscribe_config\"}\n")
+            .await
+            .unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut first = String::new();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut first),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let first: RpcResponse = serde_json::from_str(&first).unwrap();
+        assert_eq!(first.result.unwrap()["config"]["compact"], false);
+        cfg_tx.send_replace(ConfigState {
+            config: kira_ipc::UiConfig {
+                compact: true,
+                ..Default::default()
+            },
+            error: None,
+        });
+        let mut second = String::new();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut second),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let second: RpcResponse = serde_json::from_str(&second).unwrap();
+        assert_eq!(second.result.unwrap()["config"]["compact"], true);
+        server.abort();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn focus_rpc_refuses_unknown_workspace_before_niri_action() {
+        let dir = std::env::temp_dir().join(format!("kira-focus-rpc-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("core.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_ws_tx, ws_rx) = watch::channel(WorkspaceState::default());
+        let (_cfg_tx, cfg_rx) = watch::channel(ConfigState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let _ = serve(stream, ws_rx, cfg_rx, None).await;
+        });
+        let mut stream = UnixStream::connect(&path).await.unwrap();
+        stream.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"focus_workspace\",\"params\":{\"id\":\"9\"}}\n").await.unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut line = String::new();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            tokio::io::AsyncBufReadExt::read_line(&mut reader, &mut line),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let response: RpcResponse = serde_json::from_str(&line).unwrap();
+        assert_eq!(response.error.unwrap().code, -32602);
+        server.abort();
         std::fs::remove_file(&path).unwrap();
         std::fs::remove_dir(&dir).unwrap();
     }

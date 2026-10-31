@@ -133,13 +133,46 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
+## Default theme: Black, Bordeaux and Taupe
+
+The built-in **Kira Default** theme now uses the project's five-color palette:
+
+`#0a0908` Black · `#49111c` Night Bordeaux · `#f2f4f3` White Smoke ·
+`#a9927d` Dusty Taupe · `#5e503f` Stone Brown.
+
+It is the default in the Svelte Top Bar and its pre-mount WebKit loading
+screen; no environment variable or KDL option is required. CSS variables and
+the TypeScript palette share the same five base values. Dusty Taupe is used
+for legible focus/secondary text; Stone Brown is structural rather than
+low-contrast body text. See [design system](docs/DESIGN_SYSTEM.md) for exact
+tokens and accessibility checks. Choosing alternative palettes through
+KDL remains a future feature.
+
+## Validated KDL settings (Stage 2 draft)
+
+Kira Core can read `~/.config/kira-desktop/config.kdl` (or an absolute
+`KIRA_CONFIG_FILE` override), validate a **small, documented KDL profile**
+and hot-reload UI settings without restarting the compositor, Core or Shell.
+Settings include compact Top Bar spacing, center title, clock seconds,
+workspace names and maximum visible workspace chips. If an edit is invalid,
+the previous valid config stays active and the Top Bar shows `CONFIG !`.
+
+Copy the [sample configuration](config/kira.kdl.example), validate a file
+with `kira-core --check-config /absolute/path/config.kdl`, and read the
+[supported KDL syntax and safe preview guide](docs/CONFIG.md).
+
+The current KDL profile deliberately **does not implement full KDL grammar**,
+arbitrary commands, Niri actions or external modules. The independent Niri
+preview generates a temporary editable Kira config for experimentation.
+
 ## Real Niri workspaces (Stage 1 draft)
 
-The Top Bar now obtains **real, read-only** workspace data through
+The Top Bar obtains **real Niri workspace state** through
 `NIRI_SOCKET` → Rust Core `EventStream` → typed `get_workspaces` JSON-RPC →
 GTK WebKit bridge → Svelte. Workspace IDs are strings (safe for Niri's u64),
-and focus, visibility and urgency are separate flags. No Niri
-workspace-switching actions are sent by Kira.
+and focus, visibility and urgency are separate flags. Clicking a workspace
+chip sends only the validated Niri `FocusWorkspace` action by stable ID;
+keyboard shortcuts continue to work independently.
 
 With no Niri IPC connection, the UI shows `NIRI OFFLINE` instead of fake
 workspaces. The Core reconnects automatically after disconnection.
@@ -181,6 +214,6 @@ are not substitutes for a real visual review. See
 
 ## Current limitations
 
-The panel can communicate with Core through a typed request/response API and display its connection status, but workspace indicators are mock UI: Niri IPC integration, KDL hot reload, event subscriptions, user-overridable themes, docks, and third-party widgets remain unimplemented.
+The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
 
 This project is not ready to replace a working desktop environment.

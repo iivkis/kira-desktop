@@ -13,6 +13,8 @@ pub struct RpcRequest {
     pub jsonrpc: String,
     pub id: u64,
     pub method: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -49,6 +51,36 @@ pub struct WorkspaceState {
     pub workspaces: Vec<Workspace>,
 }
 
+/// Validated KDL appearance settings sent to the trusted frontend.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct UiConfig {
+    pub compact: bool,
+    pub title: String,
+    pub show_seconds: bool,
+    pub show_names: bool,
+    pub max_workspaces: u8,
+}
+
+impl Default for UiConfig {
+    fn default() -> Self {
+        Self {
+            compact: false,
+            title: "KIRA DESKTOP".into(),
+            show_seconds: false,
+            show_names: true,
+            max_workspaces: 12,
+        }
+    }
+}
+
+/// Last successfully parsed config plus an optional validation diagnostic.
+/// Invalid reloads preserve the previous working UiConfig.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct ConfigState {
+    pub config: UiConfig,
+    pub error: Option<String>,
+}
+
 impl RpcResponse {
     pub fn success(id: u64, value: Value) -> Self {
         Self {
@@ -77,6 +109,14 @@ pub fn dispatch(request: RpcRequest) -> RpcResponse {
 }
 
 pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> RpcResponse {
+    dispatch_with_state(request, state, &ConfigState::default())
+}
+
+pub fn dispatch_with_state(
+    request: RpcRequest,
+    workspaces: &WorkspaceState,
+    config: &ConfigState,
+) -> RpcResponse {
     if request.jsonrpc != PROTOCOL_VERSION {
         return RpcResponse::failure(Some(request.id), -32600, "Invalid Request");
     }
@@ -87,7 +127,8 @@ pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> 
             request.id,
             json!({ "version": env!("CARGO_PKG_VERSION"), "status": "bootstrap" }),
         ),
-        "get_workspaces" => RpcResponse::success(request.id, json!(state)),
+        "get_workspaces" => RpcResponse::success(request.id, json!(workspaces)),
+        "get_config" => RpcResponse::success(request.id, json!(config)),
         _ => RpcResponse::failure(Some(request.id), -32601, "Method not found"),
     }
 }
@@ -114,6 +155,7 @@ mod tests {
     #[test]
     fn invalid_method_has_json_rpc_error_code() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: PROTOCOL_VERSION.into(),
             id: 1,
             method: "missing".into(),
@@ -124,6 +166,7 @@ mod tests {
     #[test]
     fn invalid_version_is_rejected() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: "1.0".into(),
             id: 2,
             method: "ping".into(),
@@ -132,8 +175,40 @@ mod tests {
     }
 
     #[test]
+    fn default_config_is_read_only_and_typed() {
+        let req = RpcRequest {
+            params: None,
+            jsonrpc: PROTOCOL_VERSION.into(),
+            id: 13,
+            method: "get_config".into(),
+        };
+        let response = dispatch(req);
+        assert_eq!(
+            response.result.unwrap(),
+            json!({
+                "config": {"compact": false, "title": "KIRA DESKTOP",
+                  "show_seconds": false, "show_names": true, "max_workspaces": 12},
+                "error": null
+            })
+        );
+        assert_eq!(
+            dispatch(RpcRequest {
+                params: None,
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 14,
+                method: "set_config".into()
+            })
+            .error
+            .unwrap()
+            .code,
+            -32601
+        );
+    }
+
+    #[test]
     fn disconnected_niri_does_not_fabricate_workspaces() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: PROTOCOL_VERSION.into(),
             id: 3,
             method: "get_workspaces".into(),
@@ -160,6 +235,7 @@ mod tests {
         };
         let response = dispatch_with_workspaces(
             RpcRequest {
+                params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 4,
                 method: "get_workspaces".into(),

@@ -50,6 +50,42 @@ body,
   color: var(--kira-color-text);
 }
 
+/* Compact mode keeps the same exclusive 42px Niri layer geometry but
+ * spends less horizontal space inside it. No compositor resize needed. */
+.bar.compact {
+  padding-inline: var(--kira-space-2);
+}
+
+.bar.compact .bar__start,
+.bar.compact .bar__end {
+  gap: var(--kira-space-2);
+}
+
+.bar.compact .brand__wordmark,
+.bar.compact .bar__center-line {
+  display: none;
+}
+
+.workspace-action-error {
+  flex: none;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kira-color-accent);
+  cursor: help;
+  white-space: nowrap;
+}
+
+.config-warning {
+  flex: none;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kira-color-accent);
+  cursor: help;
+  white-space: nowrap;
+}
+
 .bar::before {
   position: absolute;
   top: 0;

@@ -39,6 +39,41 @@ test('inlines Vite bundles without leaving module subrequests', async () => {
   });
 });
 
+test('does not interpolate replacement tokens from Vite JS or CSS into HTML', async () => {
+  // Construct these dynamically because the updater itself must not parse
+  // replacement syntax in an incoming source payload.
+  const dollar = String.fromCharCode(36);
+  const tokens = [
+    dollar + '&',
+    dollar + String.fromCharCode(39),
+    dollar + String.fromCharCode(96),
+    dollar + dollar,
+  ];
+  const js = 'window.kiraTokens = ' + JSON.stringify(tokens) + ';';
+  const css = ':root::before { content: ' + JSON.stringify(tokens.join('|')) + '; }';
+  await fixture(async (dir) => {
+    await inlineUiAssets(dir);
+    const html = await readFile(join(dir, 'index.html'), 'utf8');
+    const script = /<script>\n\(function\(\)\{\n([\s\S]*?)\n\}\)\(\);\n<\/script>/.exec(html)?.[1];
+    const style = /<style>\n([\s\S]*?)\n<\/style>/.exec(html)?.[1];
+    assert.equal(script, js, 'the JS bundle must survive inlining byte for byte');
+    assert.equal(style, css, 'the CSS bundle must survive inlining byte for byte');
+    assert.equal((html.match(/<\/script>/g) ?? []).length, 1);
+    assert.equal((html.match(/<\/style>/g) ?? []).length, 1);
+    new Script(script);
+    assert.doesNotMatch(html, /<script src=|<link rel="stylesheet"/);
+  }, { js, css });
+});
+
+test('allows HTML-like text inside bundled JS without treating it as an external asset', async () => {
+  await fixture(async (dir) => {
+    const result = await inlineUiAssets(dir);
+    assert.ok(result.scriptBytes > 0);
+    const html = await readFile(join(dir, 'index.html'), 'utf8');
+    assert.match(html, /window\.kiraMarkup/);
+  }, { js: 'window.kiraMarkup = \'<link rel="stylesheet" href="https://example.invalid/a.css">\';' });
+});
+
 test('rejects an output that cannot run as a classic script', async () => {
   await fixture(async (dir) => {
     await assert.rejects(inlineUiAssets(dir), /Cannot use import statement|Unexpected token/);
