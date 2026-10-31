@@ -1,0 +1,97 @@
+/* Canonical Kira Default: Black, Bordeaux, White Smoke, Taupe, Brown. */
+window.kira-launcher-window { background: transparent; }
+.kira-launcher-card {
+  padding: 20px;
+  background: #0a0908;
+  color: #f2f4f3;
+  border: 2px solid #5e503f;
+  border-radius: 14px;
+  box-shadow: 8px 8px 0 rgba(94, 80, 63, 0.55);
+}
+.kira-eyebrow {
+  color: #a9927d;
+  font-size: 10px;
+  font-weight: 800;
+}
+.kira-heading {
+  color: #f2f4f3;
+  font-size: 27px;
+  font-weight: 800;
+}
+.kira-subheading { color: #a9927d; font-size: 12px; }
+.kira-catalog-header {
+  padding-top: 8px;
+  border-top: 2px solid #5e503f;
+}
+.kira-count { color: #f2f4f3; font-size: 10px; font-weight: 700; }
+entry.kira-search-field {
+  min-height: 46px;
+  padding: 8px 12px;
+  background: #49111c;
+  color: #f2f4f3;
+  border: 2px solid #5e503f;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 rgba(94, 80, 63, 0.55);
+}
+entry.kira-search-field:focus { border-color: #a9927d; }
+list.kira-app-list {
+  background: #0a0908;
+  color: #f2f4f3;
+}
+row.kira-app-row {
+  margin: 3px 4px 5px 2px;
+  padding: 7px 8px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: #0a0908;
+  color: #f2f4f3;
+}
+row.kira-app-row:hover:not(:selected) {
+  background: rgba(73, 17, 28, 0.65);
+  border-color: #5e503f;
+}
+row.kira-app-row:selected {
+  background: #a9927d;
+  border-color: #f2f4f3;
+  color: #0a0908;
+  box-shadow: 4px 4px 0 rgba(94, 80, 63, 0.55);
+}
+.kira-app-icon-shell {
+  min-width: 42px;
+  min-height: 42px;
+  padding: 8px;
+  border: 2px solid #5e503f;
+  border-radius: 8px;
+  background: #49111c;
+  color: #f2f4f3;
+}
+.kira-app-icon-fallback { color: #f2f4f3; font-weight: 800; }
+.kira-app-name {
+  color: #f2f4f3;
+  font-size: 14px;
+  font-weight: 750;
+}
+.kira-app-detail {
+  color: #a9927d;
+  font-size: 11px;
+}
+row.kira-app-row:selected .kira-app-name,
+row.kira-app-row:selected .kira-app-detail {
+  color: #0a0908;
+}
+.kira-empty { color: #a9927d; padding: 16px; }
+.kira-launch-error { color: #f2f4f3; font-size: 11px; }
+.kira-launcher-footer {
+  padding-top: 10px;
+  border-top: 2px solid #5e503f;
+}
+.kira-keycap {
+  padding: 4px 6px;
+  border: 2px solid #5e503f;
+  border-radius: 7px;
+  background: #49111c;
+  color: #f2f4f3;
+  font-size: 10px;
+  font-weight: 750;
+}
+.kira-key-hint { color: #a9927d; font-size: 10px; }

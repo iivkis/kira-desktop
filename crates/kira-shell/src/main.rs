@@ -1,5 +1,6 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
+mod launcher;
 mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};
@@ -153,7 +154,7 @@ fn main() {
             .web_context(&context)
             .user_content_manager(&manager)
             .build();
-        view.set_background_color(&gtk::gdk::RGBA::new(0.09, 0.09, 0.12, 1.0));
+        view.set_background_color(&gtk::gdk::RGBA::new(10.0 / 255.0, 9.0 / 255.0, 8.0 / 255.0, 1.0));
 
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
@@ -217,6 +218,16 @@ fn main() {
             eprintln!("kira-shell [ui]: {}", value.to_string());
         });
         assert!(manager.register_script_message_handler("kiraDiagnostics", None));
+
+        // A dedicated fixed-purpose message from the trusted, navigation-locked
+        // local UI. Never forward launcher requests to Core or execute JS text.
+        let launcher_application = app.clone();
+        manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
+            if value.to_string() == "open" {
+                launcher::show(&launcher_application);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraLauncher", None));
 
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");

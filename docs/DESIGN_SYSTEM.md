@@ -132,6 +132,15 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
 - `frontend/src/style.css`: responsive layout and focus styling. The UI
   stays 42 px tall to match the native layer-shell reservation.
 - `frontend/index.html`: uses matching fallback colors before Svelte mounts.
+- `crates/kira-shell/src/launcher.rs` and `launcher.css`: GTK layer-shell
+  application catalog, search, pointer/keyboard selection, KIRA brand action,
+  and canonical five-color Neo-Brutalist visuals.
+
+The KIRA button uses the dedicated `kiraLauncher` WebKit handler, which accepts
+only the literal `open` message. Actual process launch uses registered Gio
+`AppInfo` desktop entries, not interpolated shell commands. The Launcher is
+non-persistent and has no exclusive zone. Esc closes it; Up/Down select and
+Enter launches the selected application.
 
 ## Verification
 
