@@ -65,7 +65,10 @@ fn main() {
     // about:blank document so WebKit never needs to execute scripts from a
     // custom URI origin. Keep the previous scheme for opt-in diagnostics.
     let html = std::fs::read_to_string(&index).unwrap_or_else(|error| {
-        eprintln!("kira-shell: failed to read UI HTML {}: {error}", index.display());
+        eprintln!(
+            "kira-shell: failed to read UI HTML {}: {error}",
+            index.display()
+        );
         std::process::exit(1);
     });
     let use_legacy_scheme = env::var_os("KIRA_WEBKIT_LEGACY_SCHEME").is_some();
