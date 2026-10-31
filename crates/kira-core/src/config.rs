@@ -105,6 +105,24 @@ fn line_tokens(line: &str) -> Result<Vec<String>, String> {
     Ok(result)
 }
 
+/// The first profile accepts quoted titles with only the two shared
+/// KDL 2.0/JSON escapes needed for visible text: \\" and \\\\.
+/// JSON's \\uNNNN and \\/ forms are not valid KDL 2.0 string escapes.
+fn title_literal(raw: &str) -> Result<String, String> {
+    let mut escaped = false;
+    for character in raw.chars() {
+        if escaped {
+            if !matches!(character, '"' | '\\') {
+                return Err("unsupported quoted-string escape in bar.title".into());
+            }
+            escaped = false;
+        } else if character == '\\' {
+            escaped = true;
+        }
+    }
+    serde_json::from_str(raw).map_err(|_| "bar.title must be a quoted string".into())
+}
+
 fn boolean(value: &str, key: &str) -> Result<bool, String> {
     match value {
         "#true" => Ok(true),
@@ -174,9 +192,8 @@ pub fn parse(input: &str) -> Result<UiConfig, String> {
             match (node, key) {
                 ("bar", "compact") => config.compact = boolean(raw_value, &key_path)?,
                 ("bar", "title") => {
-                    let title: String = serde_json::from_str(raw_value).map_err(|_| {
-                        format!("line {}: bar.title must be a quoted string", number + 1)
-                    })?;
+                    let title = title_literal(raw_value)
+                        .map_err(|e| format!("line {}: {e}", number + 1))?;
                     if title.is_empty()
                         || title.chars().count() > 32
                         || title.chars().any(char::is_control)
@@ -329,6 +346,9 @@ mod tests {
             "kira {\n  workspaces limit=99\n}",
             "kira {\n  clock seconds=#true",
             "kira { }\n",
+            "kira {\n  clock seconds=true\n}\n", // KDL v1 boolean is not KDL 2.0
+            "kira {\n  bar title=\"\\u0041\"\n}\n", // JSON-only escape is invalid KDL2
+            "kira {\n  bar title=\"\\/bad\"\n}\n",
         ] {
             assert!(parse(broken).is_err(), "{broken}");
             let next = apply(&initial, parse(broken));
