@@ -133,6 +133,21 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
+## Default theme: Black, Bordeaux and Taupe
+
+The built-in **Kira Default** theme now uses the project's five-color palette:
+
+`#0a0908` Black · `#49111c` Night Bordeaux · `#f2f4f3` White Smoke ·
+`#a9927d` Dusty Taupe · `#5e503f` Stone Brown.
+
+It is the default in the Svelte Top Bar and its pre-mount WebKit loading
+screen; no environment variable or KDL option is required. CSS variables and
+the TypeScript palette share the same five base values. Dusty Taupe is used
+for legible focus/secondary text; Stone Brown is structural rather than
+low-contrast body text. See [design system](docs/DESIGN_SYSTEM.md) for exact
+tokens and accessibility checks. Choosing alternative palettes through
+KDL remains a future feature.
+
 ## Validated KDL settings (Stage 2 draft)
 
 Kira Core can read `~/.config/kira-desktop/config.kdl` (or an absolute
