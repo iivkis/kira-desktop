@@ -169,3 +169,41 @@ cross-origin ресурсом.
 `HTML head script executed`, `Svelte entrypoint evaluating`,
 `Svelte entrypoint mounted`, `Svelte panel DOM verified`.
 Отсутствующий этап покажет, где именно прерывается запуск.
+
+
+## Ловим исключение внутри Svelte mount
+
+Старый обработчик `window.onerror` иногда видел только
+`Script error.` без файла, строки и стека ошибки. Новый загрузчик
+оборачивает сам вызов `mount(App)` и `flushSync()` в `try/catch`:
+
+- `bootstrap: target found` говорит, что `#app` доступен;
+- `bootstrap: entering Svelte mount` отмечает вход в Svelte;
+- `bootstrap exception: ... | stack=...` показывает настоящую ошибку;
+- `bootstrap: Svelte mount and flush returned` подтверждает завершение;
+- `Svelte panel DOM verified` подтверждает наличие панели в WebKit.
+
+HTML-заглушка остаётся видимой при ошибках, чтобы на экране было сообщение
+с причиной, а не пустая полоса. Для повторного запуска после сборки:
+
+```sh
+git pull
+nix develop --command task frontend:build
+nix develop --command task dev:preview:debug
+```
+
+Такой патч предназначен для получения точного stack trace; сборка и unit-тесты
+сами по себе не доказывают успешную отрисовку Svelte в локальном WebKitGTK.
+
+
+## Исправление порядка запуска после сборки Vite
+
+Причина пустой панели была в порядке выполнения скриптов: Vite переносит
+`type="module"` entrypoint в `<head>`, где он изначально выполнялся
+после разбора HTML. В процессе сборки в один файл он заменялся на обычный
+inline-скрипт, который выполняется **раньше**, чем появляется `#app`.
+
+Теперь вызов `mount(App)` явно отложен до `DOMContentLoaded`, если документ
+ещё загружается. Добавлены тесты для обоих случаев: ранний скрипт в
+`<head>` и скрипт после готовности DOM. Зафиксированы логи
+`Svelte bootstrap after DOMContentLoaded` и `bootstrap: target found`.
