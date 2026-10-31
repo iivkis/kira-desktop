@@ -3,6 +3,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import signal
 import socket
 import subprocess
@@ -111,6 +112,10 @@ class PreviewTests(unittest.TestCase):
             finally:
                 preview.stop_process(parent)
 
+    @unittest.skipUnless(shutil.which("dbus-run-session"), "dbus-run-session unavailable")
+    def test_private_bus_is_forwarded_to_nested_core_and_shell(self):
+        self.run_mock_lifecycle(signal.SIGINT, fast=True, private_bus=True)
+
     def test_lifecycle_with_mock_niri_core_and_shell(self):
         self.run_mock_lifecycle(signal.SIGINT)
 
@@ -123,7 +128,7 @@ class PreviewTests(unittest.TestCase):
     def test_debug_preview_streams_shell_logs(self):
         self.run_mock_lifecycle(signal.SIGINT, fast=True, debug=True)
 
-    def run_mock_lifecycle(self, exit_signal, fast=False, debug=False):
+    def run_mock_lifecycle(self, exit_signal, fast=False, debug=False, private_bus=False):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             runtime = root / "runtime"
@@ -154,6 +159,7 @@ Path(os.environ['PREVIEW_AUDIT']).write_text(json.dumps({
   'preview': os.environ.get('KIRA_PREVIEW'),
   'ui': os.environ.get('KIRA_UI_DIR'),
   'kira_config': os.environ.get('KIRA_CONFIG_FILE'),
+  'dbus_session': os.environ.get('DBUS_SESSION_BUS_ADDRESS'),
 }))
 print('kira-shell: diagnostic probe', flush=True)
 while True: time.sleep(.1)
@@ -187,6 +193,9 @@ while True: time.sleep(.1)
                 "PATH": f"{root}:{env.get('PATH', '')}",
                 "PREVIEW_AUDIT": str(output),
             })
+            if private_bus:
+                # Simulate a host session address that must not reach the shell.
+                env["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=/nonexistent/kira-host-bus"
             command = [sys.executable, str(SCRIPT)]
             if fast:
                 command += ["--bin-dir", str(bins), "--ui-dir", str(ui)]
@@ -194,6 +203,8 @@ while True: time.sleep(.1)
                 command += ["--debug"]
             if not fast:
                 command += ["--package-dir", str(root / "result")]
+            if private_bus:
+                command = ["dbus-run-session", "--", *command]
             process = subprocess.Popen(
                 command,
                 env=env, start_new_session=True,
@@ -207,6 +218,9 @@ while True: time.sleep(.1)
                 actual = json.loads(output.read_text())
                 self.assertEqual(actual["wayland"], "wayland-mock-nested")
                 self.assertEqual(actual["preview"], "1")
+                if private_bus:
+                    self.assertTrue(actual["dbus_session"].startswith("unix:"))
+                    self.assertNotEqual(actual["dbus_session"], env["DBUS_SESSION_BUS_ADDRESS"])
                 self.assertEqual(actual["ui"], str(ui.resolve()) if fast else None)
                 self.assertIn("kira-preview-", actual["core"])
                 self.assertIn("kira-preview-", actual["kira_config"])
