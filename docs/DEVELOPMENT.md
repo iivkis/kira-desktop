@@ -279,12 +279,27 @@ For a manual interaction check:
 nix develop --command task dev:preview
 ```
 
-Inside the **nested** Niri, create/switch workspaces using the normal
-Niri input shortcuts and observe Top Bar. This feature is display-only;
-any workspace actions are performed by Niri's own keybindings, not Kira.
-If Niri IPC is unavailable the bar should say `NIRI OFFLINE`. The preview
-configuration is intentionally minimal and may not include the host's
-workspace shortcuts; test a full user Niri session separately for those.
+The generated **nested-only** Niri KDL now includes explicit test bindings
+so you can exercise the widget even when your host Niri uses different keys:
+
+- Focus the nested Niri window, then press **Alt+Shift+Enter** to launch
+  a real `foot` terminal *inside the child compositor* (included in
+  `nix develop`).
+- Press **Alt+Shift+2** to switch to the next workspace. Press
+  **Alt+Shift+Enter** again to put a window there. Niri dynamically
+  creates/removes empty workspaces; simply focusing an empty one might not
+  leave two populated workspaces in the list.
+- Use **Alt+Shift+1/2/3** to change workspace focus; the highlighted
+  workspace in Kira should follow within 1.5 seconds. Alternatively,
+  **Alt+Shift+Ctrl+2** moves the focused terminal to workspace 2.
+- **Alt+Shift+Q** exits the nested compositor and cleans up the preview.
+
+These bindings are written **only** into the throwaway preview config.
+They do not modify the host Niri, any global binds or the running system.
+The popup terminal is a diagnostic helper and never starts automatically.
+This feature is display-only; Kira does not issue workspace `Action`
+commands. If Niri IPC is unavailable the bar should say `NIRI OFFLINE`.
+The QA smoke modes remain read-only and do not launch a terminal.
 
 Official protocol references:
 - https://github.com/niri-wm/niri/wiki/IPC
