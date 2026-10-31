@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   check:
-    name: Lightweight Core + Frontend checks
+    name: Fast Core + Frontend checks (not native Shell)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -41,4 +41,16 @@ jobs:
       - name: Build static frontend assets
         run: task frontend:build
 
-  # The separate nix.yml workflow validates the GTK/WebKit native Shell.
+  # A green CI workflow must include the complete native GTK/WebKit Shell.
+  # Run the existing Nix build as a reusable job rather than duplicating its
+  # heavy Rust/GTK compilation in two independent workflows.
+  native-shell:
+    name: Native GTK/WebKit Shell build (required)
+    needs: check
+    permissions:
+      contents: read
+    uses: ./.github/workflows/nix.yml
+    secrets: inherit
+
+  # GitHub's CI workflow stays in progress until BOTH jobs finish. A green
+  # fast check alone is never enough to recommend a local preview or merge.
