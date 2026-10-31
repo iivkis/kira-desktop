@@ -165,10 +165,6 @@ fn main() {
             .build();
         view.set_background_color(&gtk::gdk::RGBA::new(0.09, 0.09, 0.12, 1.0));
 
-        // Independent popup layer surface, no exclusive zone and no
-        // application launch until a user selects an installed entry.
-        let launcher_popup = launcher::create(app);
-
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
         let (sender, receiver) = mpsc::channel::<ShellDelivery>();
@@ -274,10 +270,16 @@ fn main() {
         });
 
         let webview = view.clone();
+        // Do not enumerate desktop entries on startup. The native popup and
+        // GIO catalog are constructed only after the first explicit click,
+        // preserving the measured Top Bar startup path.
+        let launcher_app = app.clone();
+        let mut launcher_popup: Option<gtk::ApplicationWindow> = None;
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
             while let Ok(delivery) = receiver.try_recv() {
                 if matches!(delivery, ShellDelivery::LauncherToggle) {
-                    launcher::toggle(&launcher_popup);
+                    let popup = launcher_popup.get_or_insert_with(|| launcher::create(&launcher_app));
+                    launcher::toggle(popup);
                     continue;
                 }
                 // Double encoding ensures payload content cannot become JS.
