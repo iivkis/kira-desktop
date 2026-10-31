@@ -1,76 +1,117 @@
-/* Five canonical GTK colors: synchronized with kira-default.ts. */
+/* Canonical five colors shared with Svelte's Kira Default palette. */
 @define-color kira_black #000000ff;
 @define-color kira_prussian_blue #14213dff;
 @define-color kira_orange #fca311ff;
 @define-color kira_alabaster_grey #e5e5e5ff;
 @define-color kira_white #ffffffff;
 
-/* Only the panel itself carries a structural edge. Rows are not framed cards. */
 window.kira-launcher-window { background: transparent; }
+
+/* One structural panel edge. Internally, contrast comes from materials and
+ * typography, not from shadows and outlines around each interactive item. */
 .kira-launcher-card {
-  padding: 24px;
   background: @kira_black;
   color: @kira_white;
-  border: 1px solid rgba(229, 229, 229, 0.35);
+  border: 1px solid rgba(229, 229, 229, 0.32);
   border-radius: 10px;
 }
+
+.kira-launcher-intro {
+  padding: 22px 24px 18px;
+  background: @kira_black;
+}
 .kira-eyebrow {
+  color: @kira_orange;
+  font-size: 10px;
+  font-weight: 800;
+}
+.kira-heading {
+  color: @kira_white;
+  font-size: 32px;
+  font-weight: 800;
+}
+.kira-subheading {
+  color: @kira_alabaster_grey;
+  font-size: 12px;
+}
+
+.kira-workbench {
+  padding: 16px 18px 12px;
+  background: @kira_prussian_blue;
+}
+.kira-workbench-eyebrow,
+.kira-catalog-label {
   color: @kira_alabaster_grey;
   font-size: 10px;
-  font-weight: 750;
+  font-weight: 700;
 }
-.kira-heading { color: @kira_white; font-size: 28px; font-weight: 800; }
-.kira-subheading { color: @kira_alabaster_grey; font-size: 12px; }
-.kira-catalog-header { padding-top: 8px; }
+.kira-catalog-header { padding-top: 7px; }
 .kira-count {
   color: @kira_alabaster_grey;
   font-size: 10px;
   font-weight: 700;
 }
+
 entry.kira-search-field {
-  min-height: 46px;
-  padding: 8px 12px;
-  background: @kira_prussian_blue;
+  min-height: 42px;
+  padding: 7px 12px;
+  background: @kira_black;
   color: @kira_white;
-  border: 1px solid rgba(229, 229, 229, 0.35);
+  border: 1px solid rgba(229, 229, 229, 0.38);
   border-radius: 6px;
 }
 entry.kira-search-field:focus { border-color: @kira_orange; }
-list.kira-app-list { background: @kira_black; color: @kira_white; }
+
+list.kira-app-list {
+  background: @kira_prussian_blue;
+  color: @kira_white;
+}
 row.kira-app-row {
   margin: 2px 0;
-  padding: 8px 10px;
+  padding: 7px 8px 7px 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 5px;
   background: transparent;
   color: @kira_white;
 }
 row.kira-app-row:hover:not(:selected) {
-  background: rgba(20, 33, 61, 0.70);
+  background: rgba(0, 0, 0, 0.24);
 }
+/* Selection is a local orange marker, not a full-width orange slab. */
 row.kira-app-row:selected {
-  background: @kira_orange;
-  color: @kira_black;
+  background: rgba(0, 0, 0, 0.55);
+  color: @kira_white;
 }
+.kira-app-rail {
+  min-width: 3px;
+  min-height: 38px;
+  background: transparent;
+}
+row.kira-app-row:selected .kira-app-rail { background: @kira_orange; }
 .kira-app-icon-shell {
   min-width: 38px;
   min-height: 38px;
   padding: 6px;
   border: 0;
   border-radius: 6px;
-  background: @kira_prussian_blue;
+  background: @kira_black;
   color: @kira_white;
 }
 .kira-app-icon-fallback { color: @kira_white; font-weight: 800; }
 .kira-app-name { color: @kira_white; font-size: 14px; font-weight: 750; }
 .kira-app-detail { color: @kira_alabaster_grey; font-size: 11px; }
-row.kira-app-row:selected .kira-app-name,
-row.kira-app-row:selected .kira-app-detail { color: @kira_black; }
+row.kira-app-row:selected .kira-app-name { color: @kira_orange; }
+row.kira-app-row:selected .kira-app-detail { color: @kira_alabaster_grey; }
+
 .kira-empty { color: @kira_alabaster_grey; padding: 16px; }
-.kira-launch-error { color: @kira_white; font-size: 11px; }
+.kira-launch-error {
+  color: @kira_orange;
+  font-size: 11px;
+  margin: 0 20px;
+}
 .kira-launcher-footer {
-  padding-top: 10px;
-  border-top: 1px solid rgba(229, 229, 229, 0.25);
+  padding: 14px 24px;
+  background: @kira_black;
 }
 .kira-keycap {
   padding: 4px 6px;

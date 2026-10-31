@@ -105,7 +105,7 @@ pub fn show(application: &gtk::Application) {
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some("Kira Launcher"));
     window.set_decorated(false);
-    window.set_default_size(600, 500);
+    window.set_default_size(600, 520);
     window.add_css_class("kira-launcher-window");
     window.init_layer_shell();
     window.set_namespace(Some("kira-launcher"));
@@ -120,32 +120,40 @@ pub fn show(application: &gtk::Application) {
     frame.set_margin_end(12);
     frame.set_margin_top(6);
     frame.set_margin_bottom(12);
-    let card = gtk::Box::new(gtk::Orientation::Vertical, 12);
+    let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
     card.add_css_class("kira-launcher-card");
     frame.append(&card);
     window.set_child(Some(&frame));
-    card.append(&label("KIRA / DESKTOP", "kira-eyebrow"));
-    card.append(&label("Applications", "kira-heading"));
-    card.append(&label(
-        "Find and open installed applications.",
-        "kira-subheading",
-    ));
 
-    let header = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-    header.add_css_class("kira-catalog-header");
-    header.append(&label("CATALOG", "kira-eyebrow"));
-    let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    spacer.set_hexpand(true);
-    header.append(&spacer);
-    let count = label("", "kira-count");
-    count.set_xalign(0.5);
-    header.append(&count);
-    card.append(&header);
+    // Editorial hierarchy: a quiet black intro and a Prussian Blue workspace.
+    // This is one panel with two clear regions, not a stack of framed chips.
+    let intro = gtk::Box::new(gtk::Orientation::Vertical, 6);
+    intro.add_css_class("kira-launcher-intro");
+    intro.append(&label("KIRA  /  APPLICATION INDEX", "kira-eyebrow"));
+    intro.append(&label("Applications", "kira-heading"));
+    intro.append(&label("Search your installed tools.", "kira-subheading"));
+    card.append(&intro);
+
+    let workbench = gtk::Box::new(gtk::Orientation::Vertical, 10);
+    workbench.add_css_class("kira-workbench");
+    card.append(&workbench);
+    workbench.append(&label("FIND  /  OPEN", "kira-workbench-eyebrow"));
 
     let entry = gtk::SearchEntry::new();
     entry.add_css_class("kira-search-field");
     entry.set_placeholder_text(Some("Search applications…"));
-    card.append(&entry);
+    workbench.append(&entry);
+
+    let header = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+    header.add_css_class("kira-catalog-header");
+    header.append(&label("APPLICATION CATALOG", "kira-catalog-label"));
+    let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    spacer.set_hexpand(true);
+    header.append(&spacer);
+    let count = label("", "kira-count");
+    count.set_xalign(1.0);
+    header.append(&count);
+    workbench.append(&header);
 
     let apps = Rc::new(installed_apps());
     let list = gtk::ListBox::new();
@@ -157,6 +165,9 @@ pub fn show(application: &gtk::Application) {
         row.add_css_class("kira-app-row");
         row.set_widget_name(&format!("kira-app-{index}"));
         let content = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+        let rail = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        rail.add_css_class("kira-app-rail");
+        content.append(&rail);
         let icon_shell = gtk::Box::new(gtk::Orientation::Horizontal, 0);
         icon_shell.add_css_class("kira-app-icon-shell");
         if let Some(icon) = app.info.icon() {
@@ -191,10 +202,10 @@ pub fn show(application: &gtk::Application) {
     list.set_placeholder(Some(&empty));
     let scroll = gtk::ScrolledWindow::new();
     scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
-    scroll.set_min_content_height(240);
+    scroll.set_min_content_height(200);
     scroll.set_vexpand(true);
     scroll.set_child(Some(&list));
-    card.append(&scroll);
+    workbench.append(&scroll);
 
     let error = label("", "kira-launch-error");
     error.set_visible(false);
