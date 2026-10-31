@@ -142,9 +142,10 @@ and focus, visibility and urgency are separate flags. No Niri
 workspace-switching actions are sent by Kira.
 
 With no Niri IPC connection, the UI shows `NIRI OFFLINE` instead of fake
-workspaces. The Core reconnects automatically after disconnection. Core's
-state is event-driven; the Svelte UI temporarily refreshes the snapshot every
-1.5 seconds until push-subscriptions are implemented.
+workspaces. The Core reconnects automatically after disconnection.
+A persistent read-only Core→Shell subscription now pushes changed workspace
+snapshots as typed WebKit `kira:workspaces` events, so the Svelte UI updates
+without the old 1.5-second polling delay.
 
 To test the actual Niri workspace integration without modifying the host:
 
