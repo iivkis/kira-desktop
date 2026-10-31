@@ -8,11 +8,16 @@ const MAX_ASSET_BYTES: u64 = 8 * 1024 * 1024;
 pub const UI_DOCUMENT_URI: &str = "kira-ui://app/index.html";
 
 fn invalid_asset() -> io::Error {
-    io::Error::new(io::ErrorKind::PermissionDenied, "Invalid Kira UI asset path")
+    io::Error::new(
+        io::ErrorKind::PermissionDenied,
+        "Invalid Kira UI asset path",
+    )
 }
 
 fn asset_path(uri: &str, root: &Path) -> io::Result<(PathBuf, &'static str)> {
-    let relative = uri.strip_prefix("kira-ui://app/").ok_or_else(invalid_asset)?;
+    let relative = uri
+        .strip_prefix("kira-ui://app/")
+        .ok_or_else(invalid_asset)?;
     // Do not accept percent-encoded path components, queries or fragments.
     // The bundled Vite output uses simple ASCII filenames under assets/.
     if relative.is_empty()
@@ -59,7 +64,10 @@ fn asset_path(uri: &str, root: &Path) -> io::Result<(PathBuf, &'static str)> {
 pub fn read_asset(uri: &str, root: &Path) -> io::Result<(Vec<u8>, &'static str)> {
     let (path, mime) = asset_path(uri, root)?;
     if path.metadata()?.len() > MAX_ASSET_BYTES {
-        return Err(io::Error::new(io::ErrorKind::InvalidData, "UI asset too large"));
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "UI asset too large",
+        ));
     }
     Ok((std::fs::read(path)?, mime))
 }
@@ -76,8 +84,12 @@ mod tests {
 
     impl Fixture {
         fn new() -> Self {
-            let unique = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
-            let root = std::env::temp_dir().join(format!("kira-ui-{}-{unique}", std::process::id()));
+            let unique = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos();
+            let root =
+                std::env::temp_dir().join(format!("kira-ui-{}-{unique}", std::process::id()));
             fs::create_dir_all(root.join("assets")).unwrap();
             fs::write(root.join("index.html"), "<html></html>").unwrap();
             fs::write(root.join("assets/app.js"), "console.log('Kira')").unwrap();
