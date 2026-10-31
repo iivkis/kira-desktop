@@ -405,9 +405,7 @@ mod tests {
 
     #[test]
     fn launcher_toggle_requires_exact_method_version_and_no_params() {
-        for request in [
-            r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher"}"#,
-        ] {
+        for request in [r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher"}"#] {
             let req: RpcRequest = serde_json::from_str(request).unwrap();
             assert!(valid_launcher_toggle(&req));
         }
