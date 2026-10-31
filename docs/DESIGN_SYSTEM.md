@@ -19,34 +19,41 @@ reduced motion is enabled and visual effects are unavailable.
 
 ## Kira Default · canonical palette
 
-| Name | HEX | Default meaning |
-| --- | --- | --- |
-| Space Indigo | `#22223b` | Dark background, text on accent |
-| Dusty Grape | `#4a4e69` | Raised surfaces, supporting materials |
-| Lilac Ash | `#9a8c98` | Muted details on Space Indigo |
-| Almond Silk | `#c9ada7` | Active and focused elements |
-| Parchment | `#f2e9e4` | Primary readable text |
+The project owner's five-color **Black / Night Bordeaux / White Smoke /
+Dusty Taupe / Stone Brown** palette is now the default. No other base
+HEX colors are permitted in Kira Default.
 
-The canonical typed palette is defined by
-[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts).
-CSS variables are declared in
+| Name | HEX | Intended role |
+| --- | --- | --- |
+| Black | `#0a0908` | App background and text on selected workspaces |
+| Night Bordeaux | `#49111c` | Elevated surfaces and subdued wine-toned materials |
+| White Smoke | `#f2f4f3` | Main text on black and Bordeaux |
+| Dusty Taupe | `#a9927d` | Readable secondary text, active states and focus accent |
+| Stone Brown | `#5e503f` | Structural border detail, not small text |
+
+The source of truth is
+[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts);
+the loaded CSS lives in
 [`kira-default.css`](../frontend/src/lib/themes/kira-default.css).
-Unit tests ensure the five values remain synchronized.
+Contract tests verify that the exact five literal colors and their
+semantic aliases remain synchronized.
 
 ## Public CSS contract
 
-| Semantic variable | Canonical HEX | Intended usage |
+| Semantic variable | Canonical HEX or alias | Intended usage |
 | --- | --- | --- |
-| `--kira-color-background` | `#22223b` | Main surface/background |
-| `--kira-color-surface` | `#4a4e69` | Elevated surface |
-| `--kira-color-muted` | `#9a8c98` | Secondary details on dark background |
-| `--kira-color-accent` | `#c9ada7` | Accent, selection, focus |
-| `--kira-color-text` | `#f2e9e4` | Foreground text |
+| `--kira-color-background` | `#0a0908` | Main background |
+| `--kira-color-surface` | `#49111c` | Elevated Bordeaux surface |
+| `--kira-color-muted` | `#a9927d` | Readable secondary text |
+| `--kira-color-accent` | `var(--kira-color-muted)` | Selection and keyboard focus |
+| `--kira-color-text` | `#f2f4f3` | Main readable foreground |
+| `--kira-color-earth` | `#5e503f` | Brown structural detailing |
 
 Derived tokens: `--kira-color-on-accent`,
-`--kira-color-text-secondary`, `--kira-color-surface-subtle`,
-`--kira-color-border`. Layout and motion tokens start with
-`--kira-space-`, `--kira-radius-`, `--kira-motion-`.
+`--kira-color-text-secondary`, `--kira-color-surface-subtle`
+and `--kira-color-border` blend or alias these five colors.
+Layout and motion tokens begin with `--kira-space-`,
+`--kira-radius-` and `--kira-motion-`.
 
 Example for a future Svelte widget:
 
@@ -63,31 +70,34 @@ Example for a future Svelte widget:
 </style>
 ```
 
-**Do not hardcode HEX values inside individual components.** Theme overrides
-must happen by redefining semantic variables, not by copying stylesheet rules.
-User-configurable themes through KDL are a future milestone.
+**Never hardcode colors in component styles.** Themes must be changed at
+the semantic token layer. User-overridable themes via KDL are still a
+future increment; the current KDL configuration only adjusts bar behavior.
 
 ## Color contrast and accessibility
 
-- Parchment on Space Indigo: **12.91:1**.
-- Parchment on Dusty Grape: **6.79:1**.
-- Lilac Ash on Space Indigo: **4.84:1**.
-- Space Indigo on Almond Silk: **7.37:1**.
-- **Avoid** Lilac Ash text on Dusty Grape (only 2.55:1).
+Representative WCAG relative contrast ratios:
 
-Regular text should meet at least 4.5:1, large text and relevant non-text
-indicators at least 3:1. Do not rely only on color to indicate selection.
-Keyboard navigation and visible focus outlines are required when a widget
-becomes interactive. Respect `prefers-reduced-motion`.
+- White Smoke on Black: **18.01:1**.
+- White Smoke on Night Bordeaux: **13.77:1**.
+- Dusty Taupe on Black: **6.72:1**.
+- Dusty Taupe on Night Bordeaux: **5.14:1**.
+- Black on Dusty Taupe: **6.72:1**, suitable for selected chip text.
+- **Do not use Stone Brown as small text on Black:** only **2.55:1**.
+  It is used for structural borders and mixed with Taupe for visibility.
+
+Regular-size text requires at least 4.5:1, and meaningful non-text indicators
+at least 3:1 as applicable under WCAG. Do not indicate focus by color alone:
+workspaces also use a mark, labels and `aria-pressed`.
+Provide visible keyboard outlines and honor reduced-motion preferences.
 
 ## Current component implementation
 
 - `frontend/src/App.svelte`: premium 42 px top bar, balanced left/center/right
   regions, brand and local clock.
-- `frontend/src/lib/components/WorkspacePreview.svelte`: three **visual**
-  workspace chips. These are deliberately **not clickable**, because Niri IPC
-  has not been implemented. Workspace 1 is highlighted as a design preview
-  only, not a claim about the active Niri workspace.
+- `frontend/src/lib/components/WorkspacePreview.svelte`: real Niri workspaces
+  with accessible clickable buttons, live focus/active/urgent state, and
+  stable workspace IDs for the intentional `FocusWorkspace` action.
 - `frontend/src/lib/components/CoreStatus.svelte`: status badge with
   text and a dot, tied to the existing real Core bridge; an accessible
   `role="status"` communicates transitions.
@@ -109,5 +119,5 @@ required token names and reduced-motion support. They do **not** replace
 a screenshot or interactive accessibility test of the WebKit surface.
 
 Next design-system milestones: shared interactive primitives, complete
-keyboard navigation, configurable KDL themes, actual Niri workspaces,
-Launcher, Dock, notifications, and their consistent states.
+keyboard accessibility, configurable KDL theme overrides, Launcher, Dock,
+notifications, and their consistent states.
