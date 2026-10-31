@@ -40,8 +40,8 @@ kira {
 | --- | --- | --- | --- |
 | `bar` | `compact` | `#true` / `#false` | Reduce horizontal padding while keeping Niri's 42px reserved bar |
 | `bar` | `title` | quoted text, 1–32 printable characters | Center title; text is escaped by Svelte |
-| `clock` | `seconds` | `true` / `false` | Show seconds in the Top Bar clock |
-| `workspaces` | `show-names` | `true` / `false` | Show workspace names or only numeric indices |
+| `clock` | `seconds` | `#true` / `#false` | Show seconds in the Top Bar clock |
+| `workspaces` | `show-names` | `#true` / `#false` | Show workspace names or only numeric indices |
 | `workspaces` | `limit` | integer 1–32 | Maximum number of displayed workspaces; keep the focused one visible |
 
 Formatting rules for this **minimal KDL profile**:
