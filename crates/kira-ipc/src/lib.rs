@@ -79,7 +79,11 @@ mod tests {
         assert_eq!(response.result, Some(json!("pong")));
         assert_eq!(response.id, Some(7));
         assert_eq!(response.error, None);
-        assert!(serde_json::to_string(&response).unwrap().contains("\"result\":\"pong\""));
+        assert!(
+            serde_json::to_string(&response)
+                .unwrap()
+                .contains("\"result\":\"pong\"")
+        );
     }
 
     #[test]
