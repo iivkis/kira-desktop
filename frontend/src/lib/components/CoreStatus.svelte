@@ -35,20 +35,20 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    height: 27px;
+    height: 29px;
     max-width: 156px;
-    padding: 0 10px;
-    border: 1px solid var(--kira-color-border);
-    border-radius: var(--kira-radius-md);
-    background: var(--kira-color-surface-subtle);
+    padding: 0 11px;
+    border: 1px solid color-mix(in srgb, var(--kira-color-muted) 25%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--kira-color-surface) 33%, var(--kira-color-background));
     color: var(--kira-color-text);
     white-space: nowrap;
   }
 
   .core-status__signal {
     flex: none;
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border: 1px solid var(--kira-color-muted);
     border-radius: 50%;
     background: transparent;
@@ -67,8 +67,8 @@
 
   .core-status__name {
     font-size: 9px;
-    font-weight: 750;
-    letter-spacing: 0.11em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     opacity: 0.86;
   }
 
