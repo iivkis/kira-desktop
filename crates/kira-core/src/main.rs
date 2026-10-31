@@ -1,13 +1,16 @@
-//! Standalone system-state daemon. This milestone exposes ping/get_state only.
+//! Standalone read-only system-state daemon with Niri workspace IPC.
+
+mod niri;
 
 use std::error::Error;
 use std::io;
 use std::os::unix::fs::{FileTypeExt, MetadataExt};
 use std::path::{Path, PathBuf};
 
-use kira_ipc::{RpcRequest, RpcResponse, dispatch};
+use kira_ipc::{RpcRequest, RpcResponse, WorkspaceState, dispatch_with_workspaces};
 use tokio::io::{AsyncBufRead, AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::{UnixListener, UnixStream};
+use tokio::sync::watch;
 
 const MAX_REQUEST_BYTES: usize = 4096;
 
@@ -87,13 +90,16 @@ async fn read_bounded_line<R: AsyncBufRead + Unpin>(
     }
 }
 
-async fn serve(stream: UnixStream) -> Result<(), Box<dyn Error + Send + Sync>> {
+async fn serve(
+    stream: UnixStream,
+    workspaces: watch::Receiver<WorkspaceState>,
+) -> Result<(), Box<dyn Error + Send + Sync>> {
     let (read_half, mut writer) = stream.into_split();
     let mut reader = BufReader::new(read_half);
 
     while let Some(line) = read_bounded_line(&mut reader, MAX_REQUEST_BYTES).await? {
         let response = match serde_json::from_slice::<RpcRequest>(&line) {
-            Ok(request) => dispatch(request),
+            Ok(request) => dispatch_with_workspaces(request, &workspaces.borrow().clone()),
             Err(_) => RpcResponse::failure(None, -32700, "Parse error"),
         };
         let encoded = serde_json::to_vec(&response)?;
@@ -111,13 +117,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _guard = SocketGuard::new(&path)?;
     eprintln!("kira-core listening on {}", path.display());
 
+    let (workspace_sender, workspace_receiver) = watch::channel(WorkspaceState::default());
+    if let Some(socket) = niri::socket_path_from(std::env::var_os("NIRI_SOCKET")) {
+        tokio::spawn(niri::monitor(socket, workspace_sender.clone()));
+    } else {
+        eprintln!("kira-core: no valid NIRI_SOCKET; workspace state will be offline");
+    }
+
     let mut terminate = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
     loop {
         tokio::select! {
             accepted = listener.accept() => {
                 let (stream, _) = accepted?;
+                let state = workspace_receiver.clone();
                 tokio::spawn(async move {
-                    if let Err(error) = serve(stream).await {
+                    if let Err(error) = serve(stream, state).await {
                         eprintln!("kira-core client error: {error}");
                     }
                 });
