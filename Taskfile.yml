@@ -19,6 +19,9 @@ tasks:
     cmds:
       - test -s README.md
       - test -s docs/SPECIFICATION.md
+      - test -s docs/DESIGN_SYSTEM.md
+      - test -s frontend/src/lib/themes/kira-default.css
+      - test -s frontend/src/lib/themes/kira-default.ts
       - test -s docs/DEVELOPMENT.md
       - test -s Cargo.toml
       - test -s crates/kira-ipc/src/lib.rs

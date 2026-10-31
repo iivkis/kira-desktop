@@ -1,0 +1,38 @@
+/* Kira Default: five canonical base colors, documented in SPECIFICATION §15.
+ * Widgets should consume semantic variables, not hardcode theme colors.
+ * Secondary surfaces, borders and overlays derive from these five values.
+ */
+:root {
+  color-scheme: dark;
+
+  --kira-color-background: #22223b;
+  --kira-color-surface: #4a4e69;
+  --kira-color-muted: #9a8c98;
+  --kira-color-accent: #c9ada7;
+  --kira-color-text: #f2e9e4;
+
+  --kira-color-on-accent: var(--kira-color-background);
+  --kira-color-text-secondary: var(--kira-color-muted);
+  --kira-color-surface-subtle: color-mix(in srgb, var(--kira-color-surface) 30%, var(--kira-color-background));
+  --kira-color-border: color-mix(in srgb, var(--kira-color-surface) 58%, var(--kira-color-background));
+
+  --kira-space-1: 4px;
+  --kira-space-2: 8px;
+  --kira-space-3: 12px;
+  --kira-space-4: 16px;
+
+  --kira-radius-sm: 6px;
+  --kira-radius-md: 10px;
+  --kira-radius-lg: 12px;
+
+  --kira-motion-fast: 150ms;
+  --kira-motion-standard: 200ms;
+  --kira-motion-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --kira-motion-fast: 0ms;
+    --kira-motion-standard: 0ms;
+  }
+}
