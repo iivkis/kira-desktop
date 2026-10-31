@@ -160,6 +160,7 @@ Path(os.environ['PREVIEW_AUDIT']).write_text(json.dumps({
   'ui': os.environ.get('KIRA_UI_DIR'),
   'kira_config': os.environ.get('KIRA_CONFIG_FILE'),
   'dbus_session': os.environ.get('DBUS_SESSION_BUS_ADDRESS'),
+  'preview_pid': os.getppid(),
 }))
 print('kira-shell: diagnostic probe', flush=True)
 while True: time.sleep(.1)
@@ -229,7 +230,13 @@ while True: time.sleep(.1)
                 self.assertFalse((runtime / "kira-desktop.sock").exists())
             finally:
                 if process.poll() is None:
-                    process.send_signal(exit_signal)
+                    if private_bus and output.exists():
+                        # Signal the Python preview, not dbus-run-session.
+                        # The wrapper then observes a clean child exit.
+                        pid = json.loads(output.read_text())["preview_pid"]
+                        os.kill(pid, exit_signal)
+                    else:
+                        process.send_signal(exit_signal)
                 stdout, stderr = process.communicate(timeout=8)
                 parent.close()
             self.assertEqual(process.returncode, 0, stdout + stderr)
