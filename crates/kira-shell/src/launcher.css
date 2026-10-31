@@ -5,25 +5,25 @@
 @define-color kira_alabaster_grey #e5e5e5ff;
 @define-color kira_white #ffffffff;
 
+/* Only the panel itself carries a structural edge. Rows are not framed cards. */
 window.kira-launcher-window { background: transparent; }
 .kira-launcher-card {
-  padding: 20px;
+  padding: 24px;
   background: @kira_black;
   color: @kira_white;
-  border: 2px solid @kira_alabaster_grey;
-  border-radius: 14px;
-  box-shadow: 8px 8px 0 rgba(229, 229, 229, 0.32);
+  border: 1px solid rgba(229, 229, 229, 0.35);
+  border-radius: 10px;
 }
-.kira-eyebrow { color: @kira_alabaster_grey; font-size: 10px; font-weight: 800; }
-.kira-heading { color: @kira_white; font-size: 27px; font-weight: 800; }
+.kira-eyebrow {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 750;
+}
+.kira-heading { color: @kira_white; font-size: 28px; font-weight: 800; }
 .kira-subheading { color: @kira_alabaster_grey; font-size: 12px; }
-.kira-catalog-header { padding-top: 8px; border-top: 2px solid @kira_alabaster_grey; }
+.kira-catalog-header { padding-top: 8px; }
 .kira-count {
-  padding: 4px 8px;
-  background: @kira_prussian_blue;
-  color: @kira_white;
-  border: 2px solid @kira_orange;
-  border-radius: 7px;
+  color: @kira_alabaster_grey;
   font-size: 10px;
   font-weight: 700;
 }
@@ -32,36 +32,32 @@ entry.kira-search-field {
   padding: 8px 12px;
   background: @kira_prussian_blue;
   color: @kira_white;
-  border: 2px solid @kira_alabaster_grey;
-  border-radius: 10px;
-  box-shadow: 4px 4px 0 rgba(229, 229, 229, 0.25);
+  border: 1px solid rgba(229, 229, 229, 0.35);
+  border-radius: 6px;
 }
 entry.kira-search-field:focus { border-color: @kira_orange; }
 list.kira-app-list { background: @kira_black; color: @kira_white; }
 row.kira-app-row {
-  margin: 3px 4px 5px 2px;
-  padding: 7px 8px;
-  border: 2px solid transparent;
-  border-radius: 10px;
-  background: @kira_black;
+  margin: 2px 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
   color: @kira_white;
 }
 row.kira-app-row:hover:not(:selected) {
-  background: rgba(20, 33, 61, 0.75);
-  border-color: @kira_alabaster_grey;
+  background: rgba(20, 33, 61, 0.70);
 }
 row.kira-app-row:selected {
   background: @kira_orange;
-  border-color: @kira_white;
   color: @kira_black;
-  box-shadow: 4px 4px 0 rgba(229, 229, 229, 0.32);
 }
 .kira-app-icon-shell {
-  min-width: 42px;
-  min-height: 42px;
-  padding: 8px;
-  border: 2px solid @kira_alabaster_grey;
-  border-radius: 8px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 6px;
+  border: 0;
+  border-radius: 6px;
   background: @kira_prussian_blue;
   color: @kira_white;
 }
@@ -72,14 +68,17 @@ row.kira-app-row:selected .kira-app-name,
 row.kira-app-row:selected .kira-app-detail { color: @kira_black; }
 .kira-empty { color: @kira_alabaster_grey; padding: 16px; }
 .kira-launch-error { color: @kira_white; font-size: 11px; }
-.kira-launcher-footer { padding-top: 10px; border-top: 2px solid @kira_alabaster_grey; }
+.kira-launcher-footer {
+  padding-top: 10px;
+  border-top: 1px solid rgba(229, 229, 229, 0.25);
+}
 .kira-keycap {
   padding: 4px 6px;
-  border: 2px solid @kira_alabaster_grey;
-  border-radius: 7px;
-  background: @kira_prussian_blue;
+  border: 1px solid rgba(229, 229, 229, 0.35);
+  border-radius: 4px;
+  background: transparent;
   color: @kira_white;
   font-size: 10px;
-  font-weight: 750;
+  font-weight: 700;
 }
 .kira-key-hint { color: @kira_alabaster_grey; font-size: 10px; }

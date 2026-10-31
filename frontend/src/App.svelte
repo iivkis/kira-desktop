@@ -99,43 +99,29 @@
 </script>
 
 <main class="bar" class:compact={configState.config.compact} aria-label="Kira Desktop top bar">
-  <section class="bar__start" aria-label="Kira and workspaces">
+  <section class="bar__start" aria-label="Launcher and workspaces">
     <button type="button" class="brand" aria-label="Open applications launcher"
-      title="Open applications" onclick={activateLauncher}>
-      <span class="brand__symbol" aria-hidden="true">K</span>
-      <span class="brand__wordmark" aria-hidden="true">KIRA</span>
-    </button>
-    {#if launcherUnavailable}
-      <span class="launcher-warning" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
-    {/if}
-    <span class="bar__separator" aria-hidden="true"></span>
+      title="Open applications" onclick={activateLauncher}>KIRA</button>
     <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
       limit={configState.config.max_workspaces} pending={workspacePending}
       onFocus={(id) => { void activateWorkspace(id); }} />
+    <span class="bar__context" title={configState.config.title}>
+      {configState.config.title === 'KIRA DESKTOP' ? 'DESKTOP' : configState.config.title}
+    </span>
+    {#if launcherUnavailable}
+      <span class="launcher-warning" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
+    {/if}
     {#if workspaceActionError}
       <span class="workspace-action-error" role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
 
-  <div class="bar__center" aria-label="Kira Desktop environment">
-    <span class="bar__center-line" aria-hidden="true"></span>
-    <span class="bar__center-title">
-      {#if configState.config.title === 'KIRA DESKTOP'}KIRA <span>DESKTOP</span>{:else}{configState.config.title}{/if}
-    </span>
-    <span class="bar__center-line" aria-hidden="true"></span>
-  </div>
-
-  <section class="bar__end" aria-label="Core and clock">
+  <section class="bar__end" aria-label="System status and local time">
     {#if configState.error}
       <span class="config-warning" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
     <CoreStatus status={coreStatus} version={coreVersion} />
-    <span class="bar__separator" aria-hidden="true"></span>
     <div class="clock">
-      <svg class="clock__icon" aria-hidden="true" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.3"></circle>
-        <path d="M8 4.6V8.1L10.2 9.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
       <time datetime={now.toISOString()} aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}>
         {formatClock(now, undefined, configState.config.show_seconds)}
       </time>

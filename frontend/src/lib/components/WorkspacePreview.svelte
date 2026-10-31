@@ -44,13 +44,11 @@
             + (workspace.output ? ' on ' + workspace.output : '')
             + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
             + (workspace.is_urgent ? ' (urgent)' : '')}
-          disabled={pending || workspace.is_focused}
+          disabled={pending}
           onclick={() => onFocus(workspace.id)}
         >
           <span class="workspace-preview__label">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
-          {#if workspace.is_focused}
-            <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
-          {:else if workspace.is_urgent}
+          {#if workspace.is_urgent}
             <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
           {/if}
         </button>
@@ -65,19 +63,19 @@
     align-items: center;
     height: 28px;
     color: var(--kira-color-muted);
-    font-size: 9px;
-    font-weight: 750;
-    letter-spacing: 0.08em;
+    font-size: 10px;
+    font-weight: 650;
     white-space: nowrap;
   }
 
   .workspace-preview {
     display: flex;
     align-items: center;
-    gap: 6px;
-    max-width: min(33vw, 330px);
+    flex: none;
+    gap: 4px;
+    max-width: min(40vw, 348px);
     margin: 0;
-    padding: 0 3px 3px 0;
+    padding: 0;
     overflow-x: auto;
     scrollbar-width: none;
     list-style: none;
@@ -87,25 +85,18 @@
 
   .workspace-preview__item {
     position: relative;
-    display: grid;
     flex: none;
-    place-items: center;
-    min-width: 30px;
-    max-width: 76px;
+    min-width: 32px;
+    max-width: 90px;
     height: 28px;
-    padding-inline: 6px;
-    box-sizing: border-box;
-    border: var(--kira-border-strong) solid transparent;
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--kira-color-surface) 26%, var(--kira-color-background));
-    color: var(--kira-color-text);
+    border-radius: var(--kira-radius-sm);
+    color: var(--kira-color-muted);
     font-size: 11px;
     font-variant-numeric: tabular-nums;
     font-weight: 700;
     transition:
-      transform var(--kira-motion-fast) var(--kira-motion-easing),
-      background-color var(--kira-motion-fast) var(--kira-motion-easing),
-      border-color var(--kira-motion-fast) var(--kira-motion-easing);
+      color var(--kira-motion-fast) var(--kira-motion-easing),
+      background-color var(--kira-motion-fast) var(--kira-motion-easing);
   }
 
   .workspace-preview__button {
@@ -113,65 +104,56 @@
     place-items: center;
     width: 100%;
     height: 100%;
-    padding: 0;
+    padding: 0 9px;
     border: 0;
     border-radius: inherit;
-    color: inherit;
     background: transparent;
+    color: inherit;
     font: inherit;
-    letter-spacing: inherit;
     cursor: pointer;
   }
 
-  .workspace-preview__button:disabled { cursor: default; }
+  .workspace-preview__button:disabled { cursor: progress; }
   .workspace-preview__button:focus-visible {
     outline: 2px solid var(--kira-color-accent);
-    outline-offset: 3px;
+    outline-offset: 2px;
   }
 
   .workspace-preview__item:not(.preview-selected):has(.workspace-preview__button:not(:disabled):hover) {
-    transform: translate(-1px, -1px);
-    border-color: var(--kira-color-muted);
-    background: var(--kira-color-surface-subtle);
+    background: color-mix(in srgb, var(--kira-color-surface) 65%, var(--kira-color-background));
+    color: var(--kira-color-text);
   }
 
   .workspace-preview__label {
     display: block;
+    max-width: 72px;
     overflow: hidden;
-    white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 63px;
+    white-space: nowrap;
   }
 
   .workspace-preview__item.preview-active:not(.preview-selected) {
-    border-color: var(--kira-color-border);
+    background: color-mix(in srgb, var(--kira-color-surface) 70%, var(--kira-color-background));
+    color: var(--kira-color-text);
   }
 
+  /* One strong state. No decorative outline, nested frame or offset shadow. */
   .workspace-preview__item.preview-selected {
     background: var(--kira-color-accent);
     color: var(--kira-color-on-accent);
-    border-color: var(--kira-color-text);
-    box-shadow: var(--kira-shadow-brutal);
-  }
-
-  .workspace-preview__selected-mark {
-    position: absolute;
-    bottom: 1px;
-    width: 8px;
-    height: 2px;
-    background: var(--kira-color-background);
-  }
-
-  .workspace-preview__item.preview-urgent:not(.preview-selected) {
-    border-color: var(--kira-color-accent);
-    box-shadow: var(--kira-shadow-brutal);
   }
 
   .workspace-preview__urgent-mark {
     position: absolute;
-    bottom: 1px;
-    width: 6px;
-    height: 3px;
+    bottom: 2px;
+    left: calc(50% - 4px);
+    width: 8px;
+    height: 2px;
     background: var(--kira-color-accent);
+    pointer-events: none;
+  }
+
+  .workspace-preview__item.preview-selected .workspace-preview__urgent-mark {
+    background: var(--kira-color-on-accent);
   }
 </style>

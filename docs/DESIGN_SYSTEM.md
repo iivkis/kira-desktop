@@ -9,8 +9,9 @@ Dock, notifications and other desktop surfaces remain future milestones.
 **Neo-Brutalism + Editorial Design + Expressive Minimalism** is the
 official visual language of Kira Desktop.
 
-- **Neo-Brutalism:** constructed blocks, explicit 2 px borders, meaningful
-  contrast and hard offset shadows. No generic glass or soft SaaS surfaces.
+- **Neo-Brutalism:** deliberate geometry, high-contrast states and visible
+  structure where it carries meaning. It does **not** mean borders and offset
+  shadows on every element.
 - **Editorial Design:** a strong type hierarchy (eyebrow, heading,
   description, metadata), measured spacing and deliberate grouping.
 - **Expressive Minimalism:** one canonical accent, every element functional,
@@ -18,30 +19,33 @@ official visual language of Kira Desktop.
 
 ### Visual rules
 
-1. Components look constructed, not blurred. Borders express structure.
-2. Typography carries hierarchy, especially in the Launcher.
-3. Keep the palette limited and do not introduce decorative gradient colors.
-4. Focus and selection are equally evident to pointer and keyboard users.
-5. Indicate state with shape or text as well as color.
-6. Preserve accessible text contrast, useful labels and real button semantics.
-7. Respect reduced-motion settings; avoid animation-only state changes.
+1. The Top Bar is one continuous surface, not several framed chips.
+2. Reserve the strongest orange fill for the selected workspace or list row.
+3. Make KIRA a typographic launcher control, without a nested icon frame.
+4. Core is a small status dot with readable text; clock is unboxed numerals.
+5. No ornamental center label, ruler lines, dividers or offset chip shadows.
+6. The Launcher gets one structural panel edge, not borders on every row.
+7. Keyboard focus remains as discoverable as pointer hover; state is not
+   communicated through color alone. Respect reduced motion.
 
 ### Component principles
 
-- **Top Bar:** a 42 px segmented control strip with structured separators,
-  a real KIRA Launcher button, workspace chips, Core badge and clock chip.
-- **Launcher:** native GTK overlay command panel with editorial header,
-  app search, icon shells, filtered catalog, selection and keycap footer.
-- **Workspace chips:** distinct selected, active, urgent and keyboard focus
-  states. Niri events remain the authoritative source.
-- **Core status:** compact high-signal editorial badge with text and indicator.
+- **Top Bar:** continuous 42 px strip: KIRA text button, workspace controls,
+  optional subdued title, Core indicator and plain tabular clock.
+- **Launcher:** one native GTK editorial panel, structured search and catalog
+  rows, one clear selected fill, restrained icon shells and keycap footer.
+- **Workspace controls:** orange filled selection only; hover/active/urgent
+  and visible keyboard focus remain distinct. Niri events are authoritative.
+- **Core status:** compact unboxed label with status dot. Offline and
+  connecting states remain explicit; connected status is exposed accessibly.
 
 ### Geometry and motion
 
-Use a 4 px rhythm (prefer 8 px), 6–14 px radii, strong 2 px borders,
-120–180 ms transitions and hard offset depth. All interactions must remain
-functional when animation is disabled. The native Shell's 42 px reserved
-top-bar height is unchanged.
+Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
+controls, and a single low-contrast panel edge when truly needed. Use
+120–180 ms transitions without positional jump effects. Never put offset
+shadows on Top Bar controls. All interactions work without motion. The
+native Shell's 42 px reserved top-bar height is unchanged.
 
 ## Kira Default · canonical palette
 
@@ -80,9 +84,9 @@ Derived tokens: `--kira-color-on-accent`,
 `--kira-color-text-secondary`, `--kira-color-surface-subtle`
 and `--kira-color-border` blend or alias these five colors.
 Layout and motion tokens begin with `--kira-space-`,
-`--kira-radius-` and `--kira-motion-`. Structural tokens
-`--kira-border-strong`, `--kira-shadow-brutal` and
-`--kira-shadow-panel` define the new offset-shadow language.
+`--kira-radius-` and `--kira-motion-`. Legacy structural tokens
+remain for compatibility but are **not** instructions to draw borders
+or hard shadows on every component.
 
 Example for a future Svelte widget:
 
@@ -123,14 +127,15 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
 
 ## Current component implementation
 
-- `frontend/src/App.svelte`: structured 42 px top bar, balanced left/center/right
-  regions, brand and local clock.
+- `frontend/src/App.svelte`: continuous 42 px Top Bar with one compact
+  launcher/workspace group and a quiet Core/clock group. The configurable
+  title sits next to workspaces rather than floating in the center.
 - `frontend/src/lib/components/WorkspacePreview.svelte`: real Niri workspaces
   with accessible clickable buttons, live focus/active/urgent state, and
   stable workspace IDs for the intentional `FocusWorkspace` action.
-- `frontend/src/lib/components/CoreStatus.svelte`: status badge with
-  text and a dot, tied to the existing real Core bridge; an accessible
-  `role="status"` communicates transitions.
+- `frontend/src/lib/components/CoreStatus.svelte`: unboxed status text
+  and dot, tied to the real Core bridge; accessible `role="status"`
+  announces transitions.
 - `frontend/src/style.css`: responsive layout and focus styling. The UI
   stays 42 px tall to match the native layer-shell reservation.
 - `frontend/index.html`: uses matching fallback colors before Svelte mounts.
@@ -153,9 +158,10 @@ nix develop --command task dev:preview
 ```
 
 Run a manual visual review in nested Niri at common display scales and
-sizes. The automated tests verify palette constants, color contrast,
-required token names and reduced-motion support. They do **not** replace
-a screenshot or interactive accessibility test of the WebKit surface.
+sizes. The automated tests verify palette, contrast, token names, reduced motion
+and structural rules (no framed brand/clock or ornamental center control).
+They do **not** replace an actual screenshot or interactive accessibility
+test of the WebKit surface.
 
 Next design-system milestones: shared interactive primitives, configurable KDL
 theme overrides, Dock, notifications and their consistent states.

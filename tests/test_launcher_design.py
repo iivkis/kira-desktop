@@ -33,6 +33,9 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("background: @kira_orange;", CSS)
         self.assertIn("row.kira-app-row:selected .kira-app-name,", CSS)
         self.assertIn("color: @kira_black;", CSS)
+        self.assertNotIn("box-shadow:", CSS)
+        self.assertNotIn("border: 2px", CSS)
+        self.assertIn("border: 1px solid", CSS)
 
     def test_visual_hierarchy_and_states(self):
         for selector in (
