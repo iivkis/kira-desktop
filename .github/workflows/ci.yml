@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lightweight checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+
+      - name: Set up Rust if workspace exists
+        if: ${{ hashFiles('Cargo.toml') != '' }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Set up Node.js if frontend exists
+        if: ${{ hashFiles('frontend/package.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies if frontend exists
+        if: ${{ hashFiles('frontend/package.json') != '' }}
+        run: npm ci --prefix frontend
+
+      - name: Check specification and applicable source modules
+        run: task check
+
+      - name: Build frontend if frontend exists
+        if: ${{ hashFiles('frontend/package.json') != '' }}
+        run: npm run build --prefix frontend
