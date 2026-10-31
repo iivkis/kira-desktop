@@ -1,0 +1,58 @@
+name: Bootstrap dependency lockfiles
+
+# One-time self-hosted repository maintenance; on workflow updates or manual dispatch.
+# The generated commit is produced by real cargo/npm/nix binaries, never invented hashes.
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/lockfiles.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lock:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate real lockfiles
+        run: |
+          set -euo pipefail
+          cargo generate-lockfile
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefix frontend
+          nix flake lock
+
+      - name: Verify checked-in dependency resolutions
+        run: |
+          set -euo pipefail
+          cargo metadata --locked --no-deps --format-version 1 >/dev/null
+          npm ci --prefix frontend --ignore-scripts --no-audit --no-fund
+          nix flake check --no-build
+
+      - name: Commit generated locks if changed
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Cargo.lock frontend/package-lock.json flake.lock
+          if git diff --cached --quiet; then
+            echo "Lockfiles unchanged"
+          else
+            git commit -m "chore: lock Cargo, npm and Nix dependencies"
+            git push origin HEAD:main
+          fi

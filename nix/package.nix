@@ -51,6 +51,11 @@ rustPlatform.buildRustPackage {
     cp -r "${frontend}/share/kira-desktop/ui/." "$out/share/kira-desktop/ui/"
   '';
 
+  # wrapGAppsHook4 exposes the packaged static UI directory at runtime.
+  preFixup = ''
+    gappsWrapperArgs+=(--set KIRA_UI_DIR "$out/share/kira-desktop/ui")
+  '';
+
   meta = {
     description = "Modular Niri desktop shell for NixOS";
     platforms = lib.platforms.linux;

@@ -41,7 +41,7 @@ One JSON-RPC 2.0 request per line, one response per line over a Unix Domain Sock
 
 ## Complete the Nix package
 
-The first source commit deliberately does not fabricate dependency hashes or lockfiles. Before enabling `packages.default`:
+The lockfile bootstrap workflow at `.github/workflows/lockfiles.yml` runs real Cargo, npm and Nix lockfile generators, verifies metadata and commits their outputs if GitHub Actions has write access. The Nix package still needs a real `npmDepsHash` and native build testing. Before validating `packages.default`:
 
 1. Run `cargo generate-lockfile` with a real Rust toolchain and commit `Cargo.lock`.
 2. Run `npm install --package-lock-only --prefix frontend` with a real npm registry, test `npm ci --prefix frontend`, and commit `frontend/package-lock.json`.
