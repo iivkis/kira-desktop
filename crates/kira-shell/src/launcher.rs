@@ -131,12 +131,17 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
 
     let search = gtk::SearchEntry::new();
     search.set_placeholder_text(Some("Search installed applications…"));
+    search.set_max_length(128);
     search.set_margin_start(10);
     search.set_margin_end(10);
     container.append(&search);
 
     let list = gtk::ListBox::new();
     list.set_selection_mode(gtk::SelectionMode::Single);
+    let empty = gtk::Label::new(Some("No matching applications"));
+    empty.set_margin_top(24);
+    empty.set_margin_bottom(24);
+    list.set_placeholder(Some(&empty));
     list.set_activate_on_single_click(true);
     let scroll = gtk::ScrolledWindow::new();
     scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
@@ -150,6 +155,14 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
     footer.set_margin_bottom(12);
     container.append(&footer);
     popup.set_child(Some(&container));
+
+    let feedback = gtk::Label::new(None);
+    feedback.set_xalign(0.0);
+    feedback.set_wrap(true);
+    feedback.set_margin_start(14);
+    feedback.set_margin_end(14);
+    feedback.set_visible(false);
+    container.append(&feedback);
 
     // One read of the app catalog when the popup is created. GTK/GIO
     // already interprets XDG desktop IDs, visibility and Exec field codes.
@@ -168,13 +181,18 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
     {
         let filtered = filtered.clone();
         let popup = popup.clone();
+        let feedback = feedback.clone();
         list.connect_row_activated(move |_, row| {
             let app = filtered.borrow().get(row.index() as usize).cloned();
             if let Some(app) = app {
                 // GIO launch semantics, never sh -c, and ONLY a catalog entry.
                 match app.launch(&[], None::<&gtk::gio::AppLaunchContext>) {
                     Ok(()) => popup.hide(),
-                    Err(error) => eprintln!("kira-launcher: app launch failed: {error}"),
+                    Err(error) => {
+                        eprintln!("kira-launcher: app launch failed: {error}");
+                        feedback.set_text(&format!("Could not start application: {error}"));
+                        feedback.set_visible(true);
+                    },
                 }
             }
         });
