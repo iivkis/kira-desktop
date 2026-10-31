@@ -20,7 +20,9 @@ fn installed_apps() -> Vec<App> {
             let search = format!(
                 "{} {}",
                 info.display_name(),
-                info.description().map(|value| value.to_string()).unwrap_or_default()
+                info.description()
+                    .map(|value| value.to_string())
+                    .unwrap_or_default()
             )
             .to_lowercase();
             App { info, search }
@@ -45,7 +47,12 @@ fn visible_rows(list: &gtk::ListBox, count: usize) -> Vec<gtk::ListBoxRow> {
         .collect()
 }
 
-fn launch(apps: &[App], row: &gtk::ListBoxRow, window: &gtk::ApplicationWindow, error: &gtk::Label) {
+fn launch(
+    apps: &[App],
+    row: &gtk::ListBoxRow,
+    window: &gtk::ApplicationWindow,
+    error: &gtk::Label,
+) {
     let Ok(index) = usize::try_from(row.index()) else {
         return;
     };
@@ -53,7 +60,10 @@ fn launch(apps: &[App], row: &gtk::ListBoxRow, window: &gtk::ApplicationWindow, 
         match app.info.launch(&[], None::<&gio::AppLaunchContext>) {
             Ok(()) => window.close(),
             Err(failure) => {
-                error.set_text(&format!("Cannot open {}: {failure}", app.info.display_name()));
+                error.set_text(&format!(
+                    "Cannot open {}: {failure}",
+                    app.info.display_name()
+                ));
                 error.set_visible(true);
             }
         }
@@ -110,7 +120,10 @@ pub fn show(application: &gtk::Application) {
     window.set_child(Some(&frame));
     card.append(&label("KIRA / DESKTOP", "kira-eyebrow"));
     card.append(&label("Applications", "kira-heading"));
-    card.append(&label("Find and open installed applications.", "kira-subheading"));
+    card.append(&label(
+        "Find and open installed applications.",
+        "kira-subheading",
+    ));
 
     let header = gtk::Box::new(gtk::Orientation::Horizontal, 8);
     header.add_css_class("kira-catalog-header");
@@ -148,8 +161,16 @@ pub fn show(application: &gtk::Application) {
         let description = gtk::Box::new(gtk::Orientation::Vertical, 3);
         description.set_hexpand(true);
         description.append(&label(&app.info.display_name(), "kira-app-name"));
-        let secondary = app.info.description().map(|value| value.to_string()).unwrap_or_default();
-        let secondary = if secondary.trim().is_empty() { "Installed application" } else { secondary.trim() };
+        let secondary = app
+            .info
+            .description()
+            .map(|value| value.to_string())
+            .unwrap_or_default();
+        let secondary = if secondary.trim().is_empty() {
+            "Installed application"
+        } else {
+            secondary.trim()
+        };
         description.append(&label(secondary, "kira-app-detail"));
         content.append(&description);
         row.set_child(Some(&content));
@@ -221,9 +242,9 @@ pub fn show(application: &gtk::Application) {
         gtk::gdk::Key::Down | gtk::gdk::Key::Up => {
             let visible = visible_rows(&key_list, key_apps.len());
             if !visible.is_empty() {
-                let current = key_list.selected_row().and_then(|selected| {
-                    visible.iter().position(|row| row == &selected)
-                });
+                let current = key_list
+                    .selected_row()
+                    .and_then(|selected| visible.iter().position(|row| row == &selected));
                 let next = match (current, key) {
                     (Some(index), gtk::gdk::Key::Down) => (index + 1).min(visible.len() - 1),
                     (Some(index), _) => index.saturating_sub(1),
