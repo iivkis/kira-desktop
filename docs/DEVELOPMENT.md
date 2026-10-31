@@ -204,7 +204,7 @@ The SDK correlates numeric request IDs, applies timeouts, and reports disconnect
 {"jsonrpc":"2.0","id":1,"result":"pong"}
 ```
 
-The IPC transport uses newline-delimited JSON. The bootstrap `get_state` response contains version and status only. Niri workspace state is now updated from the Core EventStream; a typed push-subscription to Svelte is not yet implemented. The Core socket is intended for the trusted local user session only.
+The IPC transport uses newline-delimited JSON. The bootstrap `get_state` response contains version and status only. Niri workspaces now update through Core's Niri EventStream and a persistent read-only Core → Shell subscription, forwarded as typed `kira:workspaces` WebKit DOM events to Svelte. The Core socket is intended for the trusted local user session only.
 
 ## Read-only Niri workspaces (Stage 1 first increment)
 
@@ -262,6 +262,25 @@ uses the fake `[1, 2, 3]` visual demo. **Core listens to events**;
 the frontend receives a pushed snapshot whenever Core detects a change.
 Core-to-UI workspace subscriptions are now implemented; updates use a persistent read-only Core socket and WebKit DOM events.
 
+### Immediate Core → Shell → Svelte workspace updates
+
+The shell opens exactly one persistent Core IPC subscription with the internal
+`subscribe_workspaces` request (newline-delimited JSON-RPC, id `0`). Core
+sends an initial typed `WorkspaceState` snapshot, then another frame each
+time Niri changes its workspace state. The GTK Shell reads the socket on a
+worker thread and dispatches a `kira:workspaces` DOM CustomEvent on its
+main thread. Svelte subscribes on mount, unsubscribes on cleanup, and makes
+one initial `get_workspaces` request only to cover any startup race.
+
+**There is no 1.5-second Svelte polling timer anymore.** Core reconnects
+to Niri after a disconnect; Shell reconnects to Core and pushes
+`connected:false` while unavailable so the UI does not retain stale state.
+`subscribe_workspaces` is an internal Core socket operation and is *not*
+exposed to WebKit's JS request allowlist. Kira never sends Niri `Action`.
+
+This removes the artificial 1–2 second lag. Actual latency and keyboard
+focus transitions still require an interactive NixOS/Wayland check.
+
 ### Smoke-test nested Niri workspace state
 
 ```sh
@@ -288,9 +307,9 @@ The generated **nested-only** Niri KDL uses `Mod`, which resolves to
 - Press **Alt+2** to focus workspace 2 and **Alt+T** to open another
   terminal there; **Alt+1/2/3** switches workspace.
 - For moving the **focused window**, press **Alt+Ctrl+2** (or **Alt+Ctrl+1** to move it back).
-  The bindings use `move-window-to-workspace focus=false 2` so focus
-  follows the moved window. Switch between workspaces with Alt+1/2
-  to verify Kira's focused index.
+  The bindings use `move-window-to-workspace focus=false N`: the window
+  moves, but the focus stays on the original workspace. Switch manually
+  with **Alt+1/2** to see the moved window and verify Kira's focus.
 - **Alt+Shift+Q** exits nested Niri and cleans up the preview.
 
 Niri dynamically creates and removes empty workspaces; leave a
