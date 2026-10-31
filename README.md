@@ -152,11 +152,12 @@ preview generates a temporary editable Kira config for experimentation.
 
 ## Real Niri workspaces (Stage 1 draft)
 
-The Top Bar now obtains **real, read-only** workspace data through
+The Top Bar obtains **real Niri workspace state** through
 `NIRI_SOCKET` → Rust Core `EventStream` → typed `get_workspaces` JSON-RPC →
 GTK WebKit bridge → Svelte. Workspace IDs are strings (safe for Niri's u64),
-and focus, visibility and urgency are separate flags. No Niri
-workspace-switching actions are sent by Kira.
+and focus, visibility and urgency are separate flags. Clicking a workspace
+chip sends only the validated Niri `FocusWorkspace` action by stable ID;
+keyboard shortcuts continue to work independently.
 
 With no Niri IPC connection, the UI shows `NIRI OFFLINE` instead of fake
 workspaces. The Core reconnects automatically after disconnection.
@@ -198,6 +199,6 @@ are not substitutes for a real visual review. See
 
 ## Current limitations
 
-The panel can communicate with Core through a typed request/response API and display its connection status, but workspace indicators are mock UI: Niri IPC integration, KDL hot reload, event subscriptions, user-overridable themes, docks, and third-party widgets remain unimplemented.
+The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
 
 This project is not ready to replace a working desktop environment.
