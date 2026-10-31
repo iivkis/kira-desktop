@@ -24,6 +24,9 @@ class PreviewTests(unittest.TestCase):
         self.assertIn("spawn-at-startup", config)
         self.assertIn('"report"', config)
         self.assertIn("Alt+Shift+Q", config)
+        self.assertIn('Alt+Shift+Return { spawn "foot"; }', config)
+        self.assertIn("Alt+Shift+2 { focus-workspace 2; }", config)
+        self.assertIn("Alt+Shift+Ctrl+2 { move-window-to-workspace 2; }", config)
         self.assertNotIn("waybar", config)
         self.assertNotIn("--session", config)
 
