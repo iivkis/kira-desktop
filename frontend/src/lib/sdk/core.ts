@@ -94,7 +94,7 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge } };
   }
 }
 
@@ -104,6 +104,18 @@ export function openLauncher(): boolean {
   if (!channel) return false;
   channel.postMessage('open');
   return true;
+}
+
+/** Toggle the native calendar overlay. This bridge accepts one literal command. */
+export function toggleCalendar(): boolean {
+  const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kiraCalendar;
+  if (!channel) return false;
+  try {
+    channel.postMessage('toggle');
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 let nextId = 0;

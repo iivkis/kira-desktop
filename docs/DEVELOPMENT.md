@@ -25,8 +25,11 @@ component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
 focus, Core state and live KDL config updates remain behavioral concerns,
 not CSS assumptions.
 
-The **native GTK4 Launcher** cannot use Tailwind; its
-`crates/kira-shell/src/launcher.css` retains a matching GTK theme.
+The native **GTK4 Launcher and Calendar** cannot use Tailwind; their
+`crates/kira-shell/src/launcher.css` and `calendar.css` retain
+matching GTK themes. The calendar is an independent, non-exclusive layer
+surface toggled through the narrow `kiraCalendar` WebKit channel, so
+opening it never changes the 42px Niri reservation.
 The WebKit host continues to embed a single production CSS file, including
 Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 

@@ -1,5 +1,6 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
+mod calendar;
 mod launcher;
 mod ui_assets;
 use std::env;
@@ -228,6 +229,16 @@ fn main() {
             }
         });
         assert!(manager.register_script_message_handler("kiraLauncher", None));
+
+        // Separate, fixed-purpose UI control. Never interpret arbitrary JS
+        // messages or expand the Core JSON-RPC method allowlist.
+        let calendar_application = app.clone();
+        manager.connect_script_message_received(Some("kiraCalendar"), move |_, value| {
+            if value.to_string() == "toggle" {
+                calendar::toggle(&calendar_application);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraCalendar", None));
 
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");

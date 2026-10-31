@@ -42,6 +42,15 @@ official visual language of Kira Desktop.
   The right zone is a condensed single line: combined Core + Niri health,
   subtle divider and local time, all sharing one optical vertical center.
   Date and diagnostic details are available via native title tooltips.
+  The time is a semantic button that toggles a separate native calendar overlay;
+  the Top Bar remains 42 px tall.
+- **Calendar overlay:** top-right native GTK layer surface with no exclusive
+  zone. Black time hero, Prussian Blue month/day selector and Black detail
+  footer; the time updates live, the built-in GTK date grid supports month/year
+  navigation and weeks, and selecting a date exposes ISO week/day-of-year.
+  Today resets the selection; Copy ISO Date writes to clipboard only on click.
+  Clicking time again or pressing Escape closes; focus loss also dismisses
+  after activation. The calendar and Launcher close each other when opened.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   Search, catalog, stable application icons, and an orange selection rail
   communicate function without painting the entire row orange.
@@ -165,6 +174,10 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
   aliases and minimal global styles. Responsive composition and focus rules
   live in Svelte utility classes; the native 42 px reservation is unchanged.
 - `frontend/index.html`: uses matching fallback colors before Svelte mounts.
+- `crates/kira-shell/src/calendar.rs` and `calendar.css`: native time/date
+  overlay, live timezone-aware clock and navigable date grid. The dedicated
+  WebKit `kiraCalendar` bridge accepts exactly the literal `toggle`;
+  it never forwards commands to Core.
 - `crates/kira-shell/src/launcher.rs` and `launcher.css`: GTK layer-shell
   editorial introduction, Blue workbench, Gio application catalog, orange
   rail selection, pointer/keyboard activation and canonical five-color theme.

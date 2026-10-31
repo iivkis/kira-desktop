@@ -48,6 +48,10 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('configState.config.show_seconds');
     expect(markup).toContain('formatClock(now, undefined, configState.config.show_seconds)');
     expect(markup).toContain('focus-visible:outline-kira-accent');
+    expect(markup).toContain('onclick={activateCalendar}');
+    expect(markup).toContain('aria-haspopup="dialog"');
+    expect(markup).toContain('<time class=');
+    expect(markup).toContain('CALENDAR OFFLINE');
   });
 
   it('preserves accessible live workspace and Core states without component CSS', () => {

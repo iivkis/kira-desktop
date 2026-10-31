@@ -91,6 +91,19 @@ fn install_style() {
     });
 }
 
+/// Close only the Launcher when switching native overlays.
+pub fn dismiss(application: &gtk::Application) -> bool {
+    if let Some(window) = application
+        .windows()
+        .into_iter()
+        .find(|window| window.title().as_deref() == Some("Kira Launcher"))
+    {
+        window.close();
+        return true;
+    }
+    false
+}
+
 /// Show a single keyboard-accessible layer-shell overlay without reserving space.
 pub fn show(application: &gtk::Application) {
     if let Some(existing) = application
@@ -101,6 +114,7 @@ pub fn show(application: &gtk::Application) {
         existing.present();
         return;
     }
+    crate::calendar::dismiss(application);
     install_style();
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some("Kira Launcher"));

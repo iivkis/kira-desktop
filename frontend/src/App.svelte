@@ -3,7 +3,7 @@
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { openLauncher, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -12,6 +12,11 @@
   let workspacePending = $state(false);
   let workspaceActionError = $state<string | null>(null);
   let launcherUnavailable = $state(false);
+  let calendarUnavailable = $state(false);
+
+  function activateCalendar() {
+    calendarUnavailable = !toggleCalendar();
+  }
 
   function activateLauncher() {
     launcherUnavailable = !openLauncher();
@@ -160,13 +165,20 @@
       niriConnected={workspaceState?.connected ?? null}
     />
     <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
-    <time
-      class="shrink-0 whitespace-nowrap text-[13px] leading-none font-bold tracking-[0.03em] text-kira-text tabular-nums max-[540px]:text-xs"
-      datetime={now.toISOString()}
-      title={new Intl.DateTimeFormat(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(now)}
-      aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}
+    {#if calendarUnavailable}
+      <span class="shrink-0 text-[10px] font-bold text-kira-accent" role="status">CALENDAR OFFLINE</span>
+    {/if}
+    <button
+      type="button"
+      class="shrink-0 cursor-pointer rounded-sm border-0 bg-transparent px-1 py-2 leading-none text-kira-text transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
+      title="Open calendar and date details"
+      aria-label={'Open calendar, local time ' + formatClock(now, undefined, configState.config.show_seconds)}
+      aria-haspopup="dialog"
+      onclick={activateCalendar}
     >
-      {formatClock(now, undefined, configState.config.show_seconds)}
-    </time>
+      <time class="whitespace-nowrap text-[13px] font-bold tracking-[0.03em] tabular-nums max-[540px]:text-xs" datetime={now.toISOString()}>
+        {formatClock(now, undefined, configState.config.show_seconds)}
+      </time>
+    </button>
   </section>
 </main>

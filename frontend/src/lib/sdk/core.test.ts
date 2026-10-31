@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -8,6 +8,23 @@ afterEach(() => {
 });
 
 describe('Core SDK JSON-RPC bridge', () => {
+  it('toggles the calendar via a dedicated fixed-purpose host bridge', () => {
+    expect(toggleCalendar()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendar: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleCalendar()).toBe(true);
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('toggle');
+  });
+
+  it('does not claim calendar activation when the bridge throws', () => {
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendar: { postMessage: () => { throw new Error('closed'); } } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleCalendar()).toBe(false);
+  });
+
   it('rejects outside the host bridge', async () => {
     await expect(request('ping')).rejects.toThrow('bridge unavailable');
   });
