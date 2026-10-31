@@ -38,10 +38,18 @@ let
     '';
   };
 
-  # cleanCargoSource excludes unrelated frontend/docs changes from the Rust
-  # derivation. Crane creates a dummy source tree for buildDepsOnly, so edits
-  # to .rs files do NOT invalidate compiled GTK/WebKit/GObject Rust crates.
-  rustSrc = craneLib.cleanCargoSource ../.;
+  # Keep Rust/Cargo files plus the GTK CSS embedded by include_str!.
+  # cleanCargoSource alone drops *.css, breaking the packaged Shell even
+  # though local cargo build and fast Core/frontend CI pass. Keep the filter
+  # exact to avoid rebuilding native dependencies for unrelated UI/docs.
+  # Crane still builds a dummy dependency source from Cargo manifests only.
+  rustSrc = lib.cleanSourceWith {
+    src = ../.;
+    name = "kira-desktop-rust-source";
+    filter = path: type:
+      (craneLib.filterCargoSources path type)
+      || (lib.hasSuffix "/crates/kira-shell/src/launcher.css" (toString path));
+  };
   commonRustArgs = {
     src = rustSrc;
     inherit version;
