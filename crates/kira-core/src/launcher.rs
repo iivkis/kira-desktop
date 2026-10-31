@@ -136,9 +136,15 @@ fn parse_entry(content: &str, locales: &[String], path_env: Option<&OsStr>) -> O
         let (key, value) = line.split_once('=')?;
         keys.insert(key.trim(), value.trim());
     }
-    if keys.get("Type") != Some(&"Application") { return None; }
+    // A minimal Hidden=true entry is a deletion marker per the XDG spec.
     let hidden = bool_field(keys.get("Hidden").copied());
-    let visible = !hidden && !bool_field(keys.get("NoDisplay").copied());
+    if hidden {
+        return Some(DesktopEntry {
+            hidden: true, visible: false, name: String::new(), icon: None,
+        });
+    }
+    if keys.get("Type") != Some(&"Application") { return None; }
+    let visible = !bool_field(keys.get("NoDisplay").copied());
     let has_exec = keys.get("Exec").is_some_and(|value| !value.is_empty());
     let dbus = bool_field(keys.get("DBusActivatable").copied());
     if !hidden && !has_exec && !dbus { return None; }
