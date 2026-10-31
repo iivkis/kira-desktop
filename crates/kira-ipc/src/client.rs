@@ -44,6 +44,47 @@ pub fn call(socket: &Path, request: &RpcRequest) -> io::Result<RpcResponse> {
     Ok(response)
 }
 
+/// Subscribe to live read-only workspace snapshots over one persistent
+/// Core connection. Each JSON-RPC frame repeats the id of the subscription
+/// request; the callback is invoked on the CALLER'S thread, not GTK's loop.
+/// Returns on disconnect so the caller can reconnect and mark the UI offline.
+pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
+    socket: &Path,
+    mut on_state: F,
+) -> io::Result<()> {
+    let mut stream = UnixStream::connect(socket)?;
+    stream.set_write_timeout(Some(Duration::from_secs(2)))?;
+    let request = RpcRequest {
+        jsonrpc: crate::PROTOCOL_VERSION.into(),
+        id: 0,
+        method: "subscribe_workspaces".into(),
+    };
+    serde_json::to_writer(&mut stream, &request)?;
+    stream.write_all(b"\n")?;
+    stream.flush()?;
+
+    let mut reader = BufReader::new(stream);
+    loop {
+        let mut line = Vec::new();
+        reader.by_ref().take(MAX_RESPONSE_BYTES + 1).read_until(b'\n', &mut line)?;
+        if line.is_empty() {
+            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Core subscription closed"));
+        }
+        if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
+            return Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid workspace frame"));
+        }
+        let reply: RpcResponse = serde_json::from_slice(&line)?;
+        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some() {
+            return Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid workspace reply"));
+        }
+        let state = reply.result.ok_or_else(|| {
+            io::Error::new(io::ErrorKind::InvalidData, "Workspace result missing")
+        })?;
+        let state: crate::WorkspaceState = serde_json::from_value(state)?;
+        on_state(state);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -80,6 +121,37 @@ mod tests {
         )
         .unwrap();
         assert_eq!(response.result, Some(serde_json::json!("pong")));
+        server.join().unwrap();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
+    }
+
+    #[test]
+    fn live_workspace_subscription_receives_multiple_snapshots() {
+        let dir = std::env::temp_dir().join(format!("kira-sub-client-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("ipc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut raw = String::new();
+            reader.read_line(&mut raw).unwrap();
+            let request: RpcRequest = serde_json::from_str(&raw).unwrap();
+            assert_eq!(request.method, "subscribe_workspaces");
+            assert_eq!(request.id, 0);
+            let mut stream = reader.into_inner();
+            for state in [false, true] {
+                let reply = crate::RpcResponse::success(0, serde_json::json!({
+                    "connected": state, "workspaces": []
+                }));
+                serde_json::to_writer(&mut stream, &reply).unwrap();
+                stream.write_all(b"\n").unwrap();
+            }
+        });
+        let mut received = Vec::new();
+        assert!(subscribe_workspaces(&path, |state| received.push(state.connected)).is_err());
+        assert_eq!(received, vec![false, true]);
         server.join().unwrap();
         std::fs::remove_file(&path).unwrap();
         std::fs::remove_dir(&dir).unwrap();
