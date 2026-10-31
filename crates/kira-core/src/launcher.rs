@@ -291,8 +291,19 @@ fn scan(roots: &[PathBuf], locales: &[String], path_env: Option<&OsStr>) -> Vec<
             .cmp(&b.app.name.to_lowercase())
             .then(a.app.id.cmp(&b.app.id))
     });
-    all.truncate(MAX_APPS);
-    all
+    // The socket client hard-limits replies to 64 KiB. Keep the complete
+    // JSON-RPC response comfortably below that bound, including escaped text.
+    let mut bounded = Vec::new();
+    let mut response_bytes = 256;
+    for item in all {
+        let record_bytes = serde_json::to_vec(&item.app).map_or(0, |json| json.len() + 1);
+        if bounded.len() >= MAX_APPS || response_bytes + record_bytes > 48 * 1024 {
+            break;
+        }
+        response_bytes += record_bytes;
+        bounded.push(item);
+    }
+    bounded
 }
 
 pub fn catalog() -> Vec<DesktopApplication> {
