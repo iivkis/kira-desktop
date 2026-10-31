@@ -67,7 +67,78 @@ nix build
 ./result/bin/kira-shell # terminal 2
 ```
 
-The native Nix package build is tested in CI; verify appearance and behavior manually under Niri.
+The native Nix package build is tested in CI; verify appearance and behavior manually under Niri. The user confirmed that the nested packaged QA smoke passed locally (Core bootstrap, WebKit/Svelte DOM, clean shutdown), but visual screenshot review remains pending.
+
+## Build caching and release iteration
+
+**Why the previous release build was slow:** the old
+`rustPlatform.buildRustPackage` compiled third-party Rust bindings (GTK4,
+JavaScriptCore/WebKitGTK, Soup3) and Kira's own Rust code in one derivation.
+A change to a Rust file could invalidate that whole build and trigger the
+expensive compilation again. The runtime GTK/WebKit C libraries themselves
+are normally prebuilt Nix store inputs; the `Compiling gtk4 v...` log is the
+**Rust crate**.
+
+The packaged build is now split with pinned **Crane** into:
+
+1. `cargoArtifacts`: compiles third-party Rust crates from
+   `Cargo.toml`/`Cargo.lock` using a dummy workspace. Editing Kira's
+   `.rs` files or Svelte files does **not** invalidate this output.
+2. `rustBinaries`: builds `kira-core` and `kira-shell` from
+   `crates/` against the cached artifacts. It is not influenced by
+   Svelte-only changes.
+3. `frontend`: independent fixed-hash npm dependency fetch and Vite bundle.
+4. Final `kira-desktop`: inexpensive output assembly and GTK wrapper
+   pointing `KIRA_UI_DIR` at bundled UI.
+
+To run a fast, **incremental local** smoke without Nix release compilation:
+
+```sh
+nix develop --command task qa:visual:fast
+```
+
+For true release QA:
+
+```sh
+nix develop --command task qa:visual:release
+```
+
+The first Nix build after this packaging change must compile the new
+dependency derivation **once**, even if old `buildRustPackage` outputs are
+already in the Nix store. Subsequent changes to Kira's Rust sources should
+reuse it if `Cargo.lock`, manifests, native library inputs, toolchain and
+Crane lock remain the same. A Nix garbage collection removing the derivation
+can force a rebuild, so avoid `nix store gc` while actively iterating.
+
+Use `nix build .#default -L` to inspect what compiles. To measure
+derivation reuse, inspect:
+
+```sh
+nix path-info --derivation .#default
+nix build .#default --dry-run
+```
+
+Nix stores build outputs by hashes; Cargo's local `target/debug` and
+Nix's `/nix/store` are **separate caches**, and are not automatically
+interchangeable. An exact release derivation should be a no-op on subsequent
+runs; a changed dependency set or Nix toolchain legitimately requires a
+fresh dependency compilation.
+
+### Optional shared CI / multi-machine cache
+
+Nix's local store persists on the same machine, but GitHub-hosted runners
+are ephemeral. To share compiled dependency derivations between CI runs,
+an optional **Cachix** cache can be enabled by configuring:
+
+- Repository variable `KIRA_CACHIX_NAME`: existing Cachix cache name.
+- Repository secret `CACHIX_AUTH_TOKEN`: write token for that cache.
+- On a trusted local NixOS machine, configure the same cache as an
+  explicitly trusted binary substituter using Cachix's published instructions.
+
+The GitHub workflow only enables this when the variable is configured.
+Forked pull requests do not upload packages. Do not paste cache tokens
+into source files or commit `nix.conf` changes with private keys.
+Without a shared cache, dependency reuse remains local to each Nix store.
 
 ## Developer tasks
 
