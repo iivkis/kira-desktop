@@ -23,6 +23,23 @@ describe('Core SDK JSON-RPC bridge', () => {
     await expect(result).resolves.toEqual({ version: '0.1.0', status: 'bootstrap' });
   });
 
+  it('requests typed real Niri workspaces with JS-safe IDs', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const result = request('get_workspaces');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number; method: string };
+    expect(payload.method).toBe('get_workspaces');
+    const workspace = {
+      id: '18446744073709551615', idx: 2, name: 'code', output: 'DP-1',
+      is_active: true, is_focused: false, is_urgent: true,
+    };
+    deliverReply({
+      jsonrpc: '2.0', id: payload.id,
+      result: { connected: true, workspaces: [workspace] },
+    });
+    await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
+  });
+
   it('rejects Core errors', async () => {
     const postMessage = vi.fn();
     globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
