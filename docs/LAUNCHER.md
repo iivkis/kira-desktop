@@ -47,9 +47,8 @@ nix develop --command task shell:check
 nix build .#default
 ```
 
-For interactive testing, use the existing **nested Niri** preview with a
-private D-Bus session (provided by the Taskfile's `dbus-run-session` wrapper);
-do not replace or modify the running host's Niri configuration:
+For interactive testing, use only the existing **isolated nested Niri**
+preview; do not replace or modify the running host's Niri configuration:
 
 ```sh
 nix develop --command task dev:preview
@@ -63,7 +62,4 @@ checks must never activate a desktop entry or launch a process from a fixture.
 
 The native GTK window still requires manual nested-Niri QA on the real
 compositor and display environment; Rust/TS unit tests cannot certify
-Wayland placement or keyboard grab behavior. A private D-Bus session
-reduces host-window leakage but is not a full application sandbox: software
-that reuses an existing process or profile can still create a window in
-the host session. Prefer a harmless standalone terminal for placement QA.
+Wayland placement or keyboard grab behavior.
