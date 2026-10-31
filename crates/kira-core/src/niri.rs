@@ -9,7 +9,7 @@ use std::time::Duration;
 
 use kira_ipc::{Workspace, WorkspaceState};
 use serde_json::Value;
-use tokio::io::{AsyncBufRead, AsyncWriteExt, BufReader};
+use tokio::io::{AsyncWriteExt, BufReader};
 use tokio::net::UnixStream;
 use tokio::sync::watch;
 
@@ -175,10 +175,10 @@ async fn run_stream(socket: &Path, sender: &watch::Sender<WorkspaceState>) -> io
 /// Invalid paths are never substituted with a host/default compositor socket.
 pub async fn monitor(socket: PathBuf, sender: watch::Sender<WorkspaceState>) {
     loop {
-        if std::fs::metadata(&socket).is_ok_and(|metadata| metadata.file_type().is_socket()) {
-            if let Err(error) = run_stream(&socket, &sender).await {
-                eprintln!("kira-core: Niri IPC unavailable: {error}");
-            }
+        if std::fs::metadata(&socket).is_ok_and(|metadata| metadata.file_type().is_socket())
+            && let Err(error) = run_stream(&socket, &sender).await
+        {
+            eprintln!("kira-core: Niri IPC unavailable: {error}");
         }
         // Never keep stale workspace state after an IPC failure.
         sender.send_replace(WorkspaceState::default());
