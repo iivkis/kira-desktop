@@ -133,6 +133,20 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
+## Application Launcher (Stage 3 draft)
+
+Click the **KIRA** logo in Top Bar to open a floating, rounded GTK
+launcher with a polished Black/Bordeaux/Taupe theme, real icons, descriptive
+rows and a keyboard-friendly search. Search installed XDG desktop entries, use Up/Down
+and Enter to select and launch, Escape to close. The native Shell uses
+GIO `AppInfo` for desktop-entry visibility and launching, never
+`sh -c` or executable strings supplied by Svelte. The launcher
+preserves the five-color default palette.
+
+The first implementation is deliberately **native GTK**; migrating
+the catalog to Core and the UI to Svelte is planned separately.
+See [docs/LAUNCHER.md](docs/LAUNCHER.md) for usage and nested Niri QA.
+
 ## Default theme: Black, Bordeaux and Taupe
 
 The built-in **Kira Default** theme now uses the project's five-color palette:

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate } from './core';
+import { deliverReply, request, focusWorkspace, toggleLauncher, onWorkspaceUpdate, onConfigUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -38,6 +38,17 @@ describe('Core SDK JSON-RPC bridge', () => {
       result: { connected: true, workspaces: [workspace] },
     });
     await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
+  });
+
+  it('only asks native Shell to toggle the application picker without command data', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const promise = toggleLauncher();
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number; method: string; params?: unknown };
+    expect(payload.method).toBe('toggle_launcher');
+    expect(payload).not.toHaveProperty('params');
+    deliverReply({ jsonrpc: '2.0', id: payload.id, result: true });
+    await expect(promise).resolves.toBeUndefined();
   });
 
   it('sends a single focus action by stable string id, never index or unsafe JS number', async () => {

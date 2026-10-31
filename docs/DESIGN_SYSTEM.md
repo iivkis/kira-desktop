@@ -91,6 +91,36 @@ at least 3:1 as applicable under WCAG. Do not indicate focus by color alone:
 workspaces also use a mark, labels and `aria-pressed`.
 Provide visible keyboard outlines and honor reduced-motion preferences.
 
+## Premium Launcher / native widgets (Stage 3A)
+
+The native GTK Launcher in `crates/kira-shell/src/launcher.rs` uses a
+separate, scoped `launcher.css` sheet. It is a floating card rather than
+a solid black rectangle: rounded 20px corners, thin taupe outline,
+restrained shadow, Burgundy-to-Black translucent surface and generous
+interior spacing. GTK itself provides rendering of the installed app
+icons; unknown icons use a generic themed fallback.
+
+- Header hierarchy: small **KIRA / DESKTOP** eyebrow, large
+  **Applications** title, brief supporting line.
+- Search: a single 47px field, subdued Bordeaux surface and visible
+  Taupe focus ring, with search focus preserved during arrow navigation.
+- Results: 43px icon tile, strong primary app name, quiet secondary
+  description/desktop identifier, selected Taupe pill with Black text.
+- Empty/error states: useful message instead of blank content or a
+  debug console. Error stays inside the popup and does not crash Shell.
+- Footer: small keyboard shortcut keycaps; no continuous diagnostic text.
+- The Top Bar adopts similarly quiet rounded capsule brand/clock/Core
+  and workspace controls without changing its 42px exclusive zone.
+- Content/window creation is lazy on the first explicit user action.
+  Only selecting a previously enumerated GIO AppInfo launches an app.
+
+The only literal color bases are the five user-selected HEX values.
+Derived alpha layers and gradients reuse those colors. Changes to GTK
+styling must be scoped to the launcher to avoid recoloring host widgets.
+`tests/test_launcher_design.py` provides a structural contract; it
+cannot prove visual quality or accessibility without the real nested Niri
+screenshot and keyboard/mouse QA.
+
 ## Current component implementation
 
 - `frontend/src/App.svelte`: premium 42 px top bar, balanced left/center/right
@@ -119,5 +149,6 @@ required token names and reduced-motion support. They do **not** replace
 a screenshot or interactive accessibility test of the WebKit surface.
 
 Next design-system milestones: shared interactive primitives, complete
-keyboard accessibility, configurable KDL theme overrides, Launcher, Dock,
-notifications, and their consistent states.
+keyboard accessibility, configurable KDL theme overrides, a dedicated
+Svelte launcher and typed Core app catalog, Dock, notifications, and their
+consistent states.

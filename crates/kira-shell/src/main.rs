@@ -1,5 +1,6 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
+mod launcher;
 mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};
@@ -20,6 +21,7 @@ enum ShellDelivery {
     Rpc(String),
     Workspaces(WorkspaceState),
     Config(ConfigState),
+    LauncherToggle,
 }
 
 fn ui_index() -> PathBuf {
@@ -40,6 +42,14 @@ fn core_socket() -> Option<PathBuf> {
 }
 
 /// Expose read-only Core queries and one explicit, checked focus-workspace action.
+/// The browser can only toggle the native overlay; it cannot select or
+/// execute any application, even if it supplies extra fields.
+fn valid_launcher_toggle(request: &RpcRequest) -> bool {
+    request.jsonrpc == PROTOCOL_VERSION
+        && request.method == "toggle_launcher"
+        && request.params.is_none()
+}
+
 fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     let request = match serde_json::from_str::<RpcRequest>(message) {
         Ok(value) => value,
@@ -198,8 +208,21 @@ fn main() {
         }
         manager.connect_script_message_received(Some("kira"), move |_, value| {
             let message = value.to_string().to_string();
-            let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
+            let request = serde_json::from_str::<RpcRequest>(&message).ok();
+            let id = request.as_ref().map(|r| r.id);
             let sender = sender.clone();
+            if message.len() <= MAX_BRIDGE_MESSAGE_BYTES
+                && request.as_ref().is_some_and(valid_launcher_toggle)
+            {
+                // No desktop-entry ID or Exec string comes from WebKit.
+                // Toggling the popup is the only allowed UI launcher action.
+                let result = RpcResponse::success(id.unwrap_or(0), serde_json::json!(true));
+                if let Ok(serialized) = serde_json::to_string(&result) {
+                    let _ = sender.send(ShellDelivery::Rpc(serialized));
+                }
+                let _ = sender.send(ShellDelivery::LauncherToggle);
+                return;
+            }
             let socket = socket.clone();
             std::thread::spawn(move || {
                 let response = if message.len() > MAX_BRIDGE_MESSAGE_BYTES {
@@ -247,8 +270,18 @@ fn main() {
         });
 
         let webview = view.clone();
+        // Do not enumerate desktop entries on startup. The native popup and
+        // GIO catalog are constructed only after the first explicit click,
+        // preserving the measured Top Bar startup path.
+        let launcher_app = app.clone();
+        let mut launcher_popup: Option<launcher::Launcher> = None;
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
             while let Ok(delivery) = receiver.try_recv() {
+                if matches!(delivery, ShellDelivery::LauncherToggle) {
+                    let popup = launcher_popup.get_or_insert_with(|| launcher::create(&launcher_app));
+                    launcher::toggle(popup);
+                    continue;
+                }
                 // Double encoding ensures payload content cannot become JS.
                 let (event, payload) = match delivery {
                     ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
@@ -264,6 +297,7 @@ fn main() {
                         };
                         ("kira:config", serialized)
                     }
+                    ShellDelivery::LauncherToggle => unreachable!("already handled"),
                 };
                 if let Ok(encoded) = serde_json::to_string(&payload) {
                     let script = format!(
@@ -367,6 +401,32 @@ mod tests {
             let result = process_message(&request, None);
             assert_eq!(result.error.unwrap().code, -32601);
         }
+    }
+
+    #[test]
+    fn launcher_toggle_requires_exact_method_version_and_no_params() {
+        for request in [r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher"}"#] {
+            let req: RpcRequest = serde_json::from_str(request).unwrap();
+            assert!(valid_launcher_toggle(&req));
+        }
+        for request in [
+            r#"{"jsonrpc":"1.0","id":1,"method":"toggle_launcher"}"#,
+            r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher","params":{}}"#,
+            r#"{"jsonrpc":"2.0","id":1,"method":"toggle_launcher","params":{"exec":"sh"}}"#,
+            r#"{"jsonrpc":"2.0","id":1,"method":"launch_app"}"#,
+        ] {
+            let req: RpcRequest = serde_json::from_str(request).unwrap();
+            assert!(!valid_launcher_toggle(&req));
+        }
+    }
+
+    #[test]
+    fn launcher_toggle_cannot_be_forwarded_as_a_core_method() {
+        let result = process_message(
+            r#"{"jsonrpc":"2.0","id":22,"method":"toggle_launcher"}"#,
+            None,
+        );
+        assert_eq!(result.error.unwrap().code, -32601);
     }
 
     #[test]

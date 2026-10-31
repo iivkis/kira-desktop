@@ -41,6 +41,10 @@ tasks:
       - test -s scripts/dev_preview.py
       - test -s docs/PREVIEW.md
       - test -s docs/CONFIG.md
+      - test -s docs/LAUNCHER.md
+      - test -s crates/kira-shell/src/launcher.rs
+      - test -s crates/kira-shell/src/launcher.css
+      - test -s tests/test_launcher_design.py
       - test -s config/kira.kdl.example
       - test -s crates/kira-core/src/config.rs
 

@@ -1,35 +1,12 @@
 name: NixOS integration
 
 # Native GTK/WebKit compilation is tested by building the actual package.
+# Called from CI so fast Core/TS checks alone cannot declare the PR green.
 # Do not compile the same heavy Rust bindings again in a separate cargo check.
+# Invoked as a required job of CI. It can also be run manually for QA.
+# Never claim CI green until the full GTK/WebKit Shell has compiled.
 on:
-  push:
-    branches: [main]
-    paths:
-      - flake.nix
-      - flake.lock
-      - nix/**
-      - Cargo.toml
-      - Cargo.lock
-      - crates/**
-      - scripts/**
-      - tests/**
-      - Taskfile.yml
-      - frontend/**
-      - .github/workflows/nix.yml
-  pull_request:
-    paths:
-      - flake.nix
-      - flake.lock
-      - nix/**
-      - Cargo.toml
-      - Cargo.lock
-      - crates/**
-      - scripts/**
-      - tests/**
-      - frontend/**
-      - Taskfile.yml
-      - .github/workflows/nix.yml
+  workflow_call:
   workflow_dispatch:
 
 permissions:

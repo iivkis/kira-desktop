@@ -144,6 +144,13 @@ export function focusWorkspace(workspaceId: string): Promise<void> {
   return send('focus_workspace', { id: workspaceId }).then(() => undefined);
 }
 
+/** Opens or closes the trusted native GTK launcher. No Exec path or app ID
+ * can be submitted to this method, even by a malicious WebKit client.
+ */
+export function toggleLauncher(): Promise<void> {
+  return send('toggle_launcher').then(() => undefined);
+}
+
 function send(method: string, params?: { id: string }): Promise<unknown> {
   const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kira;
   if (!channel) return Promise.reject(new Error('Kira bridge unavailable (browser preview)'));
