@@ -274,7 +274,7 @@ fn main() {
         // GIO catalog are constructed only after the first explicit click,
         // preserving the measured Top Bar startup path.
         let launcher_app = app.clone();
-        let mut launcher_popup: Option<gtk::ApplicationWindow> = None;
+        let mut launcher_popup: Option<launcher::Launcher> = None;
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
             while let Ok(delivery) = receiver.try_recv() {
                 if matches!(delivery, ShellDelivery::LauncherToggle) {
