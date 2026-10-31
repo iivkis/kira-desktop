@@ -3,7 +3,7 @@
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, type WorkspaceState } from './lib/sdk/core';
+  import { request, onWorkspaceUpdate, type WorkspaceState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -33,14 +33,11 @@
     // Core listens to Niri EventStream. Shell forwards each changed snapshot
     // as kira:workspaces, so focus updates arrive without polling.
     let pushReceived = false;
-    const onWorkspaces = (event: Event) => {
-      const state = (event as CustomEvent<WorkspaceState>).detail;
-      if (disposed || !state || typeof state.connected !== 'boolean' ||
-          !Array.isArray(state.workspaces)) return;
+    const unsubscribe = onWorkspaceUpdate((state) => {
+      if (disposed) return;
       pushReceived = true;
       workspaceState = state;
-    };
-    window.addEventListener('kira:workspaces', onWorkspaces);
+    });
 
     // Initial request covers the small gap between WebKit page load and
     // event listener registration. An older RPC reply must never overwrite
@@ -57,7 +54,7 @@
       disposed = true;
       window.clearInterval(clock);
       window.clearInterval(statusTimer);
-      window.removeEventListener('kira:workspaces', onWorkspaces);
+      unsubscribe();
     };
   });
 </script>
