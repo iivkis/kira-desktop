@@ -196,17 +196,21 @@ async fn serve(
                     && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
             {
                 let params = request.params.clone();
-                let selected = tokio::task::spawn_blocking(move || {
-                    launcher::selected_path(params.as_ref())
-                }).await;
+                let selected =
+                    tokio::task::spawn_blocking(move || launcher::selected_path(params.as_ref()))
+                        .await;
                 match selected {
                     Ok(Ok(path)) => match launcher::launch(&path).await {
-                        Ok(()) => RpcResponse::success(
-                            request.id, serde_json::json!({"accepted": true}),
-                        ),
+                        Ok(()) => {
+                            RpcResponse::success(request.id, serde_json::json!({"accepted": true}))
+                        }
                         Err(error) => {
                             eprintln!("kira-core: application activation failed: {error}");
-                            RpcResponse::failure(Some(request.id), -32000, "Application activation failed")
+                            RpcResponse::failure(
+                                Some(request.id),
+                                -32000,
+                                "Application activation failed",
+                            )
                         }
                     },
                     Ok(Err(reason)) => RpcResponse::failure(Some(request.id), -32602, reason),
