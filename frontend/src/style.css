@@ -66,6 +66,16 @@ body,
   display: none;
 }
 
+.workspace-action-error {
+  flex: none;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kira-color-accent);
+  cursor: help;
+  white-space: nowrap;
+}
+
 .config-warning {
   flex: none;
   font-size: 9px;
