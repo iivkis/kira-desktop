@@ -44,7 +44,7 @@ def preview_config(python: Path, script: Path, ready: Path, nonce: str) -> str:
                     (python, script, "report", ready, nonce))
     return (
         "// Kira temporary nested Niri config (no host autostart)\n"
-        "hotkey-overlay { skip-at-startup }\n"
+        "hotkey-overlay {\n    skip-at-startup\n}\n"
         "prefer-no-csd\n"
         "binds {\n"
         "    Alt+Shift+Q { quit skip-confirmation=true; }\n"
