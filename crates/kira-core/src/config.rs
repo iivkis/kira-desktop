@@ -107,9 +107,9 @@ fn line_tokens(line: &str) -> Result<Vec<String>, String> {
 
 fn boolean(value: &str, key: &str) -> Result<bool, String> {
     match value {
-        "true" => Ok(true),
-        "false" => Ok(false),
-        _ => Err(format!("{key} must be true or false")),
+        "#true" => Ok(true),
+        "#false" => Ok(false),
+        _ => Err(format!("{key} must be #true or #false")),
     }
 }
 
@@ -307,7 +307,7 @@ mod tests {
     #[test]
     fn example_parses_and_uses_defaults() {
         assert_eq!(parse(EXAMPLE).unwrap(), UiConfig::default());
-        assert_eq!(parse("kira {\n  bar compact=true title=\"KIRA // TEST\"\n  clock seconds=true\n  workspaces show-names=false limit=3\n}\n").unwrap(),
+        assert_eq!(parse("kira {\n  bar compact=#true title=\"KIRA // TEST\"\n  clock seconds=#true\n  workspaces show-names=#false limit=3\n}\n").unwrap(),
             UiConfig { compact: true, title: "KIRA // TEST".into(), show_seconds: true,
                 show_names: false, max_workspaces: 3 });
     }
@@ -315,19 +315,19 @@ mod tests {
     #[test]
     fn invalid_config_cannot_override_previous_valid_state() {
         let initial = ConfigState {
-            config: parse("kira {\n  bar compact=true\n}\n").unwrap(),
+            config: parse("kira {\n  bar compact=#true\n}\n").unwrap(),
             error: None,
         };
         for broken in [
-            "kira {\n  bar compact=false\n  bar compact=true\n}",
+            "kira {\n  bar compact=#false\n  bar compact=#true\n}",
             "kira {\n  workspaces limit=0\n}",
             "kira {\n  clock seconds=yes\n}",
             "kira {\n  bar title=\"\"\n}",
             "kira {\n  bar title=\"bad\\nnewline\"\n}",
             "kira {\n  exec command=\"rm -rf\"\n}",
-            "kira {\n  bar compact=true compact=false\n}",
+            "kira {\n  bar compact=#true compact=#false\n}",
             "kira {\n  workspaces limit=99\n}",
-            "kira {\n  clock seconds=true",
+            "kira {\n  clock seconds=#true",
             "kira { }\n",
         ] {
             assert!(parse(broken).is_err(), "{broken}");
@@ -345,7 +345,7 @@ mod tests {
         let path = directory.join("config.kdl");
         let (tx, mut rx) = watch::channel(ConfigState::default());
         let task = tokio::spawn(monitor(path.clone(), tx));
-        std::fs::write(&path, "kira {\n  clock seconds=true\n}\n").unwrap();
+        std::fs::write(&path, "kira {\n  clock seconds=#true\n}\n").unwrap();
         tokio::time::timeout(Duration::from_secs(2), rx.changed())
             .await
             .unwrap()
@@ -359,7 +359,7 @@ mod tests {
         assert!(rx.borrow().config.show_seconds);
         assert!(rx.borrow().error.is_some());
         let staged = directory.join("pending.kdl");
-        std::fs::write(&staged, "kira {\n  clock seconds=false\n}\n").unwrap();
+        std::fs::write(&staged, "kira {\n  clock seconds=#false\n}\n").unwrap();
         std::fs::rename(staged, &path).unwrap();
         tokio::time::timeout(Duration::from_secs(2), rx.changed())
             .await
