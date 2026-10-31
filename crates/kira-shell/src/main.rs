@@ -1,5 +1,6 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
+mod launcher;
 mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};
@@ -20,6 +21,7 @@ enum ShellDelivery {
     Rpc(String),
     Workspaces(WorkspaceState),
     Config(ConfigState),
+    LauncherToggle,
 }
 
 fn ui_index() -> PathBuf {
@@ -155,6 +157,10 @@ fn main() {
             .build();
         view.set_background_color(&gtk::gdk::RGBA::new(0.09, 0.09, 0.12, 1.0));
 
+        // Independent popup layer surface, no exclusive zone and no
+        // application launch until a user selects an installed entry.
+        let launcher_popup = launcher::create(app);
+
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
         let (sender, receiver) = mpsc::channel::<ShellDelivery>();
@@ -198,8 +204,25 @@ fn main() {
         }
         manager.connect_script_message_received(Some("kira"), move |_, value| {
             let message = value.to_string().to_string();
-            let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
+            let request = serde_json::from_str::<RpcRequest>(&message).ok();
+            let id = request.as_ref().map(|r| r.id);
             let sender = sender.clone();
+            if message.len() <= MAX_BRIDGE_MESSAGE_BYTES
+                && request.as_ref().is_some_and(|request| {
+                    request.jsonrpc == PROTOCOL_VERSION
+                        && request.method == "toggle_launcher"
+                        && request.params.is_none()
+                })
+            {
+                // No desktop-entry ID or Exec string comes from WebKit.
+                // Toggling the popup is the only allowed UI launcher action.
+                let result = RpcResponse::success(id.unwrap_or(0), serde_json::json!(true));
+                if let Ok(serialized) = serde_json::to_string(&result) {
+                    let _ = sender.send(ShellDelivery::Rpc(serialized));
+                }
+                let _ = sender.send(ShellDelivery::LauncherToggle);
+                return;
+            }
             let socket = socket.clone();
             std::thread::spawn(move || {
                 let response = if message.len() > MAX_BRIDGE_MESSAGE_BYTES {
@@ -249,6 +272,10 @@ fn main() {
         let webview = view.clone();
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
             while let Ok(delivery) = receiver.try_recv() {
+                if matches!(delivery, ShellDelivery::LauncherToggle) {
+                    launcher::toggle(&launcher_popup);
+                    continue;
+                }
                 // Double encoding ensures payload content cannot become JS.
                 let (event, payload) = match delivery {
                     ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
@@ -264,6 +291,7 @@ fn main() {
                         };
                         ("kira:config", serialized)
                     }
+                    ShellDelivery::LauncherToggle => unreachable!("already handled"),
                 };
                 if let Ok(encoded) = serde_json::to_string(&payload) {
                     let script = format!(
@@ -367,6 +395,15 @@ mod tests {
             let result = process_message(&request, None);
             assert_eq!(result.error.unwrap().code, -32601);
         }
+    }
+
+    #[test]
+    fn launcher_toggle_cannot_be_forwarded_as_a_core_method() {
+        let result = process_message(
+            r#"{"jsonrpc":"2.0","id":22,"method":"toggle_launcher"}"#,
+            None,
+        );
+        assert_eq!(result.error.unwrap().code, -32601);
     }
 
     #[test]
