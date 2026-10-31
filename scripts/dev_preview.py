@@ -54,6 +54,7 @@ def preview_config(python: Path, script: Path, ready: Path, nonce: str) -> str:
         "    Mod+1 { focus-workspace 1; }\n"
         "    Mod+2 { focus-workspace 2; }\n"
         "    Mod+3 { focus-workspace 3; }\n"
+        "    Mod+Ctrl+1 repeat=false { move-window-to-workspace focus=true 1; }\n"
         "    Mod+Ctrl+2 repeat=false { move-window-to-workspace focus=true 2; }\n"
         "}\n"
         f"spawn-at-startup {args}\n"
@@ -263,7 +264,7 @@ def run_preview(
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
             if not qa_smoke and qa_output_dir is None:
                 print("[preview] Nested Mod=Alt: Alt+Enter opens foot; Alt+1/2/3 switches workspace.", flush=True)
-                print("[preview] Alt+Ctrl+2 moves the focused window to workspace 2 AND follows it.", flush=True)
+                print("[preview] Alt+Ctrl+1/2 moves the focused window to workspace 1/2 AND follows it.", flush=True)
                 print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)
 
             if qa_smoke or qa_output_dir is not None:
