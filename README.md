@@ -45,4 +45,4 @@ Workspace pills are still **static previews**, but the status indicator now asks
 
 ## Known bootstrap limitations
 
-Dependency locks are now generated and committed using Cargo, npm and Nix. `nix/package.nix` still contains a placeholder npm dependency hash. **`nix build` cannot be claimed working until native Nix integration passes.** See [development instructions](docs/DEVELOPMENT.md) for the remaining steps.
+Dependency locks are now generated and committed using Cargo, npm and Nix. `nix/package.nix` now pins the npm dependency hash from the Nix sandbox. **`nix build` cannot be claimed working until the complete Nix package integration check passes.** See [development instructions](docs/DEVELOPMENT.md) for the remaining steps.

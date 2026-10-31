@@ -1,6 +1,6 @@
 # NixOS package scaffold for the future Rust Core/Shell + Vite frontend.
 # Not buildable until Cargo Workspace, frontend/package-lock.json and binaries exist.
-# Replace lib.fakeHash with the actual npmDepsHash when frontend dependencies are added.
+# The frontend dependency hash was computed by the Nix fixed-output sandbox.
 {
   lib,
   rustPlatform,
@@ -19,7 +19,7 @@ let
     version = "0.1.0";
     src = ../frontend;
 
-    npmDepsHash = lib.fakeHash;
+    npmDepsHash = "sha256-1IUE4ratidBWc+ZT2v/Ke0lA3MnmVrPdYz153s6uqps=";
     npmBuildScript = "build";
 
     installPhase = ''
