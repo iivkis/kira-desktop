@@ -58,7 +58,7 @@ def report_ready(path: Path, nonce: str) -> None:
     display = os.environ.get("WAYLAND_DISPLAY")
     if not display:
         raise PreviewError("Nested Niri did not pass WAYLAND_DISPLAY")
-    payload = {"nonce": nonce, "display": display}
+    payload = {"nonce": nonce, "display": display, "niri_socket": os.environ.get("NIRI_SOCKET")}
     staged = path.with_suffix(".partial")
     staged.write_text(json.dumps(payload), encoding="utf-8")
     staged.replace(path)
@@ -183,9 +183,9 @@ def run_preview(package: Path) -> None:
                 if not isinstance(display, str):
                     raise PreviewError("Missing nested Wayland display")
                 socket_path = nested_display_path(display, parent_display, runtime)
-                return display if ready_socket(socket_path) else None
+                return (display, payload.get("niri_socket")) if ready_socket(socket_path) else None
 
-            nested = await_ready(nested_ready, niri, "nested Wayland socket")
+            nested, nested_niri_socket = await_ready(nested_ready, niri, "nested Wayland socket")
             print(f"[preview] Nested display: {nested}; parent: {parent_display}", flush=True)
 
             isolated = environment.copy()
@@ -194,6 +194,12 @@ def run_preview(package: Path) -> None:
                 "KIRA_CORE_SOCKET": str(socket_file),
                 "KIRA_PREVIEW": "1",
             })
+            # Future Niri IPC consumers must use the child compositor's socket.
+            if isinstance(nested_niri_socket, str) and nested_niri_socket:
+                parent_niri_socket = os.environ.get("NIRI_SOCKET")
+                if parent_niri_socket and Path(nested_niri_socket).resolve() == Path(parent_niri_socket).resolve():
+                    raise PreviewError("Nested Niri reported the parent Niri IPC socket")
+                isolated["NIRI_SOCKET"] = nested_niri_socket
             core = launch("core", [str(binaries["core"])], isolated)
             await_ready(
                 lambda: True if ready_socket(socket_file) else None,
@@ -229,15 +235,38 @@ def run_preview(package: Path) -> None:
             print("[preview] Preview processes stopped; temporary files cleaned up.", flush=True)
 
 
+def validate_preview_config() -> None:
+    niri_path = shutil.which("niri")
+    if not niri_path:
+        raise PreviewError("niri is not available in PATH")
+    with tempfile.TemporaryDirectory(prefix="kira-preview-check-") as directory:
+        config = Path(directory) / "config.kdl"
+        config.write_text(
+            preview_config(Path(sys.executable), Path(__file__).resolve(),
+                           Path(directory) / "ready.json", "validate"),
+            encoding="utf-8",
+        )
+        result = subprocess.run(
+            [niri_path, "validate", "--config", str(config)],
+            text=True, capture_output=True, check=False,
+        )
+        if result.returncode:
+            raise PreviewError(f"Invalid preview Niri KDL:\\n{result.stdout}{result.stderr}")
+        print("[preview] Niri configuration validated successfully.")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Isolated nested-Niri Kira Desktop preview")
     parser.add_argument("--package-dir", type=Path, default=Path("result"))
+    parser.add_argument("--validate-config", action="store_true")
     parser.add_argument("mode", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("ready_path", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("nonce", nargs="?", help=argparse.SUPPRESS)
     args = parser.parse_args()
     try:
-        if args.mode == "report" and args.ready_path and args.nonce:
+        if args.validate_config:
+            validate_preview_config()
+        elif args.mode == "report" and args.ready_path and args.nonce:
             report_ready(Path(args.ready_path), args.nonce)
         elif args.mode is None:
             run_preview(args.package_dir)

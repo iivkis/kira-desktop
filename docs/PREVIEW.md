@@ -57,6 +57,7 @@ D-Bus-сеанс и Linux-систему**, что и основная обол�
 
 ```sh
 nix develop --command task dev:preview:test
+python3 scripts/dev_preview.py --validate-config  # внутри nix develop
 nix build
 ```
 
