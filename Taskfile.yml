@@ -29,6 +29,8 @@ tasks:
       - test -s nix/package.nix
       - test -s Taskfile.yml
       - test -s .github/workflows/ci.yml
+      - test -s scripts/dev_preview.py
+      - test -s docs/PREVIEW.md
 
   fmt:
     desc: Check formatting of all Rust crates.
@@ -46,6 +48,7 @@ tasks:
     cmds:
       - cargo test --locked -p kira-ipc -p kira-core --all-targets
       - npm run test:ci --prefix frontend
+      - python3 -m unittest discover -s tests -p 'test_*.py'
 
   shell:check:
     desc: Check GTK Shell using the native libraries provided by nix develop.
@@ -83,6 +86,17 @@ tasks:
     cmds:
       - task: frontend:build
       - cargo build --locked --release --workspace
+
+  dev:preview:
+    desc: Build Kira and launch Core + Shell inside a separate windowed Niri.
+    cmds:
+      - task: nix:build
+      - python3 scripts/dev_preview.py
+
+  dev:preview:test:
+    desc: Test nested preview safety and lifecycle without a running Niri.
+    cmds:
+      - python3 -m unittest discover -s tests -p 'test_*.py' -v
 
   nix:check:
     desc: Check the Nix flake.

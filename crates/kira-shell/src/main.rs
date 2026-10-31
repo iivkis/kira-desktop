@@ -20,7 +20,7 @@ fn ui_index() -> PathBuf {
 }
 
 fn core_socket() -> Option<PathBuf> {
-    env::var_os("XDG_RUNTIME_DIR").map(|dir| PathBuf::from(dir).join("kira-desktop.sock"))
+    kira_ipc::core_socket_path().ok()
 }
 
 /// Only expose explicit, read-only Core operations to the Svelte page.
@@ -53,8 +53,16 @@ fn main() {
         std::process::exit(1);
     }
 
+    // A nested preview must not activate another GTK application with the same ID
+    // already running in the user's primary desktop session.
+    let flags = if env::var_os("KIRA_PREVIEW").is_some() {
+        gtk::gio::ApplicationFlags::NON_UNIQUE
+    } else {
+        gtk::gio::ApplicationFlags::empty()
+    };
     let app = gtk::Application::builder()
         .application_id("dev.kira.Desktop")
+        .flags(flags)
         .build();
     app.connect_activate(move |app| {
         let window = gtk::ApplicationWindow::new(app);

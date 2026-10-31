@@ -108,3 +108,59 @@ mod tests {
         assert_eq!(response.error.unwrap().code, -32600);
     }
 }
+
+
+/// Resolve Core's socket location. Preview can override it with an absolute path
+/// in a private directory, leaving the user's running Core untouched.
+pub fn core_socket_path() -> Result<std::path::PathBuf, &'static str> {
+    let configured = std::env::var_os("KIRA_CORE_SOCKET").map(std::path::PathBuf::from);
+    let runtime = std::env::var_os("XDG_RUNTIME_DIR").map(std::path::PathBuf::from);
+    socket_path_from(configured.as_deref(), runtime.as_deref())
+}
+
+fn socket_path_from(
+    configured: Option<&std::path::Path>,
+    runtime: Option<&std::path::Path>,
+) -> Result<std::path::PathBuf, &'static str> {
+    if let Some(path) = configured {
+        return if path.is_absolute() {
+            Ok(path.to_path_buf())
+        } else {
+            Err("KIRA_CORE_SOCKET must be an absolute path")
+        };
+    }
+    runtime
+        .map(|dir| dir.join("kira-desktop.sock"))
+        .ok_or("XDG_RUNTIME_DIR is required when KIRA_CORE_SOCKET is unset")
+}
+
+#[cfg(test)]
+mod socket_path_tests {
+    use super::*;
+    use std::path::Path;
+
+    #[test]
+    fn preview_overrides_default_socket() {
+        let path = socket_path_from(
+            Some(Path::new("/tmp/kira-preview-abc/core.sock")),
+            Some(Path::new("/run/user/1000")),
+        );
+        assert_eq!(
+            path.unwrap(),
+            Path::new("/tmp/kira-preview-abc/core.sock")
+        );
+    }
+
+    #[test]
+    fn refuses_relative_preview_socket() {
+        assert!(socket_path_from(Some(Path::new("core.sock")), None).is_err());
+    }
+
+    #[test]
+    fn default_stays_inside_user_runtime_directory() {
+        assert_eq!(
+            socket_path_from(None, Some(Path::new("/run/user/1000"))).unwrap(),
+            Path::new("/run/user/1000/kira-desktop.sock")
+        );
+    }
+}

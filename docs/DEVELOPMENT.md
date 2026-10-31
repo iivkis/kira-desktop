@@ -6,6 +6,31 @@ Kira Desktop targets NixOS, Niri and Wayland. Flakes must be enabled. The reposi
 
 The GitHub Actions workflows are split into fast, non-graphical checks (`.github/workflows/ci.yml`) and native Nix integration (`.github/workflows/nix.yml`).
 
+## Safe nested development preview
+
+```sh
+nix develop --command task dev:preview
+```
+
+This builds the pinned Nix package, validates an isolated minimal Niri KDL config,
+launches Niri **windowed without `--session`**, then receives its actual nested
+`WAYLAND_DISPLAY` from a `spawn-at-startup` handshake. Only after verifying
+the nested display is different from the parent does it start Core and Shell.
+
+`KIRA_CORE_SOCKET` points to a private temporary directory, so an existing
+Kira Core process cannot be touched. `KIRA_PREVIEW=1` enables the GTK
+`NON_UNIQUE` application flag to avoid activating a primary-session Shell.
+
+Closing the nested window or pressing Ctrl+C stops only processes owned by the
+preview. Config and logs are temporary; recent logs are printed on unexpected
+exit. Tests use mock executables, not a GPU:
+
+```sh
+task dev:preview:test
+```
+
+See [PREVIEW.md](PREVIEW.md) for additional safety checks and troubleshooting.
+
 ## Native Nix package
 
 The following build has passed on Linux in GitHub Actions with the pinned Nix inputs:

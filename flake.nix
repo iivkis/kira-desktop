@@ -9,7 +9,7 @@
       forAllSystems = f:
         nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
 
-      # Until application sources and lock files exist, expose only devShell/checks.
+      # Expose the package when the application sources and locks exist.
       hasApplicationSources =
         builtins.pathExists ./Cargo.toml
         && builtins.pathExists ./Cargo.lock
@@ -26,6 +26,8 @@
             clippy
             nodejs
             go-task
+            python3
+            niri
             pkg-config
             gtk4
             gtk4-layer-shell

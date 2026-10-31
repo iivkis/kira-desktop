@@ -14,12 +14,31 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 | Component | Current capabilities |
 | --- | --- |
 | `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded Unix socket client, unit tests |
-| `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over `$XDG_RUNTIME_DIR/kira-desktop.sock` |
+| `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over a configurable user-owned Unix socket |
 | `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge |
 | `frontend/` | Svelte 5, TypeScript, Vite, typed SDK, Core connection status, Vitest |
 | `Taskfile.yml` | Shared commands for development and CI |
 | `flake.nix`, `nix/package.nix` | Nix development shell and installable packaged Core/Shell/frontend |
 | `Cargo.lock`, `flake.lock`, `frontend/package-lock.json` | Locked dependencies for reproducibility |
+
+## Safe nested preview on NixOS
+
+The recommended development entry point runs a **separate, windowed Niri** with
+its own Kira Core socket and isolated Niri config, without replacing your current
+desktop session:
+
+```sh
+nix develop --command task dev:preview
+```
+
+Close the window with **Alt+Shift+Q** (inside nested Niri) or press **Ctrl+C** in
+the launching terminal. This only stops preview-owned processes. No `nixos-rebuild
+switch`, global `pkill`, systemd manipulation or modification of
+`~/.config/niri` is involved.
+
+See [safe preview guide (Russian)](docs/PREVIEW.md). The preview lifecycle is
+tested with mock Niri/Core/Shell processes in CI, but the first visual smoke test
+on your GPU and Niri session must still be performed locally.
 
 ## Quick start on NixOS
 

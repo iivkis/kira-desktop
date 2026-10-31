@@ -39,5 +39,4 @@ jobs:
       - name: Build static frontend assets
         run: task frontend:build
 
-  # GTK4 Layer Shell development libraries are not shipped by Ubuntu 24.04.
-  # Add a separate Nix-based shell build job once Cargo.lock/flake.lock exist.
+  # The separate nix.yml workflow validates the GTK/WebKit native Shell.

@@ -1,7 +1,5 @@
 //! Standalone system-state daemon. This milestone exposes ping/get_state only.
-use std::env;
 use std::error::Error;
-use std::path::PathBuf;
 
 use kira_ipc::{RpcRequest, RpcResponse, dispatch};
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
