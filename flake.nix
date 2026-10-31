@@ -31,6 +31,7 @@
             go-task
             python3
             niri
+            foot # optional nested Niri terminal for interactive workspace QA
             grim # explicit visual QA screenshot capture, does not copy clipboard
             pkg-config
             gtk4
