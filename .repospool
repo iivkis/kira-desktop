@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=2009
+index_bytes=2181
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,52 +15,57 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	36c0ee9b46eabc2355cc57adfdf87aa0afcc28f6
-F	.cargo/config.toml	98	71	3
-F	.github/workflows/ci.yml	904	76	42
-F	.github/workflows/nix.yml	1603	120	63
-F	.github/workflows/publish-repospool.yml	3048	185	83
-F	.gitignore	73	270	6
-F	.repospoolignore	1028	278	47
-F	Cargo.toml	494	327	22
-F	README.md	4911	351	121
-F	Taskfile.yml	4414	474	146
-F	crates/kira-core/Cargo.toml	207	622	10
-F	crates/kira-core/src/main.rs	6821	634	205
-F	crates/kira-ipc/Cargo.toml	170	841	9
-F	crates/kira-ipc/src/client.rs	3417	852	100
-F	crates/kira-ipc/src/lib.rs	4807	954	162
-F	crates/kira-shell/Cargo.toml	297	1118	12
-F	crates/kira-shell/src/main.rs	12027	1132	287
-F	crates/kira-shell/src/ui_assets.rs	4873	1421	148
-F	docs/DESIGN_SYSTEM.md	4815	1571	113
-F	docs/DEVELOPMENT.md	5921	1686	131
-F	docs/SPECIFICATION.md	27532	1819	405
-F	flake.nix	1566	2226	56
-F	frontend/index.html	2592	2284	64
-F	frontend/package.json	586	2350	21
-F	frontend/scripts/inline-assets.mjs	3708	2373	92
-F	frontend/scripts/inline-assets.test.mjs	2939	2467	71
-F	frontend/src/App.svelte	2442	2540	69
-F	frontend/src/lib/bootstrap.test.ts	3378	2611	84
-F	frontend/src/lib/bootstrap.ts	2318	2697	65
-F	frontend/src/lib/components/CoreStatus.svelte	2056	2764	91
-F	frontend/src/lib/components/WorkspacePreview.svelte	1791	2857	64
-F	frontend/src/lib/sdk/core.test.ts	1581	2923	34
-F	frontend/src/lib/sdk/core.ts	2304	2959	76
-F	frontend/src/lib/themes/kira-default.css	1168	3037	38
-F	frontend/src/lib/themes/kira-default.test.ts	2351	3077	52
-F	frontend/src/lib/themes/kira-default.ts	672	3131	19
-F	frontend/src/lib/time.test.ts	263	3152	8
-F	frontend/src/lib/time.ts	239	3162	8
-F	frontend/src/main.ts	1167	3172	35
-F	frontend/src/style.css	4120	3209	220
-F	frontend/tsconfig.json	403	3431	16
-F	frontend/vite.config.ts	164	3449	7
-F	nix/package.nix	1418	3458	62
-F	scripts/dev_preview.py	14330	3522	350	x
-F	tests/test_dev_preview.py	8491	3874	207
+C	bb0cbb7f4e144be3f30e56df0f69eb35ec87db15
+F	.cargo/config.toml	98	76	3
+F	.github/workflows/ci.yml	968	81	44
+F	.github/workflows/nix.yml	1867	127	62
+F	.github/workflows/publish-repospool.yml	3048	191	83
+F	.gitignore	178	276	11
+F	.repospoolignore	1028	289	47
+F	Cargo.toml	494	338	22
+F	README.md	7853	362	186
+F	Taskfile.yml	5537	550	174
+F	crates/kira-core/Cargo.toml	207	726	10
+F	crates/kira-core/src/main.rs	10805	738	304
+F	crates/kira-core/src/niri.rs	11579	1044	315
+F	crates/kira-ipc/Cargo.toml	170	1361	9
+F	crates/kira-ipc/src/client.rs	6937	1372	188
+F	crates/kira-ipc/src/lib.rs	6867	1562	226
+F	crates/kira-shell/Cargo.toml	297	1790	12
+F	crates/kira-shell/src/main.rs	14012	1804	335
+F	crates/kira-shell/src/ui_assets.rs	4873	2141	148
+F	docs/DESIGN_SYSTEM.md	4815	2291	113
+F	docs/DEVELOPMENT.md	15806	2406	344
+F	docs/QA_VISUAL.md	6159	2752	98
+F	docs/SPECIFICATION.md	27532	2852	405
+F	flake.nix	2408	3259	68
+F	frontend/index.html	2592	3329	64
+F	frontend/package.json	586	3395	21
+F	frontend/scripts/inline-assets.mjs	3708	3418	92
+F	frontend/scripts/inline-assets.test.mjs	2939	3512	71
+F	frontend/src/App.svelte	3345	3585	91
+F	frontend/src/lib/bootstrap.test.ts	3378	3678	84
+F	frontend/src/lib/bootstrap.ts	2318	3764	65
+F	frontend/src/lib/components/CoreStatus.svelte	2056	3831	91
+F	frontend/src/lib/components/WorkspacePreview.svelte	4031	3924	130
+F	frontend/src/lib/sdk/core.test.ts	3515	4056	74
+F	frontend/src/lib/sdk/core.ts	3439	4132	109
+F	frontend/src/lib/themes/kira-default.css	1168	4243	38
+F	frontend/src/lib/themes/kira-default.test.ts	2351	4283	52
+F	frontend/src/lib/themes/kira-default.ts	672	4337	19
+F	frontend/src/lib/time.test.ts	263	4358	8
+F	frontend/src/lib/time.ts	239	4368	8
+F	frontend/src/main.ts	1167	4378	35
+F	frontend/src/style.css	4120	4415	220
+F	frontend/tsconfig.json	403	4637	16
+F	frontend/vite.config.ts	164	4655	7
+F	nix/package.nix	2948	4664	112
+F	scripts/dev_preview.py	17189	4778	390	x
+F	scripts/qa_visual.py	12052	5170	299
+F	tests/test_dev_preview.py	9064	5471	215
+F	tests/test_qa_visual.py	10549	5688	217
 I	5
+S	1
 O	.github/workflows/lockfiles.yml
 O	Cargo.lock
 O	docs/PREVIEW.md
@@ -91,6 +96,8 @@ jobs:
 
       - name: Install Task
         uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
@@ -119,7 +126,8 @@ jobs:
 FILE	.github/workflows/nix.yml
 name: NixOS integration
 
-# Native shell and package checks are intentionally separate from lightweight CI.
+# Native GTK/WebKit compilation is tested by building the actual package.
+# Do not compile the same heavy Rust bindings again in a separate cargo check.
 on:
   push:
     branches: [main]
@@ -133,7 +141,7 @@ on:
       - scripts/**
       - tests/**
       - Taskfile.yml
-      - frontend/package-lock.json
+      - frontend/**
       - .github/workflows/nix.yml
   pull_request:
     paths:
@@ -146,6 +154,7 @@ on:
       - scripts/**
       - tests/**
       - frontend/**
+      - Taskfile.yml
       - .github/workflows/nix.yml
   workflow_dispatch:
 
@@ -153,8 +162,8 @@ permissions:
   contents: read
 
 jobs:
-  shell:
-    name: Native GTK/WebKit Shell
+  package:
+    name: Flake, nested Niri config and native Core/Shell package
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -162,23 +171,20 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check flake
+      # Optional cache, disabled unless repo owner sets a cache name.
+      # Uploads only from trusted pushes to main; PRs can read shared outputs.
+      - name: Shared Nix cache (opt-in)
+        if: ${{ vars.KIRA_CACHIX_NAME != '' }}
+        uses: cachix/cachix-action@v17
+        with:
+          name: ${{ vars.KIRA_CACHIX_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          skipPush: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
+      - name: Check flake outputs
         run: nix flake check --no-build
       - name: Validate nested Niri preview config
         run: nix develop --command python3 scripts/dev_preview.py --validate-config
-      - name: Compile Shell with native Nix libraries
-        run: nix develop --command cargo check --locked -p kira-shell
-
-  package:
-    name: Nix package build
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build packaged Core, Shell and frontend
+      - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace
 
 FILE	.github/workflows/publish-repospool.yml
@@ -273,6 +279,11 @@ FILE	.gitignore
 /result
 *.swp
 .DS_Store
+/artifacts/visual-qa/
+
+# Python bytecode and interpreter caches (all directories)
+__pycache__/
+*.py[cod]
 
 FILE	.repospoolignore
 # RepoSpool selects committed Git source; ignored files remain available in GitHub.
@@ -359,6 +370,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 - [Kira Default design system](docs/DESIGN_SYSTEM.md)
 - [CI checks](.github/workflows/ci.yml)
 - [Native Nix build checks](.github/workflows/nix.yml)
+- [Visual QA / packaged Shell smoke-test guide](docs/QA_VISUAL.md)
 
 ## Implemented foundation
 
@@ -463,6 +475,70 @@ nix run github:iivkis/repospool -- generate .
 nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
 ```
 
+
+## Incremental and release build caching
+
+- **Local Rust development:** `nix develop` sets up persistent `sccache`
+  (and Cargo still reuses `target/debug`), so recompilation can reuse compiler
+  outputs between development runs.
+- **Reproducible release:** `nix build .#default` uses Crane to cache compiled
+  third-party Rust crates separately from application code and separately from
+  the frontend. Changing Svelte should not rebuild Rust; changing a Rust
+  source file should not rebuild GTK/WebKit Rust crates.
+- **Fresh CI machines:** an optional shared Cachix binary cache can be enabled
+  through repository settings. Without it, cached artifacts persist only
+  locally in each machine's Nix store. See
+  [build cache guide](docs/DEVELOPMENT.md#build-caching-and-release-iteration).
+
+A new dependency-cache derivation must be compiled once on the first build;
+changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
+Nix inputs may legitimately invalidate the cache.
+
+## Real Niri workspaces (Stage 1 draft)
+
+The Top Bar now obtains **real, read-only** workspace data through
+`NIRI_SOCKET` → Rust Core `EventStream` → typed `get_workspaces` JSON-RPC →
+GTK WebKit bridge → Svelte. Workspace IDs are strings (safe for Niri's u64),
+and focus, visibility and urgency are separate flags. No Niri
+workspace-switching actions are sent by Kira.
+
+With no Niri IPC connection, the UI shows `NIRI OFFLINE` instead of fake
+workspaces. The Core reconnects automatically after disconnection.
+A persistent read-only Core→Shell subscription now pushes changed workspace
+snapshots as typed WebKit `kira:workspaces` events, so the Svelte UI updates
+without the old 1.5-second polling delay.
+
+To test the actual Niri workspace integration without modifying the host:
+
+```sh
+nix develop --command task qa:visual:fast
+```
+
+The QA smoke now waits for a workspace snapshot from the child compositor
+through Core, in addition to the existing WebKit/Svelte verification. This
+does not capture the screen or copy to the clipboard. Read more in
+[the development guide](docs/DEVELOPMENT.md#read-only-niri-workspaces-stage-1-first-increment).
+
+## Visual QA before Niri IPC integration
+
+Run **read-only** packaged Niri/Core/Svelte smoke on a graphical
+NixOS/Wayland session (no screenshots, scale changes or clipboard writes):
+
+```sh
+nix develop --command task qa:visual:release
+```
+
+To **explicitly opt in** to capturing 100%, 125%, 150% and 200% scales:
+
+```sh
+nix develop --command task qa:visual:capture:release
+```
+
+Capture uses `grim` bound to the nested Wayland display, **not** the Niri
+screenshot action (which also copies to clipboard). PNGs and manifests are
+stored locally in ignored `artifacts/visual-qa/`. Automated capture and CI
+are not substitutes for a real visual review. See
+[visual QA guide](docs/QA_VISUAL.md) for scope and acceptance criteria.
 
 ## Current limitations
 
@@ -603,6 +679,34 @@ tasks:
     cmds:
       - python3 -m unittest discover -s tests -p 'test_*.py' -v
 
+  qa:visual:fast:
+    desc: Run read-only Core/Svelte/Niri smoke in nested debug preview; no screenshots or scale changes.
+    cmds:
+      - task: frontend:deps
+      - task: frontend:build
+      - cargo build --locked -p kira-core -p kira-shell
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-smoke
+
+  qa:visual:release:
+    desc: Run read-only Core/Svelte/Niri smoke using the real Nix package; no screenshots.
+    cmds:
+      - task: nix:build
+      - python3 scripts/dev_preview.py --qa-smoke
+
+  qa:visual:capture:fast:
+    desc: OPT-IN four scale screenshots via grim in isolated debug preview (no clipboard).
+    cmds:
+      - task: frontend:deps
+      - task: frontend:build
+      - cargo build --locked -p kira-core -p kira-shell
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-output-dir artifacts/visual-qa
+
+  qa:visual:capture:release:
+    desc: OPT-IN four scale PNGs via grim from packaged Nix Shell (no clipboard).
+    cmds:
+      - task: nix:build
+      - python3 scripts/dev_preview.py --qa-output-dir artifacts/visual-qa
+
   nix:check:
     desc: Check the Nix flake.
     cmds:
@@ -631,16 +735,19 @@ serde_json.workspace = true
 tokio.workspace = true
 
 FILE	crates/kira-core/src/main.rs
-//! Standalone system-state daemon. This milestone exposes ping/get_state only.
+//! Standalone read-only system-state daemon with Niri workspace IPC.
+
+mod niri;
 
 use std::error::Error;
 use std::io;
 use std::os::unix::fs::{FileTypeExt, MetadataExt};
 use std::path::{Path, PathBuf};
 
-use kira_ipc::{RpcRequest, RpcResponse, dispatch};
+use kira_ipc::{RpcRequest, RpcResponse, WorkspaceState, dispatch_with_workspaces};
 use tokio::io::{AsyncBufRead, AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::{UnixListener, UnixStream};
+use tokio::sync::watch;
 
 const MAX_REQUEST_BYTES: usize = 4096;
 
@@ -720,13 +827,43 @@ async fn read_bounded_line<R: AsyncBufRead + Unpin>(
     }
 }
 
-async fn serve(stream: UnixStream) -> Result<(), Box<dyn Error + Send + Sync>> {
+/// Keep a single read-only JSON-RPC connection open and send the latest
+/// workspace state whenever Core's Niri watch channel changes. Every frame
+/// uses the original subscription request id and is newline-delimited.
+async fn stream_workspaces(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    mut workspaces: watch::Receiver<WorkspaceState>,
+    id: u64,
+) -> io::Result<()> {
+    loop {
+        let snapshot = workspaces.borrow_and_update().clone();
+        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
+        writer.write_all(&serde_json::to_vec(&response)?).await?;
+        writer.write_all(b"\n").await?;
+        if workspaces.changed().await.is_err() {
+            return Ok(());
+        }
+    }
+}
+
+async fn serve(
+    stream: UnixStream,
+    workspaces: watch::Receiver<WorkspaceState>,
+) -> Result<(), Box<dyn Error + Send + Sync>> {
     let (read_half, mut writer) = stream.into_split();
     let mut reader = BufReader::new(read_half);
 
     while let Some(line) = read_bounded_line(&mut reader, MAX_REQUEST_BYTES).await? {
         let response = match serde_json::from_slice::<RpcRequest>(&line) {
-            Ok(request) => dispatch(request),
+            Ok(request)
+                if request.method == "subscribe_workspaces"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                // Internal streaming endpoint, not exposed through the WebKit
+                // JS RPC allowlist; one subscription per socket connection.
+                return Ok(stream_workspaces(&mut writer, workspaces, request.id).await?);
+            }
+            Ok(request) => dispatch_with_workspaces(request, &workspaces.borrow().clone()),
             Err(_) => RpcResponse::failure(None, -32700, "Parse error"),
         };
         let encoded = serde_json::to_vec(&response)?;
@@ -744,13 +881,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _guard = SocketGuard::new(&path)?;
     eprintln!("kira-core listening on {}", path.display());
 
+    let (workspace_sender, workspace_receiver) = watch::channel(WorkspaceState::default());
+    if let Some(socket) = niri::socket_path_from(std::env::var_os("NIRI_SOCKET")) {
+        tokio::spawn(niri::monitor(socket, workspace_sender.clone()));
+    } else {
+        eprintln!("kira-core: no valid NIRI_SOCKET; workspace state will be offline");
+    }
+
     let mut terminate = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
     loop {
         tokio::select! {
             accepted = listener.accept() => {
                 let (stream, _) = accepted?;
+                let state = workspace_receiver.clone();
                 tokio::spawn(async move {
-                    if let Err(error) = serve(stream).await {
+                    if let Err(error) = serve(stream, state).await {
                         eprintln!("kira-core client error: {error}");
                     }
                 });
@@ -798,6 +943,64 @@ mod tests {
         assert_eq!(error.kind(), io::ErrorKind::UnexpectedEof);
     }
 
+    #[tokio::test]
+    async fn subscription_streams_initial_snapshot_and_focus_changes() {
+        use tokio::io::{AsyncBufReadExt, BufReader as TokioBufReader};
+        let dir = std::env::temp_dir().join(format!("kira-subscribe-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("ipc.sock");
+        let listener = tokio::net::UnixListener::bind(&path).unwrap();
+        let (tx, rx) = watch::channel(WorkspaceState::default());
+        let task = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let _ = serve(stream, rx).await;
+        });
+        let mut conn = UnixStream::connect(&path).await.unwrap();
+        conn.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"subscribe_workspaces\"}\n")
+            .await
+            .unwrap();
+        let mut reader = TokioBufReader::new(conn);
+        let mut line = String::new();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut line),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let first: RpcResponse = serde_json::from_str(&line).unwrap();
+        assert_eq!(first.id, Some(77));
+        assert_eq!(first.result.unwrap()["connected"], false);
+        let next = WorkspaceState {
+            connected: true,
+            workspaces: vec![kira_ipc::Workspace {
+                id: "123".into(),
+                idx: 2,
+                name: None,
+                output: Some("winit".into()),
+                is_active: true,
+                is_focused: true,
+                is_urgent: false,
+            }],
+        };
+        tx.send_replace(next);
+        line.clear();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut line),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let update: RpcResponse = serde_json::from_str(&line).unwrap();
+        assert_eq!(update.id, Some(77));
+        assert_eq!(update.result.unwrap()["workspaces"][0]["idx"], 2);
+        drop(reader);
+        task.abort();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
+    }
+
     #[test]
     fn guard_removes_owned_socket() {
         let directory = std::env::temp_dir().join(format!(
@@ -834,6 +1037,323 @@ mod tests {
         drop(replacement);
         std::fs::remove_file(&path).unwrap();
         std::fs::remove_dir(&directory).unwrap();
+    }
+}
+
+FILE	crates/kira-core/src/niri.rs
+//! Read-only Niri event stream. No Action or output-changing IPC is sent.
+//! A full workspace snapshot is received first; incremental events then
+//! update Core's local state. Disconnect clears state; reconnect resyncs.
+
+use std::io;
+use std::os::unix::fs::FileTypeExt;
+use std::path::{Path, PathBuf};
+use std::time::Duration;
+
+use kira_ipc::{Workspace, WorkspaceState};
+use serde_json::Value;
+use tokio::io::{AsyncWriteExt, BufReader};
+use tokio::net::UnixStream;
+use tokio::sync::watch;
+
+use crate::read_bounded_line;
+
+const MAX_NIRI_LINE: usize = 256 * 1024;
+const MAX_WORKSPACES: usize = 256;
+const RETRY_DELAY: Duration = Duration::from_secs(1);
+
+pub fn socket_path_from(value: Option<std::ffi::OsString>) -> Option<PathBuf> {
+    value.map(PathBuf::from).filter(|path| path.is_absolute())
+}
+
+fn invalid(message: &str) -> io::Error {
+    io::Error::new(io::ErrorKind::InvalidData, message)
+}
+
+fn parse_workspaces(value: &Value) -> io::Result<Vec<Workspace>> {
+    let list = value
+        .as_array()
+        .ok_or_else(|| invalid("workspaces not an array"))?;
+    if list.len() > MAX_WORKSPACES {
+        return Err(invalid("too many workspaces"));
+    }
+    let mut result = Vec::with_capacity(list.len());
+    for item in list {
+        let id = item["id"]
+            .as_u64()
+            .ok_or_else(|| invalid("workspace id missing"))?;
+        let idx = u8::try_from(
+            item["idx"]
+                .as_u64()
+                .ok_or_else(|| invalid("workspace idx missing"))?,
+        )
+        .map_err(|_| invalid("invalid workspace idx"))?;
+        let name = match item.get("name") {
+            None | Some(Value::Null) => None,
+            Some(Value::String(text)) => Some(text.clone()),
+            _ => return Err(invalid("invalid workspace name")),
+        };
+        let output = match item.get("output") {
+            None | Some(Value::Null) => None,
+            Some(Value::String(text)) => Some(text.clone()),
+            _ => return Err(invalid("invalid workspace output")),
+        };
+        result.push(Workspace {
+            id: id.to_string(),
+            idx,
+            name,
+            output,
+            is_active: item["is_active"]
+                .as_bool()
+                .ok_or_else(|| invalid("is_active missing"))?,
+            is_focused: item["is_focused"]
+                .as_bool()
+                .ok_or_else(|| invalid("is_focused missing"))?,
+            is_urgent: item["is_urgent"]
+                .as_bool()
+                .ok_or_else(|| invalid("is_urgent missing"))?,
+        });
+    }
+    result.sort_by(|a, b| {
+        a.output
+            .cmp(&b.output)
+            .then(a.idx.cmp(&b.idx))
+            .then(a.id.cmp(&b.id))
+    });
+    Ok(result)
+}
+
+/// Apply only the workspace-related variants. Unknown future Niri events are ignored.
+/// A malformed supported event is a protocol error and forces a resync.
+fn apply_event(state: &mut WorkspaceState, value: &Value) -> io::Result<bool> {
+    if let Some(payload) = value.get("WorkspacesChanged") {
+        let workspaces = parse_workspaces(&payload["workspaces"])?;
+        *state = WorkspaceState {
+            connected: true,
+            workspaces,
+        };
+        return Ok(true);
+    }
+    if !state.connected {
+        return Ok(false);
+    }
+    if let Some(payload) = value.get("WorkspaceActivated") {
+        let id = payload["id"]
+            .as_u64()
+            .ok_or_else(|| invalid("activation id missing"))?
+            .to_string();
+        let focused = payload["focused"]
+            .as_bool()
+            .ok_or_else(|| invalid("activation focused missing"))?;
+        let Some(target) = state.workspaces.iter().find(|ws| ws.id == id) else {
+            // Unknown workspace: wait for the next complete WorkspacesChanged.
+            return Ok(false);
+        };
+        let output = target.output.clone();
+        for workspace in &mut state.workspaces {
+            if workspace.id == id {
+                workspace.is_active = true;
+                if focused {
+                    workspace.is_focused = true;
+                }
+            } else {
+                if workspace.output == output {
+                    workspace.is_active = false;
+                }
+                if focused {
+                    workspace.is_focused = false;
+                }
+            }
+        }
+        return Ok(true);
+    }
+    if let Some(payload) = value.get("WorkspaceUrgencyChanged") {
+        let id = payload["id"]
+            .as_u64()
+            .ok_or_else(|| invalid("urgency id missing"))?
+            .to_string();
+        let urgent = payload["urgent"]
+            .as_bool()
+            .ok_or_else(|| invalid("urgency flag missing"))?;
+        if let Some(workspace) = state.workspaces.iter_mut().find(|ws| ws.id == id) {
+            workspace.is_urgent = urgent;
+            return Ok(true);
+        }
+    }
+    Ok(false)
+}
+
+async fn run_stream(socket: &Path, sender: &watch::Sender<WorkspaceState>) -> io::Result<()> {
+    let stream = tokio::time::timeout(Duration::from_secs(3), UnixStream::connect(socket))
+        .await
+        .map_err(|_| io::Error::new(io::ErrorKind::TimedOut, "niri connect timeout"))??;
+    let (reader, mut writer) = stream.into_split();
+    writer.write_all(b"\"EventStream\"\n").await?;
+    let mut reader = BufReader::new(reader);
+
+    let ack = tokio::time::timeout(
+        Duration::from_secs(3),
+        read_bounded_line(&mut reader, MAX_NIRI_LINE),
+    )
+    .await
+    .map_err(|_| io::Error::new(io::ErrorKind::TimedOut, "niri handshake timeout"))??
+    .ok_or_else(|| invalid("niri closed before handshake"))?;
+    let ack: Value = serde_json::from_slice(&ack)?;
+    if ack != serde_json::json!({"Ok": "Handled"}) {
+        return Err(invalid("niri rejected EventStream"));
+    }
+    let mut state = WorkspaceState::default();
+    loop {
+        let line = read_bounded_line(&mut reader, MAX_NIRI_LINE)
+            .await?
+            .ok_or_else(|| io::Error::new(io::ErrorKind::UnexpectedEof, "niri disconnected"))?;
+        let event: Value = serde_json::from_slice(&line)?;
+        if apply_event(&mut state, &event)? {
+            sender.send_replace(state.clone());
+        }
+    }
+}
+
+/// Monitor the exact supplied NIRI_SOCKET, reconnecting on disconnect.
+/// Invalid paths are never substituted with a host/default compositor socket.
+pub async fn monitor(socket: PathBuf, sender: watch::Sender<WorkspaceState>) {
+    loop {
+        if std::fs::metadata(&socket).is_ok_and(|metadata| metadata.file_type().is_socket())
+            && let Err(error) = run_stream(&socket, &sender).await
+        {
+            eprintln!("kira-core: Niri IPC unavailable: {error}");
+        }
+        // Never keep stale workspace state after an IPC failure.
+        sender.send_replace(WorkspaceState::default());
+        tokio::time::sleep(RETRY_DELAY).await;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+    use tokio::io::{AsyncBufReadExt, AsyncWriteExt};
+    use tokio::net::UnixListener;
+
+    fn ws(id: u64, idx: u8, output: &str, focused: bool) -> Value {
+        json!({
+            "id": id, "idx": idx, "name": null, "output": output,
+            "is_active": focused, "is_focused": focused, "is_urgent": false,
+            "active_window_id": null, "future_extra_field": "ignored"
+        })
+    }
+
+    #[test]
+    fn ignores_unknown_fields_and_preserves_multimonitor_id_index() {
+        let result =
+            parse_workspaces(&json!([ws(90, 2, "HDMI", false), ws(4, 1, "DP", true)])).unwrap();
+        assert_eq!(result[0].id, "4");
+        assert_eq!(result[1].idx, 2);
+        assert_eq!(result[0].output.as_deref(), Some("DP"));
+    }
+
+    #[test]
+    fn focus_activation_and_urgency_update_without_resetting_other_output() {
+        let mut state = WorkspaceState::default();
+        apply_event(
+            &mut state,
+            &json!({"WorkspacesChanged": {
+                "workspaces": [ws(1, 1, "DP", true), ws(2, 2, "DP", false), ws(3, 1, "HDMI", false)]
+            }}),
+        )
+        .unwrap();
+        assert!(state.connected);
+        assert!(
+            apply_event(
+                &mut state,
+                &json!({"WorkspaceActivated": {"id": 2, "focused": true}})
+            )
+            .unwrap()
+        );
+        assert!(!state.workspaces[0].is_active);
+        assert!(state.workspaces[1].is_active);
+        assert!(state.workspaces[1].is_focused);
+        assert!(!state.workspaces[2].is_focused);
+        assert!(
+            apply_event(
+                &mut state,
+                &json!({"WorkspaceUrgencyChanged": {"id": 3, "urgent": true}})
+            )
+            .unwrap()
+        );
+        assert!(state.workspaces[2].is_urgent);
+        assert!(
+            apply_event(
+                &mut state,
+                &json!({"WorkspaceActivated": {"id": 3, "focused": false}})
+            )
+            .unwrap()
+        );
+        assert!(state.workspaces[1].is_focused); // activation without focus does not change global focus
+    }
+
+    #[test]
+    fn rejects_malformed_workspace_payload_without_fake_connected_state() {
+        let mut state = WorkspaceState::default();
+        assert!(
+            apply_event(
+                &mut state,
+                &json!({"WorkspacesChanged": {"workspaces": [{"id": 1}]}})
+            )
+            .is_err()
+        );
+        assert!(!state.connected);
+        assert!(socket_path_from(Some("relative.sock".into())).is_none());
+        assert!(socket_path_from(None).is_none());
+    }
+
+    #[tokio::test]
+    async fn mocked_socket_sends_only_event_stream_and_applies_updates() {
+        let dir = std::env::temp_dir().join(format!(
+            "kira-niri-test-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("niri.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let task = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let (reader, mut writer) = stream.into_split();
+            let mut reader = BufReader::new(reader);
+            let mut request = String::new();
+            reader.read_line(&mut request).await.unwrap();
+            assert_eq!(request, "\"EventStream\"\n");
+            writer.write_all(b"{\"Ok\":\"Handled\"}\n").await.unwrap();
+            writer
+                .write_all(
+                    (json!({"WorkspacesChanged": {"workspaces": [ws(70, 1, "winit", true)]}})
+                        .to_string()
+                        + "\n")
+                        .as_bytes(),
+                )
+                .await
+                .unwrap();
+            tokio::time::sleep(Duration::from_millis(40)).await;
+            writer
+                .write_all(b"{\"WorkspaceUrgencyChanged\":{\"id\":70,\"urgent\":true}}\n")
+                .await
+                .unwrap();
+        });
+        let (tx, mut rx) = watch::channel(WorkspaceState::default());
+        let result = tokio::time::timeout(Duration::from_secs(2), run_stream(&path, &tx))
+            .await
+            .unwrap();
+        assert!(result.is_err()); // mock closed its IPC socket
+        rx.changed().await.unwrap();
+        let last = rx.borrow().clone();
+        assert!(last.connected);
+        assert_eq!(last.workspaces[0].output.as_deref(), Some("winit"));
+        assert!(last.workspaces[0].is_urgent);
+        task.await.unwrap();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
     }
 }
 
@@ -895,6 +1415,60 @@ pub fn call(socket: &Path, request: &RpcRequest) -> io::Result<RpcResponse> {
     Ok(response)
 }
 
+/// Subscribe to live read-only workspace snapshots over one persistent
+/// Core connection. Each JSON-RPC frame repeats the id of the subscription
+/// request; the callback is invoked on the CALLER'S thread, not GTK's loop.
+/// Returns on disconnect so the caller can reconnect and mark the UI offline.
+pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
+    socket: &Path,
+    mut on_state: F,
+) -> io::Result<()> {
+    let mut stream = UnixStream::connect(socket)?;
+    stream.set_write_timeout(Some(Duration::from_secs(2)))?;
+    let request = RpcRequest {
+        jsonrpc: crate::PROTOCOL_VERSION.into(),
+        id: 0,
+        method: "subscribe_workspaces".into(),
+    };
+    serde_json::to_writer(&mut stream, &request)?;
+    stream.write_all(b"\n")?;
+    stream.flush()?;
+
+    let mut reader = BufReader::new(stream);
+    loop {
+        let mut line = Vec::new();
+        reader
+            .by_ref()
+            .take(MAX_RESPONSE_BYTES + 1)
+            .read_until(b'\n', &mut line)?;
+        if line.is_empty() {
+            return Err(io::Error::new(
+                io::ErrorKind::UnexpectedEof,
+                "Core subscription closed",
+            ));
+        }
+        if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Invalid workspace frame",
+            ));
+        }
+        let reply: RpcResponse = serde_json::from_slice(&line)?;
+        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some()
+        {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Invalid workspace reply",
+            ));
+        }
+        let state = reply.result.ok_or_else(|| {
+            io::Error::new(io::ErrorKind::InvalidData, "Workspace result missing")
+        })?;
+        let state: crate::WorkspaceState = serde_json::from_value(state)?;
+        on_state(state);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -937,6 +1511,40 @@ mod tests {
     }
 
     #[test]
+    fn live_workspace_subscription_receives_multiple_snapshots() {
+        let dir = std::env::temp_dir().join(format!("kira-sub-client-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("ipc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut raw = String::new();
+            reader.read_line(&mut raw).unwrap();
+            let request: RpcRequest = serde_json::from_str(&raw).unwrap();
+            assert_eq!(request.method, "subscribe_workspaces");
+            assert_eq!(request.id, 0);
+            let mut stream = reader.into_inner();
+            for state in [false, true] {
+                let reply = crate::RpcResponse::success(
+                    0,
+                    serde_json::json!({
+                        "connected": state, "workspaces": []
+                    }),
+                );
+                serde_json::to_writer(&mut stream, &reply).unwrap();
+                stream.write_all(b"\n").unwrap();
+            }
+        });
+        let mut received = Vec::new();
+        assert!(subscribe_workspaces(&path, |state| received.push(state.connected)).is_err());
+        assert_eq!(received, vec![false, true]);
+        server.join().unwrap();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
+    }
+
+    #[test]
     fn missing_socket_returns_error() {
         let response = call(
             Path::new("/nonexistent/kira-desktop.sock"),
@@ -951,8 +1559,8 @@ mod tests {
 }
 
 FILE	crates/kira-ipc/src/lib.rs
-//! Minimal newline-delimited JSON-RPC 2.0 contracts shared by Core and Shell.
-//! Events and typed parameter schemas will be introduced in subsequent milestones.
+//! Read-only, bounded JSON-RPC state shared between Core and the GTK Shell.
+//! Niri EventStream updates are owned by Core; UI can only query snapshots.
 
 pub mod client;
 
@@ -984,6 +1592,24 @@ pub struct RpcError {
     pub message: String,
 }
 
+/// Niri workspace id is a u64. Send it as a string to avoid JS precision loss.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Workspace {
+    pub id: String,
+    pub idx: u8,
+    pub name: Option<String>,
+    pub output: Option<String>,
+    pub is_active: bool,
+    pub is_focused: bool,
+    pub is_urgent: bool,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WorkspaceState {
+    pub connected: bool,
+    pub workspaces: Vec<Workspace>,
+}
+
 impl RpcResponse {
     pub fn success(id: u64, value: Value) -> Self {
         Self {
@@ -1008,6 +1634,10 @@ impl RpcResponse {
 }
 
 pub fn dispatch(request: RpcRequest) -> RpcResponse {
+    dispatch_with_workspaces(request, &WorkspaceState::default())
+}
+
+pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> RpcResponse {
     if request.jsonrpc != PROTOCOL_VERSION {
         return RpcResponse::failure(Some(request.id), -32600, "Invalid Request");
     }
@@ -1018,6 +1648,7 @@ pub fn dispatch(request: RpcRequest) -> RpcResponse {
             request.id,
             json!({ "version": env!("CARGO_PKG_VERSION"), "status": "bootstrap" }),
         ),
+        "get_workspaces" => RpcResponse::success(request.id, json!(state)),
         _ => RpcResponse::failure(Some(request.id), -32601, "Method not found"),
     }
 }
@@ -1059,6 +1690,47 @@ mod tests {
             method: "ping".into(),
         });
         assert_eq!(response.error.unwrap().code, -32600);
+    }
+
+    #[test]
+    fn disconnected_niri_does_not_fabricate_workspaces() {
+        let response = dispatch(RpcRequest {
+            jsonrpc: PROTOCOL_VERSION.into(),
+            id: 3,
+            method: "get_workspaces".into(),
+        });
+        assert_eq!(
+            response.result,
+            Some(json!({"connected": false, "workspaces": []}))
+        );
+    }
+
+    #[test]
+    fn typed_workspaces_preserve_large_ids_and_flags() {
+        let state = WorkspaceState {
+            connected: true,
+            workspaces: vec![Workspace {
+                id: u64::MAX.to_string(),
+                idx: 2,
+                name: Some("code".into()),
+                output: Some("DP-1".into()),
+                is_active: true,
+                is_focused: false,
+                is_urgent: true,
+            }],
+        };
+        let response = dispatch_with_workspaces(
+            RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 4,
+                method: "get_workspaces".into(),
+            },
+            &state,
+        );
+        let value = response.result.unwrap();
+        assert_eq!(value["workspaces"][0]["id"], u64::MAX.to_string());
+        assert_eq!(value["workspaces"][0]["is_focused"], false);
+        assert_eq!(value["workspaces"][0]["is_urgent"], true);
     }
 }
 
@@ -1139,11 +1811,18 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{PROTOCOL_VERSION, RpcRequest, RpcResponse};
+use kira_ipc::{PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
 use webkit6::prelude::*;
 
 const BAR_HEIGHT: i32 = 42;
 const MAX_BRIDGE_MESSAGE_BYTES: usize = 4096;
+
+/// Only the GTK main loop dispatches JS events; the worker threads contain
+/// no GTK/WebKit handles.
+enum ShellDelivery {
+    Rpc(String),
+    Workspaces(WorkspaceState),
+}
 
 fn ui_index() -> PathBuf {
     let directory = env::var_os("KIRA_UI_DIR")
@@ -1171,7 +1850,10 @@ fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     if request.jsonrpc != PROTOCOL_VERSION {
         return RpcResponse::failure(Some(request.id), -32600, "Invalid JSON-RPC version");
     }
-    if !matches!(request.method.as_str(), "ping" | "get_state") {
+    if !matches!(
+        request.method.as_str(),
+        "ping" | "get_state" | "get_workspaces"
+    ) {
         return RpcResponse::failure(Some(request.id), -32601, "Method not allowed");
     }
     match socket {
@@ -1277,8 +1959,28 @@ fn main() {
 
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
-        let (sender, receiver) = mpsc::channel::<String>();
+        let (sender, receiver) = mpsc::channel::<ShellDelivery>();
         let socket = core_socket();
+
+        // One long-lived, read-only Core subscription. Core receives Niri
+        // EventStream and immediately forwards changed snapshots to this
+        // worker, avoiding the previous 1.5-second Svelte polling lag.
+        if let Some(path) = socket.clone() {
+            let updates = sender.clone();
+            std::thread::spawn(move || {
+                loop {
+                    let result = kira_ipc::client::subscribe_workspaces(&path, |state| {
+                        let _ = updates.send(ShellDelivery::Workspaces(state));
+                    });
+                    // Never show stale workspace data after a Core failure.
+                    let _ = updates.send(ShellDelivery::Workspaces(WorkspaceState::default()));
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Core workspace stream disconnected: {error}");
+                    }
+                    std::thread::sleep(Duration::from_millis(750));
+                }
+            });
+        }
         manager.connect_script_message_received(Some("kira"), move |_, value| {
             let message = value.to_string().to_string();
             let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
@@ -1291,7 +1993,7 @@ fn main() {
                     process_message(&message, socket.as_deref())
                 };
                 if let Ok(serialized) = serde_json::to_string(&response) {
-                    let _ = sender.send(serialized);
+                    let _ = sender.send(ShellDelivery::Rpc(serialized));
                 }
             });
         });
@@ -1331,11 +2033,20 @@ fn main() {
 
         let webview = view.clone();
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
-            while let Ok(response) = receiver.try_recv() {
-                // Double encoding ensures response content cannot become JS source.
-                if let Ok(encoded) = serde_json::to_string(&response) {
+            while let Ok(delivery) = receiver.try_recv() {
+                // Double encoding ensures payload content cannot become JS.
+                let (event, payload) = match delivery {
+                    ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
+                    ShellDelivery::Workspaces(state) => {
+                        let Ok(serialized) = serde_json::to_string(&state) else {
+                            continue;
+                        };
+                        ("kira:workspaces", serialized)
+                    }
+                };
+                if let Ok(encoded) = serde_json::to_string(&payload) {
                     let script = format!(
-                        "window.dispatchEvent(new CustomEvent('kira:rpc', {{ detail: JSON.parse({encoded}) }}));"
+                        "window.dispatchEvent(new CustomEvent('{event}', {{ detail: JSON.parse({encoded}) }}));"
                     );
                     webview.evaluate_javascript(
                         &script,
@@ -1398,6 +2109,15 @@ mod tests {
     fn rejects_unsupported_method_without_core_connection() {
         let result = process_message(r#"{"jsonrpc":"2.0","id":9,"method":"execute_shell"}"#, None);
         assert_eq!(result.error.unwrap().code, -32601);
+    }
+
+    #[test]
+    fn allows_read_only_workspace_method_but_reports_missing_core() {
+        let result = process_message(
+            r#"{"jsonrpc":"2.0","id":7,"method":"get_workspaces"}"#,
+            None,
+        );
+        assert_eq!(result.error.unwrap().code, -32000);
     }
 
     #[test]
@@ -1752,7 +2472,93 @@ nix build
 ./result/bin/kira-shell # terminal 2
 ```
 
-The native Nix package build is tested in CI; verify appearance and behavior manually under Niri.
+The native Nix package build is tested in CI; verify appearance and behavior manually under Niri. The user confirmed that the nested packaged QA smoke passed locally (Core bootstrap, WebKit/Svelte DOM, clean shutdown), but visual screenshot review remains pending.
+
+## Build caching and release iteration
+
+**Why the previous release build was slow:** the old
+`rustPlatform.buildRustPackage` compiled third-party Rust bindings (GTK4,
+JavaScriptCore/WebKitGTK, Soup3) and Kira's own Rust code in one derivation.
+A change to a Rust file could invalidate that whole build and trigger the
+expensive compilation again. The runtime GTK/WebKit C libraries themselves
+are normally prebuilt Nix store inputs; the `Compiling gtk4 v...` log is the
+**Rust crate**.
+
+The packaged build is now split with pinned **Crane** into:
+
+1. `cargoArtifacts`: compiles third-party Rust crates from
+   `Cargo.toml`/`Cargo.lock` using a dummy workspace. Editing Kira's
+   `.rs` files or Svelte files does **not** invalidate this output.
+2. `rustBinaries`: builds `kira-core` and `kira-shell` from
+   `crates/` against the cached artifacts. It is not influenced by
+   Svelte-only changes.
+3. `frontend`: independent fixed-hash npm dependency fetch and Vite bundle.
+4. Final `kira-desktop`: inexpensive output assembly and GTK wrapper
+   pointing `KIRA_UI_DIR` at bundled UI.
+
+The `nix develop` shell also provides **sccache** and automatically sets
+`RUSTC_WRAPPER` for Cargo. Compiler artifacts persist under
+`${XDG_CACHE_HOME:-$HOME/.cache}/kira-desktop/sccache` (default 10 GiB
+limit) and can be reused across target directories and branches when
+compiler version and flags match. Existing `target/debug` artifacts are still
+used by Cargo itself. To inspect actual compiler-cache hits:
+
+```sh
+nix develop --command sccache --show-stats
+```
+
+`sccache` does not make unrelated build profiles interchangeable, and cannot
+reuse artifacts if Rust or native dependency versions change. The release Nix
+sandbox intentionally does not use this mutable local cache.
+
+To run a fast, **incremental local** smoke without Nix release compilation:
+
+```sh
+nix develop --command task qa:visual:fast
+```
+
+For true release QA:
+
+```sh
+nix develop --command task qa:visual:release
+```
+
+The first Nix build after this packaging change must compile the new
+dependency derivation **once**, even if old `buildRustPackage` outputs are
+already in the Nix store. Subsequent changes to Kira's Rust sources should
+reuse it if `Cargo.lock`, manifests, native library inputs, toolchain and
+Crane lock remain the same. A Nix garbage collection removing the derivation
+can force a rebuild, so avoid `nix store gc` while actively iterating.
+
+Use `nix build .#default -L` to inspect what compiles. To measure
+derivation reuse, inspect:
+
+```sh
+nix path-info --derivation .#default
+nix build .#default --dry-run
+```
+
+Nix stores build outputs by hashes; Cargo's local `target/debug` and
+Nix's `/nix/store` are **separate caches**, and are not automatically
+interchangeable. An exact release derivation should be a no-op on subsequent
+runs; a changed dependency set or Nix toolchain legitimately requires a
+fresh dependency compilation.
+
+### Optional shared CI / multi-machine cache
+
+Nix's local store persists on the same machine, but GitHub-hosted runners
+are ephemeral. To share compiled dependency derivations between CI runs,
+an optional **Cachix** cache can be enabled by configuring:
+
+- Repository variable `KIRA_CACHIX_NAME`: existing Cachix cache name.
+- Repository secret `CACHIX_AUTH_TOKEN`: write token for that cache.
+- On a trusted local NixOS machine, configure the same cache as an
+  explicitly trusted binary substituter using Cachix's published instructions.
+
+The GitHub workflow only enables this when the variable is configured.
+Forked pull requests do not upload packages. Do not paste cache tokens
+into source files or commit `nix.conf` changes with private keys.
+Without a shared cache, dependency reuse remains local to each Nix store.
 
 ## Developer tasks
 
@@ -1764,6 +2570,10 @@ task shell:check     # compile the native GTK/WebKit Shell
 task dev:preview     # fast Cargo + Vite nested preview
 task dev:preview:run # reopen already built preview, no compilation
 task dev:preview:release # full Nix release preview
+task qa:visual:fast    # passive Niri/Core/Svelte smoke (no screenshots)
+task qa:visual:release # passive packaged Nix smoke (no screenshots)
+task qa:visual:capture:fast    # explicit four-scale PNGs via grim, no clipboard
+task qa:visual:capture:release # explicit packaged four-scale PNG capture
 task build           # frontend + all release binaries
 task core:run        # launch the Core daemon
 task shell:run       # rebuild frontend and launch the Shell
@@ -1799,7 +2609,130 @@ The SDK correlates numeric request IDs, applies timeouts, and reports disconnect
 {"jsonrpc":"2.0","id":1,"result":"pong"}
 ```
 
-The IPC transport uses newline-delimited JSON. The bootstrap `get_state` response contains version and status only. There is no Niri integration or event subscription mechanism yet. The Core socket is intended for the trusted local user session only.
+The IPC transport uses newline-delimited JSON. The bootstrap `get_state` response contains version and status only. Niri workspaces now update through Core's Niri EventStream and a persistent read-only Core → Shell subscription, forwarded as typed `kira:workspaces` WebKit DOM events to Svelte. The Core socket is intended for the trusted local user session only.
+
+## Read-only Niri workspaces (Stage 1 first increment)
+
+Kira Core connects to the exact absolute `NIRI_SOCKET` supplied by its
+environment. The nested preview ensures the value points to its **child**
+compositor, never the parent. With no Niri socket, Core still serves
+`ping` and `get_state`, while `get_workspaces` returns
+`{"connected":false,"workspaces":[]}`, **not** hardcoded workspace 1–3.
+
+Core writes only the Niri request `"EventStream"` and reads its full initial
+`WorkspacesChanged` snapshot plus subsequent `WorkspaceActivated` and
+`WorkspaceUrgencyChanged` events. There are no `Action` requests and no
+direct compositor-changing operations. On disconnect or malformed events,
+Core clears stale state and reconnects with a one-second delay.
+
+The public Core contract is:
+
+```json
+{"jsonrpc":"2.0","id":2,"method":"get_workspaces"}
+```
+
+Example (illustrative values; not fabricated in the actual UI):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "connected": true,
+    "workspaces": [
+      {
+        "id": "42",
+        "idx": 1,
+        "name": null,
+        "output": "DP-1",
+        "is_active": true,
+        "is_focused": true,
+        "is_urgent": false
+      }
+    ]
+  }
+}
+```
+
+`id` is a stable Niri `u64` serialized to a **string** so JavaScript
+never rounds it. `idx` is the workspace position **per output**, not a
+global identifier. `is_active` and `is_focused` are distinct: on multiple
+outputs each can have an active workspace but only one is globally focused.
+Unknown Niri event variants are ignored; message size is bounded.
+
+The Shell explicitly allows the read-only `get_workspaces` RPC and blocks
+all write-like methods. The Svelte Top Bar renders real workspace names/indices,
+focus/activation/urgency, or an explicit `NIRI OFFLINE` state; it no longer
+uses the fake `[1, 2, 3]` visual demo. **Core listens to events**;
+the frontend receives a pushed snapshot whenever Core detects a change.
+Core-to-UI workspace subscriptions are now implemented; updates use a persistent read-only Core socket and WebKit DOM events.
+
+### Immediate Core → Shell → Svelte workspace updates
+
+The shell opens exactly one persistent Core IPC subscription with the internal
+`subscribe_workspaces` request (newline-delimited JSON-RPC, id `0`). Core
+sends an initial typed `WorkspaceState` snapshot, then another frame each
+time Niri changes its workspace state. The GTK Shell reads the socket on a
+worker thread and dispatches a `kira:workspaces` DOM CustomEvent on its
+main thread. Svelte subscribes on mount, unsubscribes on cleanup, and makes
+one initial `get_workspaces` request only to cover any startup race.
+
+**There is no 1.5-second Svelte polling timer anymore.** Core reconnects
+to Niri after a disconnect; Shell reconnects to Core and pushes
+`connected:false` while unavailable so the UI does not retain stale state.
+`subscribe_workspaces` is an internal Core socket operation and is *not*
+exposed to WebKit's JS request allowlist. Kira never sends Niri `Action`.
+
+This removes the artificial 1–2 second lag. Actual latency and keyboard
+focus transitions still require an interactive NixOS/Wayland check.
+
+### Smoke-test nested Niri workspace state
+
+```sh
+nix develop --command task qa:visual:fast
+nix develop --command task qa:visual:release
+```
+
+Both smoke modes now wait for the Niri event stream's initial workspace
+snapshot **through Core's actual `get_workspaces` RPC**. They do not resize
+the screen, capture screenshots or modify the host compositor.
+
+For a manual interaction check:
+
+```sh
+nix develop --command task dev:preview
+```
+
+The generated **nested-only** Niri KDL uses `Mod`, which resolves to
+**Alt** in a windowed Niri. This avoids the four-modifier
+`Alt+Shift+Ctrl+2` shortcut that could conflict with a host layout switch.
+
+- Focus the **nested Niri** and press **Alt+T** to launch `foot`
+  inside it (`foot` is included in `nix develop`).
+- Press **Alt+2** to focus workspace 2 and **Alt+T** to open another
+  terminal there; **Alt+1/2/3** switches workspace.
+- For moving the **focused window**, press **Alt+Ctrl+2** (or **Alt+Ctrl+1** to move it back).
+  The bindings use `move-window-to-workspace focus=false N`: the window
+  moves, but the focus stays on the original workspace. Switch manually
+  with **Alt+1/2** to see the moved window and verify Kira's focus.
+- **Alt+Shift+Q** exits nested Niri and cleans up the preview.
+
+Niri dynamically creates and removes empty workspaces; leave a
+terminal on each if comparing two persistent workspaces. If the
+shortcut is not handled, inspect `echo "$NIRI_SOCKET"` followed by
+`niri msg --json workspaces` and `niri msg --json windows` **inside
+the nested terminal**. Do not run these commands if that socket is
+missing. Compare actual `is_focused` and `is_active` with the Top Bar.
+
+Bindings exist **only** in the throwaway preview config. They do not
+change the host Niri or any user config. They do not run when calling
+read-only QA smoke, and they do not add workspace actions to Kira Core.
+If Niri IPC is unavailable the bar should say `NIRI OFFLINE`.
+
+Official protocol references:
+- https://github.com/niri-wm/niri/wiki/IPC
+- https://docs.rs/niri-ipc/latest/niri_ipc/enum.Event.html
+- https://docs.rs/niri-ipc/latest/niri_ipc/struct.Workspace.html
 
 ## Updating dependencies
 
@@ -1807,13 +2740,113 @@ The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Updat
 
 ## Next milestones
 
-1. Visual QA for Kira Default on several screen scales, then packaged Shell smoke test.
-2. Niri IPC workspace state and typed event subscriptions.
+1. Visual QA for Kira Default across scales and packaged Shell smoke test. The user confirmed prior capture runs, but the PNGs still require visual review. The default QA command is now passive; explicit screenshot capture uses grim without clipboard side effects. See [QA_VISUAL.md](QA_VISUAL.md).
+2. Read-only Niri workspace state from Core EventStream is implemented in the Stage 1 draft PR. Core-to-Svelte typed workspace pushes are implemented.
 3. KDL configuration engine with validation and hot reload.
 4. Real workspace, launcher and dock widgets.
 5. System-service integrations and user widget loading.
 
 Do not claim implementation or isolation of untrusted plugins until the code and tests exist.
+
+FILE	docs/QA_VISUAL.md
+# Этап 0: Visual QA и проверка Nix-пакета
+
+**Статус:** пользователь успешно запустил предыдущую QA-команду дважды
+(2026-11-01: каталоги `20261101-004226-83233` и `20261101-004330-83927`).
+По предоставленным логам Nix-пакет собран, автоматический захват завершён и
+дочерние процессы остановлены. **Сами PNG не были просмотрены, поэтому
+визуальная приёмка остаётся открытой.** Задача: [#10](https://github.com/iivkis/kira-desktop/issues/10).
+
+## Безопасная проверка по умолчанию: без скриншотов
+
+Из существующей графической Wayland-сессии на NixOS:
+
+```sh
+nix develop --command task qa:visual:release
+```
+
+Команда собирает `nix build .#default`, запускает отдельный оконный Niri,
+Core и Shell, дожидается `Svelte entrypoint mounted` и
+`Svelte panel DOM verified`, отправляет настоящий `get_state` в Core
+через отдельный Unix socket и запрашивает список виртуальных выходов Niri.
+После проверки завершает только собственные дочерние процессы.
+
+**Важно:** `qa:visual:release` теперь **не переключает масштабы, не делает
+скриншотов, не сохраняет PNG и не копирует ничего в буфер обмена**. Это
+проверка работоспособности, а не полноценная визуальная приёмка.
+
+Быстрый вариант (Cargo debug, не проверяет поставляемый Nix-пакет):
+
+```sh
+nix develop --command task qa:visual:fast
+```
+
+## Снимки экрана: только явный выбор
+
+Для проверки масштабов пользователь **отдельно** запускает:
+
+```sh
+nix develop --command task qa:visual:capture:release
+```
+
+Для Cargo debug:
+
+```sh
+nix develop --command task qa:visual:capture:fast
+```
+
+Только эти команды временно меняют масштаб **вложенного** Niri на
+100%, 125%, 150% и 200%, записывая по одному PNG на каждом уровне в
+`artifacts/visual-qa/<timestamp>-<pid>/`.
+
+Снимки снимаются `grim -o <nested-output> <file>`, работающим через
+дочерний `WAYLAND_DISPLAY` с поддержкой `wlr-screencopy`. В отличие от
+встроенной команды `niri msg action screenshot-screen`, **grim не
+копирует снимок в буфер обмена**. `grim` присутствует в `nix develop`;
+при его отсутствии захват завершится ошибкой, без скрытого возврата к
+команде Niri, копирующей картинку.
+
+Вместе с PNG сохраняется `manifest.json` (Core, масштаб, разрешение,
+SHA-256, `captured_review_pending`). Скриншоты **не выгружаются в GitHub**
+и каталог `artifacts/visual-qa/` добавлен в `.gitignore`.
+Снимки относятся к изолированному Niri; основная графическая сессия и
+конфигурация `~/.config/niri` не меняются.
+
+**Предыдущая версия QA**, запущенная 1 ноября 2026, применяла
+`niri msg action screenshot-screen`. Эта команда Niri также копирует
+снимок в буфер обмена, что было неожиданным побочным эффектом.
+Для новых запусков такое поведение устранено.
+
+## Ручная визуальная приёмка
+
+После явного захвата скриншотов открыть все PNG и проверить:
+
+- Top Bar на верхнем крае, высота 42 логических пикселя, нет обрезанных
+  областей, пустых полос и смещений.
+- KIRA, workspaces preview, центр, `CORE Online`, часы отображаются
+  без наложений.
+- На дробных масштабах нет заметного размытия или дробных щелей.
+- Цвета соответствуют Kira Default, фокус и выбранное пространство
+  различимы не только цветом.
+- Дополнительно **вручную** открыть `task dev:preview` и проверить
+  узкие и широкие размеры окна (ориентиры 800/1024/1280 пикселей).
+  Скриншоты разных scale **не равны** проверке разных ширин.
+- После завершения убедиться, что основные приложения Niri не были
+  затронуты и остались запущены.
+
+При дефектах оформить отдельный Issue с масштабом, шириной, ожидаемым
+результатом и обезличенным кадром (если нужен). **CI и успешный
+`manifest.json` не заменяют визуального просмотра.**
+
+## Автоматические тесты
+
+`tests/test_qa_visual.py` проверяет изоляцию Unix sockets, реальный
+контракт Core `get_state` с мок-сервером, ожидание Svelte DOM,
+read-only smoke без изменения масштаба и без скриншотов, четыре масштаба
+только в режиме capture, `grim` без clipboard, PNG и честный
+`status: failed` при отказе. Это mock-тесты, без настоящего GPU.
+
+См. также [PREVIEW.md](PREVIEW.md) и [DEVELOPMENT.md](DEVELOPMENT.md).
 
 FILE	docs/SPECIFICATION.md
 # Kira Desktop
@@ -2227,8 +3260,10 @@ FILE	flake.nix
   description = "Kira Desktop: NixOS-first Wayland shell built on Niri";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  # Pinned Crane release; Cargo dependencies compile in a separate derivation.
+  inputs.crane.url = "github:ipetkov/crane/eb35abda9f232cc6610b1d1e3200d15c49b7ac54";
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, crane }:
     let
       systems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = f:
@@ -2247,24 +3282,34 @@ FILE	flake.nix
           packages = with pkgs; [
             cargo
             rustc
+            sccache # persistent compiler cache for local cargo builds
             rustfmt
             clippy
             nodejs
             go-task
             python3
             niri
+            foot # optional nested Niri terminal for interactive workspace QA
+            grim # explicit visual QA screenshot capture, does not copy clipboard
             pkg-config
             gtk4
             gtk4-layer-shell
             webkitgtk_6_0
             pipewire
           ];
+          # Local Cargo uses a persistent compiler cache; sandboxed nix build
+          # instead reuses Crane's immutable Rust dependency derivation.
+          shellHook = ''
+            export RUSTC_WRAPPER="${pkgs.sccache}/bin/sccache"
+            export SCCACHE_DIR="''${XDG_CACHE_HOME:-$HOME/.cache}/kira-desktop/sccache"
+            export SCCACHE_CACHE_SIZE="''${SCCACHE_CACHE_SIZE:-10G}"
+          '';
         };
       });
 
       packages = forAllSystems (pkgs:
         if hasApplicationSources
-        then { default = pkgs.callPackage ./nix/package.nix { }; }
+        then { default = pkgs.callPackage ./nix/package.nix { craneLib = crane.mkLib pkgs; }; }
         else { }
       );
 
@@ -2542,11 +3587,12 @@ FILE	frontend/src/App.svelte
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request } from './lib/sdk/core';
+  import { request, onWorkspaceUpdate, type WorkspaceState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
+  let workspaceState = $state<WorkspaceState | null>(null);
 
   onMount(() => {
     const clock = window.setInterval(() => {
@@ -2568,10 +3614,31 @@ FILE	frontend/src/App.svelte
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
+    // Core listens to Niri EventStream. Shell forwards each changed snapshot
+    // as kira:workspaces, so focus updates arrive without polling.
+    let pushReceived = false;
+    const unsubscribe = onWorkspaceUpdate((state) => {
+      if (disposed) return;
+      pushReceived = true;
+      workspaceState = state;
+    });
+
+    // Initial request covers the small gap between WebKit page load and
+    // event listener registration. An older RPC reply must never overwrite
+    // a newer pushed event.
+    void request('get_workspaces').then((state) => {
+      if (!disposed && !pushReceived) workspaceState = state;
+    }).catch(() => {
+      if (!disposed && !pushReceived) {
+        workspaceState = { connected: false, workspaces: [] };
+      }
+    });
+
     return () => {
       disposed = true;
       window.clearInterval(clock);
       window.clearInterval(statusTimer);
+      unsubscribe();
     };
   });
 </script>
@@ -2583,7 +3650,7 @@ FILE	frontend/src/App.svelte
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
     </div>
     <span class="bar__separator" aria-hidden="true"></span>
-    <WorkspacePreview />
+    <WorkspacePreview state={workspaceState} />
   </section>
 
   <div class="bar__center" aria-label="Kira Desktop environment">
@@ -2855,43 +3922,83 @@ FILE	frontend/src/lib/components/CoreStatus.svelte
 
 FILE	frontend/src/lib/components/WorkspacePreview.svelte
 <script lang="ts">
-  // Visual-only until Kira Core receives real Niri workspace state.
-  const mockWorkspaces = [1, 2, 3] as const;
+  import type { WorkspaceState } from '../sdk/core';
+
+  let { state }: { state: WorkspaceState | null } = $props();
 </script>
 
-<ol class="workspace-preview" aria-label="Workspace layout preview, not connected to Niri">
-  {#each mockWorkspaces as number}
-    <li
-      class="workspace-preview__item"
-      class:preview-selected={number === 1}
-      title={'Workspace ' + number + ' (layout preview only)'}
-    >
-      <span>{number}</span>
-      {#if number === 1}
-        <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
-      {/if}
-    </li>
-  {/each}
-</ol>
+{#if !state}
+  <span class="workspace-status" role="status" aria-live="polite">NIRI…</span>
+{:else if !state.connected}
+  <span class="workspace-status" role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
+{:else if state.workspaces.length === 0}
+  <span class="workspace-status" role="status" aria-live="polite">NO WORKSPACES</span>
+{:else}
+  <ol class="workspace-preview" aria-label="Niri workspaces (read-only)">
+    {#each state.workspaces as workspace (workspace.id)}
+      <li
+        class="workspace-preview__item"
+        class:preview-selected={workspace.is_focused}
+        class:preview-active={workspace.is_active}
+        class:preview-urgent={workspace.is_urgent}
+        aria-label={'Workspace ' + (workspace.name || workspace.idx)
+          + (workspace.output ? ' on ' + workspace.output : '')
+          + (workspace.is_focused ? ', focused' : '')
+          + (workspace.is_active ? ', active' : '')
+          + (workspace.is_urgent ? ', urgent' : '')}
+        title={'Workspace ' + (workspace.name || workspace.idx)
+          + (workspace.output ? ' on ' + workspace.output : '')
+          + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
+          + (workspace.is_urgent ? ' (urgent)' : '')}
+      >
+        <span class="workspace-preview__label">{workspace.name || workspace.idx}</span>
+        {#if workspace.is_focused}
+          <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
+        {:else if workspace.is_urgent}
+          <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
+        {/if}
+      </li>
+    {/each}
+  </ol>
+{/if}
 
 <style>
+  .workspace-status {
+    display: flex;
+    align-items: center;
+    height: 27px;
+    color: var(--kira-color-muted);
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
   .workspace-preview {
     display: flex;
     align-items: center;
     gap: 5px;
+    max-width: min(33vw, 330px);
     margin: 0;
     padding: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
     list-style: none;
   }
+
+  .workspace-preview::-webkit-scrollbar { display: none; }
 
   .workspace-preview__item {
     position: relative;
     display: grid;
+    flex: none;
     place-items: center;
-    width: 27px;
+    min-width: 27px;
+    max-width: 76px;
     height: 27px;
+    padding-inline: 5px;
+    box-sizing: border-box;
     border-radius: var(--kira-radius-sm);
-    /* Lilac Ash on the subtly raised left bar is below 4.5:1. */
     color: color-mix(in srgb, var(--kira-color-text) 80%, var(--kira-color-background));
     font-size: 11px;
     font-variant-numeric: tabular-nums;
@@ -2901,6 +4008,19 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
     transition:
       background-color var(--kira-motion-fast) var(--kira-motion-easing),
       color var(--kira-motion-fast) var(--kira-motion-easing);
+  }
+
+  .workspace-preview__label {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 66px;
+  }
+
+  .workspace-preview__item.preview-active:not(.preview-selected) {
+    background: var(--kira-color-surface-subtle);
+    box-shadow: inset 0 0 0 1px var(--kira-color-border);
   }
 
   .workspace-preview__item.preview-selected {
@@ -2917,11 +4037,24 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
     border-radius: 2px;
     background: var(--kira-color-background);
   }
+
+  .workspace-preview__item.preview-urgent:not(.preview-selected) {
+    box-shadow: inset 0 0 0 1px var(--kira-color-accent);
+  }
+
+  .workspace-preview__urgent-mark {
+    position: absolute;
+    bottom: 2px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--kira-color-accent);
+  }
 </style>
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request } from './core';
+import { deliverReply, request, onWorkspaceUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -2945,6 +4078,46 @@ describe('Core SDK JSON-RPC bridge', () => {
     await expect(result).resolves.toEqual({ version: '0.1.0', status: 'bootstrap' });
   });
 
+  it('requests typed real Niri workspaces with JS-safe IDs', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const result = request('get_workspaces');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number; method: string };
+    expect(payload.method).toBe('get_workspaces');
+    const workspace = {
+      id: '18446744073709551615', idx: 2, name: 'code', output: 'DP-1',
+      is_active: true, is_focused: false, is_urgent: true,
+    };
+    deliverReply({
+      jsonrpc: '2.0', id: payload.id,
+      result: { connected: true, workspaces: [workspace] },
+    });
+    await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
+  });
+
+  it('delivers live workspace events and unsubscribes without polling', () => {
+    const handlers = new Map<string, EventListener>();
+    const addEventListener = vi.fn((name: string, listener: EventListener) => {
+      handlers.set(name, listener);
+    });
+    const removeEventListener = vi.fn();
+    globalThis.window = { addEventListener, removeEventListener } as unknown as Window & typeof globalThis;
+    const onChange = vi.fn();
+    const stop = onWorkspaceUpdate(onChange);
+    const handler = handlers.get('kira:workspaces');
+    expect(handler).toBeDefined();
+    handler!({ detail: { connected: true, workspaces: [{
+      id: '33', idx: 2, name: null, output: 'winit',
+      is_active: true, is_focused: true, is_urgent: false,
+    }] } } as unknown as Event);
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onChange.mock.calls[0][0].workspaces[0].idx).toBe(2);
+    handler!({ detail: { workspaces: [] } } as unknown as Event);
+    expect(onChange).toHaveBeenCalledOnce();
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:workspaces', handler);
+  });
+
   it('rejects Core errors', async () => {
     const postMessage = vi.fn();
     globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
@@ -2962,9 +4135,42 @@ export interface CoreState {
   status: 'bootstrap';
 }
 
+export interface Workspace {
+  /** Stable Niri u64 ID encoded as a string (JavaScript numbers lose precision). */
+  id: string;
+  /** 1-based workspace position on its own output, NOT a globally unique ID. */
+  idx: number;
+  name: string | null;
+  output: string | null;
+  is_active: boolean;
+  is_focused: boolean;
+  is_urgent: boolean;
+}
+
+export interface WorkspaceState {
+  connected: boolean;
+  workspaces: Workspace[];
+}
+
+/** Listen for typed workspace push events emitted by the native Shell.
+ * No Niri or Core polling is performed here. Unsubscribe on Svelte unmount.
+ */
+export function onWorkspaceUpdate(callback: (state: WorkspaceState) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const state = (event as CustomEvent<WorkspaceState>).detail;
+    if (!state || typeof state.connected !== 'boolean' ||
+        !Array.isArray(state.workspaces)) return;
+    callback(state);
+  };
+  window.addEventListener('kira:workspaces', listener);
+  return () => window.removeEventListener('kira:workspaces', listener);
+}
+
 type Methods = {
   ping: string;
   get_state: CoreState;
+  get_workspaces: WorkspaceState;
 };
 
 type RpcReply = {
@@ -3009,7 +4215,7 @@ if (typeof window !== 'undefined') {
 }
 
 /**
- * Asks the Core for read-only bootstrap state. Resolves only after the Rust
+ * Asks the Core for an allowlisted read-only method. Resolves only after the Rust
  * Host has returned a response; rejects if Core is unavailable or times out.
  */
 export function request<M extends keyof Methods>(method: M): Promise<Methods[M]> {
@@ -3455,12 +4661,19 @@ export default defineConfig({
 });
 
 FILE	nix/package.nix
-# Reproducible NixOS package: compiled Rust Core/Shell + static Svelte frontend.
-# npmDepsHash is the fixed-output hash verified in GitHub Actions.
+# Kira Desktop packaged for NixOS.
+# Three independently cached derivations:
+#   1. Crane compiles third-party Rust crates based on Cargo manifests/lock.
+#   2. Crane builds Kira binaries using cached Rust artifacts.
+#   3. A small final derivation assembles them with the separately cached UI.
+#
+# Never reference frontend in the Rust build: otherwise changing CSS would
+# force a (needless) rebuild of application crates.
 {
   lib,
-  rustPlatform,
+  stdenv,
   buildNpmPackage,
+  craneLib,
   pkg-config,
   wrapGAppsHook4,
   gtk4,
@@ -3470,9 +4683,11 @@ FILE	nix/package.nix
   pipewire,
 }:
 let
+  version = "0.1.0";
+
   frontend = buildNpmPackage {
     pname = "kira-desktop-frontend";
-    version = "0.1.0";
+    inherit version;
     src = ../frontend;
 
     npmDepsHash = "sha256-1IUE4ratidBWc+ZT2v/Ke0lA3MnmVrPdYz153s6uqps=";
@@ -3485,15 +4700,46 @@ let
       runHook postInstall
     '';
   };
+
+  # cleanCargoSource excludes unrelated frontend/docs changes from the Rust
+  # derivation. Crane creates a dummy source tree for buildDepsOnly, so edits
+  # to .rs files do NOT invalidate compiled GTK/WebKit/GObject Rust crates.
+  rustSrc = craneLib.cleanCargoSource ../.;
+  commonRustArgs = {
+    src = rustSrc;
+    inherit version;
+    strictDeps = true;
+    cargoExtraArgs = "--locked --workspace";
+    doCheck = false;
+
+    nativeBuildInputs = [ pkg-config ];
+    buildInputs = [
+      gtk4
+      gtk4-layer-shell
+      webkitgtk_6_0
+      glib
+      pipewire
+    ];
+  };
+
+  cargoArtifacts = craneLib.buildDepsOnly (commonRustArgs // {
+    pname = "kira-desktop-rust-deps";
+  });
+  rustBinaries = craneLib.buildPackage (commonRustArgs // {
+    pname = "kira-desktop-rust";
+    inherit cargoArtifacts;
+  });
 in
-rustPlatform.buildRustPackage {
+# Assembly only: frontend edits rebuild THIS inexpensive derivation, not Rust.
+stdenv.mkDerivation {
   pname = "kira-desktop";
-  version = "0.1.0";
-  src = lib.cleanSource ../.;
+  inherit version;
+  dontUnpack = true;
+  dontConfigure = true;
+  dontBuild = true;
+  doCheck = false;
 
-  cargoLock.lockFile = ../Cargo.lock;
-
-  nativeBuildInputs = [ pkg-config wrapGAppsHook4 ];
+  nativeBuildInputs = [ wrapGAppsHook4 ];
   buildInputs = [
     gtk4
     gtk4-layer-shell
@@ -3502,15 +4748,25 @@ rustPlatform.buildRustPackage {
     pipewire
   ];
 
-  postInstall = ''
-    mkdir -p "$out/share/kira-desktop/ui"
+  installPhase = ''
+    runHook preInstall
+    mkdir -p "$out/bin" "$out/share/kira-desktop/ui"
+    cp "${rustBinaries}/bin/kira-core" "$out/bin/kira-core"
+    cp "${rustBinaries}/bin/kira-shell" "$out/bin/kira-shell"
+    chmod +x "$out/bin/kira-core" "$out/bin/kira-shell"
     cp -r "${frontend}/share/kira-desktop/ui/." "$out/share/kira-desktop/ui/"
+    runHook postInstall
   '';
 
-  # wrapGAppsHook4 exposes the packaged static UI directory at runtime.
+  # The GTK wrapper keeps its library/data setup and points WebKit to UI
+  # copied into the final package.
   preFixup = ''
     gappsWrapperArgs+=(--set KIRA_UI_DIR "$out/share/kira-desktop/ui")
   '';
+
+  passthru = {
+    inherit cargoArtifacts rustBinaries frontend;
+  };
 
   meta = {
     description = "Modular Niri desktop shell for NixOS";
@@ -3569,6 +4825,14 @@ def preview_config(python: Path, script: Path, ready: Path, nonce: str) -> str:
         "prefer-no-csd\n"
         "binds {\n"
         "    Alt+Shift+Q { quit skip-confirmation=true; }\n"
+        "    // Mod is Alt in a nested winit Niri; Super remains with host.\n"
+        "    // Do not require Alt+Shift: it commonly switches keyboard layout.\n"
+        "    Mod+T repeat=false { spawn \"foot\"; }\n"
+        "    Mod+1 { focus-workspace 1; }\n"
+        "    Mod+2 { focus-workspace 2; }\n"
+        "    Mod+3 { focus-workspace 3; }\n"
+        "    Mod+Ctrl+1 repeat=false { move-window-to-workspace focus=false 1; }\n"
+        "    Mod+Ctrl+2 repeat=false { move-window-to-workspace focus=false 2; }\n"
         "}\n"
         f"spawn-at-startup {args}\n"
     )
@@ -3663,6 +4927,8 @@ def run_preview(
     bin_dir: Path | None = None,
     ui_dir: Path | None = None,
     debug: bool = False,
+    qa_output_dir: Path | None = None,
+    qa_smoke: bool = False,
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
@@ -3773,6 +5039,33 @@ def run_preview(
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
+            if not qa_smoke and qa_output_dir is None:
+                print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
+                print("[preview] Alt+Ctrl+1/2 moves the focused window without changing the focused workspace; Alt+1/2 switches.", flush=True)
+                print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)
+
+            if qa_smoke or qa_output_dir is not None:
+                from qa_visual import capture, verify_smoke
+                try:
+                    if qa_output_dir is not None:
+                        print("[preview] OPT-IN VISUAL CAPTURE: nested Niri will change scales and save four PNGs.", flush=True)
+                        evidence = capture(
+                            niri_path, isolated, os.environ.get("NIRI_SOCKET"),
+                            logs["shell"], socket_file, qa_output_dir,
+                            packaged=(bin_dir is None),
+                        )
+                        print(f"[preview] QA evidence captured: {evidence}", flush=True)
+                        print("[preview] Visual review is still pending.", flush=True)
+                    else:
+                        print("[preview] READ-ONLY QA: checking Niri, Core and Svelte without changing scale or taking screenshots.", flush=True)
+                        state, output = verify_smoke(
+                            niri_path, isolated, os.environ.get("NIRI_SOCKET"),
+                            logs["shell"], socket_file,
+                        )
+                        print(f"[preview] QA smoke PASS: nested output={output}; Core={state['status']}; WebKit/Svelte DOM verified.", flush=True)
+                except Exception as error:
+                    raise PreviewError(f"QA smoke/capture failed: {error}") from error
+                return
 
             while True:
                 if debug:
@@ -3847,6 +5140,9 @@ def main() -> int:
     parser.add_argument("--bin-dir", type=Path, help="Cargo debug binaries directory")
     parser.add_argument("--ui-dir", type=Path, help="Compiled frontend assets directory")
     parser.add_argument("--debug", action="store_true", help="Stream Core and WebKit Shell logs")
+    qa_mode = parser.add_mutually_exclusive_group()
+    qa_mode.add_argument("--qa-smoke", action="store_true", help="Read-only Niri/Core/Svelte smoke, no screenshots or scaling")
+    qa_mode.add_argument("--qa-output-dir", type=Path, help="Explicit opt-in: change Niri scale and save PNGs with grim")
     parser.add_argument("--validate-config", action="store_true")
     parser.add_argument("mode", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("ready_path", nargs="?", help=argparse.SUPPRESS)
@@ -3858,7 +5154,7 @@ def main() -> int:
         elif args.mode == "report" and args.ready_path and args.nonce:
             report_ready(Path(args.ready_path), args.nonce)
         elif args.mode is None:
-            run_preview(args.package_dir, args.bin_dir, args.ui_dir, args.debug)
+            run_preview(args.package_dir, args.bin_dir, args.ui_dir, args.debug, args.qa_output_dir, args.qa_smoke)
         else:
             parser.error("Unknown preview mode")
     except PreviewError as error:
@@ -3869,6 +5165,307 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+FILE	scripts/qa_visual.py
+#!/usr/bin/env python3
+"""Captures reproducible visual-QA evidence from the *nested* Niri preview.
+
+No host compositor commands, no global desktop changes and no screenshot
+success claims until the user reviews the captured images.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import shutil
+from pathlib import Path
+import socket
+import stat
+import struct
+import subprocess
+import time
+
+SCALES = (1.0, 1.25, 1.5, 2.0)
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+PNG_TRAILER = b"\x00\x00\x00\x00IEND\xaeB\x60\x82"
+
+
+class VisualQAError(Exception):
+    pass
+
+
+def nested_socket(environment: dict[str, str], parent_socket: str | None) -> Path:
+    candidate = environment.get("NIRI_SOCKET")
+    if not candidate:
+        raise VisualQAError("Nested NIRI_SOCKET is missing; refusing to query host Niri")
+    path = Path(candidate)
+    if not path.is_absolute():
+        raise VisualQAError("Nested NIRI_SOCKET is not absolute")
+    if parent_socket and path.resolve() == Path(parent_socket).resolve():
+        raise VisualQAError("Nested NIRI_SOCKET equals parent; refusing to query host Niri")
+    try:
+        if not stat.S_ISSOCK(path.stat().st_mode):
+            raise VisualQAError("Nested NIRI_SOCKET is not a Unix socket")
+    except OSError as error:
+        raise VisualQAError(f"Nested NIRI_SOCKET is unavailable: {error}") from error
+    return path
+
+
+def niri_command(niri: str, environment: dict[str, str], *arguments: str) -> str:
+    try:
+        result = subprocess.run(
+            [niri, "msg", *arguments],
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise VisualQAError(f"Niri IPC command failed: {error}") from error
+    if result.returncode:
+        raise VisualQAError(
+            f"Niri IPC command exited {result.returncode}: {result.stderr.strip()}"
+        )
+    return result.stdout
+
+
+def sole_output(niri: str, environment: dict[str, str]) -> tuple[str, dict]:
+    try:
+        outputs = json.loads(niri_command(niri, environment, "--json", "outputs"))
+    except (TypeError, ValueError) as error:
+        raise VisualQAError(f"Malformed Niri output JSON: {error}") from error
+    if not isinstance(outputs, dict):
+        raise VisualQAError("Niri outputs must be a JSON object")
+    connected = [
+        (name, details)
+        for name, details in outputs.items()
+        if isinstance(details, dict) and isinstance(details.get("logical"), dict)
+    ]
+    if len(connected) != 1:
+        raise VisualQAError(f"Expected exactly one nested Niri output, found {len(connected)}")
+    return connected[0]
+
+
+def wait_for_shell_ui(shell_log: Path, timeout: float = 12.0) -> None:
+    """A running Shell process is insufficient: verify WebKit actually mounted UI."""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        logs = shell_log.read_text(encoding="utf-8", errors="replace") if shell_log.exists() else ""
+        if "UI rendering check failed" in logs or "bootstrap exception:" in logs:
+            raise VisualQAError("Shell reported a Svelte render failure")
+        if "Svelte entrypoint mounted" in logs and "Svelte panel DOM verified" in logs:
+            return
+        time.sleep(0.15)
+    raise VisualQAError("Timed out waiting for Svelte mount and WebKit DOM verification")
+
+
+def check_core(core_socket: Path) -> dict:
+    request = {"jsonrpc": "2.0", "id": 1, "method": "get_state"}
+    try:
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
+            connection.settimeout(3)
+            connection.connect(str(core_socket))
+            connection.sendall((json.dumps(request) + "\n").encode("utf-8"))
+            with connection.makefile("rb") as stream:
+                line = stream.readline(65537)
+        response = json.loads(line)
+    except (OSError, ValueError) as error:
+        raise VisualQAError(f"Core get_state smoke test failed: {error}") from error
+    if (
+        len(line) > 65536
+        or response.get("jsonrpc") != "2.0"
+        or response.get("id") != 1
+        or response.get("error")
+        or not isinstance(response.get("result"), dict)
+        or response["result"].get("status") != "bootstrap"
+    ):
+        raise VisualQAError("Core get_state returned an unexpected response")
+    return response["result"]
+
+
+def check_niri_workspaces(core_socket: Path, timeout: float = 5.0) -> dict:
+    """Assert real Core→Niri EventStream data is ready, without compositor actions."""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        request = {"jsonrpc": "2.0", "id": 2, "method": "get_workspaces"}
+        try:
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
+                connection.settimeout(3)
+                connection.connect(str(core_socket))
+                connection.sendall((json.dumps(request) + "\n").encode("utf-8"))
+                with connection.makefile("rb") as stream:
+                    line = stream.readline(65537)
+            if len(line) > 65536 or not line.endswith(b"\n"):
+                raise VisualQAError("Invalid Core workspace response boundary")
+            response = json.loads(line)
+        except (OSError, ValueError) as error:
+            raise VisualQAError(f"Core get_workspaces failed: {error}") from error
+        if response.get("jsonrpc") != "2.0" or response.get("id") != 2 or response.get("error"):
+            raise VisualQAError("Core get_workspaces returned an error")
+        state = response.get("result")
+        if not isinstance(state, dict) or not isinstance(state.get("connected"), bool) or not isinstance(state.get("workspaces"), list):
+            raise VisualQAError("Core get_workspaces returned a malformed state")
+        if state["connected"]:
+            if any(not isinstance(ws, dict) or not isinstance(ws.get("id"), str)
+                   or not isinstance(ws.get("idx"), int) for ws in state["workspaces"]):
+                raise VisualQAError("Core get_workspaces included an invalid workspace")
+            return state
+        time.sleep(0.15)
+    raise VisualQAError("Niri EventStream did not produce an initial workspace snapshot")
+
+
+def wait_for_scale(
+    niri: str, environment: dict[str, str], output: str, expected: float,
+    timeout: float = 8.0,
+) -> dict:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        name, details = sole_output(niri, environment)
+        logical = details["logical"]
+        if name == output and abs(float(logical.get("scale", -1)) - expected) < 0.02:
+            return logical
+        time.sleep(0.15)
+    raise VisualQAError(f"Niri output {output!r} did not reach scale {expected}")
+
+
+def png_dimensions(path: Path) -> tuple[int, int]:
+    with path.open("rb") as stream:
+        header = stream.read(24)
+    if (
+        len(header) != 24
+        or not header.startswith(PNG_SIGNATURE)
+        or header[12:16] != b"IHDR"
+    ):
+        raise VisualQAError(f"Invalid PNG screenshot: {path}")
+    width, height = struct.unpack(">II", header[16:24])
+    if width < 200 or height < 100:
+        raise VisualQAError(f"Implausibly small Niri screenshot: {width}x{height}")
+    return width, height
+
+
+def wait_for_png(path: Path, timeout: float = 8.0) -> tuple[int, int]:
+    deadline = time.monotonic() + timeout
+    previous_size = -1
+    while time.monotonic() < deadline:
+        if path.is_file():
+            current_size = path.stat().st_size
+            if current_size >= 40 and current_size == previous_size:
+                with path.open("rb") as file:
+                    file.seek(-len(PNG_TRAILER), 2)
+                    if file.read() == PNG_TRAILER:
+                        return png_dimensions(path)
+            previous_size = current_size
+        time.sleep(0.15)
+    raise VisualQAError(f"Niri did not finish saving PNG screenshot: {path}")
+
+
+def verify_smoke(
+    niri: str,
+    environment: dict[str, str],
+    parent_niri_socket: str | None,
+    shell_log: Path,
+    core_socket: Path,
+) -> tuple[dict, str]:
+    """Verify nested compositor, real Core IPC and actual Svelte/DOM rendering.
+
+    Read-only: never changes display scale, takes screenshots or uses clipboard.
+    """
+    nested_socket(environment, parent_niri_socket)
+    wait_for_shell_ui(shell_log)
+    core = check_core(core_socket)
+    # Distinguish a mounted UI from actual Niri workspace integration.
+    workspaces = check_niri_workspaces(core_socket)
+    print(f"[qa] Niri workspaces connected: {len(workspaces['workspaces'])} workspace(s)", flush=True)
+    output, _ = sole_output(niri, environment)
+    return core, output
+
+
+def screenshot_with_grim(
+    grim: str, environment: dict[str, str], output: str, path: Path,
+) -> None:
+    """Save PNG from the nested Wayland display without touching clipboard."""
+    if not environment.get("WAYLAND_DISPLAY"):
+        raise VisualQAError("Nested WAYLAND_DISPLAY is missing")
+    try:
+        result = subprocess.run(
+            [grim, "-o", output, str(path)],
+            env=environment, capture_output=True, text=True, check=False, timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise VisualQAError(f"grim screenshot failed: {error}") from error
+    if result.returncode:
+        raise VisualQAError(
+            f"grim screenshot exited {result.returncode}: {result.stderr.strip()}"
+        )
+
+
+def capture(
+    niri: str,
+    environment: dict[str, str],
+    parent_niri_socket: str | None,
+    shell_log: Path,
+    core_socket: Path,
+    output_directory: Path,
+    packaged: bool,
+) -> Path:
+    """Explicitly capture four scales; never touch clipboard or host Wayland."""
+    nested_socket(environment, parent_niri_socket)
+    output_directory = output_directory.resolve()
+    output_directory.mkdir(parents=True, exist_ok=True)
+    session = output_directory / (time.strftime("%Y%m%d-%H%M%S") + f"-{os.getpid()}")
+    session.mkdir(exist_ok=False)
+    manifest: dict = {
+        "status": "in_progress",
+        "visual_review": "pending",
+        "build": "packaged-nix" if packaged else "cargo-debug",
+        "screenshots": [],
+    }
+
+    def save() -> None:
+        (session / "manifest.json").write_text(
+            json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+
+    try:
+        manifest["core"], output = verify_smoke(
+            niri, environment, parent_niri_socket, shell_log, core_socket,
+        )
+        manifest["niri_output"] = output
+        grim = shutil.which("grim")
+        if grim is None:
+            raise VisualQAError("grim is required for opt-in screenshots; run via nix develop")
+        print("[qa] Explicit screenshot capture: changing scale on NESTED Niri to 100/125/150/200%.", flush=True)
+        print("[qa] grim writes PNG files only; clipboard is not used.", flush=True)
+
+        for scale in SCALES:
+            niri_command(niri, environment, "output", output, "scale", str(scale))
+            logical = wait_for_scale(niri, environment, output, scale)
+            # The compositor can apply scale before WebKit has rendered a new frame.
+            time.sleep(0.7)
+            filename = f"niri-scale-{int(scale * 100):03d}.png"
+            path = session / filename
+            screenshot_with_grim(grim, environment, output, path)
+            width, height = wait_for_png(path)
+            manifest["screenshots"].append({
+                "file": filename,
+                "scale": scale,
+                "logical": logical,
+                "pixel_size": [width, height],
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            })
+            save()
+
+        manifest["status"] = "captured_review_pending"
+        save()
+        return session
+    except Exception as error:
+        manifest["status"] = "failed"
+        manifest["error"] = str(error)
+        save()
+        raise
 
 FILE	tests/test_dev_preview.py
 """Mocked preview lifecycle tests. No graphics hardware or Niri required."""
@@ -3897,6 +5494,14 @@ class PreviewTests(unittest.TestCase):
         self.assertIn("spawn-at-startup", config)
         self.assertIn('"report"', config)
         self.assertIn("Alt+Shift+Q", config)
+        self.assertIn('Mod+T repeat=false { spawn "foot"; }', config)
+        self.assertIn("Mod+2 { focus-workspace 2; }", config)
+        self.assertIn("Mod+Ctrl+1 repeat=false { move-window-to-workspace focus=false 1; }", config)
+        self.assertIn("Mod+Ctrl+2 repeat=false { move-window-to-workspace focus=false 2; }", config)
+        # Alt+Shift can be swallowed by host keyboard-layout switching;
+        # never resurrect the earlier four-modifier move shortcut.
+        self.assertNotIn("Alt+Shift+Ctrl+2", config)
+        self.assertNotIn("Mod+Return", config)
         self.assertNotIn("waybar", config)
         self.assertNotIn("--session", config)
 
@@ -4074,6 +5679,225 @@ while True: time.sleep(.1)
             self.assertIn("cleaned up", stdout)
             if debug:
                 self.assertIn("[preview:shell] kira-shell: diagnostic probe", stderr)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_qa_visual.py
+"""Unit tests for safe visual QA capture without a GPU or a real Niri."""
+import importlib.util
+import json
+from pathlib import Path
+import socket
+import struct
+import tempfile
+import threading
+import unittest
+from unittest.mock import Mock, patch
+
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "qa_visual.py"
+spec = importlib.util.spec_from_file_location("qa_visual", SCRIPT)
+assert spec and spec.loader
+qa = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(qa)
+
+
+def png_header(width=1280, height=720):
+    return qa.PNG_SIGNATURE + struct.pack(">I", 13) + b"IHDR" + struct.pack(">II", width, height) + b"\x08\x06\x00\x00\x00\x00\x00\x00\x00"
+
+
+class VisualQATests(unittest.TestCase):
+    def test_rejects_missing_niri_socket_before_any_command(self):
+        with self.assertRaisesRegex(qa.VisualQAError, "missing"):
+            qa.nested_socket({}, None)
+
+    def test_rejects_parent_niri_socket(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "niri.sock"
+            server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            server.bind(str(path))
+            try:
+                with self.assertRaisesRegex(qa.VisualQAError, "equals parent"):
+                    qa.nested_socket({"NIRI_SOCKET": str(path)}, str(path))
+                self.assertEqual(qa.nested_socket({"NIRI_SOCKET": str(path)}, None), path)
+            finally:
+                server.close()
+
+    def test_only_one_nested_output_is_accepted(self):
+        with patch.object(qa, "niri_command", return_value=json.dumps({
+            "Virtual-1": {"logical": {"scale": 1.0, "width": 1200, "height": 800}}
+        })):
+            name, details = qa.sole_output("niri", {})
+        self.assertEqual(name, "Virtual-1")
+        self.assertEqual(details["logical"]["width"], 1200)
+        with patch.object(qa, "niri_command", return_value=json.dumps({
+            "one": {"logical": {"scale": 1.0}},
+            "two": {"logical": {"scale": 1.0}},
+        })):
+            with self.assertRaisesRegex(qa.VisualQAError, "exactly one"):
+                qa.sole_output("niri", {})
+
+    def test_mount_requires_verified_dom_not_just_started_shell(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log = Path(directory) / "shell.log"
+            log.write_text("Svelte entrypoint mounted\n")
+            with self.assertRaisesRegex(qa.VisualQAError, "Timed out"):
+                qa.wait_for_shell_ui(log, timeout=0)
+            log.write_text("Svelte entrypoint mounted\nSvelte panel DOM verified\n")
+            qa.wait_for_shell_ui(log, timeout=1)
+
+    def test_invalid_png_does_not_pass_capture(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "screen.png"
+            path.write_bytes(b"not a screenshot at all")
+            with self.assertRaisesRegex(qa.VisualQAError, "Invalid PNG"):
+                qa.png_dimensions(path)
+            path.write_bytes(png_header(width=640, height=480))
+            self.assertEqual(qa.png_dimensions(path), (640, 480))
+
+    def test_core_smoke_checks_real_get_state_response(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "core.sock"
+            listener = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            listener.bind(str(path))
+            listener.listen(1)
+            errors = []
+
+            def serve():
+                try:
+                    conn, _ = listener.accept()
+                    with conn:
+                        raw = conn.recv(4096).decode("utf-8")
+                        request = json.loads(raw)
+                        self.assertEqual(request["method"], "get_state")
+                        conn.sendall(json.dumps({
+                            "jsonrpc": "2.0", "id": 1,
+                            "result": {"version": "0.1.0", "status": "bootstrap"}
+                        }).encode("utf-8") + b"\n")
+                except Exception as error:
+                    errors.append(error)
+
+            thread = threading.Thread(target=serve)
+            thread.start()
+            try:
+                self.assertEqual(qa.check_core(path)["version"], "0.1.0")
+            finally:
+                thread.join(timeout=3)
+                listener.close()
+            self.assertFalse(errors)
+
+    def test_captures_four_scales_and_writes_pending_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            niri_socket = root / "niri.sock"
+            server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            server.bind(str(niri_socket))
+            state = {"scale": 1.0}
+            calls = []
+
+            def command(_niri, environment, *args):
+                self.assertEqual(environment["NIRI_SOCKET"], str(niri_socket))
+                calls.append(args)
+                if args == ("--json", "outputs"):
+                    return json.dumps({"Virtual-1": {"logical": {
+                        "scale": state["scale"], "width": 1280, "height": 720
+                    }}})
+                if args[:2] == ("output", "Virtual-1"):
+                    self.assertEqual(args[2], "scale")
+                    state["scale"] = float(args[3])
+                return ""
+
+            screenshots = []
+
+            def shot(grim, environment, output, path):
+                self.assertEqual(grim, "/nix/store/bin/grim")
+                self.assertEqual(output, "Virtual-1")
+                self.assertEqual(environment["WAYLAND_DISPLAY"], "wayland-nested")
+                screenshots.append(path)
+                path.write_bytes(png_header() + b"fake-screenshot" + qa.PNG_TRAILER)
+
+            try:
+                with patch.object(qa, "niri_command", side_effect=command), \
+                     patch.object(qa, "wait_for_shell_ui"), \
+                     patch.object(qa, "check_core", return_value={"status": "bootstrap"}), \
+                     patch.object(qa, "check_niri_workspaces", return_value={"connected": True, "workspaces": []}), \
+                     patch.object(qa.shutil, "which", return_value="/nix/store/bin/grim"), \
+                     patch.object(qa, "screenshot_with_grim", side_effect=shot), \
+                     patch.object(qa.time, "sleep"):
+                    path = qa.capture("niri", {
+                        "NIRI_SOCKET": str(niri_socket),
+                        "WAYLAND_DISPLAY": "wayland-nested",
+                    }, None, root / "shell.log", root / "core.sock",
+                        root / "captures", packaged=True)
+                manifest = json.loads((path / "manifest.json").read_text())
+                self.assertEqual(manifest["status"], "captured_review_pending")
+                self.assertEqual(manifest["visual_review"], "pending")
+                self.assertEqual(manifest["build"], "packaged-nix")
+                self.assertEqual([item["scale"] for item in manifest["screenshots"]],
+                                 [1.0, 1.25, 1.5, 2.0])
+                self.assertTrue(all((path / item["file"]).is_file()
+                                    for item in manifest["screenshots"]))
+                self.assertEqual(len(screenshots), 4)
+                self.assertEqual(len([a for a in calls if a[:2] == ("output", "Virtual-1")]), 4)
+                self.assertFalse(any(a[:2] == ("action", "screenshot-screen") for a in calls))
+            finally:
+                server.close()
+
+    def test_smoke_checks_read_only_without_screenshots_or_scales(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sock = root / "niri.sock"
+            server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            server.bind(str(sock))
+            calls = []
+            def command(_niri, _env, *args):
+                calls.append(args)
+                return json.dumps({"Virtual-1": {"logical": {"scale": 1.0}}})
+            try:
+                with patch.object(qa, "niri_command", side_effect=command), \
+                     patch.object(qa, "wait_for_shell_ui"), \
+                     patch.object(qa, "check_core", return_value={"status": "bootstrap"}), \
+                     patch.object(qa, "check_niri_workspaces", return_value={"connected": True, "workspaces": []}):
+                    state, output = qa.verify_smoke(
+                        "niri", {"NIRI_SOCKET": str(sock)}, None,
+                        root / "shell.log", root / "core.sock",
+                    )
+                self.assertEqual(state["status"], "bootstrap")
+                self.assertEqual(output, "Virtual-1")
+                self.assertEqual(calls, [("--json", "outputs")])
+            finally:
+                server.close()
+
+    def test_grim_capture_does_not_use_clipboard_or_host_display(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "screen.png"
+            env = {"WAYLAND_DISPLAY": "wayland-nested", "NIRI_SOCKET": "/tmp/child.sock"}
+            with patch.object(qa.subprocess, "run", return_value=Mock(returncode=0)) as run:
+                qa.screenshot_with_grim("grim", env, "Virtual-1", output)
+            args, kwargs = run.call_args
+            self.assertEqual(args[0], ["grim", "-o", "Virtual-1", str(output)])
+            self.assertEqual(kwargs["env"], env)
+            self.assertNotIn("wl-copy", args[0])
+            self.assertNotIn("screenshot-screen", args[0])
+
+    def test_failure_records_failed_not_a_pass(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sock = root / "niri.sock"
+            server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            server.bind(str(sock))
+            try:
+                with patch.object(qa, "wait_for_shell_ui", side_effect=qa.VisualQAError("DOM failed")):
+                    with self.assertRaisesRegex(qa.VisualQAError, "DOM failed"):
+                        qa.capture("niri", {"NIRI_SOCKET": str(sock)}, None,
+                                   root / "shell.log", root / "core.sock",
+                                   root / "evidence", packaged=True)
+                manifests = list((root / "evidence").glob("*/manifest.json"))
+                self.assertEqual(len(manifests), 1)
+                self.assertEqual(json.loads(manifests[0].read_text())["status"], "failed")
+            finally:
+                server.close()
 
 
 if __name__ == "__main__":
