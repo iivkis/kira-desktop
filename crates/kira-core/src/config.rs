@@ -230,15 +230,16 @@ pub async fn monitor(path: PathBuf, sender: watch::Sender<ConfigState>) {
     let mut initialized = false;
     let mut previous_contents: Option<Result<Vec<u8>, io::ErrorKind>> = None;
     loop {
-        let current = std::fs::read(&path)
-            .map_err(|error| error.kind())
-            .and_then(|bytes| {
-                if bytes.len() as u64 > MAX_CONFIG_BYTES {
-                    Err(io::ErrorKind::InvalidData)
-                } else {
-                    Ok(bytes)
-                }
-            });
+        // Hard cap the read itself, even for a huge or growing file.
+        let current = std::fs::File::open(&path).and_then(|file| {
+            let mut bytes = Vec::new();
+            file.take(MAX_CONFIG_BYTES + 1).read_to_end(&mut bytes)?;
+            if bytes.len() as u64 > MAX_CONFIG_BYTES {
+                Err(io::Error::new(io::ErrorKind::InvalidData, "config too large"))
+            } else {
+                Ok(bytes)
+            }
+        }).map_err(|error| error.kind());
 
         // Don't reparse unchanged contents, but still catch atomic replacements.
         let changed = match (&previous_contents, &current) {
