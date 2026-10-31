@@ -82,6 +82,59 @@ fn fill(
     *selected.borrow_mut() = filtered;
 }
 
+/// Minimal adjustment that keeps a selected row visible without jumping
+/// if it is already in view. The viewport can be smaller than a row.
+fn visible_offset(
+    current: f64,
+    page: f64,
+    lower: f64,
+    upper: f64,
+    row_top: f64,
+    row_bottom: f64,
+) -> f64 {
+    if page <= 0.0 {
+        return current;
+    }
+    let desired = if row_top < current {
+        row_top
+    } else if row_bottom > current + page {
+        if row_bottom - row_top > page {
+            row_top
+        } else {
+            row_bottom - page
+        }
+    } else {
+        current
+    };
+    desired.clamp(lower, (upper - page).max(lower))
+}
+
+/// GTK ListBox selection and ScrolledWindow adjustment are independent.
+/// Adjust the viewport when keyboard selection moves below/above its edges,
+/// without transferring text-input focus away from SearchEntry.
+fn ensure_selected_visible(
+    list: &gtk::ListBox,
+    row: &gtk::ListBoxRow,
+    scroll: &gtk::ScrolledWindow,
+) {
+    let Some(bounds) = row.compute_bounds(list) else {
+        return; // Not mapped or laid out yet (initial population).
+    };
+    let adjustment = scroll.vadjustment();
+    let current = adjustment.value();
+    let target = visible_offset(
+        current,
+        adjustment.page_size(),
+        adjustment.lower(),
+        adjustment.upper(),
+        f64::from(bounds.y()),
+        f64::from(bounds.y() + bounds.height()),
+    );
+    if (target - current).abs() > f64::EPSILON {
+        adjustment.set_value(target);
+    }
+}
+
 pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
     let popup = gtk::ApplicationWindow::new(app);
     popup.set_title(Some("Kira App Launcher"));
@@ -148,6 +201,15 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
     scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
     scroll.set_vexpand(true);
     scroll.set_child(Some(&list));
+    {
+        let scroll = scroll.clone();
+        // Handles ↑/↓ selection as well as mouse selection and list changes.
+        list.connect_row_selected(move |list, selected| {
+            if let Some(row) = selected {
+                ensure_selected_visible(list, row, &scroll);
+            }
+        });
+    }
     container.append(&scroll);
 
     let footer = gtk::Label::new(Some("Enter: launch  •  ↑↓: select  •  Esc: close"));
@@ -263,6 +325,28 @@ pub fn toggle(popup: &gtk::ApplicationWindow) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn selected_row_scrolls_only_when_outside_viewport() {
+        // A 100px viewport starts at y=0: visible rows do not jump.
+        assert_eq!(visible_offset(0.0, 100.0, 0.0, 1000.0, 10.0, 40.0), 0.0);
+        // Moving down one 40px row at a time scrolls only at the edge.
+        assert_eq!(visible_offset(0.0, 100.0, 0.0, 1000.0, 80.0, 120.0), 20.0);
+        assert_eq!(visible_offset(20.0, 100.0, 0.0, 1000.0, 120.0, 160.0), 60.0);
+        // Reverse direction: scroll back up when selection leaves viewport.
+        assert_eq!(visible_offset(120.0, 100.0, 0.0, 1000.0, 60.0, 100.0), 60.0);
+        assert_eq!(visible_offset(60.0, 100.0, 0.0, 1000.0, 0.0, 40.0), 0.0);
+        // Bottom of list is clamped to upper - page size.
+        assert_eq!(visible_offset(850.0, 100.0, 0.0, 900.0, 865.0, 910.0), 800.0);
+        // Rows taller than the viewport align their top, not their bottom.
+        assert_eq!(visible_offset(0.0, 80.0, 0.0, 800.0, 100.0, 240.0), 100.0);
+    }
+
+    #[test]
+    fn empty_or_unlaid_out_viewport_does_not_scroll() {
+        assert_eq!(visible_offset(25.0, 0.0, 0.0, 500.0, 90.0, 120.0), 25.0);
+        assert_eq!(visible_offset(0.0, 100.0, 0.0, 80.0, 0.0, 60.0), 0.0);
+    }
 
     #[test]
     fn matching_handles_unicode_and_empty_queries() {
