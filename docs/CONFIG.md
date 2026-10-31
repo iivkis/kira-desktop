@@ -48,8 +48,9 @@ Formatting rules for this **minimal KDL profile**:
 - Exactly one `kira {` opening line and a `}` closing line.
 - Each child node on **one line**, properties written as `key=value`
   without whitespace around `=`. Child nodes can appear in any order.
-- Values are KDL 2.0 booleans (`#true` / `#false`), unsigned integers, or standard
-  double-quoted JSON-compatible strings.
+- Values are KDL 2.0 booleans (`#true` / `#false`), unsigned integers, or single-line double-quoted strings with printable Unicode characters.
+  Only escaped double quotes and escaped backslashes are supported in this
+  initial title profile; all other escapes and multiline/raw strings are rejected.
 - Blank lines and `//` comments outside quoted strings are allowed.
 - Children, lists, arbitrary attributes, slashdash, multiline/raw strings,
   annotations, node arguments and additional KDL constructs are **not yet
