@@ -9,6 +9,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 - [Kira Default design system](docs/DESIGN_SYSTEM.md)
 - [CI checks](.github/workflows/ci.yml)
 - [Native Nix build checks](.github/workflows/nix.yml)
+- [Visual QA / packaged Shell smoke-test guide](docs/QA_VISUAL.md)
 
 ## Implemented foundation
 
@@ -113,6 +114,22 @@ nix run github:iivkis/repospool -- generate .
 nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
 ```
 
+
+## Visual QA before Niri IPC integration
+
+Run the isolated, packaged Shell smoke test on a graphical NixOS/Wayland
+session to capture 100%, 125%, 150% and 200% scale screenshots:
+
+```sh
+nix develop --command task qa:visual:release
+```
+
+The command verifies Core `get_state` and actual WebKit/Svelte mount,
+records PNGs plus a machine-readable manifest under ignored
+`artifacts/visual-qa/`, and cleans up preview-owned processes. **The
+screenshots require human review:** automated capture is not a visual PASS.
+See [visual QA guide](docs/QA_VISUAL.md) for narrow-window checks, acceptance
+criteria and known environmental requirements.
 
 ## Current limitations
 
