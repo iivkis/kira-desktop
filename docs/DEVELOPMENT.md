@@ -204,7 +204,130 @@ The SDK correlates numeric request IDs, applies timeouts, and reports disconnect
 {"jsonrpc":"2.0","id":1,"result":"pong"}
 ```
 
-The IPC transport uses newline-delimited JSON. The bootstrap `get_state` response contains version and status only. There is no Niri integration or event subscription mechanism yet. The Core socket is intended for the trusted local user session only.
+The IPC transport uses newline-delimited JSON. The bootstrap `get_state` response contains version and status only. Niri workspaces now update through Core's Niri EventStream and a persistent read-only Core → Shell subscription, forwarded as typed `kira:workspaces` WebKit DOM events to Svelte. The Core socket is intended for the trusted local user session only.
+
+## Read-only Niri workspaces (Stage 1 first increment)
+
+Kira Core connects to the exact absolute `NIRI_SOCKET` supplied by its
+environment. The nested preview ensures the value points to its **child**
+compositor, never the parent. With no Niri socket, Core still serves
+`ping` and `get_state`, while `get_workspaces` returns
+`{"connected":false,"workspaces":[]}`, **not** hardcoded workspace 1–3.
+
+Core writes only the Niri request `"EventStream"` and reads its full initial
+`WorkspacesChanged` snapshot plus subsequent `WorkspaceActivated` and
+`WorkspaceUrgencyChanged` events. There are no `Action` requests and no
+direct compositor-changing operations. On disconnect or malformed events,
+Core clears stale state and reconnects with a one-second delay.
+
+The public Core contract is:
+
+```json
+{"jsonrpc":"2.0","id":2,"method":"get_workspaces"}
+```
+
+Example (illustrative values; not fabricated in the actual UI):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "connected": true,
+    "workspaces": [
+      {
+        "id": "42",
+        "idx": 1,
+        "name": null,
+        "output": "DP-1",
+        "is_active": true,
+        "is_focused": true,
+        "is_urgent": false
+      }
+    ]
+  }
+}
+```
+
+`id` is a stable Niri `u64` serialized to a **string** so JavaScript
+never rounds it. `idx` is the workspace position **per output**, not a
+global identifier. `is_active` and `is_focused` are distinct: on multiple
+outputs each can have an active workspace but only one is globally focused.
+Unknown Niri event variants are ignored; message size is bounded.
+
+The Shell explicitly allows the read-only `get_workspaces` RPC and blocks
+all write-like methods. The Svelte Top Bar renders real workspace names/indices,
+focus/activation/urgency, or an explicit `NIRI OFFLINE` state; it no longer
+uses the fake `[1, 2, 3]` visual demo. **Core listens to events**;
+the frontend receives a pushed snapshot whenever Core detects a change.
+Core-to-UI workspace subscriptions are now implemented; updates use a persistent read-only Core socket and WebKit DOM events.
+
+### Immediate Core → Shell → Svelte workspace updates
+
+The shell opens exactly one persistent Core IPC subscription with the internal
+`subscribe_workspaces` request (newline-delimited JSON-RPC, id `0`). Core
+sends an initial typed `WorkspaceState` snapshot, then another frame each
+time Niri changes its workspace state. The GTK Shell reads the socket on a
+worker thread and dispatches a `kira:workspaces` DOM CustomEvent on its
+main thread. Svelte subscribes on mount, unsubscribes on cleanup, and makes
+one initial `get_workspaces` request only to cover any startup race.
+
+**There is no 1.5-second Svelte polling timer anymore.** Core reconnects
+to Niri after a disconnect; Shell reconnects to Core and pushes
+`connected:false` while unavailable so the UI does not retain stale state.
+`subscribe_workspaces` is an internal Core socket operation and is *not*
+exposed to WebKit's JS request allowlist. Kira never sends Niri `Action`.
+
+This removes the artificial 1–2 second lag. Actual latency and keyboard
+focus transitions still require an interactive NixOS/Wayland check.
+
+### Smoke-test nested Niri workspace state
+
+```sh
+nix develop --command task qa:visual:fast
+nix develop --command task qa:visual:release
+```
+
+Both smoke modes now wait for the Niri event stream's initial workspace
+snapshot **through Core's actual `get_workspaces` RPC**. They do not resize
+the screen, capture screenshots or modify the host compositor.
+
+For a manual interaction check:
+
+```sh
+nix develop --command task dev:preview
+```
+
+The generated **nested-only** Niri KDL uses `Mod`, which resolves to
+**Alt** in a windowed Niri. This avoids the four-modifier
+`Alt+Shift+Ctrl+2` shortcut that could conflict with a host layout switch.
+
+- Focus the **nested Niri** and press **Alt+T** to launch `foot`
+  inside it (`foot` is included in `nix develop`).
+- Press **Alt+2** to focus workspace 2 and **Alt+T** to open another
+  terminal there; **Alt+1/2/3** switches workspace.
+- For moving the **focused window**, press **Alt+Ctrl+2** (or **Alt+Ctrl+1** to move it back).
+  The bindings use `move-window-to-workspace focus=false N`: the window
+  moves, but the focus stays on the original workspace. Switch manually
+  with **Alt+1/2** to see the moved window and verify Kira's focus.
+- **Alt+Shift+Q** exits nested Niri and cleans up the preview.
+
+Niri dynamically creates and removes empty workspaces; leave a
+terminal on each if comparing two persistent workspaces. If the
+shortcut is not handled, inspect `echo "$NIRI_SOCKET"` followed by
+`niri msg --json workspaces` and `niri msg --json windows` **inside
+the nested terminal**. Do not run these commands if that socket is
+missing. Compare actual `is_focused` and `is_active` with the Top Bar.
+
+Bindings exist **only** in the throwaway preview config. They do not
+change the host Niri or any user config. They do not run when calling
+read-only QA smoke, and they do not add workspace actions to Kira Core.
+If Niri IPC is unavailable the bar should say `NIRI OFFLINE`.
+
+Official protocol references:
+- https://github.com/niri-wm/niri/wiki/IPC
+- https://docs.rs/niri-ipc/latest/niri_ipc/enum.Event.html
+- https://docs.rs/niri-ipc/latest/niri_ipc/struct.Workspace.html
 
 ## Updating dependencies
 
@@ -213,7 +336,7 @@ The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Updat
 ## Next milestones
 
 1. Visual QA for Kira Default across scales and packaged Shell smoke test. The user confirmed prior capture runs, but the PNGs still require visual review. The default QA command is now passive; explicit screenshot capture uses grim without clipboard side effects. See [QA_VISUAL.md](QA_VISUAL.md).
-2. Niri IPC workspace state and typed event subscriptions.
+2. Read-only Niri workspace state from Core EventStream is implemented in the Stage 1 draft PR. Core-to-Svelte typed workspace pushes are implemented.
 3. KDL configuration engine with validation and hot reload.
 4. Real workspace, launcher and dock widgets.
 5. System-service integrations and user widget loading.

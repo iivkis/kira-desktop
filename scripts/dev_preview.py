@@ -48,6 +48,14 @@ def preview_config(python: Path, script: Path, ready: Path, nonce: str) -> str:
         "prefer-no-csd\n"
         "binds {\n"
         "    Alt+Shift+Q { quit skip-confirmation=true; }\n"
+        "    // Mod is Alt in a nested winit Niri; Super remains with host.\n"
+        "    // Do not require Alt+Shift: it commonly switches keyboard layout.\n"
+        "    Mod+T repeat=false { spawn \"foot\"; }\n"
+        "    Mod+1 { focus-workspace 1; }\n"
+        "    Mod+2 { focus-workspace 2; }\n"
+        "    Mod+3 { focus-workspace 3; }\n"
+        "    Mod+Ctrl+1 repeat=false { move-window-to-workspace focus=false 1; }\n"
+        "    Mod+Ctrl+2 repeat=false { move-window-to-workspace focus=false 2; }\n"
         "}\n"
         f"spawn-at-startup {args}\n"
     )
@@ -254,6 +262,10 @@ def run_preview(
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
+            if not qa_smoke and qa_output_dir is None:
+                print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
+                print("[preview] Alt+Ctrl+1/2 moves the focused window without changing the focused workspace; Alt+1/2 switches.", flush=True)
+                print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)
 
             if qa_smoke or qa_output_dir is not None:
                 from qa_visual import capture, verify_smoke

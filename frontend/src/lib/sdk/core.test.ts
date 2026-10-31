@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request } from './core';
+import { deliverReply, request, onWorkspaceUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -21,6 +21,46 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(payload.method).toBe('get_state');
     deliverReply({ jsonrpc: '2.0', id: payload.id, result: { version: '0.1.0', status: 'bootstrap' } });
     await expect(result).resolves.toEqual({ version: '0.1.0', status: 'bootstrap' });
+  });
+
+  it('requests typed real Niri workspaces with JS-safe IDs', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const result = request('get_workspaces');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number; method: string };
+    expect(payload.method).toBe('get_workspaces');
+    const workspace = {
+      id: '18446744073709551615', idx: 2, name: 'code', output: 'DP-1',
+      is_active: true, is_focused: false, is_urgent: true,
+    };
+    deliverReply({
+      jsonrpc: '2.0', id: payload.id,
+      result: { connected: true, workspaces: [workspace] },
+    });
+    await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
+  });
+
+  it('delivers live workspace events and unsubscribes without polling', () => {
+    const handlers = new Map<string, EventListener>();
+    const addEventListener = vi.fn((name: string, listener: EventListener) => {
+      handlers.set(name, listener);
+    });
+    const removeEventListener = vi.fn();
+    globalThis.window = { addEventListener, removeEventListener } as unknown as Window & typeof globalThis;
+    const onChange = vi.fn();
+    const stop = onWorkspaceUpdate(onChange);
+    const handler = handlers.get('kira:workspaces');
+    expect(handler).toBeDefined();
+    handler!({ detail: { connected: true, workspaces: [{
+      id: '33', idx: 2, name: null, output: 'winit',
+      is_active: true, is_focused: true, is_urgent: false,
+    }] } } as unknown as Event);
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onChange.mock.calls[0][0].workspaces[0].idx).toBe(2);
+    handler!({ detail: { workspaces: [] } } as unknown as Event);
+    expect(onChange).toHaveBeenCalledOnce();
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:workspaces', handler);
   });
 
   it('rejects Core errors', async () => {

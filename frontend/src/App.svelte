@@ -3,11 +3,12 @@
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request } from './lib/sdk/core';
+  import { request, onWorkspaceUpdate, type WorkspaceState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
+  let workspaceState = $state<WorkspaceState | null>(null);
 
   onMount(() => {
     const clock = window.setInterval(() => {
@@ -29,10 +30,31 @@
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
+    // Core listens to Niri EventStream. Shell forwards each changed snapshot
+    // as kira:workspaces, so focus updates arrive without polling.
+    let pushReceived = false;
+    const unsubscribe = onWorkspaceUpdate((state) => {
+      if (disposed) return;
+      pushReceived = true;
+      workspaceState = state;
+    });
+
+    // Initial request covers the small gap between WebKit page load and
+    // event listener registration. An older RPC reply must never overwrite
+    // a newer pushed event.
+    void request('get_workspaces').then((state) => {
+      if (!disposed && !pushReceived) workspaceState = state;
+    }).catch(() => {
+      if (!disposed && !pushReceived) {
+        workspaceState = { connected: false, workspaces: [] };
+      }
+    });
+
     return () => {
       disposed = true;
       window.clearInterval(clock);
       window.clearInterval(statusTimer);
+      unsubscribe();
     };
   });
 </script>
@@ -44,7 +66,7 @@
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
     </div>
     <span class="bar__separator" aria-hidden="true"></span>
-    <WorkspacePreview />
+    <WorkspacePreview state={workspaceState} />
   </section>
 
   <div class="bar__center" aria-label="Kira Desktop environment">

@@ -4,9 +4,42 @@ export interface CoreState {
   status: 'bootstrap';
 }
 
+export interface Workspace {
+  /** Stable Niri u64 ID encoded as a string (JavaScript numbers lose precision). */
+  id: string;
+  /** 1-based workspace position on its own output, NOT a globally unique ID. */
+  idx: number;
+  name: string | null;
+  output: string | null;
+  is_active: boolean;
+  is_focused: boolean;
+  is_urgent: boolean;
+}
+
+export interface WorkspaceState {
+  connected: boolean;
+  workspaces: Workspace[];
+}
+
+/** Listen for typed workspace push events emitted by the native Shell.
+ * No Niri or Core polling is performed here. Unsubscribe on Svelte unmount.
+ */
+export function onWorkspaceUpdate(callback: (state: WorkspaceState) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const state = (event as CustomEvent<WorkspaceState>).detail;
+    if (!state || typeof state.connected !== 'boolean' ||
+        !Array.isArray(state.workspaces)) return;
+    callback(state);
+  };
+  window.addEventListener('kira:workspaces', listener);
+  return () => window.removeEventListener('kira:workspaces', listener);
+}
+
 type Methods = {
   ping: string;
   get_state: CoreState;
+  get_workspaces: WorkspaceState;
 };
 
 type RpcReply = {
@@ -51,7 +84,7 @@ if (typeof window !== 'undefined') {
 }
 
 /**
- * Asks the Core for read-only bootstrap state. Resolves only after the Rust
+ * Asks the Core for an allowlisted read-only method. Resolves only after the Rust
  * Host has returned a response; rejects if Core is unavailable or times out.
  */
 export function request<M extends keyof Methods>(method: M): Promise<Methods[M]> {

@@ -1,5 +1,5 @@
-//! Minimal newline-delimited JSON-RPC 2.0 contracts shared by Core and Shell.
-//! Events and typed parameter schemas will be introduced in subsequent milestones.
+//! Read-only, bounded JSON-RPC state shared between Core and the GTK Shell.
+//! Niri EventStream updates are owned by Core; UI can only query snapshots.
 
 pub mod client;
 
@@ -31,6 +31,24 @@ pub struct RpcError {
     pub message: String,
 }
 
+/// Niri workspace id is a u64. Send it as a string to avoid JS precision loss.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Workspace {
+    pub id: String,
+    pub idx: u8,
+    pub name: Option<String>,
+    pub output: Option<String>,
+    pub is_active: bool,
+    pub is_focused: bool,
+    pub is_urgent: bool,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WorkspaceState {
+    pub connected: bool,
+    pub workspaces: Vec<Workspace>,
+}
+
 impl RpcResponse {
     pub fn success(id: u64, value: Value) -> Self {
         Self {
@@ -55,6 +73,10 @@ impl RpcResponse {
 }
 
 pub fn dispatch(request: RpcRequest) -> RpcResponse {
+    dispatch_with_workspaces(request, &WorkspaceState::default())
+}
+
+pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> RpcResponse {
     if request.jsonrpc != PROTOCOL_VERSION {
         return RpcResponse::failure(Some(request.id), -32600, "Invalid Request");
     }
@@ -65,6 +87,7 @@ pub fn dispatch(request: RpcRequest) -> RpcResponse {
             request.id,
             json!({ "version": env!("CARGO_PKG_VERSION"), "status": "bootstrap" }),
         ),
+        "get_workspaces" => RpcResponse::success(request.id, json!(state)),
         _ => RpcResponse::failure(Some(request.id), -32601, "Method not found"),
     }
 }
@@ -106,6 +129,47 @@ mod tests {
             method: "ping".into(),
         });
         assert_eq!(response.error.unwrap().code, -32600);
+    }
+
+    #[test]
+    fn disconnected_niri_does_not_fabricate_workspaces() {
+        let response = dispatch(RpcRequest {
+            jsonrpc: PROTOCOL_VERSION.into(),
+            id: 3,
+            method: "get_workspaces".into(),
+        });
+        assert_eq!(
+            response.result,
+            Some(json!({"connected": false, "workspaces": []}))
+        );
+    }
+
+    #[test]
+    fn typed_workspaces_preserve_large_ids_and_flags() {
+        let state = WorkspaceState {
+            connected: true,
+            workspaces: vec![Workspace {
+                id: u64::MAX.to_string(),
+                idx: 2,
+                name: Some("code".into()),
+                output: Some("DP-1".into()),
+                is_active: true,
+                is_focused: false,
+                is_urgent: true,
+            }],
+        };
+        let response = dispatch_with_workspaces(
+            RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 4,
+                method: "get_workspaces".into(),
+            },
+            &state,
+        );
+        let value = response.result.unwrap();
+        assert_eq!(value["workspaces"][0]["id"], u64::MAX.to_string());
+        assert_eq!(value["workspaces"][0]["is_focused"], false);
+        assert_eq!(value["workspaces"][0]["is_urgent"], true);
     }
 }
 
