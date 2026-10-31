@@ -332,11 +332,7 @@ pub fn create(app: &gtk::Application) -> Launcher {
     footer.set_margin_end(20);
     footer.set_margin_top(8);
     footer.set_margin_bottom(16);
-    for (key, hint) in [
-        ("↵", "Open"),
-        ("↑ ↓", "Navigate"),
-        ("Esc", "Close"),
-    ] {
+    for (key, hint) in [("↵", "Open"), ("↑ ↓", "Navigate"), ("Esc", "Close")] {
         let key_label = gtk::Label::new(Some(key));
         key_label.add_css_class("kira-keycap");
         footer.append(&key_label);
