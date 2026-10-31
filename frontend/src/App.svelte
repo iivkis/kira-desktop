@@ -3,12 +3,28 @@
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { request, focusWorkspace, toggleLauncher, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
   let workspaceState = $state<WorkspaceState | null>(null);
+  let launcherPending = $state(false);
+  let launcherError = $state<string | null>(null);
+
+  async function openLauncher() {
+    if (launcherPending) return;
+    launcherPending = true;
+    launcherError = null;
+    try {
+      await toggleLauncher();
+    } catch (error) {
+      launcherError = error instanceof Error ? error.message : 'Launcher unavailable';
+    } finally {
+      launcherPending = false;
+    }
+  }
+
   let workspacePending = $state(false);
   let workspaceActionError = $state<string | null>(null);
 
@@ -33,6 +49,14 @@
     const clock = window.setInterval(() => {
       now = new Date();
     }, 1_000);
+
+    const shortcut = (event: KeyboardEvent) => {
+      if (event.ctrlKey && !event.altKey && !event.metaKey && event.code === 'Space') {
+        event.preventDefault();
+        void openLauncher();
+      }
+    };
+    window.addEventListener('keydown', shortcut);
 
     let disposed = false;
     const refresh = async () => {
@@ -85,6 +109,7 @@
 
     return () => {
       disposed = true;
+      window.removeEventListener('keydown', shortcut);
       window.clearInterval(clock);
       window.clearInterval(statusTimer);
       unsubscribe();
@@ -99,6 +124,20 @@
       <span class="brand__symbol" aria-hidden="true">K</span>
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
     </div>
+    <button class="launcher-trigger" type="button" aria-label="Open application launcher"
+      title="Applications (Ctrl+Space)" disabled={launcherPending}
+      onclick={() => { void openLauncher(); }}>
+      <svg viewBox="0 0 20 20" aria-hidden="true" fill="none">
+        <rect x="2.5" y="2.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"></rect>
+        <rect x="11.5" y="2.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"></rect>
+        <rect x="2.5" y="11.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"></rect>
+        <rect x="11.5" y="11.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"></rect>
+      </svg>
+      <span>APPS</span>
+    </button>
+    {#if launcherError}
+      <span class="launcher-error" role="alert" title={launcherError}>APPS !</span>
+    {/if}
     <span class="bar__separator" aria-hidden="true"></span>
     <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
       limit={configState.config.max_workspaces} pending={workspacePending}
