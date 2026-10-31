@@ -24,13 +24,14 @@ class PreviewTests(unittest.TestCase):
         self.assertIn("spawn-at-startup", config)
         self.assertIn('"report"', config)
         self.assertIn("Alt+Shift+Q", config)
-        self.assertIn('Mod+Return repeat=false { spawn "foot"; }', config)
+        self.assertIn('Mod+T repeat=false { spawn "foot"; }', config)
         self.assertIn("Mod+2 { focus-workspace 2; }", config)
-        self.assertIn("Mod+Ctrl+1 repeat=false { move-window-to-workspace focus=true 1; }", config)
-        self.assertIn("Mod+Ctrl+2 repeat=false { move-window-to-workspace focus=true 2; }", config)
+        self.assertIn("Mod+Ctrl+1 repeat=false { move-window-to-workspace focus=false 1; }", config)
+        self.assertIn("Mod+Ctrl+2 repeat=false { move-window-to-workspace focus=false 2; }", config)
         # Alt+Shift can be swallowed by host keyboard-layout switching;
         # never resurrect the earlier four-modifier move shortcut.
         self.assertNotIn("Alt+Shift+Ctrl+2", config)
+        self.assertNotIn("Mod+Return", config)
         self.assertNotIn("waybar", config)
         self.assertNotIn("--session", config)
 
