@@ -13,6 +13,8 @@ pub struct RpcRequest {
     pub jsonrpc: String,
     pub id: u64,
     pub method: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -153,6 +155,7 @@ mod tests {
     #[test]
     fn invalid_method_has_json_rpc_error_code() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: PROTOCOL_VERSION.into(),
             id: 1,
             method: "missing".into(),
@@ -163,6 +166,7 @@ mod tests {
     #[test]
     fn invalid_version_is_rejected() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: "1.0".into(),
             id: 2,
             method: "ping".into(),
@@ -173,6 +177,7 @@ mod tests {
     #[test]
     fn default_config_is_read_only_and_typed() {
         let req = RpcRequest {
+            params: None,
             jsonrpc: PROTOCOL_VERSION.into(),
             id: 13,
             method: "get_config".into(),
@@ -188,6 +193,7 @@ mod tests {
         );
         assert_eq!(
             dispatch(RpcRequest {
+            params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 14,
                 method: "set_config".into()
@@ -202,6 +208,7 @@ mod tests {
     #[test]
     fn disconnected_niri_does_not_fabricate_workspaces() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: PROTOCOL_VERSION.into(),
             id: 3,
             method: "get_workspaces".into(),
@@ -228,6 +235,7 @@ mod tests {
         };
         let response = dispatch_with_workspaces(
             RpcRequest {
+            params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 4,
                 method: "get_workspaces".into(),
