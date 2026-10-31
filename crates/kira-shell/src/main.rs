@@ -8,7 +8,7 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
+use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
 use webkit6::prelude::*;
 
 const BAR_HEIGHT: i32 = 42;
@@ -19,6 +19,7 @@ const MAX_BRIDGE_MESSAGE_BYTES: usize = 4096;
 enum ShellDelivery {
     Rpc(String),
     Workspaces(WorkspaceState),
+    Config(ConfigState),
 }
 
 fn ui_index() -> PathBuf {
@@ -49,7 +50,7 @@ fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     }
     if !matches!(
         request.method.as_str(),
-        "ping" | "get_state" | "get_workspaces"
+        "ping" | "get_state" | "get_workspaces" | "get_config"
     ) {
         return RpcResponse::failure(Some(request.id), -32601, "Method not allowed");
     }
@@ -178,6 +179,23 @@ fn main() {
                 }
             });
         }
+        // Core owns config validation and last-known-good rollback. A second
+        // independent read-only stream forwards updates to the trusted page.
+        if let Some(path) = socket.clone() {
+            let updates = sender.clone();
+            std::thread::spawn(move || {
+                loop {
+                    let result = kira_ipc::client::subscribe_config(&path, |state| {
+                        let _ = updates.send(ShellDelivery::Config(state));
+                    });
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Core config stream disconnected: {error}");
+                    }
+                    // Retain the last valid UI settings while Core reconnects.
+                    std::thread::sleep(Duration::from_millis(750));
+                }
+            });
+        }
         manager.connect_script_message_received(Some("kira"), move |_, value| {
             let message = value.to_string().to_string();
             let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
@@ -239,6 +257,12 @@ fn main() {
                             continue;
                         };
                         ("kira:workspaces", serialized)
+                    }
+                    ShellDelivery::Config(state) => {
+                        let Ok(serialized) = serde_json::to_string(&state) else {
+                            continue;
+                        };
+                        ("kira:config", serialized)
                     }
                 };
                 if let Ok(encoded) = serde_json::to_string(&payload) {
@@ -315,6 +339,22 @@ mod tests {
             None,
         );
         assert_eq!(result.error.unwrap().code, -32000);
+    }
+
+    #[test]
+    fn allows_read_only_config_but_rejects_writes() {
+        let response = process_message(
+            r#"{"jsonrpc":"2.0","id":8,"method":"get_config"}"#, None,
+        );
+        assert_eq!(response.error.unwrap().code, -32000);
+        let response = process_message(
+            r#"{"jsonrpc":"2.0","id":9,"method":"set_config"}"#, None,
+        );
+        assert_eq!(response.error.unwrap().code, -32601);
+        let response = process_message(
+            r#"{"jsonrpc":"2.0","id":10,"method":"subscribe_config"}"#, None,
+        );
+        assert_eq!(response.error.unwrap().code, -32601);
     }
 
     #[test]
