@@ -30,15 +30,15 @@ every 250 ms and notifies Shell only when the validated state changes.
 
 ```kdl
 kira {
-    bar compact=false title="KIRA DESKTOP"
-    clock seconds=false
-    workspaces show-names=true limit=12
+    bar compact=#false title="KIRA DESKTOP"
+    clock seconds=#false
+    workspaces show-names=#true limit=12
 }
 ```
 
 | Node | Property | Type / range | Effect |
 | --- | --- | --- | --- |
-| `bar` | `compact` | `true` / `false` | Reduce horizontal padding while keeping Niri's 42px reserved bar |
+| `bar` | `compact` | `#true` / `#false` | Reduce horizontal padding while keeping Niri's 42px reserved bar |
 | `bar` | `title` | quoted text, 1–32 printable characters | Center title; text is escaped by Svelte |
 | `clock` | `seconds` | `true` / `false` | Show seconds in the Top Bar clock |
 | `workspaces` | `show-names` | `true` / `false` | Show workspace names or only numeric indices |
@@ -48,7 +48,7 @@ Formatting rules for this **minimal KDL profile**:
 - Exactly one `kira {` opening line and a `}` closing line.
 - Each child node on **one line**, properties written as `key=value`
   without whitespace around `=`. Child nodes can appear in any order.
-- Values are exact `true` / `false`, unsigned integers, or standard
+- Values are KDL 2.0 booleans (`#true` / `#false`), unsigned integers, or standard
   double-quoted JSON-compatible strings.
 - Blank lines and `//` comments outside quoted strings are allowed.
 - Children, lists, arbitrary attributes, slashdash, multiline/raw strings,
@@ -92,8 +92,8 @@ nix develop --command task dev:preview
 The preview writes a **separate temporary Kira config**, copied from the
 sample. The terminal prints its `[preview] Live Kira KDL config:` path.
 While the preview is open, edit **that exact path** using a text editor,
-for example change `clock seconds=false` to `clock seconds=true` or
-`bar compact=false` to `bar compact=true`. Changes appear in the nested
+for example change `clock seconds=#false` to `clock seconds=#true` or
+`bar compact=#false` to `bar compact=#true`. Changes appear in the nested
 Top Bar without restarting. The temporary file disappears when the preview
 closes, and the host user's `~/.config/kira-desktop/` is untouched.
 
