@@ -193,7 +193,7 @@ mod tests {
         );
         assert_eq!(
             dispatch(RpcRequest {
-            params: None,
+                params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 14,
                 method: "set_config".into()
@@ -235,7 +235,7 @@ mod tests {
         };
         let response = dispatch_with_workspaces(
             RpcRequest {
-            params: None,
+                params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 4,
                 method: "get_workspaces".into(),
