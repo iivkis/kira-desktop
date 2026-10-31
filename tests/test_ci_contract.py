@@ -24,5 +24,16 @@ class NativeShellCiContract(unittest.TestCase):
         self.assertIn("Compile packaged Core, GTK/WebKit Shell", nix)
 
 
+    def test_crane_source_keeps_embedded_launcher_css(self):
+        package = (ROOT / "nix/package.nix").read_text(encoding="utf-8")
+        launcher = (ROOT / "crates/kira-shell/src/launcher.rs").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('include_str!("launcher.css")', launcher)
+        self.assertIn("craneLib.filterCargoSources", package)
+        self.assertIn('"/crates/kira-shell/src/launcher.css"', package)
+        self.assertIn("lib.cleanSourceWith", package)
+
+
 if __name__ == "__main__":
     unittest.main()
