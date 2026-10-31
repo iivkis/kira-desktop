@@ -66,6 +66,36 @@ body,
   display: none;
 }
 
+.launcher-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kira-space-2);
+  padding: 4px 7px;
+  border: 1px solid var(--kira-color-border);
+  border-radius: var(--kira-radius-sm);
+  background: var(--kira-color-surface-subtle);
+  color: var(--kira-color-text);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  cursor: pointer;
+}
+
+.launcher-trigger:hover,
+.launcher-trigger:focus-visible {
+  border-color: var(--kira-color-accent);
+  background: var(--kira-color-surface);
+}
+
+.launcher-trigger:disabled { opacity: 0.6; cursor: progress; }
+.launcher-trigger svg { width: 16px; height: 16px; color: var(--kira-color-accent); }
+.launcher-error { color: var(--kira-color-text); font-size: 10px; }
+
+@media (max-width: 1024px) {
+  .launcher-trigger span { display: none; }
+}
+
 .workspace-action-error {
   flex: none;
   font-size: 9px;
