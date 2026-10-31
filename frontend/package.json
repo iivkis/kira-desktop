@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/inline-assets.mjs dist",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc --noEmit",
-    "test:ci": "vitest run"
+    "test:ci": "vitest run src && node --test scripts/inline-assets.test.mjs"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.1.0",
