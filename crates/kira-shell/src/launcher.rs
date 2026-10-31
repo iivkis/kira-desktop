@@ -7,7 +7,7 @@ use std::sync::mpsc;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
-use kira_ipc::{DesktopApplication, RpcRequest, PROTOCOL_VERSION};
+use kira_ipc::{DesktopApplication, PROTOCOL_VERSION, RpcRequest};
 
 use crate::ShellDelivery;
 
@@ -54,7 +54,9 @@ impl LauncherUi {
     }
 
     pub fn set_catalog(&self, result: Result<Vec<DesktopApplication>, String>) {
-        if !self.window.is_visible() { return; }
+        if !self.window.is_visible() {
+            return;
+        }
         match result {
             Ok(apps) => {
                 *self.catalog.borrow_mut() = apps;
@@ -80,8 +82,13 @@ impl LauncherUi {
     }
 
     fn rebuild(&self) {
-        render(&self.catalog.borrow(), self.search.text().as_str(),
-            &self.list, &self.visible_ids, &self.message);
+        render(
+            &self.catalog.borrow(),
+            self.search.text().as_str(),
+            &self.list,
+            &self.visible_ids,
+            &self.message,
+        );
     }
 }
 
@@ -126,7 +133,11 @@ fn render(
     });
 }
 
-fn call_core(socket: Option<PathBuf>, method: &str, id: Option<String>) -> Result<serde_json::Value, String> {
+fn call_core(
+    socket: Option<PathBuf>,
+    method: &str,
+    id: Option<String>,
+) -> Result<serde_json::Value, String> {
     let path = socket.ok_or_else(|| "Kira Core unavailable".to_string())?;
     let request = RpcRequest {
         jsonrpc: PROTOCOL_VERSION.into(),
@@ -139,14 +150,17 @@ fn call_core(socket: Option<PathBuf>, method: &str, id: Option<String>) -> Resul
     if let Some(error) = response.error {
         return Err(error.message);
     }
-    response.result.ok_or_else(|| "Empty Core response".to_string())
+    response
+        .result
+        .ok_or_else(|| "Empty Core response".to_string())
 }
 
 pub fn open_catalog(socket: Option<PathBuf>, sender: mpsc::Sender<ShellDelivery>) {
     std::thread::spawn(move || {
-        let result = call_core(socket, "get_applications", None)
-            .and_then(|value| serde_json::from_value::<Vec<DesktopApplication>>(value)
-                .map_err(|_| "Invalid application catalog".to_string()));
+        let result = call_core(socket, "get_applications", None).and_then(|value| {
+            serde_json::from_value::<Vec<DesktopApplication>>(value)
+                .map_err(|_| "Invalid application catalog".to_string())
+        });
         let _ = sender.send(ShellDelivery::LauncherCatalog(result));
     });
 }
@@ -161,7 +175,9 @@ pub fn create(
     provider.load_from_data(CSS);
     if let Some(display) = gtk::gdk::Display::default() {
         gtk::style_context_add_provider_for_display(
-            &display, &provider, gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+            &display,
+            &provider,
+            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
     }
 
@@ -224,8 +240,13 @@ pub fn create(
     let ids_search = visible_ids.clone();
     let message_search = message.clone();
     search.connect_search_changed(move |entry| {
-        render(&catalog_search.borrow(), entry.text().as_str(),
-            &list_search, &ids_search, &message_search);
+        render(
+            &catalog_search.borrow(),
+            entry.text().as_str(),
+            &list_search,
+            &ids_search,
+            &message_search,
+        );
     });
 
     let ids_activate = visible_ids.clone();
@@ -234,8 +255,12 @@ pub fn create(
     let sender_activate = sender.clone();
     let message_activate = message.clone();
     list.connect_row_activated(move |_, row| {
-        if launching_activate.get() { return; }
-        let Some(id) = ids_activate.borrow().get(row.index() as usize).cloned() else { return; };
+        if launching_activate.get() {
+            return;
+        }
+        let Some(id) = ids_activate.borrow().get(row.index() as usize).cloned() else {
+            return;
+        };
         launching_activate.set(true);
         message_activate.set_text("Launching application…");
         let socket = socket_activate.clone();
@@ -255,35 +280,47 @@ pub fn create(
 
     let search_enter = list.clone();
     search.connect_activate(move |_| {
-        if let Some(row) = search_enter.selected_row() { row.activate(); }
+        if let Some(row) = search_enter.selected_row() {
+            row.activate();
+        }
     });
 
     let keys = gtk::EventControllerKey::new();
     let window_key = window.clone();
     let bar_key = bar_view.clone();
     let list_key = list.clone();
-    keys.connect_key_pressed(move |_, key, _, _| {
-        match key {
-            gtk::gdk::Key::Escape => {
-                window_key.hide();
-                bar_key.grab_focus();
-                gtk::glib::Propagation::Stop
-            }
-            gtk::gdk::Key::Down | gtk::gdk::Key::Up => {
-                let index = list_key.selected_row().map(|row| row.index()).unwrap_or(0);
-                let next = if key == gtk::gdk::Key::Down { index + 1 } else { (index - 1).max(0) };
-                if let Some(row) = list_key.row_at_index(next) {
-                    list_key.select_row(Some(&row));
-                }
-                gtk::glib::Propagation::Stop
-            }
-            _ => gtk::glib::Propagation::Proceed,
+    keys.connect_key_pressed(move |_, key, _, _| match key {
+        gtk::gdk::Key::Escape => {
+            window_key.hide();
+            bar_key.grab_focus();
+            gtk::glib::Propagation::Stop
         }
+        gtk::gdk::Key::Down | gtk::gdk::Key::Up => {
+            let index = list_key.selected_row().map(|row| row.index()).unwrap_or(0);
+            let next = if key == gtk::gdk::Key::Down {
+                index + 1
+            } else {
+                (index - 1).max(0)
+            };
+            if let Some(row) = list_key.row_at_index(next) {
+                list_key.select_row(Some(&row));
+            }
+            gtk::glib::Propagation::Stop
+        }
+        _ => gtk::glib::Propagation::Proceed,
     });
     // Capture navigation and Escape while the search entry owns focus.
     search.add_controller(keys);
 
-    LauncherUi { window, search, list, message, catalog, visible_ids, launching }
+    LauncherUi {
+        window,
+        search,
+        list,
+        message,
+        catalog,
+        visible_ids,
+        launching,
+    }
 }
 
 #[cfg(test)]
