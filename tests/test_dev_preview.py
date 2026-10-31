@@ -19,6 +19,16 @@ spec.loader.exec_module(preview)
 
 
 class PreviewTests(unittest.TestCase):
+    def test_preview_tasks_use_private_dbus_session(self):
+        # All interactive and QA launch paths must keep their D-Bus traffic
+        # away from the user's host session. Tests themselves need no bus.
+        taskfile = (SCRIPT.parents[1] / "Taskfile.yml").read_text(encoding="utf-8")
+        self.assertEqual(
+            taskfile.count("dbus-run-session -- python3 scripts/dev_preview.py"),
+            8,
+        )
+        self.assertNotIn("      - python3 scripts/dev_preview.py", taskfile)
+
     def test_config_does_not_start_host_services(self):
         config = preview.preview_config(Path("/usr/bin/python3"), SCRIPT, Path("/tmp/ready"), "abc")
         self.assertIn("spawn-at-startup", config)
