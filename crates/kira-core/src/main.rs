@@ -152,8 +152,9 @@ async fn serve(
             {
                 return Ok(stream_config(&mut writer, config, request.id).await?);
             }
-            Ok(request) if request.method == "focus_workspace"
-                && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            Ok(request)
+                if request.method == "focus_workspace"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
             {
                 // This is intentionally the sole Niri mutation available
                 // through Core. The ID must exist in a connected snapshot.
@@ -162,10 +163,17 @@ async fn serve(
                     Err(message) => RpcResponse::failure(Some(request.id), -32602, message),
                     Ok(id) => match niri_socket {
                         Some(path) => match niri::focus_workspace(path, id).await {
-                            Ok(()) => RpcResponse::success(request.id, serde_json::json!({"accepted": true})),
+                            Ok(()) => RpcResponse::success(
+                                request.id,
+                                serde_json::json!({"accepted": true}),
+                            ),
                             Err(error) => {
                                 eprintln!("kira-core: Niri workspace focus failed: {error}");
-                                RpcResponse::failure(Some(request.id), -32000, "Niri workspace focus failed")
+                                RpcResponse::failure(
+                                    Some(request.id),
+                                    -32000,
+                                    "Niri workspace focus failed",
+                                )
                             }
                         },
                         None => RpcResponse::failure(Some(request.id), -32000, "Niri unavailable"),
@@ -418,8 +426,13 @@ mod tests {
         stream.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"focus_workspace\",\"params\":{\"id\":\"9\"}}\n").await.unwrap();
         let mut reader = BufReader::new(stream);
         let mut line = String::new();
-        tokio::time::timeout(std::time::Duration::from_secs(1), tokio::io::AsyncBufReadExt::read_line(&mut reader, &mut line))
-            .await.unwrap().unwrap();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            tokio::io::AsyncBufReadExt::read_line(&mut reader, &mut line),
+        )
+        .await
+        .unwrap()
+        .unwrap();
         let response: RpcResponse = serde_json::from_str(&line).unwrap();
         assert_eq!(response.error.unwrap().code, -32602);
         server.abort();
