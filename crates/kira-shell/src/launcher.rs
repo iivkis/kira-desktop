@@ -184,7 +184,7 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
         let list = list.clone();
         search.connect_activate(move |_| {
             if let Some(row) = list.selected_row().or_else(|| list.row_at_index(0)) {
-                row.activate();
+                row.emit_activate();
             }
         });
     }
