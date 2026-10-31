@@ -66,16 +66,29 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
     let mut reader = BufReader::new(stream);
     loop {
         let mut line = Vec::new();
-        reader.by_ref().take(MAX_RESPONSE_BYTES + 1).read_until(b'\n', &mut line)?;
+        reader
+            .by_ref()
+            .take(MAX_RESPONSE_BYTES + 1)
+            .read_until(b'\n', &mut line)?;
         if line.is_empty() {
-            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Core subscription closed"));
+            return Err(io::Error::new(
+                io::ErrorKind::UnexpectedEof,
+                "Core subscription closed",
+            ));
         }
         if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
-            return Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid workspace frame"));
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Invalid workspace frame",
+            ));
         }
         let reply: RpcResponse = serde_json::from_slice(&line)?;
-        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some() {
-            return Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid workspace reply"));
+        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some()
+        {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Invalid workspace reply",
+            ));
         }
         let state = reply.result.ok_or_else(|| {
             io::Error::new(io::ErrorKind::InvalidData, "Workspace result missing")
@@ -142,9 +155,12 @@ mod tests {
             assert_eq!(request.id, 0);
             let mut stream = reader.into_inner();
             for state in [false, true] {
-                let reply = crate::RpcResponse::success(0, serde_json::json!({
-                    "connected": state, "workspaces": []
-                }));
+                let reply = crate::RpcResponse::success(
+                    0,
+                    serde_json::json!({
+                        "connected": state, "workspaces": []
+                    }),
+                );
                 serde_json::to_writer(&mut stream, &reply).unwrap();
                 stream.write_all(b"\n").unwrap();
             }
