@@ -17,30 +17,39 @@ function contrast(first: string, second: string): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-describe('Kira Default premium design tokens', () => {
+describe('Kira Default Bordeaux / Taupe design tokens', () => {
   it('contains exactly the five approved canonical base colors', () => {
     expect(Object.values(kiraDefaultPalette)).toEqual([
-      '#22223b', '#4a4e69', '#9a8c98', '#c9ada7', '#f2e9e4',
+      '#0a0908', '#49111c', '#f2f4f3', '#a9927d', '#5e503f',
     ]);
     expect(new Set(Object.values(kiraDefaultPalette)).size).toBe(5);
   });
 
   it('keeps public CSS tokens synchronized with the typed palette', () => {
     for (const [role, value] of Object.entries(kiraDefaultRoles)) {
-      const declaration = '--kira-color-' + role + ': ' + value + ';';
-      expect(css).toContain(declaration);
+      // Accent aliases the readable muted/taupe token; never add a sixth base.
+      const token = role === 'accent' ? 'var(--kira-color-muted)' : value;
+      expect(css).toContain('--kira-color-' + role + ': ' + token + ';');
     }
     const hexDeclarations = [...css.matchAll(/--kira-color-[\w-]+:\s*(#[0-9a-f]{6})\s*;/g)];
     expect(hexDeclarations).toHaveLength(5);
+    expect(new Set(hexDeclarations.map((match) => match[1]))).toEqual(
+      new Set(Object.values(kiraDefaultPalette)),
+    );
   });
 
   it('chooses text/accent pairs that meet WCAG AA', () => {
-    const { spaceIndigo, dustyGrape, lilacAsh, almondSilk, parchment } = kiraDefaultPalette;
-    expect(contrast(parchment, spaceIndigo)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(parchment, dustyGrape)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(lilacAsh, spaceIndigo)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(spaceIndigo, almondSilk)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(lilacAsh, dustyGrape)).toBeLessThan(4.5);
+    const { black, nightBordeaux, whiteSmoke, dustyTaupe, stoneBrown } = kiraDefaultPalette;
+    expect(contrast(whiteSmoke, black)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(whiteSmoke, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(dustyTaupe, black)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(dustyTaupe, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(black, dustyTaupe)).toBeGreaterThanOrEqual(4.5);
+    // Stone Brown is reserved for structure; low-contrast brown-on-black
+    // must never be used as the primary/muted text.
+    expect(contrast(stoneBrown, black)).toBeLessThan(4.5);
+    expect(kiraDefaultRoles.muted).toBe(dustyTaupe);
+    expect(kiraDefaultRoles.accent).toBe(dustyTaupe);
   });
 
   it('defines compact spacing, consistent radii and reduced motion', () => {
