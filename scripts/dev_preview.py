@@ -186,13 +186,22 @@ def run_preview(
         ready = temp / "ready.json"
         config = temp / "niri.kdl"
         socket_file = temp / "core.sock"
+        # Kira's own KDL is separate from Niri's temporary compositor KDL.
+        # Default preview never reads or writes the user's ~/.config tree.
+        demo_config = temp / "kira.kdl"
+        sample = Path(__file__).resolve().parents[1] / "config/kira.kdl.example"
+        demo_config.write_text(sample.read_text(encoding="utf-8"), encoding="utf-8")
+        requested = os.environ.get("KIRA_CONFIG_FILE")
+        if requested and not Path(requested).is_absolute():
+            raise PreviewError("KIRA_CONFIG_FILE must be an absolute path")
+        active_config = Path(requested) if requested else demo_config
         config.write_text(
             preview_config(Path(sys.executable), Path(__file__).resolve(), ready, nonce),
             encoding="utf-8",
         )
 
         environment = os.environ.copy()
-        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW", "KIRA_UI_DIR"):
+        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW", "KIRA_UI_DIR", "KIRA_CONFIG_FILE"):
             environment.pop(key, None)
 
         validation = subprocess.run(
@@ -245,6 +254,7 @@ def run_preview(
                 "WAYLAND_DISPLAY": nested,
                 "KIRA_CORE_SOCKET": str(socket_file),
                 "KIRA_PREVIEW": "1",
+                "KIRA_CONFIG_FILE": str(active_config),
             })
             if ui_dir is not None:
                 isolated["KIRA_UI_DIR"] = str(ui_dir)
@@ -261,6 +271,9 @@ def run_preview(
             )
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
+            if not qa_smoke and qa_output_dir is None:
+                print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
+                print("[preview] Edit this file to hot-reload the bar; invalid KDL retains last valid config.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
             if not qa_smoke and qa_output_dir is None:
                 print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
