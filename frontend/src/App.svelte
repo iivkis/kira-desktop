@@ -3,7 +3,7 @@
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { request, focusWorkspace, toggleLauncher, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -95,10 +95,11 @@
 
 <main class="bar" class:compact={configState.config.compact} aria-label="Kira Desktop top bar">
   <section class="bar__start" aria-label="Kira and workspaces">
-    <div class="brand" aria-label="Kira Desktop">
+    <button class="brand" type="button" aria-label="Open application launcher"
+      title="Applications" onclick={() => { void toggleLauncher().catch(console.error); }}>
       <span class="brand__symbol" aria-hidden="true">K</span>
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
-    </div>
+    </button>
     <span class="bar__separator" aria-hidden="true"></span>
     <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
       limit={configState.config.max_workspaces} pending={workspacePending}
