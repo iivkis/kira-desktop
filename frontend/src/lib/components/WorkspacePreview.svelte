@@ -143,6 +143,10 @@
     color: var(--kira-color-on-accent);
   }
 
+  .workspace-preview__item.preview-selected .workspace-preview__button:focus-visible {
+    outline-color: var(--kira-color-text);
+  }
+
   .workspace-preview__urgent-mark {
     position: absolute;
     bottom: 2px;

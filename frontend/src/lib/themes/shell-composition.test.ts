@@ -37,6 +37,7 @@ describe('Top Bar editorial composition contract', () => {
     expect(workspaces).toContain('aria-pressed={workspace.is_focused}');
     expect(workspaces).toContain('disabled={pending}');
     expect(workspaces).toContain(':focus-visible');
+    expect(workspaces).toContain('.workspace-preview__item.preview-selected .workspace-preview__button:focus-visible');
   });
 
   it('communicates status without an extra framed badge', () => {
