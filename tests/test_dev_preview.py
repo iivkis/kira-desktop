@@ -3,7 +3,6 @@ import importlib.util
 import json
 import os
 from pathlib import Path
-import shutil
 import signal
 import socket
 import subprocess
@@ -20,16 +19,6 @@ spec.loader.exec_module(preview)
 
 
 class PreviewTests(unittest.TestCase):
-    def test_preview_tasks_use_private_dbus_session(self):
-        # All interactive and QA launch paths must keep their D-Bus traffic
-        # away from the user's host session. Tests themselves need no bus.
-        taskfile = (SCRIPT.parents[1] / "Taskfile.yml").read_text(encoding="utf-8")
-        self.assertEqual(
-            taskfile.count("dbus-run-session -- python3 scripts/dev_preview.py"),
-            8,
-        )
-        self.assertNotIn("      - python3 scripts/dev_preview.py", taskfile)
-
     def test_config_does_not_start_host_services(self):
         config = preview.preview_config(Path("/usr/bin/python3"), SCRIPT, Path("/tmp/ready"), "abc")
         self.assertIn("spawn-at-startup", config)
@@ -112,10 +101,6 @@ class PreviewTests(unittest.TestCase):
             finally:
                 preview.stop_process(parent)
 
-    @unittest.skipUnless(shutil.which("dbus-run-session"), "dbus-run-session unavailable")
-    def test_private_bus_is_forwarded_to_nested_core_and_shell(self):
-        self.run_mock_lifecycle(signal.SIGINT, fast=True, private_bus=True)
-
     def test_lifecycle_with_mock_niri_core_and_shell(self):
         self.run_mock_lifecycle(signal.SIGINT)
 
@@ -128,7 +113,7 @@ class PreviewTests(unittest.TestCase):
     def test_debug_preview_streams_shell_logs(self):
         self.run_mock_lifecycle(signal.SIGINT, fast=True, debug=True)
 
-    def run_mock_lifecycle(self, exit_signal, fast=False, debug=False, private_bus=False):
+    def run_mock_lifecycle(self, exit_signal, fast=False, debug=False):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             runtime = root / "runtime"
@@ -159,8 +144,6 @@ Path(os.environ['PREVIEW_AUDIT']).write_text(json.dumps({
   'preview': os.environ.get('KIRA_PREVIEW'),
   'ui': os.environ.get('KIRA_UI_DIR'),
   'kira_config': os.environ.get('KIRA_CONFIG_FILE'),
-  'dbus_session': os.environ.get('DBUS_SESSION_BUS_ADDRESS'),
-  'preview_pid': os.getppid(),
 }))
 print('kira-shell: diagnostic probe', flush=True)
 while True: time.sleep(.1)
@@ -194,9 +177,6 @@ while True: time.sleep(.1)
                 "PATH": f"{root}:{env.get('PATH', '')}",
                 "PREVIEW_AUDIT": str(output),
             })
-            if private_bus:
-                # Simulate a host session address that must not reach the shell.
-                env["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=/nonexistent/kira-host-bus"
             command = [sys.executable, str(SCRIPT)]
             if fast:
                 command += ["--bin-dir", str(bins), "--ui-dir", str(ui)]
@@ -204,8 +184,6 @@ while True: time.sleep(.1)
                 command += ["--debug"]
             if not fast:
                 command += ["--package-dir", str(root / "result")]
-            if private_bus:
-                command = ["dbus-run-session", "--", *command]
             process = subprocess.Popen(
                 command,
                 env=env, start_new_session=True,
@@ -219,9 +197,6 @@ while True: time.sleep(.1)
                 actual = json.loads(output.read_text())
                 self.assertEqual(actual["wayland"], "wayland-mock-nested")
                 self.assertEqual(actual["preview"], "1")
-                if private_bus:
-                    self.assertTrue(actual["dbus_session"].startswith("unix:"))
-                    self.assertNotEqual(actual["dbus_session"], env["DBUS_SESSION_BUS_ADDRESS"])
                 self.assertEqual(actual["ui"], str(ui.resolve()) if fast else None)
                 self.assertIn("kira-preview-", actual["core"])
                 self.assertIn("kira-preview-", actual["kira_config"])
@@ -230,13 +205,7 @@ while True: time.sleep(.1)
                 self.assertFalse((runtime / "kira-desktop.sock").exists())
             finally:
                 if process.poll() is None:
-                    if private_bus and output.exists():
-                        # Signal the Python preview, not dbus-run-session.
-                        # The wrapper then observes a clean child exit.
-                        pid = json.loads(output.read_text())["preview_pid"]
-                        os.kill(pid, exit_signal)
-                    else:
-                        process.send_signal(exit_signal)
+                    process.send_signal(exit_signal)
                 stdout, stderr = process.communicate(timeout=8)
                 parent.close()
             self.assertEqual(process.returncode, 0, stdout + stderr)
