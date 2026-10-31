@@ -309,8 +309,9 @@ pub fn create(
         }
         _ => gtk::glib::Propagation::Proceed,
     });
-    // Capture navigation and Escape while the search entry owns focus.
-    search.add_controller(keys);
+    // Capture Escape from every child, including the list and Close button.
+    keys.set_propagation_phase(gtk::PropagationPhase::Capture);
+    window.add_controller(keys);
 
     LauncherUi {
         window,
