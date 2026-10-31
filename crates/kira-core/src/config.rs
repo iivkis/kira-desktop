@@ -141,7 +141,10 @@ pub fn parse(input: &str) -> Result<UiConfig, String> {
             continue;
         }
         if root_closed {
-            return Err(format!("line {}: unexpected content after kira block", number + 1));
+            return Err(format!(
+                "line {}: unexpected content after kira block",
+                number + 1
+            ));
         }
         if line == "}" {
             root_closed = true;
@@ -171,26 +174,40 @@ pub fn parse(input: &str) -> Result<UiConfig, String> {
             match (node, key) {
                 ("bar", "compact") => config.compact = boolean(raw_value, &key_path)?,
                 ("bar", "title") => {
-                    let title: String = serde_json::from_str(raw_value)
-                        .map_err(|_| format!("line {}: bar.title must be a quoted string", number + 1))?;
-                    if title.is_empty() || title.chars().count() > 32 ||
-                        title.chars().any(char::is_control)
+                    let title: String = serde_json::from_str(raw_value).map_err(|_| {
+                        format!("line {}: bar.title must be a quoted string", number + 1)
+                    })?;
+                    if title.is_empty()
+                        || title.chars().count() > 32
+                        || title.chars().any(char::is_control)
                     {
-                        return Err(format!("line {}: bar.title must contain 1–32 printable characters", number + 1));
+                        return Err(format!(
+                            "line {}: bar.title must contain 1–32 printable characters",
+                            number + 1
+                        ));
                     }
                     config.title = title;
                 }
                 ("clock", "seconds") => config.show_seconds = boolean(raw_value, &key_path)?,
                 ("workspaces", "show-names") => config.show_names = boolean(raw_value, &key_path)?,
                 ("workspaces", "limit") => {
-                    let limit = raw_value.parse::<u8>()
-                        .map_err(|_| format!("line {}: workspaces.limit must be an integer", number + 1))?;
+                    let limit = raw_value.parse::<u8>().map_err(|_| {
+                        format!("line {}: workspaces.limit must be an integer", number + 1)
+                    })?;
                     if !(1..=32).contains(&limit) {
-                        return Err(format!("line {}: workspaces.limit must be 1–32", number + 1));
+                        return Err(format!(
+                            "line {}: workspaces.limit must be 1–32",
+                            number + 1
+                        ));
                     }
                     config.max_workspaces = limit;
                 }
-                _ => return Err(format!("line {}: unsupported property '{key_path}'", number + 1)),
+                _ => {
+                    return Err(format!(
+                        "line {}: unsupported property '{key_path}'",
+                        number + 1
+                    ));
+                }
             }
         }
     }
@@ -203,7 +220,8 @@ pub fn parse(input: &str) -> Result<UiConfig, String> {
 pub fn load(path: &Path) -> Result<UiConfig, String> {
     let file = std::fs::File::open(path).map_err(|e| format!("cannot read config: {e}"))?;
     let mut bytes = Vec::new();
-    file.take(MAX_CONFIG_BYTES + 1).read_to_end(&mut bytes)
+    file.take(MAX_CONFIG_BYTES + 1)
+        .read_to_end(&mut bytes)
         .map_err(|e| format!("cannot read config: {e}"))?;
     if bytes.len() as u64 > MAX_CONFIG_BYTES {
         return Err("config exceeds 64 KiB".into());
@@ -214,7 +232,10 @@ pub fn load(path: &Path) -> Result<UiConfig, String> {
 
 fn apply(current: &ConfigState, latest: Result<UiConfig, String>) -> ConfigState {
     match latest {
-        Ok(config) => ConfigState { config, error: None },
+        Ok(config) => ConfigState {
+            config,
+            error: None,
+        },
         Err(error) => ConfigState {
             config: current.config.clone(),
             error: Some(error),
@@ -231,15 +252,20 @@ pub async fn monitor(path: PathBuf, sender: watch::Sender<ConfigState>) {
     let mut previous_contents: Option<Result<Vec<u8>, io::ErrorKind>> = None;
     loop {
         // Hard cap the read itself, even for a huge or growing file.
-        let current = std::fs::File::open(&path).and_then(|file| {
-            let mut bytes = Vec::new();
-            file.take(MAX_CONFIG_BYTES + 1).read_to_end(&mut bytes)?;
-            if bytes.len() as u64 > MAX_CONFIG_BYTES {
-                Err(io::Error::new(io::ErrorKind::InvalidData, "config too large"))
-            } else {
-                Ok(bytes)
-            }
-        }).map_err(|error| error.kind());
+        let current = std::fs::File::open(&path)
+            .and_then(|file| {
+                let mut bytes = Vec::new();
+                file.take(MAX_CONFIG_BYTES + 1).read_to_end(&mut bytes)?;
+                if bytes.len() as u64 > MAX_CONFIG_BYTES {
+                    Err(io::Error::new(
+                        io::ErrorKind::InvalidData,
+                        "config too large",
+                    ))
+                } else {
+                    Ok(bytes)
+                }
+            })
+            .map_err(|error| error.kind());
 
         // Don't reparse unchanged contents, but still catch atomic replacements.
         let changed = match (&previous_contents, &current) {
@@ -288,7 +314,10 @@ mod tests {
 
     #[test]
     fn invalid_config_cannot_override_previous_valid_state() {
-        let initial = ConfigState { config: parse("kira {\n  bar compact=true\n}\n").unwrap(), error: None };
+        let initial = ConfigState {
+            config: parse("kira {\n  bar compact=true\n}\n").unwrap(),
+            error: None,
+        };
         for broken in [
             "kira {\n  bar compact=false\n  bar compact=true\n}",
             "kira {\n  workspaces limit=0\n}",
@@ -317,16 +346,25 @@ mod tests {
         let (tx, mut rx) = watch::channel(ConfigState::default());
         let task = tokio::spawn(monitor(path.clone(), tx));
         std::fs::write(&path, "kira {\n  clock seconds=true\n}\n").unwrap();
-        tokio::time::timeout(Duration::from_secs(2), rx.changed()).await.unwrap().unwrap();
+        tokio::time::timeout(Duration::from_secs(2), rx.changed())
+            .await
+            .unwrap()
+            .unwrap();
         assert!(rx.borrow().config.show_seconds);
         std::fs::write(&path, "kira {\n  clock seconds=bad\n}\n").unwrap();
-        tokio::time::timeout(Duration::from_secs(2), rx.changed()).await.unwrap().unwrap();
+        tokio::time::timeout(Duration::from_secs(2), rx.changed())
+            .await
+            .unwrap()
+            .unwrap();
         assert!(rx.borrow().config.show_seconds);
         assert!(rx.borrow().error.is_some());
         let staged = directory.join("pending.kdl");
         std::fs::write(&staged, "kira {\n  clock seconds=false\n}\n").unwrap();
         std::fs::rename(staged, &path).unwrap();
-        tokio::time::timeout(Duration::from_secs(2), rx.changed()).await.unwrap().unwrap();
+        tokio::time::timeout(Duration::from_secs(2), rx.changed())
+            .await
+            .unwrap()
+            .unwrap();
         assert!(!rx.borrow().config.show_seconds);
         assert!(rx.borrow().error.is_none());
         task.abort();
