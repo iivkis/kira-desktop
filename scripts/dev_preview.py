@@ -117,16 +117,31 @@ def interrupt_preview(_signum: int, _frame: object) -> None:
     raise KeyboardInterrupt
 
 
-def log_tail(path: Path) -> str:
+def log_tail(path: Path, limit: int = 80) -> str:
     if not path.exists():
         return ""
-    return "\n".join(path.read_text(encoding="utf-8", errors="replace").splitlines()[-24:])
+    return "\n".join(path.read_text(encoding="utf-8", errors="replace").splitlines()[-limit:])
+
+
+def print_log_changes(path: Path, offset: int, label: str) -> int:
+    """Print newly emitted log lines, preserving the offset across polls."""
+    if not path.is_file():
+        return offset
+    with path.open("rb") as stream:
+        stream.seek(offset)
+        raw = stream.read(65536)
+        current = stream.tell()
+    if raw:
+        for line in raw.decode("utf-8", errors="replace").splitlines():
+            print(f"[preview:{label}] {line}", file=sys.stderr, flush=True)
+    return current
 
 
 def run_preview(
     package: Path,
     bin_dir: Path | None = None,
     ui_dir: Path | None = None,
+    debug: bool = False,
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
@@ -180,6 +195,7 @@ def run_preview(
         processes: dict[str, subprocess.Popen] = {}
         handles = []
         logs = {name: temp / f"{name}.log" for name in ("niri", "core", "shell")}
+        debug_offsets = {"core": 0, "shell": 0}
 
         def launch(name: str, argv: list[str], env: dict[str, str]):
             handle = logs[name].open("wb")
@@ -238,6 +254,11 @@ def run_preview(
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
 
             while True:
+                if debug:
+                    for name in ("core", "shell"):
+                        debug_offsets[name] = print_log_changes(
+                            logs[name], debug_offsets[name], name
+                        )
                 for name in ("niri", "core", "shell"):
                     proc = processes[name]
                     if proc.poll() is not None:
@@ -261,6 +282,21 @@ def run_preview(
                 stop_process(processes.get(name))
             for handle in handles:
                 handle.close()
+
+            if debug:
+                for name in ("core", "shell"):
+                    print_log_changes(logs[name], debug_offsets[name], name)
+            else:
+                # A successful Wayland surface is not evidence that the UI
+                # mounted. Preserve clues on normal Ctrl+C as well as crashes.
+                shell_log = logs["shell"].read_text(
+                    encoding="utf-8", errors="replace"
+                ) if logs["shell"].exists() else ""
+                if "Svelte entrypoint mounted" not in shell_log:
+                    tail = log_tail(logs["shell"])
+                    if tail:
+                        print(f"[preview] Shell diagnostics (UI mount not confirmed):\n{tail}", file=sys.stderr)
+
             print("[preview] Preview processes stopped; temporary files cleaned up.", flush=True)
 
 
@@ -289,6 +325,7 @@ def main() -> int:
     parser.add_argument("--package-dir", type=Path, default=Path("result"))
     parser.add_argument("--bin-dir", type=Path, help="Cargo debug binaries directory")
     parser.add_argument("--ui-dir", type=Path, help="Compiled frontend assets directory")
+    parser.add_argument("--debug", action="store_true", help="Stream Core and WebKit Shell logs")
     parser.add_argument("--validate-config", action="store_true")
     parser.add_argument("mode", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("ready_path", nargs="?", help=argparse.SUPPRESS)
@@ -300,7 +337,7 @@ def main() -> int:
         elif args.mode == "report" and args.ready_path and args.nonce:
             report_ready(Path(args.ready_path), args.nonce)
         elif args.mode is None:
-            run_preview(args.package_dir, args.bin_dir, args.ui_dir)
+            run_preview(args.package_dir, args.bin_dir, args.ui_dir, args.debug)
         else:
             parser.error("Unknown preview mode")
     except PreviewError as error:

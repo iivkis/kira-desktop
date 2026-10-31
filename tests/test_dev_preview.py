@@ -102,7 +102,10 @@ class PreviewTests(unittest.TestCase):
     def test_fast_preview_uses_debug_binaries_and_frontend(self):
         self.run_mock_lifecycle(signal.SIGINT, fast=True)
 
-    def run_mock_lifecycle(self, exit_signal, fast=False):
+    def test_debug_preview_streams_shell_logs(self):
+        self.run_mock_lifecycle(signal.SIGINT, fast=True, debug=True)
+
+    def run_mock_lifecycle(self, exit_signal, fast=False, debug=False):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             runtime = root / "runtime"
@@ -133,6 +136,7 @@ Path(os.environ['PREVIEW_AUDIT']).write_text(json.dumps({
   'preview': os.environ.get('KIRA_PREVIEW'),
   'ui': os.environ.get('KIRA_UI_DIR'),
 }))
+print('kira-shell: diagnostic probe', flush=True)
 while True: time.sleep(.1)
 """)
             for binary in bins.iterdir():
@@ -167,7 +171,9 @@ while True: time.sleep(.1)
             command = [sys.executable, str(SCRIPT)]
             if fast:
                 command += ["--bin-dir", str(bins), "--ui-dir", str(ui)]
-            else:
+            if debug:
+                command += ["--debug"]
+            if not fast:
                 command += ["--package-dir", str(root / "result")]
             process = subprocess.Popen(
                 command,
@@ -193,6 +199,8 @@ while True: time.sleep(.1)
             self.assertEqual(process.returncode, 0, stdout + stderr)
             self.assertIn("Nested display: wayland-mock-nested", stdout)
             self.assertIn("cleaned up", stdout)
+            if debug:
+                self.assertIn("[preview:shell] kira-shell: diagnostic probe", stderr)
 
 
 if __name__ == "__main__":
