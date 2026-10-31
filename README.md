@@ -133,20 +133,20 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
-## Default theme: Black, Bordeaux and Taupe
+## Default theme: Black, Prussian Blue and Orange
 
-The built-in **Kira Default** theme now uses the project's five-color palette:
+The built-in **Kira Default** dark theme uses five fully opaque colors:
 
-`#0a0908` Black · `#49111c` Night Bordeaux · `#f2f4f3` White Smoke ·
-`#a9927d` Dusty Taupe · `#5e503f` Stone Brown.
+`#000000ff` Black · `#14213dff` Prussian Blue · `#fca311ff` Orange ·
+`#e5e5e5ff` Alabaster Grey · `#ffffffff` White.
 
-It is the default in the Svelte Top Bar and its pre-mount WebKit loading
-screen; no environment variable or KDL option is required. CSS variables and
-the TypeScript palette share the same five base values. Dusty Taupe is used
-for legible focus/secondary text; Stone Brown is structural rather than
-low-contrast body text. See [design system](docs/DESIGN_SYSTEM.md) for exact
-tokens and accessibility checks. Choosing alternative palettes through
-KDL remains a future feature.
+These colors drive the Svelte Top Bar, pre-mount WebKit loading screen and
+native GTK Launcher. Black is the background, Prussian Blue makes structured
+surfaces, Orange marks focus and selection, Alabaster Grey is secondary text,
+and White is primary text. Selected Orange surfaces use **Black** text for
+contrast. Semantic tokens derive from the five canonical palette values;
+custom KDL theme overrides remain a future feature. See the
+[design system](docs/DESIGN_SYSTEM.md) for exact mappings and WCAG checks.
 
 ## Validated KDL settings (Stage 2 draft)
 

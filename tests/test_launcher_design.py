@@ -11,10 +11,28 @@ HOST = (ROOT / "crates/kira-shell/src/main.rs").read_text()
 
 class LauncherDesignTests(unittest.TestCase):
     def test_palette_is_canonical(self):
-        self.assertEqual(
-            set(re.findall(r"#[0-9a-fA-F]{6}\b", CSS)),
-            {"#0a0908", "#49111c", "#f2f4f3", "#a9927d", "#5e503f"},
-        )
+        palette = {
+            "kira_black": "#000000ff",
+            "kira_prussian_blue": "#14213dff",
+            "kira_orange": "#fca311ff",
+            "kira_alabaster_grey": "#e5e5e5ff",
+            "kira_white": "#ffffffff",
+        }
+        declared = dict(re.findall(
+            r"@define-color (kira_[a-z_]+) (#[0-9a-fA-F]{8});", CSS
+        ))
+        self.assertEqual(declared, palette)
+        self.assertEqual(set(re.findall(r"#[0-9a-fA-F]{8}\b", CSS)), set(palette.values()))
+        frontend_css = (ROOT / "frontend/src/lib/themes/kira-default.css").read_text()
+        for name, value in (
+            ("black", "#000000ff"), ("prussian-blue", "#14213dff"),
+            ("orange", "#fca311ff"), ("alabaster-grey", "#e5e5e5ff"),
+            ("white", "#ffffffff"),
+        ):
+            self.assertIn(f"--{name}: {value};", frontend_css)
+        self.assertIn("background: @kira_orange;", CSS)
+        self.assertIn("row.kira-app-row:selected .kira-app-name,", CSS)
+        self.assertIn("color: @kira_black;", CSS)
 
     def test_visual_hierarchy_and_states(self):
         for selector in (

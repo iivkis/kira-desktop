@@ -45,35 +45,36 @@ top-bar height is unchanged.
 
 ## Kira Default · canonical palette
 
-The project owner's five-color **Black / Night Bordeaux / White Smoke /
-Dusty Taupe / Stone Brown** palette is now the default. No other base
-HEX colors are permitted in Kira Default.
+The default dark theme uses exactly five fully opaque RGBA hex colors,
+provided by the project owner. No additional base colors are permitted.
 
-| Name | HEX | Intended role |
-| --- | --- | --- |
-| Black | `#0a0908` | App background and text on selected workspaces |
-| Night Bordeaux | `#49111c` | Elevated surfaces and subdued wine-toned materials |
-| White Smoke | `#f2f4f3` | Main text on black and Bordeaux |
-| Dusty Taupe | `#a9927d` | Readable secondary text, active states and focus accent |
-| Stone Brown | `#5e503f` | Structural border detail, not small text |
+| Name | CSS variable | RGBA HEX | Intended role |
+| --- | --- | --- | --- |
+| Black | `--black` | `#000000ff` | Background, text on Orange |
+| Prussian Blue | `--prussian-blue` | `#14213dff` | Surfaces, structural depth |
+| Orange | `--orange` | `#fca311ff` | Selection, focus, interactive accent |
+| Alabaster Grey | `--alabaster-grey` | `#e5e5e5ff` | Secondary text and borders |
+| White | `--white` | `#ffffffff` | Primary text on dark surfaces |
 
 The source of truth is
-[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts);
-the loaded CSS lives in
-[`kira-default.css`](../frontend/src/lib/themes/kira-default.css).
-Contract tests verify that the exact five literal colors and their
-semantic aliases remain synchronized.
+[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts).
+The frontend exposes the five variables through
+[`kira-default.css`](../frontend/src/lib/themes/kira-default.css), while
+native GTK uses corresponding named colors in
+[`launcher.css`](../crates/kira-shell/src/launcher.css).
+Contract tests verify the palette and semantic aliases stay synchronized.
 
 ## Public CSS contract
 
-| Semantic variable | Canonical HEX or alias | Intended usage |
+| Semantic variable | Canonical alias | Intended usage |
 | --- | --- | --- |
-| `--kira-color-background` | `#0a0908` | Main background |
-| `--kira-color-surface` | `#49111c` | Elevated Bordeaux surface |
-| `--kira-color-muted` | `#a9927d` | Readable secondary text |
-| `--kira-color-accent` | `var(--kira-color-muted)` | Selection and keyboard focus |
-| `--kira-color-text` | `#f2f4f3` | Main readable foreground |
-| `--kira-color-earth` | `#5e503f` | Brown structural detailing |
+| `--kira-color-background` | `var(--black)` | Background |
+| `--kira-color-surface` | `var(--prussian-blue)` | Elevated surfaces |
+| `--kira-color-muted` | `var(--alabaster-grey)` | Secondary text |
+| `--kira-color-accent` | `var(--orange)` | Selection and keyboard focus |
+| `--kira-color-text` | `var(--white)` | Primary text |
+| `--kira-color-earth` | `var(--prussian-blue)` | Legacy structural alias |
+| `--kira-color-on-accent` | `var(--black)` | Legible text on Orange |
 
 Derived tokens: `--kira-color-on-accent`,
 `--kira-color-text-secondary`, `--kira-color-surface-subtle`
@@ -104,15 +105,16 @@ future increment; the current KDL configuration only adjusts bar behavior.
 
 ## Color contrast and accessibility
 
-Representative WCAG relative contrast ratios:
+Representative WCAG relative contrast ratios (each canonical alpha is `ff`):
 
-- White Smoke on Black: **18.01:1**.
-- White Smoke on Night Bordeaux: **13.77:1**.
-- Dusty Taupe on Black: **6.72:1**.
-- Dusty Taupe on Night Bordeaux: **5.14:1**.
-- Black on Dusty Taupe: **6.72:1**, suitable for selected chip text.
-- **Do not use Stone Brown as small text on Black:** only **2.55:1**.
-  It is used for structural borders and mixed with Taupe for visibility.
+- White on Black: **21.00:1**.
+- White on Prussian Blue: **15.97:1**.
+- Alabaster Grey on Black: **16.67:1**.
+- Alabaster Grey on Prussian Blue: **12.68:1**.
+- Orange on Black: **10.39:1**.
+- Orange on Prussian Blue: **7.90:1**.
+- Black on Orange: **10.39:1**, used on selected chips.
+- **White on Orange is 2.02:1**: use Black for text on Orange.
 
 Regular-size text requires at least 4.5:1, and meaningful non-text indicators
 at least 3:1 as applicable under WCAG. Do not indicate focus by color alone:
