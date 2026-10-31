@@ -2,8 +2,10 @@
   description = "Kira Desktop: NixOS-first Wayland shell built on Niri";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  # Pinned Crane release; Cargo dependencies compile in a separate derivation.
+  inputs.crane.url = "github:ipetkov/crane/eb35abda9f232cc6610b1d1e3200d15c49b7ac54";
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, crane }:
     let
       systems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = f:
@@ -22,24 +24,33 @@
           packages = with pkgs; [
             cargo
             rustc
+            sccache # persistent compiler cache for local cargo builds
             rustfmt
             clippy
             nodejs
             go-task
             python3
             niri
+            grim # explicit visual QA screenshot capture, does not copy clipboard
             pkg-config
             gtk4
             gtk4-layer-shell
             webkitgtk_6_0
             pipewire
           ];
+          # Local Cargo uses a persistent compiler cache; sandboxed nix build
+          # instead reuses Crane's immutable Rust dependency derivation.
+          shellHook = ''
+            export RUSTC_WRAPPER="${pkgs.sccache}/bin/sccache"
+            export SCCACHE_DIR="''${XDG_CACHE_HOME:-$HOME/.cache}/kira-desktop/sccache"
+            export SCCACHE_CACHE_SIZE="''${SCCACHE_CACHE_SIZE:-10G}"
+          '';
         };
       });
 
       packages = forAllSystems (pkgs:
         if hasApplicationSources
-        then { default = pkgs.callPackage ./nix/package.nix { }; }
+        then { default = pkgs.callPackage ./nix/package.nix { craneLib = crane.mkLib pkgs; }; }
         else { }
       );
 

@@ -9,6 +9,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 - [Kira Default design system](docs/DESIGN_SYSTEM.md)
 - [CI checks](.github/workflows/ci.yml)
 - [Native Nix build checks](.github/workflows/nix.yml)
+- [Visual QA / packaged Shell smoke-test guide](docs/QA_VISUAL.md)
 
 ## Implemented foundation
 
@@ -113,6 +114,45 @@ nix run github:iivkis/repospool -- generate .
 nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
 ```
 
+
+## Incremental and release build caching
+
+- **Local Rust development:** `nix develop` sets up persistent `sccache`
+  (and Cargo still reuses `target/debug`), so recompilation can reuse compiler
+  outputs between development runs.
+- **Reproducible release:** `nix build .#default` uses Crane to cache compiled
+  third-party Rust crates separately from application code and separately from
+  the frontend. Changing Svelte should not rebuild Rust; changing a Rust
+  source file should not rebuild GTK/WebKit Rust crates.
+- **Fresh CI machines:** an optional shared Cachix binary cache can be enabled
+  through repository settings. Without it, cached artifacts persist only
+  locally in each machine's Nix store. See
+  [build cache guide](docs/DEVELOPMENT.md#build-caching-and-release-iteration).
+
+A new dependency-cache derivation must be compiled once on the first build;
+changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
+Nix inputs may legitimately invalidate the cache.
+
+## Visual QA before Niri IPC integration
+
+Run **read-only** packaged Niri/Core/Svelte smoke on a graphical
+NixOS/Wayland session (no screenshots, scale changes or clipboard writes):
+
+```sh
+nix develop --command task qa:visual:release
+```
+
+To **explicitly opt in** to capturing 100%, 125%, 150% and 200% scales:
+
+```sh
+nix develop --command task qa:visual:capture:release
+```
+
+Capture uses `grim` bound to the nested Wayland display, **not** the Niri
+screenshot action (which also copies to clipboard). PNGs and manifests are
+stored locally in ignored `artifacts/visual-qa/`. Automated capture and CI
+are not substitutes for a real visual review. See
+[visual QA guide](docs/QA_VISUAL.md) for scope and acceptance criteria.
 
 ## Current limitations
 
