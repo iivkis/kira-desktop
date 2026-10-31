@@ -135,8 +135,9 @@ Nix inputs may legitimately invalidate the cache.
 
 ## Application Launcher (Stage 3 draft)
 
-Click the **KIRA** logo in Top Bar to open a separate GTK layer-shell
-application picker. Search installed XDG desktop entries, use Up/Down
+Click the **KIRA** logo in Top Bar to open a floating, rounded GTK
+launcher with a polished Black/Bordeaux/Taupe theme, real icons, descriptive
+rows and a keyboard-friendly search. Search installed XDG desktop entries, use Up/Down
 and Enter to select and launch, Escape to close. The native Shell uses
 GIO `AppInfo` for desktop-entry visibility and launching, never
 `sh -c` or executable strings supplied by Svelte. The launcher
