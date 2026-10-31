@@ -12,7 +12,7 @@ The premium visual baseline is implemented using semantic CSS tokens in
 `frontend/src/lib/themes/kira-default.css` and typed color metadata in
 `frontend/src/lib/themes/kira-default.ts`. `WorkspacePreview.svelte` and
 `CoreStatus.svelte` demonstrate theme-aware components without hardcoded HEX
-values. The former is deliberately non-interactive until Niri IPC is wired.
+values. The workspace widget now receives Niri events and supports explicit mouse clicks to focus a known workspace.
 
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibility,
 spacing, contrast and future widget conventions. The small HTML fallback in
@@ -181,8 +181,8 @@ Use separate terminals for the two running processes. `XDG_RUNTIME_DIR` must poi
 ## Review hardening
 
 The Shell WebView only allows navigation to its exact packaged `index.html` URI
-and ignores attempts to open a new window. The Rust bridge remains explicitly
-allowlisted to read-only methods. This is defense-in-depth for trusted UI code,
+and ignores attempts to open a new window. The Rust bridge allowlists read-only queries plus one narrowly scoped
+`focus_workspace` action by an already known Niri workspace ID. This is defense-in-depth for trusted UI code,
 not a security boundary for untrusted extensions.
 
 Core now bounds individual JSON-RPC messages to 4096 bytes and removes the
@@ -192,7 +192,7 @@ have already exited, reducing the chance of orphaned processes.
 
 ## Core ⇄ Shell ⇄ Svelte bridge
 
-Svelte uses the typed SDK at `frontend/src/lib/sdk/core.ts`, sending JSON-RPC requests to `window.webkit.messageHandlers.kira.postMessage`. The Rust Host forwards **only `ping` and `get_state`** over Unix Domain Socket on a worker thread. Its GTK main loop returns replies as `kira:rpc` events.
+Svelte uses the typed SDK at `frontend/src/lib/sdk/core.ts`, sending JSON-RPC requests to `window.webkit.messageHandlers.kira.postMessage`. The Rust Host forwards read-only `ping`, `get_state`, `get_workspaces`, `get_config`, plus a single validated `focus_workspace` request over Unix Domain Socket on a worker thread. Its GTK main loop returns replies as `kira:rpc` events.
 
 The SDK correlates numeric request IDs, applies timeouts, and reports disconnected Core as an error. Browser-only Vite preview has no WebKit bridge and displays `Core: unavailable` rather than a fake connection.
 
@@ -214,10 +214,11 @@ compositor, never the parent. With no Niri socket, Core still serves
 `ping` and `get_state`, while `get_workspaces` returns
 `{"connected":false,"workspaces":[]}`, **not** hardcoded workspace 1–3.
 
-Core writes only the Niri request `"EventStream"` and reads its full initial
+Core primarily reads the Niri `"EventStream"` and its full initial
 `WorkspacesChanged` snapshot plus subsequent `WorkspaceActivated` and
-`WorkspaceUrgencyChanged` events. There are no `Action` requests and no
-direct compositor-changing operations. On disconnect or malformed events,
+`WorkspaceUrgencyChanged` events. The **only** available action is `FocusWorkspace` by stable workspace ID,
+requested explicitly through a mouse click. No move/window/output/configuration
+or arbitrary Action request is accepted. On disconnect or malformed events,
 Core clears stale state and reconnects with a one-second delay.
 
 The public Core contract is:
@@ -255,12 +256,35 @@ global identifier. `is_active` and `is_focused` are distinct: on multiple
 outputs each can have an active workspace but only one is globally focused.
 Unknown Niri event variants are ignored; message size is bounded.
 
-The Shell explicitly allows the read-only `get_workspaces` RPC and blocks
-all write-like methods. The Svelte Top Bar renders real workspace names/indices,
+The Shell allows the read-only `get_workspaces` RPC plus the exact
+`focus_workspace` method, blocking all other write-like operations. The Svelte Top Bar renders real workspace names/indices,
 focus/activation/urgency, or an explicit `NIRI OFFLINE` state; it no longer
 uses the fake `[1, 2, 3]` visual demo. **Core listens to events**;
 the frontend receives a pushed snapshot whenever Core detects a change.
 Core-to-UI workspace subscriptions are now implemented; updates use a persistent read-only Core socket and WebKit DOM events.
+
+### Click to focus a workspace
+
+The top bar workspace chips are now accessible buttons. Left-click or
+keyboard-activate a nonfocused workspace to send the single
+`focus_workspace` JSON-RPC request:
+`{"jsonrpc":"2.0","id":5,"method":"focus_workspace","params":{"id":"42"}}`.
+
+**IDs must be decimal strings** (u64), not indexes, so changing output
+order or multiple outputs with workspace index 1 do not target the
+wrong workspace. Core verifies that Niri is connected, that the
+workspace ID exists in the current snapshot, and that the parameters
+contain **only** the `id`. It then sends the single Niri IPC
+`Action.FocusWorkspace.reference.Id` request over the exact
+`NIRI_SOCKET` already supplied to Core. The WebKit bridge explicitly
+allowlists only this action, not generic Niri requests or shell commands.
+
+The widget does not invent a new focused state after a click; it waits
+for Niri's EventStream. Disabled/offline/current chips do not send
+actions, and a rejected action shows `WS !` with a diagnostic tooltip.
+Keyboard shortcuts remain independent and work as before. The
+isolated preview continues pointing Core to the child Niri socket,
+so this action cannot target the parent compositor in preview.
 
 ### Immediate Core → Shell → Svelte workspace updates
 
@@ -276,7 +300,7 @@ one initial `get_workspaces` request only to cover any startup race.
 to Niri after a disconnect; Shell reconnects to Core and pushes
 `connected:false` while unavailable so the UI does not retain stale state.
 `subscribe_workspaces` is an internal Core socket operation and is *not*
-exposed to WebKit's JS request allowlist. Kira never sends Niri `Action`.
+exposed to WebKit's JS request allowlist. Kira sends only Niri `FocusWorkspace` for a user-clicked stable workspace ID; no other Niri actions are supported.
 
 This removes the artificial 1–2 second lag. Actual latency and keyboard
 focus transitions still require an interactive NixOS/Wayland check.
