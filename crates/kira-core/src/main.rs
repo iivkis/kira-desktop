@@ -1,6 +1,7 @@
 //! Core state daemon: read-only subscriptions plus one checked Niri focus action.
 
 mod config;
+mod launcher;
 mod niri;
 
 use std::error::Error;
@@ -178,6 +179,38 @@ async fn serve(
                         },
                         None => RpcResponse::failure(Some(request.id), -32000, "Niri unavailable"),
                     },
+                }
+            }
+            Ok(request)
+                if request.method == "get_applications"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                // Filesystem work stays off Tokio's reactor threads.
+                match tokio::task::spawn_blocking(launcher::catalog).await {
+                    Ok(apps) => RpcResponse::success(request.id, serde_json::json!(apps)),
+                    Err(_) => RpcResponse::failure(Some(request.id), -32000, "Catalog unavailable"),
+                }
+            }
+            Ok(request)
+                if request.method == "launch_application"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                let params = request.params.clone();
+                let selected = tokio::task::spawn_blocking(move || {
+                    launcher::selected_path(params.as_ref())
+                }).await;
+                match selected {
+                    Ok(Ok(path)) => match launcher::launch(&path).await {
+                        Ok(()) => RpcResponse::success(
+                            request.id, serde_json::json!({"accepted": true}),
+                        ),
+                        Err(error) => {
+                            eprintln!("kira-core: application activation failed: {error}");
+                            RpcResponse::failure(Some(request.id), -32000, "Application activation failed")
+                        }
+                    },
+                    Ok(Err(reason)) => RpcResponse::failure(Some(request.id), -32602, reason),
+                    Err(_) => RpcResponse::failure(Some(request.id), -32000, "Catalog unavailable"),
                 }
             }
             Ok(request) => dispatch_with_state(
