@@ -134,6 +134,7 @@ class VisualQATests(unittest.TestCase):
                 with patch.object(qa, "niri_command", side_effect=command), \
                      patch.object(qa, "wait_for_shell_ui"), \
                      patch.object(qa, "check_core", return_value={"status": "bootstrap"}), \
+                     patch.object(qa, "check_niri_workspaces", return_value={"connected": True, "workspaces": []}), \
                      patch.object(qa.shutil, "which", return_value="/nix/store/bin/grim"), \
                      patch.object(qa, "screenshot_with_grim", side_effect=shot), \
                      patch.object(qa.time, "sleep"):
@@ -169,7 +170,8 @@ class VisualQATests(unittest.TestCase):
             try:
                 with patch.object(qa, "niri_command", side_effect=command), \
                      patch.object(qa, "wait_for_shell_ui"), \
-                     patch.object(qa, "check_core", return_value={"status": "bootstrap"}):
+                     patch.object(qa, "check_core", return_value={"status": "bootstrap"}), \
+                     patch.object(qa, "check_niri_workspaces", return_value={"connected": True, "workspaces": []}):
                     state, output = qa.verify_smoke(
                         "niri", {"NIRI_SOCKET": str(sock)}, None,
                         root / "shell.log", root / "core.sock",
