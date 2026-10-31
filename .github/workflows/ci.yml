@@ -1,7 +1,10 @@
 name: CI
 
+# Feature branches are checked via pull_request; main via push.
+# Avoid duplicate expensive native builds for the same PR branch commit.
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
