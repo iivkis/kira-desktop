@@ -30,6 +30,7 @@
             nodejs
             go-task
             python3
+            dbus # private session bus for nested application launches
             niri
             foot # optional nested Niri terminal for interactive workspace QA
             grim # explicit visual QA screenshot capture, does not copy clipboard
