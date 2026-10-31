@@ -127,18 +127,38 @@ if (typeof window !== 'undefined') {
  * Host has returned a response; rejects if Core is unavailable or times out.
  */
 export function request<M extends keyof Methods>(method: M): Promise<Methods[M]> {
+  return send(method) as Promise<Methods[M]>;
+}
+
+/** One intentional, narrowly scoped Niri action.
+ * Uses a stable string ID, never a per-monitor workspace index.
+ * Core checks the live workspace snapshot before sending FocusWorkspace.
+ */
+export function focusWorkspace(workspaceId: string): Promise<void> {
+  // u64 is decimal and may exceed Number.MAX_SAFE_INTEGER: never coerce to JS number.
+  if (!/^(0|[1-9][0-9]*)$/.test(workspaceId) ||
+      workspaceId.length > 20 ||
+      BigInt(workspaceId) > 18446744073709551615n) {
+    return Promise.reject(new Error('Invalid workspace ID'));
+  }
+  return send('focus_workspace', { id: workspaceId }).then(() => undefined);
+}
+
+function send(method: string, params?: { id: string }): Promise<unknown> {
   const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kira;
   if (!channel) return Promise.reject(new Error('Kira bridge unavailable (browser preview)'));
 
   const id = ++nextId;
-  return new Promise<Methods[M]>((resolve, reject) => {
+  return new Promise<unknown>((resolve, reject) => {
     const timeout = setTimeout(() => {
       pending.delete(id);
       reject(new Error('Kira Core request timed out'));
     }, 3000);
-    pending.set(id, { resolve: resolve as (value: unknown) => void, reject, timeout });
+    pending.set(id, { resolve, reject, timeout });
     try {
-      channel.postMessage(JSON.stringify({ jsonrpc: '2.0', id, method }));
+      channel.postMessage(JSON.stringify({
+        jsonrpc: '2.0', id, method, ...(params ? { params } : {}),
+      }));
     } catch (error) {
       clearTimeout(timeout);
       pending.delete(id);
