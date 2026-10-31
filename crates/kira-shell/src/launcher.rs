@@ -46,8 +46,10 @@ fn fill(
     query: &str,
     selected: &Rc<RefCell<Vec<gtk::gio::AppInfo>>>,
 ) {
-    while let Some(child) = list.first_child() {
-        list.remove(&child);
+    // Remove rows only. The ListBox's placeholder widget is not a row
+    // and would otherwise cause an infinite first_child/remove loop.
+    while let Some(row) = list.row_at_index(0) {
+        list.remove(&row);
     }
 
     let mut filtered = Vec::new();
