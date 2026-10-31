@@ -241,7 +241,7 @@ fn main() {
                 let webview = webview.clone();
                 gtk::glib::timeout_add_local_once(Duration::from_millis(1500), move || {
                     webview.evaluate_javascript(
-                        "if (!document.querySelector('main.bar')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
+                        "if (!document.querySelector('main[data-kira-ui-root]')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
                         None,
                         None,
                         None::<&gtk::gio::Cancellable>,

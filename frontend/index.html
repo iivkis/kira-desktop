@@ -46,7 +46,9 @@
               entryStarted: window.__kiraEntryStarted === true,
               mountReturned: window.__kiraMountReturned === true,
             });
-            pending.textContent = 'Kira UI did not start (' + stage + '). Check terminal logs.';
+            pending.textContent = window.__kiraBoot.bootstrapError
+              ? 'Kira UI error: ' + String(window.__kiraBoot.bootstrapError).slice(0,220)
+              : 'Kira UI did not start (' + stage + '). Check terminal logs.';
             report('Svelte not mounted: ' + stage);
           }
         }, 2500);

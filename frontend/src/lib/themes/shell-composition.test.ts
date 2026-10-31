@@ -6,6 +6,7 @@ const markup = readFileSync(new URL('../../App.svelte', import.meta.url), 'utf8'
 const workspaces = readFileSync(new URL('../components/WorkspacePreview.svelte', import.meta.url), 'utf8');
 const core = readFileSync(new URL('../components/CoreStatus.svelte', import.meta.url), 'utf8');
 const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), 'utf8');
+const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
 describe('Tailwind v4 frontend and Top Bar architecture', () => {
   it('uses the Vite plugin, CSS-first tokens and canonical palette', () => {
@@ -30,6 +31,10 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('max-[540px]:');
     expect(markup).not.toContain('<style>');
     expect(markup).not.toContain('bar__center');
+    // Regression: the Svelte root and bootstrap must share the same marker.
+    expect(markup).toContain('data-kira-ui-root');
+    expect(bootstrap).toContain("querySelector('main[data-kira-ui-root]')");
+    expect(bootstrap).not.toContain('main.bar');
     expect(markup).not.toContain('box-shadow');
   });
 

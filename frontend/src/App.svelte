@@ -101,6 +101,7 @@
 <main
   class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden bg-kira-bg text-kira-text after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-surface"
   aria-label="Kira Desktop top bar"
+  data-kira-ui-root
   data-compact={configState.config.compact}
 >
   <section

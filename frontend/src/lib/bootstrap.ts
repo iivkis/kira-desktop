@@ -33,13 +33,18 @@ export function startUi(
     report('bootstrap: entering Svelte mount');
     mountAndFlush(target);
     report('bootstrap: Svelte mount and flush returned');
-    if (!target.querySelector('main.bar')) {
-      throw new Error('Svelte mount returned but main.bar is missing after flushSync');
+    // A semantic mount marker is independent of Tailwind / component CSS.
+    if (!target.querySelector('main[data-kira-ui-root]')) {
+      throw new Error('Svelte mount returned but main[data-kira-ui-root] is missing after flushSync');
     }
     fallback?.remove();
     return true;
   } catch (error) {
     const detail = describeBootstrapError(error);
+    if (typeof window !== 'undefined') {
+      const boot = Reflect.get(window, '__kiraBoot');
+      if (boot && typeof boot === 'object') Reflect.set(boot, 'bootstrapError', detail);
+    }
     report('bootstrap exception: ' + detail);
     if (fallback) {
       fallback.textContent = 'Kira UI error: ' + detail.slice(0, 220);
