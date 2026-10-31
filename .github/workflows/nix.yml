@@ -1,6 +1,7 @@
 name: NixOS integration
 
-# Native shell and package checks are intentionally separate from lightweight CI.
+# Native GTK/WebKit compilation is tested by building the actual package.
+# Do not compile the same heavy Rust bindings again in a separate cargo check.
 on:
   push:
     branches: [main]
@@ -14,7 +15,7 @@ on:
       - scripts/**
       - tests/**
       - Taskfile.yml
-      - frontend/package-lock.json
+      - frontend/**
       - .github/workflows/nix.yml
   pull_request:
     paths:
@@ -27,6 +28,7 @@ on:
       - scripts/**
       - tests/**
       - frontend/**
+      - Taskfile.yml
       - .github/workflows/nix.yml
   workflow_dispatch:
 
@@ -34,8 +36,8 @@ permissions:
   contents: read
 
 jobs:
-  shell:
-    name: Native GTK/WebKit Shell
+  package:
+    name: Flake, nested Niri config and native Core/Shell package
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -43,9 +45,8 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      # Optional cross-run cache. Configure KIRA_CACHIX_NAME and
-      # CACHIX_AUTH_TOKEN in repository settings to enable it.
-      # Untrusted PRs may read only; uploads occur from main pushes.
+      # Optional cache, disabled unless repo owner sets a cache name.
+      # Uploads only from trusted pushes to main; PRs can read shared outputs.
       - name: Shared Nix cache (opt-in)
         if: ${{ vars.KIRA_CACHIX_NAME != '' }}
         uses: cachix/cachix-action@v17
@@ -53,31 +54,9 @@ jobs:
           name: ${{ vars.KIRA_CACHIX_NAME }}
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           skipPush: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
-      - name: Check flake
+      - name: Check flake outputs
         run: nix flake check --no-build
       - name: Validate nested Niri preview config
         run: nix develop --command python3 scripts/dev_preview.py --validate-config
-      - name: Compile Shell with native Nix libraries
-        run: nix develop --command cargo check --locked -p kira-shell
-
-  package:
-    name: Nix package build
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      # Optional cross-run cache. Configure KIRA_CACHIX_NAME and
-      # CACHIX_AUTH_TOKEN in repository settings to enable it.
-      # Untrusted PRs may read only; uploads occur from main pushes.
-      - name: Shared Nix cache (opt-in)
-        if: ${{ vars.KIRA_CACHIX_NAME != '' }}
-        uses: cachix/cachix-action@v17
-        with:
-          name: ${{ vars.KIRA_CACHIX_NAME }}
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          skipPush: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
-      - name: Build packaged Core, Shell and frontend
+      - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace
