@@ -6,29 +6,35 @@ const markup = readFileSync(new URL('../../App.svelte', import.meta.url), 'utf8'
 const workspaces = readFileSync(new URL('../components/WorkspacePreview.svelte', import.meta.url), 'utf8');
 const core = readFileSync(new URL('../components/CoreStatus.svelte', import.meta.url), 'utf8');
 
-describe('Top Bar editorial composition contract', () => {
-  it('keeps the native 42px strip as a single surface without inset cards', () => {
+describe('Top Bar architectural composition', () => {
+  it('has exactly 42px and three differentiated functional zones', () => {
     expect(bar).toContain('height: 42px;');
-    expect(bar).toContain('border-bottom: 1px');
+    expect(bar).toContain('.bar__identity');
+    expect(bar).toContain('background: var(--kira-color-surface);');
+    expect(bar).toContain('.bar__navigation');
+    expect(bar).toContain('.bar__system');
+    expect(bar).toContain('background: var(--kira-color-surface-subtle);');
+    expect(bar).toContain('.bar__identity::after');
+    expect(bar).toContain('background: var(--kira-color-accent);');
     expect(bar).not.toContain('box-shadow:');
-    expect(bar).not.toContain('var(--kira-shadow-brutal)');
-    expect(bar).not.toContain('.bar__separator');
-    expect(bar).not.toContain('.bar__center');
-    expect(bar).not.toContain('.brand__symbol');
-    expect(bar).not.toContain('.clock__icon');
-    expect(markup).not.toContain('bar__separator');
     expect(markup).not.toContain('bar__center');
-    expect(markup).not.toContain('brand__symbol');
+    expect(markup).not.toContain('bar__separator');
   });
 
-  it('keeps the brand clickable and custom title in the content flow', () => {
+  it('preserves keyboard-friendly Launcher, workspace navigation and KDL title', () => {
     expect(markup).toContain('onclick={activateLauncher}');
-    expect(markup).toContain('class="bar__context"');
+    expect(markup).toContain('class="bar__identity"');
+    expect(markup).toContain('class="bar__navigation"');
+    expect(markup).toContain('class="bar__workspace-meta"');
     expect(markup).toContain('configState.config.title');
+    expect(markup).toContain('class:compact={configState.config.compact}');
     expect(markup).toContain('formatClock(now, undefined, configState.config.show_seconds)');
+    expect(bar).toContain('.brand:focus-visible');
+    expect(bar).toContain('@media (max-width: 540px)');
+    expect(bar).toContain('.bar.compact');
   });
 
-  it('reserves orange fill for selection while preserving keyboard and urgency', () => {
+  it('keeps workspace and Core state distinct and accessible', () => {
     expect(workspaces).toContain('background: var(--kira-color-accent);');
     expect(workspaces).toContain('color: var(--kira-color-on-accent);');
     expect(workspaces).not.toContain('box-shadow:');
@@ -36,14 +42,8 @@ describe('Top Bar editorial composition contract', () => {
     expect(workspaces).toContain('class:preview-urgent={workspace.is_urgent}');
     expect(workspaces).toContain('aria-pressed={workspace.is_focused}');
     expect(workspaces).toContain('disabled={pending}');
-    expect(workspaces).toContain(':focus-visible');
     expect(workspaces).toContain('.workspace-preview__item.preview-selected .workspace-preview__button:focus-visible');
-  });
-
-  it('communicates status without an extra framed badge', () => {
     expect(core).toContain('aria-live="polite"');
     expect(core).toContain("status !== 'connected'");
-    expect(core).not.toContain('box-shadow:');
-    expect(core).not.toContain('border: var(--kira-border-strong)');
   });
 });

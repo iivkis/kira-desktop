@@ -99,15 +99,24 @@
 </script>
 
 <main class="bar" class:compact={configState.config.compact} aria-label="Kira Desktop top bar">
-  <section class="bar__start" aria-label="Launcher and workspaces">
+  <section class="bar__identity" aria-label="Kira Launcher">
     <button type="button" class="brand" aria-label="Open applications launcher"
-      title="Open applications" onclick={activateLauncher}>KIRA</button>
+      title="Open applications" onclick={activateLauncher}>
+      <span class="brand__accent" aria-hidden="true"></span>
+      <span class="brand__label">KIRA</span>
+    </button>
+  </section>
+
+  <section class="bar__navigation" aria-label="Niri workspaces">
     <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
       limit={configState.config.max_workspaces} pending={workspacePending}
       onFocus={(id) => { void activateWorkspace(id); }} />
-    <span class="bar__context" title={configState.config.title}>
-      {configState.config.title === 'KIRA DESKTOP' ? 'DESKTOP' : configState.config.title}
-    </span>
+    <div class="bar__workspace-meta" title={configState.config.title}>
+      <span class="bar__eyebrow">WORKSPACE</span>
+      <span class="bar__context">
+        {configState.config.title === 'KIRA DESKTOP' ? 'DESKTOP' : configState.config.title}
+      </span>
+    </div>
     {#if launcherUnavailable}
       <span class="launcher-warning" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
     {/if}
@@ -116,12 +125,16 @@
     {/if}
   </section>
 
-  <section class="bar__end" aria-label="System status and local time">
+  <section class="bar__system" aria-label="System status and local time">
     {#if configState.error}
       <span class="config-warning" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
-    <CoreStatus status={coreStatus} version={coreVersion} />
-    <div class="clock">
+    <div class="bar__system-item">
+      <span class="bar__eyebrow" aria-hidden="true">SYSTEM</span>
+      <CoreStatus status={coreStatus} version={coreVersion} />
+    </div>
+    <div class="bar__system-item bar__clock">
+      <span class="bar__eyebrow" aria-hidden="true">LOCAL</span>
       <time datetime={now.toISOString()} aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}>
         {formatClock(now, undefined, configState.config.show_seconds)}
       </time>
