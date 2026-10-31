@@ -74,7 +74,7 @@ impl LauncherUi {
         self.launching.set(false);
         match result {
             Ok(()) => {
-                self.window.hide();
+                self.window.set_visible(false);
                 bar_view.grab_focus();
             }
             Err(error) => self.message.set_text(&error),
@@ -212,7 +212,6 @@ pub fn create(
     let search = gtk::SearchEntry::new();
     search.add_css_class("kira-launcher-search");
     search.set_placeholder_text(Some("Search applications by name"));
-    search.set_max_length(100);
     panel.append(&search);
 
     let list = gtk::ListBox::new();
@@ -274,7 +273,7 @@ pub fn create(
     let window_close = window.clone();
     let bar_close = bar_view.clone();
     close.connect_clicked(move |_| {
-        window_close.hide();
+        window_close.set_visible(false);
         bar_close.grab_focus();
     });
 
@@ -291,7 +290,7 @@ pub fn create(
     let list_key = list.clone();
     keys.connect_key_pressed(move |_, key, _, _| match key {
         gtk::gdk::Key::Escape => {
-            window_key.hide();
+            window_key.set_visible(false);
             bar_key.grab_focus();
             gtk::glib::Propagation::Stop
         }
