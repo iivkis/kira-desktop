@@ -248,16 +248,22 @@ pub fn create(
         );
     });
 
+    // Mouse activation and Enter must take the same native Core RPC path.
+    // WidgetExt::activate() on a ListBoxRow is not a reliable substitute
+    // for GtkListBox::row-activated (it can return false with "activation failed").
     let ids_activate = visible_ids.clone();
     let launching_activate = launching.clone();
     let socket_activate = socket.clone();
     let sender_activate = sender.clone();
     let message_activate = message.clone();
-    list.connect_row_activated(move |_, row| {
+    let activate_selected = Rc::new(move |index: i32| {
         if launching_activate.get() {
             return;
         }
-        let Some(id) = ids_activate.borrow().get(row.index() as usize).cloned() else {
+        let Ok(index) = usize::try_from(index) else {
+            return;
+        };
+        let Some(id) = ids_activate.borrow().get(index).cloned() else {
             return;
         };
         launching_activate.set(true);
@@ -269,6 +275,8 @@ pub fn create(
             let _ = sender.send(ShellDelivery::LauncherLaunched(result));
         });
     });
+    let activate_mouse = activate_selected.clone();
+    list.connect_row_activated(move |_, row| activate_mouse(row.index()));
 
     let window_close = window.clone();
     let bar_close = bar_view.clone();
@@ -278,9 +286,10 @@ pub fn create(
     });
 
     let search_enter = list.clone();
+    let activate_enter = activate_selected.clone();
     search.connect_activate(move |_| {
         if let Some(row) = search_enter.selected_row() {
-            row.activate();
+            activate_enter(row.index());
         }
     });
 
