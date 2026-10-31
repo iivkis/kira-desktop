@@ -27,7 +27,7 @@ let
     inherit version;
     src = ../frontend;
 
-    npmDepsHash = "sha256-1IUE4ratidBWc+ZT2v/Ke0lA3MnmVrPdYz153s6uqps=";
+    npmDepsHash = "sha256-jZ7ayT9r36uj+XVhZXFrHOY8NGwnlKf7kpAwgaT9FuM=";
     npmBuildScript = "build";
 
     installPhase = ''
