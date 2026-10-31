@@ -74,7 +74,7 @@
   .workspace-preview {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     max-width: min(33vw, 330px);
     margin: 0;
     padding: 0;
@@ -90,12 +90,12 @@
     display: grid;
     flex: none;
     place-items: center;
-    min-width: 27px;
+    min-width: 29px;
     max-width: 76px;
-    height: 27px;
-    padding-inline: 5px;
+    height: 28px;
+    padding-inline: 6px;
     box-sizing: border-box;
-    border-radius: var(--kira-radius-sm);
+    border-radius: 9px;
     color: color-mix(in srgb, var(--kira-color-text) 80%, var(--kira-color-background));
     font-size: 11px;
     font-variant-numeric: tabular-nums;
@@ -131,7 +131,7 @@
   }
 
   .workspace-preview__item:not(.preview-selected):has(.workspace-preview__button:not(:disabled):hover) {
-    background: var(--kira-color-surface-subtle);
+    background: color-mix(in srgb, var(--kira-color-surface) 65%, var(--kira-color-background));
   }
 
   .workspace-preview__label {
@@ -143,14 +143,16 @@
   }
 
   .workspace-preview__item.preview-active:not(.preview-selected) {
-    background: var(--kira-color-surface-subtle);
-    box-shadow: inset 0 0 0 1px var(--kira-color-border);
+    background: color-mix(in srgb, var(--kira-color-surface) 34%, var(--kira-color-background));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--kira-color-muted) 27%, transparent);
   }
 
   .workspace-preview__item.preview-selected {
     color: var(--kira-color-on-accent);
     background: var(--kira-color-accent);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--kira-color-background) 35%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--kira-color-text) 30%, transparent),
+      0 2px 8px color-mix(in srgb, var(--kira-color-background) 48%, transparent);
   }
 
   .workspace-preview__selected-mark {
