@@ -99,7 +99,10 @@ class PreviewTests(unittest.TestCase):
     def test_sigterm_cleans_up_mock_preview(self):
         self.run_mock_lifecycle(signal.SIGTERM)
 
-    def run_mock_lifecycle(self, exit_signal):
+    def test_fast_preview_uses_debug_binaries_and_frontend(self):
+        self.run_mock_lifecycle(signal.SIGINT, fast=True)
+
+    def run_mock_lifecycle(self, exit_signal, fast=False):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             runtime = root / "runtime"
@@ -108,8 +111,11 @@ class PreviewTests(unittest.TestCase):
             parent.bind(str(runtime / "wayland-parent"))
             parent.listen(1)
 
-            bins = root / "result" / "bin"
+            bins = root / ("target/debug" if fast else "result/bin")
             bins.mkdir(parents=True)
+            ui = root / "frontend/dist"
+            ui.mkdir(parents=True)
+            (ui / "index.html").write_text("<html>UI</html>")
             output = root / "shell-env.json"
             (bins / "kira-core").write_text("""#!/usr/bin/env python3
 import os, socket, time
@@ -125,6 +131,7 @@ Path(os.environ['PREVIEW_AUDIT']).write_text(json.dumps({
   'wayland': os.environ.get('WAYLAND_DISPLAY'),
   'core': os.environ.get('KIRA_CORE_SOCKET'),
   'preview': os.environ.get('KIRA_PREVIEW'),
+  'ui': os.environ.get('KIRA_UI_DIR'),
 }))
 while True: time.sleep(.1)
 """)
@@ -157,8 +164,13 @@ while True: time.sleep(.1)
                 "PATH": f"{root}:{env.get('PATH', '')}",
                 "PREVIEW_AUDIT": str(output),
             })
+            command = [sys.executable, str(SCRIPT)]
+            if fast:
+                command += ["--bin-dir", str(bins), "--ui-dir", str(ui)]
+            else:
+                command += ["--package-dir", str(root / "result")]
             process = subprocess.Popen(
-                [sys.executable, str(SCRIPT), "--package-dir", str(root / "result")],
+                command,
                 env=env, start_new_session=True,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
             )
@@ -170,6 +182,7 @@ while True: time.sleep(.1)
                 actual = json.loads(output.read_text())
                 self.assertEqual(actual["wayland"], "wayland-mock-nested")
                 self.assertEqual(actual["preview"], "1")
+                self.assertEqual(actual["ui"], str(ui.resolve()) if fast else None)
                 self.assertIn("kira-preview-", actual["core"])
                 self.assertFalse((runtime / "kira-desktop.sock").exists())
             finally:

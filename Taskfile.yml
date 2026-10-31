@@ -55,10 +55,21 @@ tasks:
     cmds:
       - cargo check --locked -p kira-shell
 
-  frontend:install:
-    desc: Install frontend dependencies (generate a lockfile in a later commit).
+  frontend:deps:
+    desc: Install locked frontend dependencies only when they change.
     cmds:
-      - npm install --prefix frontend
+      - |
+        current="$(sha256sum frontend/package-lock.json | cut -d ' ' -f 1)"
+        stamp="frontend/node_modules/.kira-package-lock.sha256"
+        if [ ! -x frontend/node_modules/.bin/vite ] || [ ! -f "$stamp" ] || [ "$(cat "$stamp")" != "$current" ]; then
+          npm ci --prefix frontend --no-audit --no-fund
+          printf '%s' "$current" > "$stamp"
+        fi
+
+  frontend:install:
+    desc: Install locked frontend dependencies, regardless of cache.
+    cmds:
+      - npm ci --prefix frontend --no-audit --no-fund
 
   frontend:dev:
     desc: Run Vite for frontend development.
@@ -88,7 +99,20 @@ tasks:
       - cargo build --locked --release --workspace
 
   dev:preview:
-    desc: Build Kira and launch Core + Shell inside a separate windowed Niri.
+    desc: Fast nested Niri preview using cached Cargo debug builds and Vite assets.
+    cmds:
+      - task: frontend:deps
+      - task: frontend:build
+      - cargo build --locked -p kira-core -p kira-shell
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist
+
+  dev:preview:run:
+    desc: Reopen preview with already built debug binaries and UI assets.
+    cmds:
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist
+
+  dev:preview:release:
+    desc: Verify the full Nix package in a nested Niri compositor.
     cmds:
       - task: nix:build
       - python3 scripts/dev_preview.py
