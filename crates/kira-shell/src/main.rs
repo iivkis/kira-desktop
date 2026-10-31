@@ -1,4 +1,6 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
+
+mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc;
@@ -84,8 +86,48 @@ fn main() {
         window.set_anchor(Edge::Right, true);
         window.set_exclusive_zone(BAR_HEIGHT);
 
+        // Vite's production JS is an ES module. The file:// scheme blocks
+        // module requests in WebKitGTK; serve packaged files as a private
+        // CORS-enabled scheme instead of granting file:// broad access.
+        let context = webkit6::WebContext::new();
+        if let Some(security) = context.security_manager() {
+            security.register_uri_scheme_as_local("kira-ui");
+            security.register_uri_scheme_as_secure("kira-ui");
+            security.register_uri_scheme_as_cors_enabled("kira-ui");
+            security.register_uri_scheme_as_display_isolated("kira-ui");
+        }
+
+        let ui_root = index.parent().expect("UI index must have a parent").to_path_buf();
+        context.register_uri_scheme("kira-ui", move |request| {
+            let Some(uri) = request.uri() else {
+                let mut error = gtk::glib::Error::new(
+                    gtk::gio::IOErrorEnum::InvalidArgument,
+                    "Missing Kira UI asset URI",
+                );
+                request.finish_error(&mut error);
+                return;
+            };
+            match ui_assets::read_asset(uri.as_str(), &ui_root) {
+                Ok((content, mime)) => {
+                    let length = content.len() as i64;
+                    let bytes = gtk::glib::Bytes::from_owned(content);
+                    let stream = gtk::gio::MemoryInputStream::from_bytes(&bytes);
+                    request.finish(&stream, length, Some(mime));
+                }
+                Err(error) => {
+                    eprintln!("kira-shell: UI asset denied: {uri}: {error}");
+                    let mut webkit_error = gtk::glib::Error::new(
+                        gtk::gio::IOErrorEnum::NotFound,
+                        "Kira UI asset not found",
+                    );
+                    request.finish_error(&mut webkit_error);
+                }
+            }
+        });
+
         let manager = webkit6::UserContentManager::new();
         let view = webkit6::WebView::builder()
+            .web_context(&context)
             .user_content_manager(&manager)
             .build();
         view.set_background_color(&gtk::gdk::RGBA::new(0.09, 0.09, 0.12, 1.0));
@@ -111,6 +153,36 @@ fn main() {
             });
         });
         assert!(manager.register_script_message_handler("kira", None));
+        manager.connect_script_message_received(Some("kiraDiagnostics"), |_, value| {
+            eprintln!("kira-shell [ui]: {}", value.to_string());
+        });
+        assert!(manager.register_script_message_handler("kiraDiagnostics", None));
+
+        view.connect_load_failed(|_, event, uri, error| {
+            eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
+            false
+        });
+        view.connect_web_process_terminated(|_, reason| {
+            eprintln!("kira-shell: WebKit renderer terminated: {reason:?}");
+        });
+        view.connect_load_changed(|webview, event| {
+            if event == webkit6::LoadEvent::Finished {
+                let webview = webview.clone();
+                gtk::glib::timeout_add_local_once(Duration::from_millis(1500), move || {
+                    webview.evaluate_javascript(
+                        "if (!document.querySelector('main.bar')) throw new Error('Svelte UI did not mount');",
+                        None,
+                        None,
+                        None::<&gtk::gio::Cancellable>,
+                        |result| {
+                            if let Err(error) = result {
+                                eprintln!("kira-shell: UI rendering check failed: {error}");
+                            }
+                        },
+                    );
+                });
+            }
+        });
 
         let webview = view.clone();
         gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
@@ -136,8 +208,7 @@ fn main() {
             gtk::glib::ControlFlow::Continue
         });
 
-        let file_uri = gtk::gio::File::for_path(&index).uri();
-        let allowed_uri = file_uri.to_string();
+        let allowed_uri = ui_assets::UI_DOCUMENT_URI.to_string();
         view.connect_decide_policy(move |_, decision, kind| {
             if kind == webkit6::PolicyDecisionType::NewWindowAction {
                 decision.ignore();
@@ -157,7 +228,8 @@ fn main() {
             }
             false
         });
-        view.load_uri(file_uri.as_str());
+        eprintln!("kira-shell: loading UI through {}", ui_assets::UI_DOCUMENT_URI);
+        view.load_uri(ui_assets::UI_DOCUMENT_URI);
         window.set_child(Some(&view));
         window.present();
     });
@@ -176,13 +248,10 @@ mod tests {
 
     #[test]
     fn navigation_is_restricted_to_exact_ui_document() {
-        let local = "file:///nix/store/kira/ui/index.html";
+        let local = ui_assets::UI_DOCUMENT_URI;
         assert!(permitted_ui_page(local, local));
         assert!(!permitted_ui_page("https://evil.example/", local));
-        assert!(!permitted_ui_page(
-            "file:///nix/store/kira/ui/index.html.evil",
-            local
-        ));
+        assert!(!permitted_ui_page("kira-ui://app/index.html.evil", local));
         assert!(!permitted_ui_page("file:///etc/passwd", local));
     }
 
