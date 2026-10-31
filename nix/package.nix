@@ -1,6 +1,5 @@
-# NixOS package scaffold for the future Rust Core/Shell + Vite frontend.
-# Not buildable until Cargo Workspace, frontend/package-lock.json and binaries exist.
-# The frontend dependency hash was computed by the Nix fixed-output sandbox.
+# Reproducible NixOS package: compiled Rust Core/Shell + static Svelte frontend.
+# npmDepsHash is the fixed-output hash verified in GitHub Actions.
 {
   lib,
   rustPlatform,

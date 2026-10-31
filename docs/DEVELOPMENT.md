@@ -1,33 +1,52 @@
-# Developing Kira Desktop (bootstrap milestone)
+# Developing Kira Desktop
 
-## Prerequisites
+## Requirements
 
-Use NixOS with Niri, Wayland and Nix flakes enabled. Run `nix develop` from the repository root. The flake dev shell provides Rust, Node.js, Task, pkg-config, GTK4, gtk4-layer-shell and WebKitGTK 6 development libraries.
+Kira Desktop targets NixOS, Niri and Wayland. Flakes must be enabled. The repository commits the generated `Cargo.lock`, `flake.lock` and `frontend/package-lock.json`, as well as the verified frontend `npmDepsHash`.
 
-The repository now commits the generated `Cargo.lock`, `frontend/package-lock.json` and `flake.lock` files. Development and CI should use these exact resolutions. Update locks deliberately, not incidentally.
+The GitHub Actions workflows are split into fast, non-graphical checks (`.github/workflows/ci.yml`) and native Nix integration (`.github/workflows/nix.yml`).
 
-## Local commands
+## Native Nix package
 
-1. `npm ci --prefix frontend` — install the exact frontend dependencies from the lockfile.
-2. `task check` — Rust formatting and Core/IPC Clippy/tests, Svelte/TypeScript validation and Vitest.
-3. `task shell:check` — separately check GTK4 Shell with native libraries from `nix develop`.
-4. `task build` — Vite production assets and Rust release binaries.
-5. `task core:run` — start the daemon on `$XDG_RUNTIME_DIR/kira-desktop.sock`.
-6. `task shell:run` — compile frontend assets, start GTK4/WebKitGTK top bar in Niri.
+The following build has passed on Linux in GitHub Actions with the pinned Nix inputs:
 
-`task check` is intentionally a fast non-graphical check, not evidence that GTK Shell builds. CI on Ubuntu 24.04 cannot use an upstream GTK4 Layer Shell development package, so an actual native Shell check is a separate task for NixOS.
+```sh
+nix build .#default
+```
 
-Running `kira-shell` without `frontend/dist/index.html` produces a clear error and exits rather than showing a blank WebView. `KIRA_UI_DIR` can override the directory containing `index.html`.
+The package installs `kira-core`, `kira-shell` and the compiled UI assets; the GTK wrapper sets `KIRA_UI_DIR` to the installed frontend directory.
+
+To manually smoke-test from an existing Niri session:
+
+```sh
+nix build
+./result/bin/kira-core  # terminal 1
+./result/bin/kira-shell # terminal 2
+```
+
+Running the UI in a real graphical Niri session remains an **open manual test**; a successful Nix build alone does not validate runtime layer-shell behavior or UI rendering.
+
+## Developer tasks
+
+```sh
+nix develop
+npm ci --prefix frontend
+task check           # formatting, Clippy, IPC tests, TypeScript, Vitest
+task shell:check     # compile the native GTK/WebKit Shell
+task build           # frontend + all release binaries
+task core:run        # launch the Core daemon
+task shell:run       # rebuild frontend and launch the Shell
+task nix:check       # nix flake check
+task nix:build       # nix build
+```
+
+Use separate terminals for the two running processes. `XDG_RUNTIME_DIR` must point to the active user session runtime directory. The Shell returns an explicit error when its UI resources are missing. `KIRA_UI_DIR` can override the UI directory for development or packaging.
 
 ## Core ⇄ Shell ⇄ Svelte bridge
 
-The Svelte SDK in `frontend/src/lib/sdk/core.ts` sends JSON-RPC messages using `window.webkit.messageHandlers.kira.postMessage`. The GTK Shell forwards only `ping` and `get_state` through a bounded blocking Unix-socket client running off the GTK main thread. Results return as `kira:rpc` browser events and update the status label. In regular Vite browser preview, the native channel is absent and the UI shows `Core: unavailable` rather than pretending to be connected.
+Svelte uses the typed SDK at `frontend/src/lib/sdk/core.ts`, sending JSON-RPC requests to `window.webkit.messageHandlers.kira.postMessage`. The Rust Host forwards **only `ping` and `get_state`** over Unix Domain Socket on a worker thread. Its GTK main loop returns replies as `kira:rpc` events.
 
-This is a **request/response bridge only**. No subscriptions, Niri workspaces, permission isolation or untrusted extensions are implemented. A Core daemon must already be running.
-
-## Current IPC contract
-
-One JSON-RPC 2.0 request per line, one response per line over a Unix Domain Socket.
+The SDK correlates numeric request IDs, applies timeouts, and reports disconnected Core as an error. Browser-only Vite preview has no WebKit bridge and displays `Core: unavailable` rather than a fake connection.
 
 ```json
 {"jsonrpc":"2.0","id":1,"method":"ping"}
@@ -37,21 +56,18 @@ One JSON-RPC 2.0 request per line, one response per line over a Unix Domain Sock
 {"jsonrpc":"2.0","id":1,"result":"pong"}
 ```
 
-`get_state` returns only bootstrap metadata. No Niri events, subscriptions, authentication, or plugin privileges are implemented yet. Do not expose this socket beyond the local trusted user session.
+The IPC transport uses newline-delimited JSON. The bootstrap `get_state` response contains version and status only. There is no Niri integration or event subscription mechanism yet. The Core socket is intended for the trusted local user session only.
 
-## Complete the Nix package
+## Updating dependencies
 
-The initial lockfiles were generated by `.github/workflows/lockfiles.yml` and committed through GitHub Actions. `.github/workflows/nix.yml` performs separate native Shell and Nix package builds. Until those have passed, do not claim a working NixOS package. The Nix package now pins a real `npmDepsHash`, extracted from an actual fixed-output Nix derivation. Native Shell and full Nix package builds still must pass. Before validating `packages.default`:
+The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Update them deliberately using the appropriate tooling and commit changes together with any required Nix hash update. The separate Nix integration workflow must pass after dependency changes.
 
-1. Run `cargo generate-lockfile` with a real Rust toolchain and commit `Cargo.lock`.
-2. Run `npm install --package-lock-only --prefix frontend` with a real npm registry, test `npm ci --prefix frontend`, and commit `frontend/package-lock.json`.
-3. Run `nix flake lock` and commit `flake.lock`.
-4. The real `npmDepsHash` is committed in `nix/package.nix`. Recompute it only when npm dependencies change; verify with `nix build`.
-5. Verify that `result/bin/kira-shell` finds its packaged static assets and launches within Niri. Add `KIRA_UI_DIR` to the wrapper.
-6. Add a Nix-based native Shell build job and optional Wayland E2E tests.
+## Next milestones
 
-Until then, `nix develop` and `nix flake check` are the initial Nix features, not a validated finished package.
+1. Manual Niri smoke test of the packaged Shell, including UI asset loading.
+2. Niri IPC workspace state and typed event subscriptions.
+3. KDL configuration engine with validation and hot reload.
+4. Real workspace, launcher and dock widgets.
+5. System-service integrations and user widget loading.
 
-## Remaining architectural work
-
-The Shell does not yet communicate with Core, the UI is not wired to system state, KDL configuration is unimplemented, and the development preview is not a finished widget/theme system. All need separate test-backed changes.
+Do not claim implementation or isolation of untrusted plugins until the code and tests exist.

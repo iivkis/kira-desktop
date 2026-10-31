@@ -1,48 +1,60 @@
 # Kira Desktop
 
-**Status:** v0.1 Draft, early bootstrap. This is **not yet a finished desktop shell**.
+**Status:** v0.1 Draft, working foundation, **not yet an MVP desktop environment**.
 
-Kira Desktop is a modular, declarative **NixOS-first** environment targeting Niri/Wayland. Rust owns system capabilities; Svelte 5 owns the UI; KDL will define desktop layout and settings.
+Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust owns system capabilities, Svelte 5 owns the UI and KDL will define layouts.
 
 - [Technical specification (Russian)](docs/SPECIFICATION.md)
-- [Development instructions](docs/DEVELOPMENT.md)
+- [Development guide](docs/DEVELOPMENT.md)
+- [CI checks](.github/workflows/ci.yml)
+- [Native Nix build checks](.github/workflows/nix.yml)
 
-## Current source layout
+## Implemented foundation
 
-| Component | Current scope |
+| Component | Current capabilities |
 | --- | --- |
-| `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded socket client, and unit tests |
-| `crates/kira-core` | Async Unix domain socket daemon, newline-delimited JSON-RPC |
-| `crates/kira-shell` | GTK4 layer-shell top bar with WebKitGTK 6 message bridge to Core |
-| `frontend/` | Svelte 5 + TypeScript + Vite, typed SDK and visible Core connection status |
-| `Taskfile.yml` | Shared developer/CI commands |
-| `flake.nix`, `nix/package.nix` | Nix development shell and preliminary package recipe |
-| `.github/workflows/ci.yml` | Lightweight native Linux CI; no graphical E2E yet |
+| `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded Unix socket client, unit tests |
+| `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over `$XDG_RUNTIME_DIR/kira-desktop.sock` |
+| `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge |
+| `frontend/` | Svelte 5, TypeScript, Vite, typed SDK, Core connection status, Vitest |
+| `Taskfile.yml` | Shared commands for development and CI |
+| `flake.nix`, `nix/package.nix` | Nix development shell and installable packaged Core/Shell/frontend |
+| `Cargo.lock`, `flake.lock`, `frontend/package-lock.json` | Locked dependencies for reproducibility |
 
-## Development on NixOS
+## Quick start on NixOS
 
-```bash
+Ensure Niri and a working Wayland session are available, then:
+
+```sh
+git clone https://github.com/iivkis/kira-desktop.git
+cd kira-desktop
+nix build
+```
+
+Run these in **separate terminals** inside the Niri session:
+
+```sh
+./result/bin/kira-core
+```
+
+```sh
+./result/bin/kira-shell
+```
+
+For development and tests:
+
+```sh
 nix develop
 npm ci --prefix frontend
 task check
+task shell:check
 task build
 ```
 
-In a running Niri/Wayland session, launch **separate terminals**:
+Nix CI on Linux has successfully compiled the native Shell, built the package and run the Rust tests. **Launching and visually validating the panel in a real Niri session is still unverified.**
 
-```bash
-task core:run
-task shell:run
-```
+## Current limitations
 
-For a manual Core protocol smoke test (with `socat` installed):
+The panel can communicate with Core through a typed request/response API and display its connection status, but workspace indicators are mock UI: Niri IPC integration, KDL hot reload, event subscriptions, themes, docks, and third-party widgets remain unimplemented.
 
-```bash
-printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"ping"}' | socat - UNIX-CONNECT:"$XDG_RUNTIME_DIR/kira-desktop.sock"
-```
-
-Workspace pills are still **static previews**, but the status indicator now asks the real Rust Core for its bootstrap state over the WebKit → Shell → Unix Socket bridge. Full Niri state and event subscriptions are not yet implemented.
-
-## Known bootstrap limitations
-
-Dependency locks are now generated and committed using Cargo, npm and Nix. `nix/package.nix` now pins the npm dependency hash from the Nix sandbox. **`nix build` cannot be claimed working until the complete Nix package integration check passes.** See [development instructions](docs/DEVELOPMENT.md) for the remaining steps.
+This project is not ready to replace a working desktop environment.
