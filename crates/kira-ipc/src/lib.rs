@@ -173,17 +173,30 @@ mod tests {
     #[test]
     fn default_config_is_read_only_and_typed() {
         let req = RpcRequest {
-            jsonrpc: PROTOCOL_VERSION.into(), id: 13, method: "get_config".into(),
+            jsonrpc: PROTOCOL_VERSION.into(),
+            id: 13,
+            method: "get_config".into(),
         };
         let response = dispatch(req);
-        assert_eq!(response.result.unwrap(), json!({
-            "config": {"compact": false, "title": "KIRA DESKTOP",
-              "show_seconds": false, "show_names": true, "max_workspaces": 12},
-            "error": null
-        }));
-        assert_eq!(dispatch(RpcRequest {
-            jsonrpc: PROTOCOL_VERSION.into(), id: 14, method: "set_config".into()
-        }).error.unwrap().code, -32601);
+        assert_eq!(
+            response.result.unwrap(),
+            json!({
+                "config": {"compact": false, "title": "KIRA DESKTOP",
+                  "show_seconds": false, "show_names": true, "max_workspaces": 12},
+                "error": null
+            })
+        );
+        assert_eq!(
+            dispatch(RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 14,
+                method: "set_config".into()
+            })
+            .error
+            .unwrap()
+            .code,
+            -32601
+        );
     }
 
     #[test]
