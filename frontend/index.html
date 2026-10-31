@@ -10,7 +10,12 @@
       // so failures are distinguishable from resource/scheme errors.
       window.__kiraBoot = { head: true, lastError: null };
       const report = (message) => {
-        window.webkit?.messageHandlers?.kiraDiagnostics?.postMessage(message);
+        try {
+          window.webkit?.messageHandlers?.kiraDiagnostics?.postMessage(message);
+        } catch (error) {
+          // Diagnostics must never prevent the Svelte entrypoint from loading.
+          console.warn('Kira diagnostics bridge unavailable:', error);
+        }
       };
       report('HTML head script executed; location=' + location.href);
 
