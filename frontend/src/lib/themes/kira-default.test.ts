@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { kiraDefaultPalette, kiraDefaultRoles } from './kira-default';
 
 const css = readFileSync(new URL('./kira-default.css', import.meta.url), 'utf8');
+const html = readFileSync(new URL('../../../index.html', import.meta.url), 'utf8');
 
 function luminance(hex: string): number {
   const channels = [1, 3, 5]
@@ -50,6 +51,14 @@ describe('Kira Default Bordeaux / Taupe design tokens', () => {
     expect(contrast(stoneBrown, black)).toBeLessThan(4.5);
     expect(kiraDefaultRoles.muted).toBe(dustyTaupe);
     expect(kiraDefaultRoles.accent).toBe(dustyTaupe);
+  });
+
+  it('uses the default palette during pre-mount WebKit loading', () => {
+    expect(html).toContain('<meta name="theme-color" content="' + kiraDefaultPalette.black + '"');
+    expect(html).toContain('background:' + kiraDefaultPalette.black + ';');
+    expect(html).toContain('color:' + kiraDefaultPalette.whiteSmoke + ';');
+    expect(html).not.toContain('#22223b');
+    expect(html).not.toContain('#f2e9e4');
   });
 
   it('defines compact spacing, consistent radii and reduced motion', () => {
