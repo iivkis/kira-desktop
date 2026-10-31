@@ -30,29 +30,34 @@
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
-    // Core is subscribed to Niri's event stream. The Shell exposes read-only
-    // snapshots; this lightweight UI poll will be replaced by typed pushes.
-    let workspaceRequestPending = false;
-    const refreshWorkspaces = async () => {
-      if (workspaceRequestPending) return;
-      workspaceRequestPending = true;
-      try {
-        const state = await request('get_workspaces');
-        if (!disposed) workspaceState = state;
-      } catch {
-        if (!disposed) workspaceState = { connected: false, workspaces: [] };
-      } finally {
-        workspaceRequestPending = false;
-      }
+    // Core listens to Niri EventStream. Shell forwards each changed snapshot
+    // as kira:workspaces, so focus updates arrive without polling.
+    let pushReceived = false;
+    const onWorkspaces = (event: Event) => {
+      const state = (event as CustomEvent<WorkspaceState>).detail;
+      if (disposed || !state || typeof state.connected !== 'boolean' ||
+          !Array.isArray(state.workspaces)) return;
+      pushReceived = true;
+      workspaceState = state;
     };
-    void refreshWorkspaces();
-    const workspaceTimer = window.setInterval(() => void refreshWorkspaces(), 1_500);
+    window.addEventListener('kira:workspaces', onWorkspaces);
+
+    // Initial request covers the small gap between WebKit page load and
+    // event listener registration. An older RPC reply must never overwrite
+    // a newer pushed event.
+    void request('get_workspaces').then((state) => {
+      if (!disposed && !pushReceived) workspaceState = state;
+    }).catch(() => {
+      if (!disposed && !pushReceived) {
+        workspaceState = { connected: false, workspaces: [] };
+      }
+    });
 
     return () => {
       disposed = true;
       window.clearInterval(clock);
       window.clearInterval(statusTimer);
-      window.clearInterval(workspaceTimer);
+      window.removeEventListener('kira:workspaces', onWorkspaces);
     };
   });
 </script>
