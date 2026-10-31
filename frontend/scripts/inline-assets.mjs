@@ -70,7 +70,14 @@ export async function inlineUiAssets(outputDirectory) {
   }
   html = html.replace(styles[0], '<style>\n' + css + '\n</style>');
 
-  if (SCRIPT_TAG.test(html) || [...html.matchAll(LINK_TAG)]
+  // Inspect HTML markup, not strings inside the inlined JS or CSS. Vite
+  // bundles may legitimately contain literal '<link rel="stylesheet" ...>'
+  // snippets, which do not create network requests when inside scripts.
+  // Closing script/style tags in bundled assets were already rejected above.
+  const markup = html
+    .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, '')
+    .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, '');
+  if (SCRIPT_TAG.test(markup) || [...markup.matchAll(LINK_TAG)]
     .some((match) => attribute(match[0], 'rel')?.toLowerCase() === 'stylesheet')) {
     throw new Error('Unexpected remaining external UI assets');
   }
