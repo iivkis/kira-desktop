@@ -6,6 +6,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 
 - [Technical specification (Russian)](docs/SPECIFICATION.md)
 - [Development guide](docs/DEVELOPMENT.md)
+- [Kira Default design system](docs/DESIGN_SYSTEM.md)
 - [CI checks](.github/workflows/ci.yml)
 - [Native Nix build checks](.github/workflows/nix.yml)
 
@@ -16,7 +17,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 | `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded Unix socket client, unit tests |
 | `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over a configurable user-owned Unix socket |
 | `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge |
-| `frontend/` | Svelte 5, TypeScript, Vite, typed SDK, Core connection status, Vitest |
+| `frontend/` | Svelte 5, TypeScript, Vite, Kira Default premium tokens, themed top bar, typed SDK, Core connection status, Vitest |
 | `Taskfile.yml` | Shared commands for development and CI |
 | `flake.nix`, `nix/package.nix` | Nix development shell and installable packaged Core/Shell/frontend |
 | `Cargo.lock`, `flake.lock`, `frontend/package-lock.json` | Locked dependencies for reproducibility |
@@ -82,10 +83,10 @@ task shell:check
 task build
 ```
 
-Nix CI on Linux has successfully compiled the native Shell, built the package and run the Rust tests. **Launching and visually validating the panel in a real Niri session is still unverified.**
+Nix CI on Linux has successfully compiled the native Shell, built the package and run the Rust tests. **The top bar was manually rendered successfully inside a nested Niri window**; a full desktop session and packaged-system installation still require additional testing.
 
 ## Current limitations
 
-The panel can communicate with Core through a typed request/response API and display its connection status, but workspace indicators are mock UI: Niri IPC integration, KDL hot reload, event subscriptions, themes, docks, and third-party widgets remain unimplemented.
+The panel can communicate with Core through a typed request/response API and display its connection status, but workspace indicators are mock UI: Niri IPC integration, KDL hot reload, event subscriptions, user-overridable themes, docks, and third-party widgets remain unimplemented.
 
 This project is not ready to replace a working desktop environment.

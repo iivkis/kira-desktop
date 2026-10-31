@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import CoreStatus from './lib/components/CoreStatus.svelte';
+  import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
   import { request } from './lib/sdk/core';
 
@@ -36,21 +38,32 @@
 </script>
 
 <main class="bar" aria-label="Kira Desktop top bar">
-  <section class="start" aria-label="Workspaces (preview)">
-    <span class="brand" title="Kira Desktop">K</span>
-    <div class="workspaces">
-      <span class="workspace selected">1</span>
-      <span class="workspace">2</span>
-      <span class="workspace">3</span>
+  <section class="bar__start" aria-label="Kira and workspaces">
+    <div class="brand" aria-label="Kira Desktop">
+      <span class="brand__symbol" aria-hidden="true">K</span>
+      <span class="brand__wordmark" aria-hidden="true">KIRA</span>
     </div>
+    <span class="bar__separator" aria-hidden="true"></span>
+    <WorkspacePreview />
   </section>
 
-  <section class="center" aria-label="Desktop identity">Kira Desktop</section>
+  <div class="bar__center" aria-label="Kira Desktop environment">
+    <span class="bar__center-line" aria-hidden="true"></span>
+    <span class="bar__center-title">KIRA <span>DESKTOP</span></span>
+    <span class="bar__center-line" aria-hidden="true"></span>
+  </div>
 
-  <section class="end" aria-label="Core and system status">
-    <span class:online={coreStatus === 'connected'} class="status" title={coreStatus === 'connected' ? `Kira Core v${coreVersion}` : 'Kira Core is unavailable'}>
-      Core: {coreStatus}
-    </span>
-    <time>{formatClock(now)}</time>
+  <section class="bar__end" aria-label="Core and clock">
+    <CoreStatus status={coreStatus} version={coreVersion} />
+    <span class="bar__separator" aria-hidden="true"></span>
+    <div class="clock">
+      <svg class="clock__icon" aria-hidden="true" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.3"></circle>
+        <path d="M8 4.6V8.1L10.2 9.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <time datetime={now.toISOString()} aria-label={'Local time ' + formatClock(now)}>
+        {formatClock(now)}
+      </time>
+    </div>
   </section>
 </main>
