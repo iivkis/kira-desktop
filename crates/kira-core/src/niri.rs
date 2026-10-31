@@ -174,12 +174,20 @@ async fn run_stream(socket: &Path, sender: &watch::Sender<WorkspaceState>) -> io
 
 /// Only accept a stable workspace ID already advertised by the connected
 /// compositor. Indexes are per-output and must never be used for clicks.
-pub fn validated_focus_id(params: Option<&Value>, state: &WorkspaceState) -> Result<u64, &'static str> {
-    let params = params.and_then(Value::as_object).ok_or("Expected focus params")?;
+pub fn validated_focus_id(
+    params: Option<&Value>,
+    state: &WorkspaceState,
+) -> Result<u64, &'static str> {
+    let params = params
+        .and_then(Value::as_object)
+        .ok_or("Expected focus params")?;
     if params.len() != 1 {
         return Err("Only workspace id is allowed");
     }
-    let id = params.get("id").and_then(Value::as_str).ok_or("Workspace id must be a string")?;
+    let id = params
+        .get("id")
+        .and_then(Value::as_str)
+        .ok_or("Workspace id must be a string")?;
     let parsed = id.parse::<u64>().map_err(|_| "Invalid workspace id")?;
     if parsed.to_string() != id {
         return Err("Non-canonical workspace id");
@@ -198,7 +206,10 @@ pub fn validated_focus_id(params: Option<&Value>, state: &WorkspaceState) -> Res
 pub async fn focus_workspace(socket: &Path, workspace_id: u64) -> io::Result<()> {
     let metadata = std::fs::symlink_metadata(socket)?;
     if !metadata.file_type().is_socket() {
-        return Err(io::Error::new(io::ErrorKind::InvalidInput, "Niri socket path is not a socket"));
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "Niri socket path is not a socket",
+        ));
     }
     let action = serde_json::json!({
         "Action": {"FocusWorkspace": {"reference": {"Id": workspace_id}}}
@@ -208,7 +219,8 @@ pub async fn focus_workspace(socket: &Path, workspace_id: u64) -> io::Result<()>
         stream.write_all(action.to_string().as_bytes()).await?;
         stream.write_all(b"\n").await?;
         let mut reader = BufReader::new(stream);
-        let line = read_bounded_line(&mut reader, 4096).await?
+        let line = read_bounded_line(&mut reader, 4096)
+            .await?
             .ok_or_else(|| invalid("Niri closed without action response"))?;
         let reply: Value = serde_json::from_slice(&line)?;
         if reply == serde_json::json!({"Ok": "Handled"}) {
@@ -216,7 +228,9 @@ pub async fn focus_workspace(socket: &Path, workspace_id: u64) -> io::Result<()>
         } else {
             Err(invalid("Niri rejected workspace focus"))
         }
-    }).await.map_err(|_| io::Error::new(io::ErrorKind::TimedOut, "Niri action timed out"))?
+    })
+    .await
+    .map_err(|_| io::Error::new(io::ErrorKind::TimedOut, "Niri action timed out"))?
 }
 
 /// Monitor the exact supplied NIRI_SOCKET, reconnecting on disconnect.
@@ -315,19 +329,44 @@ mod tests {
 
     #[test]
     fn focus_rejects_offline_unknown_noncanonical_and_non_string_ids() {
-        let state = WorkspaceState { connected: true, workspaces: vec![Workspace {
-            id: u64::MAX.to_string(), idx: 2, name: None, output: Some("DP".into()),
-            is_active: false, is_focused: false, is_urgent: false,
-        }] };
-        assert_eq!(validated_focus_id(Some(&json!({"id": u64::MAX.to_string()})), &state), Ok(u64::MAX));
-        for invalid in [json!({"id":2}), json!({"id":"02"}), json!({"idx":2}),
-            json!({"id":"2"}), json!({"id":"-1"}), json!({"id":"18446744073709551616"}),
-            json!({"id": u64::MAX.to_string(), "action":"quit"})]
-        {
-            assert!(validated_focus_id(Some(&invalid), &state).is_err(), "{invalid}");
+        let state = WorkspaceState {
+            connected: true,
+            workspaces: vec![Workspace {
+                id: u64::MAX.to_string(),
+                idx: 2,
+                name: None,
+                output: Some("DP".into()),
+                is_active: false,
+                is_focused: false,
+                is_urgent: false,
+            }],
+        };
+        assert_eq!(
+            validated_focus_id(Some(&json!({"id": u64::MAX.to_string()})), &state),
+            Ok(u64::MAX)
+        );
+        for invalid in [
+            json!({"id":2}),
+            json!({"id":"02"}),
+            json!({"idx":2}),
+            json!({"id":"2"}),
+            json!({"id":"-1"}),
+            json!({"id":"18446744073709551616"}),
+            json!({"id": u64::MAX.to_string(), "action":"quit"}),
+        ] {
+            assert!(
+                validated_focus_id(Some(&invalid), &state).is_err(),
+                "{invalid}"
+            );
         }
         assert!(validated_focus_id(None, &state).is_err());
-        assert!(validated_focus_id(Some(&json!({"id":u64::MAX.to_string()})), &WorkspaceState::default()).is_err());
+        assert!(
+            validated_focus_id(
+                Some(&json!({"id":u64::MAX.to_string()})),
+                &WorkspaceState::default()
+            )
+            .is_err()
+        );
     }
 
     #[tokio::test]
@@ -343,8 +382,18 @@ mod tests {
                 let mut reader = BufReader::new(reader);
                 let line = read_bounded_line(&mut reader, 4096).await.unwrap().unwrap();
                 let request: Value = serde_json::from_slice(&line).unwrap();
-                assert_eq!(request, json!({"Action":{"FocusWorkspace":{"reference":{"Id":u64::MAX}}}}));
-                writer.write_all(if ok { b"{\"Ok\":\"Handled\"}\n" } else { b"{\"Err\":\"No such workspace\"}\n" }).await.unwrap();
+                assert_eq!(
+                    request,
+                    json!({"Action":{"FocusWorkspace":{"reference":{"Id":u64::MAX}}}})
+                );
+                writer
+                    .write_all(if ok {
+                        b"{\"Ok\":\"Handled\"}\n"
+                    } else {
+                        b"{\"Err\":\"No such workspace\"}\n"
+                    })
+                    .await
+                    .unwrap();
             }
         });
         assert!(focus_workspace(&path, u64::MAX).await.is_ok());
