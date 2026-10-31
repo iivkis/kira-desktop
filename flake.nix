@@ -28,6 +28,7 @@
             go-task
             python3
             niri
+            grim # explicit visual QA screenshot capture, does not copy clipboard
             pkg-config
             gtk4
             gtk4-layer-shell
