@@ -75,8 +75,8 @@ export async function inlineUiAssets(outputDirectory) {
   // snippets, which do not create network requests when inside scripts.
   // Closing script/style tags in bundled assets were already rejected above.
   const markup = html
-    .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, '')
-    .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, '');
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
   if (SCRIPT_TAG.test(markup) || [...markup.matchAll(LINK_TAG)]
     .some((match) => attribute(match[0], 'rel')?.toLowerCase() === 'stylesheet')) {
     throw new Error('Unexpected remaining external UI assets');
