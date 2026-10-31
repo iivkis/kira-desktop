@@ -19,7 +19,7 @@ is needed.
 The five canonical colors remain defined in
 `frontend/src/lib/themes/kira-default.css` and typed in
 `frontend/src/lib/themes/kira-default.ts`. Svelte components
-(`App.svelte`, `WorkspacePreview.svelte`, `CoreStatus.svelte`) use
+(`App.svelte`, `WorkspacePreview.svelte`, `SystemHealth.svelte`) use
 utility classes directly; their visual styling is no longer duplicated in
 component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
 focus, Core state and live KDL config updates remain behavioral concerns,

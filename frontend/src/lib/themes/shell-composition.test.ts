@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const css = readFileSync(new URL('../../style.css', import.meta.url), 'utf8');
 const markup = readFileSync(new URL('../../App.svelte', import.meta.url), 'utf8');
 const workspaces = readFileSync(new URL('../components/WorkspacePreview.svelte', import.meta.url), 'utf8');
-const core = readFileSync(new URL('../components/CoreStatus.svelte', import.meta.url), 'utf8');
+const core = readFileSync(new URL('../components/SystemHealth.svelte', import.meta.url), 'utf8');
 const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), 'utf8');
 const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
@@ -28,6 +28,10 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('aria-label="Niri workspaces"');
     expect(markup).toContain('aria-label="System status and local time"');
     expect(markup).toContain('configState.config.compact');
+    expect(markup).toContain('class={`flex shrink-0 items-center justify-end gap-3');
+    expect(markup).not.toContain('>SYSTEM</span>');
+    expect(markup).not.toContain('>LOCAL</span>');
+    expect(markup).toContain('niriConnected={workspaceState?.connected ?? null}');
     expect(markup).toContain('max-[540px]:');
     expect(markup).not.toContain('<style>');
     expect(markup).not.toContain('bar__center');
@@ -53,9 +57,14 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('focus-visible:outline-kira-text');
     expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
     expect(core).toContain('aria-live="polite"');
-    expect(core).toContain('status !== \'connected\'');
+    expect(core).toContain('data-phase={health.phase}');
+    expect(core).toContain('aria-label={health.details.replace');
     expect(core).toContain('border-kira-accent bg-kira-accent');
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
+    expect(core).not.toContain('min-h-7');
+    expect(markup).toContain("weekday: 'long'");
+    expect(markup).toContain('items-center justify-end');
+    expect(markup).not.toContain('bar__system-item');
   });
 });

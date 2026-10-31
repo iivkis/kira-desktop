@@ -23,8 +23,9 @@ official visual language of Kira Desktop.
    Prussian Blue identity, Black workspace navigation, subdued Blue system.
 2. Keep the main orange fill on the current workspace; add only a narrow
    orange baseline/mark to connect brand and active navigation.
-3. Build a compact typographic hierarchy: wordmark, workspace kicker/title,
-   and stacked system metadata with tabular clock digits.
+3. Build a compact typographic hierarchy: wordmark and workspace kicker/title.
+   The right edge is a **single vertically centered utility row**, not
+   stacked SYSTEM/LOCAL labels with inconsistent inner widget heights.
 4. Keep the full Top Bar at exactly 42 logical pixels; the navigation is
    real Niri state and the text is sourced from the current KDL config.
 5. Divide the Launcher into a Black editorial intro and a Blue working area
@@ -38,14 +39,18 @@ official visual language of Kira Desktop.
 
 - **Top Bar:** a 42 px strip with three continuous horizontal zones:
   Blue brand, Black workspaces and metadata, softer Blue system status/clock.
-  Small overlines establish hierarchy without extra boxes.
+  The right zone is a condensed single line: combined Core + Niri health,
+  subtle divider and local time, all sharing one optical vertical center.
+  Date and diagnostic details are available via native title tooltips.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   Search, catalog, stable application icons, and an orange selection rail
   communicate function without painting the entire row orange.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
   and visible keyboard focus remain distinct. Niri events are authoritative.
-- **Core status:** compact unboxed label with status dot. Offline and
-  connecting states remain explicit; connected status is exposed accessibly.
+- **System health:** combine existing Core RPC and Niri EventStream status:
+  READY only when both connected, otherwise STARTING/WAITING/CORE OFF/
+  NIRI OFF. A round/hollow/square dot reinforces the textual state;
+  hover shows Core version and Niri IPC connection. No new telemetry or polling.
 
 ### Geometry and motion
 
@@ -151,9 +156,11 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
 - `frontend/src/lib/components/WorkspacePreview.svelte`: real Niri workspaces
   with accessible clickable buttons, live focus/active/urgent state, and
   stable workspace IDs for the intentional `FocusWorkspace` action.
-- `frontend/src/lib/components/CoreStatus.svelte`: unboxed status text
-  and dot, tied to the real Core bridge; accessible `role="status"`
-  announces transitions.
+- `frontend/src/lib/components/SystemHealth.svelte` and
+  `frontend/src/lib/system-health.ts`: a compact, centered readiness indicator
+  derived from real Core and Niri states. Accessible `role="status"`
+  announces changes; unavailable details remain visible instead of an
+  unexplained indicator.
 - `frontend/src/style.css`: Tailwind v4 import, semantic `@theme inline`
   aliases and minimal global styles. Responsive composition and focus rules
   live in Svelte utility classes; the native 42 px reservation is unchanged.

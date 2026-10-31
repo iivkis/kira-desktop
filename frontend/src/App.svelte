@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import CoreStatus from './lib/components/CoreStatus.svelte';
+  import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
   import { openLauncher, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
@@ -148,29 +148,25 @@
   </section>
 
   <section
-    class={`flex shrink-0 items-stretch bg-kira-surface-soft pb-[2px] ${configState.config.compact ? 'gap-[10px] px-2' : 'gap-[19px] px-4 max-[540px]:gap-[10px] max-[540px]:px-2'}`}
+    class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}
     aria-label="System status and local time"
   >
     {#if configState.error}
-      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
-    <div class="flex min-w-0 flex-col items-start justify-center gap-[2px]">
-      {#if !configState.config.compact}
-        <span class="whitespace-nowrap text-[8px] leading-none font-semibold tracking-[0.11em] text-kira-muted/80 max-[540px]:hidden" aria-hidden="true">SYSTEM</span>
-      {/if}
-      <CoreStatus status={coreStatus} version={coreVersion} />
-    </div>
-    <div class="flex min-w-0 flex-col items-end justify-center gap-[2px]">
-      {#if !configState.config.compact}
-        <span class="whitespace-nowrap text-[8px] leading-none font-semibold tracking-[0.11em] text-kira-muted/80 max-[540px]:hidden" aria-hidden="true">LOCAL</span>
-      {/if}
-      <time
-        class="whitespace-nowrap text-[13px] leading-tight font-bold tracking-[0.03em] text-kira-text tabular-nums max-[540px]:text-xs"
-        datetime={now.toISOString()}
-        aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}
-      >
-        {formatClock(now, undefined, configState.config.show_seconds)}
-      </time>
-    </div>
+    <SystemHealth
+      coreStatus={coreStatus}
+      coreVersion={coreVersion}
+      niriConnected={workspaceState?.connected ?? null}
+    />
+    <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
+    <time
+      class="shrink-0 whitespace-nowrap text-[13px] leading-none font-bold tracking-[0.03em] text-kira-text tabular-nums max-[540px]:text-xs"
+      datetime={now.toISOString()}
+      title={new Intl.DateTimeFormat(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(now)}
+      aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}
+    >
+      {formatClock(now, undefined, configState.config.show_seconds)}
+    </time>
   </section>
 </main>
