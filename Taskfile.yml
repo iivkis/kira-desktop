@@ -61,6 +61,13 @@ tasks:
     desc: Run Core/IPC and frontend tests.
     cmds:
       - cargo test --locked -p kira-ipc -p kira-core --all-targets
+      # The date model is pure Rust: run its leap-year/ISO-week tests even
+      # on lightweight runners without GTK/WebKit development libraries.
+      - |
+        tmpdir="$(mktemp -d)"
+        trap 'rm -rf "$tmpdir"' EXIT
+        rustc --edition=2021 --test crates/kira-shell/src/calendar_model.rs -o "$tmpdir/kira-calendar-tests"
+        "$tmpdir/kira-calendar-tests"
       - npm run test:ci --prefix frontend
       - python3 -m unittest discover -s tests -p 'test_*.py'
 
