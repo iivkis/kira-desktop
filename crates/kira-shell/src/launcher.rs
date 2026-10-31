@@ -192,7 +192,7 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
                         eprintln!("kira-launcher: app launch failed: {error}");
                         feedback.set_text(&format!("Could not start application: {error}"));
                         feedback.set_visible(true);
-                    },
+                    }
                 }
             }
         });
