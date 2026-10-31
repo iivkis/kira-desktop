@@ -152,7 +152,9 @@ async fn serve(
                 return Ok(stream_config(&mut writer, config, request.id).await?);
             }
             Ok(request) => dispatch_with_state(
-                request, &workspaces.borrow().clone(), &config.borrow().clone(),
+                request,
+                &workspaces.borrow().clone(),
+                &config.borrow().clone(),
             ),
             Err(_) => RpcResponse::failure(None, -32700, "Parse error"),
         };
@@ -198,7 +200,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
         Err(error) => {
             config_sender.send_replace(ConfigState {
-                config: Default::default(), error: Some(error),
+                config: Default::default(),
+                error: Some(error),
             });
         }
     }
@@ -339,20 +342,36 @@ mod tests {
             let _ = serve(stream, ws_rx, cfg_rx).await;
         });
         let mut stream = UnixStream::connect(&path).await.unwrap();
-        stream.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":88,\"method\":\"subscribe_config\"}\n").await.unwrap();
+        stream
+            .write_all(b"{\"jsonrpc\":\"2.0\",\"id\":88,\"method\":\"subscribe_config\"}\n")
+            .await
+            .unwrap();
         let mut reader = BufReader::new(stream);
         let mut first = String::new();
-        tokio::time::timeout(std::time::Duration::from_secs(1), reader.read_line(&mut first))
-            .await.unwrap().unwrap();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut first),
+        )
+        .await
+        .unwrap()
+        .unwrap();
         let first: RpcResponse = serde_json::from_str(&first).unwrap();
         assert_eq!(first.result.unwrap()["config"]["compact"], false);
         cfg_tx.send_replace(ConfigState {
-            config: kira_ipc::UiConfig { compact: true, ..Default::default() },
+            config: kira_ipc::UiConfig {
+                compact: true,
+                ..Default::default()
+            },
             error: None,
         });
         let mut second = String::new();
-        tokio::time::timeout(std::time::Duration::from_secs(1), reader.read_line(&mut second))
-            .await.unwrap().unwrap();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut second),
+        )
+        .await
+        .unwrap()
+        .unwrap();
         let second: RpcResponse = serde_json::from_str(&second).unwrap();
         assert_eq!(second.result.unwrap()["config"]["compact"], true);
         server.abort();
