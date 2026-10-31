@@ -21,6 +21,21 @@ export interface WorkspaceState {
   workspaces: Workspace[];
 }
 
+/** Listen for typed workspace push events emitted by the native Shell.
+ * No Niri or Core polling is performed here. Unsubscribe on Svelte unmount.
+ */
+export function onWorkspaceUpdate(callback: (state: WorkspaceState) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const state = (event as CustomEvent<WorkspaceState>).detail;
+    if (!state || typeof state.connected !== 'boolean' ||
+        !Array.isArray(state.workspaces)) return;
+    callback(state);
+  };
+  window.addEventListener('kira:workspaces', listener);
+  return () => window.removeEventListener('kira:workspaces', listener);
+}
+
 type Methods = {
   ping: string;
   get_state: CoreState;
