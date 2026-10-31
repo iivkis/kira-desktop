@@ -119,7 +119,7 @@ kira-desktop/
 
 ```kdl
 theme "dark" {
-    accent "#c9ada7"
+    accent "#a9927d"
     radius 12
 }
 
