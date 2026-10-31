@@ -287,8 +287,8 @@ The generated **nested-only** Niri KDL uses `Mod`, which resolves to
   inside it (`foot` is included in `nix develop`).
 - Press **Alt+2** to focus workspace 2 and **Alt+Enter** to open another
   terminal there; **Alt+1/2/3** switches workspace.
-- For moving the **focused window**, press **Alt+Ctrl+2**.
-  The binding uses `move-window-to-workspace focus=true 2` so focus
+- For moving the **focused window**, press **Alt+Ctrl+2** (or **Alt+Ctrl+1** to move it back).
+  The bindings use `move-window-to-workspace focus=true 2` so focus
   follows the moved window. Switch between workspaces with Alt+1/2
   to verify Kira's focused index.
 - **Alt+Shift+Q** exits nested Niri and cleans up the preview.
