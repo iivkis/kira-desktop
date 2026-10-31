@@ -2,8 +2,10 @@
   description = "Kira Desktop: NixOS-first Wayland shell built on Niri";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  # Pinned Crane release; Cargo dependencies compile in a separate derivation.
+  inputs.crane.url = "github:ipetkov/crane/eb35abda9f232cc6610b1d1e3200d15c49b7ac54";
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, crane }:
     let
       systems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = f:
@@ -40,7 +42,7 @@
 
       packages = forAllSystems (pkgs:
         if hasApplicationSources
-        then { default = pkgs.callPackage ./nix/package.nix { }; }
+        then { default = pkgs.callPackage ./nix/package.nix { craneLib = crane.mkLib pkgs; }; }
         else { }
       );
 
