@@ -9,7 +9,9 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{ConfigState, DesktopApplication, PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
+use kira_ipc::{
+    ConfigState, DesktopApplication, PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState,
+};
 use webkit6::prelude::*;
 
 const BAR_HEIGHT: i32 = 42;
@@ -423,8 +425,15 @@ mod tests {
 
     #[test]
     fn browser_bridge_cannot_run_commands_or_activate_apps_directly() {
-        for method in ["launch_application", "execute", "get_applications", "gio_launch"] {
-            let request = format!(r#"{{"jsonrpc":"2.0","id":11,"method":"{method}","params":{{"id":"foo.desktop"}}}}"#);
+        for method in [
+            "launch_application",
+            "execute",
+            "get_applications",
+            "gio_launch",
+        ] {
+            let request = format!(
+                r#"{{"jsonrpc":"2.0","id":11,"method":"{method}","params":{{"id":"foo.desktop"}}}}"#
+            );
             assert_eq!(process_message(&request, None).error.unwrap().code, -32601);
         }
     }
