@@ -220,25 +220,41 @@ mod tests {
         });
         let mut conn = UnixStream::connect(&path).await.unwrap();
         conn.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"subscribe_workspaces\"}\n")
-            .await.unwrap();
+            .await
+            .unwrap();
         let mut reader = TokioBufReader::new(conn);
         let mut line = String::new();
-        tokio::time::timeout(std::time::Duration::from_secs(1), reader.read_line(&mut line))
-            .await.unwrap().unwrap();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut line),
+        )
+        .await
+        .unwrap()
+        .unwrap();
         let first: RpcResponse = serde_json::from_str(&line).unwrap();
         assert_eq!(first.id, Some(77));
         assert_eq!(first.result.unwrap()["connected"], false);
         let next = WorkspaceState {
             connected: true,
             workspaces: vec![kira_ipc::Workspace {
-                id: "123".into(), idx: 2, name: None, output: Some("winit".into()),
-                is_active: true, is_focused: true, is_urgent: false,
+                id: "123".into(),
+                idx: 2,
+                name: None,
+                output: Some("winit".into()),
+                is_active: true,
+                is_focused: true,
+                is_urgent: false,
             }],
         };
         tx.send_replace(next);
         line.clear();
-        tokio::time::timeout(std::time::Duration::from_secs(1), reader.read_line(&mut line))
-            .await.unwrap().unwrap();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut line),
+        )
+        .await
+        .unwrap()
+        .unwrap();
         let update: RpcResponse = serde_json::from_str(&line).unwrap();
         assert_eq!(update.id, Some(77));
         assert_eq!(update.result.unwrap()["workspaces"][0]["idx"], 2);
