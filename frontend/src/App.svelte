@@ -3,12 +3,30 @@
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
   let workspaceState = $state<WorkspaceState | null>(null);
+  let workspacePending = $state(false);
+  let workspaceActionError = $state<string | null>(null);
+
+  async function activateWorkspace(id: string) {
+    if (workspacePending || !workspaceState?.connected ||
+        !workspaceState.workspaces.some((ws) => ws.id === id && !ws.is_focused)) return;
+    workspacePending = true;
+    workspaceActionError = null;
+    try {
+      await focusWorkspace(id);
+      // Do not optimistically change focus. Niri's EventStream is authoritative.
+    } catch (error) {
+      workspaceActionError = error instanceof Error ? error.message : 'Workspace focus failed';
+    } finally {
+      workspacePending = false;
+    }
+  }
+
   let configState = $state<ConfigState>({ config: defaultUiConfig, error: null });
 
   onMount(() => {
@@ -82,7 +100,12 @@
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
     </div>
     <span class="bar__separator" aria-hidden="true"></span>
-    <WorkspacePreview state={workspaceState} showNames={configState.config.show_names} limit={configState.config.max_workspaces} />
+    <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
+      limit={configState.config.max_workspaces} pending={workspacePending}
+      onFocus={(id) => { void activateWorkspace(id); }} />
+    {#if workspaceActionError}
+      <span class="workspace-action-error" role="alert" title={workspaceActionError}>WS !</span>
+    {/if}
   </section>
 
   <div class="bar__center" aria-label="Kira Desktop environment">
