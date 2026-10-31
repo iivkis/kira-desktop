@@ -7,7 +7,7 @@ import struct
 import tempfile
 import threading
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "qa_visual.py"
 spec = importlib.util.spec_from_file_location("qa_visual", SCRIPT)
@@ -119,20 +119,29 @@ class VisualQATests(unittest.TestCase):
                 if args[:2] == ("output", "Virtual-1"):
                     self.assertEqual(args[2], "scale")
                     state["scale"] = float(args[3])
-                if args[:2] == ("action", "screenshot-screen"):
-                    path = Path(args[-1])
-                    self.assertEqual(args[-2], "--path")
-                    path.write_bytes(png_header() + b"fake-screenshot" + qa.PNG_TRAILER)
                 return ""
+
+            screenshots = []
+
+            def shot(grim, environment, output, path):
+                self.assertEqual(grim, "/nix/store/bin/grim")
+                self.assertEqual(output, "Virtual-1")
+                self.assertEqual(environment["WAYLAND_DISPLAY"], "wayland-nested")
+                screenshots.append(path)
+                path.write_bytes(png_header() + b"fake-screenshot" + qa.PNG_TRAILER)
 
             try:
                 with patch.object(qa, "niri_command", side_effect=command), \
                      patch.object(qa, "wait_for_shell_ui"), \
                      patch.object(qa, "check_core", return_value={"status": "bootstrap"}), \
+                     patch.object(qa.shutil, "which", return_value="/nix/store/bin/grim"), \
+                     patch.object(qa, "screenshot_with_grim", side_effect=shot), \
                      patch.object(qa.time, "sleep"):
-                    path = qa.capture("niri", {"NIRI_SOCKET": str(niri_socket)},
-                                      None, root / "shell.log", root / "core.sock",
-                                      root / "captures", packaged=True)
+                    path = qa.capture("niri", {
+                        "NIRI_SOCKET": str(niri_socket),
+                        "WAYLAND_DISPLAY": "wayland-nested",
+                    }, None, root / "shell.log", root / "core.sock",
+                        root / "captures", packaged=True)
                 manifest = json.loads((path / "manifest.json").read_text())
                 self.assertEqual(manifest["status"], "captured_review_pending")
                 self.assertEqual(manifest["visual_review"], "pending")
@@ -141,10 +150,47 @@ class VisualQATests(unittest.TestCase):
                                  [1.0, 1.25, 1.5, 2.0])
                 self.assertTrue(all((path / item["file"]).is_file()
                                     for item in manifest["screenshots"]))
-                self.assertEqual(len([a for a in calls if a[:2] == (
-                    "action", "screenshot-screen")]), 4)
+                self.assertEqual(len(screenshots), 4)
+                self.assertEqual(len([a for a in calls if a[:2] == ("output", "Virtual-1")]), 4)
+                self.assertFalse(any(a[:2] == ("action", "screenshot-screen") for a in calls))
             finally:
                 server.close()
+
+    def test_smoke_checks_read_only_without_screenshots_or_scales(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sock = root / "niri.sock"
+            server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            server.bind(str(sock))
+            calls = []
+            def command(_niri, _env, *args):
+                calls.append(args)
+                return json.dumps({"Virtual-1": {"logical": {"scale": 1.0}}})
+            try:
+                with patch.object(qa, "niri_command", side_effect=command), \
+                     patch.object(qa, "wait_for_shell_ui"), \
+                     patch.object(qa, "check_core", return_value={"status": "bootstrap"}):
+                    state, output = qa.verify_smoke(
+                        "niri", {"NIRI_SOCKET": str(sock)}, None,
+                        root / "shell.log", root / "core.sock",
+                    )
+                self.assertEqual(state["status"], "bootstrap")
+                self.assertEqual(output, "Virtual-1")
+                self.assertEqual(calls, [("--json", "outputs")])
+            finally:
+                server.close()
+
+    def test_grim_capture_does_not_use_clipboard_or_host_display(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "screen.png"
+            env = {"WAYLAND_DISPLAY": "wayland-nested", "NIRI_SOCKET": "/tmp/child.sock"}
+            with patch.object(qa.subprocess, "run", return_value=Mock(returncode=0)) as run:
+                qa.screenshot_with_grim("grim", env, "Virtual-1", output)
+            args, kwargs = run.call_args
+            self.assertEqual(args[0], ["grim", "-o", "Virtual-1", str(output)])
+            self.assertEqual(kwargs["env"], env)
+            self.assertNotIn("wl-copy", args[0])
+            self.assertNotIn("screenshot-screen", args[0])
 
     def test_failure_records_failed_not_a_pass(self):
         with tempfile.TemporaryDirectory() as directory:
