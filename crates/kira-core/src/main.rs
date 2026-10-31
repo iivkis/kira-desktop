@@ -223,7 +223,7 @@ mod tests {
             .await.unwrap();
         let mut reader = TokioBufReader::new(conn);
         let mut line = String::new();
-        tokio::time::timeout(Duration::from_secs(1), reader.read_line(&mut line))
+        tokio::time::timeout(std::time::Duration::from_secs(1), reader.read_line(&mut line))
             .await.unwrap().unwrap();
         let first: RpcResponse = serde_json::from_str(&line).unwrap();
         assert_eq!(first.id, Some(77));
@@ -237,7 +237,7 @@ mod tests {
         };
         tx.send_replace(next);
         line.clear();
-        tokio::time::timeout(Duration::from_secs(1), reader.read_line(&mut line))
+        tokio::time::timeout(std::time::Duration::from_secs(1), reader.read_line(&mut line))
             .await.unwrap().unwrap();
         let update: RpcResponse = serde_json::from_str(&line).unwrap();
         assert_eq!(update.id, Some(77));
