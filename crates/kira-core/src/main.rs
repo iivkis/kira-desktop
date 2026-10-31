@@ -90,6 +90,25 @@ async fn read_bounded_line<R: AsyncBufRead + Unpin>(
     }
 }
 
+/// Keep a single read-only JSON-RPC connection open and send the latest
+/// workspace state whenever Core's Niri watch channel changes. Every frame
+/// uses the original subscription request id and is newline-delimited.
+async fn stream_workspaces(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    mut workspaces: watch::Receiver<WorkspaceState>,
+    id: u64,
+) -> io::Result<()> {
+    loop {
+        let snapshot = workspaces.borrow_and_update().clone();
+        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
+        writer.write_all(&serde_json::to_vec(&response)?).await?;
+        writer.write_all(b"\n").await?;
+        if workspaces.changed().await.is_err() {
+            return Ok(());
+        }
+    }
+}
+
 async fn serve(
     stream: UnixStream,
     workspaces: watch::Receiver<WorkspaceState>,
@@ -99,6 +118,14 @@ async fn serve(
 
     while let Some(line) = read_bounded_line(&mut reader, MAX_REQUEST_BYTES).await? {
         let response = match serde_json::from_slice::<RpcRequest>(&line) {
+            Ok(request)
+                if request.method == "subscribe_workspaces"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                // Internal streaming endpoint, not exposed through the WebKit
+                // JS RPC allowlist; one subscription per socket connection.
+                return Ok(stream_workspaces(&mut writer, workspaces, request.id).await?);
+            }
             Ok(request) => dispatch_with_workspaces(request, &workspaces.borrow().clone()),
             Err(_) => RpcResponse::failure(None, -32700, "Parse error"),
         };
@@ -177,6 +204,48 @@ mod tests {
         let mut reader = BufReader::new(input);
         let error = read_bounded_line(&mut reader, 32).await.unwrap_err();
         assert_eq!(error.kind(), io::ErrorKind::UnexpectedEof);
+    }
+
+    #[tokio::test]
+    async fn subscription_streams_initial_snapshot_and_focus_changes() {
+        use tokio::io::{AsyncBufReadExt, BufReader as TokioBufReader};
+        let dir = std::env::temp_dir().join(format!("kira-subscribe-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("ipc.sock");
+        let listener = tokio::net::UnixListener::bind(&path).unwrap();
+        let (tx, rx) = watch::channel(WorkspaceState::default());
+        let task = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let _ = serve(stream, rx).await;
+        });
+        let mut conn = UnixStream::connect(&path).await.unwrap();
+        conn.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"subscribe_workspaces\"}\n")
+            .await.unwrap();
+        let mut reader = TokioBufReader::new(conn);
+        let mut line = String::new();
+        tokio::time::timeout(Duration::from_secs(1), reader.read_line(&mut line))
+            .await.unwrap().unwrap();
+        let first: RpcResponse = serde_json::from_str(&line).unwrap();
+        assert_eq!(first.id, Some(77));
+        assert_eq!(first.result.unwrap()["connected"], false);
+        let next = WorkspaceState {
+            connected: true,
+            workspaces: vec![kira_ipc::Workspace {
+                id: "123".into(), idx: 2, name: None, output: Some("winit".into()),
+                is_active: true, is_focused: true, is_urgent: false,
+            }],
+        };
+        tx.send_replace(next);
+        line.clear();
+        tokio::time::timeout(Duration::from_secs(1), reader.read_line(&mut line))
+            .await.unwrap().unwrap();
+        let update: RpcResponse = serde_json::from_str(&line).unwrap();
+        assert_eq!(update.id, Some(77));
+        assert_eq!(update.result.unwrap()["workspaces"][0]["idx"], 2);
+        drop(reader);
+        task.abort();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
     }
 
     #[test]
