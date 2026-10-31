@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { describeBootstrapError, startUi } from './bootstrap';
+import { describeBootstrapError, startUi, whenDocumentReady } from './bootstrap';
 
 function targetFixture() {
   const loading = { textContent: 'Loading...', remove: vi.fn() };
@@ -49,5 +49,36 @@ describe('Svelte bootstrap diagnostics', () => {
     expect(describeBootstrapError(error)).toContain('bad mount');
     expect(describeBootstrapError(error)).toContain('stack=');
     expect(describeBootstrapError('failure')).toBe('failure');
+  });
+});
+
+describe('Classic script bootstrap timing', () => {
+  it('waits for the DOMContentLoaded event if body is still parsing', () => {
+    const listeners = new Map<string, () => void>();
+    const addEventListener = vi.fn((event: string, fn: () => void) => {
+      listeners.set(event, fn);
+    });
+    const page = {
+      readyState: 'loading',
+      addEventListener,
+    } as unknown as Pick<Document, 'readyState' | 'addEventListener'>;
+    const start = vi.fn();
+    whenDocumentReady(page, start);
+    expect(start).not.toHaveBeenCalled();
+    expect(addEventListener).toHaveBeenCalledWith('DOMContentLoaded', start, { once: true });
+    listeners.get('DOMContentLoaded')?.();
+    expect(start).toHaveBeenCalledOnce();
+  });
+
+  it('mounts immediately when the document has already loaded', () => {
+    const addEventListener = vi.fn();
+    const page = {
+      readyState: 'complete',
+      addEventListener,
+    } as unknown as Pick<Document, 'readyState' | 'addEventListener'>;
+    const start = vi.fn();
+    whenDocumentReady(page, start);
+    expect(start).toHaveBeenCalledOnce();
+    expect(addEventListener).not.toHaveBeenCalled();
   });
 });

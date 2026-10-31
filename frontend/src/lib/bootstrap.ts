@@ -47,3 +47,19 @@ export function startUi(
     return false;
   }
 }
+
+/**
+ * Vite emits module scripts in <head> with deferred semantics. Our build
+ * inlines that bundle as a classic script, which executes immediately.
+ * Wait for DOMContentLoaded so #app exists before Svelte's mount().
+ */
+export function whenDocumentReady(
+  page: Pick<Document, 'readyState' | 'addEventListener'>,
+  start: () => void,
+): void {
+  if (page.readyState === 'loading') {
+    page.addEventListener('DOMContentLoaded', start, { once: true });
+  } else {
+    start();
+  }
+}
