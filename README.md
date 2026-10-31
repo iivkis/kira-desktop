@@ -133,6 +133,23 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
+## Validated KDL settings (Stage 2 draft)
+
+Kira Core can read `~/.config/kira-desktop/config.kdl` (or an absolute
+`KIRA_CONFIG_FILE` override), validate a **small, documented KDL profile**
+and hot-reload UI settings without restarting the compositor, Core or Shell.
+Settings include compact Top Bar spacing, center title, clock seconds,
+workspace names and maximum visible workspace chips. If an edit is invalid,
+the previous valid config stays active and the Top Bar shows `CONFIG !`.
+
+Copy the [sample configuration](config/kira.kdl.example), validate a file
+with `kira-core --check-config /absolute/path/config.kdl`, and read the
+[supported KDL syntax and safe preview guide](docs/CONFIG.md).
+
+The current KDL profile deliberately **does not implement full KDL grammar**,
+arbitrary commands, Niri actions or external modules. The independent Niri
+preview generates a temporary editable Kira config for experimentation.
+
 ## Real Niri workspaces (Stage 1 draft)
 
 The Top Bar now obtains **real, read-only** workspace data through
