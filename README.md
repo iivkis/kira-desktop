@@ -133,6 +133,30 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
+## Real Niri workspaces (Stage 1 draft)
+
+The Top Bar now obtains **real, read-only** workspace data through
+`NIRI_SOCKET` → Rust Core `EventStream` → typed `get_workspaces` JSON-RPC →
+GTK WebKit bridge → Svelte. Workspace IDs are strings (safe for Niri's u64),
+and focus, visibility and urgency are separate flags. No Niri
+workspace-switching actions are sent by Kira.
+
+With no Niri IPC connection, the UI shows `NIRI OFFLINE` instead of fake
+workspaces. The Core reconnects automatically after disconnection. Core's
+state is event-driven; the Svelte UI temporarily refreshes the snapshot every
+1.5 seconds until push-subscriptions are implemented.
+
+To test the actual Niri workspace integration without modifying the host:
+
+```sh
+nix develop --command task qa:visual:fast
+```
+
+The QA smoke now waits for a workspace snapshot from the child compositor
+through Core, in addition to the existing WebKit/Svelte verification. This
+does not capture the screen or copy to the clipboard. Read more in
+[the development guide](docs/DEVELOPMENT.md#read-only-niri-workspaces-stage-1-first-increment).
+
 ## Visual QA before Niri IPC integration
 
 Run **read-only** packaged Niri/Core/Svelte smoke on a graphical
