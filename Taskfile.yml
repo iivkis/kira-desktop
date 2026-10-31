@@ -130,6 +130,20 @@ tasks:
     cmds:
       - python3 -m unittest discover -s tests -p 'test_*.py' -v
 
+  qa:visual:fast:
+    desc: Capture scale screenshots from isolated debug preview; human visual review remains required.
+    cmds:
+      - task: frontend:deps
+      - task: frontend:build
+      - cargo build --locked -p kira-core -p kira-shell
+      - python3 scripts/dev_preview.py --bin-dir target/debug --ui-dir frontend/dist --qa-output-dir artifacts/visual-qa
+
+  qa:visual:release:
+    desc: Build Nix package and smoke-test real Core/Shell/Svelte across nested Niri scales.
+    cmds:
+      - task: nix:build
+      - python3 scripts/dev_preview.py --qa-output-dir artifacts/visual-qa
+
   nix:check:
     desc: Check the Nix flake.
     cmds:
