@@ -1,0 +1,3 @@
+[alias]
+check-core = "check -p kira-ipc -p kira-core"
+test-core = "test -p kira-ipc -p kira-core"

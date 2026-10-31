@@ -2,12 +2,12 @@ version: '3'
 
 tasks:
   default:
-    desc: Run all currently applicable checks.
+    desc: Run all fast CI checks.
     cmds:
       - task: check
 
   check:
-    desc: Validate repository, formatting, static analysis and tests.
+    desc: Validate structure, Core/IPC and frontend (native GTK shell checked separately).
     cmds:
       - task: spec:check
       - task: fmt
@@ -15,74 +15,86 @@ tasks:
       - task: test
 
   spec:check:
-    desc: Verify the minimum documentation and infrastructure contract.
+    desc: Validate required documentation and infrastructure.
     cmds:
       - test -s README.md
       - test -s docs/SPECIFICATION.md
+      - test -s docs/DEVELOPMENT.md
+      - test -s Cargo.toml
+      - test -s crates/kira-ipc/src/lib.rs
+      - test -s crates/kira-core/src/main.rs
+      - test -s crates/kira-shell/src/main.rs
+      - test -s frontend/package.json
       - test -s flake.nix
       - test -s nix/package.nix
       - test -s Taskfile.yml
       - test -s .github/workflows/ci.yml
 
   fmt:
-    desc: Check Rust formatting when the Rust workspace exists.
+    desc: Check formatting of all Rust crates.
     cmds:
-      - |
-        if [ -f Cargo.toml ]; then
-          cargo fmt --all -- --check
-        else
-          echo "Rust workspace is not initialized; skipping cargo fmt."
-        fi
+      - cargo fmt --all -- --check
 
   lint:
-    desc: Run Rust Clippy and frontend Svelte/TypeScript checks when available.
+    desc: Lint Core/IPC and check Svelte/TypeScript.
     cmds:
-      - |
-        if [ -f Cargo.toml ]; then
-          cargo clippy --workspace --all-targets -- -D warnings
-        else
-          echo "Rust workspace is not initialized; skipping cargo clippy."
-        fi
-      - |
-        if [ -f frontend/package.json ]; then
-          npm run check --prefix frontend
-        else
-          echo "Frontend is not initialized; skipping TypeScript/Svelte check."
-        fi
+      - cargo clippy -p kira-ipc -p kira-core --all-targets -- -D warnings
+      - npm run check --prefix frontend
 
   test:
-    desc: Run Rust and frontend automated tests when available.
+    desc: Run Core/IPC and frontend tests.
     cmds:
-      - |
-        if [ -f Cargo.toml ]; then
-          cargo test --workspace --all-targets
-        else
-          echo "Rust workspace is not initialized; skipping cargo test."
-        fi
-      - |
-        if [ -f frontend/package.json ]; then
-          npm run test:ci --prefix frontend
-        else
-          echo "Frontend is not initialized; skipping frontend tests."
-        fi
+      - cargo test -p kira-ipc -p kira-core --all-targets
+      - npm run test:ci --prefix frontend
+
+  shell:check:
+    desc: Check GTK Shell using the native libraries provided by nix develop.
+    cmds:
+      - cargo check -p kira-shell
+
+  frontend:install:
+    desc: Install frontend dependencies (generate a lockfile in a later commit).
+    cmds:
+      - npm install --prefix frontend
+
+  frontend:dev:
+    desc: Run Vite for frontend development.
+    cmds:
+      - npm run dev --prefix frontend
+
+  frontend:build:
+    desc: Build production Svelte assets.
+    cmds:
+      - npm run build --prefix frontend
+
+  core:run:
+    desc: Run the Rust Core daemon.
+    cmds:
+      - cargo run -p kira-core
+
+  shell:run:
+    desc: Build frontend and run GTK layer-shell under Niri.
+    cmds:
+      - task: frontend:build
+      - cargo run -p kira-shell
 
   build:
-    desc: Build both application layers once they exist.
+    desc: Build both layers and all Rust binaries.
     cmds:
-      - |
-        if [ ! -f Cargo.toml ] || [ ! -f frontend/package.json ]; then
-          echo "Cannot build: Rust workspace and frontend have not been implemented."
-          exit 1
-        fi
-        npm run build --prefix frontend
-        cargo build --release --workspace
+      - task: frontend:build
+      - cargo build --release --workspace
 
   nix:check:
-    desc: Validate the Nix flake.
+    desc: Check the Nix flake.
     cmds:
       - nix flake check
 
   nix:build:
-    desc: Build the NixOS application package (not available before implementation).
+    desc: Build the package when real lock files and hashes are added.
     cmds:
+      - |
+        if [ ! -f Cargo.lock ] || [ ! -f frontend/package-lock.json ] || [ ! -f flake.lock ]; then
+          echo "Missing lock files. Generate and commit real Cargo, npm and Nix locks first."
+          exit 1
+        fi
       - nix build .#default

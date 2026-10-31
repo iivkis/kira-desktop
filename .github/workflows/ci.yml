@@ -9,35 +9,35 @@ permissions:
 
 jobs:
   check:
-    name: Lightweight checks
-    runs-on: ubuntu-latest
+    name: Lightweight Core + Frontend checks
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Task
         uses: arduino/setup-task@v2
 
-      - name: Set up Rust if workspace exists
-        if: ${{ hashFiles('Cargo.toml') != '' }}
+      - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
 
-      - name: Set up Node.js if frontend exists
-        if: ${{ hashFiles('frontend/package.json') != '' }}
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend dependencies if frontend exists
-        if: ${{ hashFiles('frontend/package.json') != '' }}
-        run: npm ci --prefix frontend
+      - name: Install frontend dependencies
+        run: npm install --prefix frontend --no-audit --no-fund
 
-      - name: Check specification and applicable source modules
+      - name: Run code checks and tests
         run: task check
 
-      - name: Build frontend if frontend exists
-        if: ${{ hashFiles('frontend/package.json') != '' }}
-        run: npm run build --prefix frontend
+      - name: Compile Core
+        run: cargo build -p kira-core -p kira-ipc
+
+      - name: Build static frontend assets
+        run: task frontend:build
+
+  # GTK4 Layer Shell development libraries are not shipped by Ubuntu 24.04.
+  # Add a separate Nix-based shell build job once Cargo.lock/flake.lock exist.
