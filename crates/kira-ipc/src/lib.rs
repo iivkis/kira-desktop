@@ -109,7 +109,6 @@ mod tests {
     }
 }
 
-
 /// Resolve Core's socket location. Preview can override it with an absolute path
 /// in a private directory, leaving the user's running Core untouched.
 pub fn core_socket_path() -> Result<std::path::PathBuf, &'static str> {
@@ -145,10 +144,7 @@ mod socket_path_tests {
             Some(Path::new("/tmp/kira-preview-abc/core.sock")),
             Some(Path::new("/run/user/1000")),
         );
-        assert_eq!(
-            path.unwrap(),
-            Path::new("/tmp/kira-preview-abc/core.sock")
-        );
+        assert_eq!(path.unwrap(), Path::new("/tmp/kira-preview-abc/core.sock"));
     }
 
     #[test]
