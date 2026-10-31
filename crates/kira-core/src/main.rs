@@ -5,12 +5,6 @@ use kira_ipc::{RpcRequest, RpcResponse, dispatch};
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::{UnixListener, UnixStream};
 
-fn socket_path() -> Result<PathBuf, Box<dyn Error>> {
-    let runtime_dir = env::var_os("XDG_RUNTIME_DIR")
-        .ok_or("XDG_RUNTIME_DIR is required; refusing an unsafe socket location")?;
-    Ok(PathBuf::from(runtime_dir).join("kira-desktop.sock"))
-}
-
 async fn serve(stream: UnixStream) -> Result<(), Box<dyn Error + Send + Sync>> {
     let (read_half, mut writer) = stream.into_split();
     let mut lines = BufReader::new(read_half).lines();
@@ -31,7 +25,7 @@ async fn serve(stream: UnixStream) -> Result<(), Box<dyn Error + Send + Sync>> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let path = socket_path()?;
+    let path = kira_ipc::core_socket_path()?;
     // Do not unlink an existing socket: another Core instance may own it.
     let listener = UnixListener::bind(&path)?;
     eprintln!("kira-core listening on {}", path.display());
