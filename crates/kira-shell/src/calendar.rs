@@ -26,7 +26,7 @@ fn format_date(date: &gtk::glib::DateTime, pattern: &str) -> String {
 }
 
 fn local_datetime(date: CivilDate) -> Option<gtk::glib::DateTime> {
-    gtk::glib::DateTime::new_local(
+    gtk::glib::DateTime::from_local(
         date.year,
         i32::from(date.month),
         i32::from(date.day),
