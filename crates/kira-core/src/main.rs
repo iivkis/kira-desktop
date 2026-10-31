@@ -43,10 +43,9 @@ impl Drop for SocketGuard {
         if metadata.file_type().is_socket()
             && metadata.dev() == self.device
             && metadata.ino() == self.inode
+            && let Err(error) = std::fs::remove_file(&self.path)
         {
-            if let Err(error) = std::fs::remove_file(&self.path) {
-                eprintln!("kira-core: cannot remove owned socket: {error}");
-            }
+            eprintln!("kira-core: cannot remove owned socket: {error}");
         }
     }
 }
