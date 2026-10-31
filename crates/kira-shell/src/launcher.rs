@@ -109,7 +109,9 @@ pub fn create(app: &gtk::Application) -> gtk::ApplicationWindow {
     if let Some(display) = gtk::gdk::Display::default() {
         #[allow(deprecated)]
         gtk::StyleContext::add_provider_for_display(
-            &display, &provider, gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+            &display,
+            &provider,
+            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
     }
 
