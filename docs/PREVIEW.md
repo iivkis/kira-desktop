@@ -151,3 +151,21 @@ nix develop --command task dev:preview
 `task dev:preview:debug` покажет реальное JavaScript-исключение: скрипт
 исполняется непосредственно внутри документа и больше не является отдельным
 cross-origin ресурсом.
+
+
+## Диагностика `Script error.` после встраивания JS
+
+В версиях до исправления WebKit продолжал открывать автономный HTML через
+пользовательский протокол `kira-ui://`. На некоторых версиях WebKitGTK это
+всё ещё приводило к непрозрачному `Script error.` без выполнения Svelte.
+
+Текущий Shell использует штатный `WebView.load_html()` с базовым адресом
+`about:blank`. Для него не нужен HTTP-сервер, пользовательский URI-протокол
+или доступ к файлам из HTML, поскольку JS и CSS уже встроены при сборке.
+Предыдущий вариант доступен только для диагностики через
+`KIRA_WEBKIT_LEGACY_SCHEME=1`.
+
+В логе `task dev:preview:debug` появились этапы:
+`HTML head script executed`, `Svelte entrypoint evaluating`,
+`Svelte entrypoint mounted`, `Svelte panel DOM verified`.
+Отсутствующий этап покажет, где именно прерывается запуск.

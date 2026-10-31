@@ -61,6 +61,15 @@ fn main() {
         std::process::exit(1);
     }
 
+    // The build embeds CSS and JS in index.html. Load it directly as an
+    // about:blank document so WebKit never needs to execute scripts from a
+    // custom URI origin. Keep the previous scheme for opt-in diagnostics.
+    let html = std::fs::read_to_string(&index).unwrap_or_else(|error| {
+        eprintln!("kira-shell: failed to read UI HTML {}: {error}", index.display());
+        std::process::exit(1);
+    });
+    let use_legacy_scheme = env::var_os("KIRA_WEBKIT_LEGACY_SCHEME").is_some();
+
     // A nested preview must not activate another GTK application with the same ID
     // already running in the user's primary desktop session.
     let flags = if env::var_os("KIRA_PREVIEW").is_some() {
@@ -170,13 +179,15 @@ fn main() {
                 let webview = webview.clone();
                 gtk::glib::timeout_add_local_once(Duration::from_millis(1500), move || {
                     webview.evaluate_javascript(
-                        "if (!document.querySelector('main.bar')) throw new Error('Svelte UI did not mount');",
+                        "if (!document.querySelector('main.bar')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
                         None,
                         None,
                         None::<&gtk::gio::Cancellable>,
                         |result| {
                             if let Err(error) = result {
                                 eprintln!("kira-shell: UI rendering check failed: {error}");
+                            } else {
+                                eprintln!("kira-shell: Svelte panel DOM verified");
                             }
                         },
                     );
@@ -208,7 +219,11 @@ fn main() {
             gtk::glib::ControlFlow::Continue
         });
 
-        let allowed_uri = ui_assets::UI_DOCUMENT_URI.to_string();
+        let allowed_uri = if use_legacy_scheme {
+            ui_assets::UI_DOCUMENT_URI.to_string()
+        } else {
+            "about:blank".to_string()
+        };
         view.connect_decide_policy(move |_, decision, kind| {
             if kind == webkit6::PolicyDecisionType::NewWindowAction {
                 decision.ignore();
@@ -228,8 +243,13 @@ fn main() {
             }
             false
         });
-        eprintln!("kira-shell: loading UI through {}", ui_assets::UI_DOCUMENT_URI);
-        view.load_uri(ui_assets::UI_DOCUMENT_URI);
+        if use_legacy_scheme {
+            eprintln!("kira-shell: diagnostic legacy scheme {}", ui_assets::UI_DOCUMENT_URI);
+            view.load_uri(ui_assets::UI_DOCUMENT_URI);
+        } else {
+            eprintln!("kira-shell: loading self-contained HTML using WebKit load_html()");
+            view.load_html(&html, None);
+        }
         window.set_child(Some(&view));
         window.present();
     });
@@ -248,11 +268,12 @@ mod tests {
 
     #[test]
     fn navigation_is_restricted_to_exact_ui_document() {
-        let local = ui_assets::UI_DOCUMENT_URI;
-        assert!(permitted_ui_page(local, local));
-        assert!(!permitted_ui_page("https://evil.example/", local));
-        assert!(!permitted_ui_page("kira-ui://app/index.html.evil", local));
-        assert!(!permitted_ui_page("file:///etc/passwd", local));
+        for local in [ui_assets::UI_DOCUMENT_URI, "about:blank"] {
+            assert!(permitted_ui_page(local, local));
+            assert!(!permitted_ui_page("https://evil.example/", local));
+            assert!(!permitted_ui_page("kira-ui://app/index.html.evil", local));
+            assert!(!permitted_ui_page("file:///etc/passwd", local));
+        }
     }
 
     #[test]

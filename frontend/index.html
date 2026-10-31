@@ -6,20 +6,44 @@
     <meta name="theme-color" content="#181820" />
     <title>Kira Desktop</title>
     <script>
-      // This inline handler still runs when external ES modules fail to load.
+      // Head runs before the compiled Svelte bundle. Track boot milestones
+      // so failures are distinguishable from resource/scheme errors.
+      window.__kiraBoot = { head: true, lastError: null };
+      const report = (message) => {
+        window.webkit?.messageHandlers?.kiraDiagnostics?.postMessage(message);
+      };
+      report('HTML head script executed; location=' + location.href);
+
       window.addEventListener('error', (event) => {
-        const message = String(event.message || 'Failed to load a UI asset');
-        window.webkit?.messageHandlers?.kiraDiagnostics?.postMessage('error: ' + message);
+        const error = event.error;
+        const details = [
+          'error: ' + String(event.message || error?.message || 'unknown'),
+          'source=' + String(event.filename || location.href),
+          'line=' + String(event.lineno || 0),
+          'column=' + String(event.colno || 0),
+          error?.stack ? 'stack=' + String(error.stack) : '',
+        ].filter(Boolean).join(' | ');
+        window.__kiraBoot.lastError = details;
+        report(details);
       });
       window.addEventListener('unhandledrejection', (event) => {
-        window.webkit?.messageHandlers?.kiraDiagnostics?.postMessage(
-          'unhandled rejection: ' + String(event.reason)
-        );
+        const reason = event.reason;
+        const details = 'unhandled rejection: ' + String(reason?.stack || reason);
+        window.__kiraBoot.lastError = details;
+        report(details);
       });
       window.addEventListener('DOMContentLoaded', () => {
         window.setTimeout(() => {
           const pending = document.querySelector('#kira-loading');
-          if (pending) pending.textContent = 'Kira UI did not start. Check terminal logs.';
+          if (pending) {
+            const stage = JSON.stringify({
+              ...window.__kiraBoot,
+              entryStarted: window.__kiraEntryStarted === true,
+              mountReturned: window.__kiraMountReturned === true,
+            });
+            pending.textContent = 'Kira UI did not start (' + stage + '). Check terminal logs.';
+            report('Svelte not mounted: ' + stage);
+          }
         }, 2500);
       });
     </script>
