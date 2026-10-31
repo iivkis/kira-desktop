@@ -35,7 +35,8 @@
     width: 27px;
     height: 27px;
     border-radius: var(--kira-radius-sm);
-    color: var(--kira-color-text-secondary);
+    /* Lilac Ash on the subtly raised left bar is below 4.5:1. */
+    color: color-mix(in srgb, var(--kira-color-text) 80%, var(--kira-color-background));
     font-size: 11px;
     font-variant-numeric: tabular-nums;
     font-weight: 600;
