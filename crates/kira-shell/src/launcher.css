@@ -23,7 +23,15 @@ window.kira-launcher-window { background: transparent; }
   padding-top: 8px;
   border-top: 2px solid #5e503f;
 }
-.kira-count { color: #f2f4f3; font-size: 10px; font-weight: 700; }
+.kira-count {
+  padding: 4px 8px;
+  background: #49111c;
+  color: #f2f4f3;
+  border: 2px solid #5e503f;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+}
 entry.kira-search-field {
   min-height: 46px;
   padding: 8px 12px;

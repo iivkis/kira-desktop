@@ -128,9 +128,11 @@ pub fn show(application: &gtk::Application) {
     let header = gtk::Box::new(gtk::Orientation::Horizontal, 8);
     header.add_css_class("kira-catalog-header");
     header.append(&label("CATALOG", "kira-eyebrow"));
+    let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    spacer.set_hexpand(true);
+    header.append(&spacer);
     let count = label("", "kira-count");
-    count.set_hexpand(true);
-    count.set_xalign(1.0);
+    count.set_xalign(0.5);
     header.append(&count);
     card.append(&header);
 
