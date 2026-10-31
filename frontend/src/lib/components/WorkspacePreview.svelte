@@ -1,7 +1,16 @@
 <script lang="ts">
   import type { WorkspaceState } from '../sdk/core';
 
-  let { state }: { state: WorkspaceState | null } = $props();
+  let { state, showNames, limit }: { state: WorkspaceState | null; showNames: boolean; limit: number } = $props();
+
+  // Limit visible chips without hiding the active/focused workspace when
+  // there are many outputs. This never changes Niri's actual workspaces.
+  let visible = $derived.by(() => {
+    const all = state?.workspaces ?? [];
+    const count = Math.max(1, Math.min(32, limit));
+    const focused = Math.max(0, all.findIndex((item) => item.is_focused));
+    return all.slice(Math.max(0, focused - count + 1), Math.max(0, focused - count + 1) + count);
+  });
 </script>
 
 {#if !state}
@@ -12,7 +21,7 @@
   <span class="workspace-status" role="status" aria-live="polite">NO WORKSPACES</span>
 {:else}
   <ol class="workspace-preview" aria-label="Niri workspaces (read-only)">
-    {#each state.workspaces as workspace (workspace.id)}
+    {#each visible as workspace (workspace.id)}
       <li
         class="workspace-preview__item"
         class:preview-selected={workspace.is_focused}
@@ -28,7 +37,7 @@
           + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
           + (workspace.is_urgent ? ' (urgent)' : '')}
       >
-        <span class="workspace-preview__label">{workspace.name || workspace.idx}</span>
+        <span class="workspace-preview__label">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
         {#if workspace.is_focused}
           <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
         {:else if workspace.is_urgent}
