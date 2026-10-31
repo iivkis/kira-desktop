@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=2181
+index_bytes=2301
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,55 +15,58 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	bb0cbb7f4e144be3f30e56df0f69eb35ec87db15
-F	.cargo/config.toml	98	76	3
-F	.github/workflows/ci.yml	968	81	44
-F	.github/workflows/nix.yml	1867	127	62
-F	.github/workflows/publish-repospool.yml	3048	191	83
-F	.gitignore	178	276	11
-F	.repospoolignore	1028	289	47
-F	Cargo.toml	494	338	22
-F	README.md	7853	362	186
-F	Taskfile.yml	5537	550	174
-F	crates/kira-core/Cargo.toml	207	726	10
-F	crates/kira-core/src/main.rs	10805	738	304
-F	crates/kira-core/src/niri.rs	11579	1044	315
-F	crates/kira-ipc/Cargo.toml	170	1361	9
-F	crates/kira-ipc/src/client.rs	6937	1372	188
-F	crates/kira-ipc/src/lib.rs	6867	1562	226
-F	crates/kira-shell/Cargo.toml	297	1790	12
-F	crates/kira-shell/src/main.rs	14012	1804	335
-F	crates/kira-shell/src/ui_assets.rs	4873	2141	148
-F	docs/DESIGN_SYSTEM.md	4815	2291	113
-F	docs/DEVELOPMENT.md	15806	2406	344
-F	docs/QA_VISUAL.md	6159	2752	98
-F	docs/SPECIFICATION.md	27532	2852	405
-F	flake.nix	2408	3259	68
-F	frontend/index.html	2592	3329	64
-F	frontend/package.json	586	3395	21
-F	frontend/scripts/inline-assets.mjs	3708	3418	92
-F	frontend/scripts/inline-assets.test.mjs	2939	3512	71
-F	frontend/src/App.svelte	3345	3585	91
-F	frontend/src/lib/bootstrap.test.ts	3378	3678	84
-F	frontend/src/lib/bootstrap.ts	2318	3764	65
-F	frontend/src/lib/components/CoreStatus.svelte	2056	3831	91
-F	frontend/src/lib/components/WorkspacePreview.svelte	4031	3924	130
-F	frontend/src/lib/sdk/core.test.ts	3515	4056	74
-F	frontend/src/lib/sdk/core.ts	3439	4132	109
-F	frontend/src/lib/themes/kira-default.css	1168	4243	38
-F	frontend/src/lib/themes/kira-default.test.ts	2351	4283	52
-F	frontend/src/lib/themes/kira-default.ts	672	4337	19
-F	frontend/src/lib/time.test.ts	263	4358	8
-F	frontend/src/lib/time.ts	239	4368	8
-F	frontend/src/main.ts	1167	4378	35
-F	frontend/src/style.css	4120	4415	220
-F	frontend/tsconfig.json	403	4637	16
-F	frontend/vite.config.ts	164	4655	7
-F	nix/package.nix	2948	4664	112
-F	scripts/dev_preview.py	17189	4778	390	x
-F	scripts/qa_visual.py	12052	5170	299
-F	tests/test_dev_preview.py	9064	5471	215
-F	tests/test_qa_visual.py	10549	5688	217
+C	70acbd1f5b828e6f650fad40bcf18fd07939c08c
+F	.cargo/config.toml	98	79	3
+F	.github/workflows/ci.yml	968	84	44
+F	.github/workflows/nix.yml	1867	130	62
+F	.github/workflows/publish-repospool.yml	3048	194	83
+F	.gitignore	178	279	11
+F	.repospoolignore	1028	292	47
+F	Cargo.toml	494	341	22
+F	README.md	9524	365	219
+F	Taskfile.yml	5878	586	183
+F	config/kira.kdl.example	358	771	8
+F	crates/kira-core/Cargo.toml	207	781	10
+F	crates/kira-core/src/config.rs	15217	793	399
+F	crates/kira-core/src/main.rs	18357	1194	480
+F	crates/kira-core/src/niri.rs	16767	1676	453
+F	crates/kira-ipc/Cargo.toml	170	2131	9
+F	crates/kira-ipc/src/client.rs	10376	2142	277
+F	crates/kira-ipc/src/lib.rs	9053	2421	302
+F	crates/kira-shell/Cargo.toml	297	2725	12
+F	crates/kira-shell/src/main.rs	16482	2739	387
+F	crates/kira-shell/src/ui_assets.rs	4873	3128	148
+F	docs/CONFIG.md	5801	3278	125
+F	docs/DESIGN_SYSTEM.md	5364	3405	123
+F	docs/DEVELOPMENT.md	19012	3530	396
+F	docs/QA_VISUAL.md	6159	3928	98
+F	docs/SPECIFICATION.md	27547	4028	406
+F	flake.nix	2408	4436	68
+F	frontend/index.html	2592	4506	64
+F	frontend/package.json	586	4572	21
+F	frontend/scripts/inline-assets.mjs	4498	4595	103
+F	frontend/scripts/inline-assets.test.mjs	4645	4700	106
+F	frontend/src/App.svelte	5407	4808	135
+F	frontend/src/lib/bootstrap.test.ts	3378	4945	84
+F	frontend/src/lib/bootstrap.ts	2318	5031	65
+F	frontend/src/lib/components/CoreStatus.svelte	2056	5098	91
+F	frontend/src/lib/components/WorkspacePreview.svelte	5392	5191	177
+F	frontend/src/lib/sdk/core.test.ts	7168	5370	137
+F	frontend/src/lib/sdk/core.ts	5435	5509	168
+F	frontend/src/lib/themes/kira-default.css	1340	5679	41
+F	frontend/src/lib/themes/kira-default.test.ts	3402	5722	70
+F	frontend/src/lib/themes/kira-default.ts	867	5794	24
+F	frontend/src/lib/time.test.ts	263	5820	8
+F	frontend/src/lib/time.ts	320	5830	9
+F	frontend/src/main.ts	1167	5841	35
+F	frontend/src/style.css	4842	5878	256
+F	frontend/tsconfig.json	403	6136	16
+F	frontend/vite.config.ts	164	6154	7
+F	nix/package.nix	2948	6163	112
+F	scripts/dev_preview.py	18147	6277	403	x
+F	scripts/qa_visual.py	12052	6682	299
+F	tests/test_dev_preview.py	9339	6983	219
+F	tests/test_qa_visual.py	10549	7204	217
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -494,13 +497,46 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
+## Default theme: Black, Bordeaux and Taupe
+
+The built-in **Kira Default** theme now uses the project's five-color palette:
+
+`#0a0908` Black · `#49111c` Night Bordeaux · `#f2f4f3` White Smoke ·
+`#a9927d` Dusty Taupe · `#5e503f` Stone Brown.
+
+It is the default in the Svelte Top Bar and its pre-mount WebKit loading
+screen; no environment variable or KDL option is required. CSS variables and
+the TypeScript palette share the same five base values. Dusty Taupe is used
+for legible focus/secondary text; Stone Brown is structural rather than
+low-contrast body text. See [design system](docs/DESIGN_SYSTEM.md) for exact
+tokens and accessibility checks. Choosing alternative palettes through
+KDL remains a future feature.
+
+## Validated KDL settings (Stage 2 draft)
+
+Kira Core can read `~/.config/kira-desktop/config.kdl` (or an absolute
+`KIRA_CONFIG_FILE` override), validate a **small, documented KDL profile**
+and hot-reload UI settings without restarting the compositor, Core or Shell.
+Settings include compact Top Bar spacing, center title, clock seconds,
+workspace names and maximum visible workspace chips. If an edit is invalid,
+the previous valid config stays active and the Top Bar shows `CONFIG !`.
+
+Copy the [sample configuration](config/kira.kdl.example), validate a file
+with `kira-core --check-config /absolute/path/config.kdl`, and read the
+[supported KDL syntax and safe preview guide](docs/CONFIG.md).
+
+The current KDL profile deliberately **does not implement full KDL grammar**,
+arbitrary commands, Niri actions or external modules. The independent Niri
+preview generates a temporary editable Kira config for experimentation.
+
 ## Real Niri workspaces (Stage 1 draft)
 
-The Top Bar now obtains **real, read-only** workspace data through
+The Top Bar obtains **real Niri workspace state** through
 `NIRI_SOCKET` → Rust Core `EventStream` → typed `get_workspaces` JSON-RPC →
 GTK WebKit bridge → Svelte. Workspace IDs are strings (safe for Niri's u64),
-and focus, visibility and urgency are separate flags. No Niri
-workspace-switching actions are sent by Kira.
+and focus, visibility and urgency are separate flags. Clicking a workspace
+chip sends only the validated Niri `FocusWorkspace` action by stable ID;
+keyboard shortcuts continue to work independently.
 
 With no Niri IPC connection, the UI shows `NIRI OFFLINE` instead of fake
 workspaces. The Core reconnects automatically after disconnection.
@@ -542,7 +578,7 @@ are not substitutes for a real visual review. See
 
 ## Current limitations
 
-The panel can communicate with Core through a typed request/response API and display its connection status, but workspace indicators are mock UI: Niri IPC integration, KDL hot reload, event subscriptions, user-overridable themes, docks, and third-party widgets remain unimplemented.
+The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
 
 This project is not ready to replace a working desktop environment.
 
@@ -562,6 +598,12 @@ tasks:
       - task: fmt
       - task: lint
       - task: test
+      - task: config:check
+
+  config:check:
+    desc: Validate the sample KDL 2.0 config with the actual Core CLI.
+    cmds:
+      - cargo run --locked -p kira-core -- --check-config "{{.ROOT_DIR}}/config/kira.kdl.example"
 
   spec:check:
     desc: Validate required documentation and infrastructure.
@@ -583,6 +625,9 @@ tasks:
       - test -s .github/workflows/ci.yml
       - test -s scripts/dev_preview.py
       - test -s docs/PREVIEW.md
+      - test -s docs/CONFIG.md
+      - test -s config/kira.kdl.example
+      - test -s crates/kira-core/src/config.rs
 
   fmt:
     desc: Check formatting of all Rust crates.
@@ -722,6 +767,16 @@ tasks:
         fi
       - nix build .#default
 
+FILE	config/kira.kdl.example
+// Kira Desktop settings, supported strict KDL profile (not Niri's config).
+// Place in ~/.config/kira-desktop/config.kdl, or pass KIRA_CONFIG_FILE=/absolute/path.
+// All values below are the defaults. Changes are picked up automatically.
+kira {
+    bar compact=#false title="KIRA DESKTOP"
+    clock seconds=#false
+    workspaces show-names=#true limit=12
+}
+
 FILE	crates/kira-core/Cargo.toml
 [package]
 name = "kira-core"
@@ -734,9 +789,411 @@ kira-ipc = { path = "../kira-ipc" }
 serde_json.workspace = true
 tokio.workspace = true
 
-FILE	crates/kira-core/src/main.rs
-//! Standalone read-only system-state daemon with Niri workspace IPC.
+FILE	crates/kira-core/src/config.rs
+//! Strict, deliberately small KDL configuration profile for the first MVP.
+//! No arbitrary commands, includes, environment interpolation or KDL actions.
+//! A rejected update leaves the last successfully parsed configuration active.
 
+use std::collections::HashSet;
+use std::io::{self, Read};
+use std::path::{Path, PathBuf};
+use std::time::Duration;
+
+use kira_ipc::{ConfigState, UiConfig};
+use tokio::sync::watch;
+
+const MAX_CONFIG_BYTES: u64 = 64 * 1024;
+const MAX_LINES: usize = 128;
+
+/// No user configuration file is created or overwritten by the daemon.
+/// KIRA_CONFIG_FILE must be absolute, including in the isolated preview.
+pub fn config_path() -> Result<PathBuf, String> {
+    if let Some(override_path) = std::env::var_os("KIRA_CONFIG_FILE") {
+        let path = PathBuf::from(override_path);
+        return if path.is_absolute() {
+            Ok(path)
+        } else {
+            Err("KIRA_CONFIG_FILE must be an absolute path".into())
+        };
+    }
+    if let Some(xdg) = std::env::var_os("XDG_CONFIG_HOME") {
+        let path = PathBuf::from(xdg);
+        return if path.is_absolute() {
+            Ok(path.join("kira-desktop/config.kdl"))
+        } else {
+            Err("XDG_CONFIG_HOME must be an absolute path".into())
+        };
+    }
+    let home = std::env::var_os("HOME").ok_or("HOME is not set")?;
+    let home = PathBuf::from(home);
+    if !home.is_absolute() {
+        return Err("HOME must be an absolute path".into());
+    }
+    Ok(home.join(".config/kira-desktop/config.kdl"))
+}
+
+/// Truncate comments only outside quoted strings; values may contain "//".
+fn strip_comment(line: &str) -> &str {
+    let mut quoted = false;
+    let mut escaped = false;
+    let mut previous_slash = None;
+    for (index, ch) in line.char_indices() {
+        if quoted {
+            if escaped {
+                escaped = false;
+            } else if ch == '\\' {
+                escaped = true;
+            } else if ch == '"' {
+                quoted = false;
+            }
+        } else if ch == '"' {
+            quoted = true;
+        } else if ch == '/' {
+            if let Some(start) = previous_slash {
+                return &line[..start];
+            }
+            previous_slash = Some(index);
+            continue;
+        }
+        previous_slash = None;
+    }
+    line
+}
+
+/// Tokens are node names and key=value properties. Quoted JSON-style strings
+/// may contain spaces, backslashes and "=", but nodes remain one per line.
+fn line_tokens(line: &str) -> Result<Vec<String>, String> {
+    let mut result = Vec::new();
+    let mut token = String::new();
+    let mut quoted = false;
+    let mut escaped = false;
+    for ch in line.chars() {
+        if quoted {
+            token.push(ch);
+            if escaped {
+                escaped = false;
+            } else if ch == '\\' {
+                escaped = true;
+            } else if ch == '"' {
+                quoted = false;
+            }
+        } else if ch == '"' {
+            quoted = true;
+            token.push(ch);
+        } else if ch.is_whitespace() {
+            if !token.is_empty() {
+                result.push(std::mem::take(&mut token));
+            }
+        } else {
+            token.push(ch);
+        }
+    }
+    if quoted {
+        return Err("unterminated quoted string".into());
+    }
+    if !token.is_empty() {
+        result.push(token);
+    }
+    Ok(result)
+}
+
+/// The first profile accepts quoted titles with only the two shared
+/// KDL 2.0/JSON escapes needed for visible text: \\" and \\\\.
+/// JSON's \\uNNNN and \\/ forms are not valid KDL 2.0 string escapes.
+fn title_literal(raw: &str) -> Result<String, String> {
+    let mut escaped = false;
+    for character in raw.chars() {
+        if escaped {
+            if !matches!(character, '"' | '\\') {
+                return Err("unsupported quoted-string escape in bar.title".into());
+            }
+            escaped = false;
+        } else if character == '\\' {
+            escaped = true;
+        }
+    }
+    serde_json::from_str(raw).map_err(|_| "bar.title must be a quoted string".into())
+}
+
+fn boolean(value: &str, key: &str) -> Result<bool, String> {
+    match value {
+        "#true" => Ok(true),
+        "#false" => Ok(false),
+        _ => Err(format!("{key} must be #true or #false")),
+    }
+}
+
+/// Parse only the documented, valid KDL subset. Reject unknown nodes,
+/// duplicate properties and unsafe or unsupported syntax instead of guessing.
+pub fn parse(input: &str) -> Result<UiConfig, String> {
+    if input.len() as u64 > MAX_CONFIG_BYTES {
+        return Err("config exceeds 64 KiB".into());
+    }
+    if input.lines().count() > MAX_LINES {
+        return Err("config exceeds 128 lines".into());
+    }
+
+    let mut config = UiConfig::default();
+    let mut root_open = false;
+    let mut root_closed = false;
+    let mut seen_nodes = HashSet::new();
+
+    for (number, raw_line) in input.lines().enumerate() {
+        let line = strip_comment(raw_line).trim();
+        if line.is_empty() {
+            continue;
+        }
+        if !root_open {
+            if line != "kira {" {
+                return Err(format!("line {}: expected 'kira {{'", number + 1));
+            }
+            root_open = true;
+            continue;
+        }
+        if root_closed {
+            return Err(format!(
+                "line {}: unexpected content after kira block",
+                number + 1
+            ));
+        }
+        if line == "}" {
+            root_closed = true;
+            continue;
+        }
+
+        let tokens = line_tokens(line).map_err(|e| format!("line {}: {e}", number + 1))?;
+        let node = tokens.first().map(String::as_str).unwrap_or("");
+        if !matches!(node, "bar" | "clock" | "workspaces") {
+            return Err(format!("line {}: unknown KDL node '{node}'", number + 1));
+        }
+        if !seen_nodes.insert(node.to_owned()) {
+            return Err(format!("line {}: duplicate node '{node}'", number + 1));
+        }
+        let mut seen_properties = HashSet::new();
+        for prop in tokens.iter().skip(1) {
+            let Some((key, raw_value)) = prop.split_once('=') else {
+                return Err(format!("line {}: expected key=value property", number + 1));
+            };
+            if key.is_empty() || raw_value.is_empty() {
+                return Err(format!("line {}: empty property name or value", number + 1));
+            }
+            if !seen_properties.insert(key) {
+                return Err(format!("line {}: duplicate property '{key}'", number + 1));
+            }
+            let key_path = format!("{node}.{key}");
+            match (node, key) {
+                ("bar", "compact") => config.compact = boolean(raw_value, &key_path)?,
+                ("bar", "title") => {
+                    let title = title_literal(raw_value)
+                        .map_err(|e| format!("line {}: {e}", number + 1))?;
+                    if title.is_empty()
+                        || title.chars().count() > 32
+                        || title.chars().any(char::is_control)
+                    {
+                        return Err(format!(
+                            "line {}: bar.title must contain 1–32 printable characters",
+                            number + 1
+                        ));
+                    }
+                    config.title = title;
+                }
+                ("clock", "seconds") => config.show_seconds = boolean(raw_value, &key_path)?,
+                ("workspaces", "show-names") => config.show_names = boolean(raw_value, &key_path)?,
+                ("workspaces", "limit") => {
+                    let limit = raw_value.parse::<u8>().map_err(|_| {
+                        format!("line {}: workspaces.limit must be an integer", number + 1)
+                    })?;
+                    if !(1..=32).contains(&limit) {
+                        return Err(format!(
+                            "line {}: workspaces.limit must be 1–32",
+                            number + 1
+                        ));
+                    }
+                    config.max_workspaces = limit;
+                }
+                _ => {
+                    return Err(format!(
+                        "line {}: unsupported property '{key_path}'",
+                        number + 1
+                    ));
+                }
+            }
+        }
+    }
+    if !root_open || !root_closed {
+        return Err("expected one closed kira { ... } block".into());
+    }
+    Ok(config)
+}
+
+pub fn load(path: &Path) -> Result<UiConfig, String> {
+    let file = std::fs::File::open(path).map_err(|e| format!("cannot read config: {e}"))?;
+    let mut bytes = Vec::new();
+    file.take(MAX_CONFIG_BYTES + 1)
+        .read_to_end(&mut bytes)
+        .map_err(|e| format!("cannot read config: {e}"))?;
+    if bytes.len() as u64 > MAX_CONFIG_BYTES {
+        return Err("config exceeds 64 KiB".into());
+    }
+    let text = std::str::from_utf8(&bytes).map_err(|_| "config must be UTF-8".to_string())?;
+    parse(text)
+}
+
+fn apply(current: &ConfigState, latest: Result<UiConfig, String>) -> ConfigState {
+    match latest {
+        Ok(config) => ConfigState {
+            config,
+            error: None,
+        },
+        Err(error) => ConfigState {
+            config: current.config.clone(),
+            error: Some(error),
+        },
+    }
+}
+
+/// Poll the small user-owned file at most four times per second.
+/// Compare contents/state and publish only changes; atomic rename is detected.
+/// Missing file on first startup means defaults. Removing a previously valid
+/// file is treated as an error and retains the last valid state.
+pub async fn monitor(path: PathBuf, sender: watch::Sender<ConfigState>) {
+    let mut initialized = false;
+    let mut previous_contents: Option<Result<Vec<u8>, io::ErrorKind>> = None;
+    loop {
+        // Hard cap the read itself, even for a huge or growing file.
+        let current = std::fs::File::open(&path)
+            .and_then(|file| {
+                let mut bytes = Vec::new();
+                file.take(MAX_CONFIG_BYTES + 1).read_to_end(&mut bytes)?;
+                if bytes.len() as u64 > MAX_CONFIG_BYTES {
+                    Err(io::Error::new(
+                        io::ErrorKind::InvalidData,
+                        "config too large",
+                    ))
+                } else {
+                    Ok(bytes)
+                }
+            })
+            .map_err(|error| error.kind());
+
+        // Don't reparse unchanged contents, but still catch atomic replacements.
+        let changed = match (&previous_contents, &current) {
+            (Some(Ok(old)), Ok(new)) => old != new,
+            (Some(Err(old)), Err(new)) => old != new,
+            _ => true,
+        };
+        if changed {
+            let state = if !initialized && matches!(&current, Err(io::ErrorKind::NotFound)) {
+                ConfigState::default()
+            } else {
+                let parsed = match &current {
+                    Ok(bytes) => std::str::from_utf8(bytes)
+                        .map_err(|_| "config must be UTF-8".to_owned())
+                        .and_then(parse),
+                    Err(io::ErrorKind::InvalidData) => Err("config exceeds 64 KiB".into()),
+                    Err(error) => Err(format!("cannot read config: {error}")),
+                };
+                apply(&sender.borrow().clone(), parsed)
+            };
+            if *sender.borrow() != state {
+                if let Some(error) = &state.error {
+                    eprintln!("kira-core config: {error}; keeping previous valid settings");
+                }
+                sender.send_replace(state);
+            }
+            previous_contents = Some(current);
+            initialized = true;
+        }
+        tokio::time::sleep(Duration::from_millis(250)).await;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    const EXAMPLE: &str = include_str!("../../../config/kira.kdl.example");
+
+    #[test]
+    fn example_parses_and_uses_defaults() {
+        assert_eq!(parse(EXAMPLE).unwrap(), UiConfig::default());
+        assert_eq!(parse("kira {\n  bar compact=#true title=\"KIRA // TEST\"\n  clock seconds=#true\n  workspaces show-names=#false limit=3\n}\n").unwrap(),
+            UiConfig { compact: true, title: "KIRA // TEST".into(), show_seconds: true,
+                show_names: false, max_workspaces: 3 });
+    }
+
+    #[test]
+    fn invalid_config_cannot_override_previous_valid_state() {
+        let initial = ConfigState {
+            config: parse("kira {\n  bar compact=#true\n}\n").unwrap(),
+            error: None,
+        };
+        for broken in [
+            "kira {\n  bar compact=#false\n  bar compact=#true\n}",
+            "kira {\n  workspaces limit=0\n}",
+            "kira {\n  clock seconds=yes\n}",
+            "kira {\n  bar title=\"\"\n}",
+            "kira {\n  bar title=\"bad\\nnewline\"\n}",
+            "kira {\n  exec command=\"rm -rf\"\n}",
+            "kira {\n  bar compact=#true compact=#false\n}",
+            "kira {\n  workspaces limit=99\n}",
+            "kira {\n  clock seconds=#true",
+            "kira { }\n",
+            "kira {\n  clock seconds=true\n}\n", // KDL v1 boolean is not KDL 2.0
+            "kira {\n  bar title=\"\\u0041\"\n}\n", // JSON-only escape is invalid KDL2
+            "kira {\n  bar title=\"\\/bad\"\n}\n",
+        ] {
+            assert!(parse(broken).is_err(), "{broken}");
+            let next = apply(&initial, parse(broken));
+            assert_eq!(next.config, initial.config);
+            assert!(next.error.is_some());
+        }
+        assert!(apply(&initial, parse(EXAMPLE)).error.is_none());
+    }
+
+    #[tokio::test]
+    async fn hot_reload_rejects_invalid_and_recovers_from_atomic_replace() {
+        let directory = std::env::temp_dir().join(format!("kira-kdl-{}", std::process::id()));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("config.kdl");
+        let (tx, mut rx) = watch::channel(ConfigState::default());
+        let task = tokio::spawn(monitor(path.clone(), tx));
+        std::fs::write(&path, "kira {\n  clock seconds=#true\n}\n").unwrap();
+        tokio::time::timeout(Duration::from_secs(2), rx.changed())
+            .await
+            .unwrap()
+            .unwrap();
+        assert!(rx.borrow().config.show_seconds);
+        std::fs::write(&path, "kira {\n  clock seconds=bad\n}\n").unwrap();
+        tokio::time::timeout(Duration::from_secs(2), rx.changed())
+            .await
+            .unwrap()
+            .unwrap();
+        assert!(rx.borrow().config.show_seconds);
+        assert!(rx.borrow().error.is_some());
+        let staged = directory.join("pending.kdl");
+        std::fs::write(&staged, "kira {\n  clock seconds=#false\n}\n").unwrap();
+        std::fs::rename(staged, &path).unwrap();
+        tokio::time::timeout(Duration::from_secs(2), rx.changed())
+            .await
+            .unwrap()
+            .unwrap();
+        assert!(!rx.borrow().config.show_seconds);
+        assert!(rx.borrow().error.is_none());
+        task.abort();
+        std::fs::remove_file(path).unwrap();
+        std::fs::remove_dir(directory).unwrap();
+    }
+
+    #[test]
+    fn relative_path_never_falls_back_to_host_config() {
+        assert!(Path::new("config.kdl").is_relative());
+    }
+}
+
+FILE	crates/kira-core/src/main.rs
+//! Core state daemon: read-only subscriptions plus one checked Niri focus action.
+
+mod config;
 mod niri;
 
 use std::error::Error;
@@ -744,7 +1201,7 @@ use std::io;
 use std::os::unix::fs::{FileTypeExt, MetadataExt};
 use std::path::{Path, PathBuf};
 
-use kira_ipc::{RpcRequest, RpcResponse, WorkspaceState, dispatch_with_workspaces};
+use kira_ipc::{ConfigState, RpcRequest, RpcResponse, WorkspaceState, dispatch_with_state};
 use tokio::io::{AsyncBufRead, AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::{UnixListener, UnixStream};
 use tokio::sync::watch;
@@ -846,9 +1303,28 @@ async fn stream_workspaces(
     }
 }
 
+/// Internal read-only Core stream for active validated UI settings.
+async fn stream_config(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    mut config: watch::Receiver<ConfigState>,
+    id: u64,
+) -> io::Result<()> {
+    loop {
+        let snapshot = config.borrow_and_update().clone();
+        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
+        writer.write_all(&serde_json::to_vec(&response)?).await?;
+        writer.write_all(b"\n").await?;
+        if config.changed().await.is_err() {
+            return Ok(());
+        }
+    }
+}
+
 async fn serve(
     stream: UnixStream,
     workspaces: watch::Receiver<WorkspaceState>,
+    config: watch::Receiver<ConfigState>,
+    niri_socket: Option<&Path>,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     let (read_half, mut writer) = stream.into_split();
     let mut reader = BufReader::new(read_half);
@@ -863,7 +1339,45 @@ async fn serve(
                 // JS RPC allowlist; one subscription per socket connection.
                 return Ok(stream_workspaces(&mut writer, workspaces, request.id).await?);
             }
-            Ok(request) => dispatch_with_workspaces(request, &workspaces.borrow().clone()),
+            Ok(request)
+                if request.method == "subscribe_config"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                return Ok(stream_config(&mut writer, config, request.id).await?);
+            }
+            Ok(request)
+                if request.method == "focus_workspace"
+                    && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
+            {
+                // This is intentionally the sole Niri mutation available
+                // through Core. The ID must exist in a connected snapshot.
+                let state = workspaces.borrow().clone();
+                match niri::validated_focus_id(request.params.as_ref(), &state) {
+                    Err(message) => RpcResponse::failure(Some(request.id), -32602, message),
+                    Ok(id) => match niri_socket {
+                        Some(path) => match niri::focus_workspace(path, id).await {
+                            Ok(()) => RpcResponse::success(
+                                request.id,
+                                serde_json::json!({"accepted": true}),
+                            ),
+                            Err(error) => {
+                                eprintln!("kira-core: Niri workspace focus failed: {error}");
+                                RpcResponse::failure(
+                                    Some(request.id),
+                                    -32000,
+                                    "Niri workspace focus failed",
+                                )
+                            }
+                        },
+                        None => RpcResponse::failure(Some(request.id), -32000, "Niri unavailable"),
+                    },
+                }
+            }
+            Ok(request) => dispatch_with_state(
+                request,
+                &workspaces.borrow().clone(),
+                &config.borrow().clone(),
+            ),
             Err(_) => RpcResponse::failure(None, -32700, "Parse error"),
         };
         let encoded = serde_json::to_vec(&response)?;
@@ -875,14 +1389,48 @@ async fn serve(
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // Pure validation command: no GUI, Core socket or compositor required.
+    let mut args = std::env::args_os().skip(1);
+    if let Some(option) = args.next() {
+        if option != "--check-config" {
+            return Err("Usage: kira-core [--check-config /absolute/path/config.kdl]".into());
+        }
+        let path = args.next().ok_or("--check-config requires a file path")?;
+        if args.next().is_some() {
+            return Err("--check-config accepts exactly one file path".into());
+        }
+        let path = PathBuf::from(path);
+        if !path.is_absolute() {
+            return Err("--check-config requires an absolute path".into());
+        }
+        let settings = config::load(&path).map_err(io::Error::other)?;
+        println!("{}", serde_json::to_string_pretty(&settings)?);
+        return Ok(());
+    }
+
     let path = kira_ipc::core_socket_path()?;
     // Binding never unlinks an existing socket: another Core may own it.
     let listener = UnixListener::bind(&path)?;
     let _guard = SocketGuard::new(&path)?;
     eprintln!("kira-core listening on {}", path.display());
 
+    let (config_sender, config_receiver) = watch::channel(ConfigState::default());
+    match config::config_path() {
+        Ok(path) => {
+            eprintln!("kira-core: watching KDL config at {}", path.display());
+            tokio::spawn(config::monitor(path, config_sender));
+        }
+        Err(error) => {
+            config_sender.send_replace(ConfigState {
+                config: Default::default(),
+                error: Some(error),
+            });
+        }
+    }
+
     let (workspace_sender, workspace_receiver) = watch::channel(WorkspaceState::default());
-    if let Some(socket) = niri::socket_path_from(std::env::var_os("NIRI_SOCKET")) {
+    let niri_socket = niri::socket_path_from(std::env::var_os("NIRI_SOCKET"));
+    if let Some(socket) = niri_socket.clone() {
         tokio::spawn(niri::monitor(socket, workspace_sender.clone()));
     } else {
         eprintln!("kira-core: no valid NIRI_SOCKET; workspace state will be offline");
@@ -894,8 +1442,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             accepted = listener.accept() => {
                 let (stream, _) = accepted?;
                 let state = workspace_receiver.clone();
+                let config = config_receiver.clone();
+                let socket = niri_socket.clone();
                 tokio::spawn(async move {
-                    if let Err(error) = serve(stream, state).await {
+                    if let Err(error) = serve(stream, state, config, socket.as_deref()).await {
                         eprintln!("kira-core client error: {error}");
                     }
                 });
@@ -953,7 +1503,8 @@ mod tests {
         let (tx, rx) = watch::channel(WorkspaceState::default());
         let task = tokio::spawn(async move {
             let (stream, _) = listener.accept().await.unwrap();
-            let _ = serve(stream, rx).await;
+            let (_tx_config, rx_config) = watch::channel(ConfigState::default());
+            let _ = serve(stream, rx, rx_config, None).await;
         });
         let mut conn = UnixStream::connect(&path).await.unwrap();
         conn.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"subscribe_workspaces\"}\n")
@@ -1001,6 +1552,87 @@ mod tests {
         std::fs::remove_dir(&dir).unwrap();
     }
 
+    #[tokio::test]
+    async fn config_subscription_delivers_latest_valid_snapshot() {
+        use tokio::io::AsyncBufReadExt;
+        let dir = std::env::temp_dir().join(format!("kira-config-sub-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("core.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_ws_tx, ws_rx) = watch::channel(WorkspaceState::default());
+        let (cfg_tx, cfg_rx) = watch::channel(ConfigState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let _ = serve(stream, ws_rx, cfg_rx, None).await;
+        });
+        let mut stream = UnixStream::connect(&path).await.unwrap();
+        stream
+            .write_all(b"{\"jsonrpc\":\"2.0\",\"id\":88,\"method\":\"subscribe_config\"}\n")
+            .await
+            .unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut first = String::new();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut first),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let first: RpcResponse = serde_json::from_str(&first).unwrap();
+        assert_eq!(first.result.unwrap()["config"]["compact"], false);
+        cfg_tx.send_replace(ConfigState {
+            config: kira_ipc::UiConfig {
+                compact: true,
+                ..Default::default()
+            },
+            error: None,
+        });
+        let mut second = String::new();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            reader.read_line(&mut second),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let second: RpcResponse = serde_json::from_str(&second).unwrap();
+        assert_eq!(second.result.unwrap()["config"]["compact"], true);
+        server.abort();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn focus_rpc_refuses_unknown_workspace_before_niri_action() {
+        let dir = std::env::temp_dir().join(format!("kira-focus-rpc-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("core.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_ws_tx, ws_rx) = watch::channel(WorkspaceState::default());
+        let (_cfg_tx, cfg_rx) = watch::channel(ConfigState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let _ = serve(stream, ws_rx, cfg_rx, None).await;
+        });
+        let mut stream = UnixStream::connect(&path).await.unwrap();
+        stream.write_all(b"{\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"focus_workspace\",\"params\":{\"id\":\"9\"}}\n").await.unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut line = String::new();
+        tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            tokio::io::AsyncBufReadExt::read_line(&mut reader, &mut line),
+        )
+        .await
+        .unwrap()
+        .unwrap();
+        let response: RpcResponse = serde_json::from_str(&line).unwrap();
+        assert_eq!(response.error.unwrap().code, -32602);
+        server.abort();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&dir).unwrap();
+    }
+
     #[test]
     fn guard_removes_owned_socket() {
         let directory = std::env::temp_dir().join(format!(
@@ -1041,9 +1673,10 @@ mod tests {
 }
 
 FILE	crates/kira-core/src/niri.rs
-//! Read-only Niri event stream. No Action or output-changing IPC is sent.
-//! A full workspace snapshot is received first; incremental events then
-//! update Core's local state. Disconnect clears state; reconnect resyncs.
+//! Niri EventStream plus one deliberately narrow click-to-focus action.
+//! Full snapshots and changes are read-only. Only a known workspace ID can
+//! be focused; arbitrary actions, windows, outputs and configuration writes
+//! are never accepted from the UI. Disconnect clears state and reconnects.
 
 use std::io;
 use std::os::unix::fs::FileTypeExt;
@@ -1214,6 +1847,67 @@ async fn run_stream(socket: &Path, sender: &watch::Sender<WorkspaceState>) -> io
     }
 }
 
+/// Only accept a stable workspace ID already advertised by the connected
+/// compositor. Indexes are per-output and must never be used for clicks.
+pub fn validated_focus_id(
+    params: Option<&Value>,
+    state: &WorkspaceState,
+) -> Result<u64, &'static str> {
+    let params = params
+        .and_then(Value::as_object)
+        .ok_or("Expected focus params")?;
+    if params.len() != 1 {
+        return Err("Only workspace id is allowed");
+    }
+    let id = params
+        .get("id")
+        .and_then(Value::as_str)
+        .ok_or("Workspace id must be a string")?;
+    let parsed = id.parse::<u64>().map_err(|_| "Invalid workspace id")?;
+    if parsed.to_string() != id {
+        return Err("Non-canonical workspace id");
+    }
+    if !state.connected {
+        return Err("Niri not connected");
+    }
+    if !state.workspaces.iter().any(|workspace| workspace.id == id) {
+        return Err("Unknown workspace id");
+    }
+    Ok(parsed)
+}
+
+/// Sends the *only* supported mutating Niri request, FocusWorkspace by
+/// stable u64 ID. Never use a workspace idx or a guessed/default socket.
+pub async fn focus_workspace(socket: &Path, workspace_id: u64) -> io::Result<()> {
+    let metadata = std::fs::symlink_metadata(socket)?;
+    if !metadata.file_type().is_socket() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "Niri socket path is not a socket",
+        ));
+    }
+    let action = serde_json::json!({
+        "Action": {"FocusWorkspace": {"reference": {"Id": workspace_id}}}
+    });
+    tokio::time::timeout(Duration::from_secs(3), async {
+        let mut stream = UnixStream::connect(socket).await?;
+        stream.write_all(action.to_string().as_bytes()).await?;
+        stream.write_all(b"\n").await?;
+        let mut reader = BufReader::new(stream);
+        let line = read_bounded_line(&mut reader, 4096)
+            .await?
+            .ok_or_else(|| invalid("Niri closed without action response"))?;
+        let reply: Value = serde_json::from_slice(&line)?;
+        if reply == serde_json::json!({"Ok": "Handled"}) {
+            Ok(())
+        } else {
+            Err(invalid("Niri rejected workspace focus"))
+        }
+    })
+    .await
+    .map_err(|_| io::Error::new(io::ErrorKind::TimedOut, "Niri action timed out"))?
+}
+
 /// Monitor the exact supplied NIRI_SOCKET, reconnecting on disconnect.
 /// Invalid paths are never substituted with a host/default compositor socket.
 pub async fn monitor(socket: PathBuf, sender: watch::Sender<WorkspaceState>) {
@@ -1306,6 +2000,82 @@ mod tests {
         assert!(!state.connected);
         assert!(socket_path_from(Some("relative.sock".into())).is_none());
         assert!(socket_path_from(None).is_none());
+    }
+
+    #[test]
+    fn focus_rejects_offline_unknown_noncanonical_and_non_string_ids() {
+        let state = WorkspaceState {
+            connected: true,
+            workspaces: vec![Workspace {
+                id: u64::MAX.to_string(),
+                idx: 2,
+                name: None,
+                output: Some("DP".into()),
+                is_active: false,
+                is_focused: false,
+                is_urgent: false,
+            }],
+        };
+        assert_eq!(
+            validated_focus_id(Some(&json!({"id": u64::MAX.to_string()})), &state),
+            Ok(u64::MAX)
+        );
+        for invalid in [
+            json!({"id":2}),
+            json!({"id":"02"}),
+            json!({"idx":2}),
+            json!({"id":"2"}),
+            json!({"id":"-1"}),
+            json!({"id":"18446744073709551616"}),
+            json!({"id": u64::MAX.to_string(), "action":"quit"}),
+        ] {
+            assert!(
+                validated_focus_id(Some(&invalid), &state).is_err(),
+                "{invalid}"
+            );
+        }
+        assert!(validated_focus_id(None, &state).is_err());
+        assert!(
+            validated_focus_id(
+                Some(&json!({"id":u64::MAX.to_string()})),
+                &WorkspaceState::default()
+            )
+            .is_err()
+        );
+    }
+
+    #[tokio::test]
+    async fn focus_action_targets_exact_workspace_id_and_handles_niri_error() {
+        let dir = std::env::temp_dir().join(format!("kira-focus-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("niri.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = tokio::spawn(async move {
+            for ok in [true, false] {
+                let (socket, _) = listener.accept().await.unwrap();
+                let (reader, mut writer) = socket.into_split();
+                let mut reader = BufReader::new(reader);
+                let line = read_bounded_line(&mut reader, 4096).await.unwrap().unwrap();
+                let request: Value = serde_json::from_slice(&line).unwrap();
+                assert_eq!(
+                    request,
+                    json!({"Action":{"FocusWorkspace":{"reference":{"Id":u64::MAX}}}})
+                );
+                writer
+                    .write_all(if ok {
+                        b"{\"Ok\":\"Handled\"}\n"
+                    } else {
+                        b"{\"Err\":\"No such workspace\"}\n"
+                    })
+                    .await
+                    .unwrap();
+            }
+        });
+        assert!(focus_workspace(&path, u64::MAX).await.is_ok());
+        assert!(focus_workspace(&path, u64::MAX).await.is_err());
+        server.await.unwrap();
+        std::fs::remove_file(path).unwrap();
+        std::fs::remove_dir(dir).unwrap();
     }
 
     #[tokio::test]
@@ -1426,6 +2196,7 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
     let mut stream = UnixStream::connect(socket)?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
     let request = RpcRequest {
+        params: None,
         jsonrpc: crate::PROTOCOL_VERSION.into(),
         id: 0,
         method: "subscribe_workspaces".into(),
@@ -1469,6 +2240,59 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
     }
 }
 
+/// Internal read-only config stream. Never called from the GTK main thread.
+/// Returns on disconnect so the Shell can preserve last applied config and
+/// reconnect. No JS command or filesystem write is exposed.
+pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
+    socket: &Path,
+    mut on_state: F,
+) -> io::Result<()> {
+    let mut stream = UnixStream::connect(socket)?;
+    stream.set_write_timeout(Some(Duration::from_secs(2)))?;
+    let request = RpcRequest {
+        params: None,
+        jsonrpc: crate::PROTOCOL_VERSION.into(),
+        id: 0,
+        method: "subscribe_config".into(),
+    };
+    serde_json::to_writer(&mut stream, &request)?;
+    stream.write_all(b"\n")?;
+    stream.flush()?;
+
+    let mut reader = BufReader::new(stream);
+    loop {
+        let mut line = Vec::new();
+        reader
+            .by_ref()
+            .take(MAX_RESPONSE_BYTES + 1)
+            .read_until(b'\n', &mut line)?;
+        if line.is_empty() {
+            return Err(io::Error::new(
+                io::ErrorKind::UnexpectedEof,
+                "Core config stream closed",
+            ));
+        }
+        if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Invalid config frame",
+            ));
+        }
+        let reply: RpcResponse = serde_json::from_slice(&line)?;
+        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some()
+        {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Invalid config response",
+            ));
+        }
+        let value = reply
+            .result
+            .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Config result missing"))?;
+        on_state(serde_json::from_value(value)?);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1498,6 +2322,7 @@ mod tests {
         let response = call(
             &path,
             &RpcRequest {
+                params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 42,
                 method: "ping".into(),
@@ -1545,10 +2370,44 @@ mod tests {
     }
 
     #[test]
+    fn config_subscription_receives_validated_settings() {
+        let dir = std::env::temp_dir().join(format!("kira-config-client-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("core.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (socket, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(socket);
+            let mut line = String::new();
+            reader.read_line(&mut line).unwrap();
+            let request: RpcRequest = serde_json::from_str(&line).unwrap();
+            assert_eq!(request.method, "subscribe_config");
+            let mut socket = reader.into_inner();
+            let state = crate::ConfigState {
+                config: crate::UiConfig {
+                    compact: true,
+                    ..Default::default()
+                },
+                error: None,
+            };
+            let reply = crate::RpcResponse::success(0, serde_json::to_value(state).unwrap());
+            serde_json::to_writer(&mut socket, &reply).unwrap();
+            socket.write_all(b"\n").unwrap();
+        });
+        let mut seen = Vec::new();
+        assert!(subscribe_config(&path, |state| seen.push(state.config.compact)).is_err());
+        assert_eq!(seen, vec![true]);
+        server.join().unwrap();
+        std::fs::remove_file(path).unwrap();
+        std::fs::remove_dir(dir).unwrap();
+    }
+
+    #[test]
     fn missing_socket_returns_error() {
         let response = call(
             Path::new("/nonexistent/kira-desktop.sock"),
             &RpcRequest {
+                params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 1,
                 method: "ping".into(),
@@ -1574,6 +2433,8 @@ pub struct RpcRequest {
     pub jsonrpc: String,
     pub id: u64,
     pub method: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -1610,6 +2471,36 @@ pub struct WorkspaceState {
     pub workspaces: Vec<Workspace>,
 }
 
+/// Validated KDL appearance settings sent to the trusted frontend.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct UiConfig {
+    pub compact: bool,
+    pub title: String,
+    pub show_seconds: bool,
+    pub show_names: bool,
+    pub max_workspaces: u8,
+}
+
+impl Default for UiConfig {
+    fn default() -> Self {
+        Self {
+            compact: false,
+            title: "KIRA DESKTOP".into(),
+            show_seconds: false,
+            show_names: true,
+            max_workspaces: 12,
+        }
+    }
+}
+
+/// Last successfully parsed config plus an optional validation diagnostic.
+/// Invalid reloads preserve the previous working UiConfig.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct ConfigState {
+    pub config: UiConfig,
+    pub error: Option<String>,
+}
+
 impl RpcResponse {
     pub fn success(id: u64, value: Value) -> Self {
         Self {
@@ -1638,6 +2529,14 @@ pub fn dispatch(request: RpcRequest) -> RpcResponse {
 }
 
 pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> RpcResponse {
+    dispatch_with_state(request, state, &ConfigState::default())
+}
+
+pub fn dispatch_with_state(
+    request: RpcRequest,
+    workspaces: &WorkspaceState,
+    config: &ConfigState,
+) -> RpcResponse {
     if request.jsonrpc != PROTOCOL_VERSION {
         return RpcResponse::failure(Some(request.id), -32600, "Invalid Request");
     }
@@ -1648,7 +2547,8 @@ pub fn dispatch_with_workspaces(request: RpcRequest, state: &WorkspaceState) -> 
             request.id,
             json!({ "version": env!("CARGO_PKG_VERSION"), "status": "bootstrap" }),
         ),
-        "get_workspaces" => RpcResponse::success(request.id, json!(state)),
+        "get_workspaces" => RpcResponse::success(request.id, json!(workspaces)),
+        "get_config" => RpcResponse::success(request.id, json!(config)),
         _ => RpcResponse::failure(Some(request.id), -32601, "Method not found"),
     }
 }
@@ -1675,6 +2575,7 @@ mod tests {
     #[test]
     fn invalid_method_has_json_rpc_error_code() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: PROTOCOL_VERSION.into(),
             id: 1,
             method: "missing".into(),
@@ -1685,6 +2586,7 @@ mod tests {
     #[test]
     fn invalid_version_is_rejected() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: "1.0".into(),
             id: 2,
             method: "ping".into(),
@@ -1693,8 +2595,40 @@ mod tests {
     }
 
     #[test]
+    fn default_config_is_read_only_and_typed() {
+        let req = RpcRequest {
+            params: None,
+            jsonrpc: PROTOCOL_VERSION.into(),
+            id: 13,
+            method: "get_config".into(),
+        };
+        let response = dispatch(req);
+        assert_eq!(
+            response.result.unwrap(),
+            json!({
+                "config": {"compact": false, "title": "KIRA DESKTOP",
+                  "show_seconds": false, "show_names": true, "max_workspaces": 12},
+                "error": null
+            })
+        );
+        assert_eq!(
+            dispatch(RpcRequest {
+                params: None,
+                jsonrpc: PROTOCOL_VERSION.into(),
+                id: 14,
+                method: "set_config".into()
+            })
+            .error
+            .unwrap()
+            .code,
+            -32601
+        );
+    }
+
+    #[test]
     fn disconnected_niri_does_not_fabricate_workspaces() {
         let response = dispatch(RpcRequest {
+            params: None,
             jsonrpc: PROTOCOL_VERSION.into(),
             id: 3,
             method: "get_workspaces".into(),
@@ -1721,6 +2655,7 @@ mod tests {
         };
         let response = dispatch_with_workspaces(
             RpcRequest {
+                params: None,
                 jsonrpc: PROTOCOL_VERSION.into(),
                 id: 4,
                 method: "get_workspaces".into(),
@@ -1811,7 +2746,7 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
+use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
 use webkit6::prelude::*;
 
 const BAR_HEIGHT: i32 = 42;
@@ -1822,6 +2757,7 @@ const MAX_BRIDGE_MESSAGE_BYTES: usize = 4096;
 enum ShellDelivery {
     Rpc(String),
     Workspaces(WorkspaceState),
+    Config(ConfigState),
 }
 
 fn ui_index() -> PathBuf {
@@ -1841,7 +2777,7 @@ fn core_socket() -> Option<PathBuf> {
     kira_ipc::core_socket_path().ok()
 }
 
-/// Only expose explicit, read-only Core operations to the Svelte page.
+/// Expose read-only Core queries and one explicit, checked focus-workspace action.
 fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     let request = match serde_json::from_str::<RpcRequest>(message) {
         Ok(value) => value,
@@ -1852,7 +2788,7 @@ fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     }
     if !matches!(
         request.method.as_str(),
-        "ping" | "get_state" | "get_workspaces"
+        "ping" | "get_state" | "get_workspaces" | "get_config" | "focus_workspace"
     ) {
         return RpcResponse::failure(Some(request.id), -32601, "Method not allowed");
     }
@@ -1981,6 +2917,23 @@ fn main() {
                 }
             });
         }
+        // Core owns config validation and last-known-good rollback. A second
+        // independent read-only stream forwards updates to the trusted page.
+        if let Some(path) = socket.clone() {
+            let updates = sender.clone();
+            std::thread::spawn(move || {
+                loop {
+                    let result = kira_ipc::client::subscribe_config(&path, |state| {
+                        let _ = updates.send(ShellDelivery::Config(state));
+                    });
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Core config stream disconnected: {error}");
+                    }
+                    // Retain the last valid UI settings while Core reconnects.
+                    std::thread::sleep(Duration::from_millis(750));
+                }
+            });
+        }
         manager.connect_script_message_received(Some("kira"), move |_, value| {
             let message = value.to_string().to_string();
             let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
@@ -2042,6 +2995,12 @@ fn main() {
                             continue;
                         };
                         ("kira:workspaces", serialized)
+                    }
+                    ShellDelivery::Config(state) => {
+                        let Ok(serialized) = serde_json::to_string(&state) else {
+                            continue;
+                        };
+                        ("kira:config", serialized)
                     }
                 };
                 if let Ok(encoded) = serde_json::to_string(&payload) {
@@ -2118,6 +3077,34 @@ mod tests {
             None,
         );
         assert_eq!(result.error.unwrap().code, -32000);
+    }
+
+    #[test]
+    fn allows_read_only_config_but_rejects_writes() {
+        let response = process_message(r#"{"jsonrpc":"2.0","id":8,"method":"get_config"}"#, None);
+        assert_eq!(response.error.unwrap().code, -32000);
+        let response = process_message(r#"{"jsonrpc":"2.0","id":9,"method":"set_config"}"#, None);
+        assert_eq!(response.error.unwrap().code, -32601);
+        let response = process_message(
+            r#"{"jsonrpc":"2.0","id":10,"method":"subscribe_config"}"#,
+            None,
+        );
+        assert_eq!(response.error.unwrap().code, -32601);
+    }
+
+    #[test]
+    fn allows_exact_focus_action_only_but_not_generic_niri_actions() {
+        let focus = process_message(
+            r#"{"jsonrpc":"2.0","id":4,"method":"focus_workspace","params":{"id":"2"}}"#,
+            None,
+        );
+        // Accepted by the bridge, unavailable only because Core is absent.
+        assert_eq!(focus.error.unwrap().code, -32000);
+        for method in ["niri_action", "move_window", "focus_window", "set_config"] {
+            let request = format!(r#"{{"jsonrpc":"2.0","id":5,"method":"{method}"}}"#);
+            let result = process_message(&request, None);
+            assert_eq!(result.error.unwrap().code, -32601);
+        }
     }
 
     #[test]
@@ -2287,6 +3274,133 @@ mod tests {
     }
 }
 
+FILE	docs/CONFIG.md
+# Kira Desktop: KDL configuration (first functional profile)
+
+Kira Core owns configuration parsing and validation. The GUI only receives
+**validated, read-only state**. The first profile intentionally accepts a
+limited set of KDL nodes/properties; **it is not yet a full KDL 2.0 parser**.
+Unsupported syntax, nodes or properties fail validation rather than silently
+changing the desktop.
+
+## User configuration
+
+Copy the sample to the normal XDG location:
+
+```sh
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/kira-desktop"
+cp config/kira.kdl.example "${XDG_CONFIG_HOME:-$HOME/.config}/kira-desktop/config.kdl"
+```
+
+Default lookup is `$XDG_CONFIG_HOME/kira-desktop/config.kdl`, or
+`$HOME/.config/kira-desktop/config.kdl` when XDG_CONFIG_HOME is unset.
+An absolute `KIRA_CONFIG_FILE` environment variable takes priority.
+Relative paths are rejected. Core **never creates or overwrites** the
+user's config file.
+
+An absent file on initial startup uses Kira's built-in defaults. Editing
+or atomically replacing an existing file triggers a **hot reload without
+restarting Core or Shell**. Current implementation checks the small file
+every 250 ms and notifies Shell only when the validated state changes.
+
+## Supported KDL profile
+
+```kdl
+kira {
+    bar compact=#false title="KIRA DESKTOP"
+    clock seconds=#false
+    workspaces show-names=#true limit=12
+}
+```
+
+| Node | Property | Type / range | Effect |
+| --- | --- | --- | --- |
+| `bar` | `compact` | `#true` / `#false` | Reduce horizontal padding while keeping Niri's 42px reserved bar |
+| `bar` | `title` | quoted text, 1–32 printable characters | Center title; text is escaped by Svelte |
+| `clock` | `seconds` | `#true` / `#false` | Show seconds in the Top Bar clock |
+| `workspaces` | `show-names` | `#true` / `#false` | Show workspace names or only numeric indices |
+| `workspaces` | `limit` | integer 1–32 | Maximum number of displayed workspaces; keep the focused one visible |
+
+Formatting rules for this **minimal KDL profile**:
+- Exactly one `kira {` opening line and a `}` closing line.
+- Each child node on **one line**, properties written as `key=value`
+  without whitespace around `=`. Child nodes can appear in any order.
+- Values are KDL 2.0 booleans (`#true` / `#false`), unsigned integers, or single-line double-quoted strings with printable Unicode characters.
+  Only escaped double quotes and escaped backslashes are supported in this
+  initial title profile; all other escapes and multiline/raw strings are rejected.
+- Blank lines and `//` comments outside quoted strings are allowed.
+- Children, lists, arbitrary attributes, slashdash, multiline/raw strings,
+  annotations, node arguments and additional KDL constructs are **not yet
+  supported**. Unknown or duplicate keys/nodes are errors.
+
+This limited profile is intentional for v0.1: configuration cannot execute
+commands, spawn processes, change Niri config or load arbitrary extensions.
+
+## Validate before applying
+
+```sh
+nix develop --command cargo run --locked -p kira-core -- \
+  --check-config "$(pwd)/config/kira.kdl.example"
+```
+
+For a quick check of the committed example, `nix develop --command task config:check`
+runs that same CLI. `task check` also validates the example in CI.
+
+A valid file prints the normalized JSON UI settings and exits successfully.
+An invalid file exits nonzero with a diagnostic. This **does not bind**
+the Core socket or start Niri. For a custom file, pass its absolute path.
+
+### Error handling
+
+Core processes the entire file before publishing it. On an invalid edit
+(including unsupported nodes, missing closing brace, excessive size or
+unreadable file), it keeps **the last valid settings** and publishes an error
+in `ConfigState.error`. The Top Bar shows `CONFIG !` with a tooltip;
+it remains usable and its other widgets continue working. A subsequent
+valid edit clears the warning and applies the new settings.
+
+The maximum config size is **64 KiB** with at most **128 lines**. These
+bounds apply to reads in the hot-reload loop as well as CLI validation.
+On deleting a file after it was loaded, the last working settings remain
+active with a diagnostic. On first startup with no file, defaults apply.
+
+## Try it in the safe nested preview
+
+```sh
+nix develop --command task dev:preview
+```
+
+The preview writes a **separate temporary Kira config**, copied from the
+sample. The terminal prints its `[preview] Live Kira KDL config:` path.
+While the preview is open, edit **that exact path** using a text editor,
+for example change `clock seconds=#false` to `clock seconds=#true` or
+`bar compact=#false` to `bar compact=#true`. Changes appear in the nested
+Top Bar without restarting. The temporary file disappears when the preview
+closes, and the host user's `~/.config/kira-desktop/` is untouched.
+
+To test a persistent custom file in nested preview instead, set
+`KIRA_CONFIG_FILE=/absolute/path/config.kdl` before invoking the task.
+The preview reads it but never modifies it.
+
+## Internal data flow
+
+`config.kdl` → Core bounded parser + last-good watcher →
+`get_config` / internal `subscribe_config` → Shell worker thread →
+WebKit `kira:config` CustomEvent → typed Svelte SDK → live components.
+
+The `subscribe_config` method is private to the Core Unix socket and is
+**not** exposed via the WebKit JSON-RPC allowlist. Only `get_config`
+is available to the UI, along with the existing read-only methods.
+Changing config cannot invoke Niri `Action`. Existing workspaces remain
+connected even if the config becomes invalid.
+
+## Scope beyond this first increment
+
+Full KDL grammar, schema migrations, themes, layout/monitor geometry,
+widget ordering, per-output panels and secure user-provided modules are
+separate future milestones. Do not treat this profile as general KDL
+evaluation or an extension/command system.
+
 FILE	docs/DESIGN_SYSTEM.md
 # Kira Desktop · Design System
 
@@ -2309,34 +3423,41 @@ reduced motion is enabled and visual effects are unavailable.
 
 ## Kira Default · canonical palette
 
-| Name | HEX | Default meaning |
-| --- | --- | --- |
-| Space Indigo | `#22223b` | Dark background, text on accent |
-| Dusty Grape | `#4a4e69` | Raised surfaces, supporting materials |
-| Lilac Ash | `#9a8c98` | Muted details on Space Indigo |
-| Almond Silk | `#c9ada7` | Active and focused elements |
-| Parchment | `#f2e9e4` | Primary readable text |
+The project owner's five-color **Black / Night Bordeaux / White Smoke /
+Dusty Taupe / Stone Brown** palette is now the default. No other base
+HEX colors are permitted in Kira Default.
 
-The canonical typed palette is defined by
-[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts).
-CSS variables are declared in
+| Name | HEX | Intended role |
+| --- | --- | --- |
+| Black | `#0a0908` | App background and text on selected workspaces |
+| Night Bordeaux | `#49111c` | Elevated surfaces and subdued wine-toned materials |
+| White Smoke | `#f2f4f3` | Main text on black and Bordeaux |
+| Dusty Taupe | `#a9927d` | Readable secondary text, active states and focus accent |
+| Stone Brown | `#5e503f` | Structural border detail, not small text |
+
+The source of truth is
+[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts);
+the loaded CSS lives in
 [`kira-default.css`](../frontend/src/lib/themes/kira-default.css).
-Unit tests ensure the five values remain synchronized.
+Contract tests verify that the exact five literal colors and their
+semantic aliases remain synchronized.
 
 ## Public CSS contract
 
-| Semantic variable | Canonical HEX | Intended usage |
+| Semantic variable | Canonical HEX or alias | Intended usage |
 | --- | --- | --- |
-| `--kira-color-background` | `#22223b` | Main surface/background |
-| `--kira-color-surface` | `#4a4e69` | Elevated surface |
-| `--kira-color-muted` | `#9a8c98` | Secondary details on dark background |
-| `--kira-color-accent` | `#c9ada7` | Accent, selection, focus |
-| `--kira-color-text` | `#f2e9e4` | Foreground text |
+| `--kira-color-background` | `#0a0908` | Main background |
+| `--kira-color-surface` | `#49111c` | Elevated Bordeaux surface |
+| `--kira-color-muted` | `#a9927d` | Readable secondary text |
+| `--kira-color-accent` | `var(--kira-color-muted)` | Selection and keyboard focus |
+| `--kira-color-text` | `#f2f4f3` | Main readable foreground |
+| `--kira-color-earth` | `#5e503f` | Brown structural detailing |
 
 Derived tokens: `--kira-color-on-accent`,
-`--kira-color-text-secondary`, `--kira-color-surface-subtle`,
-`--kira-color-border`. Layout and motion tokens start with
-`--kira-space-`, `--kira-radius-`, `--kira-motion-`.
+`--kira-color-text-secondary`, `--kira-color-surface-subtle`
+and `--kira-color-border` blend or alias these five colors.
+Layout and motion tokens begin with `--kira-space-`,
+`--kira-radius-` and `--kira-motion-`.
 
 Example for a future Svelte widget:
 
@@ -2353,31 +3474,34 @@ Example for a future Svelte widget:
 </style>
 ```
 
-**Do not hardcode HEX values inside individual components.** Theme overrides
-must happen by redefining semantic variables, not by copying stylesheet rules.
-User-configurable themes through KDL are a future milestone.
+**Never hardcode colors in component styles.** Themes must be changed at
+the semantic token layer. User-overridable themes via KDL are still a
+future increment; the current KDL configuration only adjusts bar behavior.
 
 ## Color contrast and accessibility
 
-- Parchment on Space Indigo: **12.91:1**.
-- Parchment on Dusty Grape: **6.79:1**.
-- Lilac Ash on Space Indigo: **4.84:1**.
-- Space Indigo on Almond Silk: **7.37:1**.
-- **Avoid** Lilac Ash text on Dusty Grape (only 2.55:1).
+Representative WCAG relative contrast ratios:
 
-Regular text should meet at least 4.5:1, large text and relevant non-text
-indicators at least 3:1. Do not rely only on color to indicate selection.
-Keyboard navigation and visible focus outlines are required when a widget
-becomes interactive. Respect `prefers-reduced-motion`.
+- White Smoke on Black: **18.01:1**.
+- White Smoke on Night Bordeaux: **13.77:1**.
+- Dusty Taupe on Black: **6.72:1**.
+- Dusty Taupe on Night Bordeaux: **5.14:1**.
+- Black on Dusty Taupe: **6.72:1**, suitable for selected chip text.
+- **Do not use Stone Brown as small text on Black:** only **2.55:1**.
+  It is used for structural borders and mixed with Taupe for visibility.
+
+Regular-size text requires at least 4.5:1, and meaningful non-text indicators
+at least 3:1 as applicable under WCAG. Do not indicate focus by color alone:
+workspaces also use a mark, labels and `aria-pressed`.
+Provide visible keyboard outlines and honor reduced-motion preferences.
 
 ## Current component implementation
 
 - `frontend/src/App.svelte`: premium 42 px top bar, balanced left/center/right
   regions, brand and local clock.
-- `frontend/src/lib/components/WorkspacePreview.svelte`: three **visual**
-  workspace chips. These are deliberately **not clickable**, because Niri IPC
-  has not been implemented. Workspace 1 is highlighted as a design preview
-  only, not a claim about the active Niri workspace.
+- `frontend/src/lib/components/WorkspacePreview.svelte`: real Niri workspaces
+  with accessible clickable buttons, live focus/active/urgent state, and
+  stable workspace IDs for the intentional `FocusWorkspace` action.
 - `frontend/src/lib/components/CoreStatus.svelte`: status badge with
   text and a dot, tied to the existing real Core bridge; an accessible
   `role="status"` communicates transitions.
@@ -2399,8 +3523,8 @@ required token names and reduced-motion support. They do **not** replace
 a screenshot or interactive accessibility test of the WebKit surface.
 
 Next design-system milestones: shared interactive primitives, complete
-keyboard navigation, configurable KDL themes, actual Niri workspaces,
-Launcher, Dock, notifications, and their consistent states.
+keyboard accessibility, configurable KDL theme overrides, Launcher, Dock,
+notifications, and their consistent states.
 
 FILE	docs/DEVELOPMENT.md
 # Developing Kira Desktop
@@ -2417,7 +3541,7 @@ The premium visual baseline is implemented using semantic CSS tokens in
 `frontend/src/lib/themes/kira-default.css` and typed color metadata in
 `frontend/src/lib/themes/kira-default.ts`. `WorkspacePreview.svelte` and
 `CoreStatus.svelte` demonstrate theme-aware components without hardcoded HEX
-values. The former is deliberately non-interactive until Niri IPC is wired.
+values. The workspace widget now receives Niri events and supports explicit mouse clicks to focus a known workspace.
 
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibility,
 spacing, contrast and future widget conventions. The small HTML fallback in
@@ -2586,8 +3710,8 @@ Use separate terminals for the two running processes. `XDG_RUNTIME_DIR` must poi
 ## Review hardening
 
 The Shell WebView only allows navigation to its exact packaged `index.html` URI
-and ignores attempts to open a new window. The Rust bridge remains explicitly
-allowlisted to read-only methods. This is defense-in-depth for trusted UI code,
+and ignores attempts to open a new window. The Rust bridge allowlists read-only queries plus one narrowly scoped
+`focus_workspace` action by an already known Niri workspace ID. This is defense-in-depth for trusted UI code,
 not a security boundary for untrusted extensions.
 
 Core now bounds individual JSON-RPC messages to 4096 bytes and removes the
@@ -2597,7 +3721,7 @@ have already exited, reducing the chance of orphaned processes.
 
 ## Core ⇄ Shell ⇄ Svelte bridge
 
-Svelte uses the typed SDK at `frontend/src/lib/sdk/core.ts`, sending JSON-RPC requests to `window.webkit.messageHandlers.kira.postMessage`. The Rust Host forwards **only `ping` and `get_state`** over Unix Domain Socket on a worker thread. Its GTK main loop returns replies as `kira:rpc` events.
+Svelte uses the typed SDK at `frontend/src/lib/sdk/core.ts`, sending JSON-RPC requests to `window.webkit.messageHandlers.kira.postMessage`. The Rust Host forwards read-only `ping`, `get_state`, `get_workspaces`, `get_config`, plus a single validated `focus_workspace` request over Unix Domain Socket on a worker thread. Its GTK main loop returns replies as `kira:rpc` events.
 
 The SDK correlates numeric request IDs, applies timeouts, and reports disconnected Core as an error. Browser-only Vite preview has no WebKit bridge and displays `Core: unavailable` rather than a fake connection.
 
@@ -2619,10 +3743,11 @@ compositor, never the parent. With no Niri socket, Core still serves
 `ping` and `get_state`, while `get_workspaces` returns
 `{"connected":false,"workspaces":[]}`, **not** hardcoded workspace 1–3.
 
-Core writes only the Niri request `"EventStream"` and reads its full initial
+Core primarily reads the Niri `"EventStream"` and its full initial
 `WorkspacesChanged` snapshot plus subsequent `WorkspaceActivated` and
-`WorkspaceUrgencyChanged` events. There are no `Action` requests and no
-direct compositor-changing operations. On disconnect or malformed events,
+`WorkspaceUrgencyChanged` events. The **only** available action is `FocusWorkspace` by stable workspace ID,
+requested explicitly through a mouse click. No move/window/output/configuration
+or arbitrary Action request is accepted. On disconnect or malformed events,
 Core clears stale state and reconnects with a one-second delay.
 
 The public Core contract is:
@@ -2660,12 +3785,35 @@ global identifier. `is_active` and `is_focused` are distinct: on multiple
 outputs each can have an active workspace but only one is globally focused.
 Unknown Niri event variants are ignored; message size is bounded.
 
-The Shell explicitly allows the read-only `get_workspaces` RPC and blocks
-all write-like methods. The Svelte Top Bar renders real workspace names/indices,
+The Shell allows the read-only `get_workspaces` RPC plus the exact
+`focus_workspace` method, blocking all other write-like operations. The Svelte Top Bar renders real workspace names/indices,
 focus/activation/urgency, or an explicit `NIRI OFFLINE` state; it no longer
 uses the fake `[1, 2, 3]` visual demo. **Core listens to events**;
 the frontend receives a pushed snapshot whenever Core detects a change.
 Core-to-UI workspace subscriptions are now implemented; updates use a persistent read-only Core socket and WebKit DOM events.
+
+### Click to focus a workspace
+
+The top bar workspace chips are now accessible buttons. Left-click or
+keyboard-activate a nonfocused workspace to send the single
+`focus_workspace` JSON-RPC request:
+`{"jsonrpc":"2.0","id":5,"method":"focus_workspace","params":{"id":"42"}}`.
+
+**IDs must be decimal strings** (u64), not indexes, so changing output
+order or multiple outputs with workspace index 1 do not target the
+wrong workspace. Core verifies that Niri is connected, that the
+workspace ID exists in the current snapshot, and that the parameters
+contain **only** the `id`. It then sends the single Niri IPC
+`Action.FocusWorkspace.reference.Id` request over the exact
+`NIRI_SOCKET` already supplied to Core. The WebKit bridge explicitly
+allowlists only this action, not generic Niri requests or shell commands.
+
+The widget does not invent a new focused state after a click; it waits
+for Niri's EventStream. Disabled/offline/current chips do not send
+actions, and a rejected action shows `WS !` with a diagnostic tooltip.
+Keyboard shortcuts remain independent and work as before. The
+isolated preview continues pointing Core to the child Niri socket,
+so this action cannot target the parent compositor in preview.
 
 ### Immediate Core → Shell → Svelte workspace updates
 
@@ -2681,7 +3829,7 @@ one initial `get_workspaces` request only to cover any startup race.
 to Niri after a disconnect; Shell reconnects to Core and pushes
 `connected:false` while unavailable so the UI does not retain stale state.
 `subscribe_workspaces` is an internal Core socket operation and is *not*
-exposed to WebKit's JS request allowlist. Kira never sends Niri `Action`.
+exposed to WebKit's JS request allowlist. Kira sends only Niri `FocusWorkspace` for a user-clicked stable workspace ID; no other Niri actions are supported.
 
 This removes the artificial 1–2 second lag. Actual latency and keyboard
 focus transitions still require an interactive NixOS/Wayland check.
@@ -2734,6 +3882,34 @@ Official protocol references:
 - https://docs.rs/niri-ipc/latest/niri_ipc/enum.Event.html
 - https://docs.rs/niri-ipc/latest/niri_ipc/struct.Workspace.html
 
+## Validated KDL settings and hot reload (Stage 2)
+
+Kira Core now accepts `KIRA_CONFIG_FILE=/absolute/path/file.kdl` or
+defaults to `$XDG_CONFIG_HOME/kira-desktop/config.kdl`
+(`~/.config/kira-desktop/config.kdl` without XDG_CONFIG_HOME).
+
+This release deliberately implements a small **strict KDL profile**,
+not every possible KDL expression. Configurable UI properties currently
+include compact bar layout, center title, clock seconds, workspace names
+and max visible chips. The file is limited to 64 KiB / 128 lines, and
+unknown keys or invalid types fail without changing the active config.
+`kira-core --check-config /absolute/path` validates offline without
+starting Core, Niri or a WebKit window.
+
+Internally Core watches the file every 250ms, publishes the last valid
+`ConfigState` (including optional diagnostic) over `get_config` and the
+private `subscribe_config` stream. Shell forwards read-only
+`kira:config` DOM events. An invalid edit keeps the last good layout,
+but shows a `CONFIG !` warning with diagnostics.
+
+The **nested preview** always creates its own temporary editable KDL,
+shows its path in the terminal and does not overwrite the user's config.
+To test a persistent custom file opt in with absolute `KIRA_CONFIG_FILE`.
+
+See [CONFIG.md](CONFIG.md) for exact supported syntax, safety model,
+examples and preview steps. Niri KDL remains a separate compositor
+configuration and is not modified by this feature.
+
 ## Updating dependencies
 
 The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Update them deliberately using the appropriate tooling and commit changes together with any required Nix hash update. The separate Nix integration workflow must pass after dependency changes.
@@ -2742,7 +3918,7 @@ The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Updat
 
 1. Visual QA for Kira Default across scales and packaged Shell smoke test. The user confirmed prior capture runs, but the PNGs still require visual review. The default QA command is now passive; explicit screenshot capture uses grim without clipboard side effects. See [QA_VISUAL.md](QA_VISUAL.md).
 2. Read-only Niri workspace state from Core EventStream is implemented in the Stage 1 draft PR. Core-to-Svelte typed workspace pushes are implemented.
-3. KDL configuration engine with validation and hot reload.
+3. Initial strict KDL configuration profile with type validation, Core hot reload and last-good rollback is implemented in draft PR #14; full KDL grammar and custom widget layouts remain future increments.
 4. Real workspace, launcher and dock widgets.
 5. System-service integrations and user widget loading.
 
@@ -2970,7 +4146,7 @@ kira-desktop/
 
 ```kdl
 theme "dark" {
-    accent "#c9ada7"
+    accent "#a9927d"
     radius 12
 }
 
@@ -3174,65 +4350,66 @@ Frontend должен предоставлять npm scripts `check`, `test:ci`,
 
 ### 15.2. Каноническая палитра Kira Default
 
-По умолчанию используется **тёмная тема Kira Default** с **ровно пятью
-базовыми цветами**. Названия и значения ниже фиксированы:
+По умолчанию используется **тёмная тема Kira Default** из **ровно пяти**
+базовых цветов, заданных владельцем проекта:
 
 | Имя | HEX | RGB | Назначение |
 | --- | --- | --- | --- |
-| **Space Indigo** | `#22223b` | `rgb(34, 34, 59)` | Главный фон, глубокая основа интерфейса |
-| **Dusty Grape** | `#4a4e69` | `rgb(74, 78, 105)` | Приподнятые поверхности, меню и карточки |
-| **Lilac Ash** | `#9a8c98` | `rgb(154, 140, 152)` | Вспомогательные детали, неактивные элементы |
-| **Almond Silk** | `#c9ada7` | `rgb(201, 173, 167)` | Главный акцент, выбранные элементы, focus |
-| **Parchment** | `#f2e9e4` | `rgb(242, 233, 228)` | Основной текст на тёмных поверхностях |
+| **Black** | `#0a0908` | `rgb(10, 9, 8)` | Главный фон и текст на акцентных элементах |
+| **Night Bordeaux** | `#49111c` | `rgb(73, 17, 28)` | Приподнятые поверхности |
+| **White Smoke** | `#f2f4f3` | `rgb(242, 244, 243)` | Основной текст |
+| **Dusty Taupe** | `#a9927d` | `rgb(169, 146, 125)` | Читаемый вторичный текст, выделение и фокус |
+| **Stone Brown** | `#5e503f` | `rgb(94, 80, 63)` | Конструктивные детали и границы |
 
 Каноническая машинно-читаемая запись:
 
 ```json
 {
-  "Space Indigo": "#22223b",
-  "Dusty Grape": "#4a4e69",
-  "Lilac Ash": "#9a8c98",
-  "Almond Silk": "#c9ada7",
-  "Parchment": "#f2e9e4"
+  "Black": "#0a0908",
+  "Night Bordeaux": "#49111c",
+  "White Smoke": "#f2f4f3",
+  "Dusty Taupe": "#a9927d",
+  "Stone Brown": "#5e503f"
 }
 ```
 
-CSV, массивы, XML и другие формы являются представлениями **той же
-палитры**, а не дополнительными темами или цветами. Произвольные новые
-базовые цвета в Kira Default запрещены без изменения спецификации.
-Пользовательские темы в будущем могут переопределять все цвета.
+CSV, массивы, XML и другие формы являются представлениями **той же**
+палитры. Базовые цвета в компонентах не хардкодятся. Дополнительные оттенки
+разрешены только как вычисляемые смеси/прозрачности этих пяти значений.
+Пользовательские переопределения темы через KDL остаются будущей задачей.
 
 ### 15.3. Семантические токены
 
-Встроенный UI и Widget SDK должны использовать семантические токены,
-а не дублировать HEX в каждом компоненте. Предполагаемый контракт CSS:
+Все компоненты обязаны использовать семантические CSS-переменные:
 
 | CSS-токен | Значение в Kira Default | Роль |
 | --- | --- | --- |
-| `--kira-color-background` | `#22223b` | Фон |
-| `--kira-color-surface` | `#4a4e69` | Поверхности |
-| `--kira-color-muted` | `#9a8c98` | Неактивные детали |
-| `--kira-color-accent` | `#c9ada7` | Выделение, фокус |
-| `--kira-color-text` | `#f2e9e4` | Основной текст |
+| `--kira-color-background` | `#0a0908` | Фон |
+| `--kira-color-surface` | `#49111c` | Поверхности |
+| `--kira-color-muted` | `#a9927d` | Вторичный текст |
+| `--kira-color-accent` | `var(--kira-color-muted)` | Выделение и фокус |
+| `--kira-color-text` | `#f2f4f3` | Основной текст |
+| `--kira-color-earth` | `#5e503f` | Основа для границ |
 
-Для hover, border, disabled и overlay допустимы производные оттенки,
-смешивание и прозрачность этих цветов при соблюдении контраста.
-Семантические роли и значения палитры должны настраиваться единым
-механизмом темы, а в перспективе через декларативную конфигурацию KDL.
+Stone Brown намеренно не используется как мелкий текст на Black: контраст
+недостаточен. Dusty Taupe используется в двух ролях (muted и accent), чтобы
+обеспечить доступность без придумывания шестого базового цвета.
+Для hover, border, disabled и overlay допустимы производные оттенки.
 
 ### 15.4. Контрастность и доступность
 
-Примеры контрастных сочетаний (округлённые значения WCAG):
+Примеры сочетаний (WCAG, относительные контрастные отношения):
 
 | Текст / фон | Контраст | Применение |
 | --- | --- | --- |
-| Parchment / Space Indigo | **12.91:1** | Основной текст |
-| Parchment / Dusty Grape | **6.79:1** | Текст на карточках |
-| Lilac Ash / Space Indigo | **4.84:1** | Второстепенный текст |
-| Space Indigo / Almond Silk | **7.37:1** | Текст внутри активных элементов |
+| White Smoke / Black | **18.01:1** | Основной текст |
+| White Smoke / Night Bordeaux | **13.77:1** | Текст на поверхностях |
+| Dusty Taupe / Black | **6.72:1** | Вторичный текст и акцент |
+| Dusty Taupe / Night Bordeaux | **5.14:1** | Акцент на бордовой поверхности |
+| Black / Dusty Taupe | **6.72:1** | Текст на активном workspace |
 
-**Lilac Ash на Dusty Grape** (≈ 2.55:1) не подходит для обычного
-мелкого текста; **Almond Silk на Parchment** (≈ 1.75:1) также не подходит.
+**Stone Brown / Black** имеет контраст всего **2.55:1**: этот цвет
+допустим для декоративных границ, но не для обычного мелкого текста.
 
 Критерии приёмки:
 
@@ -3331,7 +4508,7 @@ FILE	frontend/index.html
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#22223b" />
+    <meta name="theme-color" content="#0a0908" />
     <title>Kira Desktop</title>
     <script>
       // Head runs before the compiled Svelte bundle. Track boot milestones
@@ -3383,7 +4560,7 @@ FILE	frontend/index.html
   </head>
   <body>
     <div id="app">
-      <div id="kira-loading" style="height:42px; display:flex; align-items:center; padding:0 14px; font:12px system-ui; background:#22223b; color:#f2e9e4;">
+      <div id="kira-loading" style="height:42px; display:flex; align-items:center; padding:0 14px; font:12px system-ui; background:#0a0908; color:#f2f4f3;">
         Kira Desktop · Loading interface…
       </div>
     </div>
@@ -3470,8 +4647,8 @@ export async function inlineUiAssets(outputDirectory) {
   // A classic script does not use opaque module origins. Do not silently
   // inline a bundle that contains ESM-only syntax.
   new Script('(function(){\n' + js + '\n})();', { filename: jsReference });
-  html = html.replace(scriptTag, '<script>\n(function(){\n' + js + '\n})();\n</script>');
-
+  // Inspect the original Vite HTML while discovering styles: strings
+  // inside bundled JS must never count as extra stylesheet links.
   const styles = [...html.matchAll(LINK_TAG)]
     .map((match) => match[0])
     .filter((tag) => attribute(tag, 'rel')?.toLowerCase() === 'stylesheet');
@@ -3485,9 +4662,20 @@ export async function inlineUiAssets(outputDirectory) {
   if (/<\/style\b/i.test(css)) {
     throw new Error('Bundled CSS includes a closing style tag');
   }
-  html = html.replace(styles[0], '<style>\n' + css + '\n</style>');
+  // The replacement argument must be a function. A string replacement
+  // expands special dollar substitutions in minified assets, corrupting HTML.
+  // A callback inserts bundled asset bytes unchanged.
+  html = html.replace(styles[0], () => '<style>\n' + css + '\n</style>');
+  html = html.replace(scriptTag, () => '<script>\n(function(){\n' + js + '\n})();\n</script>');
 
-  if (SCRIPT_TAG.test(html) || [...html.matchAll(LINK_TAG)]
+  // Inspect HTML markup, not strings inside the inlined JS or CSS. Vite
+  // bundles may legitimately contain literal '<link rel="stylesheet" ...>'
+  // snippets, which do not create network requests when inside scripts.
+  // Closing script/style tags in bundled assets were already rejected above.
+  const markup = html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+  if (SCRIPT_TAG.test(markup) || [...markup.matchAll(LINK_TAG)]
     .some((match) => attribute(match[0], 'rel')?.toLowerCase() === 'stylesheet')) {
     throw new Error('Unexpected remaining external UI assets');
   }
@@ -3550,6 +4738,41 @@ test('inlines Vite bundles without leaving module subrequests', async () => {
   });
 });
 
+test('does not interpolate replacement tokens from Vite JS or CSS into HTML', async () => {
+  // Construct these dynamically because the updater itself must not parse
+  // replacement syntax in an incoming source payload.
+  const dollar = String.fromCharCode(36);
+  const tokens = [
+    dollar + '&',
+    dollar + String.fromCharCode(39),
+    dollar + String.fromCharCode(96),
+    dollar + dollar,
+  ];
+  const js = 'window.kiraTokens = ' + JSON.stringify(tokens) + ';';
+  const css = ':root::before { content: ' + JSON.stringify(tokens.join('|')) + '; }';
+  await fixture(async (dir) => {
+    await inlineUiAssets(dir);
+    const html = await readFile(join(dir, 'index.html'), 'utf8');
+    const script = /<script>\n\(function\(\)\{\n([\s\S]*?)\n\}\)\(\);\n<\/script>/.exec(html)?.[1];
+    const style = /<style>\n([\s\S]*?)\n<\/style>/.exec(html)?.[1];
+    assert.equal(script, js, 'the JS bundle must survive inlining byte for byte');
+    assert.equal(style, css, 'the CSS bundle must survive inlining byte for byte');
+    assert.equal((html.match(/<\/script>/g) ?? []).length, 1);
+    assert.equal((html.match(/<\/style>/g) ?? []).length, 1);
+    new Script(script);
+    assert.doesNotMatch(html, /<script src=|<link rel="stylesheet"/);
+  }, { js, css });
+});
+
+test('allows HTML-like text inside bundled JS without treating it as an external asset', async () => {
+  await fixture(async (dir) => {
+    const result = await inlineUiAssets(dir);
+    assert.ok(result.scriptBytes > 0);
+    const html = await readFile(join(dir, 'index.html'), 'utf8');
+    assert.match(html, /window\.kiraMarkup/);
+  }, { js: 'window.kiraMarkup = \'<link rel="stylesheet" href="https://example.invalid/a.css">\';' });
+});
+
 test('rejects an output that cannot run as a classic script', async () => {
   await fixture(async (dir) => {
     await assert.rejects(inlineUiAssets(dir), /Cannot use import statement|Unexpected token/);
@@ -3587,12 +4810,31 @@ FILE	frontend/src/App.svelte
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, onWorkspaceUpdate, type WorkspaceState } from './lib/sdk/core';
+  import { request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
   let workspaceState = $state<WorkspaceState | null>(null);
+  let workspacePending = $state(false);
+  let workspaceActionError = $state<string | null>(null);
+
+  async function activateWorkspace(id: string) {
+    if (workspacePending || !workspaceState?.connected ||
+        !workspaceState.workspaces.some((ws) => ws.id === id && !ws.is_focused)) return;
+    workspacePending = true;
+    workspaceActionError = null;
+    try {
+      await focusWorkspace(id);
+      // Do not optimistically change focus. Niri's EventStream is authoritative.
+    } catch (error) {
+      workspaceActionError = error instanceof Error ? error.message : 'Workspace focus failed';
+    } finally {
+      workspacePending = false;
+    }
+  }
+
+  let configState = $state<ConfigState>({ config: defaultUiConfig, error: null });
 
   onMount(() => {
     const clock = window.setInterval(() => {
@@ -3634,32 +4876,57 @@ FILE	frontend/src/App.svelte
       }
     });
 
+    // Validate/parse only in Core. Shell forwards the last-good config as
+    // immediate push events. A one-shot request covers the load race.
+    let pushedConfig = false;
+    const stopConfig = onConfigUpdate((state) => {
+      if (disposed) return;
+      pushedConfig = true;
+      configState = state;
+    });
+    void request('get_config').then((state) => {
+      if (!disposed && !pushedConfig) configState = state;
+    }).catch(() => {
+      // Preserve the embedded defaults if Core is not available.
+    });
+
     return () => {
       disposed = true;
       window.clearInterval(clock);
       window.clearInterval(statusTimer);
       unsubscribe();
+      stopConfig();
     };
   });
 </script>
 
-<main class="bar" aria-label="Kira Desktop top bar">
+<main class="bar" class:compact={configState.config.compact} aria-label="Kira Desktop top bar">
   <section class="bar__start" aria-label="Kira and workspaces">
     <div class="brand" aria-label="Kira Desktop">
       <span class="brand__symbol" aria-hidden="true">K</span>
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
     </div>
     <span class="bar__separator" aria-hidden="true"></span>
-    <WorkspacePreview state={workspaceState} />
+    <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
+      limit={configState.config.max_workspaces} pending={workspacePending}
+      onFocus={(id) => { void activateWorkspace(id); }} />
+    {#if workspaceActionError}
+      <span class="workspace-action-error" role="alert" title={workspaceActionError}>WS !</span>
+    {/if}
   </section>
 
   <div class="bar__center" aria-label="Kira Desktop environment">
     <span class="bar__center-line" aria-hidden="true"></span>
-    <span class="bar__center-title">KIRA <span>DESKTOP</span></span>
+    <span class="bar__center-title">
+      {#if configState.config.title === 'KIRA DESKTOP'}KIRA <span>DESKTOP</span>{:else}{configState.config.title}{/if}
+    </span>
     <span class="bar__center-line" aria-hidden="true"></span>
   </div>
 
   <section class="bar__end" aria-label="Core and clock">
+    {#if configState.error}
+      <span class="config-warning" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
+    {/if}
     <CoreStatus status={coreStatus} version={coreVersion} />
     <span class="bar__separator" aria-hidden="true"></span>
     <div class="clock">
@@ -3667,8 +4934,8 @@ FILE	frontend/src/App.svelte
         <circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.3"></circle>
         <path d="M8 4.6V8.1L10.2 9.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
-      <time datetime={now.toISOString()} aria-label={'Local time ' + formatClock(now)}>
-        {formatClock(now)}
+      <time datetime={now.toISOString()} aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}>
+        {formatClock(now, undefined, configState.config.show_seconds)}
       </time>
     </div>
   </section>
@@ -3924,7 +5191,22 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 <script lang="ts">
   import type { WorkspaceState } from '../sdk/core';
 
-  let { state }: { state: WorkspaceState | null } = $props();
+  let { state, showNames, limit, onFocus, pending }: {
+    state: WorkspaceState | null;
+    showNames: boolean;
+    limit: number;
+    onFocus: (id: string) => void;
+    pending: boolean;
+  } = $props();
+
+  // Limit visible chips without hiding the active/focused workspace when
+  // there are many outputs. This never changes Niri's actual workspaces.
+  let visible = $derived.by(() => {
+    const all = state?.workspaces ?? [];
+    const count = Math.max(1, Math.min(32, limit));
+    const focused = Math.max(0, all.findIndex((item) => item.is_focused));
+    return all.slice(Math.max(0, focused - count + 1), Math.max(0, focused - count + 1) + count);
+  });
 </script>
 
 {#if !state}
@@ -3934,29 +5216,34 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 {:else if state.workspaces.length === 0}
   <span class="workspace-status" role="status" aria-live="polite">NO WORKSPACES</span>
 {:else}
-  <ol class="workspace-preview" aria-label="Niri workspaces (read-only)">
-    {#each state.workspaces as workspace (workspace.id)}
+  <ol class="workspace-preview" aria-label="Niri workspaces">
+    {#each visible as workspace (workspace.id)}
       <li
         class="workspace-preview__item"
         class:preview-selected={workspace.is_focused}
         class:preview-active={workspace.is_active}
         class:preview-urgent={workspace.is_urgent}
-        aria-label={'Workspace ' + (workspace.name || workspace.idx)
-          + (workspace.output ? ' on ' + workspace.output : '')
-          + (workspace.is_focused ? ', focused' : '')
-          + (workspace.is_active ? ', active' : '')
-          + (workspace.is_urgent ? ', urgent' : '')}
-        title={'Workspace ' + (workspace.name || workspace.idx)
-          + (workspace.output ? ' on ' + workspace.output : '')
-          + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
-          + (workspace.is_urgent ? ' (urgent)' : '')}
       >
-        <span class="workspace-preview__label">{workspace.name || workspace.idx}</span>
-        {#if workspace.is_focused}
-          <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
-        {:else if workspace.is_urgent}
-          <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
-        {/if}
+        <button
+          type="button"
+          class="workspace-preview__button"
+          aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
+            + (workspace.output ? ' on ' + workspace.output : '')}
+          aria-pressed={workspace.is_focused}
+          title={'Workspace ' + (workspace.name || workspace.idx)
+            + (workspace.output ? ' on ' + workspace.output : '')
+            + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
+            + (workspace.is_urgent ? ' (urgent)' : '')}
+          disabled={pending || workspace.is_focused}
+          onclick={() => onFocus(workspace.id)}
+        >
+          <span class="workspace-preview__label">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
+          {#if workspace.is_focused}
+            <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
+          {:else if workspace.is_urgent}
+            <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
+          {/if}
+        </button>
       </li>
     {/each}
   </ol>
@@ -4004,10 +5291,37 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     letter-spacing: 0.02em;
-    cursor: default;
     transition:
       background-color var(--kira-motion-fast) var(--kira-motion-easing),
       color var(--kira-motion-fast) var(--kira-motion-easing);
+  }
+
+  .workspace-preview__button {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+
+  .workspace-preview__button:disabled {
+    cursor: default;
+  }
+
+  .workspace-preview__button:focus-visible {
+    outline: 2px solid var(--kira-color-accent);
+    outline-offset: 2px;
+  }
+
+  .workspace-preview__item:not(.preview-selected):has(.workspace-preview__button:not(:disabled):hover) {
+    background: var(--kira-color-surface-subtle);
   }
 
   .workspace-preview__label {
@@ -4054,7 +5368,7 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, onWorkspaceUpdate } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -4095,6 +5409,40 @@ describe('Core SDK JSON-RPC bridge', () => {
     await expect(result).resolves.toEqual({ connected: true, workspaces: [workspace] });
   });
 
+  it('sends a single focus action by stable string id, never index or unsafe JS number', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = focusWorkspace('18446744073709551615');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as {
+      jsonrpc: string; id: number; method: string; params: { id: string };
+    };
+    expect(payload).toEqual({
+      jsonrpc: '2.0', id: expect.any(Number),
+      method: 'focus_workspace', params: { id: '18446744073709551615' },
+    });
+    expect(payload.params.id).toBe('18446744073709551615');
+    deliverReply({ jsonrpc: '2.0', id: payload.id, result: { accepted: true } });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it('rejects malformed workspace IDs without sending any native request', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    for (const id of ['-1', '01', '', 'code', '18446744073709551616', '3;quit']) {
+      await expect(focusWorkspace(id)).rejects.toThrow('Invalid workspace ID');
+    }
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it('propagates Niri focus failures rather than optimistically changing workspace', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = focusWorkspace('9');
+    const payload = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number };
+    deliverReply({ jsonrpc: '2.0', id: payload.id, error: { code: -32602, message: 'Unknown workspace id' } });
+    await expect(pending).rejects.toThrow('Unknown workspace id');
+  });
+
   it('delivers live workspace events and unsubscribes without polling', () => {
     const handlers = new Map<string, EventListener>();
     const addEventListener = vi.fn((name: string, listener: EventListener) => {
@@ -4116,6 +5464,35 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(onChange).toHaveBeenCalledOnce();
     stop();
     expect(removeEventListener).toHaveBeenCalledWith('kira:workspaces', handler);
+  });
+
+  it('reads validated config state through read-only JSON-RPC', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = request('get_config');
+    const data = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number; method: string };
+    expect(data.method).toBe('get_config');
+    const config = { compact: true, title: 'KIRA QA', show_seconds: true, show_names: false, max_workspaces: 3 };
+    deliverReply({ jsonrpc: '2.0', id: data.id, result: { config, error: null } });
+    await expect(pending).resolves.toEqual({ config, error: null });
+  });
+
+  it('applies pushed KDL configuration, rejects malformed updates and unsubscribes', () => {
+    const handlers = new Map<string, EventListener>();
+    const addEventListener = vi.fn((name: string, listener: EventListener) => handlers.set(name, listener));
+    const removeEventListener = vi.fn();
+    globalThis.window = { addEventListener, removeEventListener } as unknown as Window & typeof globalThis;
+    const changed = vi.fn();
+    const stop = onConfigUpdate(changed);
+    const listener = handlers.get('kira:config');
+    expect(listener).toBeDefined();
+    const config = { compact: true, title: 'Panel', show_seconds: true, show_names: false, max_workspaces: 8 };
+    listener!({ detail: { config, error: null } } as unknown as Event);
+    expect(changed).toHaveBeenCalledOnce();
+    listener!({ detail: { config: { ...config, max_workspaces: 0 }, error: null } } as unknown as Event);
+    expect(changed).toHaveBeenCalledOnce();
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:config', listener);
   });
 
   it('rejects Core errors', async () => {
@@ -4167,10 +5544,49 @@ export function onWorkspaceUpdate(callback: (state: WorkspaceState) => void): ()
   return () => window.removeEventListener('kira:workspaces', listener);
 }
 
+export interface UiConfig {
+  compact: boolean;
+  title: string;
+  show_seconds: boolean;
+  show_names: boolean;
+  max_workspaces: number;
+}
+
+export interface ConfigState {
+  config: UiConfig;
+  error: string | null;
+}
+
+export const defaultUiConfig: UiConfig = {
+  compact: false,
+  title: 'KIRA DESKTOP',
+  show_seconds: false,
+  show_names: true,
+  max_workspaces: 12,
+};
+
+/** Subscribe to Core's validated KDL config snapshots, without polling. */
+export function onConfigUpdate(callback: (state: ConfigState) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const state = (event as CustomEvent<ConfigState>).detail;
+    const cfg = state?.config;
+    if (!cfg || typeof cfg.compact !== 'boolean' ||
+        typeof cfg.title !== 'string' || typeof cfg.show_seconds !== 'boolean' ||
+        typeof cfg.show_names !== 'boolean' || typeof cfg.max_workspaces !== 'number' ||
+        !Number.isInteger(cfg.max_workspaces) || cfg.max_workspaces < 1 ||
+        cfg.max_workspaces > 32) return;
+    callback(state);
+  };
+  window.addEventListener('kira:config', listener);
+  return () => window.removeEventListener('kira:config', listener);
+}
+
 type Methods = {
   ping: string;
   get_state: CoreState;
   get_workspaces: WorkspaceState;
+  get_config: ConfigState;
 };
 
 type RpcReply = {
@@ -4219,18 +5635,38 @@ if (typeof window !== 'undefined') {
  * Host has returned a response; rejects if Core is unavailable or times out.
  */
 export function request<M extends keyof Methods>(method: M): Promise<Methods[M]> {
+  return send(method) as Promise<Methods[M]>;
+}
+
+/** One intentional, narrowly scoped Niri action.
+ * Uses a stable string ID, never a per-monitor workspace index.
+ * Core checks the live workspace snapshot before sending FocusWorkspace.
+ */
+export function focusWorkspace(workspaceId: string): Promise<void> {
+  // u64 is decimal and may exceed Number.MAX_SAFE_INTEGER: never coerce to JS number.
+  if (!/^(0|[1-9][0-9]*)$/.test(workspaceId) ||
+      workspaceId.length > 20 ||
+      BigInt(workspaceId) > 18446744073709551615n) {
+    return Promise.reject(new Error('Invalid workspace ID'));
+  }
+  return send('focus_workspace', { id: workspaceId }).then(() => undefined);
+}
+
+function send(method: string, params?: { id: string }): Promise<unknown> {
   const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kira;
   if (!channel) return Promise.reject(new Error('Kira bridge unavailable (browser preview)'));
 
   const id = ++nextId;
-  return new Promise<Methods[M]>((resolve, reject) => {
+  return new Promise<unknown>((resolve, reject) => {
     const timeout = setTimeout(() => {
       pending.delete(id);
       reject(new Error('Kira Core request timed out'));
     }, 3000);
-    pending.set(id, { resolve: resolve as (value: unknown) => void, reject, timeout });
+    pending.set(id, { resolve, reject, timeout });
     try {
-      channel.postMessage(JSON.stringify({ jsonrpc: '2.0', id, method }));
+      channel.postMessage(JSON.stringify({
+        jsonrpc: '2.0', id, method, ...(params ? { params } : {}),
+      }));
     } catch (error) {
       clearTimeout(timeout);
       pending.delete(id);
@@ -4240,23 +5676,26 @@ export function request<M extends keyof Methods>(method: M): Promise<Methods[M]>
 }
 
 FILE	frontend/src/lib/themes/kira-default.css
-/* Kira Default: five canonical base colors, documented in SPECIFICATION §15.
- * Widgets should consume semantic variables, not hardcode theme colors.
- * Secondary surfaces, borders and overlays derive from these five values.
+/* Kira Default: Black / Night Bordeaux / White Smoke / Dusty Taupe /
+ * Stone Brown. Exactly five canonical colors. All additional tones are
+ * semantic aliases or mixes of these colors. Components never hardcode HEX.
+ * Taupe is both the secondary readable color and interactive accent:
+ * Stone Brown is a structural detail, not a low-contrast text color.
  */
 :root {
   color-scheme: dark;
 
-  --kira-color-background: #22223b;
-  --kira-color-surface: #4a4e69;
-  --kira-color-muted: #9a8c98;
-  --kira-color-accent: #c9ada7;
-  --kira-color-text: #f2e9e4;
+  --kira-color-background: #0a0908;
+  --kira-color-surface: #49111c;
+  --kira-color-muted: #a9927d;
+  --kira-color-accent: var(--kira-color-muted);
+  --kira-color-text: #f2f4f3;
+  --kira-color-earth: #5e503f;
 
   --kira-color-on-accent: var(--kira-color-background);
   --kira-color-text-secondary: var(--kira-color-muted);
-  --kira-color-surface-subtle: color-mix(in srgb, var(--kira-color-surface) 30%, var(--kira-color-background));
-  --kira-color-border: color-mix(in srgb, var(--kira-color-surface) 58%, var(--kira-color-background));
+  --kira-color-surface-subtle: color-mix(in srgb, var(--kira-color-surface) 50%, var(--kira-color-background));
+  --kira-color-border: color-mix(in srgb, var(--kira-color-earth) 80%, var(--kira-color-muted));
 
   --kira-space-1: 4px;
   --kira-space-2: 8px;
@@ -4285,6 +5724,7 @@ import { describe, expect, it } from 'vitest';
 import { kiraDefaultPalette, kiraDefaultRoles } from './kira-default';
 
 const css = readFileSync(new URL('./kira-default.css', import.meta.url), 'utf8');
+const html = readFileSync(new URL('../../../index.html', import.meta.url), 'utf8');
 
 function luminance(hex: string): number {
   const channels = [1, 3, 5]
@@ -4299,30 +5739,47 @@ function contrast(first: string, second: string): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-describe('Kira Default premium design tokens', () => {
+describe('Kira Default Bordeaux / Taupe design tokens', () => {
   it('contains exactly the five approved canonical base colors', () => {
     expect(Object.values(kiraDefaultPalette)).toEqual([
-      '#22223b', '#4a4e69', '#9a8c98', '#c9ada7', '#f2e9e4',
+      '#0a0908', '#49111c', '#f2f4f3', '#a9927d', '#5e503f',
     ]);
     expect(new Set(Object.values(kiraDefaultPalette)).size).toBe(5);
   });
 
   it('keeps public CSS tokens synchronized with the typed palette', () => {
     for (const [role, value] of Object.entries(kiraDefaultRoles)) {
-      const declaration = '--kira-color-' + role + ': ' + value + ';';
-      expect(css).toContain(declaration);
+      // Accent aliases the readable muted/taupe token; never add a sixth base.
+      const token = role === 'accent' ? 'var(--kira-color-muted)' : value;
+      expect(css).toContain('--kira-color-' + role + ': ' + token + ';');
     }
     const hexDeclarations = [...css.matchAll(/--kira-color-[\w-]+:\s*(#[0-9a-f]{6})\s*;/g)];
     expect(hexDeclarations).toHaveLength(5);
+    expect(new Set(hexDeclarations.map((match) => match[1]))).toEqual(
+      new Set(Object.values(kiraDefaultPalette)),
+    );
   });
 
   it('chooses text/accent pairs that meet WCAG AA', () => {
-    const { spaceIndigo, dustyGrape, lilacAsh, almondSilk, parchment } = kiraDefaultPalette;
-    expect(contrast(parchment, spaceIndigo)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(parchment, dustyGrape)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(lilacAsh, spaceIndigo)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(spaceIndigo, almondSilk)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(lilacAsh, dustyGrape)).toBeLessThan(4.5);
+    const { black, nightBordeaux, whiteSmoke, dustyTaupe, stoneBrown } = kiraDefaultPalette;
+    expect(contrast(whiteSmoke, black)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(whiteSmoke, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(dustyTaupe, black)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(dustyTaupe, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(black, dustyTaupe)).toBeGreaterThanOrEqual(4.5);
+    // Stone Brown is reserved for structure; low-contrast brown-on-black
+    // must never be used as the primary/muted text.
+    expect(contrast(stoneBrown, black)).toBeLessThan(4.5);
+    expect(kiraDefaultRoles.muted).toBe(dustyTaupe);
+    expect(kiraDefaultRoles.accent).toBe(dustyTaupe);
+  });
+
+  it('uses the default palette during pre-mount WebKit loading', () => {
+    expect(html).toContain('<meta name="theme-color" content="' + kiraDefaultPalette.black + '"');
+    expect(html).toContain('background:' + kiraDefaultPalette.black + ';');
+    expect(html).toContain('color:' + kiraDefaultPalette.whiteSmoke + ';');
+    expect(html).not.toContain('#22223b');
+    expect(html).not.toContain('#f2e9e4');
   });
 
   it('defines compact spacing, consistent radii and reduced motion', () => {
@@ -4334,22 +5791,27 @@ describe('Kira Default premium design tokens', () => {
 });
 
 FILE	frontend/src/lib/themes/kira-default.ts
-/** Canonical Kira Default palette. CSS values are contract-tested against this file. */
+/** Canonical Kira Default palette. Five colors supplied by the project owner.
+ * CSS semantic tokens and contrast combinations are contract-tested.
+ */
 export const kiraDefaultPalette = Object.freeze({
-  spaceIndigo: '#22223b',
-  dustyGrape: '#4a4e69',
-  lilacAsh: '#9a8c98',
-  almondSilk: '#c9ada7',
-  parchment: '#f2e9e4',
+  black: '#0a0908',
+  nightBordeaux: '#49111c',
+  whiteSmoke: '#f2f4f3',
+  dustyTaupe: '#a9927d',
+  stoneBrown: '#5e503f',
 } as const);
 
-/** Semantic roles shared by the shell and future trusted widgets. */
+/** Semantic roles, including safe reuse of Dusty Taupe as both secondary text
+ * and focus accent. Stone Brown is for structural borders, never small text.
+ */
 export const kiraDefaultRoles = Object.freeze({
-  background: kiraDefaultPalette.spaceIndigo,
-  surface: kiraDefaultPalette.dustyGrape,
-  muted: kiraDefaultPalette.lilacAsh,
-  accent: kiraDefaultPalette.almondSilk,
-  text: kiraDefaultPalette.parchment,
+  background: kiraDefaultPalette.black,
+  surface: kiraDefaultPalette.nightBordeaux,
+  muted: kiraDefaultPalette.dustyTaupe,
+  accent: kiraDefaultPalette.dustyTaupe,
+  text: kiraDefaultPalette.whiteSmoke,
+  earth: kiraDefaultPalette.stoneBrown,
 } as const);
 
 export type KiraThemeRole = keyof typeof kiraDefaultRoles;
@@ -4365,10 +5827,11 @@ describe('formatClock', () => {
 });
 
 FILE	frontend/src/lib/time.ts
-export function formatClock(date: Date, timeZone?: string): string {
+export function formatClock(date: Date, timeZone?: string, showSeconds = false): string {
   return new Intl.DateTimeFormat('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
+    ...(showSeconds ? { second: '2-digit' as const } : {}),
     hourCycle: 'h23',
     ...(timeZone ? { timeZone } : {}),
   }).format(date);
@@ -4462,6 +5925,42 @@ body,
     inset 0 1px 0 color-mix(in srgb, var(--kira-color-text) 9%, transparent),
     0 2px 10px color-mix(in srgb, var(--kira-color-background) 25%, transparent);
   color: var(--kira-color-text);
+}
+
+/* Compact mode keeps the same exclusive 42px Niri layer geometry but
+ * spends less horizontal space inside it. No compositor resize needed. */
+.bar.compact {
+  padding-inline: var(--kira-space-2);
+}
+
+.bar.compact .bar__start,
+.bar.compact .bar__end {
+  gap: var(--kira-space-2);
+}
+
+.bar.compact .brand__wordmark,
+.bar.compact .bar__center-line {
+  display: none;
+}
+
+.workspace-action-error {
+  flex: none;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kira-color-accent);
+  cursor: help;
+  white-space: nowrap;
+}
+
+.config-warning {
+  flex: none;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kira-color-accent);
+  cursor: help;
+  white-space: nowrap;
 }
 
 .bar::before {
@@ -4963,13 +6462,22 @@ def run_preview(
         ready = temp / "ready.json"
         config = temp / "niri.kdl"
         socket_file = temp / "core.sock"
+        # Kira's own KDL is separate from Niri's temporary compositor KDL.
+        # Default preview never reads or writes the user's ~/.config tree.
+        demo_config = temp / "kira.kdl"
+        sample = Path(__file__).resolve().parents[1] / "config/kira.kdl.example"
+        demo_config.write_text(sample.read_text(encoding="utf-8"), encoding="utf-8")
+        requested = os.environ.get("KIRA_CONFIG_FILE")
+        if requested and not Path(requested).is_absolute():
+            raise PreviewError("KIRA_CONFIG_FILE must be an absolute path")
+        active_config = Path(requested) if requested else demo_config
         config.write_text(
             preview_config(Path(sys.executable), Path(__file__).resolve(), ready, nonce),
             encoding="utf-8",
         )
 
         environment = os.environ.copy()
-        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW", "KIRA_UI_DIR"):
+        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW", "KIRA_UI_DIR", "KIRA_CONFIG_FILE"):
             environment.pop(key, None)
 
         validation = subprocess.run(
@@ -5022,6 +6530,7 @@ def run_preview(
                 "WAYLAND_DISPLAY": nested,
                 "KIRA_CORE_SOCKET": str(socket_file),
                 "KIRA_PREVIEW": "1",
+                "KIRA_CONFIG_FILE": str(active_config),
             })
             if ui_dir is not None:
                 isolated["KIRA_UI_DIR"] = str(ui_dir)
@@ -5038,6 +6547,9 @@ def run_preview(
             )
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
+            if not qa_smoke and qa_output_dir is None:
+                print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
+                print("[preview] Edit this file to hot-reload the bar; invalid KDL retains last valid config.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
             if not qa_smoke and qa_output_dir is None:
                 print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
@@ -5613,6 +7125,7 @@ Path(os.environ['PREVIEW_AUDIT']).write_text(json.dumps({
   'core': os.environ.get('KIRA_CORE_SOCKET'),
   'preview': os.environ.get('KIRA_PREVIEW'),
   'ui': os.environ.get('KIRA_UI_DIR'),
+  'kira_config': os.environ.get('KIRA_CONFIG_FILE'),
 }))
 print('kira-shell: diagnostic probe', flush=True)
 while True: time.sleep(.1)
@@ -5668,6 +7181,9 @@ while True: time.sleep(.1)
                 self.assertEqual(actual["preview"], "1")
                 self.assertEqual(actual["ui"], str(ui.resolve()) if fast else None)
                 self.assertIn("kira-preview-", actual["core"])
+                self.assertIn("kira-preview-", actual["kira_config"])
+                self.assertTrue(Path(actual["kira_config"]).is_file())
+                self.assertIn("kira {", Path(actual["kira_config"]).read_text())
                 self.assertFalse((runtime / "kira-desktop.sock").exists())
             finally:
                 if process.poll() is None:
