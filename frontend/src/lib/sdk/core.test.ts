@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, onWorkspaceUpdate } from './core';
+import { deliverReply, request, onWorkspaceUpdate, onConfigUpdate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -61,6 +61,35 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(onChange).toHaveBeenCalledOnce();
     stop();
     expect(removeEventListener).toHaveBeenCalledWith('kira:workspaces', handler);
+  });
+
+  it('reads validated config state through read-only JSON-RPC', async () => {
+    const postMessage = vi.fn();
+    globalThis.window = { webkit: { messageHandlers: { kira: { postMessage } } } } as unknown as Window & typeof globalThis;
+    const pending = request('get_config');
+    const data = JSON.parse(postMessage.mock.calls[0][0] as string) as { id: number; method: string };
+    expect(data.method).toBe('get_config');
+    const config = { compact: true, title: 'KIRA QA', show_seconds: true, show_names: false, max_workspaces: 3 };
+    deliverReply({ jsonrpc: '2.0', id: data.id, result: { config, error: null } });
+    await expect(pending).resolves.toEqual({ config, error: null });
+  });
+
+  it('applies pushed KDL configuration, rejects malformed updates and unsubscribes', () => {
+    const handlers = new Map<string, EventListener>();
+    const addEventListener = vi.fn((name: string, listener: EventListener) => handlers.set(name, listener));
+    const removeEventListener = vi.fn();
+    globalThis.window = { addEventListener, removeEventListener } as unknown as Window & typeof globalThis;
+    const changed = vi.fn();
+    const stop = onConfigUpdate(changed);
+    const listener = handlers.get('kira:config');
+    expect(listener).toBeDefined();
+    const config = { compact: true, title: 'Panel', show_seconds: true, show_names: false, max_workspaces: 8 };
+    listener!({ detail: { config, error: null } } as unknown as Event);
+    expect(changed).toHaveBeenCalledOnce();
+    listener!({ detail: { config: { ...config, max_workspaces: 0 }, error: null } } as unknown as Event);
+    expect(changed).toHaveBeenCalledOnce();
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:config', listener);
   });
 
   it('rejects Core errors', async () => {
