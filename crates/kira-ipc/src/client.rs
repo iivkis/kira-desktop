@@ -1,5 +1,5 @@
 //! Blocking, bounded Unix-socket client used by the Shell worker thread.
-use std::io::{self, BufRead, BufReader, Write};
+use std::io::{self, BufRead, BufReader, Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::Path;
 use std::time::Duration;

@@ -6,7 +6,7 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{RpcRequest, RpcResponse, PROTOCOL_VERSION};
+use kira_ipc::{PROTOCOL_VERSION, RpcRequest, RpcResponse};
 use webkit6::prelude::*;
 
 const BAR_HEIGHT: i32 = 42;
@@ -53,7 +53,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    let app = gtk::Application::builder().application_id("dev.kira.Desktop").build();
+    let app = gtk::Application::builder()
+        .application_id("dev.kira.Desktop")
+        .build();
     app.connect_activate(move |app| {
         let window = gtk::ApplicationWindow::new(app);
         window.set_title(Some("Kira Desktop"));
@@ -134,19 +136,13 @@ mod tests {
 
     #[test]
     fn rejects_unsupported_method_without_core_connection() {
-        let result = process_message(
-            r#"{"jsonrpc":"2.0","id":9,"method":"execute_shell"}"#,
-            None,
-        );
+        let result = process_message(r#"{"jsonrpc":"2.0","id":9,"method":"execute_shell"}"#, None);
         assert_eq!(result.error.unwrap().code, -32601);
     }
 
     #[test]
     fn reports_missing_core() {
-        let result = process_message(
-            r#"{"jsonrpc":"2.0","id":3,"method":"ping"}"#,
-            None,
-        );
+        let result = process_message(r#"{"jsonrpc":"2.0","id":3,"method":"ping"}"#, None);
         assert_eq!(result.error.unwrap().code, -32000);
     }
 }
