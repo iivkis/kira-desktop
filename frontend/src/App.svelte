@@ -3,11 +3,12 @@
   import CoreStatus from './lib/components/CoreStatus.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request } from './lib/sdk/core';
+  import { request, type WorkspaceState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
+  let workspaceState = $state<WorkspaceState | null>(null);
 
   onMount(() => {
     const clock = window.setInterval(() => {
@@ -29,10 +30,29 @@
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
+    // Core is subscribed to Niri's event stream. The Shell exposes read-only
+    // snapshots; this lightweight UI poll will be replaced by typed pushes.
+    let workspaceRequestPending = false;
+    const refreshWorkspaces = async () => {
+      if (workspaceRequestPending) return;
+      workspaceRequestPending = true;
+      try {
+        const state = await request('get_workspaces');
+        if (!disposed) workspaceState = state;
+      } catch {
+        if (!disposed) workspaceState = { connected: false, workspaces: [] };
+      } finally {
+        workspaceRequestPending = false;
+      }
+    };
+    void refreshWorkspaces();
+    const workspaceTimer = window.setInterval(() => void refreshWorkspaces(), 1_500);
+
     return () => {
       disposed = true;
       window.clearInterval(clock);
       window.clearInterval(statusTimer);
+      window.clearInterval(workspaceTimer);
     };
   });
 </script>
@@ -44,7 +64,7 @@
       <span class="brand__wordmark" aria-hidden="true">KIRA</span>
     </div>
     <span class="bar__separator" aria-hidden="true"></span>
-    <WorkspacePreview />
+    <WorkspacePreview state={workspaceState} />
   </section>
 
   <div class="bar__center" aria-label="Kira Desktop environment">
