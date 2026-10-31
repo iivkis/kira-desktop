@@ -122,7 +122,7 @@ class VisualQATests(unittest.TestCase):
                 if args[:2] == ("action", "screenshot-screen"):
                     path = Path(args[-1])
                     self.assertEqual(args[-2], "--path")
-                    path.write_bytes(png_header() + b"fake-screenshot")
+                    path.write_bytes(png_header() + b"fake-screenshot" + qa.PNG_TRAILER)
                 return ""
 
             try:
