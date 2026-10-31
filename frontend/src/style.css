@@ -130,6 +130,26 @@ body,
   flex: none;
 }
 
+.brand {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.brand:hover .brand__symbol {
+  background: color-mix(in srgb, var(--kira-color-accent) 24%, var(--kira-color-background));
+}
+
+.brand:focus-visible {
+  border-radius: var(--kira-radius-sm);
+  outline: 2px solid var(--kira-color-accent);
+  outline-offset: 3px;
+}
+
 .brand__symbol {
   display: grid;
   place-items: center;
