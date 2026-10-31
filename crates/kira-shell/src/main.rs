@@ -1,6 +1,7 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
+mod calendar_model;
 mod launcher;
 mod ui_assets;
 use std::env;

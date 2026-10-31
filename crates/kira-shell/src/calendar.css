@@ -1,4 +1,4 @@
-/* Canonical palette shared with Kira Default and Launcher. */
+/* One Kira picker, with our own cells/navigation, never GtkCalendar. */
 @define-color kira_black #000000ff;
 @define-color kira_prussian_blue #14213dff;
 @define-color kira_orange #fca311ff;
@@ -8,46 +8,17 @@
 window.kira-calendar-window { background: transparent; }
 .kira-calendar-card {
   background: @kira_black;
-  border: 1px solid rgba(229, 229, 229, 0.30);
+  border: 1px solid rgba(229, 229, 229, 0.28);
   border-radius: 10px;
   color: @kira_white;
 }
-.kira-calendar-hero {
-  padding: 19px 22px 18px;
-  background: @kira_black;
-}
-.kira-calendar-eyebrow {
-  color: @kira_orange;
-  font-size: 10px;
-  font-weight: 800;
-}
-button.kira-calendar-close {
-  min-width: 28px;
-  min-height: 28px;
-  padding: 0;
-  color: @kira_alabaster_grey;
-  background: transparent;
-  border: 0;
-  border-radius: 5px;
-  font-size: 21px;
-}
-button.kira-calendar-close:hover { color: @kira_orange; }
-.kira-calendar-time {
-  color: @kira_white;
-  font-size: 43px;
-  font-weight: 800;
-}
-.kira-calendar-today-date {
-  color: @kira_alabaster_grey;
-  font-size: 13px;
-}
-.kira-calendar-timezone {
-  color: @kira_orange;
-  font-size: 10px;
-  font-weight: 650;
-}
+.kira-calendar-hero { padding: 19px 22px 17px; background: @kira_black; }
+.kira-calendar-eyebrow { color: @kira_orange; font-size: 10px; font-weight: 800; }
+.kira-calendar-time { color: @kira_white; font-size: 43px; font-weight: 800; }
+.kira-calendar-today-date { color: @kira_alabaster_grey; font-size: 13px; }
+.kira-calendar-timezone { color: @kira_orange; font-size: 10px; font-weight: 650; }
 .kira-calendar-workbench {
-  padding: 16px 19px 18px;
+  padding: 15px 19px 18px;
   background: @kira_prussian_blue;
 }
 .kira-calendar-section {
@@ -55,84 +26,115 @@ button.kira-calendar-close:hover { color: @kira_orange; }
   font-size: 10px;
   font-weight: 750;
 }
-button.kira-calendar-today-button {
-  padding: 4px 9px;
-  min-height: 26px;
-  border: 1px solid rgba(229, 229, 229, 0.38);
-  border-radius: 4px;
-  background: transparent;
-  color: @kira_white;
-  font-size: 10px;
-  font-weight: 750;
-}
-button.kira-calendar-today-button:hover {
-  border-color: @kira_orange;
-  color: @kira_orange;
-}
-calendar.kira-calendar-grid {
-  padding: 5px;
-  background: @kira_prussian_blue;
-  color: @kira_white;
-}
-calendar.kira-calendar-grid header {
-  color: @kira_white;
-  background: @kira_prussian_blue;
-}
-calendar.kira-calendar-grid header button {
-  color: @kira_white;
-  border-radius: 5px;
-}
-calendar.kira-calendar-grid header button:hover {
-  background: rgba(0, 0, 0, 0.30);
-}
-calendar.kira-calendar-grid grid label.day-name,
-calendar.kira-calendar-grid grid label.week-number {
-  color: @kira_alabaster_grey;
-  font-size: 11px;
-}
-calendar.kira-calendar-grid grid label.day-number {
-  color: @kira_white;
-  border-radius: 6px;
-  font-size: 12px;
-}
-calendar.kira-calendar-grid grid label.other-month {
-  color: rgba(229, 229, 229, 0.52);
-}
-calendar.kira-calendar-grid grid label.today {
-  color: @kira_orange;
-  font-weight: 800;
-}
-calendar.kira-calendar-grid grid label.day-number:selected {
-  color: @kira_black;
-  background: @kira_orange;
-  font-weight: 800;
-}
-.kira-calendar-footer {
-  padding: 16px 22px 18px;
-  background: @kira_black;
-}
-.kira-calendar-selected {
+.kira-calendar-toolbar { padding: 2px 0 5px; }
+.kira-calendar-toolbar-divider { margin: 5px 3px; background: rgba(229,229,229,0.18); }
+.kira-calendar-month {
   color: @kira_white;
   font-size: 15px;
+  font-weight: 750;
+}
+.kira-calendar-year {
+  min-width: 40px;
+  color: @kira_alabaster_grey;
+  font-size: 12px;
   font-weight: 700;
 }
-.kira-calendar-meta, .kira-calendar-hint {
+button.kira-calendar-nav {
+  min-width: 29px;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_alabaster_grey;
+  font-size: 21px;
+  font-weight: 700;
+}
+button.kira-calendar-nav:hover { background: rgba(0,0,0,0.32); color: @kira_orange; }
+button.kira-calendar-nav:active { background: rgba(0,0,0,0.52); }
+button.kira-calendar-nav:disabled { color: rgba(229,229,229,0.24); }
+button.kira-calendar-nav:focus-visible,
+button.kira-calendar-today-button:focus-visible,
+button.kira-calendar-copy:focus-visible,
+button.kira-day:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: -2px;
+}
+button.kira-calendar-close { font-size: 23px; }
+
+button.kira-calendar-today-button {
+  min-height: 29px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_orange;
+  font-size: 10px;
+  font-weight: 800;
+}
+button.kira-calendar-today-button:hover { background: rgba(0,0,0,0.30); }
+
+.kira-calendar-grid {
+  padding: 4px 0;
+  background: @kira_prussian_blue;
+}
+.kira-grid-header,
+.kira-grid-week {
   color: @kira_alabaster_grey;
   font-size: 10px;
   font-weight: 650;
 }
-.kira-calendar-actions { margin-top: 4px; }
-button.kira-calendar-copy {
-  min-height: 28px;
-  padding: 5px 10px;
-  border: 1px solid @kira_orange;
-  border-radius: 5px;
+.kira-grid-header { padding-bottom: 6px; }
+.kira-grid-week { color: rgba(229,229,229,0.6); }
+button.kira-day {
+  min-height: 36px;
+  min-width: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_white;
+  font-size: 12px;
+  font-weight: 650;
+}
+button.kira-day:hover:not(:disabled) {
+  background: rgba(0,0,0,0.34);
+  color: @kira_orange;
+}
+button.kira-day.kira-day-adjacent { color: rgba(229,229,229,0.5); }
+button.kira-day.kira-day-today:not(.kira-day-selected) {
+  box-shadow: inset 0 -2px @kira_orange;
+  color: @kira_orange;
+}
+button.kira-day.kira-day-selected,
+button.kira-day.kira-day-selected:hover {
   background: @kira_orange;
   color: @kira_black;
+  font-weight: 850;
+}
+button.kira-day:disabled { opacity: 0; }
+
+.kira-calendar-footer {
+  padding: 16px 22px 18px;
+  background: @kira_black;
+}
+.kira-calendar-selected { color: @kira_white; font-size: 15px; font-weight: 750; }
+.kira-calendar-meta,
+.kira-calendar-hint {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 650;
+}
+.kira-calendar-actions { margin-top: 8px; }
+button.kira-calendar-copy {
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 0;
+  border-bottom: 2px solid @kira_orange;
+  border-radius: 0;
+  background: transparent;
+  color: @kira_orange;
   font-size: 10px;
   font-weight: 800;
 }
-button.kira-calendar-copy:hover {
-  background: @kira_alabaster_grey;
-  border-color: @kira_alabaster_grey;
-}
+button.kira-calendar-copy:hover { background: rgba(252,163,17,0.12); }
