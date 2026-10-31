@@ -13,8 +13,10 @@ a Core-owned XDG catalog.
    requests keyboard focus while visible, not when Kira starts.
 3. Start typing to search installed applications (case-insensitive).
    The list shows up to 64 matching, non-hidden desktop entries.
-4. Use **Up / Down** to change selection and **Enter** to launch the
-   selected entry, or click a row. Use **Escape** to dismiss.
+4. Use **Up / Down** to change selection; the results list **automatically
+   scrolls the selected row into view** in either direction while keeping
+   text-input focus in the search field. Press **Enter** to launch the
+   selected entry, click a row, or use **Escape** to dismiss.
 5. Click the logo again to toggle the launcher closed.
 
 There is **no auto-launch** during preview or `qa:visual:fast/release`.
@@ -29,6 +31,12 @@ git fetch origin feat/xdg-app-launcher
 git switch --track origin/feat/xdg-app-launcher
 nix develop --command task dev:preview
 ```
+
+For manual scroll QA, clear the search so more than a viewport of apps
+appears. Press **Down** repeatedly past the visible bottom, then **Up**
+back to the first entry. The highlighted application must remain fully
+visible without manual mouse-wheel scrolling or losing the ability to
+type in the search field. Repeat after filtering the catalog.
 
 Search for `foot` if installed and explicitly launch it (only if desired).
 It inherits the **nested** `WAYLAND_DISPLAY` from the Shell, so testing
