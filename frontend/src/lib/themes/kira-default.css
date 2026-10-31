@@ -1,20 +1,23 @@
-/* Kira Default: five canonical base colors, documented in SPECIFICATION §15.
- * Widgets should consume semantic variables, not hardcode theme colors.
- * Secondary surfaces, borders and overlays derive from these five values.
+/* Kira Default: Black / Night Bordeaux / White Smoke / Dusty Taupe /
+ * Stone Brown. Exactly five canonical colors. All additional tones are
+ * semantic aliases or mixes of these colors. Components never hardcode HEX.
+ * Taupe is both the secondary readable color and interactive accent:
+ * Stone Brown is a structural detail, not a low-contrast text color.
  */
 :root {
   color-scheme: dark;
 
-  --kira-color-background: #22223b;
-  --kira-color-surface: #4a4e69;
-  --kira-color-muted: #9a8c98;
-  --kira-color-accent: #c9ada7;
-  --kira-color-text: #f2e9e4;
+  --kira-color-background: #0a0908;
+  --kira-color-surface: #49111c;
+  --kira-color-muted: #a9927d;
+  --kira-color-accent: var(--kira-color-muted);
+  --kira-color-text: #f2f4f3;
+  --kira-color-earth: #5e503f;
 
   --kira-color-on-accent: var(--kira-color-background);
   --kira-color-text-secondary: var(--kira-color-muted);
-  --kira-color-surface-subtle: color-mix(in srgb, var(--kira-color-surface) 30%, var(--kira-color-background));
-  --kira-color-border: color-mix(in srgb, var(--kira-color-surface) 58%, var(--kira-color-background));
+  --kira-color-surface-subtle: color-mix(in srgb, var(--kira-color-surface) 50%, var(--kira-color-background));
+  --kira-color-border: color-mix(in srgb, var(--kira-color-earth) 80%, var(--kira-color-muted));
 
   --kira-space-1: 4px;
   --kira-space-2: 8px;
