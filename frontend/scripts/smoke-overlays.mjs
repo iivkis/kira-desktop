@@ -154,7 +154,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'lens' ? 2450 : heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -163,7 +163,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'lens' ? 3000 : heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -249,9 +249,11 @@ try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('calendar-tenet-pointer-lens', [
     { delay: 25, kind: 'calendar', generation: 1 },
-    { delay: 180, kind: 'lens-over' },
-    { delay: 390, kind: 'lens-move' },
-    { delay: 520, kind: 'lens-out' },
+    // Allow the TENET calendar opening scene to settle first; otherwise
+    // its moving section would legitimately alter the button rectangle.
+    { delay: 1150, kind: 'lens-over' },
+    { delay: 1400, kind: 'lens-move' },
+    { delay: 1540, kind: 'lens-out' },
   ], 'Kira Calendar', 'lens');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
