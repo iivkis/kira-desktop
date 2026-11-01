@@ -20,30 +20,30 @@ const metrics: SystemMetrics = {
 };
 
 describe('System Monitor ECharts telemetry model', () => {
-  it('keeps 600 genuine 100ms samples for one minute of fast pulse', () => {
+  it('keeps 120 genuine 500ms samples for one minute of fast pulse', () => {
     let history = [] as ReturnType<typeof appendPulse>;
-    for (let i = 0; i < 625; i++) {
+    for (let i = 0; i < 145; i++) {
       history = appendPulse(history, {
         cpu_percent: i % 101, memory_total_kib: 1000, memory_available_kib: 600,
-      }, i * 100);
+      }, i * 500);
     }
-    expect(MAX_PULSE_POINTS).toBe(600);
-    expect(history).toHaveLength(600);
-    expect(history[0].time).toBe(2500);
-    expect(history.at(-1)?.time).toBe(62400);
+    expect(MAX_PULSE_POINTS).toBe(120);
+    expect(history).toHaveLength(120);
+    expect(history[0].time).toBe(12500);
+    expect(history.at(-1)?.time).toBe(72000);
     expect(history.at(-1)?.ram).toBe(40);
   });
 
-  it('never repeats 2s GPU samples across 100ms CPU/RAM pulses', () => {
+  it('never repeats 2s GPU samples across 500ms CPU/RAM pulses', () => {
     const sample = { cpu_percent: 5, memory_total_kib: 1000, memory_available_kib: 610 };
-    let history = appendPulse([], sample, 100, 73);
-    for (let i = 2; i <= 20; i++) history = appendPulse(history, sample, i * 100);
+    let history = appendPulse([], sample, 500, 73);
+    for (let i = 2; i <= 20; i++) history = appendPulse(history, sample, i * 500);
     expect(history.filter(point => point.gpu !== null)).toHaveLength(1);
     expect(history[0].gpu).toBe(73);
     expect(history.at(-1)?.gpu).toBeNull();
     const missing = appendPulse([], {
       cpu_percent: null, memory_total_kib: null, memory_available_kib: null,
-    }, 100);
+    }, 500);
     expect(missing[0]).toEqual({ time: 100, cpu: null, ram: null, gpu: null });
   });
 
