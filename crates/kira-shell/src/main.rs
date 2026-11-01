@@ -404,7 +404,11 @@ mod tests {
     #[test]
     fn navigation_is_restricted_to_exact_ui_document() {
         assert!(permitted_ui_page("about:blank"));
-        for uri in ["https://evil.example/", "kira-ui://app/index.html", "file:///etc/passwd"] {
+        for uri in [
+            "https://evil.example/",
+            "kira-ui://app/index.html",
+            "file:///etc/passwd",
+        ] {
             assert!(!permitted_ui_page(uri));
         }
     }
