@@ -79,7 +79,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("matching.slice(0, 36)", WIDGET)
         self.assertIn("function nextSort(", MODEL)
         self.assertIn("function sortedProcesses(", MODEL)
-        self.assertIn("row.pid.toString()", MODEL.replace("String(row.pid)", "row.pid.toString()"))
+        self.assertIn("String(row.pid)", MODEL)
         for file in ("/proc", "/proc/stat", 'stat', 'status'):
             self.assertIn(file, PROCESSES)
         self.assertIn("pid, stat.start_ticks", PROCESSES)
