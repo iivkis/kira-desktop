@@ -53,6 +53,12 @@ function scriptFor(steps) {
             : kind === 'filter'
               ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : kind === 'calendar-next'
+                ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent;' +
+                  'document.querySelector("button[aria-label=\\\"Next month\\\"]")?.click();'
+              : kind === 'calendar-pick'
+                ? 'const candidate = document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[data-calendar-day]:not([aria-pressed=\\\"true\\\"])");' +
+                  'window.__kiraCalendarChosen = candidate?.getAttribute("aria-label");candidate?.click();'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : kind === 'pulse'
@@ -80,6 +86,8 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
+      'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
       'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && roots[0].textContent.includes("LIVE · 500MS"));' +
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
@@ -126,6 +134,11 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       !output.includes('data-smoke-editable-selectable="true"')) {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
   }
+  if (heightMode === 'calendar' &&
+      (!output.includes('data-smoke-calendar-navigated="true"') ||
+       !output.includes('data-smoke-calendar-picked="true"'))) {
+    throw new Error(name + ': GSAP calendar navigation/selection must keep date and pressed semantics correct');
+  }
   if (heightMode === 'system') {
     const charts = Number(output.match(/data-smoke-system-charts="(\d+)"/)?.[1] ?? 0);
     if (charts < 2 || !output.includes('data-smoke-system-swap="true"') ||
@@ -164,6 +177,11 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
+  await smoke('calendar-month-and-day-motion', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 180, kind: 'calendar-next' },
+    { delay: 420, kind: 'calendar-pick' },
+  ], 'Kira Calendar', 'calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
   await smoke('system-live-telemetry', [
     { delay: 25, kind: 'system', generation: 1 },
