@@ -6,6 +6,18 @@ Kira Desktop targets NixOS, Niri and Wayland. Flakes must be enabled. The reposi
 
 The GitHub Actions workflows are split into fast, non-graphical checks (`.github/workflows/ci.yml`) and native Nix integration (`.github/workflows/nix.yml`).
 
+## Widget architecture migration
+
+The intended architecture is Rust for Core, GIO/system integration and the
+GTK/WebKit layer-shell **window host**, with **all widget views in Svelte 5**.
+The current GTK Launcher, Calendar and System Monitor are existing deviations.
+Do not build additional widget layouts using native GTK controls.
+
+See [UI_ARCHITECTURE.md](UI_ARCHITECTURE.md) for the staged migration. A
+Svelte CalendarWidget exists as an unconnected replacement; it must not be
+called the active Calendar until a separate WebKit overlay and host bridge
+have been implemented and visually tested in nested Niri.
+
 ## Kira Default visual design
 
 The Svelte 5 Top Bar uses **Tailwind CSS v4** through `@tailwindcss/vite`.
