@@ -95,8 +95,11 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
   if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
-      Number(output.match(/data-smoke-icon-count="(\\d+)"/)?.[1] ?? 0) < 1)) {
-    throw new Error(name + ': launcher must have square edges and real app icons');
+      Number(output.match(/data-smoke-icon-count="(\d+)"/)?.[1] ?? 0) < 1)) {
+    const square = output.match(/data-smoke-square="([^"]+)"/)?.[1] ?? 'unset';
+    const icons = output.match(/data-smoke-icon-count="([^"]+)"/)?.[1] ?? 'unset';
+    const rows = (output.match(/role="option"/g) ?? []).length;
+    throw new Error(name + ': square=' + square + ', icons=' + icons + ', rows=' + rows);
   }
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
