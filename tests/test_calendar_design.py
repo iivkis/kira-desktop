@@ -73,15 +73,14 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("notifyCalendarMounted", ENTRY)
         self.assertIn("host.hide()", ENTRY)
         self.assertIn("host.show(", ENTRY)
-        self.assertIn("await import('./lib/components/CalendarWidget.svelte')", ENTRY)
+        self.assertIn("import CalendarWidget from './lib/components/CalendarWidget.svelte'", ENTRY)
         self.assertIn("return unmount(instance)", ENTRY)
-        self.assertNotIn("import CalendarWidget from ", ENTRY)
         lifecycle = (ROOT / "frontend/src/lib/lazy-widget.ts").read_text()
         self.assertIn("await previous.widget.unmount(previous.instance)", lifecycle)
         self.assertIn("if (desired !== generation) continue", lifecycle)
         self.assertIn("if ((active?.generation ?? null) !== desired) void drain()", lifecycle)
-        vite = (ROOT / "frontend/vite.config.ts").read_text()
-        self.assertIn("inlineDynamicImports: true", vite)
+        # The offline classic script cannot issue a dynamic import request.
+        self.assertNotIn("await import(", ENTRY)
         # WebKit must remain alive to preserve instant reopening.
         self.assertNotIn("window.close()", RUST)
 
