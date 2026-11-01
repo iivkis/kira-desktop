@@ -513,3 +513,19 @@ leap years and ISO weeks. `calendar.rs` creates the isolated
 WebKit/layer-shell window and validates the copied ISO date with a small
 independent leap-year check before touching the system clipboard.
 The obsolete duplicate Rust month-grid model has been deleted.
+
+
+### Content-sized popup geometry
+
+Calendar, System Monitor and Launcher use **natural Svelte content height** rather
+than the old 620px fixed GTK window size. `observeOverlaySize` reads the
+active widget's root `getBoundingClientRect().height` and sends
+`size:<generation>:<height>` through the private, allowlisted WebKit bridge.
+Rust rejects stale generations and invalid sizes and clamps GTK's default
+height to **70% of the current output's logical height**. The native output
+height is passed to Svelte as an absolute CSS-pixel `maxHeight`: never use
+`70vh` here, because WebKit viewport height is itself controlled by GTK and
+can form a layout feedback loop. Under the cap the window hugs its content;
+over it, Calendar/Overview scroll vertically, while Launcher/Processes scroll
+their result lists. `ResizeObserver` is disconnected when Svelte unmounts,
+and the original single warm WebView and safe center/corner relocation remain.
