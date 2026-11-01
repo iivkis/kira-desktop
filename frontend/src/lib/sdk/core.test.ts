@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -77,6 +77,58 @@ describe('Core SDK JSON-RPC bridge', () => {
     } as unknown as Window & typeof globalThis;
     expect(() => closeCalendarOverlay()).not.toThrow();
     expect(() => copyCalendarDate('2024-02-29')).not.toThrow();
+  });
+
+  it('allows only fixed System Monitor overlay actions', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    closeSystemOverlay();
+    copySystemReport();
+    setSystemMonitorTab('overview');
+    setSystemMonitorTab('processes');
+    setSystemMonitorTab('execute' as 'processes');
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual([
+      'close', 'copy-report', 'tab:overview', 'tab:processes',
+    ]);
+  });
+
+  it('delivers only valid read-only monitor metrics and bounded processes', () => {
+    const events = new Map<string, EventListener>();
+    const removeEventListener = vi.fn();
+    globalThis.window = {
+      addEventListener(name: string, callback: EventListener) { events.set(name, callback); },
+      removeEventListener,
+    } as unknown as Window & typeof globalThis;
+    const onData = vi.fn();
+    const onProcesses = vi.fn();
+    const stopData = onSystemOverlayData(onData);
+    const stopProcesses = onSystemProcesses(onProcesses);
+    const metrics = {
+      cpu_percent: 23, memory_total_kib: 100, memory_available_kib: 70,
+      swap_total_kib: 0, swap_free_kib: 0, root_total_kib: 100, root_available_kib: 40,
+      uptime_seconds: 3600, load: [1, 2, 3], battery_percent: null, battery_charging: null,
+    };
+    const dispatch = (name: string, detail: unknown) => {
+      events.get(name)!({ detail } as unknown as Event);
+    };
+    dispatch('kira:system:data', { core: true, niri: true, metrics });
+    expect(onData).toHaveBeenCalledOnce();
+    dispatch('kira:system:data', { core: true, niri: true, metrics: { ...metrics, load: [NaN, 0, 1] } });
+    expect(onData).toHaveBeenCalledOnce();
+    const process = {
+      rows: [{ pid: 123, name: 'shell', state: 'S', cpu_percent: 1, rss_kib: 1024 }],
+      total: 1, truncated: false, error: null,
+    };
+    dispatch('kira:system:processes', process);
+    expect(onProcesses).toHaveBeenCalledOnce();
+    dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], name: 'x'.repeat(65) }] });
+    dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], cpu_percent: 200 }] });
+    expect(onProcesses).toHaveBeenCalledOnce();
+    stopData();
+    stopProcesses();
+    expect(removeEventListener).toHaveBeenCalledTimes(2);
   });
 
   it('does not claim calendar activation when the bridge throws', () => {

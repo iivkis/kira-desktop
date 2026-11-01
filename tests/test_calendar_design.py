@@ -31,10 +31,10 @@ class CalendarDesignTests(unittest.TestCase):
             self.assertNotIn(native_ui, RUST)
 
     def test_calendar_host_is_an_isolated_webkit_overlay(self):
-        self.assertIn('set_namespace(Some("kira-calendar"))', RUST)
+        self.assertIn('set_namespace(Some("kira-overlay"))', RUST)
         self.assertIn("set_exclusive_zone(0)", RUST)
         self.assertIn("set_keyboard_mode(KeyboardMode::OnDemand)", RUST)
-        self.assertIn("native_ui::configure_webview_popup(&window, 378, 560)", RUST)
+        self.assertIn("native_ui::configure_webview_popup(&window, 420, 620)", RUST)
         self.assertIn("native_ui::POPUP_TOP_MARGIN", RUST)
         self.assertIn("restrict_webview_navigation(&view)", RUST)
         self.assertIn('register_script_message_handler("kiraCalendarUi", None)', RUST)
@@ -63,8 +63,8 @@ class CalendarDesignTests(unittest.TestCase):
 
     def test_lazy_svelte_mount_and_dispose_on_hide(self):
         self.assertIn("self.view.evaluate_javascript(", RUST)
-        self.assertIn("kira:calendar:show", RUST)
-        self.assertIn("kira:calendar:hide", RUST)
+        self.assertIn("kira:overlay:show", RUST)
+        self.assertIn("kira:overlay:hide", RUST)
         self.assertIn("Some(UiCommand::HostReady)", RUST)
         self.assertIn("Some(UiCommand::Mounted(generation))", RUST)
         self.assertIn("self.widget_ready.set(false)", RUST)
@@ -90,7 +90,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("mount(CalendarWidget", ENTRY)
         self.assertIn("mount(App", ENTRY)
         self.assertIn('data-kira-ui-root', CALENDAR)
-        self.assertIn("Svelte calendar DOM verified", RUST)
+        self.assertIn("Svelte overlay DOM verified", RUST)
         self.assertIn("Svelte panel DOM verified", SHELL)
         self.assertIn("native_ui::restrict_webview_navigation(&view)", SHELL)
 

@@ -48,7 +48,6 @@ let
     filter = path: type:
       (lib.hasSuffix "/crates/kira-shell/src/launcher.css" (toString path))
       || (lib.hasSuffix "/crates/kira-shell/src/native-palette.css" (toString path))
-      || (lib.hasSuffix "/crates/kira-shell/src/system_panel.css" (toString path))
       || craneLib.filterCargoSources path type;
   };
   commonRustArgs = {

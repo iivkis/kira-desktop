@@ -1,5 +1,5 @@
-//! Reusable, prewarmed WebKit/layer-shell host for the Svelte Calendar.
-//! GTK owns the window and clipboard; calendar rendering belongs to Svelte.
+//! One warm WebKit layer-shell host shared by the Svelte Calendar and System.
+//! GTK owns one window, trusted IPC and clipboard; Svelte renders both widgets.
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::time::{Duration, Instant};
@@ -8,13 +8,27 @@ use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
 
-const TITLE: &str = "Kira Calendar";
+const TITLE: &str = "Kira Overlay";
 const CALENDAR_MARKER: &str = "<html lang=\"en\">";
 const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\">";
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Surface {
+    Calendar,
+    System,
+}
+
+impl Surface {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Calendar => "calendar",
+            Self::System => "system",
+        }
+    }
+}
+
 thread_local! {
-    // Only the GTK thread may touch GTK/WebKit. Hold the view for the entire
-    // shell session instead of constructing a new WebKit process per click.
+    // One GTK/WebKit host, shared by every built-in overlay type.
     static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>> = const { RefCell::new(None) };
 }
 
@@ -24,6 +38,9 @@ struct CalendarOverlay {
     document: String,
     host_ready: Cell<bool>,
     widget_ready: Cell<bool>,
+    active: Cell<Option<Surface>>,
+    system: RefCell<Option<crate::system_panel::Model>>,
+    last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
     revealed: Cell<bool>,
     paint_pending: Cell<bool>,
@@ -35,6 +52,10 @@ struct CalendarOverlay {
 impl CalendarOverlay {
     fn hide(&self) {
         self.requested.set(false);
+        if let Some(model) = self.system.borrow().as_ref() {
+            model.set_processes_active(false);
+        }
+        self.active.set(None);
         self.widget_ready.set(false);
         self.revealed.set(false);
         self.paint_pending.set(false);
@@ -43,7 +64,7 @@ impl CalendarOverlay {
         // warm WebKit host. The JS host serializes rapid hide/show events.
         if self.host_ready.get() {
             self.view.evaluate_javascript(
-                "window.dispatchEvent(new Event('kira:calendar:hide'));",
+                "window.dispatchEvent(new Event('kira:overlay:hide'));",
                 None,
                 None,
                 None::<&gtk::gio::Cancellable>,
@@ -57,7 +78,8 @@ impl CalendarOverlay {
         self.window.set_visible(false);
     }
 
-    fn show(self: &Rc<Self>) {
+    fn show(self: &Rc<Self>, kind: Surface) {
+        self.active.set(Some(kind));
         self.requested.set(true);
         self.revealed.set(false);
         self.widget_ready.set(false);
@@ -81,7 +103,7 @@ impl CalendarOverlay {
                     && state.generation.get() == generation
                     && !state.revealed.get()
                 {
-                    eprintln!("kira-shell: Calendar did not paint within 3s; hiding popup");
+                    eprintln!("kira-shell: Svelte overlay did not paint within 3s; hiding popup");
                     state.hide();
                 }
             }
@@ -93,9 +115,13 @@ impl CalendarOverlay {
             return;
         }
         let generation = self.generation.get();
-        // A narrow, number-only notification from GTK to the trusted JS host.
+        let Some(kind) = self.active.get() else {
+            return;
+        };
+        // Only the two hardcoded, trusted Svelte widget types may be selected.
+        let kind = kind.name();
         let script = format!(
-            "window.dispatchEvent(new CustomEvent('kira:calendar:show', {{ detail: {{ generation: {generation} }} }}));"
+            "window.dispatchEvent(new CustomEvent('kira:overlay:show', {{ detail: {{ kind: '{kind}', generation: {generation} }} }}));"
         );
         self.view.evaluate_javascript(
             &script,
@@ -144,7 +170,10 @@ impl CalendarOverlay {
             Some(UiCommand::Mounted(generation))
                 if self.requested.get() && self.generation.get() == generation =>
             {
-                eprintln!("kira-shell: Svelte calendar DOM verified");
+                eprintln!("kira-shell: Svelte overlay DOM verified");
+                if self.active.get() == Some(Surface::System) {
+                    self.send_metrics();
+                }
                 self.widget_ready.set(true);
                 self.request_paint();
             }
@@ -158,18 +187,99 @@ impl CalendarOverlay {
                 self.window.set_opacity(1.0);
                 if let Some(start) = self.open_started.take() {
                     eprintln!(
-                        "kira-shell: Calendar visible after {} ms",
+                        "kira-shell: Overlay visible after {} ms",
                         start.elapsed().as_millis()
                     );
                 }
             }
             Some(UiCommand::Close) if self.requested.get() => self.hide(),
-            Some(UiCommand::CopyDate(date)) if self.requested.get() && self.revealed.get() => {
+            Some(UiCommand::CopyDate(date))
+                if self.requested.get()
+                    && self.revealed.get()
+                    && self.active.get() == Some(Surface::Calendar) =>
+            {
                 if let Some(display) = gtk::gdk::Display::default() {
                     display.clipboard().set_text(date);
                 }
             }
-            _ => eprintln!("kira-shell: ignored invalid/stale Calendar UI command"),
+            Some(UiCommand::ProcessesTab(active))
+                if self.requested.get() && self.active.get() == Some(Surface::System) =>
+            {
+                if let Some(model) = self.system.borrow().as_ref() {
+                    model.set_processes_active(active);
+                }
+            }
+            Some(UiCommand::CopyReport)
+                if self.requested.get()
+                    && self.revealed.get()
+                    && self.active.get() == Some(Surface::System) =>
+            {
+                if let Some(model) = self.system.borrow().as_ref()
+                    && let Some(display) = gtk::gdk::Display::default()
+                {
+                    display.clipboard().set_text(&model.report());
+                }
+            }
+            _ => eprintln!("kira-shell: ignored invalid/stale Overlay UI command"),
+        }
+    }
+
+    fn dispatch_data(&self, event: &str, payload: serde_json::Value) {
+        if !self.requested.get() || self.active.get() != Some(Surface::System) {
+            return;
+        }
+        // Use JSON.parse on a quoted JSON string, never inject untrusted
+        // process names as executable JavaScript.
+        if let Ok(serialized) = serde_json::to_string(&payload)
+            && let Ok(encoded) = serde_json::to_string(&serialized)
+        {
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('{event}', {{ detail: JSON.parse({encoded}) }}));"
+            );
+            self.view.evaluate_javascript(
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: System data delivery failed: {error}");
+                    }
+                },
+            );
+        }
+    }
+
+    fn send_metrics(&self) {
+        let data = self
+            .system
+            .borrow()
+            .as_ref()
+            .map(|model| model.metrics_json());
+        if let Some(payload) = data {
+            self.dispatch_data("kira:system:data", payload);
+            self.last_metrics.set(Some(Instant::now()));
+        }
+    }
+
+    fn tick(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::System) {
+            return;
+        }
+        if self
+            .last_metrics
+            .get()
+            .is_none_or(|then| then.elapsed() >= Duration::from_secs(2))
+        {
+            self.send_metrics();
+        }
+        let process = self
+            .system
+            .borrow()
+            .as_ref()
+            .and_then(|model| model.poll_processes());
+        if let Some(payload) = process {
+            self.dispatch_data("kira:system:processes", payload);
         }
     }
 }
@@ -181,6 +291,8 @@ enum UiCommand<'a> {
     Mounted(u32),
     Painted(u32),
     CopyDate(&'a str),
+    ProcessesTab(bool),
+    CopyReport,
 }
 
 /// Revalidate date-copy requests without duplicating the Svelte date grid.
@@ -202,6 +314,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     match message {
         "close" => return Some(UiCommand::Close),
         "host-ready" => return Some(UiCommand::HostReady),
+        "tab:processes" => return Some(UiCommand::ProcessesTab(true)),
+        "tab:overview" => return Some(UiCommand::ProcessesTab(false)),
+        "copy-report" => return Some(UiCommand::CopyReport),
         _ => {}
     }
     if let Some(value) = message.strip_prefix("mounted:") {
@@ -247,7 +362,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     window.set_title(Some(TITLE));
     window.set_decorated(false);
     window.init_layer_shell();
-    window.set_namespace(Some("kira-calendar"));
+    window.set_namespace(Some("kira-overlay"));
     window.set_layer(Layer::Overlay);
     window.set_anchor(Edge::Top, true);
     window.set_anchor(Edge::Right, true);
@@ -255,7 +370,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     window.set_margin(Edge::Right, 12);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
-    crate::native_ui::configure_webview_popup(&window, 378, 560);
+    crate::native_ui::configure_webview_popup(&window, 420, 620);
 
     // The calendar has no general Core RPC bridge, only its own messages.
     let context = webkit6::WebContext::new();
@@ -273,6 +388,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         document,
         host_ready: Cell::new(false),
         widget_ready: Cell::new(false),
+        active: Cell::new(None),
+        system: RefCell::new(None),
+        last_metrics: Cell::new(None),
         requested: Cell::new(false),
         revealed: Cell::new(false),
         paint_pending: Cell::new(false),
@@ -327,6 +445,15 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     // shows. The Calendar component, timer and DOM are unmounted on hide.
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
+    let weak = Rc::downgrade(&overlay);
+    gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
+        if let Some(state) = weak.upgrade() {
+            state.tick();
+            gtk::glib::ControlFlow::Continue
+        } else {
+            gtk::glib::ControlFlow::Break
+        }
+    });
     overlay
 }
 
@@ -362,17 +489,57 @@ pub fn dismiss(_application: &gtk::Application) -> bool {
     })
 }
 
+pub fn dismiss_system(_application: &gtk::Application) -> bool {
+    CALENDAR.with(|cache| {
+        if let Some(state) = cache.borrow().as_ref()
+            && state.requested.get()
+            && state.active.get() == Some(Surface::System)
+        {
+            state.hide();
+            return true;
+        }
+        false
+    })
+}
+
 pub fn toggle(application: &gtk::Application, html: &str) {
-    if dismiss(application) {
-        return;
-    }
     let Some(state) = ensure(application, html) else {
-        eprintln!("kira-shell: Calendar HTML root not found");
+        eprintln!("kira-shell: Overlay HTML root not found");
         return;
     };
+    if state.requested.get() {
+        let was_calendar = state.active.get() == Some(Surface::Calendar);
+        state.hide();
+        if was_calendar {
+            return;
+        }
+    }
     crate::launcher::dismiss(application);
-    crate::system_panel::dismiss(application);
-    state.show();
+    state.show(Surface::Calendar);
+}
+
+pub fn toggle_system(
+    application: &gtk::Application,
+    html: &str,
+    metrics: Rc<RefCell<crate::system_metrics::Snapshot>>,
+    core: Rc<Cell<bool>>,
+    niri: Rc<Cell<bool>>,
+) {
+    let Some(state) = ensure(application, html) else {
+        eprintln!("kira-shell: Overlay HTML root not found");
+        return;
+    };
+    if state.requested.get() {
+        let was_system = state.active.get() == Some(Surface::System);
+        state.hide();
+        if was_system {
+            return;
+        }
+    }
+    crate::launcher::dismiss(application);
+    *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
+    state.last_metrics.set(None);
+    state.show(Surface::System);
 }
 
 #[cfg(test)]
@@ -389,6 +556,8 @@ mod tests {
             "painted:2;exit",
             "painted:-1",
             "painted:18446744073709551616",
+            "tab:everything",
+            "copy:2026-01-01;exit",
             "mounted:",
             "mounted:abc",
             "mounted:4294967296",
@@ -407,6 +576,15 @@ mod tests {
         }
         assert_eq!(calendar_command("close"), Some(UiCommand::Close));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
+        assert_eq!(
+            calendar_command("tab:processes"),
+            Some(UiCommand::ProcessesTab(true))
+        );
+        assert_eq!(
+            calendar_command("tab:overview"),
+            Some(UiCommand::ProcessesTab(false))
+        );
+        assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
         assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(

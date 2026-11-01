@@ -1,107 +1,101 @@
-"""Read-only system monitor integration and UI affordance checks."""
+"""Svelte System Monitor and bounded read-only Rust backend contract."""
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RUST = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
 MONITOR = (ROOT / "crates/kira-shell/src/system_metrics.rs").read_text()
-CSS = (ROOT / "crates/kira-shell/src/system_panel.css").read_text()
+PROCESSES = (ROOT / "crates/kira-shell/src/process_monitor.rs").read_text()
 HOST = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+OVERLAY = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+ENTRY = (ROOT / "frontend/src/main.ts").read_text()
 APP = (ROOT / "frontend/src/App.svelte").read_text()
-COMPONENT = (ROOT / "frontend/src/lib/components/SystemHealth.svelte").read_text()
+HEALTH = (ROOT / "frontend/src/lib/components/SystemHealth.svelte").read_text()
+WIDGET = (ROOT / "frontend/src/lib/components/SystemWidget.svelte").read_text()
+MODEL = (ROOT / "frontend/src/lib/system-model.ts").read_text()
 SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
 NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class DetailedHealthContractTests(unittest.TestCase):
-    def test_overlay_is_fixed_purpose_and_nonexclusive(self):
+    def test_same_warm_webview_hosts_calendar_and_system(self):
         self.assertIn('register_script_message_handler("kiraSystem", None)', HOST)
         self.assertIn('if value.to_string() == "toggle"', HOST)
-        self.assertIn('postNativeCommand(\'kiraSystem\', \'toggle\')', SDK)
-        self.assertIn('onclick={onOpen}', COMPONENT)
-        self.assertIn('aria-haspopup="dialog"', COMPONENT)
-        self.assertIn('set_exclusive_zone(0)', RUST)
-        self.assertIn('set_anchor(Edge::Top, true)', RUST)
-        self.assertIn('set_anchor(Edge::Right, true)', RUST)
-        self.assertIn('crate::native_ui::configure_popup(&window, &scroll, 408)', RUST)
-        self.assertIn('crate::native_ui::POPUP_TOP_MARGIN', RUST)
-        self.assertIn('kira:system-metrics', HOST)
-        self.assertIn('onSystemMetrics(', APP)
-        self.assertIn('stopMetrics();', APP)
+        self.assertIn("calendar::toggle_system(", HOST)
+        self.assertIn("postNativeCommand('kiraSystem', 'toggle')", SDK)
+        self.assertIn('onclick={onOpen}', HEALTH)
+        self.assertIn('aria-haspopup="dialog"', HEALTH)
+        self.assertIn('set_exclusive_zone(0)', OVERLAY)
+        self.assertIn('set_namespace(Some("kira-overlay"))', OVERLAY)
+        self.assertIn('configure_webview_popup(&window, 420, 620)', OVERLAY)
+        self.assertIn("self.active.set(Some(kind))", OVERLAY)
+        self.assertIn("state.show(Surface::System)", OVERLAY)
+        self.assertIn("state.show(Surface::Calendar)", OVERLAY)
+        self.assertIn("kira:overlay:show", OVERLAY)
+        self.assertIn("kira:overlay:hide", OVERLAY)
+        self.assertIn("mount(SystemWidget", ENTRY)
+        self.assertIn("mount(CalendarWidget", ENTRY)
+        self.assertIn("host.hide()", ENTRY)
+        self.assertIn("unmount(instance)", ENTRY)
+        self.assertIn('data-kira-ui-root', WIDGET)
+        self.assertIn('aria-label="Kira System Monitor"', WIDGET)
+        self.assertNotIn("webkit6::WebView::builder()", RUST)
 
-    def test_real_sources_no_arbitrary_commands(self):
-        for path in ('/proc/stat', '/proc/meminfo', '/proc/uptime',
-                     '/proc/loadavg', '/sys/class/power_supply'):
+    def test_resources_preserved_with_real_safe_kernel_sources(self):
+        for path in ("/proc/stat", "/proc/meminfo", "/proc/uptime",
+                     "/proc/loadavg", "/sys/class/power_supply"):
             self.assertIn(path, MONITOR)
-        self.assertIn('query_filesystem_info(', RUST)
-        self.assertIn('None::<&gtk::gio::Cancellable>', RUST)
-        self.assertNotIn('std::process::Command', MONITOR)
-        self.assertNotIn('std::process::Command', RUST)
-        self.assertIn('Memory: ', RUST)
-        self.assertIn('MEASURING', RUST)
-        self.assertIn('NOT DETECTED', RUST)
+        self.assertIn("query_filesystem_info(", RUST)
+        self.assertIn('kira:system:data', OVERLAY)
+        self.assertIn('kira:system:processes', OVERLAY)
+        self.assertIn('onSystemOverlayData(', WIDGET)
+        self.assertIn('onSystemProcesses(', WIDGET)
+        self.assertIn("MEMORY PRESSURE", MODEL)
+        self.assertIn("LOW STORAGE", MODEL)
+        self.assertIn("LOW BATTERY", MODEL)
+        self.assertIn("NOT DETECTED", WIDGET)
+        self.assertIn("COPY REPORT", WIDGET)
+        self.assertIn("sendCalendarUi('copy-report')", SDK)
+        self.assertIn("display.clipboard().set_text(&model.report())", OVERLAY)
+        for source in (RUST, OVERLAY, MONITOR):
+            self.assertNotIn("std::process::Command", source)
+            self.assertNotIn("Command::new", source)
 
-    def test_shared_native_palette_and_gtk_styles(self):
-        self.assertIn('crate::native_ui::install_styles(', RUST)
-        self.assertIn('include_str!("system_panel.css")', RUST)
-        self.assertIn('system_panel.css', NIX)
-        self.assertIn('.kira-system-hero', CSS)
-        self.assertIn('.kira-system-workbench', CSS)
-        self.assertIn('.kira-system-services', CSS)
-        self.assertIn('progressbar.kira-system-meter', CSS)
-        self.assertIn('button.kira-system-copy', CSS)
-        self.assertNotIn('@define-color', CSS)
-        self.assertNotIn('box-shadow:', CSS)
-        self.assertIn('kira-process-header-active', CSS)
+    def test_processes_sample_only_while_visible_and_full_table_is_svelte(self):
+        for source in (WIDGET, MODEL):
+            self.assertNotIn("gtk::", source)
+        self.assertIn("ProcessSampler::default()", RUST)
+        self.assertIn("std::thread::spawn", RUST)
+        self.assertIn("mpsc::sync_channel(1)", RUST)
+        self.assertIn("set_processes_active(false)", OVERLAY)
+        self.assertIn("Some(UiCommand::ProcessesTab(active))", OVERLAY)
+        self.assertIn("tab:processes", OVERLAY)
+        self.assertIn("tab:overview", OVERLAY)
+        self.assertIn("setSystemMonitorTab", ENTRY)
+        self.assertIn("01 / OVERVIEW", WIDGET)
+        self.assertIn("02 / PROCESSES", WIDGET)
+        self.assertIn("Filter by process name or PID", WIDGET)
+        self.assertIn("sortedProcesses(", WIDGET)
+        self.assertIn("matching.slice(0, 36)", WIDGET)
+        self.assertIn("function nextSort(", MODEL)
+        self.assertIn("function sortedProcesses(", MODEL)
+        self.assertIn("String(row.pid)", MODEL)
+        for file in ("/proc", "/proc/stat", 'stat', 'status'):
+            self.assertIn(file, PROCESSES)
+        self.assertIn("pid, stat.start_ticks", PROCESSES)
+        self.assertNotIn("kill(", RUST)
+        self.assertNotIn("gtk::Grid", RUST)
+        self.assertNotIn("gtk::SearchEntry", RUST)
+        self.assertNotIn("gtk::ProgressBar", RUST)
 
-    def test_panel_and_existing_overlays_mutually_exclusive(self):
-        launcher = (ROOT / "crates/kira-shell/src/launcher.rs").read_text()
-        calendar = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
-        self.assertIn('crate::system_panel::dismiss(application)', launcher)
-        self.assertIn('crate::system_panel::dismiss(application)', calendar)
-        self.assertIn('crate::calendar::dismiss(app)', RUST)
-        self.assertIn('crate::launcher::dismiss(app)', RUST)
+    def test_native_views_and_styles_are_removed(self):
+        self.assertNotIn("mod process_page;", HOST)
+        self.assertFalse((ROOT / "crates/kira-shell/src/process_page.rs").exists())
+        self.assertFalse((ROOT / "crates/kira-shell/src/system_panel.css").exists())
+        self.assertNotIn("system_panel.css", NIX)
+        self.assertIn("onSystemMetrics(", APP)
+        self.assertIn("stopMetrics();", APP)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-
-class ProcessesTabContractTests(unittest.TestCase):
-    def test_custom_tabs_and_safe_data_model(self):
-        page = (ROOT / "crates/kira-shell/src/process_page.rs").read_text()
-        reader = (ROOT / "crates/kira-shell/src/process_monitor.rs").read_text()
-        self.assertIn('01  OVERVIEW', RUST)
-        self.assertIn('02  PROCESSES', RUST)
-        self.assertIn('set_visible_child_name("overview")', RUST)
-        self.assertIn('set_visible_child_name("processes")', RUST)
-        self.assertIn('page_processes.set_active(true)', RUST)
-        self.assertIn('page_overview.set_active(false)', RUST)
-        self.assertIn('process_page.poll()', RUST)
-        self.assertIn('gtk::SearchEntry::new()', page)
-        self.assertIn('Sort::Cpu', page)
-        self.assertIn('Sort::Memory', page)
-        self.assertIn('Sort::Pid', page)
-        self.assertIn('Sort::Name', page)
-        self.assertIn('fn compare_rows(', page)
-        self.assertIn('fn clicked(self, field: Sort)', page)
-        self.assertIn('fn each_column_sorts_both_directions()', page)
-        self.assertIn('fn missing_metrics_are_last_in_both_directions()', page)
-        self.assertNotIn('sort_controls', page)
-        self.assertIn('VISIBLE_ROWS: usize = 36', page)
-        self.assertIn('ProcessSampler::default()', page)
-        self.assertIn('std::thread::spawn', page)
-        self.assertIn('Arc<AtomicBool>', page)
-        for file in ('/proc', '/proc/stat', 'stat', 'status'):
-            self.assertIn(file, reader)
-        self.assertIn('pid, stat.start_ticks', reader)
-        self.assertIn('fn parse_stat(', reader)
-        self.assertNotIn('std::process::Command', reader)
-        self.assertNotIn('Command::new', page)
-        self.assertNotIn('kill(', page)
-
-    def test_visual_style_uses_shared_palette_without_framed_notebook(self):
-        for selector in ('.kira-system-tabs', 'button.kira-system-tab',
-                         '.kira-process-page', '.kira-process-row',
-                         'entry.kira-process-search', 'button.kira-process-header'):
-            self.assertIn(selector, CSS)
-        self.assertNotIn('@define-color', CSS)

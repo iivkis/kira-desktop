@@ -19,16 +19,19 @@ serializes asynchronous mount/unmount across rapid toggles and skips stale
 show generations. The single offline frontend bundle contains all component
 code in advance, but creates and destroys active component instances on
 demand. It makes no network requests.
-This does **not** guarantee WebKit process RSS returns to zero. Use PSS and CPU
-sampling for actual resource measurements.
+This does **not** guarantee WebKit process RSS returns to zero. Calendar and
+System Monitor share the same warmed host with no third WebKit process.
+Process scanning starts only on the Processes tab and ends on hide.
+Use PSS and CPU sampling for actual resource measurements.
 
 ## Widget architecture migration
 
 The intended architecture is Rust for Core, GIO/system integration and the
 GTK/WebKit layer-shell **window host**, with **all widget views in Svelte 5**.
-The GTK Launcher and System Monitor remain existing deviations.
-The Calendar now renders `CalendarWidget.svelte` inside an independent
-WebKit/layer-shell popup. Do not build additional widget layouts in GTK.
+The GTK Launcher remains the last built-in native widget deviation.
+The Calendar and System Monitor now render `CalendarWidget.svelte` and
+`SystemWidget.svelte` inside one shared WebKit/layer-shell overlay.
+Do not build additional widget layouts in GTK.
 
 See [UI_ARCHITECTURE.md](UI_ARCHITECTURE.md) for the staged migration.
 The Svelte Calendar host is integrated and covered by frontend, Rust and
@@ -59,16 +62,16 @@ non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
-The GTK System Monitor uses `native_ui::configure_popup` for
-content-bounded height. The new Svelte Calendar WebKit surface uses
+The Svelte Calendar/System Monitor shared WebKit surface uses
 `configure_webview_popup`, which caps both width and height against the
 actual logical output, up to 70% of its height; HTML handles inner
 overflow. The top margin remains 25px.
 
-The Process Monitor lives in two small Rust modules:
-`process_monitor.rs` parses /proc on a worker and computes CPU from
-consecutive total-host tick counters, keyed by (PID, start-time) to
-avoid reuse. `process_page.rs` renders the custom GTK Processes tab,
+The Process Monitor uses `process_monitor.rs` for read-only /proc sampling
+on a background worker and `system_panel.rs` for its bounded, typed
+event adapter. CPU is computed from consecutive total-host tick counters
+keyed by (PID, start-time) to avoid reuse. `SystemWidget.svelte`
+renders the Processes tab,
 search and ascending/descending sorting by clicking the four
 table column headers, with no redundant SORT toolbar. No process termination, command lines, extra Core
 RPC or permanent process enumeration is included. The fast CI checks the
@@ -76,8 +79,8 @@ Python contracts and Rust Core/IPC tests. Native shell test groups can be
 run locally with `nix develop --command cargo test --locked -p kira-shell`
 or before a release; the nightly/manual Nix workflow verifies full packaging.
 
-The remaining **GTK4 Launcher and System Monitor** use native
-`launcher.css` and `system_panel.css`. The Svelte Calendar reuses Tailwind
+The remaining **GTK4 Launcher** uses native `launcher.css`.
+The Svelte Calendar and System Monitor reuse Tailwind
 and the canonical frontend palette. It is an independent, non-exclusive
 layer-shell WebKit surface toggled through `kiraCalendar`; inside that
 window only `kiraCalendarUi` provides close and strictly validated ISO
@@ -89,9 +92,10 @@ GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
 not separately in the overlay stylesheets. Shared native CSS installation
 and overlay lookup/dismiss helpers live in
 `crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
-native GTK interaction stays in `launcher.rs` or
-`system_panel.rs`; `calendar.rs` handles only Wayland window/clipboard
-integration. No generic overlay framework is introduced. When changing any
+native GTK interaction stays in `launcher.rs`. The shared
+`calendar.rs` WebKit host manages one popup and two Svelte widgets,
+while `system_panel.rs` handles read-only system data and process
+sampling. No generic command execution is exposed. When changing any
 native CSS asset, verify it remains included by `nix/package.nix`.
 
 When adding npm dependencies, commit the updated

@@ -14,10 +14,10 @@ bridge, not a second UI component framework.
 | Svelte 5 / Tailwind | Top Bar, launcher, calendar, system monitor, processes, future user widgets | Raw shell commands, unvalidated Niri/OS privileges |
 | Typed WebKit bridge | Minimal allowlisted native calls; read-only events | Generic command execution or navigation to outside content |
 
-The top bar's 42 px exclusive zone **cannot contain popovers**. Each
-overlay must be its own non-exclusive GTK layer-shell window containing a
-WebKit view that mounts the appropriate Svelte component from the same
-self-contained frontend bundle. The browser cannot create an ordinary
+The top bar's 42 px exclusive zone **cannot contain popovers**. The
+Calendar and System Monitor share **one** non-exclusive GTK layer-shell
+window and its prewarmed WebKit view, which mounts the selected Svelte
+component from the same self-contained frontend bundle. The browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 
 ## Migration, in small reviewable steps
@@ -37,10 +37,11 @@ top-level window with the required layer-shell Wayland behavior by itself.
    to Svelte. Keep GIO XDG application discovery and launch in Rust behind
    a minimal typed, allowlisted IPC contract. Never accept a shell command
    or application executable path from untrusted UI input.
-4. **System Monitor / processes.** Use existing read-only metrics events,
-   expose bounded process snapshots via a typed interface, and render
-   charts, tables, filters, and sorting in Svelte. Leave kernel sampling and
-   sensitive process capabilities in Rust.
+4. **System Monitor / processes (implemented).** The existing warm WebKit
+   overlay now mounts `SystemWidget.svelte` or `CalendarWidget.svelte` on
+   demand, never both. Rust keeps read-only kernel metrics, a bounded
+   /proc sampler and clipboard report generation. Processes are sampled
+   only while their tab is active; Svelte owns the search/sort/table.
 5. Remove GTK-only presentation assets, duplicate native color tokens and
    unused view models *only after* the Svelte replacements are functioning.
    Update docs and enforce widget ownership in regression tests.
@@ -74,5 +75,5 @@ in the single offline HTML bundle, but the DOM, effects, timers and component
 instance are created only on show. The live instance is unloaded on hide.
 This does **not** unload the prebundled JS bytes or the base WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
 immediately fall because the JavaScript engine retains allocated pages and
-shared libraries. Launcher/System Monitor remain GTK pending their Svelte
-migration; they are not yet hosted by this lazy overlay.
+shared libraries. Calendar and System Monitor share one WebView;
+Launcher is still native GTK pending its Svelte migration.
