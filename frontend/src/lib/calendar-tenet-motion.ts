@@ -92,7 +92,13 @@ export function tenetCalendarReveal(node: HTMLElement) {
   }
   const onMotionChange = () => { if (reduced(motion)) stop(); };
   motion.addEventListener('change', onMotionChange);
-  if (!reduced(motion) && clock) scene = dualScene(node, clock, targets, 1, stop);
+  if (!reduced(motion) && clock) {
+    node.dataset.tenetReveal = 'started';
+    scene = dualScene(node, clock, targets, 1, () => {
+      stop();
+      node.dataset.tenetReveal = 'settled';
+    });
+  }
 
   return {
     destroy() {
@@ -145,6 +151,8 @@ export function tenetCalendarGrid(
       activeTargets = changedMonth
         ? Array.from(node.querySelectorAll<HTMLElement>('[data-calendar-day]'))
         : [selected];
+      node.dataset.tenetScenes = String(Number(node.dataset.tenetScenes || '0') + 1);
+      node.dataset.tenetContact = next.selected;
       scene = dualScene(node, selected, activeTargets, direction, stop);
     },
     destroy() {
@@ -234,6 +242,7 @@ export function tenetClockJuggle(node: HTMLButtonElement) {
     const targets = cells();
     gsap.killTweensOf(targets);
     gsap.set(targets, { clearProps: 'transform,opacity,visibility' });
+    node.dataset.tenetPlayback = 'settled';
   }
 
   function play() {
@@ -244,11 +253,14 @@ export function tenetClockJuggle(node: HTMLButtonElement) {
     const flights = nextClockFlights(targets.length, previousFlights);
     previousFlights = flights; // Next event differs; reverse never rerolls.
     let returning = false;
+    node.dataset.tenetEvents = String(Number(node.dataset.tenetEvents || '0') + 1);
+    node.dataset.tenetPlayback = 'forward';
     animation = gsap.timeline({
       paused: true,
       onComplete: () => {
         if (!returning) {
           returning = true;
+          node.dataset.tenetPlayback = 'inverted';
           animation?.reverse(); // Same recorded physical history backwards.
         }
       },
