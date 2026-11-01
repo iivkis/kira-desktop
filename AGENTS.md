@@ -31,19 +31,14 @@ Continuity, Temporal Memory, and Causal Consistency**. For each animation:
 Existing animations are reviewed against this contract **when touched**;
 do not claim an unreviewed legacy animation already complies.
 
-## Temporal material deformation (mandatory for clickable WebKit surfaces)
+## Hover interaction policy
 
-Do NOT fake deformation using a blurred lens, pseudo-element border, glow,
-radial gradient or `backdrop-filter`. The approved `tenetHoverLens` action
-(`frontend/src/lib/tenet-hover-lens.ts`) uses **real SVG
-feDisplacementMap deformation of SourceGraphic pixels** driven over time
-by GSAP. It records actual pointer positions and reverses their physical
-field history on exit; when settled, the original image is exactly
-restored. The clickable hitbox cannot move. One filter per mounted widget,
-one active target, strict unmount cleanup, reduced-motion and touch
-support are required. Do not recreate the rejected fake glowing rectangle.
-
-See `docs/TENET_MOTION.md` for the normative motion design and testing rules.
+The optional hover pixel-distortion/lens experiment was deliberately
+removed after visual review. Do **not** reintroduce the SVG displacement
+filter, pseudo-lens, glow or cursor-tracked warp as a default for clickable
+controls. Ordinary accessible hover/focus styling remains supported.
+Future hover motion requires a new explicit design request and visual
+acceptance, in addition to the TENET motion principles.
 
 ## Visual stack (mandatory)
 
