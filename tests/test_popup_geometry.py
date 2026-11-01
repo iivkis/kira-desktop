@@ -55,6 +55,39 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertEqual(CALENDAR.count("webkit6::WebView::builder()"), 1)
         self.assertNotIn("window.close()", CALENDAR)
 
+    def test_svelte_intrinsic_height_and_scroll_are_bound_to_native_cap(self):
+        style = (ROOT / "frontend/src/style.css").read_text()
+        entry = (ROOT / "frontend/src/main.ts").read_text()
+        sdk = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+        measure = (ROOT / "frontend/src/lib/overlay-size.ts").read_text()
+        components = [
+            (ROOT / "frontend/src/lib/components/" / name).read_text()
+            for name in ("CalendarWidget.svelte", "SystemWidget.svelte",
+                         "LauncherWidget.svelte")
+        ]
+        self.assertIn('html[data-kira-surface="calendar"] #app', style)
+        self.assertIn('max-height: var(--kira-overlay-max-height, 560px)', style)
+        self.assertIn('detail.maxHeight + \'px\'', entry)
+        self.assertIn('observeOverlaySize(root, generation)', entry)
+        self.assertIn('stopSizing?.()', entry)
+        self.assertIn('notifyCalendarMounted(generation)', entry)
+        self.assertLess(entry.index('observeOverlaySize(root, generation)'),
+                        entry.index('notifyCalendarMounted(generation)'))
+        self.assertIn('new ResizeObserver(measure)', measure)
+        self.assertIn('root.getBoundingClientRect().height', measure)
+        self.assertIn('observer?.disconnect()', measure)
+        self.assertIn("sendCalendarUi('size:' + generation + ':' + height)", sdk)
+        self.assertIn('Some(UiCommand::ContentHeight(generation, height))', CALENDAR)
+        self.assertIn('self.generation.get() == generation', CALENDAR)
+        self.assertIn('height.min(crate::native_ui::webview_popup_height_limit', CALENDAR)
+        self.assertIn('self.content_height.get() == 0', CALENDAR)
+        for source in components:
+            self.assertIn('flex h-auto min-h-0 w-full flex-col', source)
+            self.assertNotIn('flex h-full min-h-0 w-full flex-col', source)
+        self.assertIn('overflow-y-auto', components[0])
+        self.assertIn('overflow-y-auto', components[1])
+        self.assertIn('overflow-y-auto', components[2])
+
     def test_half_margin_and_monitor_relative_height(self):
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", HELPERS)
         self.assertIn("i64::from(output_height.max(1)) * 7 / 10", HELPERS)
