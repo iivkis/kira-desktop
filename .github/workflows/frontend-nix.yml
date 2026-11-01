@@ -34,5 +34,10 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate package-lock metadata
+        run: |
+          npm install --prefix frontend --package-lock-only --ignore-scripts --no-audit --no-fund
+          git diff -- frontend/package-lock.json
+          git diff --exit-code -- frontend/package-lock.json
       - name: Validate locked offline UI package
         run: nix build .#frontend --no-link --print-build-logs
