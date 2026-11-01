@@ -227,6 +227,61 @@ mod tests {
         std::fs::remove_dir(dir).unwrap();
     }
 
+    // Both public subscriptions must enforce the same trusted-frame contract.
+    fn assert_subscription_error(method: &str, frame: &[u8], expected: io::ErrorKind) {
+        let dir = std::env::temp_dir().join(format!(
+            "kira-sub-invalid-{}-{method}-{:?}",
+            std::process::id(),
+            thread::current().id()
+        ));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("core.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let frame = frame.to_vec();
+        let expected_method = method.to_string();
+        let server = thread::spawn(move || {
+            let (socket, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(socket);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            let request: RpcRequest = serde_json::from_str(&request).unwrap();
+            assert_eq!(request.method, expected_method);
+            let mut socket = reader.into_inner();
+            socket.write_all(&frame).unwrap();
+            socket.write_all(b"\n").unwrap();
+        });
+        let error = match method {
+            "subscribe_workspaces" => subscribe_workspaces(&path, |_| {}),
+            "subscribe_config" => subscribe_config(&path, |_| {}),
+            _ => unreachable!(),
+        }
+        .unwrap_err();
+        assert_eq!(error.kind(), expected, "{method}");
+        server.join().unwrap();
+        std::fs::remove_file(path).unwrap();
+        std::fs::remove_dir(dir).unwrap();
+    }
+
+    #[test]
+    fn both_subscriptions_reject_an_unexpected_response_id() {
+        let frame = serde_json::to_vec(&crate::RpcResponse::success(
+            12,
+            serde_json::json!({ "connected": true, "workspaces": [] }),
+        ))
+        .unwrap();
+        for method in ["subscribe_workspaces", "subscribe_config"] {
+            assert_subscription_error(method, &frame, io::ErrorKind::InvalidData);
+        }
+    }
+
+    #[test]
+    fn both_subscriptions_reject_oversized_frames() {
+        let frame = vec![b' '; MAX_RESPONSE_BYTES as usize + 1];
+        for method in ["subscribe_workspaces", "subscribe_config"] {
+            assert_subscription_error(method, &frame, io::ErrorKind::InvalidData);
+        }
+    }
+
     #[test]
     fn missing_socket_returns_error() {
         let response = call(
