@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3874
+index_bytes=3876
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	e337b9f6e405d8d15118f40a99865a4968b91759
+C	101e02c43c7df7a6b5edc6020a59c7844ceff70c
 F	.cargo/config.toml	98	109	3
 F	.github/workflows/ci.yml	1467	114	46
 F	.github/workflows/nix.yml	1258	162	38
@@ -29,74 +29,74 @@ F	Taskfile.yml	5957	630	185
 F	config/kira.kdl.example	358	817	8
 F	crates/kira-core/Cargo.toml	207	827	10
 F	crates/kira-core/src/config.rs	15217	839	399
-F	crates/kira-core/src/main.rs	18357	1240	480
-F	crates/kira-core/src/niri.rs	16767	1722	453
-F	crates/kira-ipc/Cargo.toml	170	2177	9
-F	crates/kira-ipc/src/client.rs	10376	2188	277
-F	crates/kira-ipc/src/lib.rs	9053	2467	302
-F	crates/kira-shell/Cargo.toml	297	2771	12
-F	crates/kira-shell/src/calendar.rs	35633	2785	966
-F	crates/kira-shell/src/launcher.rs	7606	3753	223
-F	crates/kira-shell/src/main.rs	17601	3978	414
-F	crates/kira-shell/src/native_ui.rs	2857	4394	73
-F	crates/kira-shell/src/process_monitor.rs	6245	4469	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4673	214
-F	crates/kira-shell/src/system_panel.rs	7948	4889	226
-F	docs/CONFIG.md	5801	5117	125
-F	docs/DESIGN_SYSTEM.md	15048	5244	276
-F	docs/DEVELOPMENT.md	27700	5522	547
-F	docs/QA_VISUAL.md	12284	6071	149
-F	docs/SPECIFICATION.md	28960	6222	421
-F	docs/UI_ARCHITECTURE.md	6737	6645	106
-F	docs/VISUAL_REVIEW.md	9754	6753	84
-F	flake.nix	2651	6839	76
-F	frontend/index.html	2737	6917	66
-F	frontend/package.json	650	6985	23
-F	frontend/scripts/inline-assets.mjs	4457	7010	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7115	106
-F	frontend/scripts/smoke-overlays.mjs	10812	7223	175
-F	frontend/src/App.svelte	8659	7400	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7602	84
-F	frontend/src/lib/bootstrap.ts	2613	7688	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7760	38
-F	frontend/src/lib/calendar-model.ts	3453	7800	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7874	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	8053	176
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8231	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	8276	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8467	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8530	29
-F	frontend/src/lib/launcher-model.ts	778	8561	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8581	89
-F	frontend/src/lib/lazy-widget.ts	1984	8672	63
-F	frontend/src/lib/overlay-size.ts	1090	8737	29
-F	frontend/src/lib/sdk/core.test.ts	20006	8768	403
-F	frontend/src/lib/sdk/core.ts	15992	9173	432
-F	frontend/src/lib/system-health.test.ts	2348	9607	41
-F	frontend/src/lib/system-health.ts	2831	9650	60
-F	frontend/src/lib/system-model.test.ts	2988	9712	57
-F	frontend/src/lib/system-model.ts	3411	9771	76
-F	frontend/src/lib/themes/kira-default.css	1687	9849	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9903	101
-F	frontend/src/lib/themes/kira-default.ts	777	10006	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	10030	79
-F	frontend/src/lib/time.test.ts	263	10111	8
-F	frontend/src/lib/time.ts	320	10121	9
-F	frontend/src/main.ts	5907	10132	127
-F	frontend/src/style.css	2993	10261	91
-F	frontend/tsconfig.json	403	10354	16
-F	frontend/vite.config.ts	224	10372	8
-F	nix/package.nix	3132	10382	117
-F	scripts/dev_preview.py	18147	10501	403	x
-F	scripts/qa_visual.py	12052	10906	299
-F	tests/test_calendar_design.py	6835	11207	121
-F	tests/test_detailed_health.py	5195	11330	101
-F	tests/test_dev_preview.py	9339	11433	219
-F	tests/test_launcher_design.py	8709	11654	160
-F	tests/test_native_theme.py	1567	11816	36
-F	tests/test_popup_geometry.py	6956	11854	118
-F	tests/test_qa_visual.py	10549	11974	217
-F	tests/test_ui_bootstrap_contract.py	1103	12193	29
+F	crates/kira-core/src/main.rs	26110	1240	675
+F	crates/kira-core/src/niri.rs	16767	1917	453
+F	crates/kira-ipc/Cargo.toml	170	2372	9
+F	crates/kira-ipc/src/client.rs	10376	2383	277
+F	crates/kira-ipc/src/lib.rs	9053	2662	302
+F	crates/kira-shell/Cargo.toml	297	2966	12
+F	crates/kira-shell/src/calendar.rs	35633	2980	966
+F	crates/kira-shell/src/launcher.rs	7606	3948	223
+F	crates/kira-shell/src/main.rs	17601	4173	414
+F	crates/kira-shell/src/native_ui.rs	2857	4589	73
+F	crates/kira-shell/src/process_monitor.rs	6245	4664	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4868	214
+F	crates/kira-shell/src/system_panel.rs	7948	5084	226
+F	docs/CONFIG.md	5801	5312	125
+F	docs/DESIGN_SYSTEM.md	15048	5439	276
+F	docs/DEVELOPMENT.md	27700	5717	547
+F	docs/QA_VISUAL.md	12284	6266	149
+F	docs/SPECIFICATION.md	28960	6417	421
+F	docs/UI_ARCHITECTURE.md	6737	6840	106
+F	docs/VISUAL_REVIEW.md	9754	6948	84
+F	flake.nix	2651	7034	76
+F	frontend/index.html	2737	7112	66
+F	frontend/package.json	650	7180	23
+F	frontend/scripts/inline-assets.mjs	4457	7205	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7310	106
+F	frontend/scripts/smoke-overlays.mjs	10812	7418	175
+F	frontend/src/App.svelte	8659	7595	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7797	84
+F	frontend/src/lib/bootstrap.ts	2613	7883	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7955	38
+F	frontend/src/lib/calendar-model.ts	3453	7995	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	8069	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	8248	176
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8426	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	8471	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8662	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8725	29
+F	frontend/src/lib/launcher-model.ts	778	8756	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8776	89
+F	frontend/src/lib/lazy-widget.ts	1984	8867	63
+F	frontend/src/lib/overlay-size.ts	1090	8932	29
+F	frontend/src/lib/sdk/core.test.ts	20006	8963	403
+F	frontend/src/lib/sdk/core.ts	15992	9368	432
+F	frontend/src/lib/system-health.test.ts	2348	9802	41
+F	frontend/src/lib/system-health.ts	2831	9845	60
+F	frontend/src/lib/system-model.test.ts	2988	9907	57
+F	frontend/src/lib/system-model.ts	3411	9966	76
+F	frontend/src/lib/themes/kira-default.css	1687	10044	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	10098	101
+F	frontend/src/lib/themes/kira-default.ts	777	10201	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	10225	79
+F	frontend/src/lib/time.test.ts	263	10306	8
+F	frontend/src/lib/time.ts	320	10316	9
+F	frontend/src/main.ts	5907	10327	127
+F	frontend/src/style.css	2993	10456	91
+F	frontend/tsconfig.json	403	10549	16
+F	frontend/vite.config.ts	224	10567	8
+F	nix/package.nix	3132	10577	117
+F	scripts/dev_preview.py	18147	10696	403	x
+F	scripts/qa_visual.py	12052	11101	299
+F	tests/test_calendar_design.py	6835	11402	121
+F	tests/test_detailed_health.py	5195	11525	101
+F	tests/test_dev_preview.py	9339	11628	219
+F	tests/test_launcher_design.py	8709	11849	160
+F	tests/test_native_theme.py	1567	12011	36
+F	tests/test_popup_geometry.py	6956	12049	118
+F	tests/test_qa_visual.py	10549	12169	217
+F	tests/test_ui_bootstrap_contract.py	1103	12388	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -1243,8 +1243,10 @@ mod config;
 mod niri;
 
 use std::error::Error;
+use std::fs::{self, File, OpenOptions};
 use std::io;
-use std::os::unix::fs::{FileTypeExt, MetadataExt};
+use std::os::unix::fs::{FileTypeExt, MetadataExt, OpenOptionsExt, PermissionsExt};
+use std::os::unix::net::UnixStream as StdUnixStream;
 use std::path::{Path, PathBuf};
 
 use kira_ipc::{ConfigState, RpcRequest, RpcResponse, WorkspaceState, dispatch_with_state};
@@ -1291,6 +1293,85 @@ impl Drop for SocketGuard {
             eprintln!("kira-core: cannot remove owned socket: {error}");
         }
     }
+}
+
+/// Only replace an abandoned socket, never a live daemon or another file.
+/// The sidecar lock serializes cooperating Core instances during recovery.
+/// Keep the lock file on disk: unlinking a locked file permits a second lock
+/// on a new inode. The enclosing runtime/preview directory owns its cleanup.
+fn recover_stale_socket(path: &Path, lock: &File) -> io::Result<()> {
+    let occupied = |reason: &'static str| io::Error::new(io::ErrorKind::AddrInUse, reason);
+    let parent = path
+        .parent()
+        .ok_or_else(|| occupied("Core socket has no parent directory"))?;
+    let directory = fs::symlink_metadata(parent)?;
+    let socket = fs::symlink_metadata(path)?;
+    let owner = lock.metadata()?.uid();
+
+    // Automatic deletion is allowed only in a private, same-owner directory.
+    // symlink_metadata prevents a socket-path symlink from being followed.
+    if !directory.file_type().is_dir()
+        || directory.permissions().mode() & 0o022 != 0
+        || directory.uid() != owner
+        || !socket.file_type().is_socket()
+        || socket.uid() != owner
+    {
+        return Err(occupied(
+            "Refusing to replace Core socket outside a private, owner-matched directory",
+        ));
+    }
+
+    match StdUnixStream::connect(path) {
+        Ok(_) => return Err(occupied("Another Core is listening on the socket")),
+        Err(error) if error.kind() == io::ErrorKind::ConnectionRefused => {}
+        Err(error) => return Err(error), // PermissionDenied/other errors are not proof of staleness.
+    }
+
+    // Detect a replacement between the probe and unlink. Together with the
+    // sidecar lock this prevents concurrent Core startups from deleting each
+    // other's freshly bound sockets.
+    let current = fs::symlink_metadata(path)?;
+    if !current.file_type().is_socket()
+        || current.dev() != socket.dev()
+        || current.ino() != socket.ino()
+    {
+        return Err(occupied("Core socket changed during stale-socket recovery"));
+    }
+    fs::remove_file(path)?;
+    eprintln!("kira-core: removed abandoned socket {}", path.display());
+    Ok(())
+}
+
+/// Bind normally, or retry once after verified stale-socket cleanup.
+/// The returned lock must live for as long as the listener is running.
+fn bind_core_socket(path: &Path) -> io::Result<(File, SocketGuard, UnixListener)> {
+    let mut lock_path = path.as_os_str().to_os_string();
+    lock_path.push(".lock");
+    let lock = OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .truncate(false) // Persist the inode shared by future Core startups.
+        .mode(0o600)
+        .open(PathBuf::from(lock_path))?;
+    lock.try_lock().map_err(|error| {
+        io::Error::new(
+            io::ErrorKind::AddrInUse,
+            format!("Another Core holds the socket startup lock: {error}"),
+        )
+    })?;
+
+    let listener = match UnixListener::bind(path) {
+        Ok(listener) => listener,
+        Err(error) if error.kind() == io::ErrorKind::AddrInUse => {
+            recover_stale_socket(path, &lock)?;
+            UnixListener::bind(path)?
+        }
+        Err(error) => return Err(error),
+    };
+    let guard = SocketGuard::new(path)?;
+    // Pattern bindings drop in reverse order: listener, guard, then lock.
+    Ok((lock, guard, listener))
 }
 
 /// Read newline-delimited IPC without growing beyond the configured bound.
@@ -1455,9 +1536,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let path = kira_ipc::core_socket_path()?;
-    // Binding never unlinks an existing socket: another Core may own it.
-    let listener = UnixListener::bind(&path)?;
-    let _guard = SocketGuard::new(&path)?;
+    // Reclaim only a verified abandoned socket; preserve live Core instances.
+    let (_socket_lock, _guard, listener) = bind_core_socket(&path)?;
     eprintln!("kira-core listening on {}", path.display());
 
     let (config_sender, config_receiver) = watch::channel(ConfigState::default());
@@ -1677,6 +1757,121 @@ mod tests {
         server.abort();
         std::fs::remove_file(&path).unwrap();
         std::fs::remove_dir(&dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn replaces_abandoned_socket_after_unclean_shutdown() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-stale-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let old_listener = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        drop(old_listener); // Simulate SIGKILL: the socket path survives.
+        assert!(path.exists());
+
+        let (lock, guard, listener) = bind_core_socket(&path).unwrap();
+        assert!(StdUnixStream::connect(&path).is_ok());
+        drop(listener);
+        drop(guard);
+        drop(lock);
+        assert!(!path.exists());
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[tokio::test]
+    async fn refuses_to_replace_live_socket() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-live-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let (lock, guard, listener) = bind_core_socket(&path).unwrap();
+        let before = fs::symlink_metadata(&path).unwrap();
+
+        assert!(bind_core_socket(&path).is_err());
+        let after = fs::symlink_metadata(&path).unwrap();
+        assert_eq!((before.dev(), before.ino()), (after.dev(), after.ino()));
+        assert!(StdUnixStream::connect(&path).is_ok());
+
+        drop(listener);
+        drop(guard);
+        drop(lock);
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn refuses_legacy_live_listener_without_sidecar_lock() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-legacy-live-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let listener = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        let original = fs::symlink_metadata(&path).unwrap();
+
+        let error = bind_core_socket(&path).err().unwrap();
+        assert_eq!(error.kind(), io::ErrorKind::AddrInUse);
+        assert_eq!(fs::symlink_metadata(&path).unwrap().ino(), original.ino());
+        assert!(StdUnixStream::connect(&path).is_ok());
+
+        drop(listener);
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn never_removes_regular_files_or_symlinks() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-occupied-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        fs::write(&path, "keep me").unwrap();
+        assert!(bind_core_socket(&path).is_err());
+        assert_eq!(fs::read_to_string(&path).unwrap(), "keep me");
+
+        fs::remove_file(&path).unwrap();
+        let target = directory.join("target");
+        fs::write(&target, "also keep me").unwrap();
+        std::os::unix::fs::symlink(&target, &path).unwrap();
+        assert!(bind_core_socket(&path).is_err());
+        assert!(
+            fs::symlink_metadata(&path)
+                .unwrap()
+                .file_type()
+                .is_symlink()
+        );
+        assert_eq!(fs::read_to_string(&target).unwrap(), "also keep me");
+
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn refuses_recovery_in_world_writable_directory() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-public-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let stale = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        drop(stale);
+        fs::set_permissions(&directory, fs::Permissions::from_mode(0o777)).unwrap();
+
+        assert!(bind_core_socket(&path).is_err());
+        assert!(fs::symlink_metadata(&path).unwrap().file_type().is_socket());
+
+        fs::set_permissions(&directory, fs::Permissions::from_mode(0o700)).unwrap();
+        fs::remove_dir_all(directory).unwrap();
     }
 
     #[test]
