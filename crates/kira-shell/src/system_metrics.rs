@@ -225,18 +225,19 @@ fn hwmon_temperature_for_device(path: &Path, cpu: bool) -> Option<f64> {
 }
 
 fn cpu_temperature(sys: &Path) -> Option<f64> {
-    let entries = fs::read_dir(sys.join("class/hwmon")).ok()?;
-    for entry in entries.flatten() {
+    if let Ok(entries) = fs::read_dir(sys.join("class/hwmon")) {
+        for entry in entries.flatten() {
         let path = entry.path();
         let Some(name) = read_small(&path.join("name")) else {
             continue;
         };
-        if matches!(
-            name.trim(),
-            "coretemp" | "k10temp" | "zenpower" | "cpu_thermal" | "cpu-thermal"
-        ) && let Some(temp) = hwmon_temperature_for_device(&path, true)
-        {
-            return Some(temp);
+            if matches!(
+                name.trim(),
+                "coretemp" | "k10temp" | "zenpower" | "cpu_thermal" | "cpu-thermal"
+            ) && let Some(temp) = hwmon_temperature_for_device(&path, true)
+            {
+                return Some(temp);
+            }
         }
     }
     // Names of thermal zones matter. A generic ACPI/SoC temperature should
@@ -401,6 +402,21 @@ mod tests {
             gpu_label("card1", "0x1002", "PCI_SLOT_NAME=0000:03:00.0\n"),
             "GPU / AMD (card1)"
         );
+    }
+
+    #[test]
+    fn cpu_thermal_zone_is_used_without_hwmon() {
+        let root = std::env::temp_dir().join(format!(
+            "kira-cpu-thermal-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        let zone = root.join("class/thermal/thermal_zone0");
+        fs::create_dir_all(&zone).unwrap();
+        fs::write(zone.join("type"), "x86_pkg_temp\n").unwrap();
+        fs::write(zone.join("temp"), "48250\n").unwrap();
+        assert_eq!(cpu_temperature(&root), Some(48.25));
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]
