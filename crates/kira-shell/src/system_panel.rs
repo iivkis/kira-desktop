@@ -7,7 +7,9 @@ use std::sync::{Arc, mpsc};
 use std::time::Duration;
 
 use crate::process_monitor::{ProcessSampler, ProcessSnapshot};
-use crate::system_metrics::{PULSE_INTERVAL, Pulse, PulseSampler, Snapshot, bytes_label, percent_used};
+use crate::system_metrics::{
+    PULSE_INTERVAL, Pulse, PulseSampler, Snapshot, bytes_label, percent_used,
+};
 
 /// Root filesystem data is queried on the GTK thread, like the Top Bar.
 pub fn disk() -> Option<(u64, u64)> {
