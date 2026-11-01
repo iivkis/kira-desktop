@@ -18,7 +18,8 @@ function scriptFor(steps) {
     steps.map(({ delay, kind, generation }) =>
       'setTimeout(() => {' +
         (kind === 'hide'
-          ? 'window.dispatchEvent(new Event("kira:overlay:hide"));'
+          ? 'window.dispatchEvent(new CustomEvent("kira:overlay:hide", {detail: {generation: ' +
+            generation + '}}));'
           : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
             kind + '", generation: ' + generation + '}}));') +
         '}, ' + delay + ');'
@@ -45,17 +46,31 @@ async function smoke(name, steps, expected) {
   if (output.includes('id="kira-loading"')) {
     throw new Error(name + ': stale bootstrap fallback remained mounted');
   }
+  const other = expected === 'Kira Calendar' ? 'Kira System Monitor' : 'Kira Calendar';
+  if (output.includes('aria-label="' + other + '"')) {
+    throw new Error(name + ': a hidden widget was still mounted');
+  }
   console.log('OK: ' + name + ' mounted ' + expected);
 }
 
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
-  await smoke('switch', [
+  await smoke('switch-to-system', [
     { delay: 25, kind: 'calendar', generation: 1 },
-    { delay: 120, kind: 'hide' },
+    { delay: 120, kind: 'hide', generation: 1 },
     { delay: 140, kind: 'system', generation: 2 },
+    // Must not destroy System when an older hide arrives out of order.
+    { delay: 175, kind: 'hide', generation: 1 },
   ], 'Kira System Monitor');
+  await smoke('switch-back-to-calendar', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 120, kind: 'hide', generation: 1 },
+    { delay: 145, kind: 'system', generation: 2 },
+    { delay: 245, kind: 'hide', generation: 2 },
+    { delay: 265, kind: 'calendar', generation: 3 },
+    { delay: 280, kind: 'hide', generation: 2 },
+  ], 'Kira Calendar');
 } finally {
   await rm(dir, { recursive: true, force: true });
 }
