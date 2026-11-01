@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -193,6 +193,39 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
       'close', 'copy-report', 'tab:overview', 'tab:processes',
     ]);
+  });
+
+  it('accepts bounded native 100ms pulse events and cleans up listeners', () => {
+    const events = new Map<string, EventListener>();
+    const removeEventListener = vi.fn();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { events.set(name, listener); },
+      removeEventListener,
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onSystemPulse(callback);
+    const dispatch = (detail: unknown) =>
+      events.get('kira:system:pulse')!({ detail } as unknown as Event);
+    const sample = { cpu_percent: 4, memory_total_kib: 1000, memory_available_kib: 800 };
+    dispatch(sample);
+    expect(callback).toHaveBeenCalledExactlyOnceWith(sample);
+    for (const invalid of [
+      { ...sample, cpu_percent: 101 },
+      { ...sample, cpu_percent: -1 },
+      { ...sample, cpu_percent: NaN },
+      { ...sample, memory_total_kib: 1.5 },
+      { ...sample, memory_total_kib: -100 },
+      { ...sample, memory_available_kib: 1001 },
+      { ...sample, memory_available_kib: Infinity },
+      { ...sample, memory_available_kib: '800' },
+      { ...sample, cpu_percent: undefined },
+    ]) dispatch(invalid);
+    expect(callback).toHaveBeenCalledTimes(1);
+    dispatch({ ...sample, cpu_percent: null, memory_total_kib: null, memory_available_kib: null });
+    expect(callback).toHaveBeenCalledTimes(2);
+    stop();
+    expect(removeEventListener).toHaveBeenCalledOnce();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:system:pulse', expect.any(Function));
   });
 
   it('delivers only valid read-only monitor metrics and bounded processes', () => {
