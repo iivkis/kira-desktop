@@ -5,6 +5,61 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
+/// Actual CPU/RAM samples, not 100ms interpolation of two-second readings.
+pub const PULSE_INTERVAL: Duration = Duration::from_millis(100);
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Pulse {
+    pub cpu_percent: Option<u8>,
+    pub memory_total_kib: Option<u64>,
+    pub memory_available_kib: Option<u64>,
+}
+
+impl Pulse {
+    pub fn as_json(&self) -> serde_json::Value {
+        serde_json::json!({
+            "cpu_percent": self.cpu_percent,
+            "memory_total_kib": self.memory_total_kib,
+            "memory_available_kib": self.memory_available_kib,
+        })
+    }
+}
+
+/// Short-lived, read-only worker sampler. Avoids all sysfs/hwmon, disk,
+/// battery, GPU enumeration, and process scans at the 100ms pulse cadence.
+#[derive(Default)]
+pub struct PulseSampler {
+    previous_cpu: Option<(u64, u64)>,
+}
+
+impl PulseSampler {
+    pub fn sample(&mut self) -> Pulse {
+        self.sample_from(Path::new("/proc/stat"), Path::new("/proc/meminfo"))
+    }
+
+    fn sample_from(&mut self, cpu_path: &Path, memory_path: &Path) -> Pulse {
+        let cpu_percent = fs::read_to_string(cpu_path)
+            .ok()
+            .and_then(|text| cpu_ticks(&text))
+            .and_then(|next| {
+                let value = self.previous_cpu.and_then(|prev| cpu_usage(prev, next));
+                self.previous_cpu = Some(next);
+                Some(value)
+            })
+            .flatten();
+        let mut snapshot = Snapshot::default();
+        if let Ok(text) = fs::read_to_string(memory_path) {
+            parse_memory(&text, &mut snapshot);
+        }
+        Pulse {
+            cpu_percent,
+            memory_total_kib: snapshot.memory_total_kib,
+            memory_available_kib: snapshot.memory_available_kib,
+        }
+    }
+}
+
+
 #[derive(Debug, Clone)]
 pub struct GpuSnapshot {
     pub label: String,
@@ -384,6 +439,48 @@ mod tests {
         assert_eq!(cpu_usage((100, 70), (200, 130)), Some(40));
         assert_eq!(cpu_usage((100, 70), (100, 70)), None);
         assert_eq!(cpu_usage((100, 70), (90, 60)), None);
+    }
+
+    #[test]
+    fn pulse_reads_real_cpu_deltas_and_memory_without_sysfs() {
+        let dir = std::env::temp_dir().join(format!(
+            "kira-pulse-{}-{:?}", std::process::id(), std::thread::current().id()
+        ));
+        fs::create_dir_all(&dir).unwrap();
+        let stat = dir.join("stat");
+        let memory = dir.join("meminfo");
+        fs::write(&stat, "cpu 10 10 10 70 0 0 0 0\n").unwrap();
+        fs::write(&memory, "MemTotal: 8000 kB\nMemAvailable: 6000 kB\n").unwrap();
+        let mut sampler = PulseSampler::default();
+        let first = sampler.sample_from(&stat, &memory);
+        assert_eq!(first.cpu_percent, None); // First sample has no CPU baseline.
+        assert_eq!(first.memory_total_kib, Some(8000));
+        assert_eq!(first.memory_available_kib, Some(6000));
+        fs::write(&stat, "cpu 20 20 20 140 0 0 0 0\n").unwrap();
+        let next = sampler.sample_from(&stat, &memory);
+        assert_eq!(next.cpu_percent, Some(30));
+        assert_eq!(next.as_json()["cpu_percent"], 30);
+        // Unreadable values stay unknown; zero is not fabricated.
+        fs::write(&stat, "malformed").unwrap();
+        fs::remove_file(&memory).unwrap();
+        let missing = sampler.sample_from(&stat, &memory);
+        assert_eq!(missing.cpu_percent, None);
+        assert_eq!(missing.memory_total_kib, None);
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn pulse_interval_is_100ms_and_only_exports_cpu_and_memory() {
+        assert_eq!(PULSE_INTERVAL, Duration::from_millis(100));
+        let pulse = Pulse {
+            cpu_percent: Some(0),
+            memory_total_kib: Some(1024),
+            memory_available_kib: Some(1024),
+        };
+        let value = pulse.as_json();
+        assert_eq!(value["cpu_percent"], 0);
+        assert!(value.get("gpus").is_none());
+        assert!(value.get("swap_total_kib").is_none());
     }
 
     #[test]
