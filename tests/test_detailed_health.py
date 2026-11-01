@@ -27,7 +27,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('aria-haspopup="dialog"', HEALTH)
         self.assertIn('set_exclusive_zone(0)', OVERLAY)
         self.assertIn('set_namespace(Some("kira-overlay"))', OVERLAY)
-        self.assertIn('configure_webview_popup(&window, 420, 620)', OVERLAY)
+        self.assertIn('configure_webview_popup(&window, 420, 1)', OVERLAY)
         self.assertIn("self.active.set(Some(kind))", OVERLAY)
         self.assertIn("state.show(Surface::System)", OVERLAY)
         self.assertIn("state.show(Surface::Calendar)", OVERLAY)
