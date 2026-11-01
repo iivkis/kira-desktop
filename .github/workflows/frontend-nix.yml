@@ -38,7 +38,7 @@ jobs:
         run: |
           # Temporary bootstrap: repopulate npm metadata (including integrities)
           # from the registry rather than trusting bare manually added URLs.
-          node -e "const fs=require('fs');const p='frontend/package-lock.json';const l=JSON.parse(fs.readFileSync(p));for(const n of ['echarts','gsap','zrender','tslib']) delete l.packages['node_modules/'+n];fs.writeFileSync(p,JSON.stringify(l,null,2)+'\\n');"
+          node -e "const fs=require('fs');const p='frontend/package-lock.json';const l=JSON.parse(fs.readFileSync(p));for(const n of ['echarts','gsap','zrender','tslib']) delete l.packages['node_modules/'+n];fs.writeFileSync(p,JSON.stringify(l,null,2)+String.fromCharCode(10));"
           npm install --prefix frontend --package-lock-only --ignore-scripts --no-audit --no-fund
           git diff -- frontend/package-lock.json
           git diff --exit-code -- frontend/package-lock.json
