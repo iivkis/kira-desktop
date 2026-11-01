@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3490
+index_bytes=3591
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,81 +15,83 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	f700d28fed11e753b6627259b307dac10cdfc85c
-F	.cargo/config.toml	98	102	3
-F	.github/workflows/ci.yml	1467	107	46
-F	.github/workflows/nix.yml	1258	155	38
-F	.github/workflows/publish-repospool.yml	3048	195	83
-F	.gitignore	178	280	11
-F	.repospoolignore	1028	293	47
-F	Cargo.toml	494	342	22
-F	README.md	9636	366	219
-F	Taskfile.yml	5957	587	185
-F	config/kira.kdl.example	358	774	8
-F	crates/kira-core/Cargo.toml	207	784	10
-F	crates/kira-core/src/config.rs	15217	796	399
-F	crates/kira-core/src/main.rs	18357	1197	480
-F	crates/kira-core/src/niri.rs	16767	1679	453
-F	crates/kira-ipc/Cargo.toml	170	2134	9
-F	crates/kira-ipc/src/client.rs	10376	2145	277
-F	crates/kira-ipc/src/lib.rs	9053	2424	302
-F	crates/kira-shell/Cargo.toml	297	2728	12
-F	crates/kira-shell/src/calendar.rs	12799	2742	368
-F	crates/kira-shell/src/launcher.css	2924	3112	119
-F	crates/kira-shell/src/launcher.rs	10885	3233	300
-F	crates/kira-shell/src/main.rs	17475	3535	412
-F	crates/kira-shell/src/native-palette.css	353	3949	7
-F	crates/kira-shell/src/native_ui.rs	4908	3958	124
-F	crates/kira-shell/src/process_monitor.rs	6245	4084	202
-F	crates/kira-shell/src/process_page.rs	16357	4288	466
-F	crates/kira-shell/src/system_metrics.rs	7010	4756	214
-F	crates/kira-shell/src/system_panel.css	5154	4972	148
-F	crates/kira-shell/src/system_panel.rs	17263	5122	496
-F	docs/CONFIG.md	5801	5620	125
-F	docs/DESIGN_SYSTEM.md	15048	5747	276
-F	docs/DEVELOPMENT.md	24557	6025	498
-F	docs/QA_VISUAL.md	12284	6525	149
-F	docs/SPECIFICATION.md	28960	6676	421
-F	docs/UI_ARCHITECTURE.md	3667	7099	60
-F	docs/VISUAL_REVIEW.md	9754	7161	84
-F	flake.nix	2651	7247	76
-F	frontend/index.html	2737	7325	66
-F	frontend/package.json	650	7393	23
-F	frontend/scripts/inline-assets.mjs	4457	7418	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7523	106
-F	frontend/src/App.svelte	8659	7631	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7833	84
-F	frontend/src/lib/bootstrap.ts	2613	7919	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7991	38
-F	frontend/src/lib/calendar-model.ts	3453	8031	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	8105	177
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8284	43
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8329	61
-F	frontend/src/lib/sdk/core.test.ts	12253	8392	245
-F	frontend/src/lib/sdk/core.ts	9240	8639	274
-F	frontend/src/lib/system-health.test.ts	2348	8915	41
-F	frontend/src/lib/system-health.ts	2831	8958	60
-F	frontend/src/lib/themes/kira-default.css	1687	9020	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9074	101
-F	frontend/src/lib/themes/kira-default.ts	777	9177	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9201	79
-F	frontend/src/lib/time.test.ts	263	9282	8
-F	frontend/src/lib/time.ts	320	9292	9
-F	frontend/src/main.ts	2063	9303	52
-F	frontend/src/style.css	1329	9357	44
-F	frontend/tsconfig.json	403	9403	16
-F	frontend/vite.config.ts	224	9421	8
-F	nix/package.nix	3430	9431	121
-F	scripts/dev_preview.py	18147	9554	403	x
-F	scripts/qa_visual.py	12052	9959	299
-F	tests/test_calendar_design.py	5173	10260	94
-F	tests/test_detailed_health.py	5510	10356	107
-F	tests/test_dev_preview.py	9339	10465	219
-F	tests/test_launcher_design.py	2915	10686	61
-F	tests/test_native_theme.py	2589	10749	55
-F	tests/test_popup_geometry.py	1675	10806	34
-F	tests/test_qa_visual.py	10549	10842	217
-F	tests/test_ui_bootstrap_contract.py	1103	11061	29
+C	77ed951facd8ff7a01d128baab391f53b9a59e64
+F	.cargo/config.toml	98	104	3
+F	.github/workflows/ci.yml	1467	109	46
+F	.github/workflows/nix.yml	1258	157	38
+F	.github/workflows/publish-repospool.yml	3048	197	83
+F	.gitignore	178	282	11
+F	.repospoolignore	1028	295	47
+F	Cargo.toml	494	344	22
+F	README.md	9636	368	219
+F	Taskfile.yml	5957	589	185
+F	config/kira.kdl.example	358	776	8
+F	crates/kira-core/Cargo.toml	207	786	10
+F	crates/kira-core/src/config.rs	15217	798	399
+F	crates/kira-core/src/main.rs	18357	1199	480
+F	crates/kira-core/src/niri.rs	16767	1681	453
+F	crates/kira-ipc/Cargo.toml	170	2136	9
+F	crates/kira-ipc/src/client.rs	10376	2147	277
+F	crates/kira-ipc/src/lib.rs	9053	2426	302
+F	crates/kira-shell/Cargo.toml	297	2730	12
+F	crates/kira-shell/src/calendar.rs	14957	2744	426
+F	crates/kira-shell/src/launcher.css	2924	3172	119
+F	crates/kira-shell/src/launcher.rs	10885	3293	300
+F	crates/kira-shell/src/main.rs	17475	3595	412
+F	crates/kira-shell/src/native-palette.css	353	4009	7
+F	crates/kira-shell/src/native_ui.rs	4908	4018	124
+F	crates/kira-shell/src/process_monitor.rs	6245	4144	202
+F	crates/kira-shell/src/process_page.rs	16357	4348	466
+F	crates/kira-shell/src/system_metrics.rs	7010	4816	214
+F	crates/kira-shell/src/system_panel.css	5154	5032	148
+F	crates/kira-shell/src/system_panel.rs	17263	5182	496
+F	docs/CONFIG.md	5801	5680	125
+F	docs/DESIGN_SYSTEM.md	15048	5807	276
+F	docs/DEVELOPMENT.md	25236	6085	510
+F	docs/QA_VISUAL.md	12284	6597	149
+F	docs/SPECIFICATION.md	28960	6748	421
+F	docs/UI_ARCHITECTURE.md	4823	7171	78
+F	docs/VISUAL_REVIEW.md	9754	7251	84
+F	flake.nix	2651	7337	76
+F	frontend/index.html	2737	7415	66
+F	frontend/package.json	650	7483	23
+F	frontend/scripts/inline-assets.mjs	4457	7508	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7613	106
+F	frontend/src/App.svelte	8659	7721	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7923	84
+F	frontend/src/lib/bootstrap.ts	2613	8009	70
+F	frontend/src/lib/calendar-model.test.ts	2097	8081	38
+F	frontend/src/lib/calendar-model.ts	3453	8121	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	8195	177
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8374	43
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8419	61
+F	frontend/src/lib/lazy-widget.test.ts	3236	8482	89
+F	frontend/src/lib/lazy-widget.ts	1984	8573	63
+F	frontend/src/lib/sdk/core.test.ts	12481	8638	250
+F	frontend/src/lib/sdk/core.ts	9521	8890	280
+F	frontend/src/lib/system-health.test.ts	2348	9172	41
+F	frontend/src/lib/system-health.ts	2831	9215	60
+F	frontend/src/lib/themes/kira-default.css	1687	9277	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9331	101
+F	frontend/src/lib/themes/kira-default.ts	777	9434	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9458	79
+F	frontend/src/lib/time.test.ts	263	9539	8
+F	frontend/src/lib/time.ts	320	9549	9
+F	frontend/src/main.ts	2928	9560	76
+F	frontend/src/style.css	1329	9638	44
+F	frontend/tsconfig.json	403	9684	16
+F	frontend/vite.config.ts	224	9702	8
+F	nix/package.nix	3430	9712	121
+F	scripts/dev_preview.py	18147	9835	403	x
+F	scripts/qa_visual.py	12052	10240	299
+F	tests/test_calendar_design.py	6653	10541	118
+F	tests/test_detailed_health.py	5510	10661	107
+F	tests/test_dev_preview.py	9339	10770	219
+F	tests/test_launcher_design.py	2915	10991	61
+F	tests/test_native_theme.py	2589	11054	55
+F	tests/test_popup_geometry.py	1675	11111	34
+F	tests/test_qa_visual.py	10549	11147	217
+F	tests/test_ui_bootstrap_contract.py	1103	11366	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -2763,11 +2765,12 @@ struct CalendarOverlay {
     window: gtk::ApplicationWindow,
     view: webkit6::WebView,
     document: String,
-    ready: Cell<bool>,
+    host_ready: Cell<bool>,
+    widget_ready: Cell<bool>,
     requested: Cell<bool>,
     revealed: Cell<bool>,
     paint_pending: Cell<bool>,
-    generation: Cell<u64>,
+    generation: Cell<u32>,
     was_active: Cell<bool>,
     open_started: Cell<Option<Instant>>,
 }
@@ -2775,24 +2778,42 @@ struct CalendarOverlay {
 impl CalendarOverlay {
     fn hide(&self) {
         self.requested.set(false);
+        self.widget_ready.set(false);
         self.revealed.set(false);
         self.paint_pending.set(false);
+        self.open_started.take();
+        // Tear down the Svelte component on hide, preserving only the
+        // warm WebKit host. The JS host serializes rapid hide/show events.
+        if self.host_ready.get() {
+            self.view.evaluate_javascript(
+                "window.dispatchEvent(new Event('kira:calendar:hide'));",
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Calendar hide delivery failed: {error}");
+                    }
+                },
+            );
+        }
         self.window.set_visible(false);
-        // Do not call close(): that destroys the warm WebKit renderer.
     }
 
     fn show(self: &Rc<Self>) {
         self.requested.set(true);
         self.revealed.set(false);
+        self.widget_ready.set(false);
         self.paint_pending.set(false);
         self.was_active.set(false);
         self.open_started.set(Some(Instant::now()));
-        self.generation.set(self.generation.get().wrapping_add(1));
+        self.generation
+            .set(self.generation.get().wrapping_add(1).max(1));
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
         self.window.present();
-        self.request_paint();
+        self.request_mount();
 
         // A dead renderer should not leave an invisible focus-stealing popup.
         let generation = self.generation.get();
@@ -2810,8 +2831,30 @@ impl CalendarOverlay {
         });
     }
 
+    fn request_mount(&self) {
+        if !self.requested.get() || !self.host_ready.get() {
+            return;
+        }
+        let generation = self.generation.get();
+        // A narrow, number-only notification from GTK to the trusted JS host.
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:calendar:show', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: Calendar mount delivery failed: {error}");
+                }
+            },
+        );
+    }
+
     fn request_paint(&self) {
-        if !self.requested.get() || !self.ready.get() || self.paint_pending.replace(true) {
+        if !self.requested.get() || !self.widget_ready.get() || self.paint_pending.replace(true) {
             return;
         }
         let generation = self.generation.get();
@@ -2837,9 +2880,15 @@ impl CalendarOverlay {
 
     fn on_message(&self, message: &str) {
         match calendar_command(message) {
-            Some(UiCommand::Ready) => {
+            Some(UiCommand::HostReady) => {
+                self.host_ready.set(true);
+                self.request_mount();
+            }
+            Some(UiCommand::Mounted(generation))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
                 eprintln!("kira-shell: Svelte calendar DOM verified");
-                self.ready.set(true);
+                self.widget_ready.set(true);
                 self.request_paint();
             }
             Some(UiCommand::Painted(generation))
@@ -2871,8 +2920,9 @@ impl CalendarOverlay {
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
     Close,
-    Ready,
-    Painted(u64),
+    HostReady,
+    Mounted(u32),
+    Painted(u32),
     CopyDate(&'a str),
 }
 
@@ -2894,12 +2944,17 @@ fn valid_date(year: i32, month: u8, day: u8) -> bool {
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     match message {
         "close" => return Some(UiCommand::Close),
-        "ready" => return Some(UiCommand::Ready),
+        "host-ready" => return Some(UiCommand::HostReady),
         _ => {}
     }
+    if let Some(value) = message.strip_prefix("mounted:") {
+        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+            return None;
+        }
+        return value.parse().ok().map(UiCommand::Mounted);
+    }
     if let Some(value) = message.strip_prefix("painted:") {
-        // Ignore arbitrary strings or oversized/noncanonical frame numbers.
-        if value.is_empty() || value.len() > 20 || !value.bytes().all(|b| b.is_ascii_digit()) {
+        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
             return None;
         }
         return value.parse().ok().map(UiCommand::Painted);
@@ -2959,7 +3014,8 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         window: window.clone(),
         view: view.clone(),
         document,
-        ready: Cell::new(false),
+        host_ready: Cell::new(false),
+        widget_ready: Cell::new(false),
         requested: Cell::new(false),
         revealed: Cell::new(false),
         paint_pending: Cell::new(false),
@@ -2984,7 +3040,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     view.connect_load_failed(move |_, event, uri, error| {
         eprintln!("kira-shell: Calendar WebKit load failed ({event:?}) for {uri}: {error}");
         if let Some(state) = weak.upgrade() {
-            state.ready.set(false);
+            state.host_ready.set(false);
             state.hide();
         }
         false
@@ -2993,7 +3049,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     view.connect_web_process_terminated(move |_, reason| {
         eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
         if let Some(state) = weak.upgrade() {
-            state.ready.set(false);
+            state.host_ready.set(false);
             state.hide();
             state.view.load_html(&state.document, None);
         }
@@ -3010,8 +3066,8 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         }
     });
 
-    // Load once at startup with no visible layer-shell surface. GTK will map
-    // and paint it only on demand, preserving the Svelte component in memory.
+    // Load WebKit once; only the lightweight JS host survives between
+    // shows. The Calendar component, timer and DOM are unmounted on hide.
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
     overlay
@@ -3076,6 +3132,9 @@ mod tests {
             "painted:2;exit",
             "painted:-1",
             "painted:18446744073709551616",
+            "mounted:",
+            "mounted:abc",
+            "mounted:4294967296",
             "copy:",
             "copy:2026-02-30",
             "copy:1900-02-29",
@@ -3090,7 +3149,8 @@ mod tests {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
         assert_eq!(calendar_command("close"), Some(UiCommand::Close));
-        assert_eq!(calendar_command("ready"), Some(UiCommand::Ready));
+        assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
+        assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
             calendar_command("copy:2024-02-29"),
@@ -6034,6 +6094,18 @@ Pull requests and main pushes run only the lightweight Core + Svelte checks
 GitHub Actions → **Nix package (nightly / manual)** → **Run workflow**
 (select the desired branch). It does not block PR iteration.
 
+
+The Calendar is **mounted lazily**: its WebKit process prewarms without a
+Svelte Calendar component. Opening mounts one instance; hiding explicitly
+unmounts it, stopping its one-second clock and releasing DOM/effects while
+retaining the warm WebKit engine for fast reopening. `lazy-widget.ts`
+serializes asynchronous mount/unmount across rapid toggles and skips stale
+show generations. The single offline frontend bundle contains all component
+code in advance, but creates and destroys active component instances on
+demand. It makes no network requests.
+This does **not** guarantee WebKit process RSS returns to zero. Use PSS and CPU
+sampling for actual resource measurements.
+
 ## Widget architecture migration
 
 The intended architecture is Rust for Core, GIO/system integration and the
@@ -7156,6 +7228,24 @@ top-level window with the required layer-shell Wayland behavior by itself.
 The calendar is connected in the Shell now. A green CI validates compilation
 and contracts, **not** final visual behavior under a real Wayland compositor.
 Nested Niri graphical QA remains mandatory before release.
+
+## Lazy widget lifetime and memory ownership
+
+The Calendar layer-shell popup prewarms its **WebKit host** when the bar starts,
+but does not mount a Svelte widget until the user opens it. The trusted GTK
+host dispatches `kira:calendar:show` with a generation ID, then waits for
+`mounted:<generation>` and a double animation frame before revealing the
+window. On hide it dispatches `kira:calendar:hide`; the Svelte lifecycle
+serially awaits `unmount()`, releasing Calendar DOM, effects, window listeners
+and its one-second clock interval. Stale asynchronous mounts/frames are ignored.
+
+The widget is **lazy-instantiated**; its component code is already present
+in the single offline HTML bundle, but the DOM, effects, timers and component
+instance are created only on show. The live instance is unloaded on hide.
+This does **not** unload the prebundled JS bytes or the base WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
+immediately fall because the JavaScript engine retains allocated pages and
+shared libraries. Launcher/System Monitor remain GTK pending their Svelte
+migration; they are not yet hosted by this lazy overlay.
 
 FILE	docs/VISUAL_REVIEW.md
 # Kira Desktop — visual design review
@@ -8388,9 +8478,165 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
   </ol>
 {/if}
 
+FILE	frontend/src/lib/lazy-widget.test.ts
+import { describe, expect, it, vi } from 'vitest';
+import { createLazyWidget } from './lazy-widget';
+
+const flush = async () => {
+  await Promise.resolve();
+  await Promise.resolve();
+  await Promise.resolve();
+};
+
+describe('lazy overlay widget lifecycle', () => {
+  it('does not load or mount a hidden widget, and disposes it on hide', async () => {
+    const mount = vi.fn(() => ({ mounted: true }));
+    const unmount = vi.fn(async () => {});
+    const onMounted = vi.fn();
+    const load = vi.fn(async () => ({ mount, unmount, onMounted }));
+    const errors = vi.fn();
+    const widget = createLazyWidget(load, errors);
+    await flush();
+    expect(load).not.toHaveBeenCalled();
+
+    widget.show(1);
+    await flush();
+    expect(load).toHaveBeenCalledTimes(1);
+    expect(mount).toHaveBeenCalledTimes(1);
+    expect(onMounted).toHaveBeenCalledWith(1);
+
+    widget.hide();
+    await flush();
+    expect(unmount).toHaveBeenCalledTimes(1);
+    expect(unmount).toHaveBeenCalledWith({ mounted: true });
+    expect(errors).not.toHaveBeenCalled();
+
+    widget.show(2);
+    await flush();
+    expect(mount).toHaveBeenCalledTimes(2);
+    expect(onMounted).toHaveBeenCalledWith(2);
+  });
+
+  it('does not mount a component loaded after the window was hidden', async () => {
+    const mount = vi.fn(() => ({}));
+    const unmount = vi.fn();
+    const onMounted = vi.fn();
+    let finish!: (widget: { mount: typeof mount; unmount: typeof unmount; onMounted: typeof onMounted }) => void;
+    const load = vi.fn(() => new Promise<{
+      mount: typeof mount; unmount: typeof unmount; onMounted: typeof onMounted
+    }>((resolve) => { finish = resolve; }));
+    const widget = createLazyWidget(load, vi.fn());
+    widget.show(7);
+    widget.hide();
+    finish({ mount, unmount, onMounted });
+    await flush();
+    expect(mount).not.toHaveBeenCalled();
+    expect(onMounted).not.toHaveBeenCalled();
+  });
+
+  it('serializes unmount before the next mount during rapid toggles', async () => {
+    const sequence: string[] = [];
+    let completeUnmount!: () => void;
+    const endUnmount = new Promise<void>((resolve) => { completeUnmount = resolve; });
+    const widget = createLazyWidget(async () => ({
+      mount() { sequence.push('mount'); return {}; },
+      unmount() { sequence.push('unmount'); return endUnmount; },
+      onMounted() { sequence.push('ready'); },
+    }), vi.fn());
+
+    widget.show(1);
+    await flush();
+    widget.hide();
+    widget.show(2);
+    await flush();
+    expect(sequence).toEqual(['mount', 'ready', 'unmount']);
+    completeUnmount();
+    await flush();
+    expect(sequence).toEqual(['mount', 'ready', 'unmount', 'mount', 'ready']);
+  });
+
+  it('ignores invalid generations without loading and reports loader failures', async () => {
+    const load = vi.fn(async () => { throw new Error('test loader failure'); });
+    const report = vi.fn();
+    const widget = createLazyWidget(load, report);
+    for (const invalid of [0, -1, 1.5, Number.NaN, 4294967296]) widget.show(invalid);
+    await flush();
+    expect(load).not.toHaveBeenCalled();
+    widget.show(4);
+    await flush();
+    expect(report).toHaveBeenCalledTimes(1);
+    expect(String(report.mock.calls[0][0])).toContain('test loader failure');
+  });
+});
+
+FILE	frontend/src/lib/lazy-widget.ts
+/**
+ * A single WebKit page can host many widgets, but only the visible widget
+ * should own DOM nodes, timers, subscriptions and Svelte reactive effects.
+ * Serialize mount/unmount so quick hide/show never resurrects stale content.
+ */
+export interface LazyWidget<Instance> {
+  mount(): Instance;
+  unmount(instance: Instance): Promise<unknown> | void;
+  onMounted(generation: number): void;
+}
+
+export function createLazyWidget<Instance>(
+  load: () => Promise<LazyWidget<Instance>>,
+  onError: (error: unknown) => void,
+) {
+  let desired: number | null = null;
+  let active: { generation: number; instance: Instance; widget: LazyWidget<Instance> } | null = null;
+  let draining = false;
+
+  async function drain(): Promise<void> {
+    if (draining) return;
+    draining = true;
+    try {
+      while ((active?.generation ?? null) !== desired) {
+        if (active) {
+          const previous = active;
+          active = null;
+          // Svelte 5 unmount() cleans up onMount disposers, including
+          // intervals and window listeners. Wait before mounting again.
+          await previous.widget.unmount(previous.instance);
+          continue;
+        }
+        if (desired === null) break;
+        const generation = desired;
+        const widget = await load();
+        // A hidden or superseded widget is never mounted.
+        if (desired !== generation) continue;
+        const instance = widget.mount();
+        active = { generation, instance, widget };
+        widget.onMounted(generation);
+      }
+    } catch (error) {
+      desired = null;
+      onError(error);
+    } finally {
+      draining = false;
+      if ((active?.generation ?? null) !== desired) void drain();
+    }
+  }
+
+  function show(generation: number): void {
+    if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;
+    desired = generation;
+    void drain();
+  }
+
+  function hide(): void {
+    desired = null;
+    void drain();
+  }
+
+  return { show, hide };
+}
+
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -8451,8 +8697,13 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    notifyCalendarMounted();
-    expect(postMessage).toHaveBeenCalledExactlyOnceWith('ready');
+    notifyCalendarHostReady();
+    notifyCalendarMounted(42);
+    notifyCalendarMounted(0);
+    notifyCalendarMounted(-1);
+    notifyCalendarMounted(Number.NaN);
+    notifyCalendarMounted(4294967296);
+    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['host-ready', 'mounted:42']);
   });
 
   it('does not throw without a calendar host, or when its channel fails', () => {
@@ -8821,9 +9072,15 @@ function sendCalendarUi(command: string): boolean {
   }
 }
 
-/** Emitted only by the calendar bootstrap after mount() and flushSync(). */
-export function notifyCalendarMounted(): void {
-  sendCalendarUi('ready');
+/** The WebKit document is ready, but no widget has been mounted yet. */
+export function notifyCalendarHostReady(): void {
+  sendCalendarUi('host-ready');
+}
+
+/** A specific popup generation has finished its lazy Svelte mount. */
+export function notifyCalendarMounted(generation: number): void {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;
+  sendCalendarUi('mounted:' + generation);
 }
 
 export function closeCalendarOverlay(): void {
@@ -9300,10 +9557,11 @@ export function formatClock(date: Date, timeZone?: string, showSeconds = false):
 }
 
 FILE	frontend/src/main.ts
-import { flushSync, mount } from 'svelte';
+import { flushSync, mount, unmount } from 'svelte';
 import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './lib/sdk/core';
+import { closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
+import { createLazyWidget } from './lib/lazy-widget';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
 
@@ -9318,39 +9576,62 @@ function report(message: string): void {
 Reflect.set(window, '__kiraEntryStarted', true);
 report('Svelte entrypoint evaluating; document.readyState=' + document.readyState);
 
-// The original Vite <script type="module"> ran after parsing the body.
-// Our single-file build inlines it as a classic <script> in <head>, so
-// attempting mount() immediately would fail because #app does not exist yet.
+// The inline bundle is a classic <script> in <head>; wait for #app.
+// Calendar's page is bootstrapped without mounting any Svelte widget.
 whenDocumentReady(document, () => {
   report('Svelte bootstrap after DOMContentLoaded; readyState=' + document.readyState);
   const target = document.getElementById('app');
+  if (document.documentElement.dataset.kiraSurface === 'calendar') {
+    if (!target) {
+      report('Calendar bootstrap failure: #app missing');
+      return;
+    }
+    const host = createLazyWidget(
+      async () => {
+        // The component code is in the self-contained bundle, but its
+        // Svelte instance/DOM/timer only exist while the popup is visible.
+        return {
+          mount() {
+            const instance = mount(CalendarWidget, {
+              target,
+              props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
+            });
+            flushSync();
+            if (!target.querySelector('main[data-kira-ui-root][aria-label="Kira Calendar"]')) {
+              throw new Error('Calendar Svelte root missing after mount');
+            }
+            return instance;
+          },
+          unmount(instance: ReturnType<typeof mount>) {
+            return unmount(instance);
+          },
+          onMounted: notifyCalendarMounted,
+        };
+      },
+      (error) => report('Calendar lazy mount/unmount failed: ' + String(error)),
+    );
+    window.addEventListener('kira:calendar:show', (event: Event) => {
+      host.show((event as CustomEvent<{ generation: number }>).detail?.generation);
+    });
+    window.addEventListener('kira:calendar:hide', () => host.hide());
+    // Remove the HTML fallback so no widget DOM remains when hidden.
+    target.querySelector('#kira-loading')?.remove();
+    Reflect.set(window, '__kiraMountReturned', true);
+    report('Calendar host ready; no widget mounted');
+    notifyCalendarHostReady();
+    return;
+  }
+
   const mounted = startUi(
     target,
     (container) => {
-      // The same self-contained frontend is hosted by the Top Bar and
-      // independent layer-shell popups. Rust sets the surface marker before
-      // load_html(), never from a navigable URL or an untrusted message.
-      if (document.documentElement.dataset.kiraSurface === 'calendar') {
-        mount(CalendarWidget, {
-          target: container,
-          props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
-        });
-      } else {
-        mount(App, { target: container });
-      }
+      mount(App, { target: container });
       flushSync();
     },
     report,
   );
   Reflect.set(window, '__kiraMountReturned', mounted);
-  if (mounted) {
-    report('Svelte entrypoint mounted');
-    // Let the GTK host map the prepared popup only after the Svelte root is
-    // actually mounted. A second frame acknowledgement gates its opacity.
-    if (document.documentElement.dataset.kiraSurface === 'calendar') {
-      notifyCalendarMounted();
-    }
-  }
+  if (mounted) report('Svelte entrypoint mounted');
 });
 
 FILE	frontend/src/style.css
@@ -10316,8 +10597,32 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertNotIn("window.close()", RUST)
         self.assertIn("pub fn prewarm(", RUST)
         self.assertIn("requestAnimationFrame", RUST)
-        self.assertIn('sendCalendarUi(\'ready\')', SDK)
-        self.assertIn("notifyCalendarMounted();", ENTRY)
+        self.assertIn("sendCalendarUi('host-ready')", SDK)
+        self.assertIn("sendCalendarUi('mounted:' + generation)", SDK)
+        self.assertIn("onMounted: notifyCalendarMounted", ENTRY)
+
+    def test_lazy_svelte_mount_and_dispose_on_hide(self):
+        self.assertIn("self.view.evaluate_javascript(", RUST)
+        self.assertIn("kira:calendar:show", RUST)
+        self.assertIn("kira:calendar:hide", RUST)
+        self.assertIn("Some(UiCommand::HostReady)", RUST)
+        self.assertIn("Some(UiCommand::Mounted(generation))", RUST)
+        self.assertIn("self.widget_ready.set(false)", RUST)
+        self.assertIn("self.generation.get() == generation", RUST)
+        self.assertIn("notifyCalendarHostReady();", ENTRY)
+        self.assertIn("notifyCalendarMounted", ENTRY)
+        self.assertIn("host.hide()", ENTRY)
+        self.assertIn("host.show(", ENTRY)
+        self.assertIn("import CalendarWidget from './lib/components/CalendarWidget.svelte'", ENTRY)
+        self.assertIn("return unmount(instance)", ENTRY)
+        lifecycle = (ROOT / "frontend/src/lib/lazy-widget.ts").read_text()
+        self.assertIn("await previous.widget.unmount(previous.instance)", lifecycle)
+        self.assertIn("if (desired !== generation) continue", lifecycle)
+        self.assertIn("if ((active?.generation ?? null) !== desired) void drain()", lifecycle)
+        # The offline classic script cannot issue a dynamic import request.
+        self.assertNotIn("await import(", ENTRY)
+        # WebKit must remain alive to preserve instant reopening.
+        self.assertNotIn("window.close()", RUST)
 
     def test_surface_is_selected_by_trusted_html_marker(self):
         self.assertIn('data-kira-surface=\\"calendar\\"', RUST)
