@@ -76,6 +76,22 @@
     height: 0;
   }
 
+  /* Hide WebKitGTK's heavy scrollbar chrome on the System Monitor only.
+   * Wheel, touchpad, arrow keys and nested process scrolling remain usable.
+   * Do not disable overflow or clip content to make the scrollbar disappear.
+   */
+  .kira-monitor-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-y: contain;
+  }
+
+  .kira-monitor-scroll::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   /* Keep an explicit keyboard-visible outline even outside our components. */
   :focus-visible {
     outline-color: var(--kira-color-accent);
