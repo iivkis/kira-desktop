@@ -108,6 +108,9 @@ fn summary(
     if snapshot.cpu_percent.is_none() || snapshot.memory_percent().is_none() {
         return ("MEASURING", "kira-system-pending");
     }
+    if root.is_none() {
+        return ("PARTIAL DATA", "kira-system-pending");
+    }
     ("ALL SYSTEMS NOMINAL", "kira-system-ready")
 }
 
