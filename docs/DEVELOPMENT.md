@@ -31,10 +31,12 @@ non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
-The native Calendar and System Monitor now use the shared
-`native_ui::configure_popup` helper to cap their scroll viewport at 70%
-of the logical monitor height; their top margin is 25px (previously 50).
-This keeps the bottom of each popup reachable even on short displays.
+The native Calendar and System Monitor use the shared
+`native_ui::configure_popup` helper to size their windows to the natural
+height of the content, up to 70% of the logical monitor height. The old
+490/600px preferred heights were forcing unnecessary scrolling on taller
+outputs. The top margin remains 25px, and overflow scrolls only when the
+content actually exceeds the 70% cap.
 
 The Process Monitor lives in two small Rust modules:
 `process_monitor.rs` parses /proc on a worker and computes CPU from
@@ -73,6 +75,18 @@ See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibilit
 spacing, contrast and future widget conventions. The small HTML fallback in
 `frontend/index.html` uses the exact canonical colors because it runs before
 CSS assets finish loading.
+
+## Automatic rustfmt in CI
+
+The lightweight GitHub Actions CI runs `cargo fmt --all` **before tests**.
+For first-party feature branches it commits any resulting Rust changes
+and pushes the formatting-only commit without force-pushing. The same
+working tree is then checked and tested. No changes means no commit.
+Forked PRs and the protected `main` branch are check-only, with no
+formatting push. Checkout credentials are not persisted: a token is
+available only to the trusted push step. Formatting commits pushed using
+`GITHUB_TOKEN` do not launch an endless second CI run. Local
+`task fmt` still checks style.
 
 ## Safe nested development preview
 
