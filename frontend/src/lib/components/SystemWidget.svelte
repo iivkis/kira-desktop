@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import SystemCharts from './SystemCharts.svelte';
+  import { pulseReading, revealStagger } from '../motion';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -104,8 +106,8 @@
   </nav>
 
   {#if active === 'overview'}
-    <div class="flex min-h-0 flex-1 flex-col">
-      <section class="space-y-2 bg-kira-bg px-5 py-4" aria-label="Connections">
+    <div class="flex min-h-0 flex-1 flex-col" use:revealStagger>
+      <section data-kira-enter class="space-y-2 bg-kira-bg px-5 py-4" aria-label="Connections">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">CONNECTIONS / REAL-TIME</h2>
         <div class="flex justify-between gap-3 text-xs"><span class="text-kira-muted">KIRA CORE</span>
           <span class="font-bold">{status?.core ? 'CONNECTED' : 'OFFLINE'}</span></div>
@@ -113,44 +115,35 @@
           <span class="font-bold">{status?.niri ? 'CONNECTED' : 'DISCONNECTED'}</span></div>
       </section>
 
-      <section class="space-y-4 bg-kira-surface px-5 py-4" aria-label="Resource usage">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">RESOURCES / LIVE TELEMETRY</h2>
-        {#each meters as meter (meter.title)}
-          <div class="space-y-2">
-            <div class="flex items-center justify-between gap-2 text-[11px]">
-              <span class="font-semibold text-kira-muted">{meter.title}</span>
-              <span class="text-right font-bold tabular-nums">{meter.text}</span>
+      <section data-kira-enter class="space-y-2 bg-kira-surface px-5 py-4" aria-label="Resource usage">
+        <SystemCharts {metrics} {meters} />
+        <!-- DOM text remains accessible even if ECharts SVG cannot render. -->
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-kira-muted/20 pt-3">
+          {#each meters as meter (meter.title)}
+            <div class="min-w-0">
+              <div class="truncate text-[9px] font-semibold text-kira-muted">{meter.title}</div>
+              <div class="truncate text-[11px] font-bold tabular-nums" use:pulseReading={meter.text}>{meter.text}</div>
             </div>
-            {#if meter.percent !== null}
-              <div class="h-1.5 w-full overflow-hidden rounded-sm bg-kira-bg" role="progressbar"
-                aria-label={meter.title} aria-valuenow={meter.percent} aria-valuemin="0" aria-valuemax="100">
-                <div class="h-full bg-kira-accent" style:width={meter.percent + '%'}></div>
-              </div>
-            {/if}
-          </div>
-        {/each}
+          {/each}
+        </div>
       </section>
 
-      <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="GPU telemetry">
+      <section data-kira-enter class="space-y-3 bg-kira-bg px-5 py-4" aria-label="GPU telemetry">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">GRAPHICS / GPU</h2>
         {#each metrics?.gpus ?? [] as gpu (gpu.label)}
-          <div class="space-y-2">
+          <div class="space-y-2 border-l-2 border-kira-accent bg-kira-surface-soft px-3 py-3">
             <div class="flex items-center justify-between gap-2 text-[11px]">
               <span class="min-w-0 truncate font-semibold text-kira-muted" title={gpu.label}>{gpu.label}</span>
-              <span class="shrink-0 text-right font-bold tabular-nums">
+              <span class="shrink-0 text-right font-bold tabular-nums"
+                use:pulseReading={gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}>
                 {gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}
               </span>
             </div>
-            {#if gpu.utilization_percent !== null}
-              <div class="h-1.5 w-full overflow-hidden rounded-sm bg-kira-surface" role="progressbar"
-                aria-label={gpu.label + ' utilization'} aria-valuenow={gpu.utilization_percent}
-                aria-valuemin="0" aria-valuemax="100">
-                <div class="h-full bg-kira-accent" style:width={gpu.utilization_percent + '%'}></div>
-              </div>
-            {/if}
+            <!-- GPU utilization is charted in Apache ECharts above. -->
             <div class="flex justify-between gap-2 text-[11px]">
               <span class="text-kira-muted">TEMPERATURE</span>
-              <span class="font-bold tabular-nums">{temperatureLabel(gpu.temperature_c)}</span>
+              <span class="font-bold tabular-nums"
+                use:pulseReading={temperatureLabel(gpu.temperature_c)}>{temperatureLabel(gpu.temperature_c)}</span>
             </div>
           </div>
         {:else}
@@ -158,15 +151,18 @@
         {/each}
       </section>
 
-      <section class="space-y-2 bg-kira-surface px-5 py-4" aria-label="CPU temperature">
+      <section data-kira-enter class="space-y-2 bg-kira-surface px-5 py-4" aria-label="CPU temperature">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">THERMALS / CPU</h2>
         <div class="flex justify-between gap-3 text-[11px]">
           <span class="text-kira-muted">CPU PACKAGE</span>
-          <span class="font-bold tabular-nums">{temperatureLabel(metrics?.cpu_temperature_c ?? null)}</span>
+          <span class="font-bold tabular-nums"
+            use:pulseReading={temperatureLabel(metrics?.cpu_temperature_c ?? null)}>
+            {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
+          </span>
         </div>
       </section>
 
-      <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="Operating system details">
+      <section data-kira-enter class="space-y-3 bg-kira-bg px-5 py-4" aria-label="Operating system details">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">OPERATING SYSTEM / CONTEXT</h2>
         <div class="flex justify-between gap-3 text-[11px]"><span class="text-kira-muted">UPTIME</span>
           <span class="font-bold tabular-nums">{uptimeLabel(metrics?.uptime_seconds ?? null)}</span></div>
@@ -184,11 +180,12 @@
       </section>
     </div>
   {:else}
-    <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4" aria-label="Processes">
-      <h2 class="mb-3 text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
-      <input type="search" aria-label="Filter by process name or PID" placeholder="Filter by process name or PID"
+    <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
+      aria-label="Processes" use:revealStagger>
+      <h2 data-kira-enter class="mb-3 text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
+      <input data-kira-enter type="search" aria-label="Filter by process name or PID" placeholder="Filter by process name or PID"
         bind:value={query} class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
-      <div class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+      <div data-kira-enter class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
         {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
           <button type="button" onclick={() => changeSort(column.field as SortField)}
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
@@ -199,7 +196,7 @@
           </button>
         {/each}
       </div>
-      <div class="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
+      <div data-kira-enter class="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
         {#each visible as process (process.pid)}
           <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
             title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
@@ -216,7 +213,7 @@
             processes && processes.rows.length ? 'NO MATCHING PROCESSES' : 'SAMPLING / PLEASE WAIT'}</p>
         {/each}
       </div>
-      <footer class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
+      <footer data-kira-enter class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
         <p>SHOWING {visible.length} OF {matching.length} MATCHES / {processes?.total ?? 0} SCANNED
           {processes?.truncated ? ' / LIMIT REACHED' : ''}</p>
         <p>READ ONLY / CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
