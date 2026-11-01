@@ -29,6 +29,7 @@ describe('read-only system health status', () => {
     expect(systemHealth('connected', '', true, { ...normal, battery_percent: 10, battery_charging: false }).label).toBe('LOW BAT');
     expect(systemHealth('connected', '', true, { ...normal, battery_percent: 10, battery_charging: true }).label).toBe('READY');
     expect(systemHealth('connected', '', true, { ...normal, cpu_percent: 98 }).label).toBe('BUSY');
+    expect(systemHealth('connected', '', true, { ...normal, root_total_kib: null }).label).toBe('PARTIAL');
   });
 
   it('never renders an unknown metric as zero', () => {
