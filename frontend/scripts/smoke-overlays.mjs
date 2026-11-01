@@ -29,17 +29,7 @@ function scriptFor(steps, observationMs = 1150) {
       battery_percent: null, battery_charging: null,
     },
   });
-  const pointerMode = steps.some(step => step.kind.startsWith('lens-'));
   return '<script>' +
-    (pointerMode ?
-      'const realMedia = window.matchMedia.bind(window);' +
-      'window.matchMedia = q => {' +
-        'const original = realMedia(q);' +
-        'return q.includes("hover: hover") && q.includes("pointer: fine") ? {' +
-          'matches:true, media:q, addEventListener:(...args)=>original.addEventListener(...args),' +
-          'removeEventListener:(...args)=>original.removeEventListener(...args)' +
-        '} : original;' +
-      '};' : '') +
     'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
       'if (String(message).startsWith("size:")) {' +
         'document.documentElement.setAttribute("data-smoke-size", String(message));' +
@@ -74,33 +64,6 @@ function scriptFor(steps, observationMs = 1150) {
                   'setTimeout(() => {' +
                     'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
-              : kind === 'lens-over'
-                ? 'const target = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
-                  'if (target) {' +
-                  'const rect = target.getBoundingClientRect();' +
-                  'window.__kiraLensInitialRect = [rect.left,rect.top,rect.width,rect.height];' +
-                  'target.dispatchEvent(new PointerEvent("pointerover",{bubbles:true,pointerType:"mouse",clientX:rect.left+rect.width*0.25,clientY:rect.top+rect.height*0.25}));' +
-                  'const immediatePaint=target.querySelector("[data-tenet-lens-body]")||target;' +
-                  'window.__kiraLensStarted=target.dataset.tenetWarpState==="forward" && immediatePaint.dataset.tenetWarpPixels==="true" && !!immediatePaint.style.filter && !target.style.filter;' +
-                  'setTimeout(()=>{' +
-                    'const paint=target.querySelector("[data-tenet-lens-body]")||target;' +
-                    'const filter=document.querySelector("feDisplacementMap");' +
-                    'window.__kiraLensReacted=target.dataset.tenetWarpState==="forward" && paint.dataset.tenetWarpPixels==="true" && paint.style.filter.includes("kira-temporal-warp") && Number(filter?.getAttribute("scale"))>0;' +
-                    'const stages=Array.from(document.querySelectorAll("filter[id^=kira-temporal-warp] feGaussianBlur"));' +
-                    'window.__kiraWarpSmooth=paint!==target && !target.style.filter && stages.length===2 && stages[0].getAttribute("in")==="materialField" && Number(stages[0].getAttribute("stdDeviation"))>=2 && stages[1].getAttribute("in")==="displacedPixels" && Number(stages[1].getAttribute("stdDeviation"))<0.4 && Number(filter.getAttribute("scale"))<=6.5;' +
-                  '},130);' +
-                  '}'
-              : kind === 'lens-move'
-                ? 'const target = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
-                  'if(target){const rect=target.getBoundingClientRect();' +
-                  'target.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerType:"mouse",clientX:rect.right-2,clientY:rect.bottom-2}));' +
-                  'setTimeout(()=>{' +
-                    'const offset=document.querySelector("feOffset");' +
-                    'window.__kiraWarpChanged=!!offset && Math.abs(Number(offset.getAttribute("dx")))>1;' +
-                  '},140);}'
-              : kind === 'lens-out'
-                ? 'const target = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
-                  'target?.dispatchEvent(new PointerEvent("pointerout",{bubbles:true,pointerType:"mouse",relatedTarget:null}));'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : kind === 'pulse'
@@ -140,18 +103,6 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
-      'const hoveredButton = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
-      'const hoveredRect = hoveredButton?.getBoundingClientRect();' +
-      'document.documentElement.setAttribute("data-smoke-lens-enter", !!window.__kiraLensReacted);' +
-      'document.documentElement.setAttribute("data-smoke-lens-move", !!window.__kiraWarpChanged);' +
-      'document.documentElement.setAttribute("data-smoke-lens-seen", !!window.__kiraLensInitialRect);' +
-      'document.documentElement.setAttribute("data-smoke-lens-started", !!window.__kiraLensStarted);' +
-      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensStarted);' +
-      'document.documentElement.setAttribute("data-smoke-warp-svg", !!document.querySelector("filter[id^=kira-temporal-warp] feTurbulence") && !!document.querySelector("filter[id^=kira-temporal-warp] feDisplacementMap"));' +
-      'document.documentElement.setAttribute("data-smoke-warp-smooth", !!window.__kiraWarpSmooth);' +
-      'document.documentElement.setAttribute("data-smoke-warp-reset", Number(document.querySelector("feDisplacementMap")?.getAttribute("scale")) === 0);' +
-      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensStarted && !!hoveredButton && !hoveredButton.hasAttribute("data-tenet-warp-state") && !hoveredButton.style.filter);' +
-      'document.documentElement.setAttribute("data-smoke-lens-hitbox", !!hoveredRect && !!window.__kiraLensInitialRect && [hoveredRect.left,hoveredRect.top,hoveredRect.width,hoveredRect.height].every((value,index)=>Math.abs(value-window.__kiraLensInitialRect[index])<0.5));' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
@@ -159,6 +110,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
       'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
+      'document.documentElement.setAttribute("data-smoke-no-hover-warp", !document.querySelector("filter[id^=kira-temporal-warp], [data-tenet-warp-state], [data-tenet-warp-pixels], [data-tenet-lens-body]"));' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
       'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
       'document.documentElement.setAttribute("data-smoke-editable-selectable", !editable || getComputedStyle(editable).userSelect === "text");' +
@@ -173,7 +125,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode.startsWith('lens') ? 2450 : heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -182,7 +134,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
-    '--virtual-time-budget=' + (heightMode.startsWith('lens') ? 3000 : heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -197,29 +149,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': popup size bridge/cap invalid (height=' +
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
   }
+  if (!output.includes('data-smoke-no-hover-warp="true"')) {
+    throw new Error(name + ': removed pixel-distortion must not mount in any widget');
+  }
   if (!output.includes('data-smoke-unselectable="true"') ||
       !output.includes('data-smoke-editable-selectable="true"')) {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
-  }
-  if (heightMode === 'lens-system' &&
-      (!output.includes('data-smoke-lens-started="true"') ||
-       !output.includes('data-smoke-warp-svg="true"') ||
-       !output.includes('data-smoke-warp-smooth="true"') ||
-       !output.includes('data-smoke-warp-reset="true"') ||
-       !output.includes('data-smoke-lens-hitbox="true"'))) {
-    const flags = output.match(/data-smoke-(?:lens|warp)-[a-z-]+="[^"]*"/g) ?? [];
-    throw new Error(name + ': system tab text-only filter and border preservation: ' + flags.join(', '));
-  }
-  if (heightMode === 'lens' &&
-      (!output.includes('data-smoke-lens-started="true"') ||
-       !output.includes('data-smoke-lens-reacted="true"') ||
-       !output.includes('data-smoke-lens-restored="true"') ||
-       !output.includes('data-smoke-lens-hitbox="true"') ||
-       !output.includes('data-smoke-warp-svg="true"') ||
-       !output.includes('data-smoke-warp-smooth="true"') ||
-       !output.includes('data-smoke-warp-reset="true"'))) {
-    const flags = output.match(/data-smoke-(?:lens|warp)-[a-z-]+="[^"]*"/g) ?? [];
-    throw new Error(name + ': SVG material deformation and exact restoration: ' + flags.join(', '));
   }
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
@@ -279,20 +214,6 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
-  await smoke('calendar-tenet-pointer-lens', [
-    { delay: 25, kind: 'calendar', generation: 1 },
-    // Allow the TENET calendar opening scene to settle first; otherwise
-    // its moving section would legitimately alter the button rectangle.
-    { delay: 1150, kind: 'lens-over' },
-    { delay: 1400, kind: 'lens-move' },
-    { delay: 1540, kind: 'lens-out' },
-  ], 'Kira Calendar', 'lens');
-  await smoke('system-tenet-pointer-smooth-tab', [
-    { delay: 25, kind: 'system', generation: 1 },
-    { delay: 1150, kind: 'lens-over' },
-    { delay: 1400, kind: 'lens-move' },
-    { delay: 1540, kind: 'lens-out' },
-  ], 'Kira System Monitor', 'lens-system');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
