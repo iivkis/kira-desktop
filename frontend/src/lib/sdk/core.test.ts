@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -53,6 +53,15 @@ describe('Core SDK JSON-RPC bridge', () => {
       copyCalendarDate(invalid);
     }
     expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close', 'copy:2024-02-29']);
+  });
+
+  it('reports calendar Svelte mount completion only via the private host channel', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    notifyCalendarMounted();
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('ready');
   });
 
   it('does not throw without a calendar host, or when its channel fails', () => {
