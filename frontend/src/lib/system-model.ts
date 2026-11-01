@@ -1,6 +1,6 @@
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
-export type SortField = 'name' | 'pid' | 'cpu' | 'memory';
+export type SortField = 'name' | 'pid' | 'cpu' | 'memory' | 'pss';
 export type SortState = { field: SortField; descending: boolean };
 
 export const defaultSort: SortState = { field: 'cpu', descending: true };
@@ -8,7 +8,7 @@ export const defaultSort: SortState = { field: 'cpu', descending: true };
 export function nextSort(current: SortState, field: SortField): SortState {
   return current.field === field
     ? { field, descending: !current.descending }
-    : { field, descending: field === 'cpu' || field === 'memory' };
+    : { field, descending: field === 'cpu' || field === 'memory' || field === 'pss' };
 }
 
 export function sortedProcesses(rows: ProcessRow[], query: string, state: SortState): ProcessRow[] {
@@ -35,6 +35,9 @@ export function sortedProcesses(rows: ProcessRow[], query: string, state: SortSt
         case 'memory':
           delta = compareUnknown(a.rss_kib, b.rss_kib);
           break;
+        case 'pss':
+          delta = compareUnknown(a.pss_kib, b.pss_kib);
+          break;
       }
       return delta || a.pid - b.pid;
     });
@@ -47,6 +50,15 @@ export function percentUsed(total: number | null, available: number | null): num
 
 export function bytesLabel(kib: number): string {
   return kib >= 1_048_576 ? (kib / 1_048_576).toFixed(1) + ' GiB' : Math.round(kib / 1024) + ' MiB';
+}
+
+export function temperatureLabel(celsius: number | null): string {
+  return celsius === null ? 'UNAVAILABLE' : celsius.toFixed(1) + ' °C';
+}
+
+export function processMemoryLabel(kib: number | null): string {
+  if (kib === null) return '—';
+  return kib < 1024 ? kib + ' KiB' : bytesLabel(kib);
 }
 
 export function fractionLabel(total: number | null, available: number | null): string {
