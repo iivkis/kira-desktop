@@ -53,6 +53,37 @@ struct CalendarOverlay {
 }
 
 impl CalendarOverlay {
+    /// The single WebKit layer-shell window has different geometry depending
+    /// on the active widget. With no edge anchors, wlr-layer-shell centers
+    /// the launcher's fixed-size surface on its output.
+    fn position_for(&self, kind: Surface) {
+        let centered = kind == Surface::Launcher;
+
+        // Reset margins before removing anchors. Margins only belong to
+        // anchored edges, so stale top/right values cannot leak into the
+        // centered launcher (or trigger a compositor protocol error).
+        self.window.set_margin(Edge::Top, 0);
+        self.window.set_margin(Edge::Right, 0);
+        self.window.set_margin(Edge::Bottom, 0);
+        self.window.set_margin(Edge::Left, 0);
+        self.window.set_anchor(Edge::Top, !centered);
+        self.window.set_anchor(Edge::Right, !centered);
+        self.window.set_anchor(Edge::Bottom, false);
+        self.window.set_anchor(Edge::Left, false);
+
+        if centered {
+            // Ignore the bar's reserved top zone to center in the entire
+            // output, rather than the usable area below the bar.
+            self.window.set_exclusive_zone(-1);
+        } else {
+            // Calendar and System keep their existing top-right placement.
+            self.window.set_exclusive_zone(0);
+            self.window
+                .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
+            self.window.set_margin(Edge::Right, 12);
+        }
+    }
+
     fn hide(&self) {
         self.requested.set(false);
         if let Some(model) = self.system.borrow().as_ref() {
@@ -94,6 +125,7 @@ impl CalendarOverlay {
                 model.set_processes_active(false);
             }
         }
+        self.position_for(kind);
         self.active.set(Some(kind));
         // The launcher needs reliable keyboard focus for type-to-search;
         // other popups preserve their former on-demand keyboard behavior.
