@@ -92,6 +92,10 @@ official visual language of Kira Desktop.
   datetime always come from the same localized clock reading; animation
   cannot delay or falsify the actual time. Digit rolls are interrupted
   cleanly on a subsequent tick and disabled by `prefers-reduced-motion`.
+  Clicking or keyboard-activating the clock launches a deliberately playful
+  GSAP digit scatter. Every digit returns to its exact original position;
+  interruption, repeated activation, unmount and reduced-motion reset
+  transformations without delaying the real wall time.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   Search, catalog, stable application icons, and an orange selection rail
   communicate function without painting the entire row orange.
@@ -160,7 +164,9 @@ diagnostic bars. The visual hierarchy is intentional:
    with accessible HTML numbers and accurate unknown state.
 2. **Secondary:** activity history in **separate, clearly labeled CPU and RAM
    lanes**, both sampled at 500 ms and using the **same adaptive-axis rules**
-   and continuous ECharts update strategy. RAM keeps measured hundredth-percent
+   and continuous ECharts update strategy. Both lanes share the same
+   **actual timestamp X domain** and align their start at the first
+   concurrently available CPU/RAM sample. RAM keeps measured hundredth-percent
    precision instead of rounding away real movement, while accessible axis
    labels disclose the actual zoom. GPU has its own lane only when a real
    utilization sensor is available. History is bounded to 120 genuine
