@@ -125,17 +125,17 @@
       <span class="text-[10px] font-bold tabular-nums text-kira-muted">{matches.length} / {apps.length} APPS</span>
     </div>
     <div id="kira-launcher-results" bind:this={results}
-      class="min-h-0 flex-1 overflow-y-auto" role="listbox" aria-label="Matching applications">
+      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1" role="listbox" aria-label="Matching applications">
       {#each displayed as app, index (app.id)}
         <button type="button" role="option" aria-selected={index === activeIndex}
           onclick={() => choose(index)}
           title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 rounded-md py-2 pr-2 text-left focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+          class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
           <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
-          <span class="flex size-9 shrink-0 items-center justify-center bg-kira-bg text-sm font-extrabold text-kira-text" aria-hidden="true">
+          <span class="flex size-9 shrink-0 items-center justify-center overflow-hidden bg-kira-surface-soft text-[12px] font-bold text-kira-muted" aria-hidden="true">
             {#if icons[app.id]}
-              <img class="size-9 object-contain" src={icons[app.id]} alt="" loading="lazy"
+              <img class="size-8 object-contain" src={icons[app.id]} alt="" loading="lazy"
                 onerror={() => { delete icons[app.id]; }} />
             {:else}
               {app.name.slice(0, 1).toLocaleUpperCase() || 'K'}
