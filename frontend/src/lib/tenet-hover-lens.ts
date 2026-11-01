@@ -44,12 +44,21 @@ function createWarpFilter(root: HTMLElement) {
 
   const noise = svgNode(doc, 'feTurbulence');
   noise.setAttribute('type', 'fractalNoise');
-  noise.setAttribute('baseFrequency', '0.026 0.085');
-  noise.setAttribute('numOctaves', '2');
+  // Broad, low-frequency field: high-frequency noise and 10px offsets
+  // were rasterizing tiny 11px tab glyphs into visible pixel stairs.
+  noise.setAttribute('baseFrequency', '0.016 0.045');
+  noise.setAttribute('numOctaves', '1');
   noise.setAttribute('seed', String(serial % 97 + 1));
   noise.setAttribute('result', 'materialField');
+  // Blur ONLY the noise displacement field, never the rendered text.
+  // Continuous vectors retain glyph anti-aliasing instead of snapping
+  // adjacent source pixels onto abrupt blocky noise transitions.
+  const smooth = svgNode(doc, 'feGaussianBlur');
+  smooth.setAttribute('in', 'materialField');
+  smooth.setAttribute('stdDeviation', '2.4');
+  smooth.setAttribute('result', 'continuousField');
   const offset = svgNode(doc, 'feOffset');
-  offset.setAttribute('in', 'materialField');
+  offset.setAttribute('in', 'continuousField');
   offset.setAttribute('result', 'shiftedField');
   const displacement = svgNode(doc, 'feDisplacementMap');
   displacement.setAttribute('in', 'SourceGraphic');
@@ -57,7 +66,7 @@ function createWarpFilter(root: HTMLElement) {
   displacement.setAttribute('xChannelSelector', 'R');
   displacement.setAttribute('yChannelSelector', 'G');
   displacement.setAttribute('scale', '0');
-  filter.append(noise, offset, displacement);
+  filter.append(noise, smooth, offset, displacement);
   defs.appendChild(filter);
   svg.appendChild(defs);
   root.appendChild(svg);
@@ -68,7 +77,7 @@ function createWarpFilter(root: HTMLElement) {
       displacement.setAttribute('scale', field.amplitude.toFixed(2));
       offset.setAttribute('dx', field.phaseX.toFixed(2));
       offset.setAttribute('dy', field.phaseY.toFixed(2));
-      noise.setAttribute('baseFrequency', field.frequency.toFixed(4) + ' 0.085');
+      noise.setAttribute('baseFrequency', field.frequency.toFixed(4) + ' 0.045');
     },
   };
 }
@@ -80,7 +89,7 @@ export function tenetHoverLens(root: HTMLElement) {
   // mouse hover. Closed/idle widgets allocate no material compositor work.
   let warp: ReturnType<typeof createWarpFilter> | null = null;
   const ensureWarp = () => warp ?? (warp = createWarpFilter(root));
-  const field: Field = { amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026 };
+  const field: Field = { amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.016 };
   let active: HTMLElement | null = null;
   let painted: HTMLElement | null = null;
   let priorFilter = '';
@@ -102,10 +111,12 @@ export function tenetHoverLens(root: HTMLElement) {
    */
   function fieldAt(point: LensPoint): Field {
     return {
-      amplitude: 7 + Math.hypot(point.dx, point.dy) * 0.75,
-      phaseX: point.dx * 3.5,
-      phaseY: point.dy * 2,
-      frequency: 0.024 + point.x * 0.0001,
+      // Keep displacement below ~6px even at the corner. Stronger
+      // amplitude bends small text into visibly jagged, aliased edges.
+      amplitude: 3.4 + Math.hypot(point.dx, point.dy) * 0.45,
+      phaseX: point.dx * 2.4,
+      phaseY: point.dy * 1.8,
+      frequency: 0.014 + point.x * 0.00004,
     };
   }
 
@@ -135,7 +146,7 @@ export function tenetHoverLens(root: HTMLElement) {
     field.amplitude = 0;
     field.phaseX = 0;
     field.phaseY = 0;
-    field.frequency = 0.026;
+    field.frequency = 0.016;
     warp?.apply(field);
   }
 
@@ -154,8 +165,9 @@ export function tenetHoverLens(root: HTMLElement) {
     if (!target || target === active) return;
     restore();
     active = target;
-    // Filter an explicit glyph surface when available. Otherwise distort
-    // the actual painted button including its background and glyphs.
+    // Prefer a glyph-only layer: borders, separators and layout edges
+    // remain crisp. Falling back to a whole control is reserved for
+    // controls without a dedicated label.
     painted = target.querySelector<HTMLElement>('[data-tenet-lens-body]') ?? target;
     priorFilter = painted.style.filter;
     const rect = target.getBoundingClientRect();
@@ -195,7 +207,7 @@ export function tenetHoverLens(root: HTMLElement) {
       });
     }
     reverse.to(field, {
-      amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026,
+      amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.016,
       duration: 0.20, ease: 'power3.out',
       onUpdate: () => warp?.apply(field),
     });
