@@ -7,6 +7,8 @@ use gtk::gio;
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
+const TITLE: &str = "Kira Launcher";
+
 struct App {
     info: gio::AppInfo,
     search: String,
@@ -78,46 +80,24 @@ fn launch(
 
 fn install_style() {
     static ONCE: Once = Once::new();
-    ONCE.call_once(|| {
-        let provider = gtk::CssProvider::new();
-        provider.load_from_data(include_str!("launcher.css"));
-        if let Some(display) = gtk::gdk::Display::default() {
-            gtk::style_context_add_provider_for_display(
-                &display,
-                &provider,
-                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-            );
-        }
-    });
+    ONCE.call_once(|| crate::native_ui::install_styles(include_str!("launcher.css")));
 }
 
 /// Close only the Launcher when switching native overlays.
 pub fn dismiss(application: &gtk::Application) -> bool {
-    if let Some(window) = application
-        .windows()
-        .into_iter()
-        .find(|window| window.title().as_deref() == Some("Kira Launcher"))
-    {
-        window.close();
-        return true;
-    }
-    false
+    crate::native_ui::dismiss_overlay(application, TITLE)
 }
 
 /// Show a single keyboard-accessible layer-shell overlay without reserving space.
 pub fn show(application: &gtk::Application) {
-    if let Some(existing) = application
-        .windows()
-        .into_iter()
-        .find(|window| window.title().as_deref() == Some("Kira Launcher"))
-    {
+    if let Some(existing) = crate::native_ui::find_overlay(application, TITLE) {
         existing.present();
         return;
     }
     crate::calendar::dismiss(application);
     install_style();
     let window = gtk::ApplicationWindow::new(application);
-    window.set_title(Some("Kira Launcher"));
+    window.set_title(Some(TITLE));
     window.set_decorated(false);
     window.set_default_size(600, 520);
     window.add_css_class("kira-launcher-window");

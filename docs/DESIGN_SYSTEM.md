@@ -88,13 +88,16 @@ provided by the project owner. No additional base colors are permitted.
 | Alabaster Grey | `--alabaster-grey` | `#e5e5e5ff` | Secondary text and borders |
 | White | `--white` | `#ffffffff` | Primary text on dark surfaces |
 
-The source of truth is
+The canonical values are declared in
 [`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts).
-The frontend exposes the five variables through
-[`kira-default.css`](../frontend/src/lib/themes/kira-default.css), while
-native GTK uses corresponding named colors in
-[`launcher.css`](../crates/kira-shell/src/launcher.css).
-Contract tests verify the palette and semantic aliases stay synchronized.
+The frontend exposes them through
+[`kira-default.css`](../frontend/src/lib/themes/kira-default.css).
+Native GTK declares the same five colors **once** in
+[`native-palette.css`](../crates/kira-shell/src/native-palette.css),
+assembled with each overlay stylesheet by
+[`native_ui.rs`](../crates/kira-shell/src/native_ui.rs).
+Contract tests verify the values match; each overlay owns only its
+component selectors, not a second color palette.
 
 ## Public CSS contract
 

@@ -14,19 +14,6 @@ NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class CalendarDesignTests(unittest.TestCase):
-    def test_palette_is_canonical(self):
-        declared = dict(re.findall(
-            r"@define-color (kira_[a-z_]+) (#[0-9a-fA-F]{8});", CSS
-        ))
-        self.assertEqual(declared, {
-            "kira_black": "#000000ff",
-            "kira_prussian_blue": "#14213dff",
-            "kira_orange": "#fca311ff",
-            "kira_alabaster_grey": "#e5e5e5ff",
-            "kira_white": "#ffffffff",
-        })
-        self.assertEqual(set(re.findall(r"#[0-9a-fA-F]{8}\b", CSS)), set(declared.values()))
-
     def test_only_custom_calendar_grid(self):
         self.assertIn("gtk::Grid::new()", RUST)
         self.assertIn("gtk::Button::new()", RUST)
@@ -116,6 +103,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn('aria-haspopup="dialog"', FRONTEND)
         self.assertIn("calendar.css", NIX)
         self.assertIn('include_str!("calendar.css")', RUST)
+        self.assertIn("crate::native_ui::install_styles(", RUST)
 
 
 if __name__ == "__main__":

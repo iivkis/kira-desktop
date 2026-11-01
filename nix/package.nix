@@ -41,14 +41,14 @@ let
   # cleanCargoSource excludes unrelated frontend/docs changes from the Rust
   # derivation. Crane creates a dummy source tree for buildDepsOnly, so edits
   # to .rs files do NOT invalidate compiled GTK/WebKit/GObject Rust crates.
-  # Cargo source filtering would drop the GTK CSS included by launcher.rs.
-  # Retain only this additional source asset; unrelated frontend edits must
-  # still not invalidate cached native Rust builds.
+  # Cargo source filtering would drop GTK CSS included by native_ui.rs and
+  # the overlays. Retain only these assets, without pulling in frontend edits.
   rustSrc = lib.cleanSourceWith {
     src = ../.;
     filter = path: type:
       (lib.hasSuffix "/crates/kira-shell/src/launcher.css" (toString path))
       || (lib.hasSuffix "/crates/kira-shell/src/calendar.css" (toString path))
+      || (lib.hasSuffix "/crates/kira-shell/src/native-palette.css" (toString path))
       || craneLib.filterCargoSources path type;
   };
   commonRustArgs = {

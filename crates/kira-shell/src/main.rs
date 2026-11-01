@@ -3,6 +3,7 @@
 mod calendar;
 mod calendar_model;
 mod launcher;
+mod native_ui;
 mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};

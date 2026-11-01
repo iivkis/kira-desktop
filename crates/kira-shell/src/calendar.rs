@@ -208,35 +208,14 @@ fn navigation_button(text: &str, tooltip: &str) -> gtk::Button {
     button
 }
 
-fn find_window(application: &gtk::Application) -> Option<gtk::Window> {
-    application
-        .windows()
-        .into_iter()
-        .find(|window| window.title().as_deref() == Some(TITLE))
-}
-
 /// Close only this overlay, never the persistent 42px Top Bar.
 pub fn dismiss(application: &gtk::Application) -> bool {
-    if let Some(window) = find_window(application) {
-        window.close();
-        return true;
-    }
-    false
+    crate::native_ui::dismiss_overlay(application, TITLE)
 }
 
 fn install_style() {
     static ONCE: Once = Once::new();
-    ONCE.call_once(|| {
-        let provider = gtk::CssProvider::new();
-        provider.load_from_data(include_str!("calendar.css"));
-        if let Some(display) = gtk::gdk::Display::default() {
-            gtk::style_context_add_provider_for_display(
-                &display,
-                &provider,
-                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-            );
-        }
-    });
+    ONCE.call_once(|| crate::native_ui::install_styles(include_str!("calendar.css")));
 }
 
 /// Toggled only by the trusted 'kiraCalendar' WebKit handler.

@@ -72,3 +72,13 @@ until a screenshot/keyboard test is performed in Niri.
 **Verdict:** architecture and brand language meet the intent; the remaining
 scope is measured polish and verified responsive/accessibility behavior, not
 another aesthetic redesign.
+
+## KISS / DRY follow-up: native overlay infrastructure
+
+The Launcher and Calendar previously each declared all five identical
+`@define-color` values and repeated GTK CSS-provider installation and window
+lookup/dismiss logic. Shared canonical GTK declarations now live in
+`native-palette.css` and the small `native_ui.rs` helper. This deliberately
+**does not** unify their layouts or behavior: these surfaces have different
+interaction models. Nix explicitly retains the new stylesheet, and one
+cross-surface test checks canonical palette alignment and assembly.

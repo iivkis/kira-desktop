@@ -1,10 +1,4 @@
-/* Canonical five colors shared with Svelte's Kira Default palette. */
-@define-color kira_black #000000ff;
-@define-color kira_prussian_blue #14213dff;
-@define-color kira_orange #fca311ff;
-@define-color kira_alabaster_grey #e5e5e5ff;
-@define-color kira_white #ffffffff;
-
+/* Kira Launcher. Native colors loaded from native-palette.css. */
 window.kira-launcher-window { background: transparent; }
 
 /* One structural panel edge. Internally, contrast comes from materials and
