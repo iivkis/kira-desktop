@@ -4,7 +4,6 @@ mod calendar;
 mod launcher;
 mod native_ui;
 mod process_monitor;
-mod process_page;
 mod system_metrics;
 mod system_panel;
 use std::cell::{Cell, RefCell};
@@ -233,10 +232,12 @@ fn main() {
         let system_stats = latest_metrics.clone();
         let system_core = core_online.clone();
         let system_niri = niri_online.clone();
+        let system_html = html.clone();
         manager.connect_script_message_received(Some("kiraSystem"), move |_, value| {
             if value.to_string() == "toggle" {
-                system_panel::toggle(
+                calendar::toggle_system(
                     &system_app,
+                    &system_html,
                     system_stats.clone(),
                     system_core.clone(),
                     system_niri.clone(),
