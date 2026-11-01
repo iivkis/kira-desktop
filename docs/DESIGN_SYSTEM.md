@@ -91,6 +91,8 @@ official visual language of Kira Desktop.
   CPU/memory samples; LOW DISK, LOW MEM, LOW BAT or BUSY report measured
   pressure, and CHECKING is shown until first valid samples. Hover offers
   a short truthful snapshot; clicking opens the native System Monitor.
+  PARTIAL indicates that CPU and RAM have been sampled but root disk data
+  is unavailable, so the status never claims full readiness without it.
   It has the same Black heading / Prussian Blue workbench / Black details
   composition as the Calendar and Launcher, uses small orange progress
   meters and real values from Linux /proc, sysfs and Gio's root filesystem
