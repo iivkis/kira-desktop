@@ -1,7 +1,8 @@
 import { flushSync, mount, unmount } from 'svelte';
 import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
+import SystemWidget from './lib/components/SystemWidget.svelte';
+import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
@@ -18,7 +19,7 @@ Reflect.set(window, '__kiraEntryStarted', true);
 report('Svelte entrypoint evaluating; document.readyState=' + document.readyState);
 
 // The inline bundle is a classic <script> in <head>; wait for #app.
-// Calendar's page is bootstrapped without mounting any Svelte widget.
+// The shared overlay page is bootstrapped without mounting any Svelte widget.
 whenDocumentReady(document, () => {
   report('Svelte bootstrap after DOMContentLoaded; readyState=' + document.readyState);
   const target = document.getElementById('app');
@@ -27,19 +28,27 @@ whenDocumentReady(document, () => {
       report('Calendar bootstrap failure: #app missing');
       return;
     }
+    let requestedKind: 'calendar' | 'system' = 'calendar';
     const host = createLazyWidget(
       async () => {
-        // The component code is in the self-contained bundle, but its
-        // Svelte instance/DOM/timer only exist while the popup is visible.
+        // Both components are prebundled, but neither owns DOM, timers or
+        // subscriptions until its popup is explicitly requested.
+        const kind = requestedKind;
         return {
           mount() {
-            const instance = mount(CalendarWidget, {
-              target,
-              props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
-            });
+            const instance = kind === 'calendar'
+              ? mount(CalendarWidget, {
+                target,
+                props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
+              })
+              : mount(SystemWidget, {
+                target,
+                props: { onClose: closeSystemOverlay, onCopy: copySystemReport, onTab: setSystemMonitorTab },
+              });
             flushSync();
-            if (!target.querySelector('main[data-kira-ui-root][aria-label="Kira Calendar"]')) {
-              throw new Error('Calendar Svelte root missing after mount');
+            const label = kind === 'calendar' ? 'Kira Calendar' : 'Kira System Monitor';
+            if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {
+              throw new Error('Svelte ' + kind + ' root missing after mount');
             }
             return instance;
           },
@@ -49,16 +58,19 @@ whenDocumentReady(document, () => {
           onMounted: notifyCalendarMounted,
         };
       },
-      (error) => report('Calendar lazy mount/unmount failed: ' + String(error)),
+      (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
-    window.addEventListener('kira:calendar:show', (event: Event) => {
-      host.show((event as CustomEvent<{ generation: number }>).detail?.generation);
+    window.addEventListener('kira:overlay:show', (event: Event) => {
+      const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
+      if (detail?.kind !== 'calendar' && detail?.kind !== 'system') return;
+      requestedKind = detail.kind;
+      host.show(detail.generation);
     });
-    window.addEventListener('kira:calendar:hide', () => host.hide());
+    window.addEventListener('kira:overlay:hide', () => host.hide());
     // Remove the HTML fallback so no widget DOM remains when hidden.
     target.querySelector('#kira-loading')?.remove();
     Reflect.set(window, '__kiraMountReturned', true);
-    report('Calendar host ready; no widget mounted');
+    report('Overlay host ready; no widget mounted');
     notifyCalendarHostReady();
     return;
   }
