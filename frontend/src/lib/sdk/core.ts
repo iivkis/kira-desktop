@@ -137,7 +137,7 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraSystem?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge } };
   }
 }
 
@@ -165,6 +165,33 @@ export function openLauncher(): boolean {
 /** Toggle the native calendar overlay through its fixed-purpose channel. */
 export function toggleCalendar(): boolean {
   return postNativeCommand('kiraCalendar', 'toggle');
+}
+
+/** Only the calendar overlay has access to this dedicated host channel.
+ * The Top Bar cannot copy arbitrary text or request calendar window actions.
+ */
+function sendCalendarUi(command: string): boolean {
+  const channel = typeof window === 'undefined'
+    ? undefined
+    : window.webkit?.messageHandlers?.kiraCalendarUi;
+  if (!channel) return false;
+  try {
+    channel.postMessage(command);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function closeCalendarOverlay(): void {
+  sendCalendarUi('close');
+}
+
+export function copyCalendarDate(date: string): void {
+  // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
+  // revalidates the exact date, including month lengths and leap years.
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) return;
+  sendCalendarUi('copy:' + date);
 }
 
 /** Open or close the native read-only system monitor. */
