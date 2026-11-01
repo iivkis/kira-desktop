@@ -76,7 +76,7 @@
           class:text-kira-muted={health !== 'ALL SYSTEMS NOMINAL'} aria-live="polite">{health}</p>
       </div>
       <button type="button" onclick={onClose} aria-label="Close system monitor" title="Close (Esc)"
-        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body class="inline-block">×</span></button>
     </div>
   </header>
 
@@ -84,12 +84,12 @@
     <button type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'overview' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
-      01 / OVERVIEW
+      <span data-tenet-lens-body class="inline-block">01 / OVERVIEW</span>
     </button>
     <button type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
       class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'processes' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
-      02 / PROCESSES
+      <span data-tenet-lens-body class="inline-block">02 / PROCESSES</span>
     </button>
   </nav>
 
@@ -199,7 +199,7 @@
         </span>
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[10px] font-bold tracking-wide text-kira-accent
-            focus-visible:outline-2 focus-visible:outline-kira-accent">COPY REPORT</button>
+            focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body class="inline-block">COPY REPORT</span></button>
       </footer>
     </div>
   {:else}
@@ -215,7 +215,7 @@
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
             aria-label={'Sort by ' + column.label}>
-            {column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}
+            <span data-tenet-lens-body class="inline-block">{column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}</span>
           </button>
         {/each}
       </div>
