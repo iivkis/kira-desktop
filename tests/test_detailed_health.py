@@ -23,7 +23,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('set_exclusive_zone(0)', RUST)
         self.assertIn('set_anchor(Edge::Top, true)', RUST)
         self.assertIn('set_anchor(Edge::Right, true)', RUST)
-        self.assertIn('crate::native_ui::configure_popup(&window, &scroll, 408, 600)', RUST)
+        self.assertIn('crate::native_ui::configure_popup(&window, &scroll, 408)', RUST)
         self.assertIn('crate::native_ui::POPUP_TOP_MARGIN', RUST)
         self.assertIn('kira:system-metrics', HOST)
         self.assertIn('onSystemMetrics(', APP)
