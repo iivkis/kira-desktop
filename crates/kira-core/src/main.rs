@@ -582,7 +582,12 @@ mod tests {
         fs::write(&target, "also keep me").unwrap();
         std::os::unix::fs::symlink(&target, &path).unwrap();
         assert!(bind_core_socket(&path).is_err());
-        assert!(fs::symlink_metadata(&path).unwrap().file_type().is_symlink());
+        assert!(
+            fs::symlink_metadata(&path)
+                .unwrap()
+                .file_type()
+                .is_symlink()
+        );
         assert_eq!(fs::read_to_string(&target).unwrap(), "also keep me");
 
         fs::remove_dir_all(directory).unwrap();
