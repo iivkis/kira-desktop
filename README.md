@@ -7,6 +7,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 - [Technical specification (Russian)](docs/SPECIFICATION.md)
 - [Development guide](docs/DEVELOPMENT.md)
 - [Kira Default design system](docs/DESIGN_SYSTEM.md)
+- [TENET Motion System · required animation standard](docs/TENET_MOTION.md)
 - [CI checks](.github/workflows/ci.yml)
 - [Native Nix build checks](.github/workflows/nix.yml)
 - [Visual QA / packaged Shell smoke-test guide](docs/QA_VISUAL.md)
