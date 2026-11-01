@@ -4,7 +4,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RUST = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
-MODEL = (ROOT / "crates/kira-shell/src/calendar_model.rs").read_text()
 SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
 NATIVE = (ROOT / "crates/kira-shell/src/native_ui.rs").read_text()
 SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
@@ -68,13 +67,12 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("postNativeCommand('kiraCalendar', 'toggle')", SDK)
         self.assertIn("onclick={activateCalendar}", FRONTEND)
 
-    def test_pure_rust_validation_remains_tested_but_rust_no_longer_renders_days(self):
-        for token in ("pub fn month_grid", "pub fn shift_month", "pub fn iso_week",
-                      "fn leap_years_and_century_rules", "fn month_navigation_handles_years_and_limits"):
-            self.assertIn(token, MODEL)
-        self.assertIn('mod calendar_model;', SHELL)
+    def test_only_small_rust_date_copy_validation_survives(self):
+        self.assertIn("fn valid_date(year: i32, month: u8, day: u8) -> bool", RUST)
+        self.assertIn("fn rejects_untrusted_calendar_commands()", RUST)
+        self.assertNotIn("mod calendar_model;", SHELL)
+        self.assertNotIn("calendar_model.rs", RUST)
         self.assertNotIn("calendar.css", NIX)
-
 
 if __name__ == "__main__":
     unittest.main()
