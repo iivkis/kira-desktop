@@ -157,7 +157,11 @@ const MAX_HWMON_SENSORS: usize = 32;
 fn read_small(path: &Path) -> Option<String> {
     use std::io::Read;
     let mut bytes = Vec::new();
-    fs::File::open(path).ok()?.take(4096).read_to_end(&mut bytes).ok()?;
+    fs::File::open(path)
+        .ok()?
+        .take(4096)
+        .read_to_end(&mut bytes)
+        .ok()?;
     String::from_utf8(bytes).ok()
 }
 
@@ -187,34 +191,34 @@ fn hwmon_temperature(root: &Path, cpu: bool) -> Option<f64> {
 fn hwmon_temperature_for_device(path: &Path, cpu: bool) -> Option<f64> {
     let mut sensors: Vec<(u8, f64)> = Vec::new();
     for index in 1..=MAX_HWMON_SENSORS {
-            let input = path.join(format!("temp{index}_input"));
-            let Some(value) = read_small(&input).and_then(|text| temperature_c(&text)) else {
-                continue;
-            };
-            let label = read_small(&path.join(format!("temp{index}_label")))
-                .unwrap_or_default()
-                .trim()
-                .to_ascii_lowercase();
-            // CPU: prefer package/die readings. GPU: prefer the edge sensor
-            // over hotspot/junction/VRAM readings on multi-sensor cards.
-            let priority = if cpu {
-                if label.starts_with("package") || label == "tdie" || label == "cpu" {
-                    0
-                } else if label == "tctl" || label.starts_with("core ") {
-                    1
-                } else {
-                    2
-                }
-            } else if label == "edge" || label == "gpu" {
+        let input = path.join(format!("temp{index}_input"));
+        let Some(value) = read_small(&input).and_then(|text| temperature_c(&text)) else {
+            continue;
+        };
+        let label = read_small(&path.join(format!("temp{index}_label")))
+            .unwrap_or_default()
+            .trim()
+            .to_ascii_lowercase();
+        // CPU: prefer package/die readings. GPU: prefer the edge sensor
+        // over hotspot/junction/VRAM readings on multi-sensor cards.
+        let priority = if cpu {
+            if label.starts_with("package") || label == "tdie" || label == "cpu" {
                 0
-            } else if label.contains("junction") || label.contains("hotspot") {
+            } else if label == "tctl" || label.starts_with("core ") {
                 1
-            } else if label.contains("mem") {
-                3
             } else {
                 2
-            };
-            sensors.push((priority, value));
+            }
+        } else if label == "edge" || label == "gpu" {
+            0
+        } else if label.contains("junction") || label.contains("hotspot") {
+            1
+        } else if label.contains("mem") {
+            3
+        } else {
+            2
+        };
+        sensors.push((priority, value));
     }
     sensors.sort_by_key(|sensor| sensor.0);
     sensors.first().map(|sensor| sensor.1)
@@ -239,7 +243,11 @@ fn cpu_temperature(sys: &Path) -> Option<f64> {
     // not be mislabeled as CPU package temperature.
     let zones = fs::read_dir(sys.join("class/thermal")).ok()?;
     for entry in zones.flatten() {
-        if !entry.file_name().to_string_lossy().starts_with("thermal_zone") {
+        if !entry
+            .file_name()
+            .to_string_lossy()
+            .starts_with("thermal_zone")
+        {
             continue;
         }
         let path = entry.path();
@@ -264,7 +272,9 @@ fn gpu_label(card: &str, vendor: &str, uevent: &str) -> String {
     // PCI 00:02.0 is the standard integrated Intel graphics device.
     // For other GPUs do not guess integrated vs discrete from vendor.
     let integrated = vendor.trim() == "0x8086"
-        && uevent.lines().any(|line| line == "PCI_SLOT_NAME=0000:00:02.0");
+        && uevent
+            .lines()
+            .any(|line| line == "PCI_SLOT_NAME=0000:00:02.0");
     let kind = if integrated { "iGPU" } else { "GPU" };
     format!("{kind} / {manufacturer} ({card})")
 }
@@ -383,8 +393,14 @@ mod tests {
         assert_eq!(utilization("83\n"), Some(83));
         assert_eq!(utilization("101"), None);
         assert_eq!(utilization("-1"), None);
-        assert_eq!(gpu_label("card0", "0x8086", "PCI_SLOT_NAME=0000:00:02.0\n"), "iGPU / Intel (card0)");
-        assert_eq!(gpu_label("card1", "0x1002", "PCI_SLOT_NAME=0000:03:00.0\n"), "GPU / AMD (card1)");
+        assert_eq!(
+            gpu_label("card0", "0x8086", "PCI_SLOT_NAME=0000:00:02.0\n"),
+            "iGPU / Intel (card0)"
+        );
+        assert_eq!(
+            gpu_label("card1", "0x1002", "PCI_SLOT_NAME=0000:03:00.0\n"),
+            "GPU / AMD (card1)"
+        );
     }
 
     #[test]
