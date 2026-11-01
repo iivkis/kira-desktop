@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4248
+index_bytes=4250
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,95 +15,95 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	e4b8964205e568c1f8eeefee306336c21a36e973
+C	d0cba8a51bdb035681f66efe1671cfa259869b30
 F	.cargo/config.toml	98	116	3
 F	.github/workflows/ci.yml	4355	121	112
 F	.github/workflows/frontend-nix.yml	1398	235	43
 F	.github/workflows/nix.yml	1258	280	38
-F	.github/workflows/overlay-smoke.yml	912	320	34
-F	.github/workflows/publish-repospool.yml	3048	356	83
-F	.gitignore	178	441	11
-F	.repospoolignore	1028	454	47
-F	AGENTS.md	2145	503	35
-F	Cargo.toml	494	540	22
-F	README.md	11192	564	247
-F	Taskfile.yml	5957	813	185
-F	config/kira.kdl.example	358	1000	8
-F	crates/kira-core/Cargo.toml	207	1010	10
-F	crates/kira-core/src/config.rs	15217	1022	399
-F	crates/kira-core/src/main.rs	32080	1423	839
-F	crates/kira-core/src/niri.rs	16767	2264	453
-F	crates/kira-ipc/Cargo.toml	170	2719	9
-F	crates/kira-ipc/src/client.rs	17794	2730	458
-F	crates/kira-ipc/src/lib.rs	10460	3190	336
-F	crates/kira-shell/Cargo.toml	297	3528	12
-F	crates/kira-shell/src/calendar.rs	38858	3542	1043
-F	crates/kira-shell/src/launcher.rs	14114	4587	392
-F	crates/kira-shell/src/main.rs	19285	4981	447
-F	crates/kira-shell/src/native_ui.rs	2857	5430	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5505	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5793	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5911	559
-F	crates/kira-shell/src/system_panel.rs	11356	6472	318
-F	docs/CONFIG.md	5801	6792	125
-F	docs/DESIGN_SYSTEM.md	18882	6919	342
-F	docs/DEVELOPMENT.md	27700	7263	547
-F	docs/QA_VISUAL.md	12284	7812	149
-F	docs/SPECIFICATION.md	28960	7963	421
-F	docs/UI_ARCHITECTURE.md	6737	8386	106
-F	docs/VISUAL_REVIEW.md	9754	8494	84
-F	flake.nix	3181	8580	91
-F	frontend/index.html	2737	8673	66
-F	frontend/package.json	720	8741	27
-F	frontend/scripts/inline-assets.mjs	4457	8770	103
-F	frontend/scripts/inline-assets.test.mjs	4645	8875	106
-F	frontend/scripts/smoke-overlays.mjs	13460	8983	214
-F	frontend/src/App.svelte	8659	9199	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9401	84
-F	frontend/src/lib/bootstrap.ts	2613	9487	70
-F	frontend/src/lib/calendar-model.test.ts	2097	9559	38
-F	frontend/src/lib/calendar-model.ts	3453	9599	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	9673	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	9852	176
-F	frontend/src/lib/components/SystemCharts.svelte	8885	10030	205
-F	frontend/src/lib/components/SystemHealth.svelte	1684	10237	43
-F	frontend/src/lib/components/SystemWidget.svelte	13245	10282	245
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10529	61
-F	frontend/src/lib/launcher-model.test.ts	1370	10592	29
-F	frontend/src/lib/launcher-model.ts	778	10623	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	10643	89
-F	frontend/src/lib/lazy-widget.ts	1984	10734	63
-F	frontend/src/lib/motion.ts	1596	10799	49
-F	frontend/src/lib/overlay-size.ts	1090	10850	29
-F	frontend/src/lib/sdk/core.test.ts	22258	10881	444
-F	frontend/src/lib/sdk/core.ts	17793	11327	473
-F	frontend/src/lib/system-charts.test.ts	4097	11802	95
-F	frontend/src/lib/system-charts.ts	3759	11899	109
-F	frontend/src/lib/system-health.test.ts	2385	12010	42
-F	frontend/src/lib/system-health.ts	2831	12054	60
-F	frontend/src/lib/system-model.test.ts	3900	12116	73
-F	frontend/src/lib/system-model.ts	4434	12191	102
-F	frontend/src/lib/themes/kira-default.css	1687	12295	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	12349	101
-F	frontend/src/lib/themes/kira-default.ts	777	12452	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	12476	79
-F	frontend/src/lib/time.test.ts	263	12557	8
-F	frontend/src/lib/time.ts	320	12567	9
-F	frontend/src/main.ts	5907	12578	127
-F	frontend/src/style.css	3447	12707	107
-F	frontend/tsconfig.json	403	12816	16
-F	frontend/vite.config.ts	224	12834	8
-F	nix/package.nix	3132	12844	117
-F	scripts/dev_preview.py	18147	12963	403	x
-F	scripts/qa_visual.py	12052	13368	299
-F	tests/test_calendar_design.py	6835	13669	121
-F	tests/test_detailed_health.py	5195	13792	101
-F	tests/test_dev_preview.py	9339	13895	219
-F	tests/test_launcher_design.py	9956	14116	182
-F	tests/test_native_theme.py	1567	14300	36
-F	tests/test_popup_geometry.py	6956	14338	118
-F	tests/test_qa_visual.py	10549	14458	217
-F	tests/test_ui_bootstrap_contract.py	1103	14677	29
+F	.github/workflows/overlay-smoke.yml	1064	320	40
+F	.github/workflows/publish-repospool.yml	3048	362	83
+F	.gitignore	178	447	11
+F	.repospoolignore	1028	460	47
+F	AGENTS.md	2145	509	35
+F	Cargo.toml	494	546	22
+F	README.md	11192	570	247
+F	Taskfile.yml	5957	819	185
+F	config/kira.kdl.example	358	1006	8
+F	crates/kira-core/Cargo.toml	207	1016	10
+F	crates/kira-core/src/config.rs	15217	1028	399
+F	crates/kira-core/src/main.rs	32080	1429	839
+F	crates/kira-core/src/niri.rs	16767	2270	453
+F	crates/kira-ipc/Cargo.toml	170	2725	9
+F	crates/kira-ipc/src/client.rs	17794	2736	458
+F	crates/kira-ipc/src/lib.rs	10460	3196	336
+F	crates/kira-shell/Cargo.toml	297	3534	12
+F	crates/kira-shell/src/calendar.rs	38858	3548	1043
+F	crates/kira-shell/src/launcher.rs	14114	4593	392
+F	crates/kira-shell/src/main.rs	19285	4987	447
+F	crates/kira-shell/src/native_ui.rs	2857	5436	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5511	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5799	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5917	559
+F	crates/kira-shell/src/system_panel.rs	11356	6478	318
+F	docs/CONFIG.md	5801	6798	125
+F	docs/DESIGN_SYSTEM.md	19310	6925	348
+F	docs/DEVELOPMENT.md	27700	7275	547
+F	docs/QA_VISUAL.md	12284	7824	149
+F	docs/SPECIFICATION.md	28960	7975	421
+F	docs/UI_ARCHITECTURE.md	6737	8398	106
+F	docs/VISUAL_REVIEW.md	9754	8506	84
+F	flake.nix	3181	8592	91
+F	frontend/index.html	2737	8685	66
+F	frontend/package.json	720	8753	27
+F	frontend/scripts/inline-assets.mjs	4457	8782	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8887	106
+F	frontend/scripts/smoke-overlays.mjs	15101	8995	233
+F	frontend/src/App.svelte	8659	9230	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9432	84
+F	frontend/src/lib/bootstrap.ts	2613	9518	70
+F	frontend/src/lib/calendar-model.test.ts	2097	9590	38
+F	frontend/src/lib/calendar-model.ts	3453	9630	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7948	9704	180
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	9886	176
+F	frontend/src/lib/components/SystemCharts.svelte	8889	10064	205
+F	frontend/src/lib/components/SystemHealth.svelte	1684	10271	43
+F	frontend/src/lib/components/SystemWidget.svelte	13245	10316	245
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10563	61
+F	frontend/src/lib/launcher-model.test.ts	1370	10626	29
+F	frontend/src/lib/launcher-model.ts	778	10657	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	10677	89
+F	frontend/src/lib/lazy-widget.ts	1984	10768	63
+F	frontend/src/lib/motion.ts	3802	10833	113
+F	frontend/src/lib/overlay-size.ts	1090	10948	29
+F	frontend/src/lib/sdk/core.test.ts	22258	10979	444
+F	frontend/src/lib/sdk/core.ts	17793	11425	473
+F	frontend/src/lib/system-charts.test.ts	4098	11900	95
+F	frontend/src/lib/system-charts.ts	3759	11997	109
+F	frontend/src/lib/system-health.test.ts	2385	12108	42
+F	frontend/src/lib/system-health.ts	2831	12152	60
+F	frontend/src/lib/system-model.test.ts	3900	12214	73
+F	frontend/src/lib/system-model.ts	4434	12289	102
+F	frontend/src/lib/themes/kira-default.css	1687	12393	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	12447	101
+F	frontend/src/lib/themes/kira-default.ts	777	12550	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	12574	79
+F	frontend/src/lib/time.test.ts	263	12655	8
+F	frontend/src/lib/time.ts	320	12665	9
+F	frontend/src/main.ts	5907	12676	127
+F	frontend/src/style.css	3447	12805	107
+F	frontend/tsconfig.json	403	12914	16
+F	frontend/vite.config.ts	224	12932	8
+F	nix/package.nix	3132	12942	117
+F	scripts/dev_preview.py	18147	13061	403	x
+F	scripts/qa_visual.py	12052	13466	299
+F	tests/test_calendar_design.py	6835	13767	121
+F	tests/test_detailed_health.py	5195	13890	101
+F	tests/test_dev_preview.py	9339	13993	219
+F	tests/test_launcher_design.py	9956	14214	182
+F	tests/test_native_theme.py	1567	14398	36
+F	tests/test_popup_geometry.py	6956	14436	118
+F	tests/test_qa_visual.py	10549	14556	217
+F	tests/test_ui_bootstrap_contract.py	1103	14775	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -321,6 +321,12 @@ name: Overlay browser smoke
 
 on:
   pull_request:
+    paths:
+      - 'frontend/**'
+      - 'crates/kira-shell/src/calendar.rs'
+      - '.github/workflows/overlay-smoke.yml'
+  push:
+    branches: [main]
     paths:
       - 'frontend/**'
       - 'crates/kira-shell/src/calendar.rs'
@@ -4375,7 +4381,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
         if let Some(state) = weak.upgrade() {
             state.poll_launcher();
-            // Reuse the existing 30ms GTK source for the 100ms CPU/RAM
+            // Reuse the existing 30ms GTK source for the 500ms CPU/RAM
             // stream. Never schedule WebKit scripts on a worker thread.
             state.poll_pulse();
             gtk::glib::ControlFlow::Continue
@@ -5915,8 +5921,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-/// Actual CPU/RAM samples, not 100ms interpolation of two-second readings.
-pub const PULSE_INTERVAL: Duration = Duration::from_millis(100);
+/// Actual CPU/RAM samples, not 500ms interpolation of two-second readings.
+pub const PULSE_INTERVAL: Duration = Duration::from_millis(500);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Pulse {
@@ -5936,7 +5942,7 @@ impl Pulse {
 }
 
 /// Short-lived, read-only worker sampler. Avoids all sysfs/hwmon, disk,
-/// battery, GPU enumeration, and process scans at the 100ms pulse cadence.
+/// battery, GPU enumeration, and process scans at the 500ms pulse cadence.
 #[derive(Default)]
 pub struct PulseSampler {
     previous_cpu: Option<(u64, u64)>,
@@ -6382,7 +6388,7 @@ mod tests {
 
     #[test]
     fn pulse_interval_is_100ms_and_only_exports_cpu_and_memory() {
-        assert_eq!(PULSE_INTERVAL, Duration::from_millis(100));
+        assert_eq!(PULSE_INTERVAL, Duration::from_millis(500));
         let pulse = Pulse {
             cpu_percent: Some(0),
             memory_total_kib: Some(1024),
@@ -6497,7 +6503,7 @@ pub fn disk() -> Option<(u64, u64)> {
     (total > 0 && available <= total).then_some((total, available))
 }
 
-/// A bounded channel prevents stale 100ms samples from building up in a
+/// A bounded channel prevents stale 500ms samples from building up in a
 /// busy GTK main loop. This worker only exists on Overview while visible.
 struct PulseFeed {
     running: Arc<AtomicBool>,
@@ -6571,7 +6577,7 @@ impl Model {
                     Ok(()) | Err(mpsc::TrySendError::Full(_)) => {}
                     Err(mpsc::TrySendError::Disconnected(_)) => break,
                 }
-                // The interval is measured start-to-start, not IO + 100ms.
+                // The interval is measured start-to-start, not IO + 500ms.
                 // Skip missed cycles instead of flooding the GTK/UI channel.
                 if let Some(remaining) = PULSE_INTERVAL.checked_sub(started.elapsed()) {
                     std::thread::sleep(remaining);
@@ -6999,6 +7005,12 @@ official visual language of Kira Desktop.
   to the clipboard only on click.
   Clicking time again or pressing Escape closes; focus loss also dismisses
   after activation. The calendar and Launcher close each other when opened.
+  The calendar uses **GSAP** for a staggered section entrance,
+  directional month/year transitions, and a restrained selected-day pop.
+  Only opacity/transform are animated: actual date arithmetic, keyboard
+  focus, clipboard, and the 42px top bar remain unchanged. Motion is
+  disabled by `prefers-reduced-motion`, interrupted transitions are killed,
+  and all GSAP tweens/listeners are cleaned up when the calendar unmounts.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   Search, catalog, stable application icons, and an orange selection rail
   communicate function without painting the entire row orange.
@@ -7069,7 +7081,7 @@ diagnostic bars. The visual hierarchy is intentional:
    lanes**. Low CPU loads must remain visible using a bounded, adaptive
    percentage axis; each lane's axis displays its real endpoints, and GPU has
    its own lane only while a real utilization sensor is available. History is
-   bounded to 600 genuine 100ms CPU/RAM samples, never fabricated.
+   bounded to 120 genuine 500ms CPU/RAM samples, never fabricated.
 3. **Tertiary:** compact Swap and Root Storage figures, then a concise hardware
    / thermal row and OS metadata, with no empty card for unavailable GPU data.
    Nonzero fractional swap use is not rounded down to a misleading 0%.
@@ -7081,15 +7093,15 @@ diagnostic bars. The visual hierarchy is intentional:
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
 
-### 100ms CPU/RAM pulse
+### 500ms CPU/RAM pulse
 
 The **SYSTEM / PULSE** dials and activity lanes receive genuine Linux
-`/proc/stat` and `/proc/meminfo` measurements **every 100 milliseconds**,
+`/proc/stat` and `/proc/meminfo` measurements **every 500 milliseconds**,
 in a dedicated read-only worker, only while the System Monitor's Overview
 tab is visible. A bounded, single-slot channel sends the latest pulse
 through the existing GTK event loop to a strictly validated
-`kira:system:pulse` event. ECharts keeps no more than 600 real samples
-(60 seconds). No 100ms interpolation, browser polling or fake zero values.
+`kira:system:pulse` event. ECharts keeps no more than 120 real samples
+(60 seconds). No 500ms interpolation, browser polling or fake zero values.
 
 The full system feed, including GPU, CPU/GPU temperatures, battery, root
 storage, and KDL/Core status, still refreshes every two seconds. GPU
@@ -9035,6 +9047,12 @@ function scriptFor(steps) {
             : kind === 'filter'
               ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : kind === 'calendar-next'
+                ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent;' +
+                  'document.querySelector("button[aria-label=\\\"Next month\\\"]")?.click();'
+              : kind === 'calendar-pick'
+                ? 'const candidate = document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[data-calendar-day].text-kira-text:not([aria-pressed=\\\"true\\\"])");' +
+                  'window.__kiraCalendarChosen = candidate?.getAttribute("aria-label");candidate?.click();'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : kind === 'pulse'
@@ -9062,8 +9080,10 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
+      'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
-      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && roots[0].textContent.includes("LIVE · 100MS"));' +
+      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && roots[0].textContent.includes("LIVE · 500MS"));' +
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
       'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
@@ -9108,6 +9128,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       !output.includes('data-smoke-editable-selectable="true"')) {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
   }
+  if (heightMode === 'calendar' &&
+      (!output.includes('data-smoke-calendar-navigated="true"') ||
+       !output.includes('data-smoke-calendar-picked="true"'))) {
+    const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
+  }
   if (heightMode === 'system') {
     const charts = Number(output.match(/data-smoke-system-charts="(\d+)"/)?.[1] ?? 0);
     if (charts < 2 || !output.includes('data-smoke-system-swap="true"') ||
@@ -9146,6 +9172,11 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
+  await smoke('calendar-month-and-day-motion', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 180, kind: 'calendar-next' },
+    { delay: 420, kind: 'calendar-pick' },
+  ], 'Kira Calendar', 'calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
   await smoke('system-live-telemetry', [
     { delay: 25, kind: 'system', generation: 1 },
@@ -9672,6 +9703,7 @@ export function localDateLabel(date: CivilDate, locale?: string, options?: Intl.
 FILE	frontend/src/lib/components/CalendarWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import { calendarGridMotion, revealStagger } from '../motion';
   import {
     dayOfYear, isoDate, isoWeek, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -9766,10 +9798,11 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 
 <main
   data-kira-ui-root
+  use:revealStagger
   class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
-  <section class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
+  <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
     <div class="min-w-0">
       <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
       <time class="mt-1 block text-4xl font-extrabold tabular-nums" datetime={now.toISOString()}>
@@ -9784,7 +9817,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
       title="Close calendar" aria-label="Close calendar">×</button>
   </section>
 
-  <section class="min-h-0 flex-1 bg-kira-surface px-4 py-4" aria-label="Date picker">
+  <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 py-4" aria-label="Date picker">
     <div class="mb-4 flex items-center justify-between gap-2">
       <div class="min-w-0">
         <div class="text-[10px] font-semibold tracking-wider text-kira-muted">SELECT DATE</div>
@@ -9803,7 +9836,8 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
       </div>
     </div>
 
-    <div class="grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates">
+    <div class="grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates"
+      use:calendarGridMotion={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
       <span class="py-2 text-[10px] font-bold text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
         <span class="py-2 text-[10px] font-bold text-kira-muted">{label}</span>
@@ -9833,7 +9867,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
     </div>
   </section>
 
-  <section class="shrink-0 bg-kira-bg px-5 pb-5 pt-4">
+  <section data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-5 pt-4">
     <p class="text-sm font-bold" aria-live="polite">{localDateLabel(selected, locale)}</p>
     <p class="mt-1 text-[10px] font-semibold tracking-wider text-kira-muted">
       ISO WEEK {String(week.week).padStart(2, '0')} / {week.year}
@@ -10083,8 +10117,8 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
     });
     gauges?.setOption({
       animation: !reduced,
-      animationDuration: reduced ? 0 : 85,
-      animationDurationUpdate: reduced ? 0 : 85,
+      animationDuration: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 350,
       animationEasingUpdate: 'cubicOut',
       series: [
         dial('CPU', cpu, '25%', accent),
@@ -10100,8 +10134,8 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
 
     trend?.setOption({
       animation: !reduced,
-      animationDuration: reduced ? 0 : 85,
-      animationDurationUpdate: reduced ? 0 : 85,
+      animationDuration: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 350,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
       grid: panels.map((_, i) => ({
@@ -10140,7 +10174,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
     }, { notMerge: true, lazyUpdate: true });
   }
 
-  // One history point per actual native pulse. No 100ms JS timer and no
+  // One history point per actual native pulse. No 500ms JS timer and no
   // GPU replication between slow readings. The bounded list is one minute.
   $effect(() => {
     const current = metrics;
@@ -10190,7 +10224,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   <section aria-label="CPU and memory utilization">
     <div class="flex items-center justify-between">
       <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">SYSTEM / PULSE</h2>
-      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 100MS</span>
+      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 500MS</span>
     </div>
     <div class="relative mt-1 h-[164px]">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
@@ -10215,7 +10249,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   <section aria-label="Live resource activity">
     <div class="flex items-center justify-between">
       <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">ACTIVITY / LIVE</h2>
-      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · 100MS PULSE</span>
+      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · 500MS PULSE</span>
     </div>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
@@ -10846,6 +10880,70 @@ export function pulseReading(node: HTMLElement, initial: string) {
   };
 }
 
+/**
+ * Calendar-only GSAP interaction: horizontal month/year reveal followed by a
+ * restrained selection pop. Svelte owns actual dates and focus; GSAP changes
+ * presentation only. No timers, fake dates, or transitional DOM copies.
+ */
+export function calendarGridMotion(
+  node: HTMLElement,
+  initial: { month: number; selected: string },
+) {
+  let lastMonth = initial.month;
+  let lastSelected = initial.selected;
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const buttons = () => node.querySelectorAll<HTMLElement>('[data-calendar-day]');
+  const clear = () => {
+    const days = buttons();
+    gsap.killTweensOf(days);
+    gsap.set(days, { clearProps: 'opacity,visibility,transform' });
+  };
+  const onMotionChange = () => {
+    if (motion.matches) clear();
+  };
+  motion.addEventListener('change', onMotionChange);
+  return {
+    update(next: { month: number; selected: string }) {
+      const monthChanged = next.month !== lastMonth;
+      const selectedChanged = next.selected !== lastSelected;
+      const direction = Math.sign(next.month - lastMonth);
+      lastMonth = next.month;
+      lastSelected = next.selected;
+      if ((!monthChanged && !selectedChanged) || motion.matches) {
+        if (motion.matches) clear();
+        return;
+      }
+      if (monthChanged) {
+        const days = buttons();
+        gsap.killTweensOf(days);
+        gsap.fromTo(days,
+          { autoAlpha: 0, x: direction * 9 },
+          {
+            autoAlpha: 1, x: 0, duration: 0.3, stagger: 0.004,
+            ease: 'power2.out', overwrite: true,
+            clearProps: 'opacity,visibility,transform',
+          },
+        );
+      } else {
+        const selected = node.querySelector<HTMLElement>('[data-calendar-selected="true"]');
+        if (!selected) return;
+        gsap.killTweensOf(selected);
+        gsap.fromTo(selected,
+          { scale: 0.89, transformOrigin: 'center center' },
+          {
+            scale: 1, duration: 0.32, ease: 'back.out(2)',
+            overwrite: true, clearProps: 'transform,transformOrigin',
+          },
+        );
+      }
+    },
+    destroy() {
+      motion.removeEventListener('change', onMotionChange);
+      clear();
+    },
+  };
+}
+
 FILE	frontend/src/lib/overlay-size.ts
 import { notifyOverlayHeight } from './sdk/core';
 
@@ -11415,7 +11513,7 @@ export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () 
   return onNativeEvent('kira:system-metrics', isSystemMetrics, callback);
 }
 
-/** Lightweight native CPU/RAM samples at 100ms, only while Overview is open.
+/** Lightweight native CPU/RAM samples at 500ms, only while Overview is open.
  * Expensive GPU/hwmon/process/storage measurements remain on slower feeds.
  */
 export interface SystemPulse {
@@ -11821,31 +11919,31 @@ const metrics: SystemMetrics = {
 };
 
 describe('System Monitor ECharts telemetry model', () => {
-  it('keeps 600 genuine 100ms samples for one minute of fast pulse', () => {
+  it('keeps 120 genuine 500ms samples for one minute of fast pulse', () => {
     let history = [] as ReturnType<typeof appendPulse>;
-    for (let i = 0; i < 625; i++) {
+    for (let i = 0; i < 145; i++) {
       history = appendPulse(history, {
         cpu_percent: i % 101, memory_total_kib: 1000, memory_available_kib: 600,
-      }, i * 100);
+      }, i * 500);
     }
-    expect(MAX_PULSE_POINTS).toBe(600);
-    expect(history).toHaveLength(600);
-    expect(history[0].time).toBe(2500);
-    expect(history.at(-1)?.time).toBe(62400);
+    expect(MAX_PULSE_POINTS).toBe(120);
+    expect(history).toHaveLength(120);
+    expect(history[0].time).toBe(12500);
+    expect(history.at(-1)?.time).toBe(72000);
     expect(history.at(-1)?.ram).toBe(40);
   });
 
-  it('never repeats 2s GPU samples across 100ms CPU/RAM pulses', () => {
+  it('never repeats 2s GPU samples across 500ms CPU/RAM pulses', () => {
     const sample = { cpu_percent: 5, memory_total_kib: 1000, memory_available_kib: 610 };
-    let history = appendPulse([], sample, 100, 73);
-    for (let i = 2; i <= 20; i++) history = appendPulse(history, sample, i * 100);
+    let history = appendPulse([], sample, 500, 73);
+    for (let i = 2; i <= 20; i++) history = appendPulse(history, sample, i * 500);
     expect(history.filter(point => point.gpu !== null)).toHaveLength(1);
     expect(history[0].gpu).toBe(73);
     expect(history.at(-1)?.gpu).toBeNull();
     const missing = appendPulse([], {
       cpu_percent: null, memory_total_kib: null, memory_available_kib: null,
-    }, 100);
-    expect(missing[0]).toEqual({ time: 100, cpu: null, ram: null, gpu: null });
+    }, 500);
+    expect(missing[0]).toEqual({ time: 500, cpu: null, ram: null, gpu: null });
   });
 
   it('charts only real samples and caps history at thirty points', () => {
@@ -11896,7 +11994,7 @@ describe('System Monitor ECharts telemetry model', () => {
 });
 
 FILE	frontend/src/lib/system-charts.ts
-/** Bounded real native telemetry for Apache ECharts (100ms CPU/RAM, 2s GPU).
+/** Bounded real native telemetry for Apache ECharts (500ms CPU/RAM, 2s GPU).
  * This module is intentionally DOM-independent so the data rules are testable.
  */
 import type { SystemMetrics, SystemPulse } from './sdk/core';
@@ -11916,7 +12014,7 @@ export interface TelemetryPoint {
 }
 
 export const MAX_TELEMETRY_POINTS = 30; // Legacy 2-second samples.
-export const MAX_PULSE_POINTS = 600; // 100ms * 600 = 60 seconds.
+export const MAX_PULSE_POINTS = 120; // 500ms * 120 = 60 seconds.
 
 export function gpuPeak(metrics: SystemMetrics): number | null {
   const values = metrics.gpus
@@ -11952,9 +12050,9 @@ export function appendTelemetry(
   return next.slice(-MAX_TELEMETRY_POINTS);
 }
 
-/** One real sample per native 100ms pulse. GPU is populated only on the
+/** One real sample per native 500ms pulse. GPU is populated only on the
  * next pulse after a genuine two-second GPU reading, never interpolated or
- * multiplied into twenty fictitious 100ms measurements.
+ * multiplied into twenty fictitious 500ms measurements.
  */
 export function appendPulse(
   history: readonly TelemetryPoint[],
