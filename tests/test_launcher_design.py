@@ -56,12 +56,14 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("gtk::IconTheme::for_display(&display)", RUST)
         self.assertIn(".lookup_by_gicon(", RUST)
         self.assertIn(".file()", RUST)
-        self.assertIn("file_data_url(&file)", RUST)
-        self.assertIn("file.load_bytes(None::<&gio::Cancellable>)", RUST)
+        self.assertIn("fn file_data_url(path: &Path)", RUST)
+        self.assertIn(".take((MAX_ICON_BYTES + 1) as u64)", RUST)
+        self.assertIn(".read_to_end(&mut content)", RUST)
+        self.assertNotIn("file.load_bytes(", RUST)
         self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
         self.assertIn("const ICON_BATCH_LIMIT: usize = 16;", RUST)
         self.assertIn("data:{mime};base64", RUST)
-        self.assertIn("icons: RefCell<HashMap<usize, Option<String>>>", RUST)
+        self.assertIn("let mut cache: HashMap<usize, Option<String>>", RUST)
         self.assertIn("self.launcher.borrow_mut().take()", OVERLAY)
         self.assertIn("kira:launcher:icons", OVERLAY)
         self.assertIn("Some(UiCommand::LauncherIcons(generation, ids))", OVERLAY)
@@ -104,27 +106,29 @@ class LauncherDesignTests(unittest.TestCase):
 
     def test_file_icon_and_generic_fallback_resolve_without_browser_paths(self):
         self.assertIn("icon.downcast_ref::<gio::FileIcon>()", RUST)
-        self.assertIn("file_data_url(&file_icon.file())", RUST)
+        self.assertIn("let file = file_icon.file();", RUST)
+        self.assertIn("if file.is_native()", RUST)
+        self.assertIn("return file.path()", RUST)
         self.assertIn('const NAME: &str = "application-x-executable";', RUST)
         self.assertIn("theme.has_icon(NAME)", RUST)
-        self.assertIn("generic_icon_data_url", RUST)
-        self.assertIn("or_else(|| generic.clone())", RUST)
+        self.assertIn("fn generic_icon_path", RUST)
+        self.assertIn("fn encode_icon(", RUST)
+        self.assertIn("or_else(|| fallback.and_then(file_data_url))", RUST)
         self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
-        self.assertIn("icons: RefCell<HashMap<usize, Option<String>>>", RUST)
+        self.assertIn("let mut cache: HashMap<usize, Option<String>>", RUST)
         self.assertNotIn("file://", RUST)
         self.assertNotIn("std::process::Command", RUST)
 
     def test_native_app_identity_and_safe_launch(self):
         for required in (
             'gio::AppInfo::all()', 'info.should_show()',
-            'pub fn launch(&self, id: usize)', 'self.apps.get(id)',
+            'pub fn launch(&self, id: usize)', 'apps.get(id)',
             'info.launch(&[], None::<&gio::AppLaunchContext>)',
-            'apps.truncate(1024)', '"id": id',
+            'apps.truncate(MAX_APPS)', '"id": app.id',
         ):
             self.assertIn(required, RUST)
         # Regression: None::<T> is a Rust enum value, never a call.
-        # The native Shell is not built in fast CI, so catch this
-        # exact invalid syntax in the lightweight contract checks.
+        # Preserve the original syntax guard alongside real native CI builds.
         self.assertNotRegex(RUST, r"None::<[^>\n]+>\s*\(")
         self.assertNotIn('std::process::Command', RUST)
         self.assertNotIn('Command::new', RUST)
@@ -139,6 +143,24 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('postNativeCommand(\'kiraLauncher\', \'open\')', SDK)
         self.assertIn("sendCalendarUi('launch:' + generation + ':' + id)", SDK)
         self.assertIn("sendCalendarUi('apps-request:' + generation)", SDK)
+
+    def test_catalog_and_icon_bytes_stay_off_gtk_thread(self):
+        # GTK owns the display theme, while the worker owns Gio AppInfo.
+        self.assertIn('std::thread::Builder::new()', RUST)
+        self.assertIn('fn run_worker(', RUST)
+        self.assertIn('std::sync::mpsc::{self, Receiver, Sender}', RUST)
+        self.assertIn('results.send(WorkerResponse::Apps(entries))', RUST)
+        self.assertIn('WorkerRequest::Icons(', RUST)
+        self.assertIn('WorkerRequest::Launch(', RUST)
+        self.assertIn('fn resolve_icon_path(', RUST)
+        self.assertIn('fn file_data_url(path: &Path)', RUST)
+        self.assertIn('File::open(path)', RUST)
+        self.assertIn('fn poll_launcher(&self)', OVERLAY)
+        self.assertIn('state.poll_launcher();', OVERLAY)
+        self.assertIn('crate::launcher::LauncherMessage::Launched(Ok(()))', OVERLAY)
+        self.assertNotIn('Catalog::discover());', OVERLAY)
+        self.assertNotIn('catalog.icons_json(&ids)', OVERLAY)
+        self.assertNotIn('file.load_bytes(', RUST)
 
     def test_one_shared_overlay_and_retired_gtk_assets(self):
         self.assertIn('mount(LauncherWidget', ENTRY)
