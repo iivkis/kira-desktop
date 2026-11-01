@@ -62,7 +62,7 @@ function scriptFor(steps, observationMs = 1150) {
               : kind === 'clock-chaos'
                 ? 'document.querySelector("[data-calendar-clock-play]")?.click();' +
                   'setTimeout(() => {' +
-                    'window.__kiraClockFlew = Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
+                    'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
