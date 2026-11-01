@@ -188,8 +188,13 @@ export function tenetClockDigit(node: HTMLElement, initial: string) {
   let forward: gsap.core.Timeline | null = null;
   let inverted: gsap.core.Timeline | null = null;
   let ghost: HTMLSpanElement | null = null;
+  let restoreTimer: number | null = null;
 
   function stop() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
     forward?.kill();
     inverted?.kill();
     forward = null;
@@ -227,6 +232,9 @@ export function tenetClockDigit(node: HTMLElement, initial: string) {
         { yPercent: 0, autoAlpha: 1 },
         { yPercent: -85, autoAlpha: 0, duration: 0.4, ease: 'power3.out' }, 0);
       forward.play(0);
+      // When WebKit throttles animation frames, do not leave a numeral
+      // invisible until the next real second tick.
+      restoreTimer = window.setTimeout(stop, 750);
     },
     destroy() {
       motion.removeEventListener('change', onMotionChange);
