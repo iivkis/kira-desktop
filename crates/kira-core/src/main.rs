@@ -520,8 +520,8 @@ mod tests {
         std::fs::remove_dir(&dir).unwrap();
     }
 
-    #[test]
-    fn replaces_abandoned_socket_after_unclean_shutdown() {
+    #[tokio::test]
+    async fn replaces_abandoned_socket_after_unclean_shutdown() {
         let directory = std::env::temp_dir().join(format!(
             "kira-core-stale-{}-{:?}",
             std::process::id(),
@@ -542,8 +542,8 @@ mod tests {
         fs::remove_dir_all(directory).unwrap();
     }
 
-    #[test]
-    fn refuses_to_replace_live_socket() {
+    #[tokio::test]
+    async fn refuses_to_replace_live_socket() {
         let directory = std::env::temp_dir().join(format!(
             "kira-core-live-{}-{:?}",
             std::process::id(),
