@@ -180,7 +180,8 @@ impl ProcessSampler {
         }
         // A process is identified by PID plus kernel start ticks. Never
         // transfer stale PSS measurements across a fast PID reuse.
-        self.pss_cache.retain(|identity, _| next.contains_key(identity));
+        self.pss_cache
+            .retain(|identity, _| next.contains_key(identity));
         collected.sort_by_key(|(row, _, _)| row.pid);
         for index in pss_refresh_indices(collected.len(), self.pss_cursor) {
             let (_, identity, path) = &collected[index];
@@ -189,8 +190,7 @@ impl ProcessSampler {
         }
         if !collected.is_empty() {
             self.pss_cursor =
-                (self.pss_cursor + collected.len().min(MAX_PSS_READS_PER_SAMPLE))
-                    % collected.len();
+                (self.pss_cursor + collected.len().min(MAX_PSS_READS_PER_SAMPLE)) % collected.len();
         }
         let rows = collected
             .into_iter()
@@ -255,7 +255,10 @@ mod tests {
 
     #[test]
     fn pss_is_parsed_only_from_exact_rollup_field() {
-        assert_eq!(parse_pss_kib("Rss: 8000 kB\nPss: 1234 kB\nPss_Anon: 100 kB\n"), Some(1234));
+        assert_eq!(
+            parse_pss_kib("Rss: 8000 kB\nPss: 1234 kB\nPss_Anon: 100 kB\n"),
+            Some(1234)
+        );
         assert_eq!(parse_pss_kib("Pss_Anon: 600 kB\n"), None);
         assert_eq!(parse_pss_kib("Pss: -1 kB\n"), None);
         assert_eq!(parse_pss_kib("Pss: 111 KiB\n"), None);
