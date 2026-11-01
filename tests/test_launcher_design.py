@@ -42,7 +42,7 @@ class LauncherDesignTests(unittest.TestCase):
         for required in (
             'gio::AppInfo::all()', 'info.should_show()',
             'pub fn launch(&self, id: usize)', 'self.apps.get(id)',
-            'info.launch(&[], None::<&gio::AppLaunchContext>)',
+            'info.launch(&[], None::<&gio::AppLaunchContext>())',
             'apps.truncate(1024)', '"id": id',
         ):
             self.assertIn(required, RUST)
@@ -64,7 +64,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('mount(LauncherWidget', ENTRY)
         self.assertIn('mount(CalendarWidget', ENTRY)
         self.assertIn('mount(SystemWidget', ENTRY)
-        self.assertIn('kind === \'launcher\'', ENTRY)
+        self.assertIn("detail?.kind !== 'launcher'", ENTRY)
         self.assertIn('Self::Launcher => "launcher"', OVERLAY)
         self.assertIn('KeyboardMode::Exclusive', OVERLAY)
         self.assertIn('set_exclusive_zone(0)', OVERLAY)
