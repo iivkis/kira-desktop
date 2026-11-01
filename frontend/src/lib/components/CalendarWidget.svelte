@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { calendarGridMotion, clockJuggle, revealStagger, rollingClockDigit } from '../motion';
+  import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import {
     clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -97,14 +97,14 @@
 
 <main
   data-kira-ui-root
-  use:revealStagger
-  class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
+  use:tenetCalendarReveal
+  class="relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
   <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
     <div class="min-w-0">
       <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
-      <button type="button" use:clockJuggle data-calendar-clock-play
+      <button type="button" use:tenetClockJuggle data-calendar-clock-play
         aria-label="Make the clock digits fly and return"
         title="Click for a little clock chaos"
         class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
@@ -115,7 +115,7 @@
             <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
               aria-hidden="true" data-clock-cell>
               <span class="flex h-full w-full items-center justify-center"
-                data-clock-digit use:rollingClockDigit={part.char}>{part.char}</span>
+                data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
             </span>
           {:else}
             <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
@@ -151,8 +151,8 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates"
-      use:calendarGridMotion={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
+    <div class="relative grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates"
+      use:tenetCalendarGrid={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
       <span class="py-2 text-[10px] font-bold text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
         <span class="py-2 text-[10px] font-bold text-kira-muted">{label}</span>

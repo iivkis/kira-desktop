@@ -93,6 +93,13 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
       'const clock = document.querySelector("[data-calendar-clock]");' +
       'document.documentElement.setAttribute("data-smoke-calendar-odometer", !!clock && clock.querySelectorAll("[data-clock-digit]").length === 6 && !!clock.getAttribute("aria-label") && !!clock.getAttribute("datetime") && clock.querySelectorAll("[data-clock-cell]").length === 6);' +
+      'const calGrid = document.querySelector("[aria-label=\\\"Calendar dates\\\"]");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-grid-events", calGrid?.dataset.tenetScenes || "0");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-grid-contact", !!calGrid?.dataset.tenetContact);' +
+      'document.documentElement.setAttribute("data-smoke-tenet-no-fragments", document.querySelectorAll("[data-tenet-fragment]").length === 0);' +
+      'document.documentElement.setAttribute("data-smoke-tenet-reveal", document.querySelector("main[data-kira-ui-root]")?.dataset.tenetReveal || "missing");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-clock-events", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetEvents || "0");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-clock-settled", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetPlayback === "settled");' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
@@ -117,7 +124,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -126,7 +133,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -148,15 +155,21 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
        !output.includes('data-smoke-calendar-picked="true"') ||
-       !output.includes('data-smoke-calendar-odometer="true"'))) {
+       !output.includes('data-smoke-calendar-odometer="true"') ||
+       !output.includes('data-smoke-tenet-grid-events="2"') ||
+       !output.includes('data-smoke-tenet-grid-contact="true"') ||
+       !output.includes('data-smoke-tenet-no-fragments="true"'))) {
     const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
   if (heightMode === 'clock' &&
       (!output.includes('data-smoke-clock-chaos-flew="true"') ||
        !output.includes('data-smoke-clock-chaos-reset="true"') ||
-       !output.includes('data-smoke-calendar-odometer="true"'))) {
-    const flags = output.match(/data-smoke-clock-chaos-[a-z-]+="[^"]*"/g) ?? [];
+       !output.includes('data-smoke-calendar-odometer="true"') ||
+       !output.includes('data-smoke-tenet-clock-events="2"') ||
+       !output.includes('data-smoke-tenet-clock-settled="true"') ||
+       !output.includes('data-smoke-tenet-no-fragments="true"'))) {
+    const flags = output.match(/data-smoke-(?:clock-chaos|tenet)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP clock digits must fly and return: ' + flags.join(', '));
   }
   if (heightMode === 'system') {
