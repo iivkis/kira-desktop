@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import CoreStatus from './lib/components/CoreStatus.svelte';
+  import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -11,6 +11,16 @@
   let workspaceState = $state<WorkspaceState | null>(null);
   let workspacePending = $state(false);
   let workspaceActionError = $state<string | null>(null);
+  let launcherUnavailable = $state(false);
+  let calendarUnavailable = $state(false);
+
+  function activateCalendar() {
+    calendarUnavailable = !toggleCalendar();
+  }
+
+  function activateLauncher() {
+    launcherUnavailable = !openLauncher();
+  }
 
   async function activateWorkspace(id: string) {
     if (workspacePending || !workspaceState?.connected ||
@@ -93,43 +103,82 @@
   });
 </script>
 
-<main class="bar" class:compact={configState.config.compact} aria-label="Kira Desktop top bar">
-  <section class="bar__start" aria-label="Kira and workspaces">
-    <div class="brand" aria-label="Kira Desktop">
-      <span class="brand__symbol" aria-hidden="true">K</span>
-      <span class="brand__wordmark" aria-hidden="true">KIRA</span>
-    </div>
-    <span class="bar__separator" aria-hidden="true"></span>
-    <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
-      limit={configState.config.max_workspaces} pending={workspacePending}
-      onFocus={(id) => { void activateWorkspace(id); }} />
+<main
+  class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden bg-kira-bg text-kira-text after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-surface"
+  aria-label="Kira Desktop top bar"
+  data-kira-ui-root
+  data-compact={configState.config.compact}
+>
+  <section
+    class={`relative z-10 flex shrink-0 items-stretch bg-kira-surface after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-accent ${configState.config.compact ? 'w-[84px]' : 'w-[102px] max-[540px]:w-[78px]'}`}
+    aria-label="Kira Launcher"
+  >
+    <button
+      type="button"
+      class={`flex h-full w-full cursor-pointer items-center border-0 bg-transparent text-left text-kira-text transition-colors duration-150 hover:bg-kira-accent/10 active:bg-kira-bg/20 focus-visible:-outline-offset-4 focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none ${configState.config.compact ? 'gap-[7px] px-[10px]' : 'gap-[10px] px-[14px] max-[540px]:gap-[6px] max-[540px]:px-[9px]'}`}
+      aria-label="Open applications launcher"
+      title="Open applications"
+      onclick={activateLauncher}
+    >
+      <span class="h-[19px] w-[3px] shrink-0 bg-kira-accent" aria-hidden="true"></span>
+      <span class="text-[13px] font-extrabold tracking-[0.11em] max-[540px]:text-xs">KIRA</span>
+    </button>
+  </section>
+
+  <section
+    class={`flex min-w-0 flex-1 items-center pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'gap-[13px] px-4 max-[540px]:gap-[7px] max-[540px]:px-[7px]'}`}
+    aria-label="Niri workspaces"
+  >
+    <WorkspacePreview
+      state={workspaceState}
+      showNames={configState.config.show_names}
+      limit={configState.config.max_workspaces}
+      pending={workspacePending}
+      onFocus={(id) => { void activateWorkspace(id); }}
+    />
+    {#if !configState.config.compact}
+      <div class="flex min-w-0 max-w-[176px] flex-col justify-center gap-[2px] overflow-hidden max-[820px]:hidden" title={configState.config.title}>
+        <span class="whitespace-nowrap text-[8px] leading-none font-semibold tracking-[0.11em] text-kira-muted/80">WORKSPACE</span>
+        <span class="max-w-40 truncate text-[10px] leading-tight font-bold tracking-[0.06em] text-kira-text">
+          {configState.config.title === 'KIRA DESKTOP' ? 'DESKTOP' : configState.config.title}
+        </span>
+      </div>
+    {/if}
+    {#if launcherUnavailable}
+      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
+    {/if}
     {#if workspaceActionError}
-      <span class="workspace-action-error" role="alert" title={workspaceActionError}>WS !</span>
+      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
 
-  <div class="bar__center" aria-label="Kira Desktop environment">
-    <span class="bar__center-line" aria-hidden="true"></span>
-    <span class="bar__center-title">
-      {#if configState.config.title === 'KIRA DESKTOP'}KIRA <span>DESKTOP</span>{:else}{configState.config.title}{/if}
-    </span>
-    <span class="bar__center-line" aria-hidden="true"></span>
-  </div>
-
-  <section class="bar__end" aria-label="Core and clock">
+  <section
+    class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}
+    aria-label="System status and local time"
+  >
     {#if configState.error}
-      <span class="config-warning" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
-    <CoreStatus status={coreStatus} version={coreVersion} />
-    <span class="bar__separator" aria-hidden="true"></span>
-    <div class="clock">
-      <svg class="clock__icon" aria-hidden="true" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.3"></circle>
-        <path d="M8 4.6V8.1L10.2 9.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-      <time datetime={now.toISOString()} aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}>
+    <SystemHealth
+      coreStatus={coreStatus}
+      coreVersion={coreVersion}
+      niriConnected={workspaceState?.connected ?? null}
+    />
+    <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
+    {#if calendarUnavailable}
+      <span class="shrink-0 text-[10px] font-bold text-kira-accent" role="status">CALENDAR OFFLINE</span>
+    {/if}
+    <button
+      type="button"
+      class="shrink-0 cursor-pointer rounded-sm border-0 bg-transparent px-1 py-2 leading-none text-kira-text transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
+      title="Open calendar and date details"
+      aria-label={'Open calendar, local time ' + formatClock(now, undefined, configState.config.show_seconds)}
+      aria-haspopup="dialog"
+      onclick={activateCalendar}
+    >
+      <time class="whitespace-nowrap text-[13px] font-bold tracking-[0.03em] tabular-nums max-[540px]:text-xs" datetime={now.toISOString()}>
         {formatClock(now, undefined, configState.config.show_seconds)}
       </time>
-    </div>
+    </button>
   </section>
 </main>

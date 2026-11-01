@@ -1,5 +1,9 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
+mod calendar;
+mod calendar_model;
+mod launcher;
+mod native_ui;
 mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};
@@ -153,7 +157,7 @@ fn main() {
             .web_context(&context)
             .user_content_manager(&manager)
             .build();
-        view.set_background_color(&gtk::gdk::RGBA::new(0.09, 0.09, 0.12, 1.0));
+        view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
 
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
@@ -218,6 +222,26 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraDiagnostics", None));
 
+        // A dedicated fixed-purpose message from the trusted, navigation-locked
+        // local UI. Never forward launcher requests to Core or execute JS text.
+        let launcher_application = app.clone();
+        manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
+            if value.to_string() == "open" {
+                launcher::show(&launcher_application);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraLauncher", None));
+
+        // Separate, fixed-purpose UI control. Never interpret arbitrary JS
+        // messages or expand the Core JSON-RPC method allowlist.
+        let calendar_application = app.clone();
+        manager.connect_script_message_received(Some("kiraCalendar"), move |_, value| {
+            if value.to_string() == "toggle" {
+                calendar::toggle(&calendar_application);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraCalendar", None));
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -230,7 +254,7 @@ fn main() {
                 let webview = webview.clone();
                 gtk::glib::timeout_add_local_once(Duration::from_millis(1500), move || {
                     webview.evaluate_javascript(
-                        "if (!document.querySelector('main.bar')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
+                        "if (!document.querySelector('main[data-kira-ui-root]')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
                         None,
                         None,
                         None::<&gtk::gio::Cancellable>,

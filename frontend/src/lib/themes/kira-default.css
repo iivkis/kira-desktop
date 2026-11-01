@@ -1,35 +1,46 @@
-/* Kira Default: Black / Night Bordeaux / White Smoke / Dusty Taupe /
- * Stone Brown. Exactly five canonical colors. All additional tones are
- * semantic aliases or mixes of these colors. Components never hardcode HEX.
- * Taupe is both the secondary readable color and interactive accent:
- * Stone Brown is a structural detail, not a low-contrast text color.
+/* Kira Default: Black / Prussian Blue / Orange / Alabaster Grey / White.
+ * Exactly five canonical opaque colors; all other tones are derived.
  */
 :root {
   color-scheme: dark;
 
-  --kira-color-background: #0a0908;
-  --kira-color-surface: #49111c;
-  --kira-color-muted: #a9927d;
-  --kira-color-accent: var(--kira-color-muted);
-  --kira-color-text: #f2f4f3;
-  --kira-color-earth: #5e503f;
+  --black: #000000ff;
+  --prussian-blue: #14213dff;
+  --orange: #fca311ff;
+  --alabaster-grey: #e5e5e5ff;
+  --white: #ffffffff;
 
-  --kira-color-on-accent: var(--kira-color-background);
-  --kira-color-text-secondary: var(--kira-color-muted);
-  --kira-color-surface-subtle: color-mix(in srgb, var(--kira-color-surface) 50%, var(--kira-color-background));
-  --kira-color-border: color-mix(in srgb, var(--kira-color-earth) 80%, var(--kira-color-muted));
+  --kira-color-background: var(--black);
+  --kira-color-surface: var(--prussian-blue);
+  --kira-color-muted: var(--alabaster-grey);
+  --kira-color-accent: var(--orange);
+  --kira-color-text: var(--white);
+  /* Legacy alias retained for external widgets; prefer --kira-color-border. */
+  --kira-color-earth: var(--prussian-blue);
+
+  --kira-color-on-accent: var(--black);
+  --kira-color-text-secondary: var(--alabaster-grey);
+  --kira-color-surface-subtle: color-mix(in srgb, var(--prussian-blue) 75%, var(--black));
+  --kira-color-border: color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
 
   --kira-space-1: 4px;
   --kira-space-2: 8px;
   --kira-space-3: 12px;
   --kira-space-4: 16px;
+  --kira-space-5: 20px;
+  --kira-space-6: 24px;
 
   --kira-radius-sm: 6px;
   --kira-radius-md: 10px;
-  --kira-radius-lg: 12px;
+  --kira-radius-lg: 14px;
 
-  --kira-motion-fast: 150ms;
-  --kira-motion-standard: 200ms;
+  /* Neo-brutalist construction: clear borders and hard, offset depth. */
+  --kira-border-strong: 2px;
+  --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
+  --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
+
+  --kira-motion-fast: 120ms;
+  --kira-motion-standard: 180ms;
   --kira-motion-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 

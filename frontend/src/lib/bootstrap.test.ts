@@ -7,7 +7,7 @@ function targetFixture() {
   const target = {
     querySelector: vi.fn((selector: string) => {
       if (selector === '#kira-loading') return loading;
-      if (selector === 'main.bar') return mounted ? {} : null;
+      if (selector === 'main[data-kira-ui-root]') return mounted ? {} : null;
       return null;
     }),
   } as unknown as HTMLElement;
@@ -40,7 +40,7 @@ describe('Svelte bootstrap diagnostics', () => {
     const { target, loading } = targetFixture();
     const logs: string[] = [];
     expect(startUi(target, () => undefined, (value) => logs.push(value))).toBe(false);
-    expect(logs.join(' ')).toContain('main.bar is missing');
+    expect(logs.join(' ')).toContain('main[data-kira-ui-root] is missing');
     expect(loading.remove).not.toHaveBeenCalled();
   });
 

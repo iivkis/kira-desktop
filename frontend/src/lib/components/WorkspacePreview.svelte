@@ -9,8 +9,8 @@
     pending: boolean;
   } = $props();
 
-  // Limit visible chips without hiding the active/focused workspace when
-  // there are many outputs. This never changes Niri's actual workspaces.
+  // Follow Niri focus, not DOM position; do not lose the current workspace
+  // when the configured visible-workspace limit is reached.
   let visible = $derived.by(() => {
     const all = state?.workspaces ?? [];
     const count = Math.max(1, Math.min(32, limit));
@@ -20,23 +20,26 @@
 </script>
 
 {#if !state}
-  <span class="workspace-status" role="status" aria-live="polite">NIRI…</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite">NIRI…</span>
 {:else if !state.connected}
-  <span class="workspace-status" role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
 {:else if state.workspaces.length === 0}
-  <span class="workspace-status" role="status" aria-live="polite">NO WORKSPACES</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite">NO WORKSPACES</span>
 {:else}
-  <ol class="workspace-preview" aria-label="Niri workspaces">
+  <ol class="flex max-w-[min(40vw,348px)] shrink-0 items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Niri workspaces">
     {#each visible as workspace (workspace.id)}
       <li
-        class="workspace-preview__item"
-        class:preview-selected={workspace.is_focused}
-        class:preview-active={workspace.is_active}
-        class:preview-urgent={workspace.is_urgent}
+        class={`relative h-7 min-w-8 max-w-[90px] shrink-0 rounded-md text-[11px] font-bold tabular-nums transition-colors duration-150 motion-reduce:transition-none ${workspace.is_focused
+          ? 'bg-kira-accent text-kira-on-accent'
+          : workspace.is_active
+            ? 'bg-kira-surface-soft text-kira-text'
+            : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'}`}
+        data-focused={workspace.is_focused}
+        data-urgent={workspace.is_urgent}
       >
         <button
           type="button"
-          class="workspace-preview__button"
+          class={`grid h-full w-full cursor-pointer place-items-center rounded-[inherit] border-0 bg-transparent px-[9px] font-inherit text-inherit focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-progress ${workspace.is_focused ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2' : 'focus-visible:outline-kira-accent'}`}
           aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
             + (workspace.output ? ' on ' + workspace.output : '')}
           aria-pressed={workspace.is_focused}
@@ -44,134 +47,15 @@
             + (workspace.output ? ' on ' + workspace.output : '')
             + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
             + (workspace.is_urgent ? ' (urgent)' : '')}
-          disabled={pending || workspace.is_focused}
+          disabled={pending}
           onclick={() => onFocus(workspace.id)}
         >
-          <span class="workspace-preview__label">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
-          {#if workspace.is_focused}
-            <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
-          {:else if workspace.is_urgent}
-            <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
+          <span class="block max-w-[72px] truncate whitespace-nowrap">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
+          {#if workspace.is_urgent}
+            <span class={`pointer-events-none absolute bottom-[2px] left-1/2 h-[2px] w-2 -translate-x-1/2 ${workspace.is_focused ? 'bg-kira-on-accent' : 'bg-kira-accent'}`} aria-hidden="true"></span>
           {/if}
         </button>
       </li>
     {/each}
   </ol>
 {/if}
-
-<style>
-  .workspace-status {
-    display: flex;
-    align-items: center;
-    height: 27px;
-    color: var(--kira-color-muted);
-    font-size: 9px;
-    font-weight: 650;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
-
-  .workspace-preview {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    max-width: min(33vw, 330px);
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .workspace-preview::-webkit-scrollbar { display: none; }
-
-  .workspace-preview__item {
-    position: relative;
-    display: grid;
-    flex: none;
-    place-items: center;
-    min-width: 27px;
-    max-width: 76px;
-    height: 27px;
-    padding-inline: 5px;
-    box-sizing: border-box;
-    border-radius: var(--kira-radius-sm);
-    color: color-mix(in srgb, var(--kira-color-text) 80%, var(--kira-color-background));
-    font-size: 11px;
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    transition:
-      background-color var(--kira-motion-fast) var(--kira-motion-easing),
-      color var(--kira-motion-fast) var(--kira-motion-easing);
-  }
-
-  .workspace-preview__button {
-    display: grid;
-    place-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    border: 0;
-    border-radius: inherit;
-    color: inherit;
-    background: transparent;
-    font: inherit;
-    letter-spacing: inherit;
-    cursor: pointer;
-  }
-
-  .workspace-preview__button:disabled {
-    cursor: default;
-  }
-
-  .workspace-preview__button:focus-visible {
-    outline: 2px solid var(--kira-color-accent);
-    outline-offset: 2px;
-  }
-
-  .workspace-preview__item:not(.preview-selected):has(.workspace-preview__button:not(:disabled):hover) {
-    background: var(--kira-color-surface-subtle);
-  }
-
-  .workspace-preview__label {
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 66px;
-  }
-
-  .workspace-preview__item.preview-active:not(.preview-selected) {
-    background: var(--kira-color-surface-subtle);
-    box-shadow: inset 0 0 0 1px var(--kira-color-border);
-  }
-
-  .workspace-preview__item.preview-selected {
-    color: var(--kira-color-on-accent);
-    background: var(--kira-color-accent);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--kira-color-background) 35%, transparent);
-  }
-
-  .workspace-preview__selected-mark {
-    position: absolute;
-    bottom: 2px;
-    width: 8px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--kira-color-background);
-  }
-
-  .workspace-preview__item.preview-urgent:not(.preview-selected) {
-    box-shadow: inset 0 0 0 1px var(--kira-color-accent);
-  }
-
-  .workspace-preview__urgent-mark {
-    position: absolute;
-    bottom: 2px;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--kira-color-accent);
-  }
-</style>

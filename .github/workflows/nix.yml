@@ -1,7 +1,8 @@
 name: NixOS integration
 
-# Native GTK/WebKit compilation is tested by building the actual package.
-# Do not compile the same heavy Rust bindings again in a separate cargo check.
+# Validate GTK API compatibility before the slow release package build.
+# The native check uses the development profile to report type errors early,
+# while the package build still validates the full distributed artifact.
 on:
   push:
     branches: [main]
@@ -58,5 +59,9 @@ jobs:
         run: nix flake check --no-build
       - name: Validate nested Niri preview config
         run: nix develop --command python3 scripts/dev_preview.py --validate-config
+      - name: Build packaged Tailwind frontend and verify npm lock/hash first
+        run: nix build .#frontend -L --show-trace
+      - name: Type-check native GTK Shell before release packaging
+        run: nix develop --command cargo check --locked -p kira-shell
       - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace

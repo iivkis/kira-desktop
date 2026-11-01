@@ -18,45 +18,73 @@ function contrast(first: string, second: string): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-describe('Kira Default Bordeaux / Taupe design tokens', () => {
+describe('Kira Default Black / Prussian Blue / Orange design tokens', () => {
   it('contains exactly the five approved canonical base colors', () => {
     expect(Object.values(kiraDefaultPalette)).toEqual([
-      '#0a0908', '#49111c', '#f2f4f3', '#a9927d', '#5e503f',
+      '#000000ff', '#14213dff', '#fca311ff', '#e5e5e5ff', '#ffffffff',
     ]);
     expect(new Set(Object.values(kiraDefaultPalette)).size).toBe(5);
   });
 
-  it('keeps public CSS tokens synchronized with the typed palette', () => {
-    for (const [role, value] of Object.entries(kiraDefaultRoles)) {
-      // Accent aliases the readable muted/taupe token; never add a sixth base.
-      const token = role === 'accent' ? 'var(--kira-color-muted)' : value;
-      expect(css).toContain('--kira-color-' + role + ': ' + token + ';');
+  it('keeps exactly five canonical RGBA hex tokens synchronized', () => {
+    const names = {
+      black: 'black',
+      prussianBlue: 'prussian-blue',
+      orange: 'orange',
+      alabasterGrey: 'alabaster-grey',
+      white: 'white',
+    } as const;
+    for (const role of Object.keys(names) as Array<keyof typeof names>) {
+      expect(css).toContain('--' + names[role] + ': ' + kiraDefaultPalette[role] + ';');
     }
-    const hexDeclarations = [...css.matchAll(/--kira-color-[\w-]+:\s*(#[0-9a-f]{6})\s*;/g)];
-    expect(hexDeclarations).toHaveLength(5);
-    expect(new Set(hexDeclarations.map((match) => match[1]))).toEqual(
-      new Set(Object.values(kiraDefaultPalette)),
-    );
+    const colors = [...css.matchAll(/#[0-9a-f]{8}\b/g)].map((match) => match[0]);
+    expect(colors).toHaveLength(5);
+    expect(new Set(colors)).toEqual(new Set(Object.values(kiraDefaultPalette)));
+    expect(css).not.toMatch(/#[0-9a-f]{6}(?![0-9a-f])/);
   });
 
-  it('chooses text/accent pairs that meet WCAG AA', () => {
-    const { black, nightBordeaux, whiteSmoke, dustyTaupe, stoneBrown } = kiraDefaultPalette;
-    expect(contrast(whiteSmoke, black)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(whiteSmoke, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(dustyTaupe, black)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(dustyTaupe, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(black, dustyTaupe)).toBeGreaterThanOrEqual(4.5);
-    // Stone Brown is reserved for structure; low-contrast brown-on-black
-    // must never be used as the primary/muted text.
-    expect(contrast(stoneBrown, black)).toBeLessThan(4.5);
-    expect(kiraDefaultRoles.muted).toBe(dustyTaupe);
-    expect(kiraDefaultRoles.accent).toBe(dustyTaupe);
+  it('maps semantic tokens to canonical colors', () => {
+    const aliases = {
+      background: '--black',
+      surface: '--prussian-blue',
+      muted: '--alabaster-grey',
+      accent: '--orange',
+      text: '--white',
+      earth: '--prussian-blue', // legacy alias for compatibility
+    } as const;
+    const source = {
+      '--black': 'black',
+      '--prussian-blue': 'prussianBlue',
+      '--orange': 'orange',
+      '--alabaster-grey': 'alabasterGrey',
+      '--white': 'white',
+    } as const;
+    for (const role of Object.keys(aliases) as Array<keyof typeof aliases>) {
+      const base = aliases[role];
+      expect(css).toContain('--kira-color-' + role + ': var(' + base + ');');
+      expect(kiraDefaultRoles[role]).toBe(kiraDefaultPalette[source[base]]);
+    }
+    expect(css).toContain('--kira-color-on-accent: var(--black);');
+  });
+
+  it('uses WCAG AA text pairs, including black on Orange', () => {
+    const { black, prussianBlue, orange, alabasterGrey, white } = kiraDefaultPalette;
+    for (const [foreground, background] of [
+      [white, black], [white, prussianBlue],
+      [alabasterGrey, black], [alabasterGrey, prussianBlue],
+      [orange, black], [orange, prussianBlue], [black, orange],
+    ]) {
+      expect(contrast(foreground, background)).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(contrast(white, orange)).toBeLessThan(4.5);
+    expect(kiraDefaultRoles.muted).toBe(alabasterGrey);
+    expect(kiraDefaultRoles.accent).toBe(orange);
   });
 
   it('uses the default palette during pre-mount WebKit loading', () => {
     expect(html).toContain('<meta name="theme-color" content="' + kiraDefaultPalette.black + '"');
     expect(html).toContain('background:' + kiraDefaultPalette.black + ';');
-    expect(html).toContain('color:' + kiraDefaultPalette.whiteSmoke + ';');
+    expect(html).toContain('color:' + kiraDefaultPalette.white + ';');
     expect(html).not.toContain('#22223b');
     expect(html).not.toContain('#f2e9e4');
   });
@@ -64,6 +92,9 @@ describe('Kira Default Bordeaux / Taupe design tokens', () => {
   it('defines compact spacing, consistent radii and reduced motion', () => {
     expect(css).toContain('--kira-space-1: 4px;');
     expect(css).toContain('--kira-radius-md: 10px;');
+    expect(css).toContain('--kira-border-strong: 2px;');
+    expect(css).toContain('--kira-shadow-brutal:');
+    expect(css).toContain('--kira-shadow-panel:');
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
     expect(css).toContain('--kira-motion-fast: 0ms;');
   });

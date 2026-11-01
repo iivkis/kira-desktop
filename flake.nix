@@ -51,7 +51,15 @@
 
       packages = forAllSystems (pkgs:
         if hasApplicationSources
-        then { default = pkgs.callPackage ./nix/package.nix { craneLib = crane.mkLib pkgs; }; }
+        then
+          let
+            app = pkgs.callPackage ./nix/package.nix { craneLib = crane.mkLib pkgs; };
+          in {
+            default = app;
+            # Fast isolated UI build, useful for validating npmDepsHash without
+            # compiling GTK/WebKit Rust dependencies.
+            frontend = app.frontend;
+          }
         else { }
       );
 
