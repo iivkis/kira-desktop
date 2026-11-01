@@ -47,8 +47,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
-      # nix develop uses sccache as RUSTC_WRAPPER; persist its directory across runs.
-      SCCACHE_DIR: ${{ github.workspace }}/.cache/kira-sccache
+      # The flake shellHook places the compiler cache under ~/.cache/kira-desktop.
       SCCACHE_CACHE_SIZE: 2G
       CARGO_INCREMENTAL: '0'
     steps:
@@ -71,7 +70,7 @@ jobs:
       - name: Cache native Rust compiler outputs
         uses: actions/cache@v4
         with:
-          path: ${{ env.SCCACHE_DIR }}
+          path: ~/.cache/kira-desktop/sccache
           key: sccache-v1-${{ runner.os }}-${{ hashFiles('flake.lock', 'Cargo.lock') }}
           restore-keys: |
             sccache-v1-${{ runner.os }}-
