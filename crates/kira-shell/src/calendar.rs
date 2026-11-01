@@ -83,6 +83,13 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
+        // A live surface switches components in place. Do not unmap/remap
+        // the Wayland popup or queue a separate hide against the new view.
+        if self.active.get() == Some(Surface::System) && kind != Surface::System {
+            if let Some(model) = self.system.borrow().as_ref() {
+                model.set_processes_active(false);
+            }
+        }
         self.active.set(Some(kind));
         self.requested.set(true);
         self.revealed.set(false);
@@ -549,12 +556,9 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         eprintln!("kira-shell: Overlay HTML root not found");
         return;
     };
-    if state.requested.get() {
-        let was_calendar = state.active.get() == Some(Surface::Calendar);
+    if state.requested.get() && state.active.get() == Some(Surface::Calendar) {
         state.hide();
-        if was_calendar {
-            return;
-        }
+        return;
     }
     crate::launcher::dismiss(application);
     state.show(Surface::Calendar);
@@ -571,12 +575,9 @@ pub fn toggle_system(
         eprintln!("kira-shell: Overlay HTML root not found");
         return;
     };
-    if state.requested.get() {
-        let was_system = state.active.get() == Some(Surface::System);
+    if state.requested.get() && state.active.get() == Some(Surface::System) {
         state.hide();
-        if was_system {
-            return;
-        }
+        return;
     }
     crate::launcher::dismiss(application);
     *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
