@@ -24,6 +24,7 @@ enum Sort {
 pub struct ProcessPage {
     pub root: gtk::Box,
     rows: gtk::Box,
+    scroll: gtk::ScrolledWindow,
     summary: gtk::Label,
     query: RefCell<String>,
     sort: Cell<Sort>,
@@ -41,7 +42,7 @@ impl ProcessPage {
     pub fn new() -> Rc<Self> {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 12);
         root.add_css_class("kira-process-page");
-        let section = gtk::Label::new(Some("PROCESSES  /  CURRENT SESSION"));
+        let section = gtk::Label::new(Some("PROCESSES  /  HOST"));
         section.set_xalign(0.0);
         section.add_css_class("kira-system-section");
         root.append(&section);
@@ -124,6 +125,7 @@ impl ProcessPage {
         let page = Rc::new(Self {
             root,
             rows,
+            scroll,
             summary,
             query: RefCell::new(String::new()),
             sort: Cell::new(Sort::Cpu),
@@ -143,6 +145,7 @@ impl ProcessPage {
         filter.connect_search_changed(move |entry| {
             if let Some(page) = weak.upgrade() {
                 *page.query.borrow_mut() = entry.text().to_lowercase();
+                page.scroll.vadjustment().set_value(0.0);
                 page.render();
             }
         });
@@ -224,6 +227,11 @@ impl ProcessPage {
             self.show_empty("SAMPLING / PLEASE WAIT");
             return;
         };
+        // Replacing live rows must not throw the user back to the top of
+        // the list every two seconds. Sorting/filtering deliberately resets
+        // the viewport, while refreshes preserve the vertical offset.
+        let adjustment = self.scroll.vadjustment();
+        let previous_position = adjustment.value();
         let query = self.query.borrow();
         let mut rows: Vec<&ProcessRow> = snapshot
             .rows
@@ -289,6 +297,12 @@ impl ProcessPage {
                 ""
             }
         ));
+        if previous_position > 0.0 {
+            gtk::glib::idle_add_local_once(move || {
+                let max = (adjustment.upper() - adjustment.page_size()).max(0.0);
+                adjustment.set_value(previous_position.min(max));
+            });
+        }
     }
 }
 
@@ -322,6 +336,7 @@ fn connect_sort(button: &gtk::Button, sort: Sort, weak: Weak<ProcessPage>) {
     button.connect_clicked(move |_| {
         if let Some(page) = weak.upgrade() {
             page.sort.set(sort);
+            page.scroll.vadjustment().set_value(0.0);
             page.render();
         }
     });

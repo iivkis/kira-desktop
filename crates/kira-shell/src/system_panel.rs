@@ -324,6 +324,7 @@ pub fn toggle(
     let process_page = crate::process_page::ProcessPage::new();
     stack.add_named(&process_page.root, Some("processes"));
     card.append(&stack);
+    stack.set_visible_child_name("overview");
 
     let overview_weak = overview_tab.downgrade();
     let processes_weak = processes_tab.downgrade();
