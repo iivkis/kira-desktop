@@ -21,23 +21,46 @@ impl Catalog {
     }
 
     pub fn as_json(&self) -> serde_json::Value {
-        let apps: Vec<_> = self.apps.iter().enumerate().map(|(id, info)| {
-            let name: String = info.display_name().chars().filter(|c| !c.is_control()).take(120).collect();
-            let description: String = info.description().map(|v| v.to_string()).unwrap_or_default()
-                .chars().filter(|c| !c.is_control()).take(240).collect();
-            serde_json::json!({
-                "id": id,
-                "name": name,
-                "description": description,
+        let apps: Vec<_> = self
+            .apps
+            .iter()
+            .enumerate()
+            .map(|(id, info)| {
+                let name: String = info
+                    .display_name()
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(120)
+                    .collect();
+                let description: String = info
+                    .description()
+                    .map(|v| v.to_string())
+                    .unwrap_or_default()
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(240)
+                    .collect();
+                serde_json::json!({
+                    "id": id,
+                    "name": name,
+                    "description": description,
+                })
             })
-        }).collect();
+            .collect();
         serde_json::json!({ "apps": apps })
     }
 
     pub fn launch(&self, id: usize) -> Result<(), String> {
         let info = self.apps.get(id).ok_or("Unknown application index")?;
         info.launch(&[], None::<&gio::AppLaunchContext>())
-            .map_err(|error| error.to_string().chars().filter(|c| !c.is_control()).take(180).collect())
+            .map_err(|error| {
+                error
+                    .to_string()
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(180)
+                    .collect()
+            })
     }
 }
 
@@ -49,7 +72,10 @@ mod tests {
     fn out_of_range_id_cannot_launch_arbitrary_programs() {
         let catalog = Catalog { apps: vec![] };
         assert_eq!(catalog.launch(0), Err("Unknown application index".into()));
-        assert_eq!(catalog.launch(usize::MAX), Err("Unknown application index".into()));
+        assert_eq!(
+            catalog.launch(usize::MAX),
+            Err("Unknown application index".into())
+        );
         assert_eq!(catalog.as_json(), serde_json::json!({"apps":[]}));
     }
 }
