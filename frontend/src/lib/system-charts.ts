@@ -53,6 +53,30 @@ export function appendTelemetry(
   return next.slice(-MAX_TELEMETRY_POINTS);
 }
 
+/** Explicit, labelled local axis ranges make low activity readable without
+ * pretending the chart spans 0–100%. Missing samples cannot create fake peaks.
+ * CPU/GPU retain a true zero origin; RAM focuses on its measured range.
+ */
+export function activityAxis(
+  samples: readonly TelemetryPoint[],
+  field: 'cpu' | 'ram' | 'gpu',
+): { min: number; max: number } {
+  const values = samples
+    .map(point => point[field])
+    .filter((value): value is number =>
+      value !== null && Number.isFinite(value) && value >= 0 && value <= 100);
+  if (!values.length) return { min: 0, max: 100 };
+  if (field !== 'ram') {
+    const max = Math.min(100, Math.max(15, Math.ceil(Math.max(...values) * 1.25 / 5) * 5));
+    return { min: 0, max };
+  }
+  const minSample = Math.min(...values);
+  const maxSample = Math.max(...values);
+  const min = Math.max(0, Math.floor((minSample - 3) / 5) * 5);
+  const max = Math.min(100, Math.max(min + 5, Math.ceil((maxSample + 3) / 5) * 5));
+  return { min, max };
+}
+
 /** Return an accessible live label without depending on SVG rendering. */
 export function telemetrySummary(metrics: SystemMetrics | null): string {
   if (!metrics) return 'Waiting for system telemetry';
