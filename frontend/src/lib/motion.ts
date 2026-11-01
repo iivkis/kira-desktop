@@ -181,7 +181,7 @@ export function rollingClockDigit(node: HTMLElement, initial: string) {
 export function clockJuggle(node: HTMLButtonElement) {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let animation: gsap.core.Timeline | null = null;
-  let restoreTimer: ReturnType<typeof setTimeout> | null = null;
+  let restoreTimer: number | null = null;
   const cells = () => Array.from(node.querySelectorAll<HTMLElement>('[data-clock-cell]'));
 
   function reset() {
