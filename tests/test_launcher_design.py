@@ -42,10 +42,14 @@ class LauncherDesignTests(unittest.TestCase):
         for required in (
             'gio::AppInfo::all()', 'info.should_show()',
             'pub fn launch(&self, id: usize)', 'self.apps.get(id)',
-            'info.launch(&[], None::<&gio::AppLaunchContext>())',
+            'info.launch(&[], None::<&gio::AppLaunchContext>)',
             'apps.truncate(1024)', '"id": id',
         ):
             self.assertIn(required, RUST)
+        # Regression: None::<T> is a Rust enum value, never a call.
+        # The native Shell is not built in fast CI, so catch this
+        # exact invalid syntax in the lightweight contract checks.
+        self.assertNotRegex(RUST, r"None::<[^>\n]+>\s*\(")
         self.assertNotIn('std::process::Command', RUST)
         self.assertNotIn('Command::new', RUST)
         self.assertNotIn('shell', RUST.lower().split('pub fn launch', 1)[-1])
