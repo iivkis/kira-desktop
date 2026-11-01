@@ -55,14 +55,21 @@ whenDocumentReady(document, () => {
           unmount(instance: ReturnType<typeof mount>) {
             return unmount(instance);
           },
-          onMounted: notifyCalendarMounted,
+          onMounted(generation: number) {
+            report('Overlay Svelte ' + kind + ' mounted; generation=' + generation);
+            notifyCalendarMounted(generation);
+          },
         };
       },
       (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
-      if (detail?.kind !== 'calendar' && detail?.kind !== 'system') return;
+      if (detail?.kind !== 'calendar' && detail?.kind !== 'system') {
+        report('Overlay rejected invalid show payload');
+        return;
+      }
+      report('Overlay received show: ' + detail.kind + ' generation=' + detail.generation);
       requestedKind = detail.kind;
       host.show(detail.generation);
     });
