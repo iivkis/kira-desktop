@@ -366,9 +366,11 @@ mod tests {
         let generic = directory.join("generic.png");
         std::fs::write(&broken, b"not an image").unwrap();
         std::fs::write(&generic, b"\x89PNG\r\n\x1a\nimage").unwrap();
-        assert!(encode_icon(Some(&broken), Some(&generic))
-            .unwrap()
-            .starts_with("data:image/png;base64,"));
+        assert!(
+            encode_icon(Some(&broken), Some(&generic))
+                .unwrap()
+                .starts_with("data:image/png;base64,")
+        );
         std::fs::remove_dir_all(directory).unwrap();
     }
 
