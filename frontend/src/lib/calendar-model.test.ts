@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth } from './calendar-model';
+import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth, clockGlyphs, localClockText } from './calendar-model';
 
 describe('Svelte Calendar Gregorian model', () => {
   it('respects leap years, including century rules', () => {
@@ -30,6 +30,17 @@ describe('Svelte Calendar Gregorian model', () => {
     expect(dayOfYear({ year: 2026, month: 11, day: 1 })).toBe(305);
     expect(dayOfYear({ year: 2024, month: 12, day: 31 })).toBe(366);
   });
+  it('splits localized live clock into rolling numerals and static separators', () => {
+    const date = new Date(2026, 10, 1, 12, 34, 59);
+    const text = localClockText(date, 'en-GB');
+    expect(text).toBe('12:34:59');
+    expect(clockGlyphs(text).filter(part => part.digit).map(part => part.char).join('')).toBe('123459');
+    expect(clockGlyphs(text).filter(part => !part.digit)).toEqual([
+      { char: ':', digit: false }, { char: ':', digit: false },
+    ]);
+    expect(clockGlyphs('١٢:٣٤:٥٩').filter(part => part.digit)).toHaveLength(6);
+  });
+
   it('avoids the JavaScript Date year-1900 trap', () => {
     expect(isoDate(shiftDays({ year: 1, month: 1, day: 1 }, 1)!)).toBe('0001-01-02');
     expect(shiftDays({ year: 1, month: 1, day: 1 }, -1)).toBeNull();
