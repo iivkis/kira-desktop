@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3872
+index_bytes=3874
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	6ed022bcd8a65283fb0e94ca8f48bccd84bddc26
+C	e337b9f6e405d8d15118f40a99865a4968b91759
 F	.cargo/config.toml	98	109	3
 F	.github/workflows/ci.yml	1467	114	46
 F	.github/workflows/nix.yml	1258	162	38
@@ -44,59 +44,59 @@ F	crates/kira-shell/src/system_metrics.rs	7010	4673	214
 F	crates/kira-shell/src/system_panel.rs	7948	4889	226
 F	docs/CONFIG.md	5801	5117	125
 F	docs/DESIGN_SYSTEM.md	15048	5244	276
-F	docs/DEVELOPMENT.md	27412	5522	543
-F	docs/QA_VISUAL.md	12284	6067	149
-F	docs/SPECIFICATION.md	28960	6218	421
-F	docs/UI_ARCHITECTURE.md	6737	6641	106
-F	docs/VISUAL_REVIEW.md	9754	6749	84
-F	flake.nix	2651	6835	76
-F	frontend/index.html	2737	6913	66
-F	frontend/package.json	650	6981	23
-F	frontend/scripts/inline-assets.mjs	4457	7006	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7111	106
-F	frontend/scripts/smoke-overlays.mjs	9478	7219	162
-F	frontend/src/App.svelte	8659	7383	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7585	84
-F	frontend/src/lib/bootstrap.ts	2613	7671	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7743	38
-F	frontend/src/lib/calendar-model.ts	3453	7783	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7857	177
-F	frontend/src/lib/components/LauncherWidget.svelte	7752	8036	167
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8205	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	8250	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8441	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8504	29
-F	frontend/src/lib/launcher-model.ts	778	8535	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8555	89
-F	frontend/src/lib/lazy-widget.ts	1984	8646	63
-F	frontend/src/lib/overlay-size.ts	1090	8711	29
-F	frontend/src/lib/sdk/core.test.ts	20006	8742	403
-F	frontend/src/lib/sdk/core.ts	15992	9147	432
-F	frontend/src/lib/system-health.test.ts	2348	9581	41
-F	frontend/src/lib/system-health.ts	2831	9624	60
-F	frontend/src/lib/system-model.test.ts	2988	9686	57
-F	frontend/src/lib/system-model.ts	3411	9745	76
-F	frontend/src/lib/themes/kira-default.css	1687	9823	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9877	101
-F	frontend/src/lib/themes/kira-default.ts	777	9980	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	10004	79
-F	frontend/src/lib/time.test.ts	263	10085	8
-F	frontend/src/lib/time.ts	320	10095	9
-F	frontend/src/main.ts	5907	10106	127
-F	frontend/src/style.css	2445	10235	76
-F	frontend/tsconfig.json	403	10313	16
-F	frontend/vite.config.ts	224	10331	8
-F	nix/package.nix	3132	10341	117
-F	scripts/dev_preview.py	18147	10460	403	x
-F	scripts/qa_visual.py	12052	10865	299
-F	tests/test_calendar_design.py	6835	11166	121
-F	tests/test_detailed_health.py	5195	11289	101
-F	tests/test_dev_preview.py	9339	11392	219
-F	tests/test_launcher_design.py	7638	11613	142
-F	tests/test_native_theme.py	1567	11757	36
-F	tests/test_popup_geometry.py	6956	11795	118
-F	tests/test_qa_visual.py	10549	11915	217
-F	tests/test_ui_bootstrap_contract.py	1103	12134	29
+F	docs/DEVELOPMENT.md	27700	5522	547
+F	docs/QA_VISUAL.md	12284	6071	149
+F	docs/SPECIFICATION.md	28960	6222	421
+F	docs/UI_ARCHITECTURE.md	6737	6645	106
+F	docs/VISUAL_REVIEW.md	9754	6753	84
+F	flake.nix	2651	6839	76
+F	frontend/index.html	2737	6917	66
+F	frontend/package.json	650	6985	23
+F	frontend/scripts/inline-assets.mjs	4457	7010	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7115	106
+F	frontend/scripts/smoke-overlays.mjs	10812	7223	175
+F	frontend/src/App.svelte	8659	7400	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7602	84
+F	frontend/src/lib/bootstrap.ts	2613	7688	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7760	38
+F	frontend/src/lib/calendar-model.ts	3453	7800	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7874	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	8053	176
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8231	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	8276	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8467	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8530	29
+F	frontend/src/lib/launcher-model.ts	778	8561	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8581	89
+F	frontend/src/lib/lazy-widget.ts	1984	8672	63
+F	frontend/src/lib/overlay-size.ts	1090	8737	29
+F	frontend/src/lib/sdk/core.test.ts	20006	8768	403
+F	frontend/src/lib/sdk/core.ts	15992	9173	432
+F	frontend/src/lib/system-health.test.ts	2348	9607	41
+F	frontend/src/lib/system-health.ts	2831	9650	60
+F	frontend/src/lib/system-model.test.ts	2988	9712	57
+F	frontend/src/lib/system-model.ts	3411	9771	76
+F	frontend/src/lib/themes/kira-default.css	1687	9849	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9903	101
+F	frontend/src/lib/themes/kira-default.ts	777	10006	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	10030	79
+F	frontend/src/lib/time.test.ts	263	10111	8
+F	frontend/src/lib/time.ts	320	10121	9
+F	frontend/src/main.ts	5907	10132	127
+F	frontend/src/style.css	2993	10261	91
+F	frontend/tsconfig.json	403	10354	16
+F	frontend/vite.config.ts	224	10372	8
+F	nix/package.nix	3132	10382	117
+F	scripts/dev_preview.py	18147	10501	403	x
+F	scripts/qa_visual.py	12052	10906	299
+F	tests/test_calendar_design.py	6835	11207	121
+F	tests/test_detailed_health.py	5195	11330	101
+F	tests/test_dev_preview.py	9339	11433	219
+F	tests/test_launcher_design.py	8709	11654	160
+F	tests/test_native_theme.py	1567	11816	36
+F	tests/test_popup_geometry.py	6956	11854	118
+F	tests/test_qa_visual.py	10549	11974	217
+F	tests/test_ui_bootstrap_contract.py	1103	12193	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -5625,8 +5625,12 @@ images only during the visible launcher's lifetime. The icon adapter
 first reads any local GIO FileIcon from the desktop entry, then uses GTK
 IconTheme, and finally tries the theme's generic
 `application-x-executable` icon if an app-specific asset is missing.
-The first letter is the final fallback when the theme provides no readable
-image. The 36px icon slot is uniform, with a 32px image contained inside.
+A simple four-tile placeholder is the final fallback when no readable
+image is available; only this fallback gets a subtle colored background.
+Real 32px icons sit on transparent 36px slots with no added tile background.
+All Svelte widget text, including Top Bar and lazy overlays, is nonselectable
+via shared `#app` CSS, except inputs, textareas and editable fields, where
+normal text selection and clipboard shortcuts remain available.
 The launcher list uses hidden scrollbars in WebKit but retains scroll
 functionality, and selected rows no longer have rounded right corners.
 Its outer WebKit surface is square with no decorative border or shadow.
@@ -7245,7 +7249,7 @@ function scriptFor(steps) {
       'if (String(message).startsWith("icons-request:")) {' +
         'const ids = String(message).split(":")[2].split(",").map(Number);' +
         'setTimeout(() => window.dispatchEvent(new CustomEvent("kira:launcher:icons", {detail: {icons: ids.map(id => ({id, data_url: ' +
-          JSON.stringify(testIcon) + '}))}})), 5);' +
+          '(id === 0 ? null : ' + JSON.stringify(testIcon) + ')}))}})), 5);' +
       '}' +
     '}}}};' +
     'window.addEventListener("load", () => {' +
@@ -7282,6 +7286,13 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
+      'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
+      'document.documentElement.setAttribute("data-smoke-editable-selectable", !editable || getComputedStyle(editable).userSelect === "text");' +
+      'const painted = document.querySelector("[data-kira-icon-slot]:has(img)");' +
+      'document.documentElement.setAttribute("data-smoke-real-icon-transparent", !!painted && getComputedStyle(painted).backgroundColor === "rgba(0, 0, 0, 0)");' +
+      'const placeholder = document.querySelector("[data-kira-icon-slot]:has([data-kira-icon-placeholder])");' +
+      'document.documentElement.setAttribute("data-smoke-placeholder-background", !!placeholder && getComputedStyle(placeholder).backgroundColor !== "rgba(0, 0, 0, 0)");' +
     '}, 1150);' +
     '});</script>';
 }
@@ -7312,6 +7323,10 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': popup size bridge/cap invalid (height=' +
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
   }
+  if (!output.includes('data-smoke-unselectable="true"') ||
+      !output.includes('data-smoke-editable-selectable="true"')) {
+    throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
+  }
   if (heightMode === 'scroll') {
     if (size !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
@@ -7323,6 +7338,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
   if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
+      !output.includes('data-smoke-real-icon-transparent="true"') ||
+      !output.includes('data-smoke-placeholder-background="true"') ||
       !output.includes('data-smoke-icon-width="32"') ||
       Number(output.match(/data-smoke-icon-count="(\d+)"/)?.[1] ?? 0) < 1)) {
     const square = output.match(/data-smoke-square="([^"]+)"/)?.[1] ?? 'unset';
@@ -8168,12 +8185,21 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
           class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
           <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
-          <span class="flex size-9 shrink-0 items-center justify-center overflow-hidden bg-kira-surface-soft text-[12px] font-bold text-kira-muted" aria-hidden="true">
+          <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
+              (icons[app.id] ? 'bg-transparent' : 'bg-kira-surface-soft')}
+            aria-hidden="true" data-kira-icon-slot>
             {#if icons[app.id]}
               <img class="size-8 object-contain" src={icons[app.id]} alt="" loading="lazy"
                 onerror={() => { delete icons[app.id]; }} />
             {:else}
-              {app.name.slice(0, 1).toLocaleUpperCase() || 'K'}
+              <svg data-kira-icon-placeholder class="size-5 text-kira-muted" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
             {/if}
           </span>
           <span class="min-w-0 flex-1">
@@ -10263,6 +10289,21 @@ FILE	frontend/src/style.css
     overflow: hidden;
   }
 
+  /* Desktop widgets are controls, not selectable web documents.
+   * This covers the Top Bar and every lazy Svelte overlay (Calendar,
+   * System Monitor and Launcher). Keep editable text selectable so
+   * typing, selection, cut/copy/paste and input IME still behave normally. */
+  #app {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  #app :is(input, textarea, [contenteditable]:not([contenteditable="false"])),
+  #app [contenteditable]:not([contenteditable="false"]) * {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
   /* Top Bar stays full-height within its own WebKit surface.
    * Overlay documents must have an intrinsic page height instead.
    * Otherwise html/body/#app's 100% viewport height forces every
@@ -11657,7 +11698,10 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertNotIn("border-kira-muted", root_markup)
         self.assertIn("<img class=\"size-8 object-contain\"", WIDGET)
         self.assertIn("src={icons[app.id]}", WIDGET)
-        self.assertIn("app.name.slice(0, 1)", WIDGET)
+        self.assertIn("data-kira-icon-placeholder", WIDGET)
+        self.assertIn("data-kira-icon-slot", WIDGET)
+        self.assertIn("icons[app.id] ? 'bg-transparent' : 'bg-kira-surface-soft'", WIDGET)
+        self.assertIn('class="size-5 text-kira-muted"', WIDGET)
         self.assertIn("onLauncherIcons(batch", WIDGET)
         self.assertIn("requestLauncherIcons(generation, batch)", WIDGET)
         self.assertIn("needed.slice(i, i + 16)", WIDGET)
@@ -11695,6 +11739,21 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("size-9 shrink-0 items-center justify-center overflow-hidden", WIDGET)
         self.assertIn("bg-kira-surface-soft", WIDGET)
         self.assertIn("line-clamp-2 text-[11px] leading-4", WIDGET)
+
+    def test_global_widget_selection_is_disabled_except_editable_fields(self):
+        style = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn("#app {", style)
+        self.assertIn("-webkit-user-select: none;", style)
+        self.assertIn("user-select: none;", style)
+        self.assertIn("input, textarea", style)
+        self.assertIn('[contenteditable]:not([contenteditable="false"])', style)
+        self.assertIn("-webkit-user-select: text;", style)
+        self.assertIn("user-select: text;", style)
+        # The same #app hosts the Top Bar and all three lazy overlays.
+        for widget in ("CalendarWidget.svelte", "SystemWidget.svelte",
+                       "LauncherWidget.svelte"):
+            source = (ROOT / "frontend/src/lib/components" / widget).read_text()
+            self.assertIn("data-kira-ui-root", source)
 
     def test_file_icon_and_generic_fallback_resolve_without_browser_paths(self):
         self.assertIn("icon.downcast_ref::<gio::FileIcon>()", RUST)
