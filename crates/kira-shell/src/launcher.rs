@@ -107,6 +107,10 @@ impl Catalog {
         })
     }
 
+    pub fn ready_json(&self) -> Option<serde_json::Value> {
+        self.apps.as_ref().map(|_| self.as_json())
+    }
+
     /// GTK-owned IconTheme resolves paths, but never reads image data. Actual
     /// file opening, validation, and encoding all happen in run_worker().
     pub fn request_icons(&self, ids: &[usize]) -> Result<(), String> {
