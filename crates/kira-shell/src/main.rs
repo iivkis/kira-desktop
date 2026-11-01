@@ -332,6 +332,15 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
+
+        // Warm the isolated Calendar WebKit process after the Top Bar starts.
+        // The popup stays unmapped until requested; initial startup is not
+        // blocked by the Calendar's JS initialization.
+        let calendar_app = app.clone();
+        let calendar_source = html.clone();
+        gtk::glib::timeout_add_local_once(Duration::from_millis(200), move || {
+            calendar::prewarm(&calendar_app, &calendar_source);
+        });
     });
     app.run();
 }
