@@ -5,8 +5,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-/// Actual CPU/RAM samples, not 100ms interpolation of two-second readings.
-pub const PULSE_INTERVAL: Duration = Duration::from_millis(100);
+/// Actual CPU/RAM samples, not 500ms interpolation of two-second readings.
+pub const PULSE_INTERVAL: Duration = Duration::from_millis(500);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Pulse {
@@ -26,7 +26,7 @@ impl Pulse {
 }
 
 /// Short-lived, read-only worker sampler. Avoids all sysfs/hwmon, disk,
-/// battery, GPU enumeration, and process scans at the 100ms pulse cadence.
+/// battery, GPU enumeration, and process scans at the 500ms pulse cadence.
 #[derive(Default)]
 pub struct PulseSampler {
     previous_cpu: Option<(u64, u64)>,
@@ -472,7 +472,7 @@ mod tests {
 
     #[test]
     fn pulse_interval_is_100ms_and_only_exports_cpu_and_memory() {
-        assert_eq!(PULSE_INTERVAL, Duration::from_millis(100));
+        assert_eq!(PULSE_INTERVAL, Duration::from_millis(500));
         let pulse = Pulse {
             cpu_percent: Some(0),
             memory_total_kib: Some(1024),
