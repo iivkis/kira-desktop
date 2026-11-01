@@ -23,7 +23,7 @@
   type="button"
   class="inline-flex h-7 shrink-0 cursor-pointer items-center justify-center gap-[6px] rounded-sm border-0 bg-transparent px-1 text-kira-muted transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
   aria-haspopup="dialog"
-  aria-label={'Open detailed system status. ' + health.details.replaceAll('\n', '; ')}
+  aria-label={'Open system monitor: ' + health.label}
   title={health.details + '\nClick for detailed system monitor'}
   data-phase={health.phase}
   onclick={onOpen}
