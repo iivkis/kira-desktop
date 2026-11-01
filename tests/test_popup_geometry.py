@@ -30,6 +30,31 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", CALENDAR)
         self.assertNotIn("window.close()", CALENDAR)
 
+    def test_switching_launcher_never_moves_a_mapped_webkit_buffer(self):
+        # Calendar/System can switch in place. Moving to/from the centered
+        # Launcher must unmap before changing layer-shell anchors, then
+        # remap on a subsequent compositor frame with the new Svelte DOM.
+        self.assertIn("let relocating = self.window.is_visible()", CALENDAR)
+        self.assertIn("(old == Surface::Launcher) != (kind == Surface::Launcher)", CALENDAR)
+        self.assertIn("let defer_present = relocating || self.reposition_pending.get();", CALENDAR)
+        self.assertIn("self.window.set_visible(false);", CALENDAR)
+        self.assertIn("self.reposition_pending.set(defer_present);", CALENDAR)
+        show = CALENDAR.split("fn show(self: &Rc<Self>, kind: Surface)", 1)[1].split(
+            "fn request_mount(", 1
+        )[0]
+        self.assertLess(show.index("self.window.set_visible(false)"),
+                        show.index("self.position_for(kind);"))
+        self.assertIn("self.was_active.set(false);", show)
+        self.assertIn("self.window.set_opacity(0.0);", show)
+        self.assertIn("Duration::from_millis(32)", show)
+        self.assertIn("state.generation.get() == generation", show)
+        self.assertIn("state.window.present();", show)
+        self.assertIn("self.request_mount();", show)
+        self.assertIn("reposition_pending: Cell<bool>", CALENDAR)
+        # The current shared WebKit process must not be restarted on moves.
+        self.assertEqual(CALENDAR.count("webkit6::WebView::builder()"), 1)
+        self.assertNotIn("window.close()", CALENDAR)
+
     def test_half_margin_and_monitor_relative_height(self):
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", HELPERS)
         self.assertIn("i64::from(output_height.max(1)) * 7 / 10", HELPERS)
