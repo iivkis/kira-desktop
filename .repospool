@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3941
+index_bytes=3943
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	385e8006f970657f247a2198ff27418a68405d6c
+C	2d5bdd47bb280f5d474b45aaafe1f38af5c6337e
 F	.cargo/config.toml	98	110	3
 F	.github/workflows/ci.yml	4355	115	112
 F	.github/workflows/nix.yml	1258	229	38
@@ -35,69 +35,69 @@ F	crates/kira-ipc/Cargo.toml	170	2455	9
 F	crates/kira-ipc/src/client.rs	10376	2466	277
 F	crates/kira-ipc/src/lib.rs	9053	2745	302
 F	crates/kira-shell/Cargo.toml	297	3049	12
-F	crates/kira-shell/src/calendar.rs	35633	3063	966
-F	crates/kira-shell/src/launcher.rs	7606	4031	223
-F	crates/kira-shell/src/main.rs	19285	4256	447
-F	crates/kira-shell/src/native_ui.rs	2857	4705	73
-F	crates/kira-shell/src/process_monitor.rs	6245	4780	202
-F	crates/kira-shell/src/renderer_recovery.rs	3634	4984	116
-F	crates/kira-shell/src/system_metrics.rs	7010	5102	214
-F	crates/kira-shell/src/system_panel.rs	7948	5318	226
-F	docs/CONFIG.md	5801	5546	125
-F	docs/DESIGN_SYSTEM.md	15048	5673	276
-F	docs/DEVELOPMENT.md	27700	5951	547
-F	docs/QA_VISUAL.md	12284	6500	149
-F	docs/SPECIFICATION.md	28960	6651	421
-F	docs/UI_ARCHITECTURE.md	6737	7074	106
-F	docs/VISUAL_REVIEW.md	9754	7182	84
-F	flake.nix	3181	7268	91
-F	frontend/index.html	2737	7361	66
-F	frontend/package.json	650	7429	23
-F	frontend/scripts/inline-assets.mjs	4457	7454	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7559	106
-F	frontend/scripts/smoke-overlays.mjs	10812	7667	175
-F	frontend/src/App.svelte	8659	7844	200
-F	frontend/src/lib/bootstrap.test.ts	3408	8046	84
-F	frontend/src/lib/bootstrap.ts	2613	8132	70
-F	frontend/src/lib/calendar-model.test.ts	2097	8204	38
-F	frontend/src/lib/calendar-model.ts	3453	8244	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	8318	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	8497	176
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8675	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	8720	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8911	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8974	29
-F	frontend/src/lib/launcher-model.ts	778	9005	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	9025	89
-F	frontend/src/lib/lazy-widget.ts	1984	9116	63
-F	frontend/src/lib/overlay-size.ts	1090	9181	29
-F	frontend/src/lib/sdk/core.test.ts	20006	9212	403
-F	frontend/src/lib/sdk/core.ts	15992	9617	432
-F	frontend/src/lib/system-health.test.ts	2348	10051	41
-F	frontend/src/lib/system-health.ts	2831	10094	60
-F	frontend/src/lib/system-model.test.ts	2988	10156	57
-F	frontend/src/lib/system-model.ts	3411	10215	76
-F	frontend/src/lib/themes/kira-default.css	1687	10293	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	10347	101
-F	frontend/src/lib/themes/kira-default.ts	777	10450	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	10474	79
-F	frontend/src/lib/time.test.ts	263	10555	8
-F	frontend/src/lib/time.ts	320	10565	9
-F	frontend/src/main.ts	5907	10576	127
-F	frontend/src/style.css	2993	10705	91
-F	frontend/tsconfig.json	403	10798	16
-F	frontend/vite.config.ts	224	10816	8
-F	nix/package.nix	3132	10826	117
-F	scripts/dev_preview.py	18147	10945	403	x
-F	scripts/qa_visual.py	12052	11350	299
-F	tests/test_calendar_design.py	6835	11651	121
-F	tests/test_detailed_health.py	5195	11774	101
-F	tests/test_dev_preview.py	9339	11877	219
-F	tests/test_launcher_design.py	8709	12098	160
-F	tests/test_native_theme.py	1567	12260	36
-F	tests/test_popup_geometry.py	6956	12298	118
-F	tests/test_qa_visual.py	10549	12418	217
-F	tests/test_ui_bootstrap_contract.py	1103	12637	29
+F	crates/kira-shell/src/calendar.rs	38040	3063	1020
+F	crates/kira-shell/src/launcher.rs	14114	4085	392
+F	crates/kira-shell/src/main.rs	19285	4479	447
+F	crates/kira-shell/src/native_ui.rs	2857	4928	73
+F	crates/kira-shell/src/process_monitor.rs	6245	5003	202
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5207	116
+F	crates/kira-shell/src/system_metrics.rs	7010	5325	214
+F	crates/kira-shell/src/system_panel.rs	7948	5541	226
+F	docs/CONFIG.md	5801	5769	125
+F	docs/DESIGN_SYSTEM.md	15048	5896	276
+F	docs/DEVELOPMENT.md	27700	6174	547
+F	docs/QA_VISUAL.md	12284	6723	149
+F	docs/SPECIFICATION.md	28960	6874	421
+F	docs/UI_ARCHITECTURE.md	6737	7297	106
+F	docs/VISUAL_REVIEW.md	9754	7405	84
+F	flake.nix	3181	7491	91
+F	frontend/index.html	2737	7584	66
+F	frontend/package.json	650	7652	23
+F	frontend/scripts/inline-assets.mjs	4457	7677	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7782	106
+F	frontend/scripts/smoke-overlays.mjs	10812	7890	175
+F	frontend/src/App.svelte	8659	8067	200
+F	frontend/src/lib/bootstrap.test.ts	3408	8269	84
+F	frontend/src/lib/bootstrap.ts	2613	8355	70
+F	frontend/src/lib/calendar-model.test.ts	2097	8427	38
+F	frontend/src/lib/calendar-model.ts	3453	8467	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	8541	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	8720	176
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8898	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	8943	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	9134	61
+F	frontend/src/lib/launcher-model.test.ts	1370	9197	29
+F	frontend/src/lib/launcher-model.ts	778	9228	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	9248	89
+F	frontend/src/lib/lazy-widget.ts	1984	9339	63
+F	frontend/src/lib/overlay-size.ts	1090	9404	29
+F	frontend/src/lib/sdk/core.test.ts	20006	9435	403
+F	frontend/src/lib/sdk/core.ts	15992	9840	432
+F	frontend/src/lib/system-health.test.ts	2348	10274	41
+F	frontend/src/lib/system-health.ts	2831	10317	60
+F	frontend/src/lib/system-model.test.ts	2988	10379	57
+F	frontend/src/lib/system-model.ts	3411	10438	76
+F	frontend/src/lib/themes/kira-default.css	1687	10516	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	10570	101
+F	frontend/src/lib/themes/kira-default.ts	777	10673	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	10697	79
+F	frontend/src/lib/time.test.ts	263	10778	8
+F	frontend/src/lib/time.ts	320	10788	9
+F	frontend/src/main.ts	5907	10799	127
+F	frontend/src/style.css	2993	10928	91
+F	frontend/tsconfig.json	403	11021	16
+F	frontend/vite.config.ts	224	11039	8
+F	nix/package.nix	3132	11049	117
+F	scripts/dev_preview.py	18147	11168	403	x
+F	scripts/qa_visual.py	12052	11573	299
+F	tests/test_calendar_design.py	6835	11874	121
+F	tests/test_detailed_health.py	5195	11997	101
+F	tests/test_dev_preview.py	9339	12100	219
+F	tests/test_launcher_design.py	9956	12321	182
+F	tests/test_native_theme.py	1567	12505	36
+F	tests/test_popup_geometry.py	6956	12543	118
+F	tests/test_qa_visual.py	10549	12663	217
+F	tests/test_ui_bootstrap_contract.py	1103	12882	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3447,17 +3447,24 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
-                let needs_catalog = self.launcher.borrow().is_none();
-                if needs_catalog {
-                    *self.launcher.borrow_mut() = Some(crate::launcher::Catalog::discover());
-                }
-                let data = self
-                    .launcher
-                    .borrow()
-                    .as_ref()
-                    .map(|catalog| catalog.as_json());
-                if let Some(payload) = data {
-                    self.dispatch_launcher("kira:launcher:apps", payload);
+                if self.launcher.borrow().is_none() {
+                    // Do not enumerate installed apps on GTK's event loop.
+                    match crate::launcher::Catalog::discover() {
+                        Ok(catalog) => *self.launcher.borrow_mut() = Some(catalog),
+                        Err(error) => self.dispatch_launcher(
+                            "kira:launcher:error",
+                            serde_json::json!({ "message": error }),
+                        ),
+                    }
+                } else {
+                    let ready = self
+                        .launcher
+                        .borrow()
+                        .as_ref()
+                        .and_then(|catalog| catalog.ready_json());
+                    if let Some(payload) = ready {
+                        self.dispatch_launcher("kira:launcher:apps", payload);
+                    }
                 }
             }
             Some(UiCommand::LauncherIcons(generation, ids))
@@ -3465,13 +3472,19 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
-                let data = self
+                // GTK only looks up themed file paths. A worker reads the
+                // icons and encodes bounded image bytes asynchronously.
+                let result = self
                     .launcher
                     .borrow()
                     .as_ref()
-                    .map(|catalog| catalog.icons_json(&ids));
-                if let Some(payload) = data {
-                    self.dispatch_launcher("kira:launcher:icons", payload);
+                    .ok_or_else(|| "Application catalog unavailable".to_string())
+                    .and_then(|catalog| catalog.request_icons(&ids));
+                if let Err(error) = result {
+                    self.dispatch_launcher(
+                        "kira:launcher:error",
+                        serde_json::json!({ "message": error }),
+                    );
                 }
             }
             Some(UiCommand::LaunchApp(generation, id))
@@ -3480,28 +3493,60 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
+                // Launching via GIO can also block (desktop portals/D-Bus).
+                // Retain the trusted index and await the worker result.
                 let result = self
                     .launcher
                     .borrow()
                     .as_ref()
-                    .map(|catalog| catalog.launch(id));
-                match result {
-                    Some(Ok(())) => self.hide(),
-                    Some(Err(error)) => {
-                        self.dispatch_launcher(
-                            "kira:launcher:error",
-                            serde_json::json!({ "message": error }),
-                        );
-                    }
-                    None => {
-                        self.dispatch_launcher(
-                            "kira:launcher:error",
-                            serde_json::json!({ "message": "Application catalog unavailable" }),
-                        );
-                    }
+                    .ok_or_else(|| "Application catalog unavailable".to_string())
+                    .and_then(|catalog| catalog.launch(id));
+                if let Err(error) = result {
+                    self.dispatch_launcher(
+                        "kira:launcher:error",
+                        serde_json::json!({ "message": error }),
+                    );
                 }
             }
             _ => eprintln!("kira-shell: ignored invalid/stale Overlay UI command"),
+        }
+    }
+
+    /// Drain a small number of completed worker operations per GTK frame.
+    /// Closing/reopening Launcher drops its worker receiver, so stale results
+    /// cannot update a newer overlay generation.
+    fn poll_launcher(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Launcher) {
+            return;
+        }
+        for _ in 0..4 {
+            let message = self
+                .launcher
+                .borrow_mut()
+                .as_mut()
+                .and_then(|catalog| catalog.poll());
+            let Some(message) = message else {
+                break;
+            };
+            match message {
+                crate::launcher::LauncherMessage::Apps(payload) => {
+                    self.dispatch_launcher("kira:launcher:apps", payload);
+                }
+                crate::launcher::LauncherMessage::Icons(payload) => {
+                    self.dispatch_launcher("kira:launcher:icons", payload);
+                }
+                crate::launcher::LauncherMessage::Launched(Ok(())) => self.hide(),
+                crate::launcher::LauncherMessage::Launched(Err(error))
+                | crate::launcher::LauncherMessage::Error(error) => {
+                    self.dispatch_launcher(
+                        "kira:launcher:error",
+                        serde_json::json!({ "message": error }),
+                    );
+                }
+            }
+            if self.active.get() != Some(Surface::Launcher) {
+                break;
+            }
         }
     }
 
@@ -3831,6 +3876,15 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
     let weak = Rc::downgrade(&overlay);
+    gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
+        if let Some(state) = weak.upgrade() {
+            state.poll_launcher();
+            gtk::glib::ControlFlow::Continue
+        } else {
+            gtk::glib::ControlFlow::Break
+        }
+    });
+    let weak = Rc::downgrade(&overlay);
     gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
         if let Some(state) = weak.upgrade() {
             state.tick();
@@ -4030,94 +4084,253 @@ mod tests {
 FILE	crates/kira-shell/src/launcher.rs
 //! Trusted GIO desktop-app adapter for the Svelte Launcher. No GTK widgets,
 //! command strings, executable paths, terminal spawning or Core RPC.
-use std::cell::RefCell;
+//! GIO application objects stay in one worker; only owned Rust data crosses
+//! into the GTK thread. Icon file I/O and base64 encoding never block GTK.
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::Read;
+use std::path::{Path, PathBuf};
+use std::sync::mpsc::{self, Receiver, Sender};
 
 use gtk::gio;
 use gtk::gio::prelude::*;
 
 const MAX_ICON_BYTES: usize = 128 * 1024;
 const ICON_BATCH_LIMIT: usize = 16;
+const MAX_APPS: usize = 1024;
 
-/// Browser images receive only bounded data URIs, never local paths,
-/// arbitrary file URLs or executable commands. This also handles desktop
-/// entries with an absolute Icon=/path/to/icon.png (Gio FileIcon).
-fn file_data_url(file: &gio::File) -> Option<String> {
-    if !file.is_native() {
-        return None;
-    }
-    let path = file.path()?;
-    let extension = path.extension()?.to_str()?.to_ascii_lowercase();
-    let mime = match extension.as_str() {
-        "png" => "image/png",
-        "svg" => "image/svg+xml",
-        "jpg" | "jpeg" => "image/jpeg",
-        "webp" => "image/webp",
-        _ => return None,
-    };
-    let metadata = file
-        .query_info(
-            "standard::size,standard::type",
-            gio::FileQueryInfoFlags::NONE,
-            None::<&gio::Cancellable>,
-        )
-        .ok()?;
-    if metadata.file_type() != gio::FileType::Regular
-        || metadata.size() <= 0
-        || metadata.size() > MAX_ICON_BYTES as i64
-    {
-        return None;
-    }
-    let (bytes, _) = file.load_bytes(None::<&gio::Cancellable>).ok()?;
-    let content: &[u8] = bytes.as_ref();
-    if content.is_empty() || content.len() > MAX_ICON_BYTES {
-        return None;
-    }
-    // Do not turn an arbitrary text file into an image via a .png filename.
-    let valid = match extension.as_str() {
-        "png" => content.starts_with(b"\x89PNG\r\n\x1a\n"),
-        "jpg" | "jpeg" => content.starts_with(&[0xff, 0xd8, 0xff]),
-        "webp" => content.starts_with(b"RIFF") && content.get(8..12) == Some(b"WEBP".as_slice()),
-        "svg" => {
-            let prefix = String::from_utf8_lossy(&content[..content.len().min(1024)]);
-            prefix.contains("<svg") && !prefix.contains("<!DOCTYPE")
-        }
-        _ => false,
-    };
-    if !valid {
-        return None;
-    }
-    Some(format!(
-        "data:{mime};base64,{}",
-        gtk::glib::base64_encode(content)
-    ))
+#[derive(Clone)]
+struct AppEntry {
+    id: usize,
+    name: String,
+    description: String,
+    // GIcon's standard string serialization, not a Gio object or user input.
+    icon: Option<String>,
 }
 
-fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
-    // FileIcon is common for user-installed .desktop apps (including Nix
-    // profiles). Ask GIO for its exact local file before attempting the theme
-    // lookup, which may otherwise resolve to a generic missing-icon image.
-    if let Some(file_icon) = icon.downcast_ref::<gio::FileIcon>()
-        && let Some(image) = file_data_url(&file_icon.file())
-    {
-        return Some(image);
+enum WorkerRequest {
+    Icons(Vec<(usize, Option<PathBuf>, Option<PathBuf>)>),
+    Launch(usize),
+}
+
+enum WorkerResponse {
+    Apps(Vec<AppEntry>),
+    Icons(Vec<(usize, Option<String>)>),
+    Launched(Result<(), String>),
+}
+
+pub enum LauncherMessage {
+    Apps(serde_json::Value),
+    Icons(serde_json::Value),
+    Launched(Result<(), String>),
+    Error(String),
+}
+
+/// Catalog is a GTK-thread handle to an isolated GIO worker. The Gio AppInfo
+/// objects are created, used, and dropped on that same worker thread because
+/// GObject wrappers are not Send.
+pub struct Catalog {
+    commands: Sender<WorkerRequest>,
+    results: Receiver<WorkerResponse>,
+    apps: Option<Vec<AppEntry>>,
+    disconnected: bool,
+}
+
+impl Catalog {
+    /// Nonblocking for GTK: enumeration/sorting happen in a dedicated thread.
+    pub fn discover() -> Result<Self, String> {
+        let (commands, requests) = mpsc::channel();
+        let (results_tx, results) = mpsc::channel();
+        std::thread::Builder::new()
+            .name("kira-launcher".into())
+            .spawn(move || run_worker(requests, results_tx))
+            .map_err(|error| format!("Cannot start application catalog: {error}"))?;
+        Ok(Self {
+            commands,
+            results,
+            apps: None,
+            disconnected: false,
+        })
     }
-    theme
+
+    pub fn poll(&mut self) -> Option<LauncherMessage> {
+        match self.results.try_recv() {
+            Ok(WorkerResponse::Apps(apps)) => {
+                self.apps = Some(apps);
+                Some(LauncherMessage::Apps(self.as_json()))
+            }
+            Ok(WorkerResponse::Icons(icons)) => Some(LauncherMessage::Icons(serde_json::json!({
+                "icons": icons.into_iter().map(|(id, data_url)| {
+                    serde_json::json!({"id": id, "data_url": data_url})
+                }).collect::<Vec<_>>()
+            }))),
+            Ok(WorkerResponse::Launched(result)) => Some(LauncherMessage::Launched(result)),
+            Err(mpsc::TryRecvError::Empty) => None,
+            Err(mpsc::TryRecvError::Disconnected) if !self.disconnected => {
+                self.disconnected = true;
+                Some(LauncherMessage::Error(
+                    "Application service disconnected".into(),
+                ))
+            }
+            Err(mpsc::TryRecvError::Disconnected) => None,
+        }
+    }
+
+    fn as_json(&self) -> serde_json::Value {
+        let Some(apps) = self.apps.as_ref() else {
+            return serde_json::json!({"apps": []});
+        };
+        serde_json::json!({
+            "apps": apps.iter().map(|app| {
+                serde_json::json!({
+                    "id": app.id,
+                    "name": app.name,
+                    "description": app.description,
+                })
+            }).collect::<Vec<_>>()
+        })
+    }
+
+    pub fn ready_json(&self) -> Option<serde_json::Value> {
+        self.apps.as_ref().map(|_| self.as_json())
+    }
+
+    /// GTK-owned IconTheme resolves paths, but never reads image data. Actual
+    /// file opening, validation, and encoding all happen in run_worker().
+    pub fn request_icons(&self, ids: &[usize]) -> Result<(), String> {
+        let apps = self.apps.as_ref().ok_or("Application catalog not ready")?;
+        let theme =
+            gtk::gdk::Display::default().map(|display| gtk::IconTheme::for_display(&display));
+        let generic = theme.as_ref().and_then(generic_icon_path);
+        let requested = ids
+            .iter()
+            .take(ICON_BATCH_LIMIT)
+            .filter_map(|id| {
+                let app = apps.get(*id)?;
+                Some((
+                    *id,
+                    resolve_icon_path(app.icon.as_deref(), theme.as_ref()),
+                    generic.clone(),
+                ))
+            })
+            .collect();
+        self.commands
+            .send(WorkerRequest::Icons(requested))
+            .map_err(|_| "Application service unavailable".into())
+    }
+
+    /// IDs remain indices into the worker's trusted application snapshot.
+    /// Never accept an executable path or command from WebKit.
+    pub fn launch(&self, id: usize) -> Result<(), String> {
+        if self.apps.as_ref().and_then(|apps| apps.get(id)).is_none() {
+            return Err("Unknown application index".into());
+        }
+        self.commands
+            .send(WorkerRequest::Launch(id))
+            .map_err(|_| "Application service unavailable".into())
+    }
+}
+
+fn run_worker(requests: Receiver<WorkerRequest>, results: Sender<WorkerResponse>) {
+    // GIO can enumerate apps outside GTK's main loop. Keep every AppInfo on
+    // this thread, including the launch call, rather than sending GObjects.
+    let mut apps: Vec<_> = gio::AppInfo::all()
+        .into_iter()
+        .filter(|info| info.should_show())
+        .collect();
+    apps.sort_by_key(|info| info.display_name().to_string().to_lowercase());
+    apps.truncate(MAX_APPS);
+    let entries = apps
+        .iter()
+        .enumerate()
+        .map(|(id, info)| AppEntry {
+            id,
+            name: info
+                .display_name()
+                .chars()
+                .filter(|c| !c.is_control())
+                .take(120)
+                .collect(),
+            description: info
+                .description()
+                .map(|v| v.to_string())
+                .unwrap_or_default()
+                .chars()
+                .filter(|c| !c.is_control())
+                .take(240)
+                .collect(),
+            icon: info
+                .icon()
+                .and_then(|icon| icon.to_string().map(|s| s.to_string())),
+        })
+        .collect();
+    if results.send(WorkerResponse::Apps(entries)).is_err() {
+        return; // Launcher closed before enumeration completed.
+    }
+
+    let mut cache: HashMap<usize, Option<String>> = HashMap::new();
+    while let Ok(command) = requests.recv() {
+        let reply = match command {
+            WorkerRequest::Icons(paths) => {
+                let icons = paths
+                    .into_iter()
+                    .take(ICON_BATCH_LIMIT)
+                    .filter(|(id, _, _)| *id < apps.len())
+                    .map(|(id, path, fallback)| {
+                        let icon = cache
+                            .entry(id)
+                            .or_insert_with(|| encode_icon(path.as_deref(), fallback.as_deref()))
+                            .clone();
+                        (id, icon)
+                    })
+                    .collect();
+                WorkerResponse::Icons(icons)
+            }
+            WorkerRequest::Launch(id) => WorkerResponse::Launched(
+                apps.get(id)
+                    .ok_or_else(|| "Unknown application index".to_string())
+                    .and_then(|info| {
+                        info.launch(&[], None::<&gio::AppLaunchContext>)
+                            .map_err(|error| {
+                                error
+                                    .to_string()
+                                    .chars()
+                                    .filter(|c| !c.is_control())
+                                    .take(180)
+                                    .collect()
+                            })
+                    }),
+            ),
+        };
+        if results.send(reply).is_err() {
+            break;
+        }
+    }
+}
+
+/// Theme lookup stays with GTK, which owns the display and icon theme. File
+/// bytes are not accessed here. Serialized icons originate from trusted GIO.
+fn resolve_icon_path(icon: Option<&str>, theme: Option<&gtk::IconTheme>) -> Option<PathBuf> {
+    let icon = gio::Icon::for_string(icon?).ok()?;
+    if let Some(file_icon) = icon.downcast_ref::<gio::FileIcon>() {
+        let file = file_icon.file();
+        if file.is_native() {
+            return file.path();
+        }
+    }
+    theme?
         .lookup_by_gicon(
-            icon,
+            &icon,
             40,
             1,
             gtk::TextDirection::None,
             gtk::IconLookupFlags::empty(),
         )
         .file()
-        .and_then(|file| file_data_url(&file))
+        .and_then(|file| file.is_native().then(|| file.path()).flatten())
 }
 
-/// Use an actual system-theme generic application icon when a desktop
-/// entry has no icon or its configured icon is missing. A branded icon
-/// cannot be reconstructed from a nonexistent theme asset.
-fn generic_icon_data_url(theme: &gtk::IconTheme) -> Option<String> {
+fn generic_icon_path(theme: &gtk::IconTheme) -> Option<PathBuf> {
     const NAME: &str = "application-x-executable";
     if !theme.has_icon(NAME) {
         return None;
@@ -4132,116 +4345,69 @@ fn generic_icon_data_url(theme: &gtk::IconTheme) -> Option<String> {
             gtk::IconLookupFlags::empty(),
         )
         .file()
-        .and_then(|file| file_data_url(&file))
+        .and_then(|file| file.is_native().then(|| file.path()).flatten())
 }
 
-/// Only an index into this server-side snapshot is accepted from Svelte.
-/// Never use a web-supplied executable path, desktop ID or shell command.
-pub struct Catalog {
-    apps: Vec<gio::AppInfo>,
-    icons: RefCell<HashMap<usize, Option<String>>>,
+/// Prefer the requested app icon; use the system-theme generic icon if
+/// a file is missing, too large or has an invalid signature.
+fn encode_icon(primary: Option<&Path>, fallback: Option<&Path>) -> Option<String> {
+    primary
+        .and_then(file_data_url)
+        .or_else(|| fallback.and_then(file_data_url))
 }
 
-impl Catalog {
-    pub fn discover() -> Self {
-        let mut apps: Vec<_> = gio::AppInfo::all()
-            .into_iter()
-            .filter(|info| info.should_show())
-            .collect();
-        apps.sort_by_key(|info| info.display_name().to_string().to_lowercase());
-        apps.truncate(1024);
-        Self {
-            apps,
-            icons: RefCell::new(HashMap::new()),
+/// Read only small, signature-checked image files into bounded data URIs.
+/// A suffix alone is never sufficient, and even a racing file replacement
+/// cannot make the worker read more than MAX_ICON_BYTES + 1 bytes.
+fn file_data_url(path: &Path) -> Option<String> {
+    let extension = path.extension()?.to_str()?.to_ascii_lowercase();
+    let mime = match extension.as_str() {
+        "png" => "image/png",
+        "svg" => "image/svg+xml",
+        "jpg" | "jpeg" => "image/jpeg",
+        "webp" => "image/webp",
+        _ => return None,
+    };
+    let metadata = std::fs::metadata(path).ok()?;
+    if !metadata.is_file() || metadata.len() == 0 || metadata.len() > MAX_ICON_BYTES as u64 {
+        return None;
+    }
+    let mut content = Vec::with_capacity(metadata.len() as usize);
+    File::open(path)
+        .ok()?
+        .take((MAX_ICON_BYTES + 1) as u64)
+        .read_to_end(&mut content)
+        .ok()?;
+    if content.is_empty() || content.len() > MAX_ICON_BYTES {
+        return None;
+    }
+    let valid = match extension.as_str() {
+        "png" => content.starts_with(b"\x89PNG\r\n\x1a\n"),
+        "jpg" | "jpeg" => content.starts_with(&[0xff, 0xd8, 0xff]),
+        "webp" => content.starts_with(b"RIFF") && content.get(8..12) == Some(b"WEBP".as_slice()),
+        "svg" => {
+            let prefix = String::from_utf8_lossy(&content[..content.len().min(1024)]);
+            prefix.contains("<svg") && !prefix.contains("<!DOCTYPE")
         }
-    }
-
-    pub fn as_json(&self) -> serde_json::Value {
-        let apps: Vec<_> = self
-            .apps
-            .iter()
-            .enumerate()
-            .map(|(id, info)| {
-                let name: String = info
-                    .display_name()
-                    .chars()
-                    .filter(|c| !c.is_control())
-                    .take(120)
-                    .collect();
-                let description: String = info
-                    .description()
-                    .map(|v| v.to_string())
-                    .unwrap_or_default()
-                    .chars()
-                    .filter(|c| !c.is_control())
-                    .take(240)
-                    .collect();
-                serde_json::json!({
-                    "id": id,
-                    "name": name,
-                    "description": description,
-                })
-            })
-            .collect();
-        serde_json::json!({ "apps": apps })
-    }
-
-    /// Resolve only icons for rows that Svelte currently displays; caching
-    /// avoids repeated file I/O when the search filter changes. All data is
-    /// freed when the launcher is closed along with its native catalog.
-    pub fn icons_json(&self, ids: &[usize]) -> serde_json::Value {
-        let theme =
-            gtk::gdk::Display::default().map(|display| gtk::IconTheme::for_display(&display));
-        let generic = theme.as_ref().and_then(generic_icon_data_url);
-        let icons: Vec<_> = ids
-            .iter()
-            .take(ICON_BATCH_LIMIT)
-            .filter_map(|id| {
-                let info = self.apps.get(*id)?;
-                let icon = {
-                    let mut cache = self.icons.borrow_mut();
-                    cache
-                        .entry(*id)
-                        .or_insert_with(|| {
-                            info.icon()
-                                .and_then(|gicon| {
-                                    theme
-                                        .as_ref()
-                                        .and_then(|theme| icon_data_url(&gicon, theme))
-                                })
-                                .or_else(|| generic.clone())
-                        })
-                        .clone()
-                };
-                Some(serde_json::json!({ "id": id, "data_url": icon }))
-            })
-            .collect();
-        serde_json::json!({ "icons": icons })
-    }
-
-    pub fn launch(&self, id: usize) -> Result<(), String> {
-        let info = self.apps.get(id).ok_or("Unknown application index")?;
-        info.launch(&[], None::<&gio::AppLaunchContext>)
-            .map_err(|error| {
-                error
-                    .to_string()
-                    .chars()
-                    .filter(|c| !c.is_control())
-                    .take(180)
-                    .collect()
-            })
-    }
+        _ => false,
+    };
+    valid.then(|| format!("data:{mime};base64,{}", gtk::glib::base64_encode(&content)))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::Write;
 
     #[test]
     fn out_of_range_id_cannot_launch_arbitrary_programs() {
+        let (tx, _rx) = mpsc::channel();
+        let (_result_tx, results) = mpsc::channel();
         let catalog = Catalog {
-            apps: vec![],
-            icons: RefCell::new(HashMap::new()),
+            commands: tx,
+            results,
+            apps: Some(vec![]),
+            disconnected: false,
         };
         assert_eq!(catalog.launch(0), Err("Unknown application index".into()));
         assert_eq!(
@@ -4249,6 +4415,63 @@ mod tests {
             Err("Unknown application index".into())
         );
         assert_eq!(catalog.as_json(), serde_json::json!({"apps":[]}));
+    }
+
+    #[test]
+    fn invalid_icon_data_is_rejected_without_launching_anything() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-icons-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let fake = directory.join("bad.png");
+        std::fs::write(&fake, b"not actually a png").unwrap();
+        assert!(file_data_url(&fake).is_none());
+
+        let huge = directory.join("huge.svg");
+        let mut file = File::create(&huge).unwrap();
+        file.write_all(b"<svg>").unwrap();
+        file.write_all(&vec![b'x'; MAX_ICON_BYTES]).unwrap();
+        drop(file);
+        assert!(file_data_url(&huge).is_none());
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn invalid_app_icon_falls_back_to_valid_generic_icon() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-icon-fallback-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let broken = directory.join("broken.png");
+        let generic = directory.join("generic.png");
+        std::fs::write(&broken, b"not an image").unwrap();
+        std::fs::write(&generic, b"\x89PNG\r\n\x1a\nimage").unwrap();
+        assert!(
+            encode_icon(Some(&broken), Some(&generic))
+                .unwrap()
+                .starts_with("data:image/png;base64,")
+        );
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn small_local_image_is_encoded_as_bounded_data_url() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-icon-valid-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let icon = directory.join("valid.png");
+        std::fs::write(&icon, b"\x89PNG\r\n\x1a\nimage").unwrap();
+        let image = file_data_url(&icon).unwrap();
+        assert!(image.starts_with("data:image/png;base64,"));
+        assert!(!image.contains(icon.to_str().unwrap()));
+        std::fs::remove_dir_all(directory).unwrap();
     }
 }
 
@@ -12153,12 +12376,14 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("gtk::IconTheme::for_display(&display)", RUST)
         self.assertIn(".lookup_by_gicon(", RUST)
         self.assertIn(".file()", RUST)
-        self.assertIn("file_data_url(&file)", RUST)
-        self.assertIn("file.load_bytes(None::<&gio::Cancellable>)", RUST)
+        self.assertIn("fn file_data_url(path: &Path)", RUST)
+        self.assertIn(".take((MAX_ICON_BYTES + 1) as u64)", RUST)
+        self.assertIn(".read_to_end(&mut content)", RUST)
+        self.assertNotIn("file.load_bytes(", RUST)
         self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
         self.assertIn("const ICON_BATCH_LIMIT: usize = 16;", RUST)
         self.assertIn("data:{mime};base64", RUST)
-        self.assertIn("icons: RefCell<HashMap<usize, Option<String>>>", RUST)
+        self.assertIn("let mut cache: HashMap<usize, Option<String>>", RUST)
         self.assertIn("self.launcher.borrow_mut().take()", OVERLAY)
         self.assertIn("kira:launcher:icons", OVERLAY)
         self.assertIn("Some(UiCommand::LauncherIcons(generation, ids))", OVERLAY)
@@ -12201,27 +12426,29 @@ class LauncherDesignTests(unittest.TestCase):
 
     def test_file_icon_and_generic_fallback_resolve_without_browser_paths(self):
         self.assertIn("icon.downcast_ref::<gio::FileIcon>()", RUST)
-        self.assertIn("file_data_url(&file_icon.file())", RUST)
+        self.assertIn("let file = file_icon.file();", RUST)
+        self.assertIn("if file.is_native()", RUST)
+        self.assertIn("return file.path()", RUST)
         self.assertIn('const NAME: &str = "application-x-executable";', RUST)
         self.assertIn("theme.has_icon(NAME)", RUST)
-        self.assertIn("generic_icon_data_url", RUST)
-        self.assertIn("or_else(|| generic.clone())", RUST)
+        self.assertIn("fn generic_icon_path", RUST)
+        self.assertIn("fn encode_icon(", RUST)
+        self.assertIn("or_else(|| fallback.and_then(file_data_url))", RUST)
         self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
-        self.assertIn("icons: RefCell<HashMap<usize, Option<String>>>", RUST)
+        self.assertIn("let mut cache: HashMap<usize, Option<String>>", RUST)
         self.assertNotIn("file://", RUST)
         self.assertNotIn("std::process::Command", RUST)
 
     def test_native_app_identity_and_safe_launch(self):
         for required in (
             'gio::AppInfo::all()', 'info.should_show()',
-            'pub fn launch(&self, id: usize)', 'self.apps.get(id)',
+            'pub fn launch(&self, id: usize)', 'apps.get(id)',
             'info.launch(&[], None::<&gio::AppLaunchContext>)',
-            'apps.truncate(1024)', '"id": id',
+            'apps.truncate(MAX_APPS)', '"id": app.id',
         ):
             self.assertIn(required, RUST)
         # Regression: None::<T> is a Rust enum value, never a call.
-        # The native Shell is not built in fast CI, so catch this
-        # exact invalid syntax in the lightweight contract checks.
+        # Preserve the original syntax guard alongside real native CI builds.
         self.assertNotRegex(RUST, r"None::<[^>\n]+>\s*\(")
         self.assertNotIn('std::process::Command', RUST)
         self.assertNotIn('Command::new', RUST)
@@ -12236,6 +12463,24 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('postNativeCommand(\'kiraLauncher\', \'open\')', SDK)
         self.assertIn("sendCalendarUi('launch:' + generation + ':' + id)", SDK)
         self.assertIn("sendCalendarUi('apps-request:' + generation)", SDK)
+
+    def test_catalog_and_icon_bytes_stay_off_gtk_thread(self):
+        # GTK owns the display theme, while the worker owns Gio AppInfo.
+        self.assertIn('std::thread::Builder::new()', RUST)
+        self.assertIn('fn run_worker(', RUST)
+        self.assertIn('std::sync::mpsc::{self, Receiver, Sender}', RUST)
+        self.assertIn('results.send(WorkerResponse::Apps(entries))', RUST)
+        self.assertIn('WorkerRequest::Icons(', RUST)
+        self.assertIn('WorkerRequest::Launch(', RUST)
+        self.assertIn('fn resolve_icon_path(', RUST)
+        self.assertIn('fn file_data_url(path: &Path)', RUST)
+        self.assertIn('File::open(path)', RUST)
+        self.assertIn('fn poll_launcher(&self)', OVERLAY)
+        self.assertIn('state.poll_launcher();', OVERLAY)
+        self.assertIn('crate::launcher::LauncherMessage::Launched(Ok(()))', OVERLAY)
+        self.assertNotIn('Catalog::discover());', OVERLAY)
+        self.assertNotIn('catalog.icons_json(&ids)', OVERLAY)
+        self.assertNotIn('file.load_bytes(', RUST)
 
     def test_one_shared_overlay_and_retired_gtk_assets(self):
         self.assertIn('mount(LauncherWidget', ENTRY)
