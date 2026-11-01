@@ -333,7 +333,8 @@ impl CalendarOverlay {
                 // Layout-driven dimensions come only from the bounded,
                 // trusted overlay channel. Ignore stale generations and
                 // no-op resizes to avoid feedback from ResizeObserver.
-                let clamped = height.min(crate::native_ui::webview_popup_height_limit(&self.window));
+                let clamped =
+                    height.min(crate::native_ui::webview_popup_height_limit(&self.window));
                 if clamped != self.content_height.get() {
                     self.content_height.set(clamped);
                     crate::native_ui::resize_webview_popup(&self.window, 420, clamped);
@@ -596,7 +597,10 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         }
         return Some(UiCommand::ContentHeight(
             generation.parse::<u32>().ok().filter(|v| *v > 0)?,
-            height.parse::<i32>().ok().filter(|v| (1..=20_000).contains(v))?,
+            height
+                .parse::<i32>()
+                .ok()
+                .filter(|v| (1..=20_000).contains(v))?,
         ));
     }
     if let Some(value) = message.strip_prefix("painted:") {
