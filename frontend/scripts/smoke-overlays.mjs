@@ -124,12 +124,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
   }
   if (heightMode === 'system') {
-    const charts = Number(output.match(/data-smoke-system-charts="(\\d+)"/)?.[1] ?? 0);
+    const charts = Number(output.match(/data-smoke-system-charts="(\d+)"/)?.[1] ?? 0);
     if (charts < 2 || !output.includes('data-smoke-system-swap="true"') ||
         !output.includes('data-smoke-system-unknown="true"') ||
         !output.includes('data-smoke-system-no-scrollbar="true"')) {
       const diagnostic = output.match(/data-smoke-system-[a-z-]+="[^"]*"/g) ?? [];
-      const svgs = (output.match(/<svg\\b/g) ?? []).length;
+      const svgs = (output.match(/<svg\b/g) ?? []).length;
       const diagnostics = output.match(/data-smoke-result="[^"]*"/g) ?? [];
       throw new Error(name + ': ECharts SVG=' + charts + ', DOM SVG=' + svgs +
         ', flags=' + diagnostic.join(' / ') + ', roots=' + diagnostics.join(','));
