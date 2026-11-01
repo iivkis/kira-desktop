@@ -385,17 +385,24 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
-                let needs_catalog = self.launcher.borrow().is_none();
-                if needs_catalog {
-                    *self.launcher.borrow_mut() = Some(crate::launcher::Catalog::discover());
-                }
-                let data = self
-                    .launcher
-                    .borrow()
-                    .as_ref()
-                    .map(|catalog| catalog.as_json());
-                if let Some(payload) = data {
-                    self.dispatch_launcher("kira:launcher:apps", payload);
+                if self.launcher.borrow().is_none() {
+                    // Do not enumerate installed apps on GTK's event loop.
+                    match crate::launcher::Catalog::discover() {
+                        Ok(catalog) => *self.launcher.borrow_mut() = Some(catalog),
+                        Err(error) => self.dispatch_launcher(
+                            "kira:launcher:error",
+                            serde_json::json!({ "message": error }),
+                        ),
+                    }
+                } else {
+                    let ready = self
+                        .launcher
+                        .borrow()
+                        .as_ref()
+                        .and_then(|catalog| catalog.ready_json());
+                    if let Some(payload) = ready {
+                        self.dispatch_launcher("kira:launcher:apps", payload);
+                    }
                 }
             }
             Some(UiCommand::LauncherIcons(generation, ids))
@@ -403,13 +410,19 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
-                let data = self
+                // GTK only looks up themed file paths. A worker reads the
+                // icons and encodes bounded image bytes asynchronously.
+                let result = self
                     .launcher
                     .borrow()
                     .as_ref()
-                    .map(|catalog| catalog.icons_json(&ids));
-                if let Some(payload) = data {
-                    self.dispatch_launcher("kira:launcher:icons", payload);
+                    .ok_or_else(|| "Application catalog unavailable".to_string())
+                    .and_then(|catalog| catalog.request_icons(&ids));
+                if let Err(error) = result {
+                    self.dispatch_launcher(
+                        "kira:launcher:error",
+                        serde_json::json!({ "message": error }),
+                    );
                 }
             }
             Some(UiCommand::LaunchApp(generation, id))
@@ -418,28 +431,60 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
+                // Launching via GIO can also block (desktop portals/D-Bus).
+                // Retain the trusted index and await the worker result.
                 let result = self
                     .launcher
                     .borrow()
                     .as_ref()
-                    .map(|catalog| catalog.launch(id));
-                match result {
-                    Some(Ok(())) => self.hide(),
-                    Some(Err(error)) => {
-                        self.dispatch_launcher(
-                            "kira:launcher:error",
-                            serde_json::json!({ "message": error }),
-                        );
-                    }
-                    None => {
-                        self.dispatch_launcher(
-                            "kira:launcher:error",
-                            serde_json::json!({ "message": "Application catalog unavailable" }),
-                        );
-                    }
+                    .ok_or_else(|| "Application catalog unavailable".to_string())
+                    .and_then(|catalog| catalog.launch(id));
+                if let Err(error) = result {
+                    self.dispatch_launcher(
+                        "kira:launcher:error",
+                        serde_json::json!({ "message": error }),
+                    );
                 }
             }
             _ => eprintln!("kira-shell: ignored invalid/stale Overlay UI command"),
+        }
+    }
+
+    /// Drain a small number of completed worker operations per GTK frame.
+    /// Closing/reopening Launcher drops its worker receiver, so stale results
+    /// cannot update a newer overlay generation.
+    fn poll_launcher(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Launcher) {
+            return;
+        }
+        for _ in 0..4 {
+            let message = self
+                .launcher
+                .borrow_mut()
+                .as_mut()
+                .and_then(|catalog| catalog.poll());
+            let Some(message) = message else {
+                break;
+            };
+            match message {
+                crate::launcher::LauncherMessage::Apps(payload) => {
+                    self.dispatch_launcher("kira:launcher:apps", payload);
+                }
+                crate::launcher::LauncherMessage::Icons(payload) => {
+                    self.dispatch_launcher("kira:launcher:icons", payload);
+                }
+                crate::launcher::LauncherMessage::Launched(Ok(())) => self.hide(),
+                crate::launcher::LauncherMessage::Launched(Err(error))
+                | crate::launcher::LauncherMessage::Error(error) => {
+                    self.dispatch_launcher(
+                        "kira:launcher:error",
+                        serde_json::json!({ "message": error }),
+                    );
+                }
+            }
+            if self.active.get() != Some(Surface::Launcher) {
+                break;
+            }
         }
     }
 
@@ -768,6 +813,15 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     // shows. The Calendar component, timer and DOM are unmounted on hide.
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
+    let weak = Rc::downgrade(&overlay);
+    gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
+        if let Some(state) = weak.upgrade() {
+            state.poll_launcher();
+            gtk::glib::ControlFlow::Continue
+        } else {
+            gtk::glib::ControlFlow::Break
+        }
+    });
     let weak = Rc::downgrade(&overlay);
     gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
         if let Some(state) = weak.upgrade() {
