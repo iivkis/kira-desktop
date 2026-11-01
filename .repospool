@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	6624f2ebfba6b4b909c0b61a01b96e31cb6cdf2f
+C	5fe89bb22d34be6537abd4863f9cb4c8cce881a2
 F	.cargo/config.toml	98	108	3
 F	.github/workflows/ci.yml	1467	113	46
 F	.github/workflows/nix.yml	1258	161	38
@@ -35,67 +35,67 @@ F	crates/kira-ipc/Cargo.toml	170	2176	9
 F	crates/kira-ipc/src/client.rs	10376	2187	277
 F	crates/kira-ipc/src/lib.rs	9053	2466	302
 F	crates/kira-shell/Cargo.toml	297	2770	12
-F	crates/kira-shell/src/calendar.rs	27842	2784	783
-F	crates/kira-shell/src/launcher.rs	2568	3569	81
-F	crates/kira-shell/src/main.rs	17601	3652	414
-F	crates/kira-shell/src/native_ui.rs	2413	4068	61
-F	crates/kira-shell/src/process_monitor.rs	6245	4131	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4335	214
-F	crates/kira-shell/src/system_panel.rs	7948	4551	226
-F	docs/CONFIG.md	5801	4779	125
-F	docs/DESIGN_SYSTEM.md	15048	4906	276
-F	docs/DEVELOPMENT.md	25624	5184	515
-F	docs/QA_VISUAL.md	12284	5701	149
-F	docs/SPECIFICATION.md	28960	5852	421
-F	docs/UI_ARCHITECTURE.md	5097	6275	80
-F	docs/VISUAL_REVIEW.md	9754	6357	84
-F	flake.nix	2651	6443	76
-F	frontend/index.html	2737	6521	66
-F	frontend/package.json	650	6589	23
-F	frontend/scripts/inline-assets.mjs	4457	6614	103
-F	frontend/scripts/inline-assets.test.mjs	4645	6719	106
-F	frontend/scripts/smoke-overlays.mjs	4141	6827	88
-F	frontend/src/App.svelte	8659	6917	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7119	84
-F	frontend/src/lib/bootstrap.ts	2613	7205	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7277	38
-F	frontend/src/lib/calendar-model.ts	3453	7317	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7391	177
-F	frontend/src/lib/components/LauncherWidget.svelte	6492	7570	137
-F	frontend/src/lib/components/SystemHealth.svelte	1684	7709	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	7754	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	7945	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8008	29
-F	frontend/src/lib/launcher-model.ts	778	8039	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8059	89
-F	frontend/src/lib/lazy-widget.ts	1984	8150	63
-F	frontend/src/lib/sdk/core.test.ts	17180	8215	349
-F	frontend/src/lib/sdk/core.ts	14103	8566	389
-F	frontend/src/lib/system-health.test.ts	2348	8957	41
-F	frontend/src/lib/system-health.ts	2831	9000	60
-F	frontend/src/lib/system-model.test.ts	2988	9062	57
-F	frontend/src/lib/system-model.ts	3411	9121	76
-F	frontend/src/lib/themes/kira-default.css	1687	9199	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9253	101
-F	frontend/src/lib/themes/kira-default.ts	777	9356	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9380	79
-F	frontend/src/lib/time.test.ts	263	9461	8
-F	frontend/src/lib/time.ts	320	9471	9
-F	frontend/src/main.ts	4907	9482	112
-F	frontend/src/style.css	1329	9596	44
-F	frontend/tsconfig.json	403	9642	16
-F	frontend/vite.config.ts	224	9660	8
-F	nix/package.nix	3132	9670	117
-F	scripts/dev_preview.py	18147	9789	403	x
-F	scripts/qa_visual.py	12052	10194	299
-F	tests/test_calendar_design.py	6837	10495	121
-F	tests/test_detailed_health.py	5197	10618	101
-F	tests/test_dev_preview.py	9339	10721	219
-F	tests/test_launcher_design.py	4192	10942	84
-F	tests/test_native_theme.py	1567	11028	36
-F	tests/test_popup_geometry.py	1569	11066	33
-F	tests/test_qa_visual.py	10549	11101	217
-F	tests/test_ui_bootstrap_contract.py	1103	11320	29
+F	crates/kira-shell/src/calendar.rs	29324	2784	815
+F	crates/kira-shell/src/launcher.rs	2568	3601	81
+F	crates/kira-shell/src/main.rs	17601	3684	414
+F	crates/kira-shell/src/native_ui.rs	2413	4100	61
+F	crates/kira-shell/src/process_monitor.rs	6245	4163	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4367	214
+F	crates/kira-shell/src/system_panel.rs	7948	4583	226
+F	docs/CONFIG.md	5801	4811	125
+F	docs/DESIGN_SYSTEM.md	15048	4938	276
+F	docs/DEVELOPMENT.md	25624	5216	515
+F	docs/QA_VISUAL.md	12284	5733	149
+F	docs/SPECIFICATION.md	28960	5884	421
+F	docs/UI_ARCHITECTURE.md	5421	6307	85
+F	docs/VISUAL_REVIEW.md	9754	6394	84
+F	flake.nix	2651	6480	76
+F	frontend/index.html	2737	6558	66
+F	frontend/package.json	650	6626	23
+F	frontend/scripts/inline-assets.mjs	4457	6651	103
+F	frontend/scripts/inline-assets.test.mjs	4645	6756	106
+F	frontend/scripts/smoke-overlays.mjs	4141	6864	88
+F	frontend/src/App.svelte	8659	6954	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7156	84
+F	frontend/src/lib/bootstrap.ts	2613	7242	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7314	38
+F	frontend/src/lib/calendar-model.ts	3453	7354	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7428	177
+F	frontend/src/lib/components/LauncherWidget.svelte	6492	7607	137
+F	frontend/src/lib/components/SystemHealth.svelte	1684	7746	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	7791	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	7982	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8045	29
+F	frontend/src/lib/launcher-model.ts	778	8076	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8096	89
+F	frontend/src/lib/lazy-widget.ts	1984	8187	63
+F	frontend/src/lib/sdk/core.test.ts	17180	8252	349
+F	frontend/src/lib/sdk/core.ts	14103	8603	389
+F	frontend/src/lib/system-health.test.ts	2348	8994	41
+F	frontend/src/lib/system-health.ts	2831	9037	60
+F	frontend/src/lib/system-model.test.ts	2988	9099	57
+F	frontend/src/lib/system-model.ts	3411	9158	76
+F	frontend/src/lib/themes/kira-default.css	1687	9236	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9290	101
+F	frontend/src/lib/themes/kira-default.ts	777	9393	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9417	79
+F	frontend/src/lib/time.test.ts	263	9498	8
+F	frontend/src/lib/time.ts	320	9508	9
+F	frontend/src/main.ts	4907	9519	112
+F	frontend/src/style.css	1329	9633	44
+F	frontend/tsconfig.json	403	9679	16
+F	frontend/vite.config.ts	224	9697	8
+F	nix/package.nix	3132	9707	117
+F	scripts/dev_preview.py	18147	9826	403	x
+F	scripts/qa_visual.py	12052	10231	299
+F	tests/test_calendar_design.py	6837	10532	121
+F	tests/test_detailed_health.py	5197	10655	101
+F	tests/test_dev_preview.py	9339	10758	219
+F	tests/test_launcher_design.py	4192	10979	84
+F	tests/test_native_theme.py	1567	11065	36
+F	tests/test_popup_geometry.py	2885	11103	54
+F	tests/test_qa_visual.py	10549	11159	217
+F	tests/test_ui_bootstrap_contract.py	1103	11378	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -2836,6 +2836,37 @@ struct CalendarOverlay {
 }
 
 impl CalendarOverlay {
+    /// The single WebKit layer-shell window has different geometry depending
+    /// on the active widget. With no edge anchors, wlr-layer-shell centers
+    /// the launcher's fixed-size surface on its output.
+    fn position_for(&self, kind: Surface) {
+        let centered = kind == Surface::Launcher;
+
+        // Reset margins before removing anchors. Margins only belong to
+        // anchored edges, so stale top/right values cannot leak into the
+        // centered launcher (or trigger a compositor protocol error).
+        self.window.set_margin(Edge::Top, 0);
+        self.window.set_margin(Edge::Right, 0);
+        self.window.set_margin(Edge::Bottom, 0);
+        self.window.set_margin(Edge::Left, 0);
+        self.window.set_anchor(Edge::Top, !centered);
+        self.window.set_anchor(Edge::Right, !centered);
+        self.window.set_anchor(Edge::Bottom, false);
+        self.window.set_anchor(Edge::Left, false);
+
+        if centered {
+            // Ignore the bar's reserved top zone to center in the entire
+            // output, rather than the usable area below the bar.
+            self.window.set_exclusive_zone(-1);
+        } else {
+            // Calendar and System keep their existing top-right placement.
+            self.window.set_exclusive_zone(0);
+            self.window
+                .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
+            self.window.set_margin(Edge::Right, 12);
+        }
+    }
+
     fn hide(&self) {
         self.requested.set(false);
         if let Some(model) = self.system.borrow().as_ref() {
@@ -2877,6 +2908,7 @@ impl CalendarOverlay {
                 model.set_processes_active(false);
             }
         }
+        self.position_for(kind);
         self.active.set(Some(kind));
         // The launcher needs reliable keyboard focus for type-to-search;
         // other popups preserve their former on-demand keyboard behavior.
@@ -6290,7 +6322,12 @@ bridge, not a second UI component framework.
 
 The top bar's 42 px exclusive zone **cannot contain popovers**. The Calendar, System Monitor and Launcher share **one** non-exclusive GTK
 layer-shell window and prewarmed WebKit view. At most one Svelte widget is
-mounted at a time; the rest own no live timers or DOM. The browser cannot create an ordinary
+mounted at a time; the rest own no live timers or DOM. The Launcher
+clears all Wayland layer-shell anchors and uses exclusive zone -1 so the
+compositor centers it on the full output. Calendar and System Monitor
+restore the top/right anchors, 25px top margin, 12px right margin and
+exclusive zone 0 when selected. The same GTK window and WebKit view
+survive these repositionings. The browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 
 ## Migration, in small reviewable steps
@@ -11074,6 +11111,27 @@ MONITOR = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
 
 
 class PopupGeometryTests(unittest.TestCase):
+    def test_launcher_is_centered_without_affecting_other_widgets(self):
+        self.assertIn("fn position_for(&self, kind: Surface)", CALENDAR)
+        self.assertIn("let centered = kind == Surface::Launcher;", CALENDAR)
+        self.assertIn("self.position_for(kind);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Top, !centered);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Right, !centered);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Bottom, false);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Left, false);", CALENDAR)
+        self.assertIn("self.window.set_exclusive_zone(-1);", CALENDAR)
+        self.assertIn("self.window.set_exclusive_zone(0);", CALENDAR)
+        self.assertIn("self.window.set_margin(Edge::Top, 0);", CALENDAR)
+        self.assertIn("self.window.set_margin(Edge::Right, 0);", CALENDAR)
+        self.assertIn("self.window.set_margin(Edge::Right, 12);", CALENDAR)
+        self.assertIn(
+            "set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN)",
+            CALENDAR,
+        )
+        # The shared layer-shell window and WebKit renderer stay in place.
+        self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", CALENDAR)
+        self.assertNotIn("window.close()", CALENDAR)
+
     def test_half_margin_and_monitor_relative_height(self):
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", HELPERS)
         self.assertIn("i64::from(output_height.max(1)) * 7 / 10", HELPERS)
