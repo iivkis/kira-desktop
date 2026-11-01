@@ -22,11 +22,12 @@ struct CalendarOverlay {
     window: gtk::ApplicationWindow,
     view: webkit6::WebView,
     document: String,
-    ready: Cell<bool>,
+    host_ready: Cell<bool>,
+    widget_ready: Cell<bool>,
     requested: Cell<bool>,
     revealed: Cell<bool>,
     paint_pending: Cell<bool>,
-    generation: Cell<u64>,
+    generation: Cell<u32>,
     was_active: Cell<bool>,
     open_started: Cell<Option<Instant>>,
 }
@@ -34,24 +35,39 @@ struct CalendarOverlay {
 impl CalendarOverlay {
     fn hide(&self) {
         self.requested.set(false);
+        self.widget_ready.set(false);
         self.revealed.set(false);
         self.paint_pending.set(false);
+        self.open_started.take();
+        // Tear down the Svelte component on hide, preserving only the
+        // warm WebKit host. The JS host serializes rapid hide/show events.
+        if self.host_ready.get() {
+            self.view.evaluate_javascript(
+                "window.dispatchEvent(new Event('kira:calendar:hide'));",
+                None, None, None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Calendar hide delivery failed: {error}");
+                    }
+                },
+            );
+        }
         self.window.set_visible(false);
-        // Do not call close(): that destroys the warm WebKit renderer.
     }
 
     fn show(self: &Rc<Self>) {
         self.requested.set(true);
         self.revealed.set(false);
+        self.widget_ready.set(false);
         self.paint_pending.set(false);
         self.was_active.set(false);
         self.open_started.set(Some(Instant::now()));
-        self.generation.set(self.generation.get().wrapping_add(1));
+        self.generation.set(self.generation.get().wrapping_add(1).max(1));
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
         self.window.present();
-        self.request_paint();
+        self.request_mount();
 
         // A dead renderer should not leave an invisible focus-stealing popup.
         let generation = self.generation.get();
@@ -69,8 +85,27 @@ impl CalendarOverlay {
         });
     }
 
+    fn request_mount(&self) {
+        if !self.requested.get() || !self.host_ready.get() {
+            return;
+        }
+        let generation = self.generation.get();
+        // A narrow, number-only notification from GTK to the trusted JS host.
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:calendar:show', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script, None, None, None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: Calendar mount delivery failed: {error}");
+                }
+            },
+        );
+    }
+
     fn request_paint(&self) {
-        if !self.requested.get() || !self.ready.get() || self.paint_pending.replace(true) {
+        if !self.requested.get() || !self.widget_ready.get() || self.paint_pending.replace(true) {
             return;
         }
         let generation = self.generation.get();
@@ -96,9 +131,15 @@ impl CalendarOverlay {
 
     fn on_message(&self, message: &str) {
         match calendar_command(message) {
-            Some(UiCommand::Ready) => {
+            Some(UiCommand::HostReady) => {
+                self.host_ready.set(true);
+                self.request_mount();
+            }
+            Some(UiCommand::Mounted(generation))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
                 eprintln!("kira-shell: Svelte calendar DOM verified");
-                self.ready.set(true);
+                self.widget_ready.set(true);
                 self.request_paint();
             }
             Some(UiCommand::Painted(generation))
@@ -130,8 +171,9 @@ impl CalendarOverlay {
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
     Close,
-    Ready,
-    Painted(u64),
+    HostReady,
+    Mounted(u32),
+    Painted(u32),
     CopyDate(&'a str),
 }
 
@@ -153,12 +195,17 @@ fn valid_date(year: i32, month: u8, day: u8) -> bool {
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     match message {
         "close" => return Some(UiCommand::Close),
-        "ready" => return Some(UiCommand::Ready),
+        "host-ready" => return Some(UiCommand::HostReady),
         _ => {}
     }
+    if let Some(value) = message.strip_prefix("mounted:") {
+        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+            return None;
+        }
+        return value.parse().ok().map(UiCommand::Mounted);
+    }
     if let Some(value) = message.strip_prefix("painted:") {
-        // Ignore arbitrary strings or oversized/noncanonical frame numbers.
-        if value.is_empty() || value.len() > 20 || !value.bytes().all(|b| b.is_ascii_digit()) {
+        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
             return None;
         }
         return value.parse().ok().map(UiCommand::Painted);
@@ -218,7 +265,8 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         window: window.clone(),
         view: view.clone(),
         document,
-        ready: Cell::new(false),
+        host_ready: Cell::new(false),
+        widget_ready: Cell::new(false),
         requested: Cell::new(false),
         revealed: Cell::new(false),
         paint_pending: Cell::new(false),
@@ -243,7 +291,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     view.connect_load_failed(move |_, event, uri, error| {
         eprintln!("kira-shell: Calendar WebKit load failed ({event:?}) for {uri}: {error}");
         if let Some(state) = weak.upgrade() {
-            state.ready.set(false);
+            state.host_ready.set(false);
             state.hide();
         }
         false
@@ -252,7 +300,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     view.connect_web_process_terminated(move |_, reason| {
         eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
         if let Some(state) = weak.upgrade() {
-            state.ready.set(false);
+            state.host_ready.set(false);
             state.hide();
             state.view.load_html(&state.document, None);
         }
@@ -269,8 +317,8 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         }
     });
 
-    // Load once at startup with no visible layer-shell surface. GTK will map
-    // and paint it only on demand, preserving the Svelte component in memory.
+    // Load WebKit once; only the lightweight JS host survives between
+    // shows. The Calendar component, timer and DOM are unmounted on hide.
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
     overlay
@@ -335,6 +383,7 @@ mod tests {
             "painted:2;exit",
             "painted:-1",
             "painted:18446744073709551616",
+            "mounted:", "mounted:abc", "mounted:4294967296",
             "copy:",
             "copy:2026-02-30",
             "copy:1900-02-29",
@@ -349,7 +398,8 @@ mod tests {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
         assert_eq!(calendar_command("close"), Some(UiCommand::Close));
-        assert_eq!(calendar_command("ready"), Some(UiCommand::Ready));
+        assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
+        assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
             calendar_command("copy:2024-02-29"),
