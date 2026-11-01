@@ -6,6 +6,12 @@ on:
       - 'frontend/**'
       - 'crates/kira-shell/src/calendar.rs'
       - '.github/workflows/overlay-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'crates/kira-shell/src/calendar.rs'
+      - '.github/workflows/overlay-smoke.yml'
   workflow_dispatch:
 
 permissions:
