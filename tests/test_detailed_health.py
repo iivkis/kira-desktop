@@ -23,6 +23,8 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('set_exclusive_zone(0)', RUST)
         self.assertIn('set_anchor(Edge::Top, true)', RUST)
         self.assertIn('set_anchor(Edge::Right, true)', RUST)
+        self.assertIn('crate::native_ui::configure_popup(&window, &scroll, 408, 600)', RUST)
+        self.assertIn('crate::native_ui::POPUP_TOP_MARGIN', RUST)
         self.assertIn('kira:system-metrics', HOST)
         self.assertIn('onSystemMetrics(', APP)
         self.assertIn('stopMetrics();', APP)
@@ -50,6 +52,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('button.kira-system-copy', CSS)
         self.assertNotIn('@define-color', CSS)
         self.assertNotIn('box-shadow:', CSS)
+        self.assertIn('kira-process-header-active', CSS)
 
     def test_panel_and_existing_overlays_mutually_exclusive(self):
         launcher = (ROOT / "crates/kira-shell/src/launcher.rs").read_text()
@@ -78,6 +81,12 @@ class ProcessesTabContractTests(unittest.TestCase):
         self.assertIn('Sort::Cpu', page)
         self.assertIn('Sort::Memory', page)
         self.assertIn('Sort::Pid', page)
+        self.assertIn('Sort::Name', page)
+        self.assertIn('fn compare_rows(', page)
+        self.assertIn('fn clicked(self, field: Sort)', page)
+        self.assertIn('fn each_column_sorts_both_directions()', page)
+        self.assertIn('fn missing_metrics_are_last_in_both_directions()', page)
+        self.assertNotIn('sort_controls', page)
         self.assertIn('VISIBLE_ROWS: usize = 36', page)
         self.assertIn('ProcessSampler::default()', page)
         self.assertIn('std::thread::spawn', page)
@@ -93,6 +102,6 @@ class ProcessesTabContractTests(unittest.TestCase):
     def test_visual_style_uses_shared_palette_without_framed_notebook(self):
         for selector in ('.kira-system-tabs', 'button.kira-system-tab',
                          '.kira-process-page', '.kira-process-row',
-                         'entry.kira-process-search', 'button.kira-process-sort'):
+                         'entry.kira-process-search', 'button.kira-process-header'):
             self.assertIn(selector, CSS)
         self.assertNotIn('@define-color', CSS)

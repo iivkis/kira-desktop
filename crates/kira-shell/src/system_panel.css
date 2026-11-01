@@ -99,24 +99,27 @@ entry.kira-process-search {
   font-size: 12px;
 }
 entry.kira-process-search:focus-within { border-color: @kira_orange; }
-.kira-process-caption, .kira-process-heading {
+.kira-process-heading {
   color: @kira_alabaster_grey;
   font-size: 10px;
   font-weight: 750;
 }
-button.kira-process-sort {
-  min-height: 27px;
-  padding: 0 7px;
+/* Column headings themselves sort ascending/descending; no extra toolbar. */
+button.kira-process-header {
+  min-width: 0;
+  min-height: 30px;
+  padding: 0;
   border: 0;
-  border-radius: 4px;
+  border-radius: 2px;
   background: transparent;
   color: @kira_alabaster_grey;
-  font-size: 10px;
-  font-weight: 700;
 }
-button.kira-process-sort:hover { background: rgba(0,0,0,0.35); color: @kira_white; }
-button.kira-process-sort.kira-process-sort-current { color: @kira_orange; }
-button.kira-process-sort:focus-visible {
+button.kira-process-header:hover { background: rgba(0,0,0,0.35); }
+button.kira-process-header:hover .kira-process-heading { color: @kira_white; }
+button.kira-process-header.kira-process-header-active .kira-process-heading {
+  color: @kira_orange;
+}
+button.kira-process-header:focus-visible {
   outline: 2px solid @kira_orange;
   outline-offset: -2px;
 }

@@ -67,5 +67,7 @@ jobs:
         run: nix develop --command cargo test --locked -p kira-shell system_metrics::tests -- --nocapture
       - name: Verify process parser, CPU accounting and PID reuse
         run: nix develop --command cargo test --locked -p kira-shell process_monitor::tests -- --nocapture
+      - name: Verify interactive process table sorting directions
+        run: nix develop --command cargo test --locked -p kira-shell process_page::tests -- --nocapture
       - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace
