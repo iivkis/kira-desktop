@@ -106,7 +106,9 @@ official visual language of Kira Desktop.
   monitor). The second tab reads readable tasks from Linux /proc only
   while active, displaying process name, PID, sampled CPU percentage
   relative to the entire host, and resident memory (RSS), with a search
-  field, CPU/RAM/PID sorting, an independently scrollable top-36 list
+  field, reversible sorting by clicking PROCESS/PID/CPU/RAM headers
+  (orange active state and direction arrow), an independently scrollable
+  top-36 list
   and honest counts. Samples update every two seconds on a worker.
   Initial CPU has no historical baseline and is displayed as a dash,
   and unreadable RSS/processes are not replaced with fake zero.
@@ -114,6 +116,14 @@ official visual language of Kira Desktop.
   A PID plus kernel start-time identity prevents reuse from attributing
   another process's CPU history. No new Core JSON-RPC methods or
   user-data collection are introduced.
+
+### Popup geometry
+
+Calendar and System Monitor share a **25 logical pixel** top margin,
+half the previous 50px. A single GTK helper caps each popup's
+scrollable viewport at **70% of the logical height of its monitor**,
+recalculating after the Wayland surface maps. Both remain non-exclusive
+overlays; Top Bar still reserves 42px.
 
 ### Geometry and motion
 

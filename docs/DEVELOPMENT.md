@@ -31,11 +31,17 @@ non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
+The native Calendar and System Monitor now use the shared
+`native_ui::configure_popup` helper to cap their scroll viewport at 70%
+of the logical monitor height; their top margin is 25px (previously 50).
+This keeps the bottom of each popup reachable even on short displays.
+
 The Process Monitor lives in two small Rust modules:
 `process_monitor.rs` parses /proc on a worker and computes CPU from
 consecutive total-host tick counters, keyed by (PID, start-time) to
 avoid reuse. `process_page.rs` renders the custom GTK Processes tab,
-search and sorting. No process termination, command lines, extra Core
+search and ascending/descending sorting by clicking the four
+table column headers, with no redundant SORT toolbar. No process termination, command lines, extra Core
 RPC or permanent process enumeration is included. The Nix CI executes
 both `system_metrics::tests` and `process_monitor::tests`.
 
