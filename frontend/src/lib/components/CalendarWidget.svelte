@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { calendarGridMotion, revealStagger, rollingClockDigit } from '../motion';
+  import { calendarGridMotion, clockJuggle, revealStagger, rollingClockDigit } from '../motion';
   import {
     clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -104,8 +104,12 @@
   <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
     <div class="min-w-0">
       <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
-      <time class="mt-1 flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
-        datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
+      <button type="button" use:clockJuggle data-calendar-clock-play
+        aria-label="Make the clock digits fly and return"
+        title="Click for a little clock chaos"
+        class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
+        <time class="flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
+          datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
         {#each clockParts as part, index (index)}
           {#if part.digit}
             <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
@@ -117,7 +121,8 @@
             <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
           {/if}
         {/each}
-      </time>
+        </time>
+      </button>
       <p class="mt-1 text-xs text-kira-muted">
         {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now)}
       </p>
