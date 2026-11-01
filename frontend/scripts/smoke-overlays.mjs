@@ -140,6 +140,9 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
       'const hoveredButton = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
       'const hoveredRect = hoveredButton?.getBoundingClientRect();' +
+      'document.documentElement.setAttribute("data-smoke-lens-enter", !!window.__kiraLensReacted);' +
+      'document.documentElement.setAttribute("data-smoke-lens-move", !!window.__kiraWarpChanged);' +
+      'document.documentElement.setAttribute("data-smoke-lens-seen", !!window.__kiraLensInitialRect);' +
       'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted && !!window.__kiraWarpChanged);' +
       'document.documentElement.setAttribute("data-smoke-warp-svg", !!document.querySelector("filter[id^=kira-temporal-warp] feTurbulence") && !!document.querySelector("filter[id^=kira-temporal-warp] feDisplacementMap"));' +
       'document.documentElement.setAttribute("data-smoke-warp-smooth", !!window.__kiraWarpSmooth);' +
