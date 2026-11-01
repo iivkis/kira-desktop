@@ -38,39 +38,49 @@ export interface SystemMetrics {
   battery_charging: boolean | null;
 }
 
-/** Event-driven system metrics: does not add browser polling or an RPC method. */
-export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () => void {
+/** Subscribe to a trusted native event after checking its payload shape. */
+function onNativeEvent<T>(
+  name: string,
+  isValid: (value: unknown) => value is T,
+  callback: (value: T) => void,
+): () => void {
   if (typeof window === 'undefined') return () => {};
   const listener = (event: Event) => {
-    const value = (event as CustomEvent<SystemMetrics>).detail;
-    const valid = (n: unknown) => n === null ||
-      (typeof n === 'number' && Number.isFinite(n) && n >= 0);
-    if (!value || typeof value !== 'object' ||
-        !valid(value.cpu_percent) || !valid(value.memory_total_kib) ||
-        !valid(value.memory_available_kib) || !valid(value.root_total_kib) ||
-        !valid(value.root_available_kib) ||
-        (value.cpu_percent !== null && value.cpu_percent > 100) ||
-        (value.battery_percent !== null && (!valid(value.battery_percent) || value.battery_percent > 100)) ||
-        ![null, true, false].includes(value.battery_charging)) return;
-    callback(value);
+    const value = (event as CustomEvent<unknown>).detail;
+    if (isValid(value)) callback(value);
   };
-  window.addEventListener('kira:system-metrics', listener);
-  return () => window.removeEventListener('kira:system-metrics', listener);
+  window.addEventListener(name, listener);
+  return () => window.removeEventListener(name, listener);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isSystemMetrics(value: unknown): value is SystemMetrics {
+  if (!isRecord(value)) return false;
+  const valid = (n: unknown) => n === null ||
+    (typeof n === 'number' && Number.isFinite(n) && n >= 0);
+  const percent = (n: unknown) => valid(n) && (n === null || (typeof n === 'number' && n <= 100));
+  return percent(value.cpu_percent) &&
+    valid(value.memory_total_kib) && valid(value.memory_available_kib) &&
+    valid(value.root_total_kib) && valid(value.root_available_kib) &&
+    percent(value.battery_percent) &&
+    (value.battery_charging === null || typeof value.battery_charging === 'boolean');
+}
+
+/** Event-driven system metrics: does not add browser polling or an RPC method. */
+export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () => void {
+  return onNativeEvent('kira:system-metrics', isSystemMetrics, callback);
 }
 
 /** Listen for typed workspace push events emitted by the native Shell.
  * No Niri or Core polling is performed here. Unsubscribe on Svelte unmount.
  */
 export function onWorkspaceUpdate(callback: (state: WorkspaceState) => void): () => void {
-  if (typeof window === 'undefined') return () => {};
-  const listener = (event: Event) => {
-    const state = (event as CustomEvent<WorkspaceState>).detail;
-    if (!state || typeof state.connected !== 'boolean' ||
-        !Array.isArray(state.workspaces)) return;
-    callback(state);
-  };
-  window.addEventListener('kira:workspaces', listener);
-  return () => window.removeEventListener('kira:workspaces', listener);
+  return onNativeEvent('kira:workspaces', (value): value is WorkspaceState =>
+    isRecord(value) && typeof value.connected === 'boolean' && Array.isArray(value.workspaces),
+  callback);
 }
 
 export interface UiConfig {
@@ -96,19 +106,15 @@ export const defaultUiConfig: UiConfig = {
 
 /** Subscribe to Core's validated KDL config snapshots, without polling. */
 export function onConfigUpdate(callback: (state: ConfigState) => void): () => void {
-  if (typeof window === 'undefined') return () => {};
-  const listener = (event: Event) => {
-    const state = (event as CustomEvent<ConfigState>).detail;
-    const cfg = state?.config;
-    if (!cfg || typeof cfg.compact !== 'boolean' ||
-        typeof cfg.title !== 'string' || typeof cfg.show_seconds !== 'boolean' ||
-        typeof cfg.show_names !== 'boolean' || typeof cfg.max_workspaces !== 'number' ||
-        !Number.isInteger(cfg.max_workspaces) || cfg.max_workspaces < 1 ||
-        cfg.max_workspaces > 32) return;
-    callback(state);
-  };
-  window.addEventListener('kira:config', listener);
-  return () => window.removeEventListener('kira:config', listener);
+  return onNativeEvent('kira:config', (value): value is ConfigState => {
+    if (!isRecord(value) || !isRecord(value.config)) return false;
+    const cfg = value.config;
+    return typeof cfg.compact === 'boolean' &&
+      typeof cfg.title === 'string' && typeof cfg.show_seconds === 'boolean' &&
+      typeof cfg.show_names === 'boolean' && typeof cfg.max_workspaces === 'number' &&
+      Number.isInteger(cfg.max_workspaces) && cfg.max_workspaces >= 1 &&
+      cfg.max_workspaces <= 32;
+  }, callback);
 }
 
 type Methods = {
