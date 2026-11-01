@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -52,6 +52,45 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
       'close', 'apps-request:8', 'launch:8:42',
     ]);
+  });
+
+  it('requests only bounded catalog icon IDs, never arbitrary paths', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(requestLauncherIcons(42, [0, 7, 1023])).toBe(true);
+    expect(requestLauncherIcons(42, [])).toBe(false);
+    expect(requestLauncherIcons(42, Array.from({ length: 17 }, (_, i) => i))).toBe(false);
+    expect(requestLauncherIcons(42, [1, 1])).toBe(false);
+    expect(requestLauncherIcons(0, [1])).toBe(false);
+    expect(requestLauncherIcons(42, [-1])).toBe(false);
+    expect(requestLauncherIcons(42, [1024])).toBe(false);
+    expect(requestLauncherIcons(42, [1.5])).toBe(false);
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual(['icons-request:42:0,7,1023']);
+  });
+
+  it('accepts image-only data URI batches and rejects paths, web URLs or oversized SVG', () => {
+    const handlers = new Map<string, EventListener>();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
+      removeEventListener: vi.fn(),
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onLauncherIcons(callback);
+    const send = (batch: unknown) => handlers.get('kira:launcher:icons')!({ detail: batch } as unknown as Event);
+    const valid = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==';
+    send({ icons: [{ id: 7, data_url: valid }, { id: 8, data_url: null }] });
+    expect(callback).toHaveBeenCalledOnce();
+    for (const invalid of ['file:///etc/passwd', 'https://example.com/icon.png',
+      'javascript:alert(1)', 'data:text/html;base64,PHNjcmlwdD4=',
+      'data:image/svg+xml;base64,' + 'A'.repeat(180_000)]) {
+      send({ icons: [{ id: 7, data_url: invalid }] });
+    }
+    send({ icons: [{ id: 1024, data_url: valid }] });
+    send({ icons: Array.from({ length: 17 }, (_, id) => ({ id, data_url: valid })) });
+    expect(callback).toHaveBeenCalledOnce();
+    stop();
   });
 
   it('validates launcher catalogs, errors and unsubscribes after hide', () => {
