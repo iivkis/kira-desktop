@@ -36,16 +36,45 @@ on:
 permissions:
   contents: read
 
+# A newer commit supersedes a previous build of the same branch.
+concurrency:
+  group: nix-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   package:
     name: Flake, nested Niri config and native Core/Shell package
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    env:
+      # The flake shellHook places the compiler cache under ~/.cache/kira-desktop.
+      SCCACHE_CACHE_SIZE: 2G
+      CARGO_INCREMENTAL: '0'
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      # Persist Nix store outputs, including Crane's compiled dependencies.
+      # Do not run Nix GC here: unrooted cargoArtifacts would be deleted
+      # before upload, making the cache useless for incremental Rust builds.
+      - name: Cache Nix store
+        id: nix-cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-v2-${{ runner.os }}-${{ hashFiles('flake.lock', 'Cargo.lock', 'Cargo.toml', 'crates/**/Cargo.toml', 'frontend/package-lock.json') }}
+          restore-prefixes-first-match: nix-v2-${{ runner.os }}-
+
+      # Cache the developer-shell Cargo check/test compiler outputs separately.
+      # Crane's sandboxed nix build is served by the Nix store cache above.
+      - name: Cache native Rust compiler outputs
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/kira-desktop/sccache
+          key: sccache-v1-${{ runner.os }}-${{ hashFiles('flake.lock', 'Cargo.lock') }}
+          restore-keys: |
+            sccache-v1-${{ runner.os }}-
+
       # Optional cache, disabled unless repo owner sets a cache name.
       # Uploads only from trusted pushes to main; PRs can read shared outputs.
       - name: Shared Nix cache (opt-in)
@@ -61,13 +90,9 @@ jobs:
         run: nix develop --command python3 scripts/dev_preview.py --validate-config
       - name: Build packaged Tailwind frontend and verify npm lock/hash first
         run: nix build .#frontend -L --show-trace
-      - name: Type-check native GTK Shell before release packaging
-        run: nix develop --command cargo check --locked -p kira-shell
-      - name: Run real Rust unit tests for Linux system metrics
-        run: nix develop --command cargo test --locked -p kira-shell system_metrics::tests -- --nocapture
-      - name: Verify process parser, CPU accounting and PID reuse
-        run: nix develop --command cargo test --locked -p kira-shell process_monitor::tests -- --nocapture
-      - name: Verify interactive process table sorting directions
-        run: nix develop --command cargo test --locked -p kira-shell process_page::tests -- --nocapture
+      # One compilation of the test profile also type-checks the native Shell.
+      # Running a separate cargo check first recompiles GTK/WebKit dependencies.
+      - name: Compile and run all native Shell tests once
+        run: nix develop --command cargo test --locked -p kira-shell -- --nocapture
       - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace
