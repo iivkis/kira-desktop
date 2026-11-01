@@ -131,6 +131,18 @@ To **enforce** the native job on protected branches, require the status check
 `Native Shell check` in the repository's branch protection/ruleset, alongside
 `Core + Svelte checks`.
 
+## IPC subscription liveness
+
+Core pushes workspace and validated KDL config updates immediately when they change.
+If nothing changes, it sends a read-only JSON-RPC heartbeat every **5 seconds**
+on each subscription using the same request id and the distinct
+`{"heartbeat":true}` result. Heartbeats do **not** repeat workspace/config
+snapshots or generate browser events. Shell's blocking IPC workers use a
+**15-second socket read timeout**: a connected but unresponsive Core causes
+the existing reconnect loop to run, mark workspaces offline, and retry. The
+last valid config is retained while reconnecting. The heartbeat is internal
+to the Core/Shell protocol, not part of the WebKit JS allowlist.
+
 ## Incremental and release build caching
 
 - **Local Rust development:** `nix develop` sets up persistent `sccache`
