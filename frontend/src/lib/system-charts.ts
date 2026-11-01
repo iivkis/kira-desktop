@@ -1,4 +1,4 @@
-/** Bounded real native telemetry for Apache ECharts (100ms CPU/RAM, 2s GPU).
+/** Bounded real native telemetry for Apache ECharts (500ms CPU/RAM, 2s GPU).
  * This module is intentionally DOM-independent so the data rules are testable.
  */
 import type { SystemMetrics, SystemPulse } from './sdk/core';
@@ -18,7 +18,7 @@ export interface TelemetryPoint {
 }
 
 export const MAX_TELEMETRY_POINTS = 30; // Legacy 2-second samples.
-export const MAX_PULSE_POINTS = 600; // 100ms * 600 = 60 seconds.
+export const MAX_PULSE_POINTS = 120; // 500ms * 120 = 60 seconds.
 
 export function gpuPeak(metrics: SystemMetrics): number | null {
   const values = metrics.gpus
@@ -54,9 +54,9 @@ export function appendTelemetry(
   return next.slice(-MAX_TELEMETRY_POINTS);
 }
 
-/** One real sample per native 100ms pulse. GPU is populated only on the
+/** One real sample per native 500ms pulse. GPU is populated only on the
  * next pulse after a genuine two-second GPU reading, never interpolated or
- * multiplied into twenty fictitious 100ms measurements.
+ * multiplied into twenty fictitious 500ms measurements.
  */
 export function appendPulse(
   history: readonly TelemetryPoint[],
