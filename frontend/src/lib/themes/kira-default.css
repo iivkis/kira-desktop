@@ -34,11 +34,6 @@
   --kira-radius-md: 10px;
   --kira-radius-lg: 14px;
 
-  /* Neo-brutalist construction: clear borders and hard, offset depth. */
-  --kira-border-strong: 2px;
-  --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
-  --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
-
   --kira-motion-fast: 120ms;
   --kira-motion-standard: 180ms;
   --kira-motion-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
