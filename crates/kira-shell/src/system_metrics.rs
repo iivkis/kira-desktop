@@ -51,7 +51,9 @@ pub fn percent_used(total: u64, available: u64) -> Option<u8> {
 }
 
 fn mem_value(text: &str, key: &str) -> Option<u64> {
-    let line = text.lines().find(|line| line.starts_with(key) && line.as_bytes().get(key.len()) == Some(&b':'))?;
+    let line = text
+        .lines()
+        .find(|line| line.starts_with(key) && line.as_bytes().get(key.len()) == Some(&b':'))?;
     line.split_whitespace().nth(1)?.parse().ok()
 }
 
@@ -68,7 +70,10 @@ fn cpu_ticks(text: &str) -> Option<(u64, u64)> {
     if tokens.next()? != "cpu" {
         return None;
     }
-    let ticks = tokens.map(str::parse::<u64>).collect::<Result<Vec<_>, _>>().ok()?;
+    let ticks = tokens
+        .map(str::parse::<u64>)
+        .collect::<Result<Vec<_>, _>>()
+        .ok()?;
     if ticks.len() < 4 {
         return None;
     }
@@ -83,7 +88,11 @@ fn cpu_usage(previous: (u64, u64), next: (u64, u64)) -> Option<u8> {
     if total == 0 || idle > total {
         return None;
     }
-    Some((((total - idle) as f64 / total as f64) * 100.0).round().clamp(0.0, 100.0) as u8)
+    Some(
+        (((total - idle) as f64 / total as f64) * 100.0)
+            .round()
+            .clamp(0.0, 100.0) as u8,
+    )
 }
 
 fn parse_load(text: &str) -> Option<[f64; 3]> {
@@ -93,7 +102,9 @@ fn parse_load(text: &str) -> Option<[f64; 3]> {
         words.next()?.parse::<f64>().ok()?,
         words.next()?.parse::<f64>().ok()?,
     ];
-    vals.iter().all(|v| v.is_finite() && *v >= 0.0).then_some(vals)
+    vals.iter()
+        .all(|v| v.is_finite() && *v >= 0.0)
+        .then_some(vals)
 }
 
 fn battery() -> (Option<u8>, Option<bool>) {
@@ -107,14 +118,16 @@ fn battery() -> (Option<u8>, Option<bool>) {
             continue;
         }
         let percentage = fs::read_to_string(path.join("capacity"))
-            .ok().and_then(|s| s.trim().parse::<u8>().ok()).filter(|v| *v <= 100);
-        let charging = fs::read_to_string(path.join("status")).ok().and_then(|status| {
-            match status.trim() {
+            .ok()
+            .and_then(|s| s.trim().parse::<u8>().ok())
+            .filter(|v| *v <= 100);
+        let charging = fs::read_to_string(path.join("status"))
+            .ok()
+            .and_then(|status| match status.trim() {
                 "Charging" | "Full" | "Not charging" => Some(true),
                 "Discharging" => Some(false),
                 _ => None,
-            }
-        });
+            });
         return (percentage, charging);
     }
     (None, None)
@@ -141,7 +154,9 @@ impl Sampler {
             s.load = parse_load(&text);
         }
         if let Ok(text) = fs::read_to_string("/proc/uptime") {
-            s.uptime_seconds = text.split_whitespace().next()
+            s.uptime_seconds = text
+                .split_whitespace()
+                .next()
                 .and_then(|value| value.parse::<f64>().ok())
                 .filter(|v| v.is_finite() && *v >= 0.0)
                 .map(|v| Duration::from_secs_f64(v).as_secs());
@@ -170,7 +185,10 @@ mod tests {
         assert_eq!(percent_used(0, 0), None);
         assert_eq!(percent_used(100, 101), None);
         let mut s = Snapshot::default();
-        parse_memory("MemTotal: 16384 kB\nMemAvailable: 4096 kB\nSwapTotal: 1024 kB\nSwapFree: 512 kB\n", &mut s);
+        parse_memory(
+            "MemTotal: 16384 kB\nMemAvailable: 4096 kB\nSwapTotal: 1024 kB\nSwapFree: 512 kB\n",
+            &mut s,
+        );
         assert_eq!(s.memory_percent(), Some(75));
         assert_eq!(s.swap_free_kib, Some(512));
     }
@@ -186,7 +204,10 @@ mod tests {
     #[test]
     fn unavailable_or_malformed_data_is_unknown() {
         assert_eq!(parse_load("bad data"), None);
-        assert_eq!(parse_load("0.23 1.02 2.33 4/5 111"), Some([0.23, 1.02, 2.33]));
+        assert_eq!(
+            parse_load("0.23 1.02 2.33 4/5 111"),
+            Some([0.23, 1.02, 2.33])
+        );
         assert_eq!(cpu_ticks("cpu 10 foo"), None);
         assert_eq!(mem_value("MemTotal: x kB", "MemTotal"), None);
     }

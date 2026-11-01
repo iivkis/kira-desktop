@@ -52,10 +52,12 @@ fn percentage(line: &Metric, percent: Option<u8>, detail: String) {
 
 pub fn disk() -> Option<(u64, u64)> {
     let file = gtk::gio::File::for_path("/");
-    let info = file.query_filesystem_info(
-        "filesystem::size,filesystem::free",
-        None::<&gtk::gio::Cancellable>,
-    ).ok()?;
+    let info = file
+        .query_filesystem_info(
+            "filesystem::size,filesystem::free",
+            None::<&gtk::gio::Cancellable>,
+        )
+        .ok()?;
     let total = info.attribute_uint64("filesystem::size") / 1024;
     let free = info.attribute_uint64("filesystem::free") / 1024;
     (total > 0 && free <= total).then_some((total, free))
@@ -75,7 +77,12 @@ fn uptime_label(seconds: Option<u64>) -> String {
     }
 }
 
-fn summary(core: bool, niri: bool, snapshot: &Snapshot, root: Option<(u64, u64)>) -> (&'static str, &'static str) {
+fn summary(
+    core: bool,
+    niri: bool,
+    snapshot: &Snapshot,
+    root: Option<(u64, u64)>,
+) -> (&'static str, &'static str) {
     if !core {
         return ("CORE OFFLINE", "kira-system-error");
     }
@@ -91,8 +98,7 @@ fn summary(core: bool, niri: bool, snapshot: &Snapshot, root: Option<(u64, u64)>
     if snapshot.memory_percent().is_some_and(|p| p >= 90) {
         return ("MEMORY PRESSURE", "kira-system-warning");
     }
-    if snapshot.battery_percent.is_some_and(|b| b <= 15)
-        && snapshot.battery_charging == Some(false)
+    if snapshot.battery_percent.is_some_and(|b| b <= 15) && snapshot.battery_charging == Some(false)
     {
         return ("LOW BATTERY", "kira-system-warning");
     }
@@ -124,58 +130,103 @@ impl Panel {
         let root = snapshot.root_total_kib.zip(snapshot.root_available_kib);
         let (headline, class) = summary(core, niri, snapshot, root);
         self.state.set_text(headline);
-        for state in ["kira-system-ready", "kira-system-error", "kira-system-warning", "kira-system-pending"] {
+        for state in [
+            "kira-system-ready",
+            "kira-system-error",
+            "kira-system-warning",
+            "kira-system-pending",
+        ] {
             self.state.remove_css_class(state);
         }
         self.state.add_css_class(class);
-        self.core.set_text(if core { "CONNECTED" } else { "OFFLINE" });
-        self.niri.set_text(if niri { "CONNECTED" } else { "DISCONNECTED" });
+        self.core
+            .set_text(if core { "CONNECTED" } else { "OFFLINE" });
+        self.niri
+            .set_text(if niri { "CONNECTED" } else { "DISCONNECTED" });
 
         let cpu = snapshot.cpu_percent;
-        percentage(&self.cpu, cpu, cpu.map_or("MEASURING".into(), |v| format!("{v}%")));
+        percentage(
+            &self.cpu,
+            cpu,
+            cpu.map_or("MEASURING".into(), |v| format!("{v}%")),
+        );
         let mem = snapshot.memory_total_kib.zip(snapshot.memory_available_kib);
-        percentage(&self.memory, snapshot.memory_percent(),
-            mem.map_or("UNAVAILABLE".into(), |(total, avail)| format!(
-                "{} / {}",
-                bytes_label(total.saturating_sub(avail)),
-                bytes_label(total),
-            )));
+        percentage(
+            &self.memory,
+            snapshot.memory_percent(),
+            mem.map_or("UNAVAILABLE".into(), |(total, avail)| {
+                format!(
+                    "{} / {}",
+                    bytes_label(total.saturating_sub(avail)),
+                    bytes_label(total),
+                )
+            }),
+        );
         let swap = snapshot.swap_total_kib.zip(snapshot.swap_free_kib);
         let swap_percent = swap.and_then(|(total, free)| percent_used(total, free));
-        percentage(&self.swap, swap_percent, swap.map_or("UNAVAILABLE".into(), |(total, free)| {
-            if total == 0 {
-                "NOT CONFIGURED".into()
-            } else {
-                format!("{} / {}", bytes_label(total.saturating_sub(free)), bytes_label(total))
-            }
-        }));
+        percentage(
+            &self.swap,
+            swap_percent,
+            swap.map_or("UNAVAILABLE".into(), |(total, free)| {
+                if total == 0 {
+                    "NOT CONFIGURED".into()
+                } else {
+                    format!(
+                        "{} / {}",
+                        bytes_label(total.saturating_sub(free)),
+                        bytes_label(total)
+                    )
+                }
+            }),
+        );
         let disk_percent = root.and_then(|(total, free)| percent_used(total, free));
-        percentage(&self.storage, disk_percent, root.map_or("UNAVAILABLE".into(), |(total, free)| {
-            format!("{} / {}", bytes_label(total.saturating_sub(free)), bytes_label(total))
-        }));
-        self.load.set_text(&snapshot.load.map_or("UNAVAILABLE".into(), |v| {
-            format!("{:.2} / {:.2} / {:.2}", v[0], v[1], v[2])
-        }));
+        percentage(
+            &self.storage,
+            disk_percent,
+            root.map_or("UNAVAILABLE".into(), |(total, free)| {
+                format!(
+                    "{} / {}",
+                    bytes_label(total.saturating_sub(free)),
+                    bytes_label(total)
+                )
+            }),
+        );
+        self.load
+            .set_text(&snapshot.load.map_or("UNAVAILABLE".into(), |v| {
+                format!("{:.2} / {:.2} / {:.2}", v[0], v[1], v[2])
+            }));
         self.uptime.set_text(&uptime_label(snapshot.uptime_seconds));
-        self.battery.set_text(&snapshot.battery_percent.map_or("NOT DETECTED".into(), |percent| {
-            let state = match snapshot.battery_charging {
-                Some(true) => " / AC OR CHARGING",
-                Some(false) => " / DISCHARGING",
-                None => "",
-            };
-            format!("{percent}%{state}")
-        }));
+        self.battery.set_text(
+            &snapshot
+                .battery_percent
+                .map_or("NOT DETECTED".into(), |percent| {
+                    let state = match snapshot.battery_charging {
+                        Some(true) => " / AC OR CHARGING",
+                        Some(false) => " / DISCHARGING",
+                        None => "",
+                    };
+                    format!("{percent}%{state}")
+                }),
+        );
         if let Ok(now) = gtk::glib::DateTime::now_local() {
             self.updated.set_text(&format!(
                 "LIVE / {}",
-                now.format("%H:%M:%S").map(|v| v.to_string()).unwrap_or_default()
+                now.format("%H:%M:%S")
+                    .map(|v| v.to_string())
+                    .unwrap_or_default()
             ));
         }
         format!(
             "KIRA SYSTEM / {headline}\nCore: {}\nNiri: {}\nCPU: {}\nMemory: {}\nSwap: {}\nStorage /: {}\nLoad 1/5/15: {}\nUptime: {}\nBattery: {}",
-            self.core.text(), self.niri.text(), self.cpu.value.text(),
-            self.memory.value.text(), self.swap.value.text(),
-            self.storage.value.text(), self.load.text(), self.uptime.text(), self.battery.text(),
+            self.core.text(),
+            self.niri.text(),
+            self.cpu.value.text(),
+            self.memory.value.text(),
+            self.swap.value.text(),
+            self.storage.value.text(),
+            self.load.text(),
+            self.uptime.text(),
+            self.battery.text(),
         )
     }
 }
@@ -266,7 +317,10 @@ pub fn toggle(
 
     let workbench = gtk::Box::new(gtk::Orientation::Vertical, 10);
     workbench.add_css_class("kira-system-workbench");
-    workbench.append(&label("RESOURCES  /  LIVE TELEMETRY", "kira-system-section"));
+    workbench.append(&label(
+        "RESOURCES  /  LIVE TELEMETRY",
+        "kira-system-section",
+    ));
     let cpu = metric(&workbench, "CPU / ALL CORES");
     let memory = metric(&workbench, "MEMORY / RAM");
     let swap = metric(&workbench, "SWAP");
@@ -275,11 +329,18 @@ pub fn toggle(
 
     let details = gtk::Box::new(gtk::Orientation::Vertical, 8);
     details.add_css_class("kira-system-details");
-    details.append(&label("OPERATING SYSTEM  /  CONTEXT", "kira-system-eyebrow"));
+    details.append(&label(
+        "OPERATING SYSTEM  /  CONTEXT",
+        "kira-system-eyebrow",
+    ));
     let uptime = label("", "kira-system-value");
     let load = label("", "kira-system-value");
     let battery = label("", "kira-system-value");
-    for (name, value) in [("UPTIME", &uptime), ("LOAD / 1 5 15", &load), ("POWER", &battery)] {
+    for (name, value) in [
+        ("UPTIME", &uptime),
+        ("LOAD / 1 5 15", &load),
+        ("POWER", &battery),
+    ] {
         let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
         let heading = label(name, "kira-system-key");
         heading.set_hexpand(true);
@@ -300,11 +361,24 @@ pub fn toggle(
     card.append(&details);
 
     let panel = Rc::new(Panel {
-        state, core: core_label, niri: niri_label, cpu, memory, swap, storage,
-        battery, load, uptime, updated,
+        state,
+        core: core_label,
+        niri: niri_label,
+        cpu,
+        memory,
+        swap,
+        storage,
+        battery,
+        load,
+        uptime,
+        updated,
     });
     let report = Rc::new(RefCell::new(String::new()));
-    *report.borrow_mut() = panel.refresh(&current.borrow(), core_connected.get(), niri_connected.get());
+    *report.borrow_mut() = panel.refresh(
+        &current.borrow(),
+        core_connected.get(),
+        niri_connected.get(),
+    );
     let copy_report = report.clone();
     let copy_button = copy.clone();
     copy.connect_clicked(move |_| {
@@ -323,7 +397,11 @@ pub fn toggle(
         let Some(panel) = weak_panel.upgrade() else {
             return gtk::glib::ControlFlow::Break;
         };
-        *report.borrow_mut() = panel.refresh(&current.borrow(), core_connected.get(), niri_connected.get());
+        *report.borrow_mut() = panel.refresh(
+            &current.borrow(),
+            core_connected.get(),
+            niri_connected.get(),
+        );
         copy.set_label("COPY REPORT");
         gtk::glib::ControlFlow::Continue
     });

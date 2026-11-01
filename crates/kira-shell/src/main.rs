@@ -9,8 +9,8 @@ mod system_panel;
 mod ui_assets;
 use std::cell::{Cell, RefCell};
 use std::env;
-use std::rc::Rc;
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 use std::sync::mpsc;
 use std::time::Duration;
 
