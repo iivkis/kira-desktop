@@ -8,7 +8,7 @@
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
   import { percentUsedPrecise } from '../system-model';
   import {
-    activityAxis, appendPulse, gpuPeak,
+    activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak,
     type TelemetryPoint,
   } from '../system-charts';
 
@@ -64,6 +64,8 @@
       ],
     }, { lazyUpdate: true });
 
+    const syncedHistory = alignedActivity(history);
+    const timeDomain = activityTimeDomain(syncedHistory);
     const panels: { field: 'cpu' | 'ram' | 'gpu'; name: string; color: string }[] = [
       { field: 'cpu', name: 'CPU ACTIVITY', color: accent },
       { field: 'ram', name: 'MEMORY ACTIVITY', color: white },
@@ -82,13 +84,13 @@
       })),
       xAxis: panels.map((panel, i) => ({
         id: 'x-' + panel.field,
-        type: 'category' as const, gridIndex: i, boundaryGap: false,
-        data: history.map(point => String(point.time)),
+        type: 'time' as const, gridIndex: i, boundaryGap: false,
+        min: timeDomain.min, max: timeDomain.max,
         axisLine: { show: false }, axisTick: { show: false },
         axisLabel: { show: false }, splitLine: { show: false },
       })),
       yAxis: panels.map((panel, i) => {
-        const axis = activityAxis(history, panel.field);
+        const axis = activityAxis(syncedHistory, panel.field);
         return {
           id: 'y-' + panel.field,
           type: 'value' as const, gridIndex: i,
@@ -106,9 +108,9 @@
         name: panel.name, type: 'line' as const,
         xAxisIndex: i, yAxisIndex: i,
         smooth: 0.18, silent: true,
-        showSymbol: history.length < 3, symbolSize: 5,
+        showSymbol: syncedHistory.length < 3, symbolSize: 5,
         connectNulls: panel.field === 'gpu',
-        data: history.map(point => point[panel.field]),
+        data: activitySeries(syncedHistory, panel.field),
         lineStyle: { color: panel.color, width: 2.5 },
         itemStyle: { color: panel.color },
         areaStyle: { color: panel.color, opacity: panel.field === 'cpu' ? 0.18 : 0.09 },
