@@ -285,10 +285,15 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
-                if self.launcher.borrow().is_none() {
+                let needs_catalog = self.launcher.borrow().is_none();
+                if needs_catalog {
                     *self.launcher.borrow_mut() = Some(crate::launcher::Catalog::discover());
                 }
-                let data = self.launcher.borrow().as_ref().map(|catalog| catalog.as_json());
+                let data = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.as_json());
                 if let Some(payload) = data {
                     self.dispatch_launcher("kira:launcher:apps", payload);
                 }
@@ -299,7 +304,11 @@ impl CalendarOverlay {
                     && self.active.get() == Some(Surface::Launcher)
                     && self.generation.get() == generation =>
             {
-                let result = self.launcher.borrow().as_ref().map(|catalog| catalog.launch(id));
+                let result = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.launch(id));
                 match result {
                     Some(Ok(())) => self.hide(),
                     Some(Err(error)) => {
@@ -446,13 +455,20 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
             return None;
         }
-        return value.parse::<u32>().ok().filter(|v| *v > 0).map(UiCommand::LauncherCatalog);
+        return value
+            .parse::<u32>()
+            .ok()
+            .filter(|v| *v > 0)
+            .map(UiCommand::LauncherCatalog);
     }
     if let Some(value) = message.strip_prefix("launch:") {
         let (generation, id) = value.split_once(':')?;
-        if generation.is_empty() || generation.len() > 10 ||
-            !generation.bytes().all(|b| b.is_ascii_digit()) ||
-            id.is_empty() || id.len() > 4 || !id.bytes().all(|b| b.is_ascii_digit())
+        if generation.is_empty()
+            || generation.len() > 10
+            || !generation.bytes().all(|b| b.is_ascii_digit())
+            || id.is_empty()
+            || id.len() > 4
+            || !id.bytes().all(|b| b.is_ascii_digit())
         {
             return None;
         }
@@ -740,8 +756,14 @@ mod tests {
             Some(UiCommand::ProcessesTab(false))
         );
         assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
-        assert_eq!(calendar_command("apps-request:12"), Some(UiCommand::LauncherCatalog(12)));
-        assert_eq!(calendar_command("launch:12:42"), Some(UiCommand::LaunchApp(12, 42)));
+        assert_eq!(
+            calendar_command("apps-request:12"),
+            Some(UiCommand::LauncherCatalog(12))
+        );
+        assert_eq!(
+            calendar_command("launch:12:42"),
+            Some(UiCommand::LaunchApp(12, 42))
+        );
         assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
