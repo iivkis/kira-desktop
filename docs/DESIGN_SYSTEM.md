@@ -134,6 +134,34 @@ official visual language of Kira Desktop.
   another process's CPU history. No new Core JSON-RPC methods or
   user-data collection are introduced.
 
+### TENET Motion System · обязательный закон анимаций
+
+**Единая обязательная спецификация:** [TENET Motion System](TENET_MOTION.md).
+Все новые и изменённые анимации виджетов, Top Bar, Calendar, Launcher,
+System Monitor и будущих поверхностей подчиняются этим правилам, независимо
+от того, насколько эффект прост или декоративен.
+
+- **Reverse Causality:** инвертированный след может предшествовать визуальной
+  причине, но не реальному нажатию/действию.
+- **Dual Time Flow:** прямой и обратный потоки сосуществуют на единой временной
+  шкале и встречаются в конкретной точке контакта; инвертировать всю сцену
+  целиком не требуется и обычно нежелательно.
+- **Physical Continuity:** инвертируется сохранённая история движения,
+  включая easing, отскоки, вращение и вторичные эффекты, а не только знак
+  смещения или CSS direction.
+- **Temporal Memory:** траектории, исходные состояния и случайные параметры
+  запоминаются для точного воспроизведения *одного* эпизода вперёд и назад.
+- **Causal Consistency:** после отмены, повторного клика и закрытия эффекты
+  восстанавливают точную геометрию; метрики, время, фокус и действия честны.
+
+**GSAP** исполняет JS-motion; **Apache ECharts** остаётся для настоящих
+данных и графиков. Обычные функциональные микроанимации могут оставаться
+FORWARD и должны соблюдать физическую непрерывность, доступность и cleanup.
+Рекомендуемый баланс 70–80% обычных движений и немного выразительных
+инверсий — *ориентир*, а не обязательная доля в каждом виджете.
+Проверять reduced motion, прерывания и точку контакта; не вводить
+фальшивую телеметрию, фиктивное время и блокировку пользовательских действий.
+
 ### Charting and motion libraries (project standard)
 
 **Apache ECharts** is the only supported chart engine for quantitative
@@ -145,8 +173,9 @@ A missing/unsupported sensor is `UNAVAILABLE`, never a zero-shaped graph.
 Visible text and labels supplement SVG for accessibility.
 
 **GSAP** is the standard for interface animations, including staggered
-tab entrances and gentle reading updates. Animations are short, scoped to
-their own Svelte widget and fully disabled under
+tab entrances and gentle reading updates. Animations follow
+[TENET Motion System](TENET_MOTION.md), stay scoped to their own Svelte
+widget, and are disabled under
 `prefers-reduced-motion: reduce`. On widget unmount, dispose ECharts
 instances and kill GSAP tweens/observers. No canvas/WebGL loops, network
 requests or detached subscriptions may survive a closed overlay.
