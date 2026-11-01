@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3862
+index_bytes=3871
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	02b0925c3b1b5e15d0133039f1ca7f3416ec893d
+C	54f8c96e5515be013cf0a9e0fd9b69666c1d4f86
 F	.cargo/config.toml	98	109	3
 F	.github/workflows/ci.yml	1467	114	46
 F	.github/workflows/nix.yml	1258	162	38
@@ -35,68 +35,68 @@ F	crates/kira-ipc/Cargo.toml	170	2177	9
 F	crates/kira-ipc/src/client.rs	10376	2188	277
 F	crates/kira-ipc/src/lib.rs	9053	2467	302
 F	crates/kira-shell/Cargo.toml	297	2771	12
-F	crates/kira-shell/src/calendar.rs	33667	2785	915
-F	crates/kira-shell/src/launcher.rs	2568	3702	81
-F	crates/kira-shell/src/main.rs	17601	3785	414
-F	crates/kira-shell/src/native_ui.rs	2857	4201	73
-F	crates/kira-shell/src/process_monitor.rs	6245	4276	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4480	214
-F	crates/kira-shell/src/system_panel.rs	7948	4696	226
-F	docs/CONFIG.md	5801	4924	125
-F	docs/DESIGN_SYSTEM.md	15048	5051	276
-F	docs/DEVELOPMENT.md	26566	5329	531
-F	docs/QA_VISUAL.md	12284	5862	149
-F	docs/SPECIFICATION.md	28960	6013	421
-F	docs/UI_ARCHITECTURE.md	6685	6436	106
-F	docs/VISUAL_REVIEW.md	9754	6544	84
-F	flake.nix	2651	6630	76
-F	frontend/index.html	2737	6708	66
-F	frontend/package.json	650	6776	23
-F	frontend/scripts/inline-assets.mjs	4457	6801	103
-F	frontend/scripts/inline-assets.test.mjs	4645	6906	106
-F	frontend/scripts/smoke-overlays.mjs	6900	7014	130
-F	frontend/src/App.svelte	8659	7146	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7348	84
-F	frontend/src/lib/bootstrap.ts	2613	7434	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7506	38
-F	frontend/src/lib/calendar-model.ts	3453	7546	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7620	177
-F	frontend/src/lib/components/LauncherWidget.svelte	6492	7799	137
-F	frontend/src/lib/components/SystemHealth.svelte	1684	7938	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	7983	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8174	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8237	29
-F	frontend/src/lib/launcher-model.ts	778	8268	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8288	89
-F	frontend/src/lib/lazy-widget.ts	1984	8379	63
-F	frontend/src/lib/overlay-size.ts	1090	8444	29
-F	frontend/src/lib/sdk/core.test.ts	17903	8475	364
-F	frontend/src/lib/sdk/core.ts	14567	8841	398
-F	frontend/src/lib/system-health.test.ts	2348	9241	41
-F	frontend/src/lib/system-health.ts	2831	9284	60
-F	frontend/src/lib/system-model.test.ts	2988	9346	57
-F	frontend/src/lib/system-model.ts	3411	9405	76
-F	frontend/src/lib/themes/kira-default.css	1687	9483	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9537	101
-F	frontend/src/lib/themes/kira-default.ts	777	9640	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9664	79
-F	frontend/src/lib/time.test.ts	263	9745	8
-F	frontend/src/lib/time.ts	320	9755	9
-F	frontend/src/main.ts	5907	9766	127
-F	frontend/src/style.css	2051	9895	62
-F	frontend/tsconfig.json	403	9959	16
-F	frontend/vite.config.ts	224	9977	8
-F	nix/package.nix	3132	9987	117
-F	scripts/dev_preview.py	18147	10106	403	x
-F	scripts/qa_visual.py	12052	10511	299
-F	tests/test_calendar_design.py	6835	10812	121
-F	tests/test_detailed_health.py	5195	10935	101
-F	tests/test_dev_preview.py	9339	11038	219
-F	tests/test_launcher_design.py	4192	11259	84
-F	tests/test_native_theme.py	1567	11345	36
-F	tests/test_popup_geometry.py	6956	11383	118
-F	tests/test_qa_visual.py	10549	11503	217
-F	tests/test_ui_bootstrap_contract.py	1103	11722	29
+F	crates/kira-shell/src/calendar.rs	35633	2785	966
+F	crates/kira-shell/src/launcher.rs	6220	3753	185
+F	crates/kira-shell/src/main.rs	17601	3940	414
+F	crates/kira-shell/src/native_ui.rs	2857	4356	73
+F	crates/kira-shell/src/process_monitor.rs	6245	4431	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4635	214
+F	crates/kira-shell/src/system_panel.rs	7948	4851	226
+F	docs/CONFIG.md	5801	5079	125
+F	docs/DESIGN_SYSTEM.md	15048	5206	276
+F	docs/DEVELOPMENT.md	26972	5484	537
+F	docs/QA_VISUAL.md	12284	6023	149
+F	docs/SPECIFICATION.md	28960	6174	421
+F	docs/UI_ARCHITECTURE.md	6737	6597	106
+F	docs/VISUAL_REVIEW.md	9754	6705	84
+F	flake.nix	2651	6791	76
+F	frontend/index.html	2737	6869	66
+F	frontend/package.json	650	6937	23
+F	frontend/scripts/inline-assets.mjs	4457	6962	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7067	106
+F	frontend/scripts/smoke-overlays.mjs	8443	7175	151
+F	frontend/src/App.svelte	8659	7328	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7530	84
+F	frontend/src/lib/bootstrap.ts	2613	7616	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7688	38
+F	frontend/src/lib/calendar-model.ts	3453	7728	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7802	177
+F	frontend/src/lib/components/LauncherWidget.svelte	7671	7981	167
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8150	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	8195	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8386	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8449	29
+F	frontend/src/lib/launcher-model.ts	778	8480	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8500	89
+F	frontend/src/lib/lazy-widget.ts	1984	8591	63
+F	frontend/src/lib/overlay-size.ts	1090	8656	29
+F	frontend/src/lib/sdk/core.test.ts	20006	8687	403
+F	frontend/src/lib/sdk/core.ts	15992	9092	432
+F	frontend/src/lib/system-health.test.ts	2348	9526	41
+F	frontend/src/lib/system-health.ts	2831	9569	60
+F	frontend/src/lib/system-model.test.ts	2988	9631	57
+F	frontend/src/lib/system-model.ts	3411	9690	76
+F	frontend/src/lib/themes/kira-default.css	1687	9768	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9822	101
+F	frontend/src/lib/themes/kira-default.ts	777	9925	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9949	79
+F	frontend/src/lib/time.test.ts	263	10030	8
+F	frontend/src/lib/time.ts	320	10040	9
+F	frontend/src/main.ts	5907	10051	127
+F	frontend/src/style.css	2051	10180	62
+F	frontend/tsconfig.json	403	10244	16
+F	frontend/vite.config.ts	224	10262	8
+F	nix/package.nix	3132	10272	117
+F	scripts/dev_preview.py	18147	10391	403	x
+F	scripts/qa_visual.py	12052	10796	299
+F	tests/test_calendar_design.py	6835	11097	121
+F	tests/test_detailed_health.py	5195	11220	101
+F	tests/test_dev_preview.py	9339	11323	219
+F	tests/test_launcher_design.py	6054	11544	115
+F	tests/test_native_theme.py	1567	11661	36
+F	tests/test_popup_geometry.py	6956	11699	118
+F	tests/test_qa_visual.py	10549	11819	217
+F	tests/test_ui_bootstrap_contract.py	1103	12038	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3182,6 +3182,20 @@ impl CalendarOverlay {
                     self.dispatch_launcher("kira:launcher:apps", payload);
                 }
             }
+            Some(UiCommand::LauncherIcons(generation, ids))
+                if self.requested.get()
+                    && self.active.get() == Some(Surface::Launcher)
+                    && self.generation.get() == generation =>
+            {
+                let data = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.icons_json(&ids));
+                if let Some(payload) = data {
+                    self.dispatch_launcher("kira:launcher:icons", payload);
+                }
+            }
             Some(UiCommand::LaunchApp(generation, id))
                 if self.requested.get()
                     && self.revealed.get()
@@ -3309,6 +3323,7 @@ enum UiCommand<'a> {
     ProcessesTab(bool),
     CopyReport,
     LauncherCatalog(u32),
+    LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
 }
 
@@ -3345,6 +3360,33 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
             .ok()
             .filter(|v| *v > 0)
             .map(UiCommand::LauncherCatalog);
+    }
+    if let Some(value) = message.strip_prefix("icons-request:") {
+        let (generation, raw_ids) = value.split_once(':')?;
+        if generation.is_empty()
+            || generation.len() > 10
+            || !generation.bytes().all(|b| b.is_ascii_digit())
+            || raw_ids.len() > 79
+        {
+            return None;
+        }
+        let generation = generation.parse::<u32>().ok().filter(|v| *v > 0)?;
+        let parts: Vec<_> = raw_ids.split(',').collect();
+        if parts.is_empty() || parts.len() > 16 {
+            return None;
+        }
+        let mut ids = Vec::with_capacity(parts.len());
+        for raw in parts {
+            if raw.is_empty() || raw.len() > 4 || !raw.bytes().all(|b| b.is_ascii_digit()) {
+                return None;
+            }
+            let id = raw.parse::<usize>().ok().filter(|id| *id < 1024)?;
+            if ids.contains(&id) {
+                return None;
+            }
+            ids.push(id);
+        }
+        return Some(UiCommand::LauncherIcons(generation, ids));
     }
     if let Some(value) = message.strip_prefix("launch:") {
         let (generation, id) = value.split_once(':')?;
@@ -3630,6 +3672,15 @@ mod tests {
             "tab:everything",
             "apps-request:",
             "apps-request:abc",
+            "icons-request:",
+            "icons-request:0:1",
+            "icons-request:1:",
+            "icons-request:1:1024",
+            "icons-request:1:1,,2",
+            "icons-request:1:1,1",
+            "icons-request:1:1;sh",
+            "icons-request:1:1:2",
+            "icons-request:4294967296:1",
             "launch:1:1024",
             "launch:1:-1",
             "launch:1:0;sh",
@@ -3701,13 +3752,81 @@ mod tests {
 FILE	crates/kira-shell/src/launcher.rs
 //! Trusted GIO desktop-app adapter for the Svelte Launcher. No GTK widgets,
 //! command strings, executable paths, terminal spawning or Core RPC.
+use std::cell::RefCell;
+use std::collections::HashMap;
+
 use gtk::gio;
 use gtk::gio::prelude::*;
+
+const MAX_ICON_BYTES: usize = 128 * 1024;
+const ICON_BATCH_LIMIT: usize = 16;
+
+/// Browser images receive only bounded data URIs from the GTK icon theme,
+/// never local paths, arbitrary file URLs or executable commands.
+fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
+    let paintable = theme.lookup_by_gicon(
+        icon,
+        40,
+        1,
+        gtk::TextDirection::None,
+        gtk::IconLookupFlags::empty(),
+    );
+    let file = paintable.file()?;
+    if !file.is_native() {
+        return None;
+    }
+    let path = file.path()?;
+    let extension = path.extension()?.to_str()?.to_ascii_lowercase();
+    let mime = match extension.as_str() {
+        "png" => "image/png",
+        "svg" => "image/svg+xml",
+        "jpg" | "jpeg" => "image/jpeg",
+        "webp" => "image/webp",
+        _ => return None,
+    };
+    let metadata = file
+        .query_info(
+            "standard::size,standard::type",
+            gio::FileQueryInfoFlags::NONE,
+            None::<&gio::Cancellable>,
+        )
+        .ok()?;
+    if metadata.file_type() != gio::FileType::Regular
+        || metadata.size() <= 0
+        || metadata.size() > MAX_ICON_BYTES as i64
+    {
+        return None;
+    }
+    let (bytes, _) = file.load_bytes(None::<&gio::Cancellable>).ok()?;
+    let content: &[u8] = bytes.as_ref();
+    if content.is_empty() || content.len() > MAX_ICON_BYTES {
+        return None;
+    }
+    // Do not turn an arbitrary text file into an image via a .png filename.
+    let valid = match extension.as_str() {
+        "png" => content.starts_with(b"\x89PNG\r\n\x1a\n"),
+        "jpg" | "jpeg" => content.starts_with(&[0xff, 0xd8, 0xff]),
+        "webp" => content.starts_with(b"RIFF") && content.get(8..12) == Some(b"WEBP".as_slice()),
+        "svg" => {
+            let prefix = String::from_utf8_lossy(&content[..content.len().min(1024)]);
+            prefix.contains("<svg") && !prefix.contains("<!DOCTYPE")
+        }
+        _ => false,
+    };
+    if !valid {
+        return None;
+    }
+    Some(format!(
+        "data:{mime};base64,{}",
+        gtk::glib::base64_encode(content)
+    ))
+}
 
 /// Only an index into this server-side snapshot is accepted from Svelte.
 /// Never use a web-supplied executable path, desktop ID or shell command.
 pub struct Catalog {
     apps: Vec<gio::AppInfo>,
+    icons: RefCell<HashMap<usize, Option<String>>>,
 }
 
 impl Catalog {
@@ -3718,7 +3837,10 @@ impl Catalog {
             .collect();
         apps.sort_by_key(|info| info.display_name().to_string().to_lowercase());
         apps.truncate(1024);
-        Self { apps }
+        Self {
+            apps,
+            icons: RefCell::new(HashMap::new()),
+        }
     }
 
     pub fn as_json(&self) -> serde_json::Value {
@@ -3751,6 +3873,36 @@ impl Catalog {
         serde_json::json!({ "apps": apps })
     }
 
+    /// Resolve only icons for rows that Svelte currently displays; caching
+    /// avoids repeated file I/O when the search filter changes. All data is
+    /// freed when the launcher is closed along with its native catalog.
+    pub fn icons_json(&self, ids: &[usize]) -> serde_json::Value {
+        let theme =
+            gtk::gdk::Display::default().map(|display| gtk::IconTheme::for_display(&display));
+        let icons: Vec<_> = ids
+            .iter()
+            .take(ICON_BATCH_LIMIT)
+            .filter_map(|id| {
+                let info = self.apps.get(*id)?;
+                let icon = {
+                    let mut cache = self.icons.borrow_mut();
+                    cache
+                        .entry(*id)
+                        .or_insert_with(|| {
+                            info.icon().and_then(|gicon| {
+                                theme
+                                    .as_ref()
+                                    .and_then(|theme| icon_data_url(&gicon, theme))
+                            })
+                        })
+                        .clone()
+                };
+                Some(serde_json::json!({ "id": id, "data_url": icon }))
+            })
+            .collect();
+        serde_json::json!({ "icons": icons })
+    }
+
     pub fn launch(&self, id: usize) -> Result<(), String> {
         let info = self.apps.get(id).ok_or("Unknown application index")?;
         info.launch(&[], None::<&gio::AppLaunchContext>)
@@ -3771,7 +3923,10 @@ mod tests {
 
     #[test]
     fn out_of_range_id_cannot_launch_arbitrary_programs() {
-        let catalog = Catalog { apps: vec![] };
+        let catalog = Catalog {
+            apps: vec![],
+            icons: RefCell::new(HashMap::new()),
+        };
         assert_eq!(catalog.launch(0), Err("Unknown application index".into()));
         assert_eq!(
             catalog.launch(usize::MAX),
@@ -5424,7 +5579,13 @@ popup sizing. `calendar.rs` manages one window and three lazily mounted
 Svelte widgets. `launcher.rs` holds only a bounded GIO AppInfo catalog
 and calls `AppInfo::launch()` for a validated index, while
 `system_panel.rs` handles read-only system data and process sampling.
-Launcher currently uses a letter fallback instead of native themed icons.
+Launcher now resolves the system's themed GIO icons through GTK IconTheme
+only for the currently rendered rows. The Rust bridge accepts up to 16 app
+indices per request, caps individual icon files at 128 KiB, checks image
+signatures, and returns image-only data URIs (no paths/URLs). Svelte caches
+images only during the visible launcher's lifetime and uses an initial-letter
+fallback for unavailable icons. Its outer WebKit surface is square with no
+decorative border or shadow.
 No generic command execution is exposed.
 
 When adding npm dependencies, commit the updated
@@ -6480,8 +6641,8 @@ top-level window with the required layer-shell Wayland behavior by itself.
 3. **Launcher (implemented).** Svelte owns search, selection, layout and
    keyboard events. Rust GIO discovers desktop entries and launches by
    bounded, generation-scoped catalog index. Browser cannot supply executable
-   paths or shell commands. Application icon imagery uses an initial-letter
-   fallback pending optional themed icon support.
+   paths or shell commands. Application icons are resolved on demand through GTK IconTheme and delivered
+   as bounded image data URIs; missing icons retain the letter fallback.
 4. **System Monitor / processes (implemented).** The existing warm WebKit
    overlay now mounts `SystemWidget.svelte` or `CalendarWidget.svelte` on
    demand, never both. Rust keeps read-only kernel metrics, a bounded
@@ -7025,6 +7186,9 @@ import { execFileSync } from 'node:child_process';
 const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
 const chrome = process.env.CHROME_BIN || 'google-chrome';
 const dir = await mkdtemp(join(tmpdir(), 'kira-overlay-smoke-'));
+const testIcon = 'data:image/svg+xml;base64,' + Buffer.from(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#ef7d1a"/></svg>',
+).toString('base64');
 
 function scriptFor(steps) {
   return '<script>' +
@@ -7033,6 +7197,11 @@ function scriptFor(steps) {
         'document.documentElement.setAttribute("data-smoke-size", String(message));' +
         'const count = Number(document.documentElement.getAttribute("data-smoke-resizes") || 0) + 1;' +
         'document.documentElement.setAttribute("data-smoke-resizes", count);' +
+      '}' +
+      'if (String(message).startsWith("icons-request:")) {' +
+        'const ids = String(message).split(":")[2].split(",").map(Number);' +
+        'setTimeout(() => window.dispatchEvent(new CustomEvent("kira:launcher:icons", {detail: {icons: ids.map(id => ({id, data_url: ' +
+          JSON.stringify(testIcon) + '}))}})), 5);' +
       '}' +
     '}}}};' +
     'window.addEventListener("load", () => {' +
@@ -7060,6 +7229,8 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
+      'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
+      'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
     '}, 1150);' +
     '});</script>';
 }
@@ -7097,6 +7268,13 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
+  if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
+      Number(output.match(/data-smoke-icon-count="(\d+)"/)?.[1] ?? 0) < 1)) {
+    const square = output.match(/data-smoke-square="([^"]+)"/)?.[1] ?? 'unset';
+    const icons = output.match(/data-smoke-icon-count="([^"]+)"/)?.[1] ?? 'unset';
+    const rows = (output.match(/role="option"/g) ?? []).length;
+    throw new Error(name + ': square=' + square + ', icons=' + icons + ', rows=' + rows);
+  }
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
@@ -7104,6 +7282,10 @@ try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
+  await smoke('launcher-square-with-themed-icons', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+  ], 'Kira Launcher', 'icons');
   await smoke('launcher-long-list', [
     { delay: 25, kind: 'launcher', generation: 1 },
     { delay: 90, kind: 'catalog' },
@@ -7799,14 +7981,18 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import {
-    launchDesktopApp, onLauncherCatalog, onLauncherError,
-    requestLauncherCatalog, type LauncherApp,
+    launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
+    requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
   } from '../sdk/core';
   import { filterLauncherApps, nextLauncherSelection } from '../launcher-model';
 
   let { onClose, generation }: { onClose: () => void; generation: number } = $props();
 
   let apps = $state<LauncherApp[]>([]);
+  let icons = $state<Record<number, string>>({});
+  // Cache requests for this one visible widget only. Native icon bytes
+  // are never requested for hidden entries or retained after unmount.
+  const requestedIcons = new Set<number>();
   let loaded = $state(false);
   let error = $state('');
   let query = $state('');
@@ -7822,11 +8008,18 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
   onMount(() => {
     const stopCatalog = onLauncherCatalog(catalog => {
       apps = catalog.apps;
+      requestedIcons.clear();
+      icons = {};
       loaded = true;
       error = '';
       selected = 0;
     });
     const stopError = onLauncherError(message => { error = message; });
+    const stopIcons = onLauncherIcons(batch => {
+      for (const icon of batch.icons) {
+        if (icon.data_url) icons[icon.id] = icon.data_url;
+      }
+    });
     if (!requestLauncherCatalog(generation)) {
       error = 'Application service unavailable';
     }
@@ -7834,7 +8027,21 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
     return () => {
       stopCatalog();
       stopError();
+      stopIcons();
     };
+  });
+
+  // Only request the at-most-80 rows Svelte is actually rendering.
+  // Keep batches small so icon resolution cannot flood the WebKit bridge.
+  $effect(() => {
+    if (!loaded) return;
+    const needed = displayed.map(app => app.id).filter(id => !requestedIcons.has(id));
+    for (let i = 0; i < needed.length; i += 16) {
+      const batch = needed.slice(i, i + 16);
+      if (requestLauncherIcons(generation, batch)) {
+        for (const id of batch) requestedIcons.add(id);
+      }
+    }
   });
 
   function choose(index: number) {
@@ -7872,7 +8079,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira Launcher"
-  class="flex h-auto min-h-0 w-full flex-col overflow-hidden rounded-lg border border-kira-muted/30 bg-kira-bg text-kira-text">
+  class="flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header class="shrink-0 px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0">
@@ -7906,8 +8113,13 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
           class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 rounded-md py-2 pr-2 text-left focus-visible:outline-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
           <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
-          <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-kira-bg text-sm font-extrabold text-kira-text" aria-hidden="true">
-            {app.name.slice(0, 1).toLocaleUpperCase() || 'K'}
+          <span class="flex size-9 shrink-0 items-center justify-center bg-kira-bg text-sm font-extrabold text-kira-text" aria-hidden="true">
+            {#if icons[app.id]}
+              <img class="size-9 object-contain" src={icons[app.id]} alt="" loading="lazy"
+                onerror={() => { delete icons[app.id]; }} />
+            {:else}
+              {app.name.slice(0, 1).toLocaleUpperCase() || 'K'}
+            {/if}
           </span>
           <span class="min-w-0 flex-1">
             <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
@@ -8473,7 +8685,7 @@ export function observeOverlaySize(root: HTMLElement, generation: number): () =>
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -8526,6 +8738,45 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
       'close', 'apps-request:8', 'launch:8:42',
     ]);
+  });
+
+  it('requests only bounded catalog icon IDs, never arbitrary paths', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(requestLauncherIcons(42, [0, 7, 1023])).toBe(true);
+    expect(requestLauncherIcons(42, [])).toBe(false);
+    expect(requestLauncherIcons(42, Array.from({ length: 17 }, (_, i) => i))).toBe(false);
+    expect(requestLauncherIcons(42, [1, 1])).toBe(false);
+    expect(requestLauncherIcons(0, [1])).toBe(false);
+    expect(requestLauncherIcons(42, [-1])).toBe(false);
+    expect(requestLauncherIcons(42, [1024])).toBe(false);
+    expect(requestLauncherIcons(42, [1.5])).toBe(false);
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual(['icons-request:42:0,7,1023']);
+  });
+
+  it('accepts image-only data URI batches and rejects paths, web URLs or oversized SVG', () => {
+    const handlers = new Map<string, EventListener>();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
+      removeEventListener: vi.fn(),
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onLauncherIcons(callback);
+    const send = (batch: unknown) => handlers.get('kira:launcher:icons')!({ detail: batch } as unknown as Event);
+    const valid = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==';
+    send({ icons: [{ id: 7, data_url: valid }, { id: 8, data_url: null }] });
+    expect(callback).toHaveBeenCalledOnce();
+    for (const invalid of ['file:///etc/passwd', 'https://example.com/icon.png',
+      'javascript:alert(1)', 'data:text/html;base64,PHNjcmlwdD4=',
+      'data:image/svg+xml;base64,' + 'A'.repeat(180_000)]) {
+      send({ icons: [{ id: 7, data_url: invalid }] });
+    }
+    send({ icons: [{ id: 1024, data_url: valid }] });
+    send({ icons: Array.from({ length: 17 }, (_, id) => ({ id, data_url: valid })) });
+    expect(callback).toHaveBeenCalledOnce();
+    stop();
   });
 
   it('validates launcher catalogs, errors and unsubscribes after hide', () => {
@@ -9126,6 +9377,40 @@ export interface LauncherApp {
 
 export interface LauncherCatalog {
   apps: LauncherApp[];
+}
+
+export interface LauncherIcon {
+  id: number;
+  data_url: string | null;
+}
+
+export interface LauncherIcons {
+  icons: LauncherIcon[];
+}
+
+const iconDataUri = /^data:image\/(?:png|jpeg|webp|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/;
+
+/** Native GTK resolves themed icons into bounded image-only data URIs.
+ * Never accept filesystem paths, file://, javascript: or HTTP URLs.
+ */
+export function onLauncherIcons(callback: (batch: LauncherIcons) => void): () => void {
+  return onNativeEvent('kira:launcher:icons', (value): value is LauncherIcons =>
+    isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 16 &&
+    value.icons.every((icon: unknown) => {
+      if (!isRecord(icon) || !Number.isSafeInteger(icon.id) ||
+          (icon.id as number) < 0 || (icon.id as number) >= 1024) return false;
+      return icon.data_url === null ||
+        (typeof icon.data_url === 'string' && icon.data_url.length <= 180_000 &&
+          iconDataUri.test(icon.data_url));
+    }), callback);
+}
+
+export function requestLauncherIcons(generation: number, ids: number[]): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      ids.length === 0 || ids.length > 16 ||
+      new Set(ids).size !== ids.length ||
+      !ids.every(id => Number.isSafeInteger(id) && id >= 0 && id < 1024)) return false;
+  return sendCalendarUi('icons-request:' + generation + ':' + ids.join(','));
 }
 
 /** The launcher receives a bounded, read-only catalog from native GIO. */
@@ -11295,6 +11580,37 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertNotIn('gtk::SearchEntry', RUST)
         self.assertNotIn('gtk::ApplicationWindow', RUST)
         self.assertNotIn('gtk::CssProvider', RUST)
+
+    def test_square_launcher_and_lazily_resolved_native_icons(self):
+        root_markup = WIDGET.split("<main data-kira-ui-root", 1)[1].split("<header", 1)[0]
+        self.assertIn("overflow-hidden bg-kira-bg text-kira-text", root_markup)
+        self.assertNotIn("rounded-lg", root_markup)
+        self.assertNotIn("border-kira-muted", root_markup)
+        self.assertIn("<img class=\"size-9 object-contain\"", WIDGET)
+        self.assertIn("src={icons[app.id]}", WIDGET)
+        self.assertIn("app.name.slice(0, 1)", WIDGET)
+        self.assertIn("onLauncherIcons(batch", WIDGET)
+        self.assertIn("requestLauncherIcons(generation, batch)", WIDGET)
+        self.assertIn("needed.slice(i, i + 16)", WIDGET)
+        self.assertIn("stopIcons();", WIDGET)
+        self.assertIn("gtk::IconTheme::for_display(&display)", RUST)
+        self.assertIn("theme.lookup_by_gicon(", RUST)
+        self.assertIn("paintable.file()?", RUST)
+        self.assertIn("file.load_bytes(None::<&gio::Cancellable>)", RUST)
+        self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
+        self.assertIn("const ICON_BATCH_LIMIT: usize = 16;", RUST)
+        self.assertIn("data:{mime};base64", RUST)
+        self.assertIn("icons: RefCell<HashMap<usize, Option<String>>>", RUST)
+        self.assertIn("self.launcher.borrow_mut().take()", OVERLAY)
+        self.assertIn("kira:launcher:icons", OVERLAY)
+        self.assertIn("Some(UiCommand::LauncherIcons(generation, ids))", OVERLAY)
+        self.assertIn("icons-request:", OVERLAY)
+        self.assertIn("self.generation.get() == generation", OVERLAY)
+        self.assertIn("raw_ids.split(',')", OVERLAY)
+        self.assertIn("ids.contains(&id)", OVERLAY)
+        self.assertIn("iconDataUri.test(icon.data_url)", SDK)
+        self.assertNotIn("file://", RUST)
+        self.assertNotIn("std::process::Command", RUST)
 
     def test_native_app_identity_and_safe_launch(self):
         for required in (
