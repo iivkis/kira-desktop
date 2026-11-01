@@ -66,7 +66,14 @@ function createWarpFilter(root: HTMLElement) {
   displacement.setAttribute('xChannelSelector', 'R');
   displacement.setAttribute('yChannelSelector', 'G');
   displacement.setAttribute('scale', '0');
-  filter.append(noise, smooth, offset, displacement);
+  displacement.setAttribute('result', 'displacedPixels');
+  // Gentle reconstruction of subpixel edges AFTER displacement; this
+  // reduces stair-stepped font rasterization without blurring the tab
+  // background or the border (only the text span is filtered).
+  const edgeAA = svgNode(doc, 'feGaussianBlur');
+  edgeAA.setAttribute('in', 'displacedPixels');
+  edgeAA.setAttribute('stdDeviation', '0.24');
+  filter.append(noise, smooth, offset, displacement, edgeAA);
   defs.appendChild(filter);
   svg.appendChild(defs);
   root.appendChild(svg);
