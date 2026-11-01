@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4572
+index_bytes=4738
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,101 +15,104 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	41fe3d4901436724c53500894d88f08bf0cb1b53
-F	.cargo/config.toml	98	122	3
-F	.github/workflows/ci.yml	4355	127	112
-F	.github/workflows/frontend-nix.yml	1398	241	43
-F	.github/workflows/nix.yml	1258	286	38
-F	.github/workflows/overlay-smoke.yml	1064	326	40
-F	.github/workflows/publish-repospool.yml	3048	368	83
-F	.gitignore	178	453	11
-F	.repospoolignore	1028	466	47
-F	AGENTS.md	3992	515	66
-F	Cargo.toml	494	583	22
-F	README.md	11269	607	248
-F	Taskfile.yml	5957	857	185
-F	config/kira.kdl.example	358	1044	8
-F	crates/kira-core/Cargo.toml	207	1054	10
-F	crates/kira-core/src/config.rs	15217	1066	399
-F	crates/kira-core/src/main.rs	32080	1467	839
-F	crates/kira-core/src/niri.rs	16767	2308	453
-F	crates/kira-ipc/Cargo.toml	170	2763	9
-F	crates/kira-ipc/src/client.rs	17794	2774	458
-F	crates/kira-ipc/src/lib.rs	10460	3234	336
-F	crates/kira-shell/Cargo.toml	297	3572	12
-F	crates/kira-shell/src/calendar.rs	38858	3586	1043
-F	crates/kira-shell/src/launcher.rs	14114	4631	392
-F	crates/kira-shell/src/main.rs	19285	5025	447
-F	crates/kira-shell/src/native_ui.rs	2857	5474	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5549	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5837	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5955	559
-F	crates/kira-shell/src/system_panel.rs	11356	6516	318
-F	docs/CONFIG.md	5801	6836	125
-F	docs/DESIGN_SYSTEM.md	23622	6963	399
-F	docs/DEVELOPMENT.md	29347	7364	577
-F	docs/QA_VISUAL.md	12284	7943	149
-F	docs/SPECIFICATION.md	28960	8094	421
-F	docs/TENET_MOTION.md	20941	8517	127
-F	docs/UI_ARCHITECTURE.md	6737	8646	106
-F	docs/VISUAL_REVIEW.md	9754	8754	84
-F	flake.nix	3181	8840	91
-F	frontend/index.html	2737	8933	66
-F	frontend/package.json	720	9001	27
-F	frontend/scripts/inline-assets.mjs	4457	9030	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9135	106
-F	frontend/scripts/smoke-overlays.mjs	18698	9243	271
-F	frontend/src/App.svelte	8659	9516	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9718	84
-F	frontend/src/lib/bootstrap.ts	2613	9804	70
-F	frontend/src/lib/calendar-model.test.ts	2687	9876	49
-F	frontend/src/lib/calendar-model.ts	4009	9927	88
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10017	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10079	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10110	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10430	50
-F	frontend/src/lib/clock-flight.ts	1977	10482	50
-F	frontend/src/lib/components/CalendarWidget.svelte	9027	10534	198
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	10734	176
-F	frontend/src/lib/components/SystemCharts.svelte	9336	10912	212
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11126	43
-F	frontend/src/lib/components/SystemWidget.svelte	13245	11171	245
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11418	61
-F	frontend/src/lib/launcher-model.test.ts	1370	11481	29
-F	frontend/src/lib/launcher-model.ts	778	11512	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	11532	89
-F	frontend/src/lib/lazy-widget.ts	1984	11623	63
-F	frontend/src/lib/motion.ts	1597	11688	50
-F	frontend/src/lib/overlay-size.ts	1090	11740	29
-F	frontend/src/lib/sdk/core.test.ts	22258	11771	444
-F	frontend/src/lib/sdk/core.ts	17793	12217	473
-F	frontend/src/lib/system-charts.test.ts	6312	12692	141
-F	frontend/src/lib/system-charts.ts	5514	12835	149
-F	frontend/src/lib/system-health.test.ts	2385	12986	42
-F	frontend/src/lib/system-health.ts	2831	13030	60
-F	frontend/src/lib/system-model.test.ts	3900	13092	73
-F	frontend/src/lib/system-model.ts	4983	13167	113
-F	frontend/src/lib/themes/kira-default.css	1687	13282	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13336	101
-F	frontend/src/lib/themes/kira-default.ts	777	13439	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	13463	79
-F	frontend/src/lib/time.test.ts	263	13544	8
-F	frontend/src/lib/time.ts	320	13554	9
-F	frontend/src/main.ts	5907	13565	127
-F	frontend/src/style.css	3447	13694	107
-F	frontend/tsconfig.json	403	13803	16
-F	frontend/vite.config.ts	224	13821	8
-F	nix/package.nix	3132	13831	117
-F	scripts/dev_preview.py	18147	13950	403	x
-F	scripts/qa_visual.py	12052	14355	299
-F	tests/test_calendar_design.py	6835	14656	121
-F	tests/test_detailed_health.py	5195	14779	101
-F	tests/test_dev_preview.py	9339	14882	219
-F	tests/test_launcher_design.py	9956	15103	182
-F	tests/test_native_theme.py	1567	15287	36
-F	tests/test_popup_geometry.py	6956	15325	118
-F	tests/test_qa_visual.py	10549	15445	217
-F	tests/test_ui_bootstrap_contract.py	1103	15664	29
+C	40c2f05ea1d078d5fa97e557077b589c4bd6b36f
+F	.cargo/config.toml	98	125	3
+F	.github/workflows/ci.yml	4355	130	112
+F	.github/workflows/frontend-nix.yml	1398	244	43
+F	.github/workflows/nix.yml	1258	289	38
+F	.github/workflows/overlay-smoke.yml	1064	329	40
+F	.github/workflows/publish-repospool.yml	3048	371	83
+F	.gitignore	178	456	11
+F	.repospoolignore	1028	469	47
+F	AGENTS.md	4785	518	79
+F	Cargo.toml	494	599	22
+F	README.md	11269	623	248
+F	Taskfile.yml	5957	873	185
+F	config/kira.kdl.example	358	1060	8
+F	crates/kira-core/Cargo.toml	207	1070	10
+F	crates/kira-core/src/config.rs	15217	1082	399
+F	crates/kira-core/src/main.rs	32080	1483	839
+F	crates/kira-core/src/niri.rs	16767	2324	453
+F	crates/kira-ipc/Cargo.toml	170	2779	9
+F	crates/kira-ipc/src/client.rs	17794	2790	458
+F	crates/kira-ipc/src/lib.rs	10460	3250	336
+F	crates/kira-shell/Cargo.toml	297	3588	12
+F	crates/kira-shell/src/calendar.rs	38858	3602	1043
+F	crates/kira-shell/src/launcher.rs	14114	4647	392
+F	crates/kira-shell/src/main.rs	19285	5041	447
+F	crates/kira-shell/src/native_ui.rs	2857	5490	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5565	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5853	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5971	559
+F	crates/kira-shell/src/system_panel.rs	11356	6532	318
+F	docs/CONFIG.md	5801	6852	125
+F	docs/DESIGN_SYSTEM.md	23622	6979	399
+F	docs/DEVELOPMENT.md	29347	7380	577
+F	docs/QA_VISUAL.md	12284	7959	149
+F	docs/SPECIFICATION.md	28960	8110	421
+F	docs/TENET_MOTION.md	23999	8533	158
+F	docs/UI_ARCHITECTURE.md	6737	8693	106
+F	docs/VISUAL_REVIEW.md	9754	8801	84
+F	flake.nix	3181	8887	91
+F	frontend/index.html	2737	8980	66
+F	frontend/package.json	720	9048	27
+F	frontend/scripts/inline-assets.mjs	4457	9077	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9182	106
+F	frontend/scripts/smoke-overlays.mjs	22165	9290	316
+F	frontend/src/App.svelte	8659	9608	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9810	84
+F	frontend/src/lib/bootstrap.ts	2613	9896	70
+F	frontend/src/lib/calendar-model.test.ts	2687	9968	49
+F	frontend/src/lib/calendar-model.ts	4009	10019	88
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10109	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10171	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10202	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10522	50
+F	frontend/src/lib/clock-flight.ts	1977	10574	50
+F	frontend/src/lib/components/CalendarWidget.svelte	9261	10626	200
+F	frontend/src/lib/components/LauncherWidget.svelte	8349	10828	177
+F	frontend/src/lib/components/SystemCharts.svelte	9336	11007	212
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11221	43
+F	frontend/src/lib/components/SystemWidget.svelte	13320	11266	246
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11514	61
+F	frontend/src/lib/launcher-model.test.ts	1370	11577	29
+F	frontend/src/lib/launcher-model.ts	778	11608	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	11628	89
+F	frontend/src/lib/lazy-widget.ts	1984	11719	63
+F	frontend/src/lib/motion.ts	1597	11784	50
+F	frontend/src/lib/overlay-size.ts	1090	11836	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11867	444
+F	frontend/src/lib/sdk/core.ts	17793	12313	473
+F	frontend/src/lib/system-charts.test.ts	6312	12788	141
+F	frontend/src/lib/system-charts.ts	5514	12931	149
+F	frontend/src/lib/system-health.test.ts	2385	13082	42
+F	frontend/src/lib/system-health.ts	2831	13126	60
+F	frontend/src/lib/system-model.test.ts	3900	13188	73
+F	frontend/src/lib/system-model.ts	4983	13263	113
+F	frontend/src/lib/tenet-hover-lens.ts	6739	13378	179
+F	frontend/src/lib/tenet-lens-model.test.ts	1799	13559	44
+F	frontend/src/lib/tenet-lens-model.ts	1381	13605	42
+F	frontend/src/lib/themes/kira-default.css	1687	13649	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13703	101
+F	frontend/src/lib/themes/kira-default.ts	777	13806	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13830	79
+F	frontend/src/lib/time.test.ts	263	13911	8
+F	frontend/src/lib/time.ts	320	13921	9
+F	frontend/src/main.ts	5907	13932	127
+F	frontend/src/style.css	5364	14061	164
+F	frontend/tsconfig.json	403	14227	16
+F	frontend/vite.config.ts	224	14245	8
+F	nix/package.nix	3132	14255	117
+F	scripts/dev_preview.py	18147	14374	403	x
+F	scripts/qa_visual.py	12052	14779	299
+F	tests/test_calendar_design.py	6835	15080	121
+F	tests/test_detailed_health.py	5195	15203	101
+F	tests/test_dev_preview.py	9339	15306	219
+F	tests/test_launcher_design.py	9956	15527	182
+F	tests/test_native_theme.py	1567	15711	36
+F	tests/test_popup_geometry.py	6956	15749	118
+F	tests/test_qa_visual.py	10549	15869	217
+F	tests/test_ui_bootstrap_contract.py	1103	16088	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -544,6 +547,19 @@ Continuity, Temporal Memory, and Causal Consistency**. For each animation:
 
 Existing animations are reviewed against this contract **when touched**;
 do not claim an unreviewed legacy animation already complies.
+
+## Interactive optics (mandatory for WebKit click targets)
+
+All clickable controls in Calendar, System Monitor, Launcher and new WebKit
+widgets use the shared `tenetHoverLens` root action from
+`frontend/src/lib/tenet-hover-lens.ts`. Mouse/pen hover should visibly
+refract/lens and gently deform optical content, while leaving the
+actual clickable hitbox fixed. Pointer exit replays **the same recorded
+hover path backwards**, never a new randomized movement. Disabled buttons
+and touch input do not activate it; reduced motion and unmount clear all
+GSAP effects and CSS artifacts. Retain native focus-visible affordances
+and avoid transform competition with Calendar day/clock timelines.
+See `docs/TENET_MOTION.md#hover--pointer-optics--стандарт-активных-элементов`.
 
 ## Visual stack (mandatory)
 
@@ -8625,6 +8641,37 @@ IDLE -> PREPARED -> FORWARD / INVERTED / DUAL -> CONTACT -> SETTLED
 
 Длинный декоративный эффект нельзя навязывать при каждом обычном действии; дополнительные сцены должны быть редкими, легко прерываемыми и ненавязчивыми.
 
+## Hover / Pointer Optics · стандарт активных элементов
+
+**Все кликабельные элементы WebKit-виджетов**, включая Calendar, System
+Monitor и Launcher, получают мягкую реакцию на наведение мыши: оптическую
+«линзу», локальное преломление света, деформацию контура и небольшое смещение
+глифов, когда оно не конфликтует с текущей GSAP-анимацией.
+
+- **FORWARD (+1):** линза проявляется и перемещается вместе с фактической
+  позицией курсора относительно неподвижного прямоугольника элемента.
+- **INVERTED (−1):** после ухода мыши оптический след проходит **сохранённые
+  координаты курсора в обратном порядке**, затем полностью исчезает.
+- **Temporal Memory:** максимум 16 реальных точек одного наведения; никакого
+  нового случайного пути при восстановлении.
+- **Physical Continuity:** эффект создаётся GSAP через `opacity`, небольшую
+  деформацию вложенных глифов, световой контур и CSS `backdrop-filter`.
+  Положение кликабельного элемента и его hitbox **никогда не смещаются**.
+- **Causal Consistency:** при повторном наведении, нажатии, смене фокуса,
+  изменении системной настройки движения и размонтировании все слои
+  убираются; исходные transform/CSS-переменные восстановлены.
+- **Доступность:** для `prefers-reduced-motion`, touch/грубого указателя и
+  `disabled` эффект отсутствует; фокус клавиатуры и нативный hover-отклик
+  остаются доступными. Декоративные псевдоэлементы не перехватывают события.
+- **Производительность:** один делегированный обработчик на виджет вместо
+  обработчика для каждой строки, обрабатывается только активный элемент;
+  нет постоянного `requestAnimationFrame` или опроса курсора вне hover.
+
+Переиспользуемая реализация: `frontend/src/lib/tenet-hover-lens.ts` и
+`tenet-lens-model.ts`. Не делать новый несогласованный hover-движок
+в каждом виджете. Пользовательское действие никогда не задерживается
+ради преломления.
+
 ## IV. Критерии приёмки каждой новой анимации
 
 Перед PR разработчик/агент должен ответить на вопросы и **проверить**, а не просто заявить соответствие:
@@ -9271,7 +9318,17 @@ function scriptFor(steps, observationMs = 1150) {
       battery_percent: null, battery_charging: null,
     },
   });
+  const pointerMode = steps.some(step => step.kind.startsWith('lens-'));
   return '<script>' +
+    (pointerMode ?
+      'const realMedia = window.matchMedia.bind(window);' +
+      'window.matchMedia = q => {' +
+        'const original = realMedia(q);' +
+        'return q.includes("hover: hover") && q.includes("pointer: fine") ? {' +
+          'matches:true, media:q, addEventListener:(...args)=>original.addEventListener(...args),' +
+          'removeEventListener:(...args)=>original.removeEventListener(...args)' +
+        '} : original;' +
+      '};' : '') +
     'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
       'if (String(message).startsWith("size:")) {' +
         'document.documentElement.setAttribute("data-smoke-size", String(message));' +
@@ -9306,6 +9363,21 @@ function scriptFor(steps, observationMs = 1150) {
                   'setTimeout(() => {' +
                     'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
+              : kind === 'lens-over'
+                ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+                  'if (target) {' +
+                  'const rect = target.getBoundingClientRect();' +
+                  'window.__kiraLensInitialRect = [rect.left,rect.top,rect.width,rect.height];' +
+                  'target.dispatchEvent(new PointerEvent("pointerover",{bubbles:true,pointerType:"mouse",clientX:rect.left+rect.width*0.25,clientY:rect.top+rect.height*0.25}));' +
+                  'setTimeout(()=>{window.__kiraLensReacted=target.dataset.tenetLensState==="forward";},130);' +
+                  '}'
+              : kind === 'lens-move'
+                ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+                  'if(target){const rect=target.getBoundingClientRect();' +
+                  'target.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerType:"mouse",clientX:rect.right-2,clientY:rect.bottom-2}));}'
+              : kind === 'lens-out'
+                ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+                  'target?.dispatchEvent(new PointerEvent("pointerout",{bubbles:true,pointerType:"mouse",relatedTarget:null}));'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : kind === 'pulse'
@@ -9345,6 +9417,11 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
+      'const hoveredButton = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+      'const hoveredRect = hoveredButton?.getBoundingClientRect();' +
+      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted);' +
+      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensReacted && !!hoveredButton && !hoveredButton.classList.contains("kira-tenet-lens-target") && !hoveredButton.hasAttribute("data-tenet-lens-state"));' +
+      'document.documentElement.setAttribute("data-smoke-lens-hitbox", !!hoveredRect && !!window.__kiraLensInitialRect && [hoveredRect.left,hoveredRect.top,hoveredRect.width,hoveredRect.height].every((value,index)=>Math.abs(value-window.__kiraLensInitialRect[index])<0.5));' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
@@ -9366,7 +9443,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'lens' ? 2450 : heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -9375,7 +9452,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'lens' ? 3000 : heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -9393,6 +9470,13 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   if (!output.includes('data-smoke-unselectable="true"') ||
       !output.includes('data-smoke-editable-selectable="true"')) {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
+  }
+  if (heightMode === 'lens' &&
+      (!output.includes('data-smoke-lens-reacted="true"') ||
+       !output.includes('data-smoke-lens-restored="true"') ||
+       !output.includes('data-smoke-lens-hitbox="true"'))) {
+    const flags = output.match(/data-smoke-lens-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': TENET hover refraction and exact reset: ' + flags.join(', '));
   }
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
@@ -9452,6 +9536,14 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
+  await smoke('calendar-tenet-pointer-lens', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    // Allow the TENET calendar opening scene to settle first; otherwise
+    // its moving section would legitimately alter the button rectangle.
+    { delay: 1150, kind: 'lens-over' },
+    { delay: 1400, kind: 'lens-move' },
+    { delay: 1540, kind: 'lens-out' },
+  ], 'Kira Calendar', 'lens');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
@@ -10534,6 +10626,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
+  import { tenetHoverLens } from '../tenet-hover-lens';
   import {
     clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -10631,6 +10724,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 <main
   data-kira-ui-root
   use:tenetCalendarReveal
+  use:tenetHoverLens
   class="relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
@@ -10641,7 +10735,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
         aria-label="Make the clock digits fly and return"
         title="Click for a little clock chaos"
         class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
-        <time class="flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
+        <time data-tenet-lens-body class="flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
           datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
         {#each clockParts as part, index (index)}
           {#if part.digit}
@@ -10679,7 +10773,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
             onclick={() => navigate(step)}
             title={step === -12 ? 'Previous year' : step === -1 ? 'Previous month' : step === 1 ? 'Next month' : 'Next year'}
             aria-label={step === -12 ? 'Previous year' : step === -1 ? 'Previous month' : step === 1 ? 'Next month' : 'Next year'}
-          >{step === -12 ? '«' : step === -1 ? '‹' : step === 1 ? '›' : '»'}</button>
+          ><span data-tenet-lens-body>{step === -12 ? '«' : step === -1 ? '‹' : step === 1 ? '›' : '»'}</span></button>
         {/each}
       </div>
     </div>
@@ -10706,7 +10800,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
               data-calendar-day
               data-calendar-selected={isoDate(date) === selectedIso}
               onclick={() => choose(date)}
-            >{date.day}</button>
+            ><span data-tenet-lens-body>{date.day}</span></button>
           {:else}
             <span aria-hidden="true"></span>
           {/if}
@@ -10723,9 +10817,9 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
     </p>
     <div class="mt-3 flex items-center justify-between">
       <button type="button" onclick={goToday}
-        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">TODAY</button>
+        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body>TODAY</span></button>
       <button type="button" onclick={() => onCopy(selectedIso)}
-        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">COPY DATE</button>
+        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body>COPY DATE</span></button>
     </div>
   </section>
 </main>
@@ -10733,6 +10827,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 FILE	frontend/src/lib/components/LauncherWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import { tenetHoverLens } from '../tenet-hover-lens';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
@@ -10831,7 +10926,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 
 <svelte:window onkeydown={keydown} />
 
-<main data-kira-ui-root aria-label="Kira Launcher"
+<main data-kira-ui-root aria-label="Kira Launcher" use:tenetHoverLens
   class="flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header class="shrink-0 px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-2">
@@ -11172,6 +11267,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, revealStagger } from '../motion';
+  import { tenetHoverLens } from '../tenet-hover-lens';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -11233,7 +11329,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 
 <svelte:window onkeydown={keydown} />
 
-<main data-kira-ui-root aria-label="Kira System Monitor"
+<main data-kira-ui-root aria-label="Kira System Monitor" use:tenetHoverLens
   class="kira-monitor-scroll flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header class="shrink-0 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
@@ -13278,6 +13374,277 @@ export function uptimeLabel(seconds: number | null): string {
   return (days ? days + 'd ' : '') + hours + 'h ' + minutes + 'm';
 }
 
+FILE	frontend/src/lib/tenet-hover-lens.ts
+/** Delegated GSAP hover refraction for all clickable desktop overlay items.
+ *
+ * The functional button does not change its hitbox or receive transforms.
+ * An optical layer is warped under the pointer; an optional inner glyph
+ * layer deforms independently of Calendar's existing TENET/clock timelines.
+ * On departure, the trace retraces the actual bounded pointer history
+ * INVERTED, while the base UI continues FORWARD. One event, same geometry.
+ */
+import { gsap } from 'gsap';
+import {
+  inverseLensPath, lensPoint, rememberLensPoint, type LensPoint,
+} from './tenet-lens-model';
+
+const SELECTOR = 'button:not(:disabled), a[href], [role="button"]:not([aria-disabled="true"])';
+
+export function tenetHoverLens(root: HTMLElement) {
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  let active: HTMLElement | null = null;
+  let history: LensPoint[] = [];
+  let enterTween: gsap.core.Tween | null = null;
+  let pointerTween: gsap.core.Tween | null = null;
+  let returnTimeline: gsap.core.Timeline | null = null;
+  let restoreTimer: number | null = null;
+  let contentTween: gsap.core.Tween | null = null;
+  let content: HTMLElement | null = null;
+
+  const eligible = (event: Event): HTMLElement | null => {
+    if (!(event.target instanceof Element)) return null;
+    const candidate = event.target.closest<HTMLElement>(SELECTOR);
+    return candidate && root.contains(candidate) ? candidate : null;
+  };
+  const enabled = (event: PointerEvent) => !motion.matches &&
+    finePointer.matches && (event.pointerType === 'mouse' || event.pointerType === 'pen');
+
+  function endAnimations() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
+    enterTween?.kill();
+    pointerTween?.kill();
+    returnTimeline?.kill();
+    contentTween?.kill();
+    enterTween = pointerTween = contentTween = null;
+    returnTimeline = null;
+  }
+
+  function reset() {
+    endAnimations();
+    if (content) gsap.set(content, { clearProps: 'transform' });
+    if (active) {
+      gsap.set(active, { clearProps:
+        '--kira-lens-opacity,--kira-lens-x,--kira-lens-y,--kira-lens-dx,--kira-lens-dy,--kira-lens-shear' });
+      active.classList.remove('kira-tenet-lens-target');
+      active.removeAttribute('data-tenet-lens-state');
+    }
+    content = null;
+    active = null;
+    history = [];
+  }
+
+  function values(point: LensPoint) {
+    return {
+      '--kira-lens-x': point.x + '%',
+      '--kira-lens-y': point.y + '%',
+      '--kira-lens-dx': point.dx + 'px',
+      '--kira-lens-dy': point.dy + 'px',
+      '--kira-lens-shear': point.dx * 0.65 + 'deg',
+    };
+  }
+
+  function onOver(event: PointerEvent) {
+    if (!enabled(event)) return;
+    const target = eligible(event);
+    if (!target || target === active) return;
+    reset();
+    active = target;
+    content = target.querySelector<HTMLElement>('[data-tenet-lens-body]');
+    const rect = target.getBoundingClientRect();
+    const point = lensPoint(event.clientX, event.clientY,
+      rect.left, rect.top, rect.width, rect.height);
+    history = rememberLensPoint([], point);
+    target.classList.add('kira-tenet-lens-target');
+    target.dataset.tenetLensState = 'forward';
+    gsap.set(target, { ...values(point), '--kira-lens-opacity': 0 });
+    enterTween = gsap.to(target, {
+      '--kira-lens-opacity': 0.94, duration: 0.22,
+      ease: 'power2.out', overwrite: 'auto',
+    });
+    if (content) {
+      contentTween = gsap.to(content, {
+        x: point.dx * 0.5, y: point.dy * 0.5,
+        skewX: point.dx * 0.55, scale: 1.055,
+        duration: 0.24, ease: 'power2.out', overwrite: 'auto',
+      });
+    }
+  }
+
+  function onMove(event: PointerEvent) {
+    if (!active || !enabled(event) || eligible(event) !== active) return;
+    const rect = active.getBoundingClientRect();
+    const point = lensPoint(event.clientX, event.clientY,
+      rect.left, rect.top, rect.width, rect.height);
+    history = rememberLensPoint(history, point);
+    pointerTween?.kill();
+    pointerTween = gsap.to(active, {
+      ...values(point), duration: 0.105, ease: 'power2.out',
+      overwrite: 'auto',
+    });
+    if (content) {
+      contentTween?.kill();
+      contentTween = gsap.to(content, {
+        x: point.dx * 0.5, y: point.dy * 0.5,
+        skewX: point.dx * 0.55, scale: 1.055,
+        duration: 0.16, ease: 'power2.out',
+        overwrite: 'auto',
+      });
+    }
+  }
+
+  function onOut(event: PointerEvent) {
+    if (!active) return;
+    const departed = eligible(event);
+    if (departed !== active) return;
+    const next = event.relatedTarget;
+    if (next instanceof Node && active.contains(next)) return;
+    const node = active;
+    const reversed = inverseLensPath(history);
+    endAnimations();
+    node.dataset.tenetLensState = 'inverted';
+    returnTimeline = gsap.timeline({ onComplete: reset });
+    // One recorded sequence. Never sample new mouse positions after departure.
+    for (const point of reversed) {
+      returnTimeline.to(node, {
+        ...values(point), duration: 0.018, ease: 'none',
+      });
+    }
+    returnTimeline.to(node, {
+      '--kira-lens-opacity': 0,
+      '--kira-lens-dx': '0px', '--kira-lens-dy': '0px',
+      '--kira-lens-shear': '0deg',
+      duration: 0.2, ease: 'power2.out',
+    });
+    if (content) {
+      returnTimeline.to(content, {
+        x: 0, y: 0, skewX: 0, scale: 1, duration: 0.25,
+        ease: 'power2.out',
+      }, '<');
+    }
+    // GTK/WebKit may suspend requestAnimationFrame while transitioning
+    // overlays. A one-shot safeguard restores everything, then cancels
+    // itself on normal GSAP completion or new input.
+    restoreTimer = window.setTimeout(reset, 750);
+  }
+
+  const onMotionChange = () => { if (motion.matches || !finePointer.matches) reset(); };
+  const onDown = () => { if (active) reset(); };
+  const onFocus = () => { if (active) reset(); };
+  root.addEventListener('pointerover', onOver);
+  root.addEventListener('pointermove', onMove);
+  root.addEventListener('pointerout', onOut);
+  root.addEventListener('pointerdown', onDown);
+  root.addEventListener('focusin', onFocus);
+  motion.addEventListener('change', onMotionChange);
+  finePointer.addEventListener('change', onMotionChange);
+  return {
+    destroy() {
+      root.removeEventListener('pointerover', onOver);
+      root.removeEventListener('pointermove', onMove);
+      root.removeEventListener('pointerout', onOut);
+      root.removeEventListener('pointerdown', onDown);
+      root.removeEventListener('focusin', onFocus);
+      motion.removeEventListener('change', onMotionChange);
+      finePointer.removeEventListener('change', onMotionChange);
+      reset();
+    },
+  };
+}
+
+FILE	frontend/src/lib/tenet-lens-model.test.ts
+import { describe, expect, it } from 'vitest';
+import {
+  inverseLensPath, lensPoint, MAX_LENS_HISTORY, rememberLensPoint,
+} from './tenet-lens-model';
+
+describe('TENET optical hover geometry', () => {
+  it('maps the real pointer to its hitbox without moving the hitbox itself', () => {
+    expect(lensPoint(150, 100, 100, 75, 100, 50))
+      .toEqual({ x: 50, y: 50, dx: 0, dy: 0 });
+    expect(lensPoint(100, 75, 100, 75, 100, 50))
+      .toEqual({ x: 0, y: 0, dx: -4, dy: -4 });
+    expect(lensPoint(200, 125, 100, 75, 100, 50))
+      .toEqual({ x: 100, y: 100, dx: 4, dy: 4 });
+    expect(lensPoint(-100, 2000, 100, 75, 100, 50))
+      .toEqual({ x: 0, y: 100, dx: -4, dy: 4 });
+    expect(lensPoint(1, 1, 1, 1, 0, 0))
+      .toEqual({ x: 0, y: 0, dx: -4, dy: -4 });
+  });
+
+  it('remembers a bounded, deduplicated real pointer path', () => {
+    let history = [] as ReturnType<typeof rememberLensPoint>;
+    for (let i = 0; i < 48; i++) {
+      const next = lensPoint(10 + i, 25, 0, 0, 100, 50);
+      history = rememberLensPoint(history, next);
+    }
+    expect(history).toHaveLength(MAX_LENS_HISTORY);
+    expect(history[0].x).toBe(42);
+    expect(history.at(-1)?.x).toBe(57);
+    expect(rememberLensPoint(history, history[history.length - 1])).toEqual(history);
+  });
+
+  it('replays the exact same visited points in reverse causal order', () => {
+    const history = [
+      lensPoint(10, 10, 0, 0, 100, 100),
+      lensPoint(60, 20, 0, 0, 100, 100),
+      lensPoint(80, 75, 0, 0, 100, 100),
+    ];
+    const inverted = inverseLensPath(history);
+    expect(inverted).toEqual([history[2], history[1], history[0]]);
+    expect(inverseLensPath(inverted)).toEqual(history);
+    expect(history[0]).toEqual(lensPoint(10, 10, 0, 0, 100, 100));
+    expect(inverseLensPath([])).toEqual([]);
+  });
+});
+
+FILE	frontend/src/lib/tenet-lens-model.ts
+/** TENET hover refraction geometry, independent of DOM/GSAP.
+ * A mouse interaction records one bounded path. On pointer leave, the
+ * INVERTED optical trace visits the same points in the opposite order.
+ * The functional target never moves from its hit-testing rectangle.
+ */
+export interface LensPoint {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+}
+
+export const MAX_LENS_HISTORY = 16;
+
+export function lensPoint(
+  clientX: number, clientY: number, left: number, top: number,
+  width: number, height: number,
+): LensPoint {
+  const w = Math.max(1, width);
+  const h = Math.max(1, height);
+  const nx = Math.max(0, Math.min(1, (clientX - left) / w));
+  const ny = Math.max(0, Math.min(1, (clientY - top) / h));
+  return {
+    x: Math.round(nx * 1000) / 10,
+    y: Math.round(ny * 1000) / 10,
+    dx: Math.round((nx - 0.5) * 8 * 100) / 100,
+    dy: Math.round((ny - 0.5) * 8 * 100) / 100,
+  };
+}
+
+export function rememberLensPoint(
+  history: readonly LensPoint[], next: LensPoint,
+): LensPoint[] {
+  const last = history[history.length - 1];
+  if (last && last.x === next.x && last.y === next.y) return history.slice();
+  return [...history, next].slice(-MAX_LENS_HISTORY);
+}
+
+/** A return uses the SAME stored coordinates; no newly synthesized path. */
+export function inverseLensPath(history: readonly LensPoint[]): LensPoint[] {
+  return [...history].reverse();
+}
+
 FILE	frontend/src/lib/themes/kira-default.css
 /* Kira Default: Black / Prussian Blue / Orange / Alabaster Grey / White.
  * Exactly five canonical opaque colors; all other tones are derived.
@@ -13783,6 +14150,63 @@ FILE	frontend/src/style.css
     display: none;
     width: 0;
     height: 0;
+  }
+
+  /* TENET optical hover: the clickable hitbox never shifts. An amber/white
+   * refraction field bends in response to the real pointer, then reconstructs
+   * its recorded movement in reverse. Only the currently active control
+   * receives backdrop filtering; no shader or permanent animation loop.
+   */
+  .kira-tenet-lens-target {
+    position: relative;
+    isolation: isolate;
+    --kira-lens-opacity: 0;
+    --kira-lens-x: 50%;
+    --kira-lens-y: 50%;
+    --kira-lens-dx: 0px;
+    --kira-lens-dy: 0px;
+    --kira-lens-shear: 0deg;
+  }
+
+  .kira-tenet-lens-target::before,
+  .kira-tenet-lens-target::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    inset: -2px;
+    opacity: var(--kira-lens-opacity);
+    z-index: 2;
+    border-radius: inherit;
+  }
+
+  .kira-tenet-lens-target::before {
+    background: radial-gradient(ellipse 48% 88% at var(--kira-lens-x) var(--kira-lens-y),
+      rgb(229 229 229 / 16%) 0%, rgb(252 163 17 / 9%) 33%,
+      rgb(20 33 61 / 4%) 55%, transparent 75%);
+    -webkit-backdrop-filter: blur(1px) contrast(1.12);
+    backdrop-filter: blur(1px) contrast(1.12);
+    transform: translate3d(var(--kira-lens-dx), var(--kira-lens-dy), 0)
+      skewX(var(--kira-lens-shear));
+  }
+
+  .kira-tenet-lens-target::after {
+    inset: -3px;
+    border: 1px solid rgb(252 163 17 / 55%);
+    background: linear-gradient(118deg, transparent 15%, rgb(229 229 229 / 18%) 48%,
+      rgb(252 163 17 / 12%) 54%, transparent 82%);
+    transform: translate3d(var(--kira-lens-dx), var(--kira-lens-dy), 0)
+      skewX(var(--kira-lens-shear)) scaleX(1.035);
+  }
+
+  .kira-tenet-lens-target [data-tenet-lens-body] {
+    display: inline-block;
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+    .kira-tenet-lens-target::before,
+    .kira-tenet-lens-target::after { display: none; }
   }
 
   /* Keep an explicit keyboard-visible outline even outside our components. */
