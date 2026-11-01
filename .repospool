@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4393
+index_bytes=4572
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,98 +15,101 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	e775894910f69f16bae7b5c32b82cd6aaa3723bc
-F	.cargo/config.toml	98	119	3
-F	.github/workflows/ci.yml	4355	124	112
-F	.github/workflows/frontend-nix.yml	1398	238	43
-F	.github/workflows/nix.yml	1258	283	38
-F	.github/workflows/overlay-smoke.yml	1064	323	40
-F	.github/workflows/publish-repospool.yml	3048	365	83
-F	.gitignore	178	450	11
-F	.repospoolignore	1028	463	47
-F	AGENTS.md	3992	512	66
-F	Cargo.toml	494	580	22
-F	README.md	11269	604	248
-F	Taskfile.yml	5957	854	185
-F	config/kira.kdl.example	358	1041	8
-F	crates/kira-core/Cargo.toml	207	1051	10
-F	crates/kira-core/src/config.rs	15217	1063	399
-F	crates/kira-core/src/main.rs	32080	1464	839
-F	crates/kira-core/src/niri.rs	16767	2305	453
-F	crates/kira-ipc/Cargo.toml	170	2760	9
-F	crates/kira-ipc/src/client.rs	17794	2771	458
-F	crates/kira-ipc/src/lib.rs	10460	3231	336
-F	crates/kira-shell/Cargo.toml	297	3569	12
-F	crates/kira-shell/src/calendar.rs	38858	3583	1043
-F	crates/kira-shell/src/launcher.rs	14114	4628	392
-F	crates/kira-shell/src/main.rs	19285	5022	447
-F	crates/kira-shell/src/native_ui.rs	2857	5471	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5546	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5834	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5952	559
-F	crates/kira-shell/src/system_panel.rs	11356	6513	318
-F	docs/CONFIG.md	5801	6833	125
-F	docs/DESIGN_SYSTEM.md	23122	6960	392
-F	docs/DEVELOPMENT.md	29347	7354	577
-F	docs/QA_VISUAL.md	12284	7933	149
-F	docs/SPECIFICATION.md	28960	8084	421
-F	docs/TENET_MOTION.md	20941	8507	127
-F	docs/UI_ARCHITECTURE.md	6737	8636	106
-F	docs/VISUAL_REVIEW.md	9754	8744	84
-F	flake.nix	3181	8830	91
-F	frontend/index.html	2737	8923	66
-F	frontend/package.json	720	8991	27
-F	frontend/scripts/inline-assets.mjs	4457	9020	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9125	106
-F	frontend/scripts/smoke-overlays.mjs	17254	9233	258
-F	frontend/src/App.svelte	8659	9493	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9695	84
-F	frontend/src/lib/bootstrap.ts	2613	9781	70
-F	frontend/src/lib/calendar-model.test.ts	2687	9853	49
-F	frontend/src/lib/calendar-model.ts	4009	9904	88
-F	frontend/src/lib/clock-flight.test.ts	2404	9994	50
-F	frontend/src/lib/clock-flight.ts	1977	10046	50
-F	frontend/src/lib/components/CalendarWidget.svelte	8978	10098	198
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	10298	176
-F	frontend/src/lib/components/SystemCharts.svelte	9336	10476	212
-F	frontend/src/lib/components/SystemHealth.svelte	1684	10690	43
-F	frontend/src/lib/components/SystemWidget.svelte	13245	10735	245
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10982	61
-F	frontend/src/lib/launcher-model.test.ts	1370	11045	29
-F	frontend/src/lib/launcher-model.ts	778	11076	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	11096	89
-F	frontend/src/lib/lazy-widget.ts	1984	11187	63
-F	frontend/src/lib/motion.ts	8717	11252	244
-F	frontend/src/lib/overlay-size.ts	1090	11498	29
-F	frontend/src/lib/sdk/core.test.ts	22258	11529	444
-F	frontend/src/lib/sdk/core.ts	17793	11975	473
-F	frontend/src/lib/system-charts.test.ts	6312	12450	141
-F	frontend/src/lib/system-charts.ts	5514	12593	149
-F	frontend/src/lib/system-health.test.ts	2385	12744	42
-F	frontend/src/lib/system-health.ts	2831	12788	60
-F	frontend/src/lib/system-model.test.ts	3900	12850	73
-F	frontend/src/lib/system-model.ts	4983	12925	113
-F	frontend/src/lib/themes/kira-default.css	1687	13040	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13094	101
-F	frontend/src/lib/themes/kira-default.ts	777	13197	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	13221	79
-F	frontend/src/lib/time.test.ts	263	13302	8
-F	frontend/src/lib/time.ts	320	13312	9
-F	frontend/src/main.ts	5907	13323	127
-F	frontend/src/style.css	3447	13452	107
-F	frontend/tsconfig.json	403	13561	16
-F	frontend/vite.config.ts	224	13579	8
-F	nix/package.nix	3132	13589	117
-F	scripts/dev_preview.py	18147	13708	403	x
-F	scripts/qa_visual.py	12052	14113	299
-F	tests/test_calendar_design.py	6835	14414	121
-F	tests/test_detailed_health.py	5195	14537	101
-F	tests/test_dev_preview.py	9339	14640	219
-F	tests/test_launcher_design.py	9956	14861	182
-F	tests/test_native_theme.py	1567	15045	36
-F	tests/test_popup_geometry.py	6956	15083	118
-F	tests/test_qa_visual.py	10549	15203	217
-F	tests/test_ui_bootstrap_contract.py	1103	15422	29
+C	41fe3d4901436724c53500894d88f08bf0cb1b53
+F	.cargo/config.toml	98	122	3
+F	.github/workflows/ci.yml	4355	127	112
+F	.github/workflows/frontend-nix.yml	1398	241	43
+F	.github/workflows/nix.yml	1258	286	38
+F	.github/workflows/overlay-smoke.yml	1064	326	40
+F	.github/workflows/publish-repospool.yml	3048	368	83
+F	.gitignore	178	453	11
+F	.repospoolignore	1028	466	47
+F	AGENTS.md	3992	515	66
+F	Cargo.toml	494	583	22
+F	README.md	11269	607	248
+F	Taskfile.yml	5957	857	185
+F	config/kira.kdl.example	358	1044	8
+F	crates/kira-core/Cargo.toml	207	1054	10
+F	crates/kira-core/src/config.rs	15217	1066	399
+F	crates/kira-core/src/main.rs	32080	1467	839
+F	crates/kira-core/src/niri.rs	16767	2308	453
+F	crates/kira-ipc/Cargo.toml	170	2763	9
+F	crates/kira-ipc/src/client.rs	17794	2774	458
+F	crates/kira-ipc/src/lib.rs	10460	3234	336
+F	crates/kira-shell/Cargo.toml	297	3572	12
+F	crates/kira-shell/src/calendar.rs	38858	3586	1043
+F	crates/kira-shell/src/launcher.rs	14114	4631	392
+F	crates/kira-shell/src/main.rs	19285	5025	447
+F	crates/kira-shell/src/native_ui.rs	2857	5474	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5549	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5837	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5955	559
+F	crates/kira-shell/src/system_panel.rs	11356	6516	318
+F	docs/CONFIG.md	5801	6836	125
+F	docs/DESIGN_SYSTEM.md	23622	6963	399
+F	docs/DEVELOPMENT.md	29347	7364	577
+F	docs/QA_VISUAL.md	12284	7943	149
+F	docs/SPECIFICATION.md	28960	8094	421
+F	docs/TENET_MOTION.md	20941	8517	127
+F	docs/UI_ARCHITECTURE.md	6737	8646	106
+F	docs/VISUAL_REVIEW.md	9754	8754	84
+F	flake.nix	3181	8840	91
+F	frontend/index.html	2737	8933	66
+F	frontend/package.json	720	9001	27
+F	frontend/scripts/inline-assets.mjs	4457	9030	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9135	106
+F	frontend/scripts/smoke-overlays.mjs	18698	9243	271
+F	frontend/src/App.svelte	8659	9516	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9718	84
+F	frontend/src/lib/bootstrap.ts	2613	9804	70
+F	frontend/src/lib/calendar-model.test.ts	2687	9876	49
+F	frontend/src/lib/calendar-model.ts	4009	9927	88
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10017	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10079	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10110	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10430	50
+F	frontend/src/lib/clock-flight.ts	1977	10482	50
+F	frontend/src/lib/components/CalendarWidget.svelte	9027	10534	198
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	10734	176
+F	frontend/src/lib/components/SystemCharts.svelte	9336	10912	212
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11126	43
+F	frontend/src/lib/components/SystemWidget.svelte	13245	11171	245
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11418	61
+F	frontend/src/lib/launcher-model.test.ts	1370	11481	29
+F	frontend/src/lib/launcher-model.ts	778	11512	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	11532	89
+F	frontend/src/lib/lazy-widget.ts	1984	11623	63
+F	frontend/src/lib/motion.ts	1597	11688	50
+F	frontend/src/lib/overlay-size.ts	1090	11740	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11771	444
+F	frontend/src/lib/sdk/core.ts	17793	12217	473
+F	frontend/src/lib/system-charts.test.ts	6312	12692	141
+F	frontend/src/lib/system-charts.ts	5514	12835	149
+F	frontend/src/lib/system-health.test.ts	2385	12986	42
+F	frontend/src/lib/system-health.ts	2831	13030	60
+F	frontend/src/lib/system-model.test.ts	3900	13092	73
+F	frontend/src/lib/system-model.ts	4983	13167	113
+F	frontend/src/lib/themes/kira-default.css	1687	13282	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13336	101
+F	frontend/src/lib/themes/kira-default.ts	777	13439	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13463	79
+F	frontend/src/lib/time.test.ts	263	13544	8
+F	frontend/src/lib/time.ts	320	13554	9
+F	frontend/src/main.ts	5907	13565	127
+F	frontend/src/style.css	3447	13694	107
+F	frontend/tsconfig.json	403	13803	16
+F	frontend/vite.config.ts	224	13821	8
+F	nix/package.nix	3132	13831	117
+F	scripts/dev_preview.py	18147	13950	403	x
+F	scripts/qa_visual.py	12052	14355	299
+F	tests/test_calendar_design.py	6835	14656	121
+F	tests/test_detailed_health.py	5195	14779	101
+F	tests/test_dev_preview.py	9339	14882	219
+F	tests/test_launcher_design.py	9956	15103	182
+F	tests/test_native_theme.py	1567	15287	36
+F	tests/test_popup_geometry.py	6956	15325	118
+F	tests/test_qa_visual.py	10549	15445	217
+F	tests/test_ui_bootstrap_contract.py	1103	15664	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7040,8 +7043,15 @@ official visual language of Kira Desktop.
   to the clipboard only on click.
   Clicking time again or pressing Escape closes; focus loss also dismisses
   after activation. The calendar and Launcher close each other when opened.
-  The calendar uses **GSAP** for a staggered section entrance,
-  directional month/year transitions, and a restrained selected-day pop.
+  Calendar motion now uses **TENET dual-time GSAP scenes**:
+  when sections appear or month/day selection changes, actual content moves
+  FORWARD while four recorded decorative fragments replay their original
+  outbound trajectories INVERTED into the real clock/selected-day contact.
+  Both flows share a master timeline and restore exact DOM geometry.
+  Clock numeral changes use paired FORWARD outgoing and INVERTED incoming
+  glyphs; clock-click chaos retains a new random outbound path for each
+  interaction but reverses **that identical GSAP timeline** to get home.
+  No scene fabricates time or delays the actual date selection.
   Only opacity/transform are animated: actual date arithmetic, keyboard
   focus, clipboard, and the 42px top bar remain unchanged. Motion is
   disabled by `prefers-reduced-motion`, interrupted transitions are killed,
@@ -9325,6 +9335,13 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
       'const clock = document.querySelector("[data-calendar-clock]");' +
       'document.documentElement.setAttribute("data-smoke-calendar-odometer", !!clock && clock.querySelectorAll("[data-clock-digit]").length === 6 && !!clock.getAttribute("aria-label") && !!clock.getAttribute("datetime") && clock.querySelectorAll("[data-clock-cell]").length === 6);' +
+      'const calGrid = document.querySelector("[aria-label=\\\"Calendar dates\\\"]");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-grid-events", calGrid?.dataset.tenetScenes || "0");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-grid-contact", !!calGrid?.dataset.tenetContact);' +
+      'document.documentElement.setAttribute("data-smoke-tenet-no-fragments", document.querySelectorAll("[data-tenet-fragment]").length === 0);' +
+      'document.documentElement.setAttribute("data-smoke-tenet-reveal", document.querySelector("main[data-kira-ui-root]")?.dataset.tenetReveal || "missing");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-clock-events", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetEvents || "0");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-clock-settled", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetPlayback === "settled");' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
@@ -9349,7 +9366,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -9358,7 +9375,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -9380,15 +9397,21 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
        !output.includes('data-smoke-calendar-picked="true"') ||
-       !output.includes('data-smoke-calendar-odometer="true"'))) {
+       !output.includes('data-smoke-calendar-odometer="true"') ||
+       !output.includes('data-smoke-tenet-grid-events="2"') ||
+       !output.includes('data-smoke-tenet-grid-contact="true"') ||
+       !output.includes('data-smoke-tenet-no-fragments="true"'))) {
     const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
   if (heightMode === 'clock' &&
       (!output.includes('data-smoke-clock-chaos-flew="true"') ||
        !output.includes('data-smoke-clock-chaos-reset="true"') ||
-       !output.includes('data-smoke-calendar-odometer="true"'))) {
-    const flags = output.match(/data-smoke-clock-chaos-[a-z-]+="[^"]*"/g) ?? [];
+       !output.includes('data-smoke-calendar-odometer="true"') ||
+       !output.includes('data-smoke-tenet-clock-events="2"') ||
+       !output.includes('data-smoke-tenet-clock-settled="true"') ||
+       !output.includes('data-smoke-tenet-no-fragments="true"'))) {
+    const flags = output.match(/data-smoke-(?:clock-chaos|tenet)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP clock digits must fly and return: ' + flags.join(', '));
   }
   if (heightMode === 'system') {
@@ -9990,6 +10013,419 @@ export function clockGlyphs(value: string): { char: string; digit: boolean }[] {
   }));
 }
 
+FILE	frontend/src/lib/calendar-tenet-model.test.ts
+import { describe, expect, it } from 'vitest';
+import { dualTime, temporalProgress, tenetFragmentsFor } from './calendar-tenet-model';
+import { nextClockFlights } from './clock-flight';
+
+describe('TENET Calendar temporal contract', () => {
+  it('advances simultaneous forward and inverted flows from a single cursor', () => {
+    expect(dualTime(0)).toEqual({ forward: 0, inverted: 1 });
+    expect(dualTime(0.25)).toEqual({ forward: 0.25, inverted: 0.75 });
+    expect(dualTime(0.5)).toEqual({ forward: 0.5, inverted: 0.5 });
+    expect(dualTime(1)).toEqual({ forward: 1, inverted: 0 });
+    expect(temporalProgress(-5, -1)).toBe(1);
+    expect(temporalProgress(5, 1)).toBe(1);
+    expect(temporalProgress(Number.NaN, 1)).toBe(0);
+  });
+
+  it('inverts one remembered flight without recalculating coordinates', () => {
+    const outward = tenetFragmentsFor(1);
+    const inbound = [...outward].reverse().reverse();
+    expect(inbound).toEqual(outward);
+    for (const flight of outward) {
+      // The very same recorded flight becomes a return when time is reversed.
+      const center = { x: 0, y: 0 };
+      const position = (progress: number) => ({
+        x: center.x + progress * flight.x,
+        y: center.y + progress * flight.y,
+        rotation: progress * flight.rotation,
+      });
+      for (const t of [0, 0.1, 0.5, 0.9, 1]) {
+        expect(position(dualTime(t).inverted))
+          .toEqual(position(dualTime(1 - t).forward));
+      }
+      // IEEE-754 -0 is physically identical to +0; compare magnitudes.
+      expect(Math.abs(position(0).x)).toBe(0);
+      expect(Math.abs(position(0).y)).toBe(0);
+      expect(Math.abs(position(0).rotation)).toBe(0);
+    }
+  });
+
+  it('changes outbound history when month direction changes, not the contact point', () => {
+    const forward = tenetFragmentsFor(1);
+    const backward = tenetFragmentsFor(-1);
+    expect(forward).toHaveLength(4);
+    expect(backward).toHaveLength(4);
+    for (let i = 0; i < forward.length; i++) {
+      expect(backward[i].x).toBe(-forward[i].x);
+      expect(backward[i].y).toBe(forward[i].y);
+      expect(backward[i].rotation).toBe(forward[i].rotation);
+    }
+  });
+
+  it('randomizes only between clock events, never while reversing a single one', () => {
+    const first = nextClockFlights(6, [], () => 0.2);
+    // Saved outbound positions are reused as-is on the return.
+    const memory = [...first];
+    expect(memory).toEqual(first);
+    const second = nextClockFlights(6, first, () => 0.2);
+    expect(second.every((flight, i) => flight.sector !== first[i].sector)).toBe(true);
+    expect(first).toEqual(memory);
+  });
+});
+
+FILE	frontend/src/lib/calendar-tenet-model.ts
+/** Pure, inspectable time laws for Calendar's GSAP TENET scenes.
+ * One event records its outbound path once; inverted playback runs the same
+ * keyframes in the opposite chronology. Not a mirrored x-axis.
+ */
+export type FlowDirection = 1 | -1;
+export interface FragmentFlight { x: number; y: number; rotation: number; }
+
+export function temporalProgress(progress: number, direction: FlowDirection): number {
+  const u = Number.isFinite(progress) ? Math.max(0, Math.min(1, progress)) : 0;
+  return direction === 1 ? u : 1 - u;
+}
+
+/** Coordinates relative to the same contact point; saved for the event.
+ * Changing month direction changes the outbound history, not the return.
+ */
+export function tenetFragmentsFor(direction: number): FragmentFlight[] {
+  const sign = direction < 0 ? -1 : 1;
+  return [
+    { x: -39 * sign, y: -18, rotation: -65 },
+    { x: 31 * sign, y: 29, rotation: 42 },
+    { x: -14 * sign, y: 40, rotation: 80 },
+    { x: 37 * sign, y: -32, rotation: -35 },
+  ];
+}
+
+/** Same master cursor for both streams. Each uses its own chronology. */
+export function dualTime(progress: number): { forward: number; inverted: number } {
+  return { forward: temporalProgress(progress, 1), inverted: temporalProgress(progress, -1) };
+}
+
+FILE	frontend/src/lib/calendar-tenet-motion.ts
+/** TENET Motion System for the Calendar.
+ *
+ * A single interaction owns a remembered scene. FORWARD elements settle
+ * normally while INVERTED fragments replay one pre-recorded outward flight
+ * backward towards the SAME contact point. All scenes are cancellable and
+ * leave no transforms, fragments, timers or RAF loops behind.
+ */
+import { gsap } from 'gsap';
+import { nextClockFlights, type ClockFlight } from './clock-flight';
+import { dualTime, tenetFragmentsFor, type FragmentFlight } from './calendar-tenet-model';
+
+type Scene = { forward: gsap.core.Timeline; inverted: gsap.core.Timeline; fragments: HTMLElement[] };
+const ACCENT = '#fca311';
+const MUTED = '#e5e5e5';
+
+function reduced(motion: MediaQueryList): boolean { return motion.matches; }
+
+function createFragments(root: HTMLElement, contact: HTMLElement, positions: readonly FragmentFlight[]): HTMLElement[] {
+  const base = root.getBoundingClientRect();
+  const target = contact.getBoundingClientRect();
+  const x = target.left - base.left + target.width / 2;
+  const y = target.top - base.top + target.height / 2;
+  return positions.map((_, i) => {
+    const fragment = root.ownerDocument.createElement('span');
+    fragment.dataset.tenetFragment = 'inverted';
+    fragment.setAttribute('aria-hidden', 'true');
+    fragment.style.cssText = [
+      'position:absolute', 'pointer-events:none', 'z-index:1', 'width:4px', 'height:4px',
+      `left:${x}px`, `top:${y}px`, `background:${i % 2 ? MUTED : ACCENT}`,
+      'opacity:0', 'transform-origin:center center',
+    ].join(';');
+    root.appendChild(fragment);
+    return fragment;
+  });
+}
+
+/** Scene master timeline advances forward content and reverses the exact
+ * same recorded fragment keyframes. Both streams meet at the contact point.
+ */
+function dualScene(
+  root: HTMLElement,
+  contact: HTMLElement,
+  targets: readonly HTMLElement[],
+  direction: number,
+  cleanup: () => void,
+): Scene {
+  const positions = tenetFragmentsFor(direction);
+  const fragments = createFragments(root, contact, positions);
+  gsap.set(fragments, { x: 0, y: 0, rotation: 0, scale: 0, opacity: 0 });
+  const inverted = gsap.timeline({ paused: true });
+  inverted.to(fragments, {
+    x: (i: number) => positions[i].x,
+    y: (i: number) => positions[i].y,
+    rotation: (i: number) => positions[i].rotation,
+    scale: 1,
+    opacity: 0.85,
+    duration: 0.52,
+    stagger: 0.025,
+    ease: 'power3.out',
+  }, 0);
+  inverted.progress(1); // Future trace exists first; then returns to contact.
+  const forward = gsap.timeline({
+    paused: true,
+    onUpdate: () => { inverted.progress(dualTime(forward.progress()).inverted); },
+    onComplete: cleanup,
+  });
+  forward.fromTo(targets,
+    { autoAlpha: 0, x: 10 * direction, y: 5, scale: 0.985 },
+    {
+      autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.43, stagger: 0.005,
+      ease: 'power2.out',
+    },
+    0);
+  forward.play(0);
+  return { forward, inverted, fragments };
+}
+
+export function tenetCalendarReveal(node: HTMLElement) {
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const targets = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
+  const clock = node.querySelector<HTMLElement>('[data-calendar-clock-play]');
+  let scene: Scene | null = null;
+  let restoreTimer: number | null = null;
+
+  function stop() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
+    const old = scene;
+    scene = null;
+    old?.forward.kill();
+    old?.inverted.kill();
+    old?.fragments.forEach(fragment => fragment.remove());
+    gsap.killTweensOf(targets);
+    gsap.set(targets, { clearProps: 'opacity,visibility,transform' });
+  }
+  const onMotionChange = () => { if (reduced(motion)) stop(); };
+  motion.addEventListener('change', onMotionChange);
+  if (!reduced(motion) && clock) {
+    node.dataset.tenetReveal = 'started';
+    scene = dualScene(node, clock, targets, 1, () => {
+      stop();
+      node.dataset.tenetReveal = 'settled';
+    });
+    // Hidden/throttled WebKit views may suspend RAF. Never strand fragments.
+    restoreTimer = window.setTimeout(() => {
+      stop();
+      node.dataset.tenetReveal = 'settled';
+    }, 950);
+  }
+
+  return {
+    destroy() {
+      motion.removeEventListener('change', onMotionChange);
+      stop();
+    },
+  };
+}
+
+/** Calendar navigation: day/date text moves FORWARD; four fragments move
+ * INVERTED back into the newly selected day. The real date has already
+ * changed in Svelte; motion never delays selection, focus or keyboard input.
+ */
+export function tenetCalendarGrid(
+  node: HTMLElement,
+  initial: { month: number; selected: string },
+) {
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let lastMonth = initial.month;
+  let lastSelected = initial.selected;
+  let scene: Scene | null = null;
+  let restoreTimer: number | null = null;
+  let activeTargets: HTMLElement[] = [];
+
+  function stop() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
+    const old = scene;
+    scene = null;
+    old?.forward.kill();
+    old?.inverted.kill();
+    old?.fragments.forEach(fragment => fragment.remove());
+    gsap.killTweensOf(activeTargets);
+    gsap.set(activeTargets, { clearProps: 'opacity,visibility,transform' });
+    activeTargets = [];
+  }
+  const onMotionChange = () => { if (reduced(motion)) stop(); };
+  motion.addEventListener('change', onMotionChange);
+
+  return {
+    update(next: { month: number; selected: string }) {
+      const changedMonth = next.month !== lastMonth;
+      const changedSelection = next.selected !== lastSelected;
+      const direction = next.month < lastMonth ? -1 : 1;
+      lastMonth = next.month;
+      lastSelected = next.selected;
+      if (!changedMonth && !changedSelection) return;
+
+      stop();
+      if (reduced(motion)) return;
+      const selected = node.querySelector<HTMLElement>('[data-calendar-selected="true"]');
+      if (!selected) return;
+      activeTargets = changedMonth
+        ? Array.from(node.querySelectorAll<HTMLElement>('[data-calendar-day]'))
+        : [selected];
+      node.dataset.tenetScenes = String(Number(node.dataset.tenetScenes || '0') + 1);
+      node.dataset.tenetContact = next.selected;
+      scene = dualScene(node, selected, activeTargets, direction, stop);
+      restoreTimer = window.setTimeout(stop, 950);
+    },
+    destroy() {
+      motion.removeEventListener('change', onMotionChange);
+      stop();
+    },
+  };
+}
+
+/** Each second: the stale numeral moves forward out of the cell while
+ * the real current numeral replays a remembered outbound path INVERTED
+ * into the SAME cell. The real datetime and accessible clock never pause.
+ */
+export function tenetClockDigit(node: HTMLElement, initial: string) {
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let previous = initial;
+  let forward: gsap.core.Timeline | null = null;
+  let inverted: gsap.core.Timeline | null = null;
+  let ghost: HTMLSpanElement | null = null;
+  let restoreTimer: number | null = null;
+
+  function stop() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
+    forward?.kill();
+    inverted?.kill();
+    forward = null;
+    inverted = null;
+    ghost?.remove();
+    ghost = null;
+    gsap.killTweensOf(node);
+    gsap.set(node, { clearProps: 'opacity,visibility,transform,color' });
+  }
+  const onMotionChange = () => { if (reduced(motion)) stop(); };
+  motion.addEventListener('change', onMotionChange);
+  return {
+    update(next: string) {
+      if (next === previous) return;
+      const outgoing = previous;
+      previous = next;
+      stop();
+      if (reduced(motion) || !node.parentElement) return;
+      const relic = node.ownerDocument.createElement('span');
+      relic.textContent = outgoing;
+      relic.setAttribute('aria-hidden', 'true');
+      relic.className = 'pointer-events-none absolute inset-0 flex items-center justify-center text-kira-muted';
+      node.parentElement.appendChild(relic);
+      ghost = relic;
+
+      inverted = gsap.timeline({ paused: true });
+      inverted.to(node, { yPercent: 85, autoAlpha: 0, duration: 0.4, ease: 'power3.out' }, 0);
+      inverted.progress(1); // New numeral is known; reverse its future exit.
+      forward = gsap.timeline({
+        paused: true,
+        onUpdate: () => { inverted?.progress(dualTime(forward?.progress() ?? 1).inverted); },
+        onComplete: stop,
+      });
+      forward.fromTo(relic,
+        { yPercent: 0, autoAlpha: 1 },
+        { yPercent: -85, autoAlpha: 0, duration: 0.4, ease: 'power3.out' }, 0);
+      forward.play(0);
+      // When WebKit throttles animation frames, do not leave a numeral
+      // invisible until the next real second tick.
+      restoreTimer = window.setTimeout(stop, 750);
+    },
+    destroy() {
+      motion.removeEventListener('change', onMotionChange);
+      stop();
+    },
+  };
+}
+
+/** Clock easter egg: every click chooses a fresh set of six paths, but
+ * each single event uses ONE GSAP timeline played FORWARD and then
+ * REVERSED. This reverses the exact easing, stagger, rotation and opacity,
+ * unlike separate "fly away" and "spring back" tweens.
+ */
+export function tenetClockJuggle(node: HTMLButtonElement) {
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let animation: gsap.core.Timeline | null = null;
+  let restoreTimer: number | null = null;
+  let previousFlights: ClockFlight[] = [];
+  const cells = () => Array.from(node.querySelectorAll<HTMLElement>('[data-clock-cell]'));
+
+  function reset() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
+    const current = animation;
+    animation = null;
+    current?.kill();
+    const targets = cells();
+    gsap.killTweensOf(targets);
+    gsap.set(targets, { clearProps: 'transform,opacity,visibility' });
+    node.dataset.tenetPlayback = 'settled';
+  }
+
+  function play() {
+    reset();
+    if (reduced(motion)) return;
+    const targets = cells();
+    if (!targets.length) return;
+    const flights = nextClockFlights(targets.length, previousFlights);
+    previousFlights = flights; // Next event differs; reverse never rerolls.
+    let returning = false;
+    node.dataset.tenetEvents = String(Number(node.dataset.tenetEvents || '0') + 1);
+    node.dataset.tenetPlayback = 'forward';
+    animation = gsap.timeline({
+      paused: true,
+      onComplete: () => {
+        if (!returning) {
+          returning = true;
+          node.dataset.tenetPlayback = 'inverted';
+          animation?.reverse(); // Same recorded physical history backwards.
+        }
+      },
+      onReverseComplete: reset,
+    });
+    animation.to(targets, {
+      x: (i: number) => flights[i].x,
+      y: (i: number) => flights[i].y,
+      rotation: (i: number) => flights[i].rotation,
+      scale: (i: number) => flights[i].scale,
+      opacity: (i: number) => flights[i].opacity,
+      duration: 0.38,
+      stagger: 0.026,
+      ease: 'power3.out',
+    }, 0);
+    animation.play(0);
+    // Guard against throttled frames in WebKitGTK. Never strand digits.
+    restoreTimer = window.setTimeout(reset, 1450);
+  }
+
+  const onMotionChange = () => { if (reduced(motion)) reset(); };
+  node.addEventListener('click', play);
+  motion.addEventListener('change', onMotionChange);
+  return {
+    destroy() {
+      node.removeEventListener('click', play);
+      motion.removeEventListener('change', onMotionChange);
+      reset();
+    },
+  };
+}
+
 FILE	frontend/src/lib/clock-flight.test.ts
 import { describe, expect, it } from 'vitest';
 import { nextClockFlights } from './clock-flight';
@@ -10097,7 +10533,7 @@ export function nextClockFlights(
 FILE	frontend/src/lib/components/CalendarWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { calendarGridMotion, clockJuggle, revealStagger, rollingClockDigit } from '../motion';
+  import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import {
     clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -10194,14 +10630,14 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 
 <main
   data-kira-ui-root
-  use:revealStagger
-  class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
+  use:tenetCalendarReveal
+  class="relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
   <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
     <div class="min-w-0">
       <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
-      <button type="button" use:clockJuggle data-calendar-clock-play
+      <button type="button" use:tenetClockJuggle data-calendar-clock-play
         aria-label="Make the clock digits fly and return"
         title="Click for a little clock chaos"
         class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
@@ -10212,7 +10648,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
             <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
               aria-hidden="true" data-clock-cell>
               <span class="flex h-full w-full items-center justify-center"
-                data-clock-digit use:rollingClockDigit={part.char}>{part.char}</span>
+                data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
             </span>
           {:else}
             <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
@@ -10248,8 +10684,8 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
       </div>
     </div>
 
-    <div class="grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates"
-      use:calendarGridMotion={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
+    <div class="relative grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates"
+      use:tenetCalendarGrid={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
       <span class="py-2 text-[10px] font-bold text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
         <span class="py-2 text-[10px] font-bold text-kira-muted">{label}</span>
@@ -11254,7 +11690,6 @@ FILE	frontend/src/lib/motion.ts
  * GTK/Wayland windows, and reduced-motion is a functional no-animation path.
  */
 import { gsap } from 'gsap';
-import { nextClockFlights, type ClockFlight } from './clock-flight';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -11300,199 +11735,6 @@ export function pulseReading(node: HTMLElement, initial: string) {
   };
 }
 
-/**
- * Calendar-only GSAP interaction: horizontal month/year reveal followed by a
- * restrained selection pop. Svelte owns actual dates and focus; GSAP changes
- * presentation only. No timers, fake dates, or transitional DOM copies.
- */
-export function calendarGridMotion(
-  node: HTMLElement,
-  initial: { month: number; selected: string },
-) {
-  let lastMonth = initial.month;
-  let lastSelected = initial.selected;
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const buttons = () => node.querySelectorAll<HTMLElement>('[data-calendar-day]');
-  const clear = () => {
-    const days = buttons();
-    gsap.killTweensOf(days);
-    gsap.set(days, { clearProps: 'opacity,visibility,transform' });
-  };
-  const onMotionChange = () => {
-    if (motion.matches) clear();
-  };
-  motion.addEventListener('change', onMotionChange);
-  return {
-    update(next: { month: number; selected: string }) {
-      const monthChanged = next.month !== lastMonth;
-      const selectedChanged = next.selected !== lastSelected;
-      const direction = Math.sign(next.month - lastMonth);
-      lastMonth = next.month;
-      lastSelected = next.selected;
-      if ((!monthChanged && !selectedChanged) || motion.matches) {
-        if (motion.matches) clear();
-        return;
-      }
-      if (monthChanged) {
-        const days = buttons();
-        gsap.killTweensOf(days);
-        gsap.fromTo(days,
-          { autoAlpha: 0, x: direction * 9 },
-          {
-            autoAlpha: 1, x: 0, duration: 0.3, stagger: 0.004,
-            ease: 'power2.out', overwrite: true,
-            clearProps: 'opacity,visibility,transform',
-          },
-        );
-      } else {
-        const selected = node.querySelector<HTMLElement>('[data-calendar-selected="true"]');
-        if (!selected) return;
-        gsap.killTweensOf(selected);
-        gsap.fromTo(selected,
-          { scale: 0.89, transformOrigin: 'center center' },
-          {
-            scale: 1, duration: 0.32, ease: 'back.out(2)',
-            overwrite: true, clearProps: 'transform,transformOrigin',
-          },
-        );
-      }
-    },
-    destroy() {
-      motion.removeEventListener('change', onMotionChange);
-      clear();
-    },
-  };
-}
-
-/** Odometer-style clock glyph with short, interruptible GSAP transitions.
- * The actual character, ARIA label and datetime remain Svelte-owned. This
- * action decorates only changed numerals, never replays unchanged digits.
- */
-export function rollingClockDigit(node: HTMLElement, initial: string) {
-  let previous = initial;
-  let animation: gsap.core.Timeline | null = null;
-  let ghost: HTMLSpanElement | null = null;
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  const stop = () => {
-    animation?.kill();
-    animation = null;
-    ghost?.remove();
-    ghost = null;
-    gsap.set(node, { clearProps: 'opacity,transform,filter,color' });
-  };
-  const onMotionChange = () => { if (motion.matches) stop(); };
-  motion.addEventListener('change', onMotionChange);
-
-  return {
-    update(next: string) {
-      if (next === previous) return;
-      const outgoing = previous;
-      previous = next;
-      stop();
-      if (motion.matches) return;
-
-      const parent = node.parentElement;
-      if (!parent) return;
-      ghost = node.ownerDocument.createElement('span');
-      ghost.textContent = outgoing;
-      ghost.setAttribute('aria-hidden', 'true');
-      ghost.className = 'pointer-events-none absolute inset-0 flex items-center justify-center text-kira-muted';
-      parent.appendChild(ghost);
-
-      const currentGhost = ghost;
-      animation = gsap.timeline({
-        defaults: { duration: 0.42, ease: 'power3.out' },
-        onComplete: () => {
-          currentGhost.remove();
-          if (ghost === currentGhost) ghost = null;
-          animation = null;
-          gsap.set(node, { clearProps: 'opacity,transform,filter,color' });
-        },
-      });
-      animation.fromTo(node,
-        { yPercent: 85, autoAlpha: 0, filter: 'blur(2px)', color: '#fca311' },
-        { yPercent: 0, autoAlpha: 1, filter: 'blur(0px)', color: 'inherit' },
-        0);
-      animation.to(currentGhost, {
-        yPercent: -85, autoAlpha: 0, duration: 0.35, ease: 'power2.inOut',
-      }, 0);
-    },
-    destroy() {
-      motion.removeEventListener('change', onMotionChange);
-      stop();
-    },
-  };
-}
-
-/** Intentionally useless clock easter egg. Clicking the actual time sends its
- * six glyph cells flying in freshly randomized directions before restoring every one.
- * GSAP owns decoration only: the live wall clock and odometer can tick in
- * their inner spans throughout. Repeated clicks restart cleanly.
- */
-export function clockJuggle(node: HTMLButtonElement) {
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let animation: gsap.core.Timeline | null = null;
-  let restoreTimer: number | null = null;
-  let previousFlights: ClockFlight[] = [];
-  const cells = () => Array.from(node.querySelectorAll<HTMLElement>('[data-clock-cell]'));
-
-  function reset() {
-    // A one-shot safety reset is important when GTK/WebKit throttles GSAP
-    // requestAnimationFrame during compositor or window visibility changes.
-    if (restoreTimer !== null) {
-      window.clearTimeout(restoreTimer);
-      restoreTimer = null;
-    }
-    animation?.kill();
-    animation = null;
-    const targets = cells();
-    gsap.killTweensOf(targets);
-    gsap.set(targets, { clearProps: 'transform,opacity,visibility' });
-  }
-
-  function play() {
-    reset();
-    if (motion.matches) return;
-    const targets = cells();
-    if (!targets.length) return;
-    // Each click draws a new flight plan. Sector memory survives resets so
-    // even identical random sequences cannot repeat the previous directions.
-    const flights = nextClockFlights(targets.length, previousFlights);
-    previousFlights = flights;
-    animation = gsap.timeline({ onComplete: reset });
-    animation.to(targets, {
-      x: (index: number) => flights[index].x,
-      y: (index: number) => flights[index].y,
-      rotation: (index: number) => flights[index].rotation,
-      scale: (index: number) => flights[index].scale,
-      opacity: (index: number) => flights[index].opacity,
-      duration: 0.27,
-      stagger: 0.026,
-      ease: 'power3.out',
-    }, 0);
-    animation.to(targets, {
-      x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
-      duration: 0.48, stagger: { each: 0.02, from: 'end' },
-      ease: 'back.out(2.3)',
-    }, 0.34);
-    // GSAP completes in under a second during normal rendering. If
-    // requestAnimationFrame is suspended, never leave digits scattered.
-    // The timeout is scoped to the click and cancelled on complete/destroy.
-    restoreTimer = window.setTimeout(reset, 1200);
-  }
-
-  const onMotionChange = () => { if (motion.matches) reset(); };
-  node.addEventListener('click', play);
-  motion.addEventListener('change', onMotionChange);
-  return {
-    destroy() {
-      node.removeEventListener('click', play);
-      motion.removeEventListener('change', onMotionChange);
-      reset();
-    },
-  };
-}
 
 FILE	frontend/src/lib/overlay-size.ts
 import { notifyOverlayHeight } from './sdk/core';
