@@ -61,7 +61,7 @@ impl Drop for SocketGuard {
 /// Keep the lock file on disk: unlinking a locked file permits a second lock
 /// on a new inode. The enclosing runtime/preview directory owns its cleanup.
 fn recover_stale_socket(path: &Path, lock: &File) -> io::Result<()> {
-    let occupied = |reason| io::Error::new(io::ErrorKind::AddrInUse, reason);
+    let occupied = |reason: &'static str| io::Error::new(io::ErrorKind::AddrInUse, reason);
     let parent = path
         .parent()
         .ok_or_else(|| occupied("Core socket has no parent directory"))?;
@@ -517,7 +517,6 @@ mod tests {
         std::fs::remove_file(&path).unwrap();
         std::fs::remove_dir(&dir).unwrap();
     }
-
 
     #[test]
     fn replaces_abandoned_socket_after_unclean_shutdown() {
