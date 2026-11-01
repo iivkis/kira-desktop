@@ -59,7 +59,6 @@ impl PulseSampler {
     }
 }
 
-
 #[derive(Debug, Clone)]
 pub struct GpuSnapshot {
     pub label: String,
@@ -444,7 +443,9 @@ mod tests {
     #[test]
     fn pulse_reads_real_cpu_deltas_and_memory_without_sysfs() {
         let dir = std::env::temp_dir().join(format!(
-            "kira-pulse-{}-{:?}", std::process::id(), std::thread::current().id()
+            "kira-pulse-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
         ));
         fs::create_dir_all(&dir).unwrap();
         let stat = dir.join("stat");
