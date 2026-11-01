@@ -16,9 +16,59 @@ const VISIBLE_ROWS: usize = 36;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Sort {
+    Name,
+    Pid,
     Cpu,
     Memory,
-    Pid,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+struct SortState {
+    field: Sort,
+    descending: bool,
+}
+
+impl SortState {
+    const fn new(field: Sort) -> Self {
+        Self {
+            field,
+            descending: matches!(field, Sort::Cpu | Sort::Memory),
+        }
+    }
+
+    fn clicked(self, field: Sort) -> Self {
+        if self.field == field {
+            Self { field, descending: !self.descending }
+        } else {
+            Self::new(field)
+        }
+    }
+}
+
+/// Unknown readings stay at the bottom in either direction.
+fn compare_known<T: PartialOrd>(a: Option<T>, b: Option<T>, descending: bool) -> Ordering {
+    match (a, b) {
+        (Some(a), Some(b)) => {
+            let order = a.partial_cmp(&b).unwrap_or(Ordering::Equal);
+            if descending { order.reverse() } else { order }
+        }
+        (Some(_), None) => Ordering::Less,
+        (None, Some(_)) => Ordering::Greater,
+        (None, None) => Ordering::Equal,
+    }
+}
+
+fn compare_rows(a: &ProcessRow, b: &ProcessRow, sort: SortState) -> Ordering {
+    let result = match sort.field {
+        Sort::Name => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
+        Sort::Pid => a.pid.cmp(&b.pid),
+        Sort::Cpu => return compare_known(a.cpu_percent, b.cpu_percent, sort.descending)
+            .then_with(|| compare_known(a.rss_kib, b.rss_kib, true))
+            .then(a.pid.cmp(&b.pid)),
+        Sort::Memory => compare_known(a.rss_kib, b.rss_kib, sort.descending),
+    };
+    let result = if sort.descending { result.reverse() } else { result };
+    result.then(a.pid.cmp(&b.pid))
 }
 
 pub struct ProcessPage {
@@ -27,12 +77,10 @@ pub struct ProcessPage {
     scroll: gtk::ScrolledWindow,
     summary: gtk::Label,
     query: RefCell<String>,
-    sort: Cell<Sort>,
+    sort: Cell<SortState>,
     latest: RefCell<Option<ProcessSnapshot>>,
     error: RefCell<Option<String>>,
-    cpu_button: gtk::Button,
-    memory_button: gtk::Button,
-    pid_button: gtk::Button,
+    headers: [(gtk::Button, gtk::Label); 4],
     running: Arc<AtomicBool>,
     active: Arc<AtomicBool>,
     receiver: RefCell<mpsc::Receiver<Result<ProcessSnapshot, String>>>,
@@ -53,27 +101,19 @@ impl ProcessPage {
         filter.add_css_class("kira-process-search");
         root.append(&filter);
 
-        let sort_controls = gtk::Box::new(gtk::Orientation::Horizontal, 6);
-        sort_controls.add_css_class("kira-process-controls");
-        let caption = gtk::Label::new(Some("SORT"));
-        caption.add_css_class("kira-process-caption");
-        caption.set_hexpand(true);
-        caption.set_xalign(0.0);
-        sort_controls.append(&caption);
-        let cpu_button = sort_button("CPU", "Sort by CPU usage, highest first");
-        let memory_button = sort_button("RAM", "Sort by resident memory, highest first");
-        let pid_button = sort_button("PID", "Sort by process identifier");
-        for button in [&cpu_button, &memory_button, &pid_button] {
-            sort_controls.append(button);
-        }
-        root.append(&sort_controls);
-
+        // The column headings are the sort controls. Clicking the current
+        // heading toggles direction; no second toolbar consumes vertical space.
         let headings = gtk::Box::new(gtk::Orientation::Horizontal, 0);
         headings.add_css_class("kira-process-headings");
-        headings.append(&text("PROCESS", "kira-process-heading", true, 0));
-        headings.append(&text("PID", "kira-process-heading", false, 6));
-        headings.append(&text("CPU", "kira-process-heading", false, 7));
-        headings.append(&text("RAM", "kira-process-heading", false, 8));
+        let headers = [
+            column_header("PROCESS", true, 0),
+            column_header("PID", false, 6),
+            column_header("CPU", false, 7),
+            column_header("RAM", false, 8),
+        ];
+        for (button, _) in &headers {
+            headings.append(button);
+        }
         root.append(&headings);
 
         let scroll = gtk::ScrolledWindow::new();
@@ -128,12 +168,10 @@ impl ProcessPage {
             scroll,
             summary,
             query: RefCell::new(String::new()),
-            sort: Cell::new(Sort::Cpu),
+            sort: Cell::new(SortState::new(Sort::Cpu)),
             latest: RefCell::new(None),
             error: RefCell::new(None),
-            cpu_button,
-            memory_button,
-            pid_button,
+            headers,
             running,
             active,
             receiver: RefCell::new(receiver),
@@ -149,12 +187,10 @@ impl ProcessPage {
                 page.render();
             }
         });
-        for (button, sort) in [
-            (&page.cpu_button, Sort::Cpu),
-            (&page.memory_button, Sort::Memory),
-            (&page.pid_button, Sort::Pid),
-        ] {
-            connect_sort(button, sort, Rc::downgrade(&page));
+        for ((button, _), field) in page.headers.iter().zip([
+            Sort::Name, Sort::Pid, Sort::Cpu, Sort::Memory,
+        ]) {
+            connect_sort(button, field, Rc::downgrade(&page));
         }
         page
     }
@@ -201,15 +237,27 @@ impl ProcessPage {
     }
 
     fn update_sort_styles(&self) {
-        for (button, sort) in [
-            (&self.cpu_button, Sort::Cpu),
-            (&self.memory_button, Sort::Memory),
-            (&self.pid_button, Sort::Pid),
-        ] {
-            if self.sort.get() == sort {
-                button.add_css_class("kira-process-sort-current");
+        let sort = self.sort.get();
+        for ((button, caption), (field, name)) in self.headers.iter().zip([
+            (Sort::Name, "PROCESS"),
+            (Sort::Pid, "PID"),
+            (Sort::Cpu, "CPU"),
+            (Sort::Memory, "RAM"),
+        ]) {
+            if sort.field == field {
+                button.add_css_class("kira-process-header-active");
+                caption.set_text(&format!(
+                    "{name} {}", if sort.descending { "↓" } else { "↑" }
+                ));
+                button.set_tooltip_text(Some(if sort.descending {
+                    "Sorted descending; click to sort ascending"
+                } else {
+                    "Sorted ascending; click to sort descending"
+                }));
             } else {
-                button.remove_css_class("kira-process-sort-current");
+                button.remove_css_class("kira-process-header-active");
+                caption.set_text(name);
+                button.set_tooltip_text(Some("Click to sort by this column"));
             }
         }
     }
@@ -242,19 +290,8 @@ impl ProcessPage {
                     || row.pid.to_string().contains(query.as_str())
             })
             .collect();
-        match self.sort.get() {
-            Sort::Cpu => rows.sort_by(|a, b| {
-                b.cpu_percent
-                    .partial_cmp(&a.cpu_percent)
-                    .unwrap_or(Ordering::Equal)
-                    .then_with(|| b.rss_kib.cmp(&a.rss_kib))
-                    .then(a.pid.cmp(&b.pid))
-            }),
-            Sort::Memory => {
-                rows.sort_by(|a, b| b.rss_kib.cmp(&a.rss_kib).then_with(|| a.pid.cmp(&b.pid)))
-            }
-            Sort::Pid => rows.sort_by_key(|row| row.pid),
-        }
+        let sort = self.sort.get();
+        rows.sort_by(|a, b| compare_rows(a, b, sort));
         let matches = rows.len();
         while let Some(child) = self.rows.first_child() {
             self.rows.remove(&child);
@@ -325,19 +362,74 @@ fn text(value: &str, class: &str, flexible: bool, width: i32) -> gtk::Label {
     label
 }
 
-fn sort_button(name: &str, tooltip: &str) -> gtk::Button {
-    let button = gtk::Button::with_label(name);
-    button.add_css_class("kira-process-sort");
-    button.set_tooltip_text(Some(tooltip));
-    button
+fn column_header(name: &str, flexible: bool, width: i32) -> (gtk::Button, gtk::Label) {
+    let button = gtk::Button::new();
+    button.add_css_class("kira-process-header");
+    button.set_hexpand(flexible);
+    let caption = text(name, "kira-process-heading", flexible, width);
+    button.set_child(Some(&caption));
+    (button, caption)
 }
 
-fn connect_sort(button: &gtk::Button, sort: Sort, weak: Weak<ProcessPage>) {
+fn connect_sort(button: &gtk::Button, field: Sort, weak: Weak<ProcessPage>) {
     button.connect_clicked(move |_| {
         if let Some(page) = weak.upgrade() {
-            page.sort.set(sort);
+            page.sort.set(page.sort.get().clicked(field));
             page.scroll.vadjustment().set_value(0.0);
             page.render();
         }
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn process(pid: u32, name: &str, cpu: Option<f64>, rss: Option<u64>) -> ProcessRow {
+        ProcessRow { pid, name: name.to_string(), cpu_percent: cpu, rss_kib: rss, state: 'S' }
+    }
+
+    #[test]
+    fn clicking_current_header_reverses_direction() {
+        let initial = SortState::new(Sort::Cpu);
+        assert!(initial.descending);
+        assert!(!initial.clicked(Sort::Cpu).descending);
+        assert!(initial.clicked(Sort::Cpu).clicked(Sort::Cpu).descending);
+        assert!(!initial.clicked(Sort::Name).descending);
+        assert!(initial.clicked(Sort::Memory).descending);
+        assert!(!initial.clicked(Sort::Pid).descending);
+    }
+
+    #[test]
+    fn each_column_sorts_both_directions() {
+        let mut rows = [
+            process(3, "zebra", Some(20.0), Some(4000)),
+            process(1, "alpha", Some(80.0), Some(1000)),
+            process(2, "beta", Some(50.0), Some(2000)),
+        ];
+        for (field, descending, expected) in [
+            (Sort::Name, false, [1, 2, 3]),
+            (Sort::Name, true, [3, 2, 1]),
+            (Sort::Pid, false, [1, 2, 3]),
+            (Sort::Pid, true, [3, 2, 1]),
+            (Sort::Cpu, false, [3, 2, 1]),
+            (Sort::Cpu, true, [1, 2, 3]),
+            (Sort::Memory, false, [1, 2, 3]),
+            (Sort::Memory, true, [3, 2, 1]),
+        ] {
+            rows.sort_by(|a, b| compare_rows(a, b, SortState { field, descending }));
+            assert_eq!(rows.map(|row| row.pid), expected);
+        }
+    }
+
+    #[test]
+    fn missing_metrics_are_last_in_both_directions() {
+        let a = process(1, "alpha", None, None);
+        let b = process(2, "beta", Some(1.0), Some(1024));
+        for descending in [true, false] {
+            for field in [Sort::Cpu, Sort::Memory] {
+                assert_eq!(compare_rows(&a, &b, SortState { field, descending }), Ordering::Greater);
+            }
+        }
+    }
 }
