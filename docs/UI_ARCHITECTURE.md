@@ -45,8 +45,8 @@ top-level window with the required layer-shell Wayland behavior by itself.
 3. **Launcher (implemented).** Svelte owns search, selection, layout and
    keyboard events. Rust GIO discovers desktop entries and launches by
    bounded, generation-scoped catalog index. Browser cannot supply executable
-   paths or shell commands. Application icon imagery uses an initial-letter
-   fallback pending optional themed icon support.
+   paths or shell commands. Application icons are resolved on demand through GTK IconTheme and delivered
+   as bounded image data URIs; missing icons retain the letter fallback.
 4. **System Monitor / processes (implemented).** The existing warm WebKit
    overlay now mounts `SystemWidget.svelte` or `CalendarWidget.svelte` on
    demand, never both. Rust keeps read-only kernel metrics, a bounded
