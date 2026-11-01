@@ -3,10 +3,23 @@
 
 pub mod client;
 
+use std::time::Duration;
+
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 pub const PROTOCOL_VERSION: &str = "2.0";
+
+/// Read-only subscription streams send a heartbeat even when Niri and KDL
+/// have not changed. Clients reconnect after three missed heartbeat periods.
+pub const SUBSCRIPTION_HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
+pub const SUBSCRIPTION_READ_TIMEOUT: Duration = Duration::from_secs(15);
+
+/// Heartbeats share the subscription's JSON-RPC id but never represent state.
+/// Match the *entire* shape so malformed results cannot silently mask errors.
+pub fn is_subscription_heartbeat(value: &Value) -> bool {
+    value == &json!({"heartbeat": true})
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RpcRequest {
@@ -82,6 +95,10 @@ pub struct ConfigState {
 }
 
 impl RpcResponse {
+    pub fn heartbeat(id: u64) -> Self {
+        Self::success(id, json!({"heartbeat": true}))
+    }
+
     pub fn success(id: u64, value: Value) -> Self {
         Self {
             jsonrpc: PROTOCOL_VERSION.into(),
@@ -136,6 +153,19 @@ pub fn dispatch_with_state(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn heartbeat_cannot_be_mistaken_for_workspace_or_config_state() {
+        let frame = RpcResponse::heartbeat(73);
+        assert_eq!(frame.id, Some(73));
+        assert_eq!(frame.jsonrpc, PROTOCOL_VERSION);
+        assert!(frame.error.is_none());
+        assert!(is_subscription_heartbeat(frame.result.as_ref().unwrap()));
+        assert!(!is_subscription_heartbeat(&json!({"heartbeat": false})));
+        assert!(!is_subscription_heartbeat(&json!({"heartbeat": true, "connected": true})));
+        assert!(!is_subscription_heartbeat(&json!(WorkspaceState::default())));
+        assert!(!is_subscription_heartbeat(&json!(ConfigState::default())));
+    }
 
     #[test]
     fn ping_round_trip() {
