@@ -14,14 +14,22 @@ const chrome = process.env.CHROME_BIN || 'google-chrome';
 const dir = await mkdtemp(join(tmpdir(), 'kira-overlay-smoke-'));
 
 function scriptFor(steps) {
-  return '<script>window.addEventListener("load", () => {' +
+  return '<script>' +
+    'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
+      'if (String(message).startsWith("size:")) {' +
+        'document.documentElement.setAttribute("data-smoke-size", String(message));' +
+        'const count = Number(document.documentElement.getAttribute("data-smoke-resizes") || 0) + 1;' +
+        'document.documentElement.setAttribute("data-smoke-resizes", count);' +
+      '}' +
+    '}}}};' +
+    'window.addEventListener("load", () => {' +
     steps.map(({ delay, kind, generation }) =>
       'setTimeout(() => {' +
         (kind === 'hide'
           ? 'window.dispatchEvent(new CustomEvent("kira:overlay:hide", {detail: {generation: ' +
             generation + '}}));'
           : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
-            kind + '", generation: ' + generation + '}}));') +
+            kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
     ).join('') +
     // Test the live DOM, not strings in the bundled Svelte templates.
@@ -29,6 +37,9 @@ function scriptFor(steps) {
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+      'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
+      'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
+      'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
     '}, 1150);' +
     '});</script>';
 }
@@ -51,7 +62,15 @@ async function smoke(name, steps, expected) {
     const found = output.match(/data-smoke-result="([^"]+)"/)?.[1] ?? 'no result';
     throw new Error(name + ': expected live Svelte ' + expected + ', found ' + found);
   }
-  console.log('OK: ' + name + ' mounted ' + expected);
+  const size = Number(output.match(/data-smoke-height="(\\d+)"/)?.[1] ?? 0);
+  const nativeMessage = output.match(/data-smoke-size="size:(\\d+):(\\d+)"/);
+  const resizeCount = Number(output.match(/data-smoke-resizes="(\\d+)"/)?.[1] ?? 0);
+  if (!nativeMessage || size <= 0 || size > 420 || Number(nativeMessage[2]) <= 0 ||
+      Number(nativeMessage[2]) > 420 || resizeCount > 12) {
+    throw new Error(name + ': popup size bridge/cap invalid (height=' +
+      size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
+  }
+  console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
 try {
