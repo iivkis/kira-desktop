@@ -73,6 +73,40 @@ export function appendPulse(
   return next.slice(-MAX_PULSE_POINTS);
 }
 
+/** Both panels must plot the SAME real timestamps and start on the
+ * first *concurrent* valid CPU/RAM sample. Linux's first CPU delta may be
+ * unavailable while its baseline is primed, so drawing earlier RAM points
+ * alone makes one panel appear to start much farther left than the other.
+ * If one sensor never becomes available, keep the other sensor visible.
+ */
+export function alignedActivity(history: readonly TelemetryPoint[]): TelemetryPoint[] {
+  const firstComplete = history.findIndex(point => point.cpu !== null && point.ram !== null);
+  return firstComplete >= 0 ? history.slice(firstComplete) : history.slice();
+}
+
+/** A shared, elapsed-time X domain for every ECharts lane.
+ * Never spread 3 samples across the whole chart as if they covered 60s.
+ * The domain advances using timestamps from the native stream, not a
+ * separate browser timer or generated/interpolated measurements.
+ */
+export function activityTimeDomain(
+  history: readonly TelemetryPoint[],
+): { min: number; max: number } {
+  if (history.length === 0) return { min: 0, max: 500 };
+  return {
+    min: history[0].time,
+    max: Math.max(history[history.length - 1].time, history[0].time + 500),
+  };
+}
+
+/** ECharts time-axis pairs; null stays null, never a faked 0%. */
+export function activitySeries(
+  history: readonly TelemetryPoint[],
+  field: 'cpu' | 'ram' | 'gpu',
+): [number, number | null][] {
+  return history.map(point => [point.time, point[field]]);
+}
+
 /** CPU and RAM use the SAME bounded adaptive-window rule.
  * CPU was previously zero-anchored while RAM was zoomed; that made the
  * plots behave differently despite identical 500ms pulse events.
