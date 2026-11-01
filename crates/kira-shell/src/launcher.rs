@@ -46,7 +46,7 @@ fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
         return None;
     }
     let (bytes, _) = file.load_bytes(None::<&gio::Cancellable>).ok()?;
-    let content = bytes.as_ref();
+    let content: &[u8] = bytes.as_ref();
     if content.is_empty() || content.len() > MAX_ICON_BYTES {
         return None;
     }
@@ -54,8 +54,7 @@ fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
     let valid = match extension.as_str() {
         "png" => content.starts_with(b"\x89PNG\r\n\x1a\n"),
         "jpg" | "jpeg" => content.starts_with(&[0xff, 0xd8, 0xff]),
-        "webp" => content.starts_with(b"RIFF")
-            && content.get(8..12) == Some(b"WEBP".as_slice()),
+        "webp" => content.starts_with(b"RIFF") && content.get(8..12) == Some(b"WEBP".as_slice()),
         "svg" => {
             let prefix = String::from_utf8_lossy(&content[..content.len().min(1024)]);
             prefix.contains("<svg") && !prefix.contains("<!DOCTYPE")
@@ -65,7 +64,10 @@ fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
     if !valid {
         return None;
     }
-    Some(format!("data:{mime};base64,{}", gtk::glib::base64_encode(content)))
+    Some(format!(
+        "data:{mime};base64,{}",
+        gtk::glib::base64_encode(content)
+    ))
 }
 
 /// Only an index into this server-side snapshot is accepted from Svelte.
@@ -123,7 +125,8 @@ impl Catalog {
     /// avoids repeated file I/O when the search filter changes. All data is
     /// freed when the launcher is closed along with its native catalog.
     pub fn icons_json(&self, ids: &[usize]) -> serde_json::Value {
-        let theme = gtk::gdk::Display::default().map(|display| gtk::IconTheme::for_display(&display));
+        let theme =
+            gtk::gdk::Display::default().map(|display| gtk::IconTheme::for_display(&display));
         let icons: Vec<_> = ids
             .iter()
             .take(ICON_BATCH_LIMIT)
@@ -134,8 +137,11 @@ impl Catalog {
                     cache
                         .entry(*id)
                         .or_insert_with(|| {
-                            info.icon()
-                                .and_then(|gicon| theme.as_ref().and_then(|theme| icon_data_url(&gicon, theme)))
+                            info.icon().and_then(|gicon| {
+                                theme
+                                    .as_ref()
+                                    .and_then(|theme| icon_data_url(&gicon, theme))
+                            })
                         })
                         .clone()
                 };
