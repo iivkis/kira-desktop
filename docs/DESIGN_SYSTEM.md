@@ -117,6 +117,30 @@ official visual language of Kira Desktop.
   another process's CPU history. No new Core JSON-RPC methods or
   user-data collection are introduced.
 
+### Charting and motion libraries (project standard)
+
+**Apache ECharts** is the only supported chart engine for quantitative
+visualizations, including resource gauges/bars and live time-series.
+Import ECharts modularly via `echarts/core` and use the SVG renderer in
+compact WebKitGTK popovers. The system monitor shows actual sampled CPU,
+RAM, GPU and other available percentages, with a bounded 60-second history.
+A missing/unsupported sensor is `UNAVAILABLE`, never a zero-shaped graph.
+Visible text and labels supplement SVG for accessibility.
+
+**GSAP** is the standard for interface animations, including staggered
+tab entrances and gentle reading updates. Animations are short, scoped to
+their own Svelte widget and fully disabled under
+`prefers-reduced-motion: reduce`. On widget unmount, dispose ECharts
+instances and kill GSAP tweens/observers. No canvas/WebGL loops, network
+requests or detached subscriptions may survive a closed overlay.
+
+Both libraries are **bundled into the one self-contained offline HTML**
+that WebKitGTK loads; never use CDNs, runtime dynamic imports, or extra
+asset chunks. Preserve the canonical five-color palette and the 42 px
+native top bar. The system monitor's Processes view retains searchable,
+sortable RSS and PSS process data while the Overview chart uses only the
+existing read-only native telemetry feed.
+
 ### Popup geometry
 
 Calendar and System Monitor share a **25 logical pixel** top margin,
