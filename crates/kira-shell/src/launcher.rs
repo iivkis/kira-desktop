@@ -75,18 +75,18 @@ impl Catalog {
                 self.apps = Some(apps);
                 Some(LauncherMessage::Apps(self.as_json()))
             }
-            Ok(WorkerResponse::Icons(icons)) => Some(LauncherMessage::Icons(
-                serde_json::json!({
-                    "icons": icons.into_iter().map(|(id, data_url)| {
-                        serde_json::json!({"id": id, "data_url": data_url})
-                    }).collect::<Vec<_>>()
-                }),
-            )),
+            Ok(WorkerResponse::Icons(icons)) => Some(LauncherMessage::Icons(serde_json::json!({
+                "icons": icons.into_iter().map(|(id, data_url)| {
+                    serde_json::json!({"id": id, "data_url": data_url})
+                }).collect::<Vec<_>>()
+            }))),
             Ok(WorkerResponse::Launched(result)) => Some(LauncherMessage::Launched(result)),
             Err(mpsc::TryRecvError::Empty) => None,
             Err(mpsc::TryRecvError::Disconnected) if !self.disconnected => {
                 self.disconnected = true;
-                Some(LauncherMessage::Error("Application service disconnected".into()))
+                Some(LauncherMessage::Error(
+                    "Application service disconnected".into(),
+                ))
             }
             Err(mpsc::TryRecvError::Disconnected) => None,
         }
@@ -175,7 +175,9 @@ fn run_worker(requests: Receiver<WorkerRequest>, results: Sender<WorkerResponse>
                 .filter(|c| !c.is_control())
                 .take(240)
                 .collect(),
-            icon: info.icon().and_then(|icon| icon.to_string().map(|s| s.to_string())),
+            icon: info
+                .icon()
+                .and_then(|icon| icon.to_string().map(|s| s.to_string())),
         })
         .collect();
     if results.send(WorkerResponse::Apps(entries)).is_err() {
