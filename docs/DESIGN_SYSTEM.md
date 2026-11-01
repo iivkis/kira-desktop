@@ -174,9 +174,9 @@ Derived tokens: `--kira-color-on-accent`,
 `--kira-color-text-secondary`, `--kira-color-surface-subtle`
 and `--kira-color-border` blend or alias these five colors.
 Layout and motion tokens begin with `--kira-space-`,
-`--kira-radius-` and `--kira-motion-`. Legacy structural tokens
-remain for compatibility but are **not** instructions to draw borders
-or hard shadows on every component.
+`--kira-radius-` and `--kira-motion-`. The `--kira-color-earth`
+alias remains for compatibility; unused hard-shadow and strong-border
+tokens are deliberately absent.
 
 ## Tailwind CSS v4 frontend contract
 
