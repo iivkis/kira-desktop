@@ -5,8 +5,8 @@
     type SystemOverlayData, type SystemProcesses,
   } from '../sdk/core';
   import {
-    bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed,
-    sortedProcesses, systemHeadline, uptimeLabel, type SortField,
+    defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel,
+    sortedProcesses, systemHeadline, temperatureLabel, uptimeLabel, type SortField,
   } from '../system-model';
 
   let { onClose, onCopy, onTab }: {
@@ -131,6 +131,41 @@
         {/each}
       </section>
 
+      <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="GPU telemetry">
+        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">GRAPHICS / GPU</h2>
+        {#each metrics?.gpus ?? [] as gpu (gpu.label)}
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2 text-[11px]">
+              <span class="min-w-0 truncate font-semibold text-kira-muted" title={gpu.label}>{gpu.label}</span>
+              <span class="shrink-0 text-right font-bold tabular-nums">
+                {gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}
+              </span>
+            </div>
+            {#if gpu.utilization_percent !== null}
+              <div class="h-1.5 w-full overflow-hidden rounded-sm bg-kira-surface" role="progressbar"
+                aria-label={gpu.label + ' utilization'} aria-valuenow={gpu.utilization_percent}
+                aria-valuemin="0" aria-valuemax="100">
+                <div class="h-full bg-kira-accent" style:width={gpu.utilization_percent + '%'}></div>
+              </div>
+            {/if}
+            <div class="flex justify-between gap-2 text-[11px]">
+              <span class="text-kira-muted">TEMPERATURE</span>
+              <span class="font-bold tabular-nums">{temperatureLabel(gpu.temperature_c)}</span>
+            </div>
+          </div>
+        {:else}
+          <p class="text-[11px] text-kira-muted">NO GPU DATA / DEVICE NOT DETECTED</p>
+        {/each}
+      </section>
+
+      <section class="space-y-2 bg-kira-surface px-5 py-4" aria-label="CPU temperature">
+        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">THERMALS / CPU</h2>
+        <div class="flex justify-between gap-3 text-[11px]">
+          <span class="text-kira-muted">CPU PACKAGE</span>
+          <span class="font-bold tabular-nums">{temperatureLabel(metrics?.cpu_temperature_c ?? null)}</span>
+        </div>
+      </section>
+
       <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="Operating system details">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">OPERATING SYSTEM / CONTEXT</h2>
         <div class="flex justify-between gap-3 text-[11px]"><span class="text-kira-muted">UPTIME</span>
@@ -153,8 +188,8 @@
       <h2 class="mb-3 text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
       <input type="search" aria-label="Filter by process name or PID" placeholder="Filter by process name or PID"
         bind:value={query} class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
-      <div class="grid grid-cols-[minmax(0,1fr)_55px_65px_76px] gap-1 border-b border-kira-muted/20 pb-2">
-        {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RAM'}] as column}
+      <div class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+        {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
           <button type="button" onclick={() => changeSort(column.field as SortField)}
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
@@ -166,12 +201,14 @@
       </div>
       <div class="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
         {#each visible as process (process.pid)}
-          <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_55px_65px_76px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
-            title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state}>
+          <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
+            title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
+              ' / RSS ' + processMemoryLabel(process.rss_kib) + ' / PSS ' + processMemoryLabel(process.pss_kib)}>
             <span class="truncate font-semibold">{process.name}</span>
             <span class="text-right tabular-nums text-kira-muted">{process.pid}</span>
             <span class="text-right tabular-nums">{process.cpu_percent === null ? '—' : process.cpu_percent.toFixed(1) + '%'}</span>
-            <span class="text-right tabular-nums">{process.rss_kib === null ? '—' : bytesLabel(process.rss_kib)}</span>
+            <span class="text-right tabular-nums">{processMemoryLabel(process.rss_kib)}</span>
+            <span class="text-right tabular-nums">{processMemoryLabel(process.pss_kib)}</span>
           </div>
         {:else}
           <p class="py-9 text-center text-xs text-kira-muted">{processes?.error ?
@@ -182,7 +219,7 @@
       <footer class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
         <p>SHOWING {visible.length} OF {matching.length} MATCHES / {processes?.total ?? 0} SCANNED
           {processes?.truncated ? ' / LIMIT REACHED' : ''}</p>
-        <p>READ ONLY / CPU % OF ENTIRE HOST / RSS MEMORY</p>
+        <p>READ ONLY / CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
       </footer>
     </section>
   {/if}

@@ -207,7 +207,9 @@ describe('Core SDK JSON-RPC bridge', () => {
     const stopData = onSystemOverlayData(onData);
     const stopProcesses = onSystemProcesses(onProcesses);
     const metrics = {
-      cpu_percent: 23, memory_total_kib: 100, memory_available_kib: 70,
+      cpu_percent: 23, cpu_temperature_c: 61.5,
+      gpus: [{ label: 'iGPU / Intel (card0)', utilization_percent: 12, temperature_c: 46.7 }],
+      memory_total_kib: 100, memory_available_kib: 70,
       swap_total_kib: 0, swap_free_kib: 0, root_total_kib: 100, root_available_kib: 40,
       uptime_seconds: 3600, load: [1, 2, 3], battery_percent: null, battery_charging: null,
     };
@@ -217,15 +219,18 @@ describe('Core SDK JSON-RPC bridge', () => {
     dispatch('kira:system:data', { core: true, niri: true, metrics });
     expect(onData).toHaveBeenCalledOnce();
     dispatch('kira:system:data', { core: true, niri: true, metrics: { ...metrics, load: [NaN, 0, 1] } });
+    dispatch('kira:system:data', { core: true, niri: true, metrics: { ...metrics, gpus: [{ ...metrics.gpus[0], utilization_percent: 101 }] } });
+    dispatch('kira:system:data', { core: true, niri: true, metrics: { ...metrics, cpu_temperature_c: 200 } });
     expect(onData).toHaveBeenCalledOnce();
     const process = {
-      rows: [{ pid: 123, name: 'shell', state: 'S', cpu_percent: 1, rss_kib: 1024 }],
+      rows: [{ pid: 123, name: 'shell', state: 'S', cpu_percent: 1, rss_kib: 1024, pss_kib: 768 }],
       total: 1, truncated: false, error: null,
     };
     dispatch('kira:system:processes', process);
     expect(onProcesses).toHaveBeenCalledOnce();
     dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], name: 'x'.repeat(65) }] });
     dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], cpu_percent: 200 }] });
+    dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], pss_kib: -1 }] });
     expect(onProcesses).toHaveBeenCalledOnce();
     stopData();
     stopProcesses();
@@ -338,7 +343,8 @@ describe('Core SDK JSON-RPC bridge', () => {
     const listener = handlers.get('kira:system-metrics');
     expect(listener).toBeDefined();
     const metrics = {
-      cpu_percent: 42, memory_total_kib: 16000, memory_available_kib: 8000,
+      cpu_percent: 42, cpu_temperature_c: null, gpus: [],
+      memory_total_kib: 16000, memory_available_kib: 8000,
       root_total_kib: 20000, root_available_kib: 12000,
       battery_percent: null, battery_charging: null,
     };
@@ -346,6 +352,8 @@ describe('Core SDK JSON-RPC bridge', () => {
       null, { ...metrics, cpu_percent: 120 }, { ...metrics, cpu_percent: -1 },
       { ...metrics, root_available_kib: Number.NaN }, { ...metrics, battery_percent: 101 },
       { ...metrics, battery_charging: 'unknown' },
+      { ...metrics, gpus: [{ label: 'bad', utilization_percent: NaN, temperature_c: null }] },
+      { ...metrics, cpu_temperature_c: Infinity },
     ]) {
       listener!({ detail: invalid } as unknown as Event);
     }

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, sortedProcesses, systemHeadline } from './system-model';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel } from './system-model';
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
 const processes: ProcessRow[] = [
-  { pid: 3, name: 'zebra', state: 'R', cpu_percent: 20, rss_kib: 4000 },
-  { pid: 1, name: 'alpha', state: 'S', cpu_percent: 80, rss_kib: 1000 },
-  { pid: 2, name: 'beta', state: 'S', cpu_percent: 50, rss_kib: 2000 },
-  { pid: 4, name: 'missing', state: 'S', cpu_percent: null, rss_kib: null },
+  { pid: 3, name: 'zebra', state: 'R', cpu_percent: 20, rss_kib: 4000, pss_kib: 1200 },
+  { pid: 1, name: 'alpha', state: 'S', cpu_percent: 80, rss_kib: 1000, pss_kib: 800 },
+  { pid: 2, name: 'beta', state: 'S', cpu_percent: 50, rss_kib: 2000, pss_kib: 1300 },
+  { pid: 4, name: 'missing', state: 'S', cpu_percent: null, rss_kib: null, pss_kib: null },
 ];
 
 describe('Svelte System Monitor model', () => {
@@ -16,12 +16,14 @@ describe('Svelte System Monitor model', () => {
       ['pid', [1, 2, 3, 4], [4, 3, 2, 1]],
       ['cpu', [3, 2, 1, 4], [1, 2, 3, 4]],
       ['memory', [1, 2, 3, 4], [3, 2, 1, 4]],
+      ['pss', [1, 3, 2, 4], [2, 3, 1, 4]],
     ] as const) {
       expect(sortedProcesses(processes, '', { field, descending: false }).map(row => row.pid)).toEqual(ascending);
       expect(sortedProcesses(processes, '', { field, descending: true }).map(row => row.pid)).toEqual(descending);
     }
     expect(nextSort(defaultSort, 'cpu')).toEqual({ field: 'cpu', descending: false });
     expect(nextSort(defaultSort, 'memory')).toEqual({ field: 'memory', descending: true });
+    expect(nextSort(defaultSort, 'pss')).toEqual({ field: 'pss', descending: true });
     expect(nextSort(defaultSort, 'name')).toEqual({ field: 'name', descending: false });
   });
 
@@ -39,11 +41,17 @@ describe('Svelte System Monitor model', () => {
     expect(percentUsed(100, 0)).toBe(100);
     expect(fractionLabel(null, null)).toBe('UNAVAILABLE');
     expect(bytesLabel(1_048_576)).toBe('1.0 GiB');
+    expect(processMemoryLabel(null)).toBe('—');
+    expect(processMemoryLabel(0)).toBe('0 KiB');
+    expect(processMemoryLabel(512)).toBe('512 KiB');
+    expect(temperatureLabel(null)).toBe('UNAVAILABLE');
+    expect(temperatureLabel(57.125)).toBe('57.1 °C');
   });
 
   it('prioritizes offline, storage and memory pressure', () => {
     const m: SystemMetrics = {
-      cpu_percent: 12, memory_total_kib: 100, memory_available_kib: 80,
+      cpu_percent: 12, cpu_temperature_c: null, gpus: [],
+      memory_total_kib: 100, memory_available_kib: 80,
       swap_total_kib: 0, swap_free_kib: 0,
       root_total_kib: 100, root_available_kib: 80, uptime_seconds: 3600,
       load: [0, 0, 0], battery_percent: null, battery_charging: null,

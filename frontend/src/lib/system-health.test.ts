@@ -3,7 +3,8 @@ import { systemHealth } from './system-health';
 import type { SystemMetrics } from './sdk/core';
 
 const normal: SystemMetrics = {
-  cpu_percent: 24, memory_total_kib: 1000, memory_available_kib: 580,
+  cpu_percent: 24, cpu_temperature_c: null, gpus: [],
+  memory_total_kib: 1000, memory_available_kib: 580,
   swap_total_kib: 0, swap_free_kib: 0,
   root_total_kib: 1000, root_available_kib: 500,
   uptime_seconds: 3600, load: [0.2, 0.3, 0.1],

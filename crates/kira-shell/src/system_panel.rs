@@ -106,6 +106,7 @@ impl Model {
                             "state": row.state.to_string(),
                             "cpu_percent": row.cpu_percent,
                             "rss_kib": row.rss_kib,
+                            "pss_kib": row.pss_kib,
                         })
                     })
                     .collect();
@@ -164,6 +165,27 @@ impl Model {
                 };
                 format!("{battery}%{suffix}")
             });
+        let cpu_temp = s
+            .cpu_temperature_c
+            .map_or("UNAVAILABLE".to_string(), |v| format!("{v:.1} °C"));
+        let gpus = if s.gpus.is_empty() {
+            "GPU: NOT DETECTED".to_string()
+        } else {
+            s.gpus
+                .iter()
+                .map(|gpu| {
+                    format!(
+                        "{}: {} / {} °C",
+                        gpu.label,
+                        gpu.utilization_percent
+                            .map_or("UNAVAILABLE".into(), |v| format!("{v}%")),
+                        gpu.temperature_c
+                            .map_or("UNAVAILABLE".into(), |v| format!("{v:.1}")),
+                    )
+                })
+                .collect::<Vec<_>>()
+                .join("\n")
+        };
         let root = pair(s.root_total_kib, s.root_available_kib);
         let memory = pair(s.memory_total_kib, s.memory_available_kib);
         let swap = pair(s.swap_total_kib, s.swap_free_kib);
@@ -184,7 +206,7 @@ impl Model {
             "SYSTEM STATUS"
         };
         format!(
-            "KIRA SYSTEM / {health}\nCore: {}\nNiri: {}\nCPU: {}\nMemory: {memory}\nSwap: {swap}\nStorage /: {root}\nLoad 1/5/15: {load}\nUptime: {uptime}\nBattery: {power}",
+            "KIRA SYSTEM / {health}\nCore: {}\nNiri: {}\nCPU: {}\nCPU temperature: {cpu_temp}\n{gpus}\nMemory: {memory}\nSwap: {swap}\nStorage /: {root}\nLoad 1/5/15: {load}\nUptime: {uptime}\nBattery: {power}",
             if self.core.get() {
                 "CONNECTED"
             } else {
