@@ -16,6 +16,7 @@ const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\"
 enum Surface {
     Calendar,
     System,
+    Launcher,
 }
 
 impl Surface {
@@ -23,6 +24,7 @@ impl Surface {
         match self {
             Self::Calendar => "calendar",
             Self::System => "system",
+            Self::Launcher => "launcher",
         }
     }
 }
@@ -40,6 +42,7 @@ struct CalendarOverlay {
     widget_ready: Cell<bool>,
     active: Cell<Option<Surface>>,
     system: RefCell<Option<crate::system_panel::Model>>,
+    launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
     revealed: Cell<bool>,
@@ -56,6 +59,7 @@ impl CalendarOverlay {
             model.set_processes_active(false);
         }
         self.active.set(None);
+        self.launcher.borrow_mut().take();
         self.widget_ready.set(false);
         self.revealed.set(false);
         self.paint_pending.set(false);
@@ -91,6 +95,13 @@ impl CalendarOverlay {
             }
         }
         self.active.set(Some(kind));
+        // The launcher needs reliable keyboard focus for type-to-search;
+        // other popups preserve their former on-demand keyboard behavior.
+        self.window.set_keyboard_mode(if kind == Surface::Launcher {
+            KeyboardMode::Exclusive
+        } else {
+            KeyboardMode::OnDemand
+        });
         self.requested.set(true);
         self.revealed.set(false);
         self.widget_ready.set(false);
@@ -139,7 +150,7 @@ impl CalendarOverlay {
         let Some(kind) = self.active.get() else {
             return;
         };
-        // Only the two hardcoded, trusted Svelte widget types may be selected.
+        // Only hardcoded, trusted Svelte widget types may be selected.
         let kind = kind.name();
         let script = format!(
             "window.dispatchEvent(new CustomEvent('kira:overlay:show', {{ detail: {{ kind: '{kind}', generation: {generation} }} }}));"
@@ -269,7 +280,77 @@ impl CalendarOverlay {
                     display.clipboard().set_text(&model.report());
                 }
             }
+            Some(UiCommand::LauncherCatalog(generation))
+                if self.requested.get()
+                    && self.active.get() == Some(Surface::Launcher)
+                    && self.generation.get() == generation =>
+            {
+                let needs_catalog = self.launcher.borrow().is_none();
+                if needs_catalog {
+                    *self.launcher.borrow_mut() = Some(crate::launcher::Catalog::discover());
+                }
+                let data = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.as_json());
+                if let Some(payload) = data {
+                    self.dispatch_launcher("kira:launcher:apps", payload);
+                }
+            }
+            Some(UiCommand::LaunchApp(generation, id))
+                if self.requested.get()
+                    && self.revealed.get()
+                    && self.active.get() == Some(Surface::Launcher)
+                    && self.generation.get() == generation =>
+            {
+                let result = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.launch(id));
+                match result {
+                    Some(Ok(())) => self.hide(),
+                    Some(Err(error)) => {
+                        self.dispatch_launcher(
+                            "kira:launcher:error",
+                            serde_json::json!({ "message": error }),
+                        );
+                    }
+                    None => {
+                        self.dispatch_launcher(
+                            "kira:launcher:error",
+                            serde_json::json!({ "message": "Application catalog unavailable" }),
+                        );
+                    }
+                }
+            }
             _ => eprintln!("kira-shell: ignored invalid/stale Overlay UI command"),
+        }
+    }
+
+    fn dispatch_launcher(&self, event: &str, payload: serde_json::Value) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Launcher) {
+            return;
+        }
+        // Serialize data twice so installed app names never become JS source.
+        if let Ok(serialized) = serde_json::to_string(&payload)
+            && let Ok(encoded) = serde_json::to_string(&serialized)
+        {
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('{event}', {{ detail: JSON.parse({encoded}) }}));"
+            );
+            self.view.evaluate_javascript(
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Launcher catalog delivery failed: {error}");
+                    }
+                },
+            );
         }
     }
 
@@ -342,6 +423,8 @@ enum UiCommand<'a> {
     CopyDate(&'a str),
     ProcessesTab(bool),
     CopyReport,
+    LauncherCatalog(u32),
+    LaunchApp(u32, usize),
 }
 
 /// Revalidate date-copy requests without duplicating the Svelte date grid.
@@ -367,6 +450,32 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         "tab:overview" => return Some(UiCommand::ProcessesTab(false)),
         "copy-report" => return Some(UiCommand::CopyReport),
         _ => {}
+    }
+    if let Some(value) = message.strip_prefix("apps-request:") {
+        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+            return None;
+        }
+        return value
+            .parse::<u32>()
+            .ok()
+            .filter(|v| *v > 0)
+            .map(UiCommand::LauncherCatalog);
+    }
+    if let Some(value) = message.strip_prefix("launch:") {
+        let (generation, id) = value.split_once(':')?;
+        if generation.is_empty()
+            || generation.len() > 10
+            || !generation.bytes().all(|b| b.is_ascii_digit())
+            || id.is_empty()
+            || id.len() > 4
+            || !id.bytes().all(|b| b.is_ascii_digit())
+        {
+            return None;
+        }
+        return Some(UiCommand::LaunchApp(
+            generation.parse::<u32>().ok().filter(|v| *v > 0)?,
+            id.parse::<usize>().ok().filter(|v| *v < 1024)?,
+        ));
     }
     if let Some(value) = message.strip_prefix("mounted:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
@@ -439,6 +548,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         widget_ready: Cell::new(false),
         active: Cell::new(None),
         system: RefCell::new(None),
+        launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
         revealed: Cell::new(false),
@@ -560,8 +670,21 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         state.hide();
         return;
     }
-    crate::launcher::dismiss(application);
     state.show(Surface::Calendar);
+}
+
+pub fn open_launcher(application: &gtk::Application, html: &str) {
+    let Some(state) = ensure(application, html) else {
+        eprintln!("kira-shell: Overlay HTML root not found");
+        return;
+    };
+    // Opening the launcher again should focus its existing search field.
+    if state.requested.get() && state.active.get() == Some(Surface::Launcher) {
+        state.window.present();
+        return;
+    }
+    state.launcher.borrow_mut().take();
+    state.show(Surface::Launcher);
 }
 
 pub fn toggle_system(
@@ -579,7 +702,6 @@ pub fn toggle_system(
         state.hide();
         return;
     }
-    crate::launcher::dismiss(application);
     *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
     state.last_metrics.set(None);
     state.show(Surface::System);
@@ -600,6 +722,12 @@ mod tests {
             "painted:-1",
             "painted:18446744073709551616",
             "tab:everything",
+            "apps-request:",
+            "apps-request:abc",
+            "launch:1:1024",
+            "launch:1:-1",
+            "launch:1:0;sh",
+            "launch:18446744073709551616:0",
             "copy:2026-01-01;exit",
             "mounted:",
             "mounted:abc",
@@ -628,6 +756,14 @@ mod tests {
             Some(UiCommand::ProcessesTab(false))
         );
         assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
+        assert_eq!(
+            calendar_command("apps-request:12"),
+            Some(UiCommand::LauncherCatalog(12))
+        );
+        assert_eq!(
+            calendar_command("launch:12:42"),
+            Some(UiCommand::LaunchApp(12, 42))
+        );
         assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(

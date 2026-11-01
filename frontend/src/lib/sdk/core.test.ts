@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -18,6 +18,53 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('allows only generation-scoped indexed Gio launches, no path or shell command', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    closeLauncherOverlay();
+    expect(requestLauncherCatalog(8)).toBe(true);
+    expect(launchDesktopApp(8, 42)).toBe(true);
+    for (const bad of [-1, 1.5, 1024, Number.NaN]) {
+      expect(launchDesktopApp(8, bad)).toBe(false);
+    }
+    expect(launchDesktopApp(0, 1)).toBe(false);
+    expect(launchDesktopApp(4294967296, 1)).toBe(false);
+    expect(requestLauncherCatalog(-1)).toBe(false);
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual([
+      'close', 'apps-request:8', 'launch:8:42',
+    ]);
+  });
+
+  it('validates launcher catalogs, errors and unsubscribes after hide', () => {
+    const handlers = new Map<string, EventListener>();
+    const removeEventListener = vi.fn();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
+      removeEventListener,
+    } as unknown as Window & typeof globalThis;
+    const onCatalog = vi.fn();
+    const onError = vi.fn();
+    const stopCatalog = onLauncherCatalog(onCatalog);
+    const stopError = onLauncherError(onError);
+    const dispatch = (name: string, detail: unknown) => {
+      handlers.get(name)!({ detail } as unknown as Event);
+    };
+    dispatch('kira:launcher:apps', {
+      apps: [{ id: 7, name: 'Browser', description: 'Open the web' }],
+    });
+    expect(onCatalog).toHaveBeenCalledOnce();
+    dispatch('kira:launcher:apps', { apps: [{ id: 1024, name: 'Unknown', description: '' }] });
+    dispatch('kira:launcher:apps', { apps: [{ id: 1, name: 'x'.repeat(121), description: '' }] });
+    expect(onCatalog).toHaveBeenCalledOnce();
+    dispatch('kira:launcher:error', { message: 'Cannot open application' });
+    expect(onError).toHaveBeenCalledWith('Cannot open application');
+    stopCatalog();
+    stopError();
+    expect(removeEventListener).toHaveBeenCalledTimes(2);
   });
 
   it('opens native read-only system monitor only through the fixed bridge', () => {

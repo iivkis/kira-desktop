@@ -1,60 +1,79 @@
-"""Contract checks for the GTK native editorial launcher, without a display."""
+"""Svelte Launcher: trusted GIO lookup, shared WebKit, no native GTK view."""
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = (ROOT / "crates/kira-shell/src/launcher.css").read_text()
-RUST = (ROOT / "crates/kira-shell/src/launcher.rs").read_text()
-HOST = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+SOURCE = ROOT / "crates/kira-shell/src"
+RUST = (SOURCE / "launcher.rs").read_text()
+OVERLAY = (SOURCE / "calendar.rs").read_text()
+HOST = (SOURCE / "main.rs").read_text()
+ENTRY = (ROOT / "frontend/src/main.ts").read_text()
+WIDGET = (ROOT / "frontend/src/lib/components/LauncherWidget.svelte").read_text()
+MODEL = (ROOT / "frontend/src/lib/launcher-model.ts").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
 
 
 class LauncherDesignTests(unittest.TestCase):
-    def test_selection_visual_contract(self):
-        self.assertIn("row.kira-app-row:selected .kira-app-rail", CSS)
-        self.assertIn("background: @kira_orange;", CSS)
-        self.assertIn("row.kira-app-row:selected .kira-app-name", CSS)
-        self.assertIn("color: @kira_orange;", CSS)
-        self.assertNotIn("box-shadow:", CSS)
-        self.assertNotIn("border: 2px", CSS)
-        self.assertIn("border: 1px solid", CSS)
-
-    def test_visual_hierarchy_and_states(self):
-        for selector in (
-            ".kira-launcher-card", ".kira-launcher-intro", ".kira-workbench",
-            ".kira-workbench-eyebrow", ".kira-catalog-label", ".kira-eyebrow",
-            ".kira-heading", "entry.kira-search-field:focus",
-            "row.kira-app-row:hover", "row.kira-app-row:selected",
-            ".kira-app-rail", ".kira-app-icon-shell", ".kira-app-detail",
-            ".kira-keycap",
+    def test_svelte_owns_presentation_and_keyboard_navigation(self):
+        for value in (
+            'aria-label="Kira Launcher"', 'data-kira-ui-root',
+            'KIRA / APPLICATION INDEX', 'Search applications…',
+            'APPLICATION CATALOG', 'role="listbox"',
+            'aria-selected={index === activeIndex}',
+            "event.key === 'ArrowDown'", "event.key === 'ArrowUp'",
+            "event.key === 'Escape'", "event.key === 'Enter'",
+            'search?.focus()', 'onclick={() => choose(index)}',
+            'No matching applications', 'KIRA',
         ):
-            self.assertIn(selector, CSS)
+            if value == 'KIRA':
+                continue
+            self.assertIn(value, WIDGET)
+        self.assertIn('filterLauncherApps(apps, query)', WIDGET)
+        self.assertIn('nextLauncherSelection(', WIDGET)
+        self.assertIn('matches.slice(0, 80)', WIDGET)
+        self.assertIn('app.id', WIDGET)
+        self.assertIn('toLocaleLowerCase()', MODEL)
+        self.assertNotIn('gtk::ListBox', RUST)
+        self.assertNotIn('gtk::SearchEntry', RUST)
+        self.assertNotIn('gtk::ApplicationWindow', RUST)
+        self.assertNotIn('gtk::CssProvider', RUST)
 
-    def test_editorial_surface_not_monolithic_highlight(self):
-        self.assertIn("background: @kira_black;", CSS)
-        self.assertIn("background: @kira_prussian_blue;", CSS)
-        self.assertIn("row.kira-app-row:selected .kira-app-rail", CSS)
-        self.assertNotIn("row.kira-app-row:selected {\n  background: @kira_orange;", CSS)
-        self.assertIn('intro.add_css_class("kira-launcher-intro")', RUST)
-        self.assertIn('workbench.add_css_class("kira-workbench")', RUST)
-        self.assertIn('rail.add_css_class("kira-app-rail")', RUST)
-
-    def test_native_wiring_and_search(self):
+    def test_native_app_identity_and_safe_launch(self):
         for required in (
-            'include_str!("launcher.css")', "gio::AppInfo::all()",
-            "info.should_show()", "set_filter_func", "connect_search_changed",
-            "connect_key_pressed", "KeyboardMode::Exclusive", "set_exclusive_zone(0)",
-            'app.info.launch(&[], None::<&gio::AppLaunchContext>)',
+            'gio::AppInfo::all()', 'info.should_show()',
+            'pub fn launch(&self, id: usize)', 'self.apps.get(id)',
+            'info.launch(&[], None::<&gio::AppLaunchContext>())',
+            'apps.truncate(1024)', '"id": id',
         ):
             self.assertIn(required, RUST)
-        self.assertIn('mod launcher;', HOST)
-        self.assertIn('register_script_message_handler("kiraLauncher"', HOST)
-        self.assertIn('launcher::show(', HOST)
+        self.assertNotIn('std::process::Command', RUST)
+        self.assertNotIn('Command::new', RUST)
+        self.assertNotIn('shell', RUST.lower().split('pub fn launch', 1)[-1])
+        self.assertIn('self.launcher.borrow_mut().take()', OVERLAY)
+        self.assertIn('Some(UiCommand::LauncherCatalog(generation))', OVERLAY)
+        self.assertIn('Some(UiCommand::LaunchApp(generation, id))', OVERLAY)
+        self.assertIn('self.generation.get() == generation', OVERLAY)
+        self.assertIn('self.revealed.get()', OVERLAY)
+        self.assertIn('calendar::open_launcher(', HOST)
+        self.assertIn('register_script_message_handler("kiraLauncher", None)', HOST)
+        self.assertIn('postNativeCommand(\'kiraLauncher\', \'open\')', SDK)
+        self.assertIn("sendCalendarUi('launch:' + generation + ':' + id)", SDK)
+        self.assertIn("sendCalendarUi('apps-request:' + generation)", SDK)
 
-    def test_native_row_identity_survives_filtering(self):
-        self.assertIn('fn app_index(row: &gtk::ListBoxRow)', RUST)
-        self.assertIn('row.set_widget_name(&format!("kira-app-{index}"))', RUST)
-        self.assertNotIn('row.index()', RUST.split('fn app_index', 1)[1].split('fn visible_rows', 1)[1])
-        self.assertIn('.is_child_visible()', RUST)
+    def test_one_shared_overlay_and_retired_gtk_assets(self):
+        self.assertIn('mount(LauncherWidget', ENTRY)
+        self.assertIn('mount(CalendarWidget', ENTRY)
+        self.assertIn('mount(SystemWidget', ENTRY)
+        self.assertIn("detail?.kind !== 'launcher'", ENTRY)
+        self.assertIn('Self::Launcher => "launcher"', OVERLAY)
+        self.assertIn('KeyboardMode::Exclusive', OVERLAY)
+        self.assertIn('set_exclusive_zone(0)', OVERLAY)
+        self.assertIn('native_ui::configure_webview_popup', OVERLAY)
+        self.assertFalse((SOURCE / "launcher.css").exists())
+        self.assertFalse((SOURCE / "native-palette.css").exists())
+        self.assertIn('data-kira-ui-root', WIDGET)
+        self.assertNotIn('launcher::show(', HOST)
+        self.assertNotIn('crate::launcher::dismiss(', OVERLAY)
 
 
 if __name__ == "__main__":

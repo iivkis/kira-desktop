@@ -1,7 +1,0 @@
-/* Native GTK canonical Kira Default colors. Single source for native overlays.
- * Svelte's matching tokens are verified in tests/test_native_theme.py. */
-@define-color kira_black #000000ff;
-@define-color kira_prussian_blue #14213dff;
-@define-color kira_orange #fca311ff;
-@define-color kira_alabaster_grey #e5e5e5ff;
-@define-color kira_white #ffffffff;

@@ -208,9 +208,10 @@ fn main() {
         // A dedicated fixed-purpose message from the trusted, navigation-locked
         // local UI. Never forward launcher requests to Core or execute JS text.
         let launcher_application = app.clone();
+        let launcher_html = html.clone();
         manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
             if value.to_string() == "open" {
-                launcher::show(&launcher_application);
+                calendar::open_launcher(&launcher_application, &launcher_html);
             }
         });
         assert!(manager.register_script_message_handler("kiraLauncher", None));

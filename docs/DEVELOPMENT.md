@@ -19,18 +19,19 @@ serializes asynchronous mount/unmount across rapid toggles and skips stale
 show generations. The single offline frontend bundle contains all component
 code in advance, but creates and destroys active component instances on
 demand. It makes no network requests.
-This does **not** guarantee WebKit process RSS returns to zero. Calendar and
-System Monitor share the same warmed host with no third WebKit process.
-Process scanning starts only on the Processes tab and ends on hide.
+This does **not** guarantee WebKit process RSS returns to zero. Calendar, System Monitor and Launcher share the same warmed host with
+no additional WebKit process. Process scanning starts only on the Processes
+tab and ends on hide. The Launcher discovers GIO entries on demand, discards
+its catalog on hide and can launch only an index into that native snapshot.
 Use PSS and CPU sampling for actual resource measurements.
 
 ## Widget architecture migration
 
 The intended architecture is Rust for Core, GIO/system integration and the
 GTK/WebKit layer-shell **window host**, with **all widget views in Svelte 5**.
-The GTK Launcher remains the last built-in native widget deviation.
-The Calendar and System Monitor now render `CalendarWidget.svelte` and
-`SystemWidget.svelte` inside one shared WebKit/layer-shell overlay.
+All three built-in widgets are Svelte 5: `CalendarWidget.svelte`,
+`SystemWidget.svelte` and `LauncherWidget.svelte` use one shared,
+prewarmed WebKit/layer-shell overlay.
 Do not build additional widget layouts in GTK.
 
 See [UI_ARCHITECTURE.md](UI_ARCHITECTURE.md) for the staged migration.
@@ -62,7 +63,7 @@ non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
-The Svelte Calendar/System Monitor shared WebKit surface uses
+The shared Calendar/System Monitor/Launcher WebKit surface uses
 `configure_webview_popup`, which caps both width and height against the
 actual logical output, up to 70% of its height; HTML handles inner
 overflow. The top margin remains 25px.
@@ -79,24 +80,24 @@ Python contracts and Rust Core/IPC tests. Native shell test groups can be
 run locally with `nix develop --command cargo test --locked -p kira-shell`
 or before a release; the nightly/manual Nix workflow verifies full packaging.
 
-The remaining **GTK4 Launcher** uses native `launcher.css`.
-The Svelte Calendar and System Monitor reuse Tailwind
-and the canonical frontend palette. It is an independent, non-exclusive
-layer-shell WebKit surface toggled through `kiraCalendar`; inside that
-window only `kiraCalendarUi` provides close and strictly validated ISO
-date copy. Opening it does not change the 42px Niri reservation.
+All overlay widgets use Tailwind and the canonical frontend palette.
+Their non-exclusive layer-shell WebKit window accepts only fixed-purpose
+`kiraCalendarUi` commands: validated date copy, read-only system tabs,
+generation-scoped GIO catalog lookup and indexed desktop-app launch.
+The WebKit view cannot supply arbitrary executable paths, shell commands
+or a general Core RPC method. Opening it does not change the 42px Niri reservation.
 The WebKit host continues to embed a single production CSS file, including
 Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 
-GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
-not separately in the overlay stylesheets. Shared native CSS installation
-and overlay lookup/dismiss helpers live in
-`crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
-native GTK interaction stays in `launcher.rs`. The shared
-`calendar.rs` WebKit host manages one popup and two Svelte widgets,
-while `system_panel.rs` handles read-only system data and process
-sampling. No generic command execution is exposed. When changing any
-native CSS asset, verify it remains included by `nix/package.nix`.
+The five canonical colors live in the frontend theme; obsolete GTK
+launcher/system monitor styles and palette have been removed. The shared
+`native_ui.rs` keeps WebKit navigation restrictions and monitor-aware
+popup sizing. `calendar.rs` manages one window and three lazily mounted
+Svelte widgets. `launcher.rs` holds only a bounded GIO AppInfo catalog
+and calls `AppInfo::launch()` for a validated index, while
+`system_panel.rs` handles read-only system data and process sampling.
+Launcher currently uses a letter fallback instead of native themed icons.
+No generic command execution is exposed.
 
 When adding npm dependencies, commit the updated
 `frontend/package-lock.json` and update `npmDepsHash` in

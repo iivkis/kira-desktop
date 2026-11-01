@@ -269,6 +269,51 @@ export function copySystemReport(): void {
   sendCalendarUi('copy-report');
 }
 
+export interface LauncherApp {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface LauncherCatalog {
+  apps: LauncherApp[];
+}
+
+/** The launcher receives a bounded, read-only catalog from native GIO. */
+export function onLauncherCatalog(callback: (catalog: LauncherCatalog) => void): () => void {
+  return onNativeEvent('kira:launcher:apps', (value): value is LauncherCatalog =>
+    isRecord(value) && Array.isArray(value.apps) && value.apps.length <= 1024 &&
+    value.apps.every((app: unknown) =>
+      isRecord(app) && Number.isSafeInteger(app.id) &&
+      (app.id as number) >= 0 && (app.id as number) < 1024 &&
+      typeof app.name === 'string' && app.name.length <= 120 &&
+      typeof app.description === 'string' && app.description.length <= 240),
+  callback);
+}
+
+export function onLauncherError(callback: (message: string) => void): () => void {
+  return onNativeEvent('kira:launcher:error',
+    (value): value is { message: string } =>
+      isRecord(value) && typeof value.message === 'string' && value.message.length <= 180,
+    (value) => callback(value.message));
+}
+
+/** Index belongs to Rust's GIO catalog, never an executable path or a command. */
+export function requestLauncherCatalog(generation: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return false;
+  return sendCalendarUi('apps-request:' + generation);
+}
+
+export function launchDesktopApp(generation: number, id: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      !Number.isSafeInteger(id) || id < 0 || id >= 1024) return false;
+  return sendCalendarUi('launch:' + generation + ':' + id);
+}
+
+export function closeLauncherOverlay(): void {
+  sendCalendarUi('close');
+}
+
 /** Open or close the shared Svelte read-only system monitor. */
 export function toggleSystemPanel(): boolean {
   return postNativeCommand('kiraSystem', 'toggle');

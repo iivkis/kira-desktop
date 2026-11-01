@@ -2,7 +2,8 @@ import { flushSync, mount, unmount } from 'svelte';
 import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
+import LauncherWidget from './lib/components/LauncherWidget.svelte';
+import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
@@ -28,7 +29,7 @@ whenDocumentReady(document, () => {
       report('Calendar bootstrap failure: #app missing');
       return;
     }
-    let requestedKind: 'calendar' | 'system' = 'calendar';
+    let requestedKind: 'calendar' | 'system' | 'launcher' = 'calendar';
     let visibleGeneration: number | null = null;
     let lastGeneration = 0;
     const host = createLazyWidget(
@@ -43,12 +44,14 @@ whenDocumentReady(document, () => {
                 target,
                 props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
               })
-              : mount(SystemWidget, {
-                target,
-                props: { onClose: closeSystemOverlay, onCopy: copySystemReport, onTab: setSystemMonitorTab },
-              });
+              : kind === 'system'
+                ? mount(SystemWidget, {
+                  target,
+                  props: { onClose: closeSystemOverlay, onCopy: copySystemReport, onTab: setSystemMonitorTab },
+                })
+                : mount(LauncherWidget, { target, props: { onClose: closeLauncherOverlay, generation: visibleGeneration ?? 0 } });
             flushSync();
-            const label = kind === 'calendar' ? 'Kira Calendar' : 'Kira System Monitor';
+            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {
               throw new Error('Svelte ' + kind + ' root missing after mount');
             }
@@ -67,7 +70,7 @@ whenDocumentReady(document, () => {
     );
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
-      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system') ||
+      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||
           !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
           detail.generation > 0xffffffff || detail.generation <= lastGeneration) {
         report('Overlay rejected invalid or stale show payload');

@@ -57,6 +57,7 @@ async function smoke(name, steps, expected) {
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
+  await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
   await smoke('switch-to-system', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 120, kind: 'hide', generation: 1 },
@@ -72,6 +73,16 @@ try {
     { delay: 265, kind: 'calendar', generation: 3 },
     { delay: 280, kind: 'hide', generation: 2 },
   ], 'Kira Calendar');
+  await smoke('three-widget-cycle', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 130, kind: 'system', generation: 2 },
+    { delay: 240, kind: 'launcher', generation: 3 },
+    { delay: 255, kind: 'hide', generation: 1 },
+    { delay: 350, kind: 'calendar', generation: 4 },
+    { delay: 365, kind: 'hide', generation: 2 },
+    { delay: 480, kind: 'launcher', generation: 5 },
+    { delay: 495, kind: 'hide', generation: 4 },
+  ], 'Kira Launcher');
 } finally {
   await rm(dir, { recursive: true, force: true });
 }
