@@ -41,6 +41,21 @@ class CalendarDesignTests(unittest.TestCase):
         ):
             self.assertIn(selector, CSS)
 
+    def test_copy_date_is_a_button_and_not_an_underline_tab(self):
+        block = CSS.split("button.kira-calendar-copy {", 1)[1].split("}", 1)[0]
+        self.assertIn("border: 1px solid @kira_orange;", block)
+        self.assertIn("border-radius: 6px;", block)
+        self.assertIn("background: @kira_prussian_blue;", block)
+        self.assertIn("min-height: 34px;", block)
+        self.assertNotIn("border-bottom:", block)
+        self.assertIn("button.kira-calendar-copy:hover", CSS)
+        self.assertIn("button.kira-calendar-copy:active", CSS)
+        self.assertIn("button.kira-calendar-copy:focus-visible", CSS)
+        self.assertIn('copy.set_label("COPIED ✓")', RUST)
+        # The unobtrusive Today command remains flat and text-only.
+        today = CSS.split("button.kira-calendar-today-button {", 1)[1].split("}", 1)[0]
+        self.assertIn("background: transparent;", today)
+
     def test_date_model_and_keyboard(self):
         for token in (
             "pub fn month_grid", "pub fn shift_month", "pub fn iso_week",

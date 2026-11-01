@@ -126,15 +126,28 @@ button.kira-day:disabled { opacity: 0; }
   font-weight: 650;
 }
 .kira-calendar-actions { margin-top: 8px; }
+/* A real secondary action, not an underlined active tab. Keep the Today
+ * command text-only: the two controls intentionally have different roles. */
 button.kira-calendar-copy {
-  min-height: 30px;
-  padding: 4px 8px;
-  border: 0;
-  border-bottom: 2px solid @kira_orange;
-  border-radius: 0;
-  background: transparent;
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 1px solid @kira_orange;
+  border-radius: 6px;
+  background: @kira_prussian_blue;
   color: @kira_orange;
   font-size: 10px;
   font-weight: 800;
 }
-button.kira-calendar-copy:hover { background: rgba(252,163,17,0.12); }
+button.kira-calendar-copy:hover {
+  background: @kira_orange;
+  color: @kira_black;
+}
+button.kira-calendar-copy:active {
+  background: @kira_alabaster_grey;
+  border-color: @kira_alabaster_grey;
+  color: @kira_black;
+}
+button.kira-calendar-copy:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: 2px;
+}

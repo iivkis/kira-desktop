@@ -50,7 +50,9 @@ official visual language of Kira Desktop.
   accessible buttons supports month/year navigation, adjacent-month dates,
   ISO weeks and arrow/PageUp/PageDown/Home keyboard navigation. Selecting
   a date exposes the correct ISO week-year and day of year.
-  Today resets the selection; Copy ISO Date writes to clipboard only on click.
+  Today remains a flat text command, while Copy Date is a compact outlined
+  button with Prussian Blue fill, orange border and explicit hover/active/focus
+  states (not a tab underline). Copy writes to clipboard only on click.
   Clicking time again or pressing Escape closes; focus loss also dismisses
   after activation. The calendar and Launcher close each other when opened.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
