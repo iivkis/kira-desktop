@@ -22,17 +22,17 @@ top-level window with the required layer-shell Wayland behavior by itself.
 
 ## Migration, in small reviewable steps
 
-1. **Calendar Svelte implementation (this branch).** Add a reusable,
-   accessible CalendarWidget with a pure TS Gregorian model and tests.
-   It accepts host callbacks for close and copy; it does not request native
-   privileges or rely on arbitrary clipboard APIs. The legacy GTK calendar
-   remains active until the WebKit overlay host is implemented and tested.
-2. **Calendar host integration.** Add a narrowly scoped overlay surface
-   selector to the existing Svelte bootstrap and use the trusted local HTML
-   in an independent non-exclusive WebKit/layer-shell window. Provide
-   fixed-purpose close and copy handlers, maintain navigation lockdown,
-   verify Escape, mouse and keyboard focus. Remove legacy GTK calendar
-   markup and CSS and update the native theme and Nix packaging tests.
+1. **Calendar Svelte implementation and host integration (this PR).**
+   The active Calendar is `CalendarWidget.svelte`, mounted inside an
+   independent non-exclusive GTK layer-shell window with WebKit. The
+   same self-contained HTML bundle is marked with
+   `data-kira-surface="calendar"` before `load_html()`; only the
+   fixed-purpose `kiraCalendarUi` handler (close, validated ISO date copy)
+   is registered there. The Top Bar retains its original 42px reservation.
+   The GTK date-grid view and its native CSS have been removed.
+2. **Calendar graphic acceptance.** Frontend, GTK/Nix, and security contract
+   tests run in CI. The actual separate Wayland window still needs a
+   manual nested-Niri graphical smoke-test at multiple scales before release.
 3. **Launcher.** Move search, rows, icons, selection, and keyboard handling
    to Svelte. Keep GIO XDG application discovery and launch in Rust behind
    a minimal typed, allowlisted IPC contract. Never accept a shell command
@@ -45,7 +45,7 @@ top-level window with the required layer-shell Wayland behavior by itself.
    unused view models *only after* the Svelte replacements are functioning.
    Update docs and enforce widget ownership in regression tests.
 
-## Acceptance before switching the active calendar
+## Acceptance before releasing the migrated calendar
 
 - NixOS CI: native Shell, frontend type-check, model tests and full package.
 - Nested Niri: popup stays inside 360x640 and 600x480 logical displays,
@@ -55,6 +55,6 @@ top-level window with the required layer-shell Wayland behavior by itself.
 - UI events can only reach explicitly allowlisted Rust host operations.
 - No duplicate native GTK calendar stays in the shipping Shell.
 
-A Svelte component existing in the repository is **not** proof that the
-running overlay has migrated. Until step 2, CalendarWidget is an
-implementation artifact, not yet the active UI.
+The calendar is connected in the Shell now. A green CI validates compilation
+and contracts, **not** final visual behavior under a real Wayland compositor.
+Nested Niri graphical QA remains mandatory before release.
