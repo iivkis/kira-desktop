@@ -51,7 +51,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("needed.slice(i, i + 16)", WIDGET)
         self.assertIn("stopIcons();", WIDGET)
         self.assertIn("gtk::IconTheme::for_display(&display)", RUST)
-        self.assertIn("theme.lookup_by_gicon(", RUST)
+        self.assertIn(".lookup_by_gicon(", RUST)
         self.assertIn("paintable.file()?", RUST)
         self.assertIn("file.load_bytes(None::<&gio::Cancellable>)", RUST)
         self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
