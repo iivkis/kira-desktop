@@ -70,3 +70,19 @@ export function localDateLabel(date: CivilDate, locale?: string, options?: Intl.
   value.setHours(12, 0, 0, 0);
   return new Intl.DateTimeFormat(locale, options ?? { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(value);
 }
+
+/** A single localized, actual wall-clock value drives the calendar time and
+ * its decorative GSAP digit rolls. Avoid separate clocks for the animation.
+ */
+export function localClockText(value: Date, locale?: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+  }).format(value);
+}
+
+export function clockGlyphs(value: string): { char: string; digit: boolean }[] {
+  return Array.from(value, char => ({
+    char,
+    digit: /\p{Decimal_Number}/u.test(char),
+  }));
+}

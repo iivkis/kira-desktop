@@ -2,7 +2,7 @@
  * This module is intentionally DOM-independent so the data rules are testable.
  */
 import type { SystemMetrics, SystemPulse } from './sdk/core';
-import { percentUsed } from './system-model';
+import { percentUsedPrecise } from './system-model';
 
 export interface Meter {
   title: string;
@@ -48,7 +48,7 @@ export function appendTelemetry(
   const next = [...history, {
     time,
     cpu: metrics.cpu_percent,
-    ram: percentUsed(metrics.memory_total_kib, metrics.memory_available_kib),
+    ram: percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib),
     gpu: gpuPeak(metrics),
   }];
   return next.slice(-MAX_TELEMETRY_POINTS);
@@ -67,15 +67,17 @@ export function appendPulse(
   const next = [...history, {
     time,
     cpu: pulse.cpu_percent,
-    ram: percentUsed(pulse.memory_total_kib, pulse.memory_available_kib),
+    ram: percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib),
     gpu: gpuReading,
   }];
   return next.slice(-MAX_PULSE_POINTS);
 }
 
-/** Explicit, labelled local axis ranges make low activity readable without
- * pretending the chart spans 0–100%. Missing samples cannot create fake peaks.
- * CPU/GPU retain a true zero origin; RAM focuses on its measured range.
+/** CPU and RAM use the SAME bounded adaptive-window rule.
+ * CPU was previously zero-anchored while RAM was zoomed; that made the
+ * plots behave differently despite identical 500ms pulse events.
+ * The per-lane min/max are always printed alongside the plot, so zoom
+ * never claims a larger change than actually occurred.
  */
 export function activityAxis(
   samples: readonly TelemetryPoint[],
@@ -86,14 +88,18 @@ export function activityAxis(
     .filter((value): value is number =>
       value !== null && Number.isFinite(value) && value >= 0 && value <= 100);
   if (!values.length) return { min: 0, max: 100 };
-  if (field !== 'ram') {
-    const max = Math.min(100, Math.max(15, Math.ceil(Math.max(...values) * 1.25 / 5) * 5));
-    return { min: 0, max };
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  const spread = high - low;
+  const padding = Math.max(2, spread * 0.25);
+  let min = Math.max(0, Math.floor((low - padding) * 10) / 10);
+  let max = Math.min(100, Math.ceil((high + padding) * 10) / 10);
+  // Keep a minimum four-point interval without falsely exceeding 0–100%.
+  if (max - min < 4) {
+    min = Math.max(0, Math.floor((low - 2) * 10) / 10);
+    max = Math.min(100, Math.max(min + 4, Math.ceil((high + 2) * 10) / 10));
+    min = Math.max(0, Math.min(min, max - 4));
   }
-  const minSample = Math.min(...values);
-  const maxSample = Math.max(...values);
-  const min = Math.max(0, Math.floor((minSample - 3) / 5) * 5);
-  const max = Math.min(100, Math.max(min + 5, Math.ceil((maxSample + 3) / 5) * 5));
   return { min, max };
 }
 
@@ -103,7 +109,7 @@ export function telemetrySummary(metrics: SystemMetrics | null): string {
   const value = (percent: number | null) => percent === null ? 'unavailable' : percent + '%';
   return [
     'CPU ' + value(metrics.cpu_percent),
-    'RAM ' + value(percentUsed(metrics.memory_total_kib, metrics.memory_available_kib)),
+    'RAM ' + value(percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib)),
     'GPU peak ' + value(gpuPeak(metrics)),
   ].join(', ');
 }

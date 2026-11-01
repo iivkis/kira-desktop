@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { calendarGridMotion, revealStagger } from '../motion';
+  import { calendarGridMotion, revealStagger, rollingClockDigit } from '../motion';
   import {
-    dayOfYear, isoDate, isoWeek, localDateLabel, monthGrid,
+    clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
   } from '../calendar-model';
 
@@ -22,6 +22,8 @@
   let selected = $state<CivilDate>(today);
   let visible = $state({ year: today.year, month: today.month });
 
+  const clockText = $derived(localClockText(now, locale));
+  const clockParts = $derived(clockGlyphs(clockText));
   const weeks = $derived(monthGrid(visible.year, visible.month));
   const selectedIso = $derived(isoDate(selected));
   const todayIso = $derived(isoDate(today));
@@ -102,8 +104,19 @@
   <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
     <div class="min-w-0">
       <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
-      <time class="mt-1 block text-4xl font-extrabold tabular-nums" datetime={now.toISOString()}>
-        {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).format(now)}
+      <time class="mt-1 flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
+        datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
+        {#each clockParts as part, index (index)}
+          {#if part.digit}
+            <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
+              aria-hidden="true" data-clock-cell>
+              <span class="flex h-full w-full items-center justify-center"
+                data-clock-digit use:rollingClockDigit={part.char}>{part.char}</span>
+            </span>
+          {:else}
+            <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
+          {/if}
+        {/each}
       </time>
       <p class="mt-1 text-xs text-kira-muted">
         {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now)}

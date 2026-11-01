@@ -6,7 +6,7 @@
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
-  import { percentUsed } from '../system-model';
+  import { percentUsedPrecise } from '../system-model';
   import {
     activityAxis, appendPulse, gpuPeak,
     type TelemetryPoint,
@@ -34,11 +34,12 @@
 
   const cpu = $derived(pulse ? pulse.cpu_percent : metrics?.cpu_percent ?? null);
   const ram = $derived(pulse
-    ? percentUsed(pulse.memory_total_kib, pulse.memory_available_kib)
-    : metrics ? percentUsed(metrics.memory_total_kib, metrics.memory_available_kib) : null);
+    ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
+    : metrics ? percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib) : null);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
   const trendHeight = $derived(gpuAvailable ? 296 : 202);
-  const dialLabel = (value: number | null) => value === null ? '—' : value + '%';
+  const dialLabel = (value: number | null, precise = false) =>
+    value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
 
   function draw(): void {
     const dial = (name: string, value: number | null, center: string, color: string) => ({
@@ -75,10 +76,12 @@
       animationDurationUpdate: reduced ? 0 : 350,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
-      grid: panels.map((_, i) => ({
-        left: 34, right: 8, top: i * 96 + 28, height: 56,
+      grid: panels.map((panel, i) => ({
+        id: 'grid-' + panel.field,
+        left: 41, right: 8, top: i * 96 + 28, height: 56,
       })),
-      xAxis: panels.map((_, i) => ({
+      xAxis: panels.map((panel, i) => ({
+        id: 'x-' + panel.field,
         type: 'category' as const, gridIndex: i, boundaryGap: false,
         data: history.map(point => String(point.time)),
         axisLine: { show: false }, axisTick: { show: false },
@@ -87,17 +90,19 @@
       yAxis: panels.map((panel, i) => {
         const axis = activityAxis(history, panel.field);
         return {
+          id: 'y-' + panel.field,
           type: 'value' as const, gridIndex: i,
-          min: axis.min, max: axis.max, splitNumber: 2,
+          min: axis.min, max: axis.max, interval: (axis.max - axis.min) / 2,
           axisLine: { show: false }, axisTick: { show: false },
           axisLabel: {
             color: muted, fontSize: 9, margin: 7,
-            formatter: (v: number) => v === axis.min || v === axis.max ? v + '%' : '',
+            formatter: (v: number) => Number(v.toFixed(1)) + '%',
           },
           splitLine: { lineStyle: { color: prussian, width: 1 } },
         };
       }),
       series: panels.map((panel, i) => ({
+        id: 'series-' + panel.field,
         name: panel.name, type: 'line' as const,
         xAxisIndex: i, yAxisIndex: i,
         smooth: 0.18, silent: true,
@@ -108,7 +113,7 @@
         itemStyle: { color: panel.color },
         areaStyle: { color: panel.color, opacity: panel.field === 'cpu' ? 0.18 : 0.09 },
       })),
-    }, { notMerge: true, lazyUpdate: true });
+    }, { replaceMerge: ['grid', 'xAxis', 'yAxis', 'series'], lazyUpdate: true });
   }
 
   // One history point per actual native pulse. No 500ms JS timer and no
@@ -175,8 +180,8 @@
         </div>
         <div class="flex flex-col items-center justify-center">
           <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums"
-            aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram + ' percent')}>
-            {dialLabel(ram)}
+            aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
+            {dialLabel(ram, true)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
         </div>

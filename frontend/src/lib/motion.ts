@@ -111,3 +111,64 @@ export function calendarGridMotion(
     },
   };
 }
+
+/** Odometer-style clock glyph with short, interruptible GSAP transitions.
+ * The actual character, ARIA label and datetime remain Svelte-owned. This
+ * action decorates only changed numerals, never replays unchanged digits.
+ */
+export function rollingClockDigit(node: HTMLElement, initial: string) {
+  let previous = initial;
+  let animation: gsap.core.Timeline | null = null;
+  let ghost: HTMLSpanElement | null = null;
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const stop = () => {
+    animation?.kill();
+    animation = null;
+    ghost?.remove();
+    ghost = null;
+    gsap.set(node, { clearProps: 'opacity,transform,filter,color' });
+  };
+  const onMotionChange = () => { if (motion.matches) stop(); };
+  motion.addEventListener('change', onMotionChange);
+
+  return {
+    update(next: string) {
+      if (next === previous) return;
+      const outgoing = previous;
+      previous = next;
+      stop();
+      if (motion.matches) return;
+
+      const parent = node.parentElement;
+      if (!parent) return;
+      ghost = node.ownerDocument.createElement('span');
+      ghost.textContent = outgoing;
+      ghost.setAttribute('aria-hidden', 'true');
+      ghost.className = 'pointer-events-none absolute inset-0 flex items-center justify-center text-kira-muted';
+      parent.appendChild(ghost);
+
+      const currentGhost = ghost;
+      animation = gsap.timeline({
+        defaults: { duration: 0.42, ease: 'power3.out' },
+        onComplete: () => {
+          currentGhost.remove();
+          if (ghost === currentGhost) ghost = null;
+          animation = null;
+          gsap.set(node, { clearProps: 'opacity,transform,filter,color' });
+        },
+      });
+      animation.fromTo(node,
+        { yPercent: 85, autoAlpha: 0, filter: 'blur(2px)', color: '#fca311' },
+        { yPercent: 0, autoAlpha: 1, filter: 'blur(0px)', color: 'inherit' },
+        0);
+      animation.to(currentGhost, {
+        yPercent: -85, autoAlpha: 0, duration: 0.35, ease: 'power2.inOut',
+      }, 0);
+    },
+    destroy() {
+      motion.removeEventListener('change', onMotionChange);
+      stop();
+    },
+  };
+}

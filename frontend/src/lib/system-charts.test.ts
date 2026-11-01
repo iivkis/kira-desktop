@@ -73,15 +73,33 @@ describe('System Monitor ECharts telemetry model', () => {
 
   it('keeps low CPU load visible while retaining an honest labeled zero origin', () => {
     const low = [2, 4, 5].map((cpu, time) => ({ time, cpu, ram: 39, gpu: null }));
-    expect(activityAxis(low, 'cpu')).toEqual({ min: 0, max: 15 });
-    expect(activityAxis(low, 'ram')).toEqual({ min: 35, max: 45 });
+    expect(activityAxis(low, 'cpu')).toEqual({ min: 0, max: 7 });
+    expect(activityAxis(low, 'ram')).toEqual({ min: 37, max: 41 });
     expect(activityAxis(low, 'gpu')).toEqual({ min: 0, max: 100 });
     expect(activityAxis([{ time: 0, cpu: 91, ram: 99, gpu: 0 }], 'cpu'))
-      .toEqual({ min: 0, max: 100 });
+      .toEqual({ min: 89, max: 93 });
     expect(activityAxis([{ time: 0, cpu: 0, ram: 0, gpu: 0 }], 'ram'))
-      .toEqual({ min: 0, max: 5 });
+      .toEqual({ min: 0, max: 4 });
     expect(activityAxis([{ time: 0, cpu: null, ram: null, gpu: null }], 'cpu'))
       .toEqual({ min: 0, max: 100 });
+  });
+
+  it('gives identical CPU and RAM history the exact same adaptive scale', () => {
+    const samples = [39.12, 39.25, 39.31].map((value, time) =>
+      ({ time, cpu: value, ram: value, gpu: null }));
+    expect(activityAxis(samples, 'cpu')).toEqual(activityAxis(samples, 'ram'));
+  });
+
+  it('preserves sub-percent RAM changes from each true 500ms pulse', () => {
+    const a = appendPulse([], {
+      cpu_percent: 5, memory_total_kib: 1_000_000, memory_available_kib: 608_800,
+    }, 500);
+    const b = appendPulse(a, {
+      cpu_percent: 6, memory_total_kib: 1_000_000, memory_available_kib: 608_100,
+    }, 1000);
+    expect(b.map(point => point.cpu)).toEqual([5, 6]);
+    expect(b.map(point => point.ram)).toEqual([39.12, 39.19]);
+    expect(b.map(point => point.time)).toEqual([500, 1000]);
   });
 
   it('adds one bar per detected GPU, retaining unknown readings', () => {
