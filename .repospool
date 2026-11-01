@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3490
+index_bytes=3492
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	bed79ba34cff0f95dad950810623bf9f9a4200e1
+C	c337894aa2b4676ffdcd247b10160e254d91ad73
 F	.cargo/config.toml	98	102	3
 F	.github/workflows/ci.yml	4105	107	105
 F	.github/workflows/nix.yml	2714	214	73
@@ -34,62 +34,62 @@ F	crates/kira-ipc/Cargo.toml	170	2228	9
 F	crates/kira-ipc/src/client.rs	10376	2239	277
 F	crates/kira-ipc/src/lib.rs	9053	2518	302
 F	crates/kira-shell/Cargo.toml	297	2822	12
-F	crates/kira-shell/src/calendar.rs	7459	2836	205
-F	crates/kira-shell/src/launcher.css	2924	3043	119
-F	crates/kira-shell/src/launcher.rs	10885	3164	300
-F	crates/kira-shell/src/main.rs	17023	3466	403
-F	crates/kira-shell/src/native-palette.css	353	3871	7
-F	crates/kira-shell/src/native_ui.rs	4859	3880	118
-F	crates/kira-shell/src/process_monitor.rs	6245	4000	202
-F	crates/kira-shell/src/process_page.rs	16357	4204	466
-F	crates/kira-shell/src/system_metrics.rs	7010	4672	214
-F	crates/kira-shell/src/system_panel.css	5154	4888	148
-F	crates/kira-shell/src/system_panel.rs	17263	5038	496
-F	docs/CONFIG.md	5801	5536	125
-F	docs/DESIGN_SYSTEM.md	15048	5663	276
-F	docs/DEVELOPMENT.md	23849	5941	486
-F	docs/QA_VISUAL.md	12284	6429	149
-F	docs/SPECIFICATION.md	28960	6580	421
-F	docs/UI_ARCHITECTURE.md	3667	7003	60
-F	docs/VISUAL_REVIEW.md	9754	7065	84
-F	flake.nix	2651	7151	76
-F	frontend/index.html	2737	7229	66
-F	frontend/package.json	650	7297	23
-F	frontend/scripts/inline-assets.mjs	4457	7322	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7427	106
-F	frontend/src/App.svelte	8659	7535	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7737	84
-F	frontend/src/lib/bootstrap.ts	2613	7823	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7895	38
-F	frontend/src/lib/calendar-model.ts	3453	7935	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	8009	177
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8188	43
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8233	61
-F	frontend/src/lib/sdk/core.test.ts	11858	8296	236
-F	frontend/src/lib/sdk/core.ts	9088	8534	269
-F	frontend/src/lib/system-health.test.ts	2348	8805	41
-F	frontend/src/lib/system-health.ts	2831	8848	60
-F	frontend/src/lib/themes/kira-default.css	1687	8910	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	8964	101
-F	frontend/src/lib/themes/kira-default.ts	777	9067	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9091	79
-F	frontend/src/lib/time.test.ts	263	9172	8
-F	frontend/src/lib/time.ts	320	9182	9
-F	frontend/src/main.ts	1780	9193	47
-F	frontend/src/style.css	1329	9242	44
-F	frontend/tsconfig.json	403	9288	16
-F	frontend/vite.config.ts	224	9306	8
-F	nix/package.nix	3430	9316	121
-F	scripts/dev_preview.py	18147	9439	403	x
-F	scripts/qa_visual.py	12052	9844	299
-F	tests/test_calendar_design.py	4195	10145	78
-F	tests/test_detailed_health.py	5510	10225	107
-F	tests/test_dev_preview.py	9339	10334	219
-F	tests/test_launcher_design.py	2915	10555	61
-F	tests/test_native_theme.py	2589	10618	55
-F	tests/test_popup_geometry.py	1656	10675	34
-F	tests/test_qa_visual.py	10549	10711	217
-F	tests/test_ui_bootstrap_contract.py	1103	10930	29
+F	crates/kira-shell/src/calendar.rs	12799	2836	368
+F	crates/kira-shell/src/launcher.css	2924	3206	119
+F	crates/kira-shell/src/launcher.rs	10885	3327	300
+F	crates/kira-shell/src/main.rs	17475	3629	412
+F	crates/kira-shell/src/native-palette.css	353	4043	7
+F	crates/kira-shell/src/native_ui.rs	4908	4052	124
+F	crates/kira-shell/src/process_monitor.rs	6245	4178	202
+F	crates/kira-shell/src/process_page.rs	16357	4382	466
+F	crates/kira-shell/src/system_metrics.rs	7010	4850	214
+F	crates/kira-shell/src/system_panel.css	5154	5066	148
+F	crates/kira-shell/src/system_panel.rs	17263	5216	496
+F	docs/CONFIG.md	5801	5714	125
+F	docs/DESIGN_SYSTEM.md	15048	5841	276
+F	docs/DEVELOPMENT.md	23849	6119	486
+F	docs/QA_VISUAL.md	12284	6607	149
+F	docs/SPECIFICATION.md	28960	6758	421
+F	docs/UI_ARCHITECTURE.md	3667	7181	60
+F	docs/VISUAL_REVIEW.md	9754	7243	84
+F	flake.nix	2651	7329	76
+F	frontend/index.html	2737	7407	66
+F	frontend/package.json	650	7475	23
+F	frontend/scripts/inline-assets.mjs	4457	7500	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7605	106
+F	frontend/src/App.svelte	8659	7713	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7915	84
+F	frontend/src/lib/bootstrap.ts	2613	8001	70
+F	frontend/src/lib/calendar-model.test.ts	2097	8073	38
+F	frontend/src/lib/calendar-model.ts	3453	8113	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	8187	177
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8366	43
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8411	61
+F	frontend/src/lib/sdk/core.test.ts	12253	8474	245
+F	frontend/src/lib/sdk/core.ts	9240	8721	274
+F	frontend/src/lib/system-health.test.ts	2348	8997	41
+F	frontend/src/lib/system-health.ts	2831	9040	60
+F	frontend/src/lib/themes/kira-default.css	1687	9102	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9156	101
+F	frontend/src/lib/themes/kira-default.ts	777	9259	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9283	79
+F	frontend/src/lib/time.test.ts	263	9364	8
+F	frontend/src/lib/time.ts	320	9374	9
+F	frontend/src/main.ts	2063	9385	52
+F	frontend/src/style.css	1329	9439	44
+F	frontend/tsconfig.json	403	9485	16
+F	frontend/vite.config.ts	224	9503	8
+F	nix/package.nix	3430	9513	121
+F	scripts/dev_preview.py	18147	9636	403	x
+F	scripts/qa_visual.py	12052	10041	299
+F	tests/test_calendar_design.py	5173	10342	94
+F	tests/test_detailed_health.py	5510	10438	107
+F	tests/test_dev_preview.py	9339	10547	219
+F	tests/test_launcher_design.py	2915	10768	61
+F	tests/test_native_theme.py	2589	10831	55
+F	tests/test_popup_geometry.py	1675	10888	34
+F	tests/test_qa_visual.py	10549	10924	217
+F	tests/test_ui_bootstrap_contract.py	1103	11143	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -2833,11 +2833,11 @@ kira-ipc = { path = "../kira-ipc" }
 serde_json.workspace = true
 
 FILE	crates/kira-shell/src/calendar.rs
-//! Non-exclusive Wayland layer-shell window for the Svelte Calendar widget.
-//! GTK owns only the window, trusted WebKit bridge and native clipboard.
-use std::cell::Cell;
+//! Reusable, prewarmed WebKit/layer-shell host for the Svelte Calendar.
+//! GTK owns the window and clipboard; calendar rendering belongs to Svelte.
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
@@ -2847,14 +2847,130 @@ const TITLE: &str = "Kira Calendar";
 const CALENDAR_MARKER: &str = "<html lang=\"en\">";
 const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\">";
 
+thread_local! {
+    // Only the GTK thread may touch GTK/WebKit. Hold the view for the entire
+    // shell session instead of constructing a new WebKit process per click.
+    static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>> = const { RefCell::new(None) };
+}
+
+struct CalendarOverlay {
+    window: gtk::ApplicationWindow,
+    view: webkit6::WebView,
+    document: String,
+    ready: Cell<bool>,
+    requested: Cell<bool>,
+    revealed: Cell<bool>,
+    paint_pending: Cell<bool>,
+    generation: Cell<u64>,
+    was_active: Cell<bool>,
+    open_started: Cell<Option<Instant>>,
+}
+
+impl CalendarOverlay {
+    fn hide(&self) {
+        self.requested.set(false);
+        self.revealed.set(false);
+        self.paint_pending.set(false);
+        self.window.set_visible(false);
+        // Do not call close(): that destroys the warm WebKit renderer.
+    }
+
+    fn show(self: &Rc<Self>) {
+        self.requested.set(true);
+        self.revealed.set(false);
+        self.paint_pending.set(false);
+        self.was_active.set(false);
+        self.open_started.set(Some(Instant::now()));
+        self.generation.set(self.generation.get().wrapping_add(1));
+        // An unpainted layer-shell surface must never flash grey. GTK4
+        // supports fully transparent toplevels on Wayland.
+        self.window.set_opacity(0.0);
+        self.window.present();
+        self.request_paint();
+
+        // A dead renderer should not leave an invisible focus-stealing popup.
+        let generation = self.generation.get();
+        let weak = Rc::downgrade(self);
+        gtk::glib::timeout_add_local_once(Duration::from_secs(3), move || {
+            if let Some(state) = weak.upgrade() {
+                if state.requested.get()
+                    && state.generation.get() == generation
+                    && !state.revealed.get()
+                {
+                    eprintln!("kira-shell: Calendar did not paint within 3s; hiding popup");
+                    state.hide();
+                }
+            }
+        });
+    }
+
+    fn request_paint(&self) {
+        if !self.requested.get() || !self.ready.get() || self.paint_pending.replace(true) {
+            return;
+        }
+        let generation = self.generation.get();
+        // Two animation frames give WebKit a chance to commit its Svelte
+        // content before GTK makes the popup opaque. This script only sends a
+        // fixed-purpose acknowledgement to the private calendar channel.
+        let script = format!(
+            "requestAnimationFrame(() => requestAnimationFrame(() => \
+             window.webkit.messageHandlers.kiraCalendarUi.postMessage('painted:{generation}')));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: Calendar frame request failed: {error}");
+                }
+            },
+        );
+    }
+
+    fn on_message(&self, message: &str) {
+        match calendar_command(message) {
+            Some(UiCommand::Ready) => {
+                eprintln!("kira-shell: Svelte calendar DOM verified");
+                self.ready.set(true);
+                self.request_paint();
+            }
+            Some(UiCommand::Painted(generation))
+                if self.requested.get()
+                    && self.paint_pending.get()
+                    && self.generation.get() == generation =>
+            {
+                self.revealed.set(true);
+                self.paint_pending.set(false);
+                self.window.set_opacity(1.0);
+                if let Some(start) = self.open_started.take() {
+                    eprintln!(
+                        "kira-shell: Calendar visible after {} ms",
+                        start.elapsed().as_millis()
+                    );
+                }
+            }
+            Some(UiCommand::Close) if self.requested.get() => self.hide(),
+            Some(UiCommand::CopyDate(date)) if self.requested.get() && self.revealed.get() => {
+                if let Some(display) = gtk::gdk::Display::default() {
+                    display.clipboard().set_text(date);
+                }
+            }
+            _ => eprintln!("kira-shell: ignored invalid/stale Calendar UI command"),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
     Close,
+    Ready,
+    Painted(u64),
     CopyDate(&'a str),
 }
 
-/// Revalidate untrusted date-copy requests without duplicating the Svelte
-/// calendar's grid, navigation or ISO week model in Rust.
+/// Revalidate date-copy requests without duplicating the Svelte date grid.
 fn valid_date(year: i32, month: u8, day: u8) -> bool {
     if !(1..=9999).contains(&year) || !(1..=12).contains(&month) {
         return false;
@@ -2869,17 +2985,28 @@ fn valid_date(year: i32, month: u8, day: u8) -> bool {
     (1..=last).contains(&day)
 }
 
-/// Only the exact ISO format is allowed into the OS clipboard.
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
-    if message == "close" {
-        return Some(UiCommand::Close);
+    match message {
+        "close" => return Some(UiCommand::Close),
+        "ready" => return Some(UiCommand::Ready),
+        _ => {}
+    }
+    if let Some(value) = message.strip_prefix("painted:") {
+        // Ignore arbitrary strings or oversized/noncanonical frame numbers.
+        if value.is_empty() || value.len() > 20 || !value.bytes().all(|b| b.is_ascii_digit()) {
+            return None;
+        }
+        return value.parse().ok().map(UiCommand::Painted);
     }
     let date = message.strip_prefix("copy:")?;
     let bytes = date.as_bytes();
     if bytes.len() != 10
         || bytes[4] != b'-'
         || bytes[7] != b'-'
-        || !bytes.iter().enumerate().all(|(i, b)| i == 4 || i == 7 || b.is_ascii_digit())
+        || !bytes
+            .iter()
+            .enumerate()
+            .all(|(i, b)| i == 4 || i == 7 || b.is_ascii_digit())
     {
         return None;
     }
@@ -2892,29 +3019,12 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     Some(UiCommand::CopyDate(date))
 }
 
-/// A single trusted frontend bundle serves both surfaces; the calendar marker
-/// selects CalendarWidget at mount time, without granting it Core RPC access.
 fn calendar_document(html: &str) -> Option<String> {
     html.contains(CALENDAR_MARKER)
         .then(|| html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
 }
 
-pub fn dismiss(application: &gtk::Application) -> bool {
-    crate::native_ui::dismiss_overlay(application, TITLE)
-}
-
-pub fn toggle(application: &gtk::Application, html: &str) {
-    if dismiss(application) {
-        return;
-    }
-    let Some(document) = calendar_document(html) else {
-        eprintln!("kira-shell: calendar HTML root not found");
-        return;
-    };
-
-    crate::launcher::dismiss(application);
-    crate::system_panel::dismiss(application);
-
+fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay> {
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
     window.set_decorated(false);
@@ -2929,8 +3039,7 @@ pub fn toggle(application: &gtk::Application, html: &str) {
     window.set_keyboard_mode(KeyboardMode::OnDemand);
     crate::native_ui::configure_webview_popup(&window, 378, 560);
 
-    // Separate content manager: no kira (Core RPC) or other overlay controls
-    // are registered in the calendar renderer.
+    // The calendar has no general Core RPC bridge, only its own messages.
     let context = webkit6::WebContext::new();
     let manager = webkit6::UserContentManager::new();
     let view = webkit6::WebView::builder()
@@ -2940,21 +3049,22 @@ pub fn toggle(application: &gtk::Application, html: &str) {
     view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
     crate::native_ui::restrict_webview_navigation(&view);
 
-    let weak_window = window.downgrade();
+    let overlay = Rc::new(CalendarOverlay {
+        window: window.clone(),
+        view: view.clone(),
+        document,
+        ready: Cell::new(false),
+        requested: Cell::new(false),
+        revealed: Cell::new(false),
+        paint_pending: Cell::new(false),
+        generation: Cell::new(0),
+        was_active: Cell::new(false),
+        open_started: Cell::new(None),
+    });
+    let weak = Rc::downgrade(&overlay);
     manager.connect_script_message_received(Some("kiraCalendarUi"), move |_, value| {
-        let payload = value.to_string();
-        match calendar_command(&payload) {
-            Some(UiCommand::Close) => {
-                if let Some(window) = weak_window.upgrade() {
-                    window.close();
-                }
-            }
-            Some(UiCommand::CopyDate(date)) => {
-                if let Some(display) = gtk::gdk::Display::default() {
-                    display.clipboard().set_text(date);
-                }
-            }
-            None => eprintln!("kira-shell: rejected invalid calendar UI command"),
+        if let Some(overlay) = weak.upgrade() {
+            overlay.on_message(&value.to_string());
         }
     });
     assert!(manager.register_script_message_handler("kiraCalendarUi", None));
@@ -2964,48 +3074,86 @@ pub fn toggle(application: &gtk::Application, html: &str) {
     });
     assert!(manager.register_script_message_handler("kiraDiagnostics", None));
 
-    view.connect_load_failed(|_, event, uri, error| {
-        eprintln!("kira-shell: calendar WebKit load failed ({event:?}) for {uri}: {error}");
+    let weak = Rc::downgrade(&overlay);
+    view.connect_load_failed(move |_, event, uri, error| {
+        eprintln!("kira-shell: Calendar WebKit load failed ({event:?}) for {uri}: {error}");
+        if let Some(state) = weak.upgrade() {
+            state.ready.set(false);
+            state.hide();
+        }
         false
     });
-    view.connect_web_process_terminated(|_, reason| {
-        eprintln!("kira-shell: calendar WebKit renderer terminated: {reason:?}");
-    });
-    view.connect_load_changed(|webview, event| {
-        if event == webkit6::LoadEvent::Finished {
-            let webview = webview.clone();
-            gtk::glib::timeout_add_local_once(Duration::from_millis(1500), move || {
-                webview.evaluate_javascript(
-                    "if (!document.querySelector('main[data-kira-ui-root][aria-label=\"Kira Calendar\"]')) { throw new Error('Svelte Calendar did not mount'); }",
-                    None,
-                    None,
-                    None::<&gtk::gio::Cancellable>,
-                    |result| {
-                        if let Err(error) = result {
-                            eprintln!("kira-shell: Svelte calendar DOM check failed: {error}");
-                        } else {
-                            eprintln!("kira-shell: Svelte calendar DOM verified");
-                        }
-                    },
-                );
-            });
+    let weak = Rc::downgrade(&overlay);
+    view.connect_web_process_terminated(move |_, reason| {
+        eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
+        if let Some(state) = weak.upgrade() {
+            state.ready.set(false);
+            state.hide();
+            state.view.load_html(&state.document, None);
         }
     });
 
-    // On-demand keyboard focus: close the popup when it loses active focus,
-    // but never close the persistent 42px top bar.
-    let was_active = Rc::new(Cell::new(false));
+    let weak = Rc::downgrade(&overlay);
     window.connect_is_active_notify(move |window| {
-        if window.is_active() {
-            was_active.set(true);
-        } else if was_active.get() {
-            window.close();
+        if let Some(state) = weak.upgrade() {
+            if window.is_active() {
+                state.was_active.set(true);
+            } else if state.requested.get() && state.was_active.get() {
+                state.hide();
+            }
         }
     });
 
-    view.load_html(&document, None);
+    // Load once at startup with no visible layer-shell surface. GTK will map
+    // and paint it only on demand, preserving the Svelte component in memory.
     window.set_child(Some(&view));
-    window.present();
+    view.load_html(&overlay.document, None);
+    overlay
+}
+
+fn ensure(application: &gtk::Application, html: &str) -> Option<Rc<CalendarOverlay>> {
+    CALENDAR.with(|cache| {
+        let existing = cache.borrow().clone();
+        if existing.is_some() {
+            return existing;
+        }
+        let document = calendar_document(html)?;
+        let overlay = build(application, document);
+        *cache.borrow_mut() = Some(overlay.clone());
+        Some(overlay)
+    })
+}
+
+/// Start WebKit loading shortly after the bar is activated, not on first click.
+pub fn prewarm(application: &gtk::Application, html: &str) {
+    if ensure(application, html).is_none() {
+        eprintln!("kira-shell: Calendar HTML root not found");
+    }
+}
+
+pub fn dismiss(_application: &gtk::Application) -> bool {
+    CALENDAR.with(|cache| {
+        if let Some(state) = cache.borrow().as_ref() {
+            if state.requested.get() {
+                state.hide();
+                return true;
+            }
+        }
+        false
+    })
+}
+
+pub fn toggle(application: &gtk::Application, html: &str) {
+    if dismiss(application) {
+        return;
+    }
+    let Some(state) = ensure(application, html) else {
+        eprintln!("kira-shell: Calendar HTML root not found");
+        return;
+    };
+    crate::launcher::dismiss(application);
+    crate::system_panel::dismiss(application);
+    state.show();
 }
 
 #[cfg(test)]
@@ -3015,14 +3163,29 @@ mod tests {
     #[test]
     fn rejects_untrusted_calendar_commands() {
         for invalid in [
-            "", "COPY", "toggle", "copy:", "copy:2026-02-30", "copy:1900-02-29",
-            "copy:0000-01-01", "copy:2026-13-01", "copy:2026-11-1",
-            "copy:2026-11-01\n", "copy:2026-11-01;rm", "copy:🔥",
+            "",
+            "COPY",
+            "toggle",
+            "painted:",
+            "painted:2;exit",
+            "painted:-1",
+            "painted:18446744073709551616",
+            "copy:",
+            "copy:2026-02-30",
+            "copy:1900-02-29",
+            "copy:0000-01-01",
+            "copy:2026-13-01",
+            "copy:2026-11-1",
+            "copy:2026-11-01\n",
+            "copy:2026-11-01;rm",
+            "copy:🔥",
             r#"{"method":"execute_shell"}"#,
         ] {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
         assert_eq!(calendar_command("close"), Some(UiCommand::Close));
+        assert_eq!(calendar_command("ready"), Some(UiCommand::Ready));
+        assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
             calendar_command("copy:2024-02-29"),
             Some(UiCommand::CopyDate("2024-02-29"))
@@ -3797,6 +3960,15 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
+
+        // Warm the isolated Calendar WebKit process after the Top Bar starts.
+        // The popup stays unmapped until requested; initial startup is not
+        // blocked by the Calendar's JS initialization.
+        let calendar_app = app.clone();
+        let calendar_source = html.clone();
+        gtk::glib::timeout_add_local_once(Duration::from_millis(200), move || {
+            calendar::prewarm(&calendar_app, &calendar_source);
+        });
     });
     app.run();
 }
@@ -3923,13 +4095,19 @@ pub fn restrict_webview_navigation(view: &webkit6::WebView) {
 
 /// WebKit views fill their window instead of reporting a useful natural size.
 /// Cap dimensions to the actual logical monitor, with safe narrow-screen margins.
-fn apply_webview_size(window: &gtk::ApplicationWindow, preferred_width: i32, preferred_height: i32) {
+fn apply_webview_size(
+    window: &gtk::ApplicationWindow,
+    preferred_width: i32,
+    preferred_height: i32,
+) {
     let display = gtk::prelude::WidgetExt::display(window);
     let monitor = window
         .surface()
         .and_then(|surface| display.monitor_at_surface(&surface))
         .or_else(|| {
-            display.monitors().item(0)
+            display
+                .monitors()
+                .item(0)
                 .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
         });
     let (output_width, output_height) = monitor
@@ -8294,7 +8472,7 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -8348,6 +8526,15 @@ describe('Core SDK JSON-RPC bridge', () => {
       copyCalendarDate(invalid);
     }
     expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close', 'copy:2024-02-29']);
+  });
+
+  it('reports calendar Svelte mount completion only via the private host channel', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    notifyCalendarMounted();
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('ready');
   });
 
   it('does not throw without a calendar host, or when its channel fails', () => {
@@ -8716,6 +8903,11 @@ function sendCalendarUi(command: string): boolean {
   }
 }
 
+/** Emitted only by the calendar bootstrap after mount() and flushSync(). */
+export function notifyCalendarMounted(): void {
+  sendCalendarUi('ready');
+}
+
 export function closeCalendarOverlay(): void {
   sendCalendarUi('close');
 }
@@ -8723,7 +8915,7 @@ export function closeCalendarOverlay(): void {
 export function copyCalendarDate(date: string): void {
   // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
   // revalidates the exact date, including month lengths and leap years.
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) return;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
   sendCalendarUi('copy:' + date);
 }
 
@@ -9193,7 +9385,7 @@ FILE	frontend/src/main.ts
 import { flushSync, mount } from 'svelte';
 import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate } from './lib/sdk/core';
+import { closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './lib/sdk/core';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
 
@@ -9235,6 +9427,11 @@ whenDocumentReady(document, () => {
   Reflect.set(window, '__kiraMountReturned', mounted);
   if (mounted) {
     report('Svelte entrypoint mounted');
+    // Let the GTK host map the prepared popup only after the Svelte root is
+    // actually mounted. A second frame acknowledgement gates its opacity.
+    if (document.documentElement.dataset.kiraSurface === 'calendar') {
+      notifyCalendarMounted();
+    }
   }
 });
 
@@ -10182,11 +10379,27 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("native_ui::POPUP_TOP_MARGIN", RUST)
         self.assertIn("restrict_webview_navigation(&view)", RUST)
         self.assertIn('register_script_message_handler("kiraCalendarUi", None)', RUST)
-        self.assertIn("view.load_html(&document, None)", RUST)
+        self.assertIn("view.load_html(&overlay.document, None)", RUST)
         self.assertNotIn('register_script_message_handler("kira", None)', RUST)
         self.assertNotIn("gtk::CssProvider", RUST)
         self.assertIn("pub fn restrict_webview_navigation", NATIVE)
         self.assertIn("pub fn configure_webview_popup", NATIVE)
+
+    def test_calendar_is_preloaded_and_reused_without_a_blank_surface(self):
+        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source)", SHELL)
+        self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", RUST)
+        self.assertIn("fn ensure(application: &gtk::Application, html: &str)", RUST)
+        self.assertIn("self.window.set_visible(false)", RUST)
+        self.assertIn("self.window.set_opacity(0.0)", RUST)
+        self.assertIn("self.window.set_opacity(1.0)", RUST)
+        self.assertIn("self.request_paint()", RUST)
+        self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)
+        self.assertIn("self.generation.get() == generation", RUST)
+        self.assertNotIn("window.close()", RUST)
+        self.assertIn("pub fn prewarm(", RUST)
+        self.assertIn("requestAnimationFrame", RUST)
+        self.assertIn('sendCalendarUi(\'ready\')', SDK)
+        self.assertIn("notifyCalendarMounted();", ENTRY)
 
     def test_surface_is_selected_by_trusted_html_marker(self):
         self.assertIn('data-kira-surface=\\"calendar\\"', RUST)
@@ -10199,8 +10412,8 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("native_ui::restrict_webview_navigation(&view)", SHELL)
 
     def test_calendar_commands_are_allowlisted_and_dates_revalidated(self):
-        self.assertIn("calendar_command(&payload)", RUST)
-        self.assertIn("CivilDate::new(year, month, day)?", RUST)
+        self.assertIn("calendar_command(message)", RUST)
+        self.assertIn("valid_date(year, month, day)", RUST)
         self.assertIn("display.clipboard().set_text(date)", RUST)
         self.assertIn("fn rejects_untrusted_calendar_commands()", RUST)
         self.assertIn('sendCalendarUi("close")'.replace('"', "'"), SDK)
@@ -10691,7 +10904,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("scroll.set_max_content_height(height_limit)", HELPERS)
         self.assertIn("scroll.set_propagate_natural_height(true)", HELPERS)
         self.assertIn("window.set_default_size(width, -1)", HELPERS)
-        self.assertNotIn("preferred_height", HELPERS)
+        self.assertNotIn("window.set_default_size(width, 490)", HELPERS)
         self.assertIn("native_ui::configure_popup", MONITOR)
         self.assertIn("native_ui::configure_webview_popup", CALENDAR)
         self.assertIn("output_width.saturating_sub(24)", HELPERS)
