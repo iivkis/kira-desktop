@@ -57,7 +57,7 @@ function scriptFor(steps) {
                 ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent;' +
                   'document.querySelector("button[aria-label=\\\"Next month\\\"]")?.click();'
               : kind === 'calendar-pick'
-                ? 'const candidate = document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[data-calendar-day]:not([aria-pressed=\\\"true\\\"])");' +
+                ? 'const candidate = document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[data-calendar-day].text-kira-text:not([aria-pressed=\\\"true\\\"])");' +
                   'window.__kiraCalendarChosen = candidate?.getAttribute("aria-label");candidate?.click();'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
@@ -137,7 +137,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
        !output.includes('data-smoke-calendar-picked="true"'))) {
-    throw new Error(name + ': GSAP calendar navigation/selection must keep date and pressed semantics correct');
+    const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
   if (heightMode === 'system') {
     const charts = Number(output.match(/data-smoke-system-charts="(\d+)"/)?.[1] ?? 0);
