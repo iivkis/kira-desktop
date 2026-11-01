@@ -1,100 +1,170 @@
-/** Delegated GSAP hover refraction for all clickable desktop overlay items.
+/** TENET temporal material deformation, not a glow or a glass overlay.
  *
- * The functional button does not change its hitbox or receive transforms.
- * An optical layer is warped under the pointer; an optional inner glyph
- * layer deforms independently of Calendar's existing TENET/clock timelines.
- * On departure, the trace retraces the actual bounded pointer history
- * INVERTED, while the base UI continues FORWARD. One event, same geometry.
+ * An actual SVG feDisplacementMap warps SourceGraphic pixels (the selected
+ * control or its glyphs). GSAP evolves its displacement amplitude and field
+ * phase over time; the cursor writes a bounded causal path. Pointer departure
+ * retraces that same path in reverse before settling to the exact unfiltered
+ * original. The clickable layout rectangle is never transformed.
  */
 import { gsap } from 'gsap';
 import {
   inverseLensPath, lensPoint, rememberLensPoint, type LensPoint,
 } from './tenet-lens-model';
 
+const NS = 'http://www.w3.org/2000/svg';
 const SELECTOR = 'button:not(:disabled), a[href], [role="button"]:not([aria-disabled="true"])';
+let serial = 0;
+
+type Field = { amplitude: number; phaseX: number; phaseY: number; frequency: number };
+
+function svgNode(doc: Document, name: string): SVGElement {
+  return doc.createElementNS(NS, name);
+}
+
+/** One in-document SVG filter per mounted widget. No CDN, image fetch,
+ * permanent animation loop, pseudo-element or backdrop blur.
+ */
+function createWarpFilter(root: HTMLElement) {
+  const id = 'kira-temporal-warp-' + (++serial);
+  const doc = root.ownerDocument;
+  const svg = svgNode(doc, 'svg');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  svg.setAttribute('width', '0');
+  svg.setAttribute('height', '0');
+  svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none';
+  const defs = svgNode(doc, 'defs');
+  const filter = svgNode(doc, 'filter');
+  filter.setAttribute('id', id);
+  filter.setAttribute('x', '-24%');
+  filter.setAttribute('y', '-48%');
+  filter.setAttribute('width', '148%');
+  filter.setAttribute('height', '196%');
+  filter.setAttribute('color-interpolation-filters', 'sRGB');
+
+  const noise = svgNode(doc, 'feTurbulence');
+  noise.setAttribute('type', 'fractalNoise');
+  noise.setAttribute('baseFrequency', '0.026 0.085');
+  noise.setAttribute('numOctaves', '2');
+  noise.setAttribute('seed', String(serial % 97 + 1));
+  noise.setAttribute('result', 'materialField');
+  const offset = svgNode(doc, 'feOffset');
+  offset.setAttribute('in', 'materialField');
+  offset.setAttribute('result', 'shiftedField');
+  const displacement = svgNode(doc, 'feDisplacementMap');
+  displacement.setAttribute('in', 'SourceGraphic');
+  displacement.setAttribute('in2', 'shiftedField');
+  displacement.setAttribute('xChannelSelector', 'R');
+  displacement.setAttribute('yChannelSelector', 'G');
+  displacement.setAttribute('scale', '0');
+  filter.append(noise, offset, displacement);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+  root.appendChild(svg);
+
+  return {
+    id, svg, displacement,
+    apply(field: Field) {
+      displacement.setAttribute('scale', field.amplitude.toFixed(2));
+      offset.setAttribute('dx', field.phaseX.toFixed(2));
+      offset.setAttribute('dy', field.phaseY.toFixed(2));
+      noise.setAttribute('baseFrequency', field.frequency.toFixed(4) + ' 0.085');
+    },
+  };
+}
 
 export function tenetHoverLens(root: HTMLElement) {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const warp = createWarpFilter(root);
+  const field: Field = { amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026 };
   let active: HTMLElement | null = null;
+  let painted: HTMLElement | null = null;
+  let priorFilter = '';
   let history: LensPoint[] = [];
-  let enterTween: gsap.core.Tween | null = null;
-  let pointerTween: gsap.core.Tween | null = null;
-  let returnTimeline: gsap.core.Timeline | null = null;
+  let forward: gsap.core.Tween | null = null;
+  let reverse: gsap.core.Timeline | null = null;
   let restoreTimer: number | null = null;
-  let contentTween: gsap.core.Tween | null = null;
-  let content: HTMLElement | null = null;
 
   const eligible = (event: Event): HTMLElement | null => {
     if (!(event.target instanceof Element)) return null;
-    const candidate = event.target.closest<HTMLElement>(SELECTOR);
-    return candidate && root.contains(candidate) ? candidate : null;
+    const target = event.target.closest<HTMLElement>(SELECTOR);
+    return target && root.contains(target) ? target : null;
   };
-  const enabled = (event: PointerEvent) => !motion.matches &&
-    finePointer.matches && (event.pointerType === 'mouse' || event.pointerType === 'pen');
+  const enabled = (event: PointerEvent) => !motion.matches && finePointer.matches &&
+    (event.pointerType === 'mouse' || event.pointerType === 'pen');
 
-  function endAnimations() {
+  /** Displacement strength and phase are derived from real stored positions.
+   * No random rerolls or invented cursor samples during inverse playback.
+   */
+  function fieldAt(point: LensPoint): Field {
+    return {
+      amplitude: 7 + Math.hypot(point.dx, point.dy) * 0.75,
+      phaseX: point.dx * 3.5,
+      phaseY: point.dy * 2,
+      frequency: 0.024 + point.x * 0.0001,
+    };
+  }
+
+  function kill() {
     if (restoreTimer !== null) {
       window.clearTimeout(restoreTimer);
       restoreTimer = null;
     }
-    enterTween?.kill();
-    pointerTween?.kill();
-    returnTimeline?.kill();
-    contentTween?.kill();
-    enterTween = pointerTween = contentTween = null;
-    returnTimeline = null;
+    forward?.kill();
+    reverse?.kill();
+    forward = null;
+    reverse = null;
   }
 
-  function reset() {
-    endAnimations();
-    if (content) gsap.set(content, { clearProps: 'transform' });
-    if (active) {
-      gsap.set(active, { clearProps:
-        '--kira-lens-opacity,--kira-lens-x,--kira-lens-y,--kira-lens-dx,--kira-lens-dy,--kira-lens-shear' });
-      active.classList.remove('kira-tenet-lens-target');
-      active.removeAttribute('data-tenet-lens-state');
+  function restore() {
+    kill();
+    if (painted) {
+      painted.style.filter = priorFilter;
+      painted.removeAttribute('data-tenet-warp-pixels');
     }
-    content = null;
+    if (active) {
+      active.removeAttribute('data-tenet-warp-state');
+    }
+    painted = null;
     active = null;
     history = [];
+    field.amplitude = 0;
+    field.phaseX = 0;
+    field.phaseY = 0;
+    field.frequency = 0.026;
+    warp.apply(field);
   }
 
-  function values(point: LensPoint) {
-    return {
-      '--kira-lens-x': point.x + '%',
-      '--kira-lens-y': point.y + '%',
-      '--kira-lens-dx': point.dx + 'px',
-      '--kira-lens-dy': point.dy + 'px',
-      '--kira-lens-shear': point.dx * 0.65 + 'deg',
-    };
+  function forwardTo(point: LensPoint, duration: number) {
+    forward?.kill();
+    forward = gsap.to(field, {
+      ...fieldAt(point),
+      duration, ease: 'power3.out', overwrite: true,
+      onUpdate: () => warp.apply(field),
+    });
   }
 
   function onOver(event: PointerEvent) {
     if (!enabled(event)) return;
     const target = eligible(event);
     if (!target || target === active) return;
-    reset();
+    restore();
     active = target;
-    content = target.querySelector<HTMLElement>('[data-tenet-lens-body]');
+    // Filter an explicit glyph surface when available. Otherwise distort
+    // the actual painted button including its background and glyphs.
+    painted = target.querySelector<HTMLElement>('[data-tenet-lens-body]') ?? target;
+    priorFilter = painted.style.filter;
     const rect = target.getBoundingClientRect();
     const point = lensPoint(event.clientX, event.clientY,
       rect.left, rect.top, rect.width, rect.height);
     history = rememberLensPoint([], point);
-    target.classList.add('kira-tenet-lens-target');
-    target.dataset.tenetLensState = 'forward';
-    gsap.set(target, { ...values(point), '--kira-lens-opacity': 0 });
-    enterTween = gsap.to(target, {
-      '--kira-lens-opacity': 0.94, duration: 0.22,
-      ease: 'power2.out', overwrite: 'auto',
-    });
-    if (content) {
-      contentTween = gsap.to(content, {
-        x: point.dx * 0.5, y: point.dy * 0.5,
-        skewX: point.dx * 0.55, scale: 1.055,
-        duration: 0.24, ease: 'power2.out', overwrite: 'auto',
-      });
-    }
+    painted.style.filter = 'url("#' + warp.id + '")';
+    painted.dataset.tenetWarpPixels = 'true';
+    target.dataset.tenetWarpState = 'forward';
+    // Initial contact bends the real pixels; the material settles with
+    // slight inertia as more cursor positions arrive.
+    forwardTo(point, 0.34);
   }
 
   function onMove(event: PointerEvent) {
@@ -103,67 +173,45 @@ export function tenetHoverLens(root: HTMLElement) {
     const point = lensPoint(event.clientX, event.clientY,
       rect.left, rect.top, rect.width, rect.height);
     history = rememberLensPoint(history, point);
-    pointerTween?.kill();
-    pointerTween = gsap.to(active, {
-      ...values(point), duration: 0.105, ease: 'power2.out',
-      overwrite: 'auto',
-    });
-    if (content) {
-      contentTween?.kill();
-      contentTween = gsap.to(content, {
-        x: point.dx * 0.5, y: point.dy * 0.5,
-        skewX: point.dx * 0.55, scale: 1.055,
-        duration: 0.16, ease: 'power2.out',
-        overwrite: 'auto',
-      });
-    }
+    forwardTo(point, 0.22);
   }
 
   function onOut(event: PointerEvent) {
-    if (!active) return;
-    const departed = eligible(event);
-    if (departed !== active) return;
-    const next = event.relatedTarget;
-    if (next instanceof Node && active.contains(next)) return;
-    const node = active;
-    const reversed = inverseLensPath(history);
-    endAnimations();
-    node.dataset.tenetLensState = 'inverted';
-    returnTimeline = gsap.timeline({ onComplete: reset });
-    // One recorded sequence. Never sample new mouse positions after departure.
-    for (const point of reversed) {
-      returnTimeline.to(node, {
-        ...values(point), duration: 0.018, ease: 'none',
+    if (!active || eligible(event) !== active) return;
+    if (event.relatedTarget instanceof Node && active.contains(event.relatedTarget)) return;
+    const reversePoints = inverseLensPath(history);
+    kill();
+    active.dataset.tenetWarpState = 'inverted';
+    reverse = gsap.timeline({ onComplete: restore });
+    // Reconstruct the cursor's exact recorded sequence in reverse; each
+    // segment has a continuous material field and a shared temporal cursor.
+    for (const point of reversePoints) {
+      reverse.to(field, {
+        ...fieldAt(point), duration: 0.035, ease: 'none',
+        onUpdate: () => warp.apply(field),
       });
     }
-    returnTimeline.to(node, {
-      '--kira-lens-opacity': 0,
-      '--kira-lens-dx': '0px', '--kira-lens-dy': '0px',
-      '--kira-lens-shear': '0deg',
-      duration: 0.2, ease: 'power2.out',
+    reverse.to(field, {
+      amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026,
+      duration: 0.25, ease: 'power3.out',
+      onUpdate: () => warp.apply(field),
     });
-    if (content) {
-      returnTimeline.to(content, {
-        x: 0, y: 0, skewX: 0, scale: 1, duration: 0.25,
-        ease: 'power2.out',
-      }, '<');
-    }
-    // GTK/WebKit may suspend requestAnimationFrame while transitioning
-    // overlays. A one-shot safeguard restores everything, then cancels
-    // itself on normal GSAP completion or new input.
-    restoreTimer = window.setTimeout(reset, 750);
+    // If WebKitGTK throttles animation frames, the control still recovers.
+    restoreTimer = window.setTimeout(restore, 1000);
   }
 
-  const onMotionChange = () => { if (motion.matches || !finePointer.matches) reset(); };
-  const onDown = () => { if (active) reset(); };
-  const onFocus = () => { if (active) reset(); };
+  const onEnvironmentChange = () => {
+    if (motion.matches || !finePointer.matches) restore();
+  };
+  const onDown = () => restore();
+  const onFocus = () => restore();
   root.addEventListener('pointerover', onOver);
   root.addEventListener('pointermove', onMove);
   root.addEventListener('pointerout', onOut);
   root.addEventListener('pointerdown', onDown);
   root.addEventListener('focusin', onFocus);
-  motion.addEventListener('change', onMotionChange);
-  finePointer.addEventListener('change', onMotionChange);
+  motion.addEventListener('change', onEnvironmentChange);
+  finePointer.addEventListener('change', onEnvironmentChange);
   return {
     destroy() {
       root.removeEventListener('pointerover', onOver);
@@ -171,9 +219,10 @@ export function tenetHoverLens(root: HTMLElement) {
       root.removeEventListener('pointerout', onOut);
       root.removeEventListener('pointerdown', onDown);
       root.removeEventListener('focusin', onFocus);
-      motion.removeEventListener('change', onMotionChange);
-      finePointer.removeEventListener('change', onMotionChange);
-      reset();
+      motion.removeEventListener('change', onEnvironmentChange);
+      finePointer.removeEventListener('change', onEnvironmentChange);
+      restore();
+      warp.svg.remove();
     },
   };
 }
