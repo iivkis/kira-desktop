@@ -7,26 +7,15 @@
  */
 import { gsap } from 'gsap';
 import { nextClockFlights, type ClockFlight } from './clock-flight';
+import { dualTime, tenetFragmentsFor, type FragmentFlight } from './calendar-tenet-model';
 
 type Scene = { forward: gsap.core.Timeline; inverted: gsap.core.Timeline; fragments: HTMLElement[] };
-type Offset = { x: number; y: number; rotation: number };
 const ACCENT = '#fca311';
 const MUTED = '#e5e5e5';
 
 function reduced(motion: MediaQueryList): boolean { return motion.matches; }
 
-/** Deterministic flight memory within this event; no random reroll on inversion. */
-export function tenetFragmentsFor(direction: number): Offset[] {
-  const sign = direction < 0 ? -1 : 1;
-  return [
-    { x: -39 * sign, y: -18, rotation: -65 },
-    { x: 31 * sign, y: 29, rotation: 42 },
-    { x: -14 * sign, y: 40, rotation: 80 },
-    { x: 37 * sign, y: -32, rotation: -35 },
-  ];
-}
-
-function createFragments(root: HTMLElement, contact: HTMLElement, positions: readonly Offset[]): HTMLElement[] {
+function createFragments(root: HTMLElement, contact: HTMLElement, positions: readonly FragmentFlight[]): HTMLElement[] {
   const base = root.getBoundingClientRect();
   const target = contact.getBoundingClientRect();
   const x = target.left - base.left + target.width / 2;
@@ -72,7 +61,7 @@ function dualScene(
   inverted.progress(1); // Future trace exists first; then returns to contact.
   const forward = gsap.timeline({
     paused: true,
-    onUpdate: () => { inverted.progress(1 - forward.progress()); },
+    onUpdate: () => { inverted.progress(dualTime(forward.progress()).inverted); },
     onComplete: cleanup,
   });
   forward.fromTo(targets,
@@ -207,7 +196,7 @@ export function tenetClockDigit(node: HTMLElement, initial: string) {
       inverted.progress(1); // New numeral is known; reverse its future exit.
       forward = gsap.timeline({
         paused: true,
-        onUpdate: () => { inverted?.progress(1 - (forward?.progress() ?? 1)); },
+        onUpdate: () => { inverted?.progress(dualTime(forward?.progress() ?? 1).inverted); },
         onComplete: stop,
       });
       forward.fromTo(relic,
