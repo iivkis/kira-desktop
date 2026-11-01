@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, openLauncher } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -8,6 +8,18 @@ afterEach(() => {
 });
 
 describe('Core SDK JSON-RPC bridge', () => {
+  it('opens Launcher via its fixed command and reports missing or failing host bridge', () => {
+    expect(openLauncher()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraLauncher: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(openLauncher()).toBe(true);
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
+    postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
+    expect(openLauncher()).toBe(false);
+  });
+
   it('toggles the calendar via a dedicated fixed-purpose host bridge', () => {
     expect(toggleCalendar()).toBe(false);
     const postMessage = vi.fn();

@@ -25,6 +25,12 @@ component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
 focus, Core state and live KDL config updates remain behavioral concerns,
 not CSS assumptions.
 
+The narrow Svelte host bridge exposes only `openLauncher()` and
+`toggleCalendar()` for native overlays. Both share the same private,
+non-throwing message helper, while Rust checks the literal `open` and
+`toggle` payloads independently. If the native handler is missing or
+fails, the UI reports the overlay offline instead of throwing.
+
 The native **GTK4 Launcher and Calendar** cannot use Tailwind; their
 `crates/kira-shell/src/launcher.css` and `calendar.css` retain
 matching GTK themes. The calendar is an independent, non-exclusive layer

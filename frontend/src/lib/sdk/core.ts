@@ -98,24 +98,30 @@ declare global {
   }
 }
 
-/** Native launcher control is a dedicated fixed-purpose channel, never a shell command. */
-export function openLauncher(): boolean {
-  const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kiraLauncher;
-  if (!channel) return false;
-  channel.postMessage('open');
-  return true;
-}
-
-/** Toggle the native calendar overlay. This bridge accepts one literal command. */
-export function toggleCalendar(): boolean {
-  const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kiraCalendar;
+/** Only fixed commands are exposed to trusted Svelte components. Keep host
+ * bridge failures non-throwing so an offline overlay does not crash the bar.
+ */
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar', command: 'open' | 'toggle'): boolean {
+  const channel = typeof window === 'undefined'
+    ? undefined
+    : window.webkit?.messageHandlers?.[channelName];
   if (!channel) return false;
   try {
-    channel.postMessage('toggle');
+    channel.postMessage(command);
     return true;
   } catch {
     return false;
   }
+}
+
+/** Native launcher control is a fixed-purpose channel, never a shell command. */
+export function openLauncher(): boolean {
+  return postNativeCommand('kiraLauncher', 'open');
+}
+
+/** Toggle the native calendar overlay through its fixed-purpose channel. */
+export function toggleCalendar(): boolean {
+  return postNativeCommand('kiraCalendar', 'toggle');
 }
 
 let nextId = 0;
