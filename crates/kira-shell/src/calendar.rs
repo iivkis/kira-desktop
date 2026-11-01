@@ -8,8 +8,6 @@ use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
 
-use crate::calendar_model::CivilDate;
-
 const TITLE: &str = "Kira Calendar";
 const CALENDAR_MARKER: &str = "<html lang=\"en\">";
 const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\">";
@@ -18,6 +16,22 @@ const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\"
 enum UiCommand<'a> {
     Close,
     CopyDate(&'a str),
+}
+
+/// Revalidate untrusted date-copy requests without duplicating the Svelte
+/// calendar's grid, navigation or ISO week model in Rust.
+fn valid_date(year: i32, month: u8, day: u8) -> bool {
+    if !(1..=9999).contains(&year) || !(1..=12).contains(&month) {
+        return false;
+    }
+    let leap = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+    let last = match month {
+        2 if leap => 29,
+        2 => 28,
+        4 | 6 | 9 | 11 => 30,
+        _ => 31,
+    };
+    (1..=last).contains(&day)
 }
 
 /// Only the exact ISO format is allowed into the OS clipboard.
@@ -37,7 +51,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     let year = date[..4].parse().ok()?;
     let month = date[5..7].parse().ok()?;
     let day = date[8..10].parse().ok()?;
-    CivilDate::new(year, month, day)?;
+    if !valid_date(year, month, day) {
+        return None;
+    }
     Some(UiCommand::CopyDate(date))
 }
 
