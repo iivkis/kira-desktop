@@ -170,8 +170,6 @@ impl CalendarOverlay {
             },
         );
     }
-
-
     // Compositors may throttle requestAnimationFrame for a transparent
     // popup. A verified, synchronously flushed Svelte mount must never
     // remain invisible solely because the paint acknowledgement was skipped.
