@@ -1,73 +1,38 @@
-name: NixOS integration
+name: Nix package (nightly / manual)
 
-# Validate GTK API compatibility before the slow release package build.
-# The native check uses the development profile to report type errors early,
-# while the package build still validates the full distributed artifact.
+# GTK/WebKit native libraries and a full Nix/Crane release rebuild are far
+# too expensive to run on every PR. Use Actions -> Nix package -> Run
+# workflow (select the branch), or rely on the nightly check on main.
 on:
-  push:
-    branches: [main]
-    paths:
-      - flake.nix
-      - flake.lock
-      - nix/**
-      - Cargo.toml
-      - Cargo.lock
-      - crates/**
-      - scripts/**
-      - tests/**
-      - Taskfile.yml
-      - frontend/**
-      - .github/workflows/nix.yml
-  pull_request:
-    paths:
-      - flake.nix
-      - flake.lock
-      - nix/**
-      - Cargo.toml
-      - Cargo.lock
-      - crates/**
-      - scripts/**
-      - tests/**
-      - frontend/**
-      - Taskfile.yml
-      - .github/workflows/nix.yml
   workflow_dispatch:
+  schedule:
+    - cron: '37 3 * * *'
 
 permissions:
   contents: read
 
+concurrency:
+  group: nix-package-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   package:
-    name: Flake, nested Niri config and native Core/Shell package
+    name: Build full Nix release package
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      # Optional cache, disabled unless repo owner sets a cache name.
-      # Uploads only from trusted pushes to main; PRs can read shared outputs.
-      - name: Shared Nix cache (opt-in)
+      - name: Optional shared binary cache
         if: ${{ vars.KIRA_CACHIX_NAME != '' }}
         uses: cachix/cachix-action@v17
         with:
           name: ${{ vars.KIRA_CACHIX_NAME }}
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          skipPush: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
-      - name: Check flake outputs
-        run: nix flake check --no-build
-      - name: Validate nested Niri preview config
-        run: nix develop --command python3 scripts/dev_preview.py --validate-config
-      - name: Build packaged Tailwind frontend and verify npm lock/hash first
-        run: nix build .#frontend -L --show-trace
-      - name: Type-check native GTK Shell before release packaging
-        run: nix develop --command cargo check --locked -p kira-shell
-      - name: Run real Rust unit tests for Linux system metrics
-        run: nix develop --command cargo test --locked -p kira-shell system_metrics::tests -- --nocapture
-      - name: Verify process parser, CPU accounting and PID reuse
-        run: nix develop --command cargo test --locked -p kira-shell process_monitor::tests -- --nocapture
-      - name: Verify interactive process table sorting directions
-        run: nix develop --command cargo test --locked -p kira-shell process_page::tests -- --nocapture
-      - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
-        run: nix build .#default -L --show-trace
+      # The Nix build already compiles the frontend, Core and GTK/WebKit Shell.
+      # Do not additionally rebuild the same crates with cargo check and
+      # three separate cargo test invocations in different profiles.
+      - name: Build packaged Core, Shell and Svelte frontend
+        run: nix build .#default -L
