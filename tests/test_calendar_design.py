@@ -71,7 +71,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("native_ui::restrict_webview_navigation(&view)", SHELL)
 
     def test_calendar_commands_are_allowlisted_and_dates_revalidated(self):
-        self.assertIn("calendar_command(&payload)", RUST)
+        self.assertIn("calendar_command(message)", RUST)
         self.assertIn("CivilDate::new(year, month, day)?", RUST)
         self.assertIn("display.clipboard().set_text(date)", RUST)
         self.assertIn("fn rejects_untrusted_calendar_commands()", RUST)
