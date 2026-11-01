@@ -21,7 +21,12 @@ clears all Wayland layer-shell anchors and uses exclusive zone -1 so the
 compositor centers it on the full output. Calendar and System Monitor
 restore the top/right anchors, 25px top margin, 12px right margin and
 exclusive zone 0 when selected. The same GTK window and WebKit view
-survive these repositionings. The browser cannot create an ordinary
+survive these repositionings. **When switching between the centered
+Launcher and corner popups, the GTK surface is first unmapped**, its
+anchors are changed while hidden, and remapping is deferred one compositor
+turn; the previous WebKit framebuffer must never travel visibly across
+the output. Calendar ↔ System remain immediate, in-place switches. The
+browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 
 ## Migration, in small reviewable steps
