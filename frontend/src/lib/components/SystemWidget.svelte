@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, revealStagger } from '../motion';
+  import { tenetHoverLens } from '../tenet-hover-lens';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -63,7 +64,7 @@
 
 <svelte:window onkeydown={keydown} />
 
-<main data-kira-ui-root aria-label="Kira System Monitor"
+<main data-kira-ui-root aria-label="Kira System Monitor" use:tenetHoverLens
   class="kira-monitor-scroll flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header class="shrink-0 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
