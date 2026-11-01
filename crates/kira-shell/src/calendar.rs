@@ -60,17 +60,21 @@ impl CalendarOverlay {
         self.revealed.set(false);
         self.paint_pending.set(false);
         self.open_started.take();
-        // Tear down the Svelte component on hide, preserving only the
-        // warm WebKit host. The JS host serializes rapid hide/show events.
+        // Deliver a generation-scoped hide. WebKit evaluates scripts
+        // asynchronously: a stale hide must never unmount a newer show.
         if self.host_ready.get() {
+            let generation = self.generation.get();
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('kira:overlay:hide', {{ detail: {{ generation: {generation} }} }}));"
+            );
             self.view.evaluate_javascript(
-                "window.dispatchEvent(new Event('kira:overlay:hide'));",
+                &script,
                 None,
                 None,
                 None::<&gtk::gio::Cancellable>,
                 |result| {
                     if let Err(error) = result {
-                        eprintln!("kira-shell: Calendar hide delivery failed: {error}");
+                        eprintln!("kira-shell: Overlay hide delivery failed: {error}");
                     }
                 },
             );
