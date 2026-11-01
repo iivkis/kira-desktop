@@ -480,7 +480,7 @@ Do not claim implementation or isolation of untrusted plugins until the code and
 The active Calendar day grid and navigation now live in
 `frontend/src/lib/components/CalendarWidget.svelte`, using the pure
 `frontend/src/lib/calendar-model.ts`. Vitest checks Gregorian boundaries,
-leap years and ISO weeks. Rust's retained `calendar_model.rs` is used to
-validate date-copy requests before touching the system clipboard and keeps
-its original `rustc --test` regression tests. `calendar.rs` creates only
-the isolated WebKit/layer-shell window.
+leap years and ISO weeks. `calendar.rs` creates the isolated
+WebKit/layer-shell window and validates the copied ISO date with a small
+independent leap-year check before touching the system clipboard.
+The obsolete duplicate Rust month-grid model has been deleted.
