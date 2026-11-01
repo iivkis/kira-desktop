@@ -105,7 +105,7 @@ fn recover_stale_socket(path: &Path, lock: &File) -> io::Result<()> {
 
 /// Bind normally, or retry once after verified stale-socket cleanup.
 /// The returned lock must live for as long as the listener is running.
-fn bind_core_socket(path: &Path) -> io::Result<(UnixListener, SocketGuard, File)> {
+fn bind_core_socket(path: &Path) -> io::Result<(File, SocketGuard, UnixListener)> {
     let mut lock_path = path.as_os_str().to_os_string();
     lock_path.push(".lock");
     let lock = OpenOptions::new()
@@ -130,7 +130,8 @@ fn bind_core_socket(path: &Path) -> io::Result<(UnixListener, SocketGuard, File)
         Err(error) => return Err(error),
     };
     let guard = SocketGuard::new(path)?;
-    Ok((listener, guard, lock))
+    // Pattern bindings drop in reverse order: listener, guard, then lock.
+    Ok((lock, guard, listener))
 }
 
 /// Read newline-delimited IPC without growing beyond the configured bound.
@@ -296,7 +297,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let path = kira_ipc::core_socket_path()?;
     // Reclaim only a verified abandoned socket; preserve live Core instances.
-    let (listener, _guard, _socket_lock) = bind_core_socket(&path)?;
+    let (_socket_lock, _guard, listener) = bind_core_socket(&path)?;
     eprintln!("kira-core listening on {}", path.display());
 
     let (config_sender, config_receiver) = watch::channel(ConfigState::default());
@@ -531,7 +532,7 @@ mod tests {
         drop(old_listener); // Simulate SIGKILL: the socket path survives.
         assert!(path.exists());
 
-        let (listener, guard, lock) = bind_core_socket(&path).unwrap();
+        let (lock, guard, listener) = bind_core_socket(&path).unwrap();
         assert!(StdUnixStream::connect(&path).is_ok());
         drop(listener);
         drop(guard);
@@ -549,7 +550,7 @@ mod tests {
         ));
         fs::create_dir_all(&directory).unwrap();
         let path = directory.join("socket");
-        let (listener, guard, lock) = bind_core_socket(&path).unwrap();
+        let (lock, guard, listener) = bind_core_socket(&path).unwrap();
         let before = fs::symlink_metadata(&path).unwrap();
 
         assert!(bind_core_socket(&path).is_err());
