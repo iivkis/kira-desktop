@@ -110,7 +110,10 @@ impl CalendarOverlay {
                 self.paint_pending.set(false);
                 self.window.set_opacity(1.0);
                 if let Some(start) = self.open_started.take() {
-                    eprintln!("kira-shell: Calendar visible after {} ms", start.elapsed().as_millis());
+                    eprintln!(
+                        "kira-shell: Calendar visible after {} ms",
+                        start.elapsed().as_millis()
+                    );
                 }
             }
             Some(UiCommand::Close) if self.requested.get() => self.hide(),
