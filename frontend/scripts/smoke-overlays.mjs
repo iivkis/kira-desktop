@@ -55,6 +55,8 @@ function scriptFor(steps) {
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
+              : kind === 'pulse'
+                ? 'window.dispatchEvent(new CustomEvent("kira:system:pulse", {detail: {cpu_percent: 42, memory_total_kib: 1000, memory_available_kib: 500}}));'
               : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
                 kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
@@ -79,6 +81,7 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
+      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && roots[0].textContent.includes("LIVE · 100MS"));' +
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
       'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
@@ -127,7 +130,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     const charts = Number(output.match(/data-smoke-system-charts="(\d+)"/)?.[1] ?? 0);
     if (charts < 2 || !output.includes('data-smoke-system-swap="true"') ||
         !output.includes('data-smoke-system-unknown="true"') ||
-        !output.includes('data-smoke-system-no-scrollbar="true"')) {
+        !output.includes('data-smoke-system-no-scrollbar="true"') ||
+        !output.includes('data-smoke-system-pulse="true"')) {
       const diagnostic = output.match(/data-smoke-system-[a-z-]+="[^"]*"/g) ?? [];
       const svgs = (output.match(/<svg\b/g) ?? []).length;
       const diagnostics = output.match(/data-smoke-result="[^"]*"/g) ?? [];
@@ -164,6 +168,7 @@ try {
   await smoke('system-live-telemetry', [
     { delay: 25, kind: 'system', generation: 1 },
     { delay: 170, kind: 'metrics' },
+    { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
   await smoke('launcher-square-with-themed-icons', [
