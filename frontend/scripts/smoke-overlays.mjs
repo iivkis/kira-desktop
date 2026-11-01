@@ -86,6 +86,8 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'const clock = document.querySelector("[data-calendar-clock]");' +
+      'document.documentElement.setAttribute("data-smoke-calendar-odometer", !!clock && clock.querySelectorAll("[data-clock-digit]").length === 6 && !!clock.getAttribute("aria-label") && !!clock.getAttribute("datetime") && clock.querySelectorAll("[data-clock-cell]").length === 6);' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
@@ -136,7 +138,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   }
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
-       !output.includes('data-smoke-calendar-picked="true"'))) {
+       !output.includes('data-smoke-calendar-picked="true"') ||
+       !output.includes('data-smoke-calendar-odometer="true"'))) {
     const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
