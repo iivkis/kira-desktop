@@ -47,6 +47,21 @@
             export SCCACHE_CACHE_SIZE="''${SCCACHE_CACHE_SIZE:-10G}"
           '';
         };
+        # Native Shell type-checking in PRs: no compositor, JS toolchain,
+        # screenshot tools or interactive terminal needed. This shell uses
+        # cache.nixos.org (and optional Cachix in CI) for GTK/WebKit inputs;
+        # Rust artifacts are cached separately by GitHub Actions.
+        ci = pkgs.mkShell {
+          packages = with pkgs; [
+            cargo
+            rustc
+            pkg-config
+            gtk4
+            gtk4-layer-shell
+            webkitgtk_6_0
+            pipewire
+          ];
+        };
       });
 
       packages = forAllSystems (pkgs:
