@@ -169,7 +169,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-tenet-clock-events="2"') ||
        !output.includes('data-smoke-tenet-clock-settled="true"') ||
        !output.includes('data-smoke-tenet-no-fragments="true"'))) {
-    const flags = output.match(/data-smoke-clock-chaos-[a-z-]+="[^"]*"/g) ?? [];
+    const flags = output.match(/data-smoke-(?:clock-chaos|tenet)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP clock digits must fly and return: ' + flags.join(', '));
   }
   if (heightMode === 'system') {
