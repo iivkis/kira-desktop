@@ -1,0 +1,34 @@
+name: Overlay browser smoke
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - 'crates/kira-shell/src/calendar.rs'
+      - '.github/workflows/overlay-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: overlay-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend
+        run: npm ci --prefix frontend --no-audit --no-fund
+      - name: Build self-contained overlay HTML
+        run: npm run build --prefix frontend
+      - name: Validate real Calendar and System mounts
+        run: node frontend/scripts/smoke-overlays.mjs

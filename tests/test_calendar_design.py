@@ -51,6 +51,9 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("self.window.set_visible(false)", RUST)
         self.assertIn("self.window.set_opacity(0.0)", RUST)
         self.assertIn("self.window.set_opacity(1.0)", RUST)
+        self.assertIn("self.schedule_reveal_fallback(generation)", RUST)
+        self.assertIn("Duration::from_millis(150)", RUST)
+        self.assertIn("state.widget_ready.get()", RUST)
         self.assertIn("self.request_paint()", RUST)
         self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)
         self.assertIn("self.generation.get() == generation", RUST)
@@ -59,7 +62,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("requestAnimationFrame", RUST)
         self.assertIn("sendCalendarUi('host-ready')", SDK)
         self.assertIn("sendCalendarUi('mounted:' + generation)", SDK)
-        self.assertIn("onMounted: notifyCalendarMounted", ENTRY)
+        self.assertIn("notifyCalendarMounted(generation)", ENTRY)
 
     def test_lazy_svelte_mount_and_dispose_on_hide(self):
         self.assertIn("self.view.evaluate_javascript(", RUST)

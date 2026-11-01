@@ -29,6 +29,8 @@ whenDocumentReady(document, () => {
       return;
     }
     let requestedKind: 'calendar' | 'system' = 'calendar';
+    let visibleGeneration: number | null = null;
+    let lastGeneration = 0;
     const host = createLazyWidget(
       async () => {
         // Both components are prebundled, but neither owns DOM, timers or
@@ -55,18 +57,37 @@ whenDocumentReady(document, () => {
           unmount(instance: ReturnType<typeof mount>) {
             return unmount(instance);
           },
-          onMounted: notifyCalendarMounted,
+          onMounted(generation: number) {
+            report('Overlay Svelte ' + kind + ' mounted; generation=' + generation);
+            notifyCalendarMounted(generation);
+          },
         };
       },
       (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
-      if (detail?.kind !== 'calendar' && detail?.kind !== 'system') return;
+      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system') ||
+          !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
+          detail.generation > 0xffffffff || detail.generation <= lastGeneration) {
+        report('Overlay rejected invalid or stale show payload');
+        return;
+      }
+      lastGeneration = detail.generation;
+      visibleGeneration = detail.generation;
+      report('Overlay received show: ' + detail.kind + ' generation=' + detail.generation);
       requestedKind = detail.kind;
       host.show(detail.generation);
     });
-    window.addEventListener('kira:overlay:hide', () => host.hide());
+    window.addEventListener('kira:overlay:hide', (event: Event) => {
+      const generation = (event as CustomEvent<{ generation: number }>).detail?.generation;
+      if (generation !== visibleGeneration) {
+        report('Overlay ignored stale hide generation=' + generation);
+        return;
+      }
+      visibleGeneration = null;
+      host.hide();
+    });
     // Remove the HTML fallback so no widget DOM remains when hidden.
     target.querySelector('#kira-loading')?.remove();
     Reflect.set(window, '__kiraMountReturned', true);

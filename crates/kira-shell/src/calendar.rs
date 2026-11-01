@@ -60,17 +60,21 @@ impl CalendarOverlay {
         self.revealed.set(false);
         self.paint_pending.set(false);
         self.open_started.take();
-        // Tear down the Svelte component on hide, preserving only the
-        // warm WebKit host. The JS host serializes rapid hide/show events.
+        // Deliver a generation-scoped hide. WebKit evaluates scripts
+        // asynchronously: a stale hide must never unmount a newer show.
         if self.host_ready.get() {
+            let generation = self.generation.get();
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('kira:overlay:hide', {{ detail: {{ generation: {generation} }} }}));"
+            );
             self.view.evaluate_javascript(
-                "window.dispatchEvent(new Event('kira:overlay:hide'));",
+                &script,
                 None,
                 None,
                 None::<&gtk::gio::Cancellable>,
                 |result| {
                     if let Err(error) = result {
-                        eprintln!("kira-shell: Calendar hide delivery failed: {error}");
+                        eprintln!("kira-shell: Overlay hide delivery failed: {error}");
                     }
                 },
             );
@@ -79,6 +83,13 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
+        // A live surface switches components in place. Do not unmap/remap
+        // the Wayland popup or queue a separate hide against the new view.
+        if self.active.get() == Some(Surface::System) && kind != Surface::System {
+            if let Some(model) = self.system.borrow().as_ref() {
+                model.set_processes_active(false);
+            }
+        }
         self.active.set(Some(kind));
         self.requested.set(true);
         self.revealed.set(false);
@@ -92,6 +103,12 @@ impl CalendarOverlay {
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
         self.window.present();
+        eprintln!(
+            "kira-shell: Overlay requested: {} generation {} (host ready: {})",
+            kind.name(),
+            self.generation.get(),
+            self.host_ready.get()
+        );
         self.request_mount();
 
         // A dead renderer should not leave an invisible focus-stealing popup.
@@ -103,7 +120,11 @@ impl CalendarOverlay {
                     && state.generation.get() == generation
                     && !state.revealed.get()
                 {
-                    eprintln!("kira-shell: Svelte overlay did not paint within 3s; hiding popup");
+                    eprintln!(
+                        "kira-shell: Overlay did not mount within 3s (host ready: {}, widget ready: {}); hiding popup",
+                        state.host_ready.get(),
+                        state.widget_ready.get()
+                    );
                     state.hide();
                 }
             }
@@ -160,10 +181,44 @@ impl CalendarOverlay {
             },
         );
     }
+    // Compositors may throttle requestAnimationFrame for a transparent
+    // popup. A verified, synchronously flushed Svelte mount must never
+    // remain invisible solely because the paint acknowledgement was skipped.
+    fn schedule_reveal_fallback(self: &Rc<Self>, generation: u32) {
+        let weak = Rc::downgrade(self);
+        gtk::glib::timeout_add_local_once(Duration::from_millis(150), move || {
+            let Some(state) = weak.upgrade() else {
+                return;
+            };
+            if state.requested.get()
+                && state.generation.get() == generation
+                && state.widget_ready.get()
+                && !state.revealed.get()
+            {
+                eprintln!(
+                    "kira-shell: Overlay frame acknowledgement delayed; revealing verified Svelte DOM"
+                );
+                state.reveal();
+            }
+        });
+    }
 
-    fn on_message(&self, message: &str) {
+    fn reveal(&self) {
+        self.revealed.set(true);
+        self.paint_pending.set(false);
+        self.window.set_opacity(1.0);
+        if let Some(start) = self.open_started.take() {
+            eprintln!(
+                "kira-shell: Overlay visible after {} ms",
+                start.elapsed().as_millis()
+            );
+        }
+    }
+
+    fn on_message(self: &Rc<Self>, message: &str) {
         match calendar_command(message) {
             Some(UiCommand::HostReady) => {
+                eprintln!("kira-shell: Shared Svelte overlay host ready");
                 self.host_ready.set(true);
                 self.request_mount();
             }
@@ -176,21 +231,15 @@ impl CalendarOverlay {
                 }
                 self.widget_ready.set(true);
                 self.request_paint();
+                self.schedule_reveal_fallback(generation);
             }
             Some(UiCommand::Painted(generation))
                 if self.requested.get()
+                    && self.widget_ready.get()
                     && self.paint_pending.get()
                     && self.generation.get() == generation =>
             {
-                self.revealed.set(true);
-                self.paint_pending.set(false);
-                self.window.set_opacity(1.0);
-                if let Some(start) = self.open_started.take() {
-                    eprintln!(
-                        "kira-shell: Overlay visible after {} ms",
-                        start.elapsed().as_millis()
-                    );
-                }
+                self.reveal();
             }
             Some(UiCommand::Close) if self.requested.get() => self.hide(),
             Some(UiCommand::CopyDate(date))
@@ -507,12 +556,9 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         eprintln!("kira-shell: Overlay HTML root not found");
         return;
     };
-    if state.requested.get() {
-        let was_calendar = state.active.get() == Some(Surface::Calendar);
+    if state.requested.get() && state.active.get() == Some(Surface::Calendar) {
         state.hide();
-        if was_calendar {
-            return;
-        }
+        return;
     }
     crate::launcher::dismiss(application);
     state.show(Surface::Calendar);
@@ -529,12 +575,9 @@ pub fn toggle_system(
         eprintln!("kira-shell: Overlay HTML root not found");
         return;
     };
-    if state.requested.get() {
-        let was_system = state.active.get() == Some(Surface::System);
+    if state.requested.get() && state.active.get() == Some(Surface::System) {
         state.hide();
-        if was_system {
-            return;
-        }
+        return;
     }
     crate::launcher::dismiss(application);
     *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
