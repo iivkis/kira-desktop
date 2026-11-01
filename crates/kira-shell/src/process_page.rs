@@ -38,7 +38,10 @@ impl SortState {
 
     fn clicked(self, field: Sort) -> Self {
         if self.field == field {
-            Self { field, descending: !self.descending }
+            Self {
+                field,
+                descending: !self.descending,
+            }
         } else {
             Self::new(field)
         }
@@ -62,12 +65,18 @@ fn compare_rows(a: &ProcessRow, b: &ProcessRow, sort: SortState) -> Ordering {
     let result = match sort.field {
         Sort::Name => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
         Sort::Pid => a.pid.cmp(&b.pid),
-        Sort::Cpu => return compare_known(a.cpu_percent, b.cpu_percent, sort.descending)
-            .then_with(|| compare_known(a.rss_kib, b.rss_kib, true))
-            .then(a.pid.cmp(&b.pid)),
+        Sort::Cpu => {
+            return compare_known(a.cpu_percent, b.cpu_percent, sort.descending)
+                .then_with(|| compare_known(a.rss_kib, b.rss_kib, true))
+                .then(a.pid.cmp(&b.pid));
+        }
         Sort::Memory => compare_known(a.rss_kib, b.rss_kib, sort.descending),
     };
-    let result = if sort.descending { result.reverse() } else { result };
+    let result = if sort.descending {
+        result.reverse()
+    } else {
+        result
+    };
     result.then(a.pid.cmp(&b.pid))
 }
 
@@ -187,9 +196,11 @@ impl ProcessPage {
                 page.render();
             }
         });
-        for ((button, _), field) in page.headers.iter().zip([
-            Sort::Name, Sort::Pid, Sort::Cpu, Sort::Memory,
-        ]) {
+        for ((button, _), field) in
+            page.headers
+                .iter()
+                .zip([Sort::Name, Sort::Pid, Sort::Cpu, Sort::Memory])
+        {
             connect_sort(button, field, Rc::downgrade(&page));
         }
         page
@@ -247,7 +258,8 @@ impl ProcessPage {
             if sort.field == field {
                 button.add_css_class("kira-process-header-active");
                 caption.set_text(&format!(
-                    "{name} {}", if sort.descending { "↓" } else { "↑" }
+                    "{name} {}",
+                    if sort.descending { "↓" } else { "↑" }
                 ));
                 button.set_tooltip_text(Some(if sort.descending {
                     "Sorted descending; click to sort ascending"
@@ -386,7 +398,13 @@ mod tests {
     use super::*;
 
     fn process(pid: u32, name: &str, cpu: Option<f64>, rss: Option<u64>) -> ProcessRow {
-        ProcessRow { pid, name: name.to_string(), cpu_percent: cpu, rss_kib: rss, state: 'S' }
+        ProcessRow {
+            pid,
+            name: name.to_string(),
+            cpu_percent: cpu,
+            rss_kib: rss,
+            state: 'S',
+        }
     }
 
     #[test]
@@ -418,7 +436,10 @@ mod tests {
             (Sort::Memory, true, [3, 2, 1]),
         ] {
             rows.sort_by(|a, b| compare_rows(a, b, SortState { field, descending }));
-            assert_eq!(rows.iter().map(|row| row.pid).collect::<Vec<_>>(), expected.to_vec());
+            assert_eq!(
+                rows.iter().map(|row| row.pid).collect::<Vec<_>>(),
+                expected.to_vec()
+            );
         }
     }
 
@@ -428,7 +449,10 @@ mod tests {
         let b = process(2, "beta", Some(1.0), Some(1024));
         for descending in [true, false] {
             for field in [Sort::Cpu, Sort::Memory] {
-                assert_eq!(compare_rows(&a, &b, SortState { field, descending }), Ordering::Greater);
+                assert_eq!(
+                    compare_rows(&a, &b, SortState { field, descending }),
+                    Ordering::Greater
+                );
             }
         }
     }
