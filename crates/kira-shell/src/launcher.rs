@@ -9,17 +9,10 @@ use gtk::gio::prelude::*;
 const MAX_ICON_BYTES: usize = 128 * 1024;
 const ICON_BATCH_LIMIT: usize = 16;
 
-/// Browser images receive only bounded data URIs from the GTK icon theme,
-/// never local paths, arbitrary file URLs or executable commands.
-fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
-    let paintable = theme.lookup_by_gicon(
-        icon,
-        40,
-        1,
-        gtk::TextDirection::None,
-        gtk::IconLookupFlags::empty(),
-    );
-    let file = paintable.file()?;
+/// Browser images receive only bounded data URIs, never local paths,
+/// arbitrary file URLs or executable commands. This also handles desktop
+/// entries with an absolute Icon=/path/to/icon.png (Gio FileIcon).
+fn file_data_url(file: &gio::File) -> Option<String> {
     if !file.is_native() {
         return None;
     }
@@ -68,6 +61,48 @@ fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
         "data:{mime};base64,{}",
         gtk::glib::base64_encode(content)
     ))
+}
+
+fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
+    // FileIcon is common for user-installed .desktop apps (including Nix
+    // profiles). Ask GIO for its exact local file before attempting the theme
+    // lookup, which may otherwise resolve to a generic missing-icon image.
+    if let Some(file_icon) = icon.downcast_ref::<gio::FileIcon>()
+        && let Some(image) = file_data_url(&file_icon.file())
+    {
+        return Some(image);
+    }
+    theme
+        .lookup_by_gicon(
+            icon,
+            40,
+            1,
+            gtk::TextDirection::None,
+            gtk::IconLookupFlags::empty(),
+        )
+        .file()
+        .and_then(|file| file_data_url(&file))
+}
+
+/// Use an actual system-theme generic application icon when a desktop
+/// entry has no icon or its configured icon is missing. A branded icon
+/// cannot be reconstructed from a nonexistent theme asset.
+fn generic_icon_data_url(theme: &gtk::IconTheme) -> Option<String> {
+    const NAME: &str = "application-x-executable";
+    if !theme.has_icon(NAME) {
+        return None;
+    }
+    theme
+        .lookup_icon(
+            NAME,
+            &[],
+            40,
+            1,
+            gtk::TextDirection::None,
+            gtk::IconLookupFlags::empty(),
+        )
+        .file()
+        .and_then(|file| file_data_url(&file))
 }
 
 /// Only an index into this server-side snapshot is accepted from Svelte.
@@ -127,6 +162,7 @@ impl Catalog {
     pub fn icons_json(&self, ids: &[usize]) -> serde_json::Value {
         let theme =
             gtk::gdk::Display::default().map(|display| gtk::IconTheme::for_display(&display));
+        let generic = theme.as_ref().and_then(generic_icon_data_url);
         let icons: Vec<_> = ids
             .iter()
             .take(ICON_BATCH_LIMIT)
@@ -137,11 +173,13 @@ impl Catalog {
                     cache
                         .entry(*id)
                         .or_insert_with(|| {
-                            info.icon().and_then(|gicon| {
-                                theme
-                                    .as_ref()
-                                    .and_then(|theme| icon_data_url(&gicon, theme))
-                            })
+                            info.icon()
+                                .and_then(|gicon| {
+                                    theme
+                                        .as_ref()
+                                        .and_then(|theme| icon_data_url(&gicon, theme))
+                                })
+                                .or_else(|| generic.clone())
                         })
                         .clone()
                 };

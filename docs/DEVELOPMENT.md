@@ -100,9 +100,15 @@ Launcher now resolves the system's themed GIO icons through GTK IconTheme
 only for the currently rendered rows. The Rust bridge accepts up to 16 app
 indices per request, caps individual icon files at 128 KiB, checks image
 signatures, and returns image-only data URIs (no paths/URLs). Svelte caches
-images only during the visible launcher's lifetime and uses an initial-letter
-fallback for unavailable icons. Its outer WebKit surface is square with no
-decorative border or shadow.
+images only during the visible launcher's lifetime. The icon adapter
+first reads any local GIO FileIcon from the desktop entry, then uses GTK
+IconTheme, and finally tries the theme's generic
+`application-x-executable` icon if an app-specific asset is missing.
+The first letter is the final fallback when the theme provides no readable
+image. The 36px icon slot is uniform, with a 32px image contained inside.
+The launcher list uses hidden scrollbars in WebKit but retains scroll
+functionality, and selected rows no longer have rounded right corners.
+Its outer WebKit surface is square with no decorative border or shadow.
 No generic command execution is exposed.
 
 When adding npm dependencies, commit the updated

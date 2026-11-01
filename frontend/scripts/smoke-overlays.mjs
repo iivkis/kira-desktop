@@ -55,6 +55,13 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
+      'document.documentElement.setAttribute("data-smoke-scrollbar-hidden", !!list && getComputedStyle(list).scrollbarWidth === "none");' +
+      'if (list && list.scrollHeight > list.clientHeight) list.scrollTop = 80;' +
+      'document.documentElement.setAttribute("data-smoke-scrolled", !!list && list.scrollTop > 0);' +
+      'const firstIcon = document.querySelector("[role=listbox] img[src^=\\"data:image/\\"]");' +
+      'document.documentElement.setAttribute("data-smoke-icon-width", firstIcon ? Math.round(firstIcon.getBoundingClientRect().width) : 0);' +
+      'const firstRow = document.querySelector("[role=listbox] [role=option]");' +
+      'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
     '}, 1150);' +
@@ -88,13 +95,17 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
   }
   if (heightMode === 'scroll') {
-    if (size !== 420 || !output.includes('data-smoke-list-scroll="true"')) {
+    if (size !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
+        !output.includes('data-smoke-scrollbar-hidden="true"') ||
+        !output.includes('data-smoke-scrolled="true"') ||
+        !output.includes('data-smoke-row-square="true"')) {
       throw new Error(name + ': long launcher list should fill the cap and scroll internally');
     }
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
   if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
+      !output.includes('data-smoke-icon-width="32"') ||
       Number(output.match(/data-smoke-icon-count="(\d+)"/)?.[1] ?? 0) < 1)) {
     const square = output.match(/data-smoke-square="([^"]+)"/)?.[1] ?? 'unset';
     const icons = output.match(/data-smoke-icon-count="([^"]+)"/)?.[1] ?? 'unset';
