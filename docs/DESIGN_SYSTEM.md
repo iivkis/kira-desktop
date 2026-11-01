@@ -81,8 +81,15 @@ official visual language of Kira Desktop.
   to the clipboard only on click.
   Clicking time again or pressing Escape closes; focus loss also dismisses
   after activation. The calendar and Launcher close each other when opened.
-  The calendar uses **GSAP** for a staggered section entrance,
-  directional month/year transitions, and a restrained selected-day pop.
+  Calendar motion now uses **TENET dual-time GSAP scenes**:
+  when sections appear or month/day selection changes, actual content moves
+  FORWARD while four recorded decorative fragments replay their original
+  outbound trajectories INVERTED into the real clock/selected-day contact.
+  Both flows share a master timeline and restore exact DOM geometry.
+  Clock numeral changes use paired FORWARD outgoing and INVERTED incoming
+  glyphs; clock-click chaos retains a new random outbound path for each
+  interaction but reverses **that identical GSAP timeline** to get home.
+  No scene fabricates time or delays the actual date selection.
   Only opacity/transform are animated: actual date arithmetic, keyboard
   focus, clipboard, and the 42px top bar remain unchanged. Motion is
   disabled by `prefers-reduced-motion`, interrupted transitions are killed,
