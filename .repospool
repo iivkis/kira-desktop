@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	6cabc662e0e0cfae9e766e6517688fd00676da2a
+C	6624f2ebfba6b4b909c0b61a01b96e31cb6cdf2f
 F	.cargo/config.toml	98	108	3
 F	.github/workflows/ci.yml	1467	113	46
 F	.github/workflows/nix.yml	1258	161	38
@@ -36,7 +36,7 @@ F	crates/kira-ipc/src/client.rs	10376	2187	277
 F	crates/kira-ipc/src/lib.rs	9053	2466	302
 F	crates/kira-shell/Cargo.toml	297	2770	12
 F	crates/kira-shell/src/calendar.rs	27842	2784	783
-F	crates/kira-shell/src/launcher.rs	2570	3569	81
+F	crates/kira-shell/src/launcher.rs	2568	3569	81
 F	crates/kira-shell/src/main.rs	17601	3652	414
 F	crates/kira-shell/src/native_ui.rs	2413	4068	61
 F	crates/kira-shell/src/process_monitor.rs	6245	4131	202
@@ -91,11 +91,11 @@ F	scripts/qa_visual.py	12052	10194	299
 F	tests/test_calendar_design.py	6837	10495	121
 F	tests/test_detailed_health.py	5197	10618	101
 F	tests/test_dev_preview.py	9339	10721	219
-F	tests/test_launcher_design.py	3934	10942	80
-F	tests/test_native_theme.py	1567	11024	36
-F	tests/test_popup_geometry.py	1569	11062	33
-F	tests/test_qa_visual.py	10549	11097	217
-F	tests/test_ui_bootstrap_contract.py	1103	11316	29
+F	tests/test_launcher_design.py	4192	10942	84
+F	tests/test_native_theme.py	1567	11028	36
+F	tests/test_popup_geometry.py	1569	11066	33
+F	tests/test_qa_visual.py	10549	11101	217
+F	tests/test_ui_bootstrap_contract.py	1103	11320	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3620,7 +3620,7 @@ impl Catalog {
 
     pub fn launch(&self, id: usize) -> Result<(), String> {
         let info = self.apps.get(id).ok_or("Unknown application index")?;
-        info.launch(&[], None::<&gio::AppLaunchContext>())
+        info.launch(&[], None::<&gio::AppLaunchContext>)
             .map_err(|error| {
                 error
                     .to_string()
@@ -10983,10 +10983,14 @@ class LauncherDesignTests(unittest.TestCase):
         for required in (
             'gio::AppInfo::all()', 'info.should_show()',
             'pub fn launch(&self, id: usize)', 'self.apps.get(id)',
-            'info.launch(&[], None::<&gio::AppLaunchContext>())',
+            'info.launch(&[], None::<&gio::AppLaunchContext>)',
             'apps.truncate(1024)', '"id": id',
         ):
             self.assertIn(required, RUST)
+        # Regression: None::<T> is a Rust enum value, never a call.
+        # The native Shell is not built in fast CI, so catch this
+        # exact invalid syntax in the lightweight contract checks.
+        self.assertNotRegex(RUST, r"None::<[^>\n]+>\s*\(")
         self.assertNotIn('std::process::Command', RUST)
         self.assertNotIn('Command::new', RUST)
         self.assertNotIn('shell', RUST.lower().split('pub fn launch', 1)[-1])
