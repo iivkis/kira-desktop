@@ -74,13 +74,16 @@ jobs:
           fi
           # If GitHub cannot provide a comparable base (e.g. a force push),
           # run the check rather than accidentally skipping native code.
-          if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+          if ! git cat-file -e "${base}^{commit}" 2>/dev/null ||
+             ! git cat-file -e "${head}^{commit}" 2>/dev/null; then
             echo "shell=true" >> "$GITHUB_OUTPUT"
-            echo "Base revision unavailable; checking Shell conservatively"
+            echo "Revision unavailable; checking Shell conservatively"
             exit 0
           fi
-          if git diff --name-only "$base" "$head" -- | grep -Eq \
-            '^(crates/kira-shell/|crates/kira-ipc/|\.cargo/|nix/|Cargo\.toml$|Cargo\.lock$|flake\.nix$|flake\.lock$|Taskfile\.yml$|\.github/workflows/ci\.yml$)'; then
+          # Avoid git-diff SIGPIPE under pipefail when grep exits early.
+          changed="$(git diff --name-only "$base" "$head" --)"
+          if grep -Eq \
+            '^(crates/kira-shell/|crates/kira-ipc/|\.cargo/|nix/|Cargo\.toml$|Cargo\.lock$|flake\.nix$|flake\.lock$|Taskfile\.yml$|\.github/workflows/ci\.yml$)' <<< "$changed"; then
             echo "shell=true" >> "$GITHUB_OUTPUT"
           else
             echo "shell=false" >> "$GITHUB_OUTPUT"
