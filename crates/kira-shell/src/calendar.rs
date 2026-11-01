@@ -44,7 +44,10 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if bytes.len() != 10
         || bytes[4] != b'-'
         || bytes[7] != b'-'
-        || !bytes.iter().enumerate().all(|(i, b)| i == 4 || i == 7 || b.is_ascii_digit())
+        || !bytes
+            .iter()
+            .enumerate()
+            .all(|(i, b)| i == 4 || i == 7 || b.is_ascii_digit())
     {
         return None;
     }
@@ -180,9 +183,18 @@ mod tests {
     #[test]
     fn rejects_untrusted_calendar_commands() {
         for invalid in [
-            "", "COPY", "toggle", "copy:", "copy:2026-02-30", "copy:1900-02-29",
-            "copy:0000-01-01", "copy:2026-13-01", "copy:2026-11-1",
-            "copy:2026-11-01\n", "copy:2026-11-01;rm", "copy:🔥",
+            "",
+            "COPY",
+            "toggle",
+            "copy:",
+            "copy:2026-02-30",
+            "copy:1900-02-29",
+            "copy:0000-01-01",
+            "copy:2026-13-01",
+            "copy:2026-11-1",
+            "copy:2026-11-01\n",
+            "copy:2026-11-01;rm",
+            "copy:🔥",
             r#"{"method":"execute_shell"}"#,
         ] {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
