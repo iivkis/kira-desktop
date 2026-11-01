@@ -190,8 +190,11 @@ async fn stream_workspaces_with_heartbeat(
     heartbeat_every: std::time::Duration,
 ) -> io::Result<()> {
     let snapshot = workspaces.borrow_and_update().clone();
-    send_subscription_frame(writer, RpcResponse::success(id, serde_json::to_value(snapshot)?))
-        .await?;
+    send_subscription_frame(
+        writer,
+        RpcResponse::success(id, serde_json::to_value(snapshot)?),
+    )
+    .await?;
     let mut heartbeat = tokio::time::interval_at(
         tokio::time::Instant::now() + heartbeat_every,
         heartbeat_every,
@@ -239,8 +242,11 @@ async fn stream_config_with_heartbeat(
     heartbeat_every: std::time::Duration,
 ) -> io::Result<()> {
     let snapshot = config.borrow_and_update().clone();
-    send_subscription_frame(writer, RpcResponse::success(id, serde_json::to_value(snapshot)?))
-        .await?;
+    send_subscription_frame(
+        writer,
+        RpcResponse::success(id, serde_json::to_value(snapshot)?),
+    )
+    .await?;
     let mut heartbeat = tokio::time::interval_at(
         tokio::time::Instant::now() + heartbeat_every,
         heartbeat_every,
@@ -440,7 +446,9 @@ mod tests {
                 rx,
                 91,
                 std::time::Duration::from_millis(30),
-            ).await.unwrap();
+            )
+            .await
+            .unwrap();
         });
         let stream = UnixStream::connect(&path).await.unwrap();
         let mut reader = BufReader::new(stream);
@@ -449,13 +457,17 @@ mod tests {
         tokio::time::timeout(std::time::Duration::from_secs(1), async {
             reader.read_line(&mut first).await.unwrap();
             reader.read_line(&mut heartbeat).await.unwrap();
-        }).await.unwrap();
+        })
+        .await
+        .unwrap();
         let snapshot: RpcResponse = serde_json::from_str(&first).unwrap();
         assert_eq!(snapshot.id, Some(91));
         assert_eq!(snapshot.result.unwrap()["connected"], false);
         let beat: RpcResponse = serde_json::from_str(&heartbeat).unwrap();
         assert_eq!(beat.id, Some(91));
-        assert!(kira_ipc::is_subscription_heartbeat(beat.result.as_ref().unwrap()));
+        assert!(kira_ipc::is_subscription_heartbeat(
+            beat.result.as_ref().unwrap()
+        ));
         server.abort();
         fs::remove_dir_all(directory).unwrap();
     }
@@ -475,12 +487,9 @@ mod tests {
         let server = tokio::spawn(async move {
             let (stream, _) = listener.accept().await.unwrap();
             let (_, mut writer) = stream.into_split();
-            stream_config_with_heartbeat(
-                &mut writer,
-                rx,
-                92,
-                std::time::Duration::from_millis(30),
-            ).await.unwrap();
+            stream_config_with_heartbeat(&mut writer, rx, 92, std::time::Duration::from_millis(30))
+                .await
+                .unwrap();
         });
         let stream = UnixStream::connect(&path).await.unwrap();
         let mut reader = BufReader::new(stream);
@@ -489,13 +498,17 @@ mod tests {
         tokio::time::timeout(std::time::Duration::from_secs(1), async {
             reader.read_line(&mut first).await.unwrap();
             reader.read_line(&mut heartbeat).await.unwrap();
-        }).await.unwrap();
+        })
+        .await
+        .unwrap();
         let snapshot: RpcResponse = serde_json::from_str(&first).unwrap();
         assert_eq!(snapshot.id, Some(92));
         assert_eq!(snapshot.result.unwrap()["config"]["compact"], false);
         let beat: RpcResponse = serde_json::from_str(&heartbeat).unwrap();
         assert_eq!(beat.id, Some(92));
-        assert!(kira_ipc::is_subscription_heartbeat(beat.result.as_ref().unwrap()));
+        assert!(kira_ipc::is_subscription_heartbeat(
+            beat.result.as_ref().unwrap()
+        ));
         server.abort();
         fs::remove_dir_all(directory).unwrap();
     }
