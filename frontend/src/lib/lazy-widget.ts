@@ -21,7 +21,7 @@ export function createLazyWidget<Instance>(
     if (draining) return;
     draining = true;
     try {
-      while (active?.generation !== desired) {
+      while ((active?.generation ?? null) !== desired) {
         if (active) {
           const previous = active;
           active = null;
@@ -44,7 +44,7 @@ export function createLazyWidget<Instance>(
       onError(error);
     } finally {
       draining = false;
-      if (active?.generation !== desired) void drain();
+      if ((active?.generation ?? null) !== desired) void drain();
     }
   }
 
