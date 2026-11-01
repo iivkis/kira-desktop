@@ -181,9 +181,16 @@ export function rollingClockDigit(node: HTMLElement, initial: string) {
 export function clockJuggle(node: HTMLButtonElement) {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let animation: gsap.core.Timeline | null = null;
+  let restoreTimer: ReturnType<typeof setTimeout> | null = null;
   const cells = () => Array.from(node.querySelectorAll<HTMLElement>('[data-clock-cell]'));
 
   function reset() {
+    // A one-shot safety reset is important when GTK/WebKit throttles GSAP
+    // requestAnimationFrame during compositor or window visibility changes.
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
     animation?.kill();
     animation = null;
     const targets = cells();
@@ -215,6 +222,10 @@ export function clockJuggle(node: HTMLButtonElement) {
       duration: 0.48, stagger: { each: 0.02, from: 'end' },
       ease: 'back.out(2.3)',
     }, 0.34);
+    // GSAP completes in under a second during normal rendering. If
+    // requestAnimationFrame is suspended, never leave digits scattered.
+    // The timeout is scoped to the click and cancelled on complete/destroy.
+    restoreTimer = window.setTimeout(reset, 1200);
   }
 
   const onMotionChange = () => { if (motion.matches) reset(); };
