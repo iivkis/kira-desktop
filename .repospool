@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3945
+index_bytes=3951
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	d50115eb2986b1fcd57e716214b3ffa076de2827
+C	41d58d74c0f9579cb4068ef45049c5e7d0876909
 F	.cargo/config.toml	98	110	3
 F	.github/workflows/ci.yml	4355	115	112
 F	.github/workflows/nix.yml	1258	229	38
@@ -39,65 +39,65 @@ F	crates/kira-shell/src/calendar.rs	38040	3454	1020
 F	crates/kira-shell/src/launcher.rs	14114	4476	392
 F	crates/kira-shell/src/main.rs	19285	4870	447
 F	crates/kira-shell/src/native_ui.rs	2857	5319	73
-F	crates/kira-shell/src/process_monitor.rs	6245	5394	202
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5598	116
-F	crates/kira-shell/src/system_metrics.rs	7010	5716	214
-F	crates/kira-shell/src/system_panel.rs	7948	5932	226
-F	docs/CONFIG.md	5801	6160	125
-F	docs/DESIGN_SYSTEM.md	15048	6287	276
-F	docs/DEVELOPMENT.md	27700	6565	547
-F	docs/QA_VISUAL.md	12284	7114	149
-F	docs/SPECIFICATION.md	28960	7265	421
-F	docs/UI_ARCHITECTURE.md	6737	7688	106
-F	docs/VISUAL_REVIEW.md	9754	7796	84
-F	flake.nix	3181	7882	91
-F	frontend/index.html	2737	7975	66
-F	frontend/package.json	650	8043	23
-F	frontend/scripts/inline-assets.mjs	4457	8068	103
-F	frontend/scripts/inline-assets.test.mjs	4645	8173	106
-F	frontend/scripts/smoke-overlays.mjs	10812	8281	175
-F	frontend/src/App.svelte	8659	8458	200
-F	frontend/src/lib/bootstrap.test.ts	3408	8660	84
-F	frontend/src/lib/bootstrap.ts	2613	8746	70
-F	frontend/src/lib/calendar-model.test.ts	2097	8818	38
-F	frontend/src/lib/calendar-model.ts	3453	8858	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	8932	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	9111	176
-F	frontend/src/lib/components/SystemHealth.svelte	1684	9289	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	9334	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	9525	61
-F	frontend/src/lib/launcher-model.test.ts	1370	9588	29
-F	frontend/src/lib/launcher-model.ts	778	9619	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	9639	89
-F	frontend/src/lib/lazy-widget.ts	1984	9730	63
-F	frontend/src/lib/overlay-size.ts	1090	9795	29
-F	frontend/src/lib/sdk/core.test.ts	20006	9826	403
-F	frontend/src/lib/sdk/core.ts	15992	10231	432
-F	frontend/src/lib/system-health.test.ts	2348	10665	41
-F	frontend/src/lib/system-health.ts	2831	10708	60
-F	frontend/src/lib/system-model.test.ts	2988	10770	57
-F	frontend/src/lib/system-model.ts	3411	10829	76
-F	frontend/src/lib/themes/kira-default.css	1687	10907	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	10961	101
-F	frontend/src/lib/themes/kira-default.ts	777	11064	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	11088	79
-F	frontend/src/lib/time.test.ts	263	11169	8
-F	frontend/src/lib/time.ts	320	11179	9
-F	frontend/src/main.ts	5907	11190	127
-F	frontend/src/style.css	2993	11319	91
-F	frontend/tsconfig.json	403	11412	16
-F	frontend/vite.config.ts	224	11430	8
-F	nix/package.nix	3132	11440	117
-F	scripts/dev_preview.py	18147	11559	403	x
-F	scripts/qa_visual.py	12052	11964	299
-F	tests/test_calendar_design.py	6835	12265	121
-F	tests/test_detailed_health.py	5195	12388	101
-F	tests/test_dev_preview.py	9339	12491	219
-F	tests/test_launcher_design.py	9956	12712	182
-F	tests/test_native_theme.py	1567	12896	36
-F	tests/test_popup_geometry.py	6956	12934	118
-F	tests/test_qa_visual.py	10549	13054	217
-F	tests/test_ui_bootstrap_contract.py	1103	13273	29
+F	crates/kira-shell/src/process_monitor.rs	9336	5394	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5682	116
+F	crates/kira-shell/src/system_metrics.rs	16187	5800	461
+F	crates/kira-shell/src/system_panel.rs	8819	6263	248
+F	docs/CONFIG.md	5801	6513	125
+F	docs/DESIGN_SYSTEM.md	15048	6640	276
+F	docs/DEVELOPMENT.md	27700	6918	547
+F	docs/QA_VISUAL.md	12284	7467	149
+F	docs/SPECIFICATION.md	28960	7618	421
+F	docs/UI_ARCHITECTURE.md	6737	8041	106
+F	docs/VISUAL_REVIEW.md	9754	8149	84
+F	flake.nix	3181	8235	91
+F	frontend/index.html	2737	8328	66
+F	frontend/package.json	650	8396	23
+F	frontend/scripts/inline-assets.mjs	4457	8421	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8526	106
+F	frontend/scripts/smoke-overlays.mjs	10812	8634	175
+F	frontend/src/App.svelte	8659	8811	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9013	84
+F	frontend/src/lib/bootstrap.ts	2613	9099	70
+F	frontend/src/lib/calendar-model.test.ts	2097	9171	38
+F	frontend/src/lib/calendar-model.ts	3453	9211	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	9285	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	9464	176
+F	frontend/src/lib/components/SystemHealth.svelte	1684	9642	43
+F	frontend/src/lib/components/SystemWidget.svelte	12864	9687	226
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	9915	61
+F	frontend/src/lib/launcher-model.test.ts	1370	9978	29
+F	frontend/src/lib/launcher-model.ts	778	10009	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	10029	89
+F	frontend/src/lib/lazy-widget.ts	1984	10120	63
+F	frontend/src/lib/overlay-size.ts	1090	10185	29
+F	frontend/src/lib/sdk/core.test.ts	20689	10216	411
+F	frontend/src/lib/sdk/core.ts	16727	10629	449
+F	frontend/src/lib/system-health.test.ts	2385	11080	42
+F	frontend/src/lib/system-health.ts	2831	11124	60
+F	frontend/src/lib/system-model.test.ts	3518	11186	65
+F	frontend/src/lib/system-model.ts	3830	11253	88
+F	frontend/src/lib/themes/kira-default.css	1687	11343	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	11397	101
+F	frontend/src/lib/themes/kira-default.ts	777	11500	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	11524	79
+F	frontend/src/lib/time.test.ts	263	11605	8
+F	frontend/src/lib/time.ts	320	11615	9
+F	frontend/src/main.ts	5907	11626	127
+F	frontend/src/style.css	2993	11755	91
+F	frontend/tsconfig.json	403	11848	16
+F	frontend/vite.config.ts	224	11866	8
+F	nix/package.nix	3132	11876	117
+F	scripts/dev_preview.py	18147	11995	403	x
+F	scripts/qa_visual.py	12052	12400	299
+F	tests/test_calendar_design.py	6835	12701	121
+F	tests/test_detailed_health.py	5195	12824	101
+F	tests/test_dev_preview.py	9339	12927	219
+F	tests/test_launcher_design.py	9956	13148	182
+F	tests/test_native_theme.py	1567	13332	36
+F	tests/test_popup_geometry.py	6956	13370	118
+F	tests/test_qa_visual.py	10549	13490	217
+F	tests/test_ui_bootstrap_contract.py	1103	13709	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -5396,12 +5396,16 @@ FILE	crates/kira-shell/src/process_monitor.rs
 //! Sampling and /proc enumeration run only while Processes is the active tab.
 use std::collections::HashMap;
 use std::fs;
-use std::io;
+use std::io::{self, Read};
 use std::path::Path;
 
 use crate::system_metrics::cpu_ticks;
 
 const MAX_SCANNED: usize = 4096;
+// smaps_rollup is more expensive than /proc/status. Refresh a bounded,
+// rotating slice of processes each 2-second worker sample.
+const MAX_PSS_READS_PER_SAMPLE: usize = 96;
+const MAX_SMAPS_ROLLUP_BYTES: u64 = 16 * 1024;
 
 #[derive(Debug, Clone)]
 pub struct ProcessRow {
@@ -5410,6 +5414,7 @@ pub struct ProcessRow {
     pub state: char,
     pub cpu_percent: Option<f64>,
     pub rss_kib: Option<u64>,
+    pub pss_kib: Option<u64>,
 }
 
 #[derive(Debug, Clone)]
@@ -5466,6 +5471,33 @@ fn rss_kib(input: &str) -> Option<u64> {
     })
 }
 
+fn parse_pss_kib(text: &str) -> Option<u64> {
+    text.lines().find_map(|line| {
+        let mut parts = line.strip_prefix("Pss:")?.split_whitespace();
+        let value = parts.next()?.parse::<u64>().ok()?;
+        (parts.next()? == "kB").then_some(value)
+    })
+}
+
+fn read_pss_kib(path: &Path) -> Option<u64> {
+    let mut text = String::new();
+    fs::File::open(path)
+        .ok()?
+        .take(MAX_SMAPS_ROLLUP_BYTES)
+        .read_to_string(&mut text)
+        .ok()?;
+    parse_pss_kib(&text)
+}
+
+fn pss_refresh_indices(total: usize, cursor: usize) -> Vec<usize> {
+    if total == 0 {
+        return Vec::new();
+    }
+    (0..total.min(MAX_PSS_READS_PER_SAMPLE))
+        .map(|offset| (cursor + offset) % total)
+        .collect()
+}
+
 fn cpu_percent(prev: Option<u64>, current: u64, total_delta: Option<u64>) -> Option<f64> {
     let delta = current.checked_sub(prev?)?;
     let total = total_delta?;
@@ -5481,6 +5513,8 @@ fn cpu_percent(prev: Option<u64>, current: u64, total_delta: Option<u64>) -> Opt
 pub struct ProcessSampler {
     previous: HashMap<(u32, u64), u64>,
     previous_total: Option<u64>,
+    pss_cache: HashMap<(u32, u64), Option<u64>>,
+    pss_cursor: usize,
 }
 
 impl ProcessSampler {
@@ -5492,7 +5526,7 @@ impl ProcessSampler {
             .and_then(|(before, after)| after.checked_sub(before));
         self.previous_total = total;
         let mut next = HashMap::new();
-        let mut rows = Vec::new();
+        let mut collected = Vec::new();
         let mut scanned = 0;
         let mut truncated = false;
         let entries = fs::read_dir("/proc")?;
@@ -5524,14 +5558,40 @@ impl ProcessSampler {
             let rss = fs::read_to_string(path.join("status"))
                 .ok()
                 .and_then(|s| rss_kib(&s));
-            rows.push(ProcessRow {
-                pid,
-                name: stat.name,
-                state: stat.state,
-                cpu_percent: usage,
-                rss_kib: rss,
-            });
+            collected.push((
+                ProcessRow {
+                    pid,
+                    name: stat.name,
+                    state: stat.state,
+                    cpu_percent: usage,
+                    rss_kib: rss,
+                    pss_kib: None,
+                },
+                identity,
+                path,
+            ));
         }
+        // A process is identified by PID plus kernel start ticks. Never
+        // transfer stale PSS measurements across a fast PID reuse.
+        self.pss_cache
+            .retain(|identity, _| next.contains_key(identity));
+        collected.sort_by_key(|(row, _, _)| row.pid);
+        for index in pss_refresh_indices(collected.len(), self.pss_cursor) {
+            let (_, identity, path) = &collected[index];
+            let pss = read_pss_kib(&path.join("smaps_rollup"));
+            self.pss_cache.insert(*identity, pss);
+        }
+        if !collected.is_empty() {
+            self.pss_cursor =
+                (self.pss_cursor + collected.len().min(MAX_PSS_READS_PER_SAMPLE)) % collected.len();
+        }
+        let rows = collected
+            .into_iter()
+            .map(|(mut row, identity, _)| {
+                row.pss_kib = self.pss_cache.get(&identity).copied().flatten();
+                row
+            })
+            .collect();
         self.previous = next;
         Ok(ProcessSnapshot {
             rows,
@@ -5584,6 +5644,30 @@ mod tests {
         let mut sampler = ProcessSampler::default();
         sampler.previous.insert((42, 111), 200);
         assert_eq!(sampler.previous.get(&(42, 222)), None);
+    }
+
+    #[test]
+    fn pss_is_parsed_only_from_exact_rollup_field() {
+        assert_eq!(
+            parse_pss_kib("Rss: 8000 kB\nPss: 1234 kB\nPss_Anon: 100 kB\n"),
+            Some(1234)
+        );
+        assert_eq!(parse_pss_kib("Pss_Anon: 600 kB\n"), None);
+        assert_eq!(parse_pss_kib("Pss: -1 kB\n"), None);
+        assert_eq!(parse_pss_kib("Pss: 111 KiB\n"), None);
+        assert_eq!(parse_pss_kib("Pss: 0 kB\n"), Some(0));
+    }
+
+    #[test]
+    fn pss_scanning_is_bounded_and_fair() {
+        assert!(pss_refresh_indices(0, 0).is_empty());
+        assert_eq!(pss_refresh_indices(3, 0), vec![0, 1, 2]);
+        let first = pss_refresh_indices(101, 0);
+        let second = pss_refresh_indices(101, first.len());
+        assert_eq!(first.len(), MAX_PSS_READS_PER_SAMPLE);
+        assert!(second.contains(&96));
+        assert!(second.contains(&100));
+        assert!(second.contains(&0));
     }
 
     #[test]
@@ -5717,11 +5801,21 @@ FILE	crates/kira-shell/src/system_metrics.rs
 //! additional dependencies. Optional fields are absent when the kernel does
 //! not provide a metric; lack of data must never be displayed as zero.
 use std::fs;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
+
+#[derive(Debug, Clone)]
+pub struct GpuSnapshot {
+    pub label: String,
+    pub utilization_percent: Option<u8>,
+    pub temperature_c: Option<f64>,
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct Snapshot {
     pub cpu_percent: Option<u8>,
+    pub cpu_temperature_c: Option<f64>,
+    pub gpus: Vec<GpuSnapshot>,
     pub memory_total_kib: Option<u64>,
     pub memory_available_kib: Option<u64>,
     pub swap_total_kib: Option<u64>,
@@ -5738,6 +5832,12 @@ impl Snapshot {
     pub fn as_json(&self) -> serde_json::Value {
         serde_json::json!({
             "cpu_percent": self.cpu_percent,
+            "cpu_temperature_c": self.cpu_temperature_c,
+            "gpus": self.gpus.iter().map(|gpu| serde_json::json!({
+                "label": gpu.label,
+                "utilization_percent": gpu.utilization_percent,
+                "temperature_c": gpu.temperature_c,
+            })).collect::<Vec<_>>(),
             "memory_total_kib": self.memory_total_kib,
             "memory_available_kib": self.memory_available_kib,
             "swap_total_kib": self.swap_total_kib,
@@ -5848,6 +5948,173 @@ fn battery() -> (Option<u8>, Option<bool>) {
     (None, None)
 }
 
+// sysfs is kernel-provided; optional sensors must never become zero by default.
+// GPU utilization is driver-dependent (e.g. AMD gpu_busy_percent).
+const MAX_GPUS: usize = 8;
+const MAX_HWMON_SENSORS: usize = 32;
+
+fn read_small(path: &Path) -> Option<String> {
+    use std::io::Read;
+    let mut bytes = Vec::new();
+    fs::File::open(path)
+        .ok()?
+        .take(4096)
+        .read_to_end(&mut bytes)
+        .ok()?;
+    String::from_utf8(bytes).ok()
+}
+
+fn temperature_c(text: &str) -> Option<f64> {
+    let millidegrees = text.trim().parse::<i64>().ok()?;
+    (-40_000..=150_000)
+        .contains(&millidegrees)
+        .then_some(millidegrees as f64 / 1000.0)
+}
+
+fn utilization(text: &str) -> Option<u8> {
+    text.trim().parse::<u8>().ok().filter(|p| *p <= 100)
+}
+
+fn hwmon_temperature(root: &Path, cpu: bool) -> Option<f64> {
+    let entries = fs::read_dir(root).ok()?;
+    for directory in entries.flatten() {
+        if directory.file_name().to_string_lossy().starts_with("hwmon")
+            && let Some(value) = hwmon_temperature_for_device(&directory.path(), cpu)
+        {
+            return Some(value);
+        }
+    }
+    None
+}
+
+fn hwmon_temperature_for_device(path: &Path, cpu: bool) -> Option<f64> {
+    let mut sensors: Vec<(u8, f64)> = Vec::new();
+    for index in 1..=MAX_HWMON_SENSORS {
+        let input = path.join(format!("temp{index}_input"));
+        let Some(value) = read_small(&input).and_then(|text| temperature_c(&text)) else {
+            continue;
+        };
+        let label = read_small(&path.join(format!("temp{index}_label")))
+            .unwrap_or_default()
+            .trim()
+            .to_ascii_lowercase();
+        // CPU: prefer package/die readings. GPU: prefer the edge sensor
+        // over hotspot/junction/VRAM readings on multi-sensor cards.
+        let priority = if cpu {
+            if label.starts_with("package") || label == "tdie" || label == "cpu" {
+                0
+            } else if label == "tctl" || label.starts_with("core ") {
+                1
+            } else {
+                2
+            }
+        } else if label == "edge" || label == "gpu" {
+            0
+        } else if label.contains("junction") || label.contains("hotspot") {
+            1
+        } else if label.contains("mem") {
+            3
+        } else {
+            2
+        };
+        sensors.push((priority, value));
+    }
+    sensors.sort_by_key(|sensor| sensor.0);
+    sensors.first().map(|sensor| sensor.1)
+}
+
+fn cpu_temperature(sys: &Path) -> Option<f64> {
+    if let Ok(entries) = fs::read_dir(sys.join("class/hwmon")) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            let Some(name) = read_small(&path.join("name")) else {
+                continue;
+            };
+            if matches!(
+                name.trim(),
+                "coretemp" | "k10temp" | "zenpower" | "cpu_thermal" | "cpu-thermal"
+            ) && let Some(temp) = hwmon_temperature_for_device(&path, true)
+            {
+                return Some(temp);
+            }
+        }
+    }
+    // Names of thermal zones matter. A generic ACPI/SoC temperature should
+    // not be mislabeled as CPU package temperature.
+    let zones = fs::read_dir(sys.join("class/thermal")).ok()?;
+    for entry in zones.flatten() {
+        if !entry
+            .file_name()
+            .to_string_lossy()
+            .starts_with("thermal_zone")
+        {
+            continue;
+        }
+        let path = entry.path();
+        let name = read_small(&path.join("type")).unwrap_or_default();
+        if matches!(name.trim(), "x86_pkg_temp" | "cpu-thermal" | "cpu_thermal")
+            && let Some(temp) = read_small(&path.join("temp")).and_then(|s| temperature_c(&s))
+        {
+            return Some(temp);
+        }
+    }
+    None
+}
+
+fn gpu_label(card: &str, vendor: &str, uevent: &str) -> String {
+    let manufacturer = match vendor.trim() {
+        "0x8086" => "Intel",
+        "0x1002" => "AMD",
+        "0x10de" => "NVIDIA",
+        "0x1af4" => "Virtio",
+        _ => "Unknown",
+    };
+    // PCI 00:02.0 is the standard integrated Intel graphics device.
+    // For other GPUs do not guess integrated vs discrete from vendor.
+    let integrated = vendor.trim() == "0x8086"
+        && uevent
+            .lines()
+            .any(|line| line == "PCI_SLOT_NAME=0000:00:02.0");
+    let kind = if integrated { "iGPU" } else { "GPU" };
+    format!("{kind} / {manufacturer} ({card})")
+}
+
+fn sample_gpus(sys: &Path) -> Vec<GpuSnapshot> {
+    let Ok(entries) = fs::read_dir(sys.join("class/drm")) else {
+        return Vec::new();
+    };
+    let mut cards: Vec<(String, PathBuf)> = entries
+        .flatten()
+        .filter_map(|entry| {
+            let name = entry.file_name().to_str()?.to_owned();
+            name.strip_prefix("card")?.parse::<u8>().ok()?;
+            let device = entry.path().join("device");
+            device.exists().then_some((name, device))
+        })
+        .collect();
+    cards.sort_by(|a, b| a.0.cmp(&b.0));
+    cards
+        .into_iter()
+        .take(MAX_GPUS)
+        .map(|(card, device)| {
+            let vendor = read_small(&device.join("vendor")).unwrap_or_default();
+            let uevent = read_small(&device.join("uevent")).unwrap_or_default();
+            let utilization_percent = [
+                device.join("gpu_busy_percent"),
+                device.join("gt_busy_percent"),
+                device.join("gt/gt0/gt_busy_percent"),
+            ]
+            .iter()
+            .find_map(|path| read_small(path).and_then(|s| utilization(&s)));
+            GpuSnapshot {
+                label: gpu_label(&card, &vendor, &uevent),
+                utilization_percent,
+                temperature_c: hwmon_temperature(&device.join("hwmon"), false),
+            }
+        })
+        .collect()
+}
+
 #[derive(Default)]
 pub struct Sampler {
     previous_cpu: Option<(u64, u64)>,
@@ -5877,6 +6144,8 @@ impl Sampler {
                 .map(|v| Duration::from_secs_f64(v).as_secs());
         }
         (s.battery_percent, s.battery_charging) = battery();
+        s.cpu_temperature_c = cpu_temperature(Path::new("/sys"));
+        s.gpus = sample_gpus(Path::new("/sys"));
         s
     }
 }
@@ -5914,6 +6183,68 @@ mod tests {
         assert_eq!(cpu_usage((100, 70), (200, 130)), Some(40));
         assert_eq!(cpu_usage((100, 70), (100, 70)), None);
         assert_eq!(cpu_usage((100, 70), (90, 60)), None);
+    }
+
+    #[test]
+    fn sensor_parsers_reject_invalid_or_missing_measurements() {
+        assert_eq!(temperature_c("50250\n"), Some(50.25));
+        assert_eq!(temperature_c("151000"), None);
+        assert_eq!(temperature_c("n/a"), None);
+        assert_eq!(utilization("83\n"), Some(83));
+        assert_eq!(utilization("101"), None);
+        assert_eq!(utilization("-1"), None);
+        assert_eq!(
+            gpu_label("card0", "0x8086", "PCI_SLOT_NAME=0000:00:02.0\n"),
+            "iGPU / Intel (card0)"
+        );
+        assert_eq!(
+            gpu_label("card1", "0x1002", "PCI_SLOT_NAME=0000:03:00.0\n"),
+            "GPU / AMD (card1)"
+        );
+    }
+
+    #[test]
+    fn cpu_thermal_zone_is_used_without_hwmon() {
+        let root = std::env::temp_dir().join(format!(
+            "kira-cpu-thermal-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        let zone = root.join("class/thermal/thermal_zone0");
+        fs::create_dir_all(&zone).unwrap();
+        fs::write(zone.join("type"), "x86_pkg_temp\n").unwrap();
+        fs::write(zone.join("temp"), "48250\n").unwrap();
+        assert_eq!(cpu_temperature(&root), Some(48.25));
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn gpu_and_cpu_sensors_are_optional_and_device_scoped() {
+        let root = std::env::temp_dir().join(format!(
+            "kira-sys-hwmon-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        let hwmon = root.join("class/hwmon/hwmon0");
+        let gpu = root.join("class/drm/card1/device");
+        fs::create_dir_all(&hwmon).unwrap();
+        fs::create_dir_all(gpu.join("hwmon/hwmon2")).unwrap();
+        fs::write(hwmon.join("name"), "k10temp\n").unwrap();
+        fs::write(hwmon.join("temp1_label"), "Tctl\n").unwrap();
+        fs::write(hwmon.join("temp1_input"), "61125\n").unwrap();
+        fs::write(gpu.join("vendor"), "0x1002\n").unwrap();
+        fs::write(gpu.join("gpu_busy_percent"), "47\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp1_label"), "edge\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp1_input"), "55375\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp2_label"), "junction\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp2_input"), "79900\n").unwrap();
+        assert_eq!(cpu_temperature(&root), Some(61.125));
+        let cards = sample_gpus(&root);
+        assert_eq!(cards.len(), 1);
+        assert_eq!(cards[0].label, "GPU / AMD (card1)");
+        assert_eq!(cards[0].utilization_percent, Some(47));
+        assert_eq!(cards[0].temperature_c, Some(55.375));
+        fs::remove_dir_all(&root).unwrap();
     }
 
     #[test]
@@ -6037,6 +6368,7 @@ impl Model {
                             "state": row.state.to_string(),
                             "cpu_percent": row.cpu_percent,
                             "rss_kib": row.rss_kib,
+                            "pss_kib": row.pss_kib,
                         })
                     })
                     .collect();
@@ -6095,6 +6427,27 @@ impl Model {
                 };
                 format!("{battery}%{suffix}")
             });
+        let cpu_temp = s
+            .cpu_temperature_c
+            .map_or("UNAVAILABLE".to_string(), |v| format!("{v:.1} °C"));
+        let gpus = if s.gpus.is_empty() {
+            "GPU: NOT DETECTED".to_string()
+        } else {
+            s.gpus
+                .iter()
+                .map(|gpu| {
+                    format!(
+                        "{}: {} / {} °C",
+                        gpu.label,
+                        gpu.utilization_percent
+                            .map_or("UNAVAILABLE".into(), |v| format!("{v}%")),
+                        gpu.temperature_c
+                            .map_or("UNAVAILABLE".into(), |v| format!("{v:.1}")),
+                    )
+                })
+                .collect::<Vec<_>>()
+                .join("\n")
+        };
         let root = pair(s.root_total_kib, s.root_available_kib);
         let memory = pair(s.memory_total_kib, s.memory_available_kib);
         let swap = pair(s.swap_total_kib, s.swap_free_kib);
@@ -6115,7 +6468,7 @@ impl Model {
             "SYSTEM STATUS"
         };
         format!(
-            "KIRA SYSTEM / {health}\nCore: {}\nNiri: {}\nCPU: {}\nMemory: {memory}\nSwap: {swap}\nStorage /: {root}\nLoad 1/5/15: {load}\nUptime: {uptime}\nBattery: {power}",
+            "KIRA SYSTEM / {health}\nCore: {}\nNiri: {}\nCPU: {}\nCPU temperature: {cpu_temp}\n{gpus}\nMemory: {memory}\nSwap: {swap}\nStorage /: {root}\nLoad 1/5/15: {load}\nUptime: {uptime}\nBattery: {power}",
             if self.core.get() {
                 "CONNECTED"
             } else {
@@ -9338,8 +9691,8 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
     type SystemOverlayData, type SystemProcesses,
   } from '../sdk/core';
   import {
-    bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed,
-    sortedProcesses, systemHeadline, uptimeLabel, type SortField,
+    defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel,
+    sortedProcesses, systemHeadline, temperatureLabel, uptimeLabel, type SortField,
   } from '../system-model';
 
   let { onClose, onCopy, onTab }: {
@@ -9464,6 +9817,41 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
         {/each}
       </section>
 
+      <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="GPU telemetry">
+        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">GRAPHICS / GPU</h2>
+        {#each metrics?.gpus ?? [] as gpu (gpu.label)}
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2 text-[11px]">
+              <span class="min-w-0 truncate font-semibold text-kira-muted" title={gpu.label}>{gpu.label}</span>
+              <span class="shrink-0 text-right font-bold tabular-nums">
+                {gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}
+              </span>
+            </div>
+            {#if gpu.utilization_percent !== null}
+              <div class="h-1.5 w-full overflow-hidden rounded-sm bg-kira-surface" role="progressbar"
+                aria-label={gpu.label + ' utilization'} aria-valuenow={gpu.utilization_percent}
+                aria-valuemin="0" aria-valuemax="100">
+                <div class="h-full bg-kira-accent" style:width={gpu.utilization_percent + '%'}></div>
+              </div>
+            {/if}
+            <div class="flex justify-between gap-2 text-[11px]">
+              <span class="text-kira-muted">TEMPERATURE</span>
+              <span class="font-bold tabular-nums">{temperatureLabel(gpu.temperature_c)}</span>
+            </div>
+          </div>
+        {:else}
+          <p class="text-[11px] text-kira-muted">NO GPU DATA / DEVICE NOT DETECTED</p>
+        {/each}
+      </section>
+
+      <section class="space-y-2 bg-kira-surface px-5 py-4" aria-label="CPU temperature">
+        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">THERMALS / CPU</h2>
+        <div class="flex justify-between gap-3 text-[11px]">
+          <span class="text-kira-muted">CPU PACKAGE</span>
+          <span class="font-bold tabular-nums">{temperatureLabel(metrics?.cpu_temperature_c ?? null)}</span>
+        </div>
+      </section>
+
       <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="Operating system details">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">OPERATING SYSTEM / CONTEXT</h2>
         <div class="flex justify-between gap-3 text-[11px]"><span class="text-kira-muted">UPTIME</span>
@@ -9486,8 +9874,8 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       <h2 class="mb-3 text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
       <input type="search" aria-label="Filter by process name or PID" placeholder="Filter by process name or PID"
         bind:value={query} class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
-      <div class="grid grid-cols-[minmax(0,1fr)_55px_65px_76px] gap-1 border-b border-kira-muted/20 pb-2">
-        {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RAM'}] as column}
+      <div class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+        {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
           <button type="button" onclick={() => changeSort(column.field as SortField)}
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
@@ -9499,12 +9887,14 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       </div>
       <div class="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
         {#each visible as process (process.pid)}
-          <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_55px_65px_76px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
-            title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state}>
+          <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
+            title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
+              ' / RSS ' + processMemoryLabel(process.rss_kib) + ' / PSS ' + processMemoryLabel(process.pss_kib)}>
             <span class="truncate font-semibold">{process.name}</span>
             <span class="text-right tabular-nums text-kira-muted">{process.pid}</span>
             <span class="text-right tabular-nums">{process.cpu_percent === null ? '—' : process.cpu_percent.toFixed(1) + '%'}</span>
-            <span class="text-right tabular-nums">{process.rss_kib === null ? '—' : bytesLabel(process.rss_kib)}</span>
+            <span class="text-right tabular-nums">{processMemoryLabel(process.rss_kib)}</span>
+            <span class="text-right tabular-nums">{processMemoryLabel(process.pss_kib)}</span>
           </div>
         {:else}
           <p class="py-9 text-center text-xs text-kira-muted">{processes?.error ?
@@ -9515,7 +9905,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       <footer class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
         <p>SHOWING {visible.length} OF {matching.length} MATCHES / {processes?.total ?? 0} SCANNED
           {processes?.truncated ? ' / LIMIT REACHED' : ''}</p>
-        <p>READ ONLY / CPU % OF ENTIRE HOST / RSS MEMORY</p>
+        <p>READ ONLY / CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
       </footer>
     </section>
   {/if}
@@ -10032,7 +10422,9 @@ describe('Core SDK JSON-RPC bridge', () => {
     const stopData = onSystemOverlayData(onData);
     const stopProcesses = onSystemProcesses(onProcesses);
     const metrics = {
-      cpu_percent: 23, memory_total_kib: 100, memory_available_kib: 70,
+      cpu_percent: 23, cpu_temperature_c: 61.5,
+      gpus: [{ label: 'iGPU / Intel (card0)', utilization_percent: 12, temperature_c: 46.7 }],
+      memory_total_kib: 100, memory_available_kib: 70,
       swap_total_kib: 0, swap_free_kib: 0, root_total_kib: 100, root_available_kib: 40,
       uptime_seconds: 3600, load: [1, 2, 3], battery_percent: null, battery_charging: null,
     };
@@ -10042,15 +10434,18 @@ describe('Core SDK JSON-RPC bridge', () => {
     dispatch('kira:system:data', { core: true, niri: true, metrics });
     expect(onData).toHaveBeenCalledOnce();
     dispatch('kira:system:data', { core: true, niri: true, metrics: { ...metrics, load: [NaN, 0, 1] } });
+    dispatch('kira:system:data', { core: true, niri: true, metrics: { ...metrics, gpus: [{ ...metrics.gpus[0], utilization_percent: 101 }] } });
+    dispatch('kira:system:data', { core: true, niri: true, metrics: { ...metrics, cpu_temperature_c: 200 } });
     expect(onData).toHaveBeenCalledOnce();
     const process = {
-      rows: [{ pid: 123, name: 'shell', state: 'S', cpu_percent: 1, rss_kib: 1024 }],
+      rows: [{ pid: 123, name: 'shell', state: 'S', cpu_percent: 1, rss_kib: 1024, pss_kib: 768 }],
       total: 1, truncated: false, error: null,
     };
     dispatch('kira:system:processes', process);
     expect(onProcesses).toHaveBeenCalledOnce();
     dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], name: 'x'.repeat(65) }] });
     dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], cpu_percent: 200 }] });
+    dispatch('kira:system:processes', { ...process, rows: [{ ...process.rows[0], pss_kib: -1 }] });
     expect(onProcesses).toHaveBeenCalledOnce();
     stopData();
     stopProcesses();
@@ -10163,7 +10558,8 @@ describe('Core SDK JSON-RPC bridge', () => {
     const listener = handlers.get('kira:system-metrics');
     expect(listener).toBeDefined();
     const metrics = {
-      cpu_percent: 42, memory_total_kib: 16000, memory_available_kib: 8000,
+      cpu_percent: 42, cpu_temperature_c: null, gpus: [],
+      memory_total_kib: 16000, memory_available_kib: 8000,
       root_total_kib: 20000, root_available_kib: 12000,
       battery_percent: null, battery_charging: null,
     };
@@ -10171,6 +10567,8 @@ describe('Core SDK JSON-RPC bridge', () => {
       null, { ...metrics, cpu_percent: 120 }, { ...metrics, cpu_percent: -1 },
       { ...metrics, root_available_kib: Number.NaN }, { ...metrics, battery_percent: 101 },
       { ...metrics, battery_charging: 'unknown' },
+      { ...metrics, gpus: [{ label: 'bad', utilization_percent: NaN, temperature_c: null }] },
+      { ...metrics, cpu_temperature_c: Infinity },
     ]) {
       listener!({ detail: invalid } as unknown as Event);
     }
@@ -10254,8 +10652,16 @@ export interface WorkspaceState {
 /** Linux resource snapshot forwarded by the trusted native Shell.
  * Null means unavailable, never zero. Units are KiB and seconds.
  */
+export interface GpuMetrics {
+  label: string;
+  utilization_percent: number | null;
+  temperature_c: number | null;
+}
+
 export interface SystemMetrics {
   cpu_percent: number | null;
+  cpu_temperature_c: number | null;
+  gpus: GpuMetrics[];
   memory_total_kib: number | null;
   memory_available_kib: number | null;
   swap_total_kib: number | null;
@@ -10292,7 +10698,14 @@ function isSystemMetrics(value: unknown): value is SystemMetrics {
   const valid = (n: unknown) => n === null ||
     (typeof n === 'number' && Number.isFinite(n) && n >= 0);
   const percent = (n: unknown) => valid(n) && (n === null || (typeof n === 'number' && n <= 100));
+  const temperature = (n: unknown) => n === null ||
+    (typeof n === 'number' && Number.isFinite(n) && n >= -40 && n <= 150);
   return percent(value.cpu_percent) &&
+    temperature(value.cpu_temperature_c) &&
+    Array.isArray(value.gpus) && value.gpus.length <= 8 &&
+    value.gpus.every((gpu: unknown) => isRecord(gpu) &&
+      typeof gpu.label === 'string' && gpu.label.length <= 80 &&
+      percent(gpu.utilization_percent) && temperature(gpu.temperature_c)) &&
     valid(value.memory_total_kib) && valid(value.memory_available_kib) &&
     valid(value.root_total_kib) && valid(value.root_available_kib) &&
     percent(value.battery_percent) &&
@@ -10316,6 +10729,7 @@ export interface ProcessRow {
   state: string;
   cpu_percent: number | null;
   rss_kib: number | null;
+  pss_kib: number | null;
 }
 
 export interface SystemProcesses {
@@ -10351,7 +10765,8 @@ export function onSystemProcesses(callback: (data: SystemProcesses) => void): ()
       typeof row.name === 'string' && row.name.length <= 64 &&
       typeof row.state === 'string' && row.state.length === 1 &&
       (row.cpu_percent === null || (typeof row.cpu_percent === 'number' && Number.isFinite(row.cpu_percent) && row.cpu_percent >= 0 && row.cpu_percent <= 100)) &&
-      (row.rss_kib === null || (Number.isSafeInteger(row.rss_kib) && (row.rss_kib as number) >= 0)));
+      (row.rss_kib === null || (Number.isSafeInteger(row.rss_kib) && (row.rss_kib as number) >= 0)) &&
+      (row.pss_kib === null || (Number.isSafeInteger(row.pss_kib) && (row.pss_kib as number) >= 0)));
   }, callback);
 }
 
@@ -10667,7 +11082,8 @@ import { systemHealth } from './system-health';
 import type { SystemMetrics } from './sdk/core';
 
 const normal: SystemMetrics = {
-  cpu_percent: 24, memory_total_kib: 1000, memory_available_kib: 580,
+  cpu_percent: 24, cpu_temperature_c: null, gpus: [],
+  memory_total_kib: 1000, memory_available_kib: 580,
   swap_total_kib: 0, swap_free_kib: 0,
   root_total_kib: 1000, root_available_kib: 500,
   uptime_seconds: 3600, load: [0.2, 0.3, 0.1],
@@ -10768,14 +11184,14 @@ export function systemHealth(
 
 FILE	frontend/src/lib/system-model.test.ts
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, sortedProcesses, systemHeadline } from './system-model';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel } from './system-model';
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
 const processes: ProcessRow[] = [
-  { pid: 3, name: 'zebra', state: 'R', cpu_percent: 20, rss_kib: 4000 },
-  { pid: 1, name: 'alpha', state: 'S', cpu_percent: 80, rss_kib: 1000 },
-  { pid: 2, name: 'beta', state: 'S', cpu_percent: 50, rss_kib: 2000 },
-  { pid: 4, name: 'missing', state: 'S', cpu_percent: null, rss_kib: null },
+  { pid: 3, name: 'zebra', state: 'R', cpu_percent: 20, rss_kib: 4000, pss_kib: 1200 },
+  { pid: 1, name: 'alpha', state: 'S', cpu_percent: 80, rss_kib: 1000, pss_kib: 800 },
+  { pid: 2, name: 'beta', state: 'S', cpu_percent: 50, rss_kib: 2000, pss_kib: 1300 },
+  { pid: 4, name: 'missing', state: 'S', cpu_percent: null, rss_kib: null, pss_kib: null },
 ];
 
 describe('Svelte System Monitor model', () => {
@@ -10785,12 +11201,14 @@ describe('Svelte System Monitor model', () => {
       ['pid', [1, 2, 3, 4], [4, 3, 2, 1]],
       ['cpu', [3, 2, 1, 4], [1, 2, 3, 4]],
       ['memory', [1, 2, 3, 4], [3, 2, 1, 4]],
+      ['pss', [1, 3, 2, 4], [2, 3, 1, 4]],
     ] as const) {
       expect(sortedProcesses(processes, '', { field, descending: false }).map(row => row.pid)).toEqual(ascending);
       expect(sortedProcesses(processes, '', { field, descending: true }).map(row => row.pid)).toEqual(descending);
     }
     expect(nextSort(defaultSort, 'cpu')).toEqual({ field: 'cpu', descending: false });
     expect(nextSort(defaultSort, 'memory')).toEqual({ field: 'memory', descending: true });
+    expect(nextSort(defaultSort, 'pss')).toEqual({ field: 'pss', descending: true });
     expect(nextSort(defaultSort, 'name')).toEqual({ field: 'name', descending: false });
   });
 
@@ -10808,11 +11226,17 @@ describe('Svelte System Monitor model', () => {
     expect(percentUsed(100, 0)).toBe(100);
     expect(fractionLabel(null, null)).toBe('UNAVAILABLE');
     expect(bytesLabel(1_048_576)).toBe('1.0 GiB');
+    expect(processMemoryLabel(null)).toBe('—');
+    expect(processMemoryLabel(0)).toBe('0 KiB');
+    expect(processMemoryLabel(512)).toBe('512 KiB');
+    expect(temperatureLabel(null)).toBe('UNAVAILABLE');
+    expect(temperatureLabel(57.125)).toBe('57.1 °C');
   });
 
   it('prioritizes offline, storage and memory pressure', () => {
     const m: SystemMetrics = {
-      cpu_percent: 12, memory_total_kib: 100, memory_available_kib: 80,
+      cpu_percent: 12, cpu_temperature_c: null, gpus: [],
+      memory_total_kib: 100, memory_available_kib: 80,
       swap_total_kib: 0, swap_free_kib: 0,
       root_total_kib: 100, root_available_kib: 80, uptime_seconds: 3600,
       load: [0, 0, 0], battery_percent: null, battery_charging: null,
@@ -10828,7 +11252,7 @@ describe('Svelte System Monitor model', () => {
 FILE	frontend/src/lib/system-model.ts
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
-export type SortField = 'name' | 'pid' | 'cpu' | 'memory';
+export type SortField = 'name' | 'pid' | 'cpu' | 'memory' | 'pss';
 export type SortState = { field: SortField; descending: boolean };
 
 export const defaultSort: SortState = { field: 'cpu', descending: true };
@@ -10836,7 +11260,7 @@ export const defaultSort: SortState = { field: 'cpu', descending: true };
 export function nextSort(current: SortState, field: SortField): SortState {
   return current.field === field
     ? { field, descending: !current.descending }
-    : { field, descending: field === 'cpu' || field === 'memory' };
+    : { field, descending: field === 'cpu' || field === 'memory' || field === 'pss' };
 }
 
 export function sortedProcesses(rows: ProcessRow[], query: string, state: SortState): ProcessRow[] {
@@ -10863,6 +11287,9 @@ export function sortedProcesses(rows: ProcessRow[], query: string, state: SortSt
         case 'memory':
           delta = compareUnknown(a.rss_kib, b.rss_kib);
           break;
+        case 'pss':
+          delta = compareUnknown(a.pss_kib, b.pss_kib);
+          break;
       }
       return delta || a.pid - b.pid;
     });
@@ -10875,6 +11302,15 @@ export function percentUsed(total: number | null, available: number | null): num
 
 export function bytesLabel(kib: number): string {
   return kib >= 1_048_576 ? (kib / 1_048_576).toFixed(1) + ' GiB' : Math.round(kib / 1024) + ' MiB';
+}
+
+export function temperatureLabel(celsius: number | null): string {
+  return celsius === null ? 'UNAVAILABLE' : celsius.toFixed(1) + ' °C';
+}
+
+export function processMemoryLabel(kib: number | null): string {
+  if (kib === null) return '—';
+  return kib < 1024 ? kib + ' KiB' : bytesLabel(kib);
 }
 
 export function fractionLabel(total: number | null, available: number | null): string {
