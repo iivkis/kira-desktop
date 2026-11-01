@@ -133,12 +133,21 @@
           class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
           <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
-          <span class="flex size-9 shrink-0 items-center justify-center overflow-hidden bg-kira-surface-soft text-[12px] font-bold text-kira-muted" aria-hidden="true">
+          <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
+              (icons[app.id] ? 'bg-transparent' : 'bg-kira-surface-soft')}
+            aria-hidden="true" data-kira-icon-slot>
             {#if icons[app.id]}
               <img class="size-8 object-contain" src={icons[app.id]} alt="" loading="lazy"
                 onerror={() => { delete icons[app.id]; }} />
             {:else}
-              {app.name.slice(0, 1).toLocaleUpperCase() || 'K'}
+              <svg data-kira-icon-placeholder class="size-5 text-kira-muted" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
             {/if}
           </span>
           <span class="min-w-0 flex-1">

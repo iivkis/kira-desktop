@@ -104,8 +104,12 @@ images only during the visible launcher's lifetime. The icon adapter
 first reads any local GIO FileIcon from the desktop entry, then uses GTK
 IconTheme, and finally tries the theme's generic
 `application-x-executable` icon if an app-specific asset is missing.
-The first letter is the final fallback when the theme provides no readable
-image. The 36px icon slot is uniform, with a 32px image contained inside.
+A simple four-tile placeholder is the final fallback when no readable
+image is available; only this fallback gets a subtle colored background.
+Real 32px icons sit on transparent 36px slots with no added tile background.
+All Svelte widget text, including Top Bar and lazy overlays, is nonselectable
+via shared `#app` CSS, except inputs, textareas and editable fields, where
+normal text selection and clipboard shortcuts remain available.
 The launcher list uses hidden scrollbars in WebKit but retains scroll
 functionality, and selected rows no longer have rounded right corners.
 Its outer WebKit surface is square with no decorative border or shadow.

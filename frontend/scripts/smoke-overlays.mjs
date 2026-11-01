@@ -27,7 +27,7 @@ function scriptFor(steps) {
       'if (String(message).startsWith("icons-request:")) {' +
         'const ids = String(message).split(":")[2].split(",").map(Number);' +
         'setTimeout(() => window.dispatchEvent(new CustomEvent("kira:launcher:icons", {detail: {icons: ids.map(id => ({id, data_url: ' +
-          JSON.stringify(testIcon) + '}))}})), 5);' +
+          '(id === 0 ? null : ' + JSON.stringify(testIcon) + ')}))}})), 5);' +
       '}' +
     '}}}};' +
     'window.addEventListener("load", () => {' +
@@ -64,6 +64,13 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
+      'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
+      'document.documentElement.setAttribute("data-smoke-editable-selectable", !editable || getComputedStyle(editable).userSelect === "text");' +
+      'const painted = document.querySelector("[data-kira-icon-slot]:has(img)");' +
+      'document.documentElement.setAttribute("data-smoke-real-icon-transparent", !!painted && getComputedStyle(painted).backgroundColor === "rgba(0, 0, 0, 0)");' +
+      'const placeholder = document.querySelector("[data-kira-icon-slot]:has([data-kira-icon-placeholder])");' +
+      'document.documentElement.setAttribute("data-smoke-placeholder-background", !!placeholder && getComputedStyle(placeholder).backgroundColor !== "rgba(0, 0, 0, 0)");' +
     '}, 1150);' +
     '});</script>';
 }
@@ -94,6 +101,10 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': popup size bridge/cap invalid (height=' +
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
   }
+  if (!output.includes('data-smoke-unselectable="true"') ||
+      !output.includes('data-smoke-editable-selectable="true"')) {
+    throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
+  }
   if (heightMode === 'scroll') {
     if (size !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
@@ -105,6 +116,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
   if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
+      !output.includes('data-smoke-real-icon-transparent="true"') ||
+      !output.includes('data-smoke-placeholder-background="true"') ||
       !output.includes('data-smoke-icon-width="32"') ||
       Number(output.match(/data-smoke-icon-count="(\d+)"/)?.[1] ?? 0) < 1)) {
     const square = output.match(/data-smoke-square="([^"]+)"/)?.[1] ?? 'unset';
