@@ -21,6 +21,43 @@ export interface WorkspaceState {
   workspaces: Workspace[];
 }
 
+/** Linux resource snapshot forwarded by the trusted native Shell.
+ * Null means unavailable, never zero. Units are KiB and seconds.
+ */
+export interface SystemMetrics {
+  cpu_percent: number | null;
+  memory_total_kib: number | null;
+  memory_available_kib: number | null;
+  swap_total_kib: number | null;
+  swap_free_kib: number | null;
+  root_total_kib: number | null;
+  root_available_kib: number | null;
+  uptime_seconds: number | null;
+  load: [number, number, number] | null;
+  battery_percent: number | null;
+  battery_charging: boolean | null;
+}
+
+/** Event-driven system metrics: does not add browser polling or an RPC method. */
+export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const value = (event as CustomEvent<SystemMetrics>).detail;
+    const valid = (n: unknown) => n === null ||
+      (typeof n === 'number' && Number.isFinite(n) && n >= 0);
+    if (!value || typeof value !== 'object' ||
+        !valid(value.cpu_percent) || !valid(value.memory_total_kib) ||
+        !valid(value.memory_available_kib) || !valid(value.root_total_kib) ||
+        !valid(value.root_available_kib) ||
+        (value.cpu_percent !== null && value.cpu_percent > 100) ||
+        (value.battery_percent !== null && (!valid(value.battery_percent) || value.battery_percent > 100)) ||
+        ![null, true, false].includes(value.battery_charging)) return;
+    callback(value);
+  };
+  window.addEventListener('kira:system-metrics', listener);
+  return () => window.removeEventListener('kira:system-metrics', listener);
+}
+
 /** Listen for typed workspace push events emitted by the native Shell.
  * No Niri or Core polling is performed here. Unsubscribe on Svelte unmount.
  */
@@ -94,14 +131,14 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraSystem?: Bridge } };
   }
 }
 
 /** Only fixed commands are exposed to trusted Svelte components. Keep host
  * bridge failures non-throwing so an offline overlay does not crash the bar.
  */
-function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar', command: 'open' | 'toggle'): boolean {
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem', command: 'open' | 'toggle'): boolean {
   const channel = typeof window === 'undefined'
     ? undefined
     : window.webkit?.messageHandlers?.[channelName];
@@ -122,6 +159,11 @@ export function openLauncher(): boolean {
 /** Toggle the native calendar overlay through its fixed-purpose channel. */
 export function toggleCalendar(): boolean {
   return postNativeCommand('kiraCalendar', 'toggle');
+}
+
+/** Open or close the native read-only system monitor. */
+export function toggleSystemPanel(): boolean {
+  return postNativeCommand('kiraSystem', 'toggle');
 }
 
 let nextId = 0;

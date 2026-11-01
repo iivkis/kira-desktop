@@ -49,6 +49,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('formatClock(now, undefined, configState.config.show_seconds)');
     expect(markup).toContain('focus-visible:outline-kira-accent');
     expect(markup).toContain('onclick={activateCalendar}');
+    expect(markup).toContain('onOpen={activateSystemPanel}');
+    expect(markup).toContain('metrics={systemMetrics}');
+    expect(markup).toContain('stopMetrics();');
     expect(markup).toContain('aria-haspopup="dialog"');
     expect(markup).toContain('<time class=');
     expect(markup).toContain('CALENDAR OFFLINE');
@@ -62,6 +65,8 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
     expect(core).toContain('aria-live="polite"');
     expect(core).toContain('data-phase={health.phase}');
+    expect(core).toContain('aria-haspopup="dialog"');
+    expect(core).toContain('onclick={onOpen}');
     expect(core).toContain('aria-label={health.details.replace');
     expect(core).toContain('border-kira-accent bg-kira-accent');
     expect(workspaces).not.toContain('<style>');

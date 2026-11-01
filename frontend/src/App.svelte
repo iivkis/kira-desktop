@@ -3,7 +3,7 @@
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { openLauncher, toggleCalendar, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, toggleSystemPanel, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -13,6 +13,12 @@
   let workspaceActionError = $state<string | null>(null);
   let launcherUnavailable = $state(false);
   let calendarUnavailable = $state(false);
+  let systemUnavailable = $state(false);
+  let systemMetrics = $state<SystemMetrics | null>(null);
+
+  function activateSystemPanel() {
+    systemUnavailable = !toggleSystemPanel();
+  }
 
   function activateCalendar() {
     calendarUnavailable = !toggleCalendar();
@@ -59,6 +65,10 @@
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
+    const stopMetrics = onSystemMetrics((value) => {
+      if (!disposed) systemMetrics = value;
+    });
+
     // Core listens to Niri EventStream. Shell forwards each changed snapshot
     // as kira:workspaces, so focus updates arrive without polling.
     let pushReceived = false;
@@ -99,6 +109,7 @@
       window.clearInterval(statusTimer);
       unsubscribe();
       stopConfig();
+      stopMetrics();
     };
   });
 </script>
@@ -163,7 +174,12 @@
       coreStatus={coreStatus}
       coreVersion={coreVersion}
       niriConnected={workspaceState?.connected ?? null}
+      metrics={systemMetrics}
+      onOpen={activateSystemPanel}
     />
+    {#if systemUnavailable}
+      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+    {/if}
     <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
     {#if calendarUnavailable}
       <span class="shrink-0 text-[10px] font-bold text-kira-accent" role="status">CALENDAR OFFLINE</span>
