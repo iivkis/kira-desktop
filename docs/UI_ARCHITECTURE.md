@@ -14,10 +14,9 @@ bridge, not a second UI component framework.
 | Svelte 5 / Tailwind | Top Bar, launcher, calendar, system monitor, processes, future user widgets | Raw shell commands, unvalidated Niri/OS privileges |
 | Typed WebKit bridge | Minimal allowlisted native calls; read-only events | Generic command execution or navigation to outside content |
 
-The top bar's 42 px exclusive zone **cannot contain popovers**. The
-Calendar and System Monitor share **one** non-exclusive GTK layer-shell
-window and its prewarmed WebKit view, which mounts the selected Svelte
-component from the same self-contained frontend bundle. The browser cannot create an ordinary
+The top bar's 42 px exclusive zone **cannot contain popovers**. The Calendar, System Monitor and Launcher share **one** non-exclusive GTK
+layer-shell window and prewarmed WebKit view. At most one Svelte widget is
+mounted at a time; the rest own no live timers or DOM. The browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 
 ## Migration, in small reviewable steps
@@ -33,10 +32,11 @@ top-level window with the required layer-shell Wayland behavior by itself.
 2. **Calendar graphic acceptance.** Frontend, GTK/Nix, and security contract
    tests run in CI. The actual separate Wayland window still needs a
    manual nested-Niri graphical smoke-test at multiple scales before release.
-3. **Launcher.** Move search, rows, icons, selection, and keyboard handling
-   to Svelte. Keep GIO XDG application discovery and launch in Rust behind
-   a minimal typed, allowlisted IPC contract. Never accept a shell command
-   or application executable path from untrusted UI input.
+3. **Launcher (implemented).** Svelte owns search, selection, layout and
+   keyboard events. Rust GIO discovers desktop entries and launches by
+   bounded, generation-scoped catalog index. Browser cannot supply executable
+   paths or shell commands. Application icon imagery uses an initial-letter
+   fallback pending optional themed icon support.
 4. **System Monitor / processes (implemented).** The existing warm WebKit
    overlay now mounts `SystemWidget.svelte` or `CalendarWidget.svelte` on
    demand, never both. Rust keeps read-only kernel metrics, a bounded
@@ -75,5 +75,6 @@ in the single offline HTML bundle, but the DOM, effects, timers and component
 instance are created only on show. The live instance is unloaded on hide.
 This does **not** unload the prebundled JS bytes or the base WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
 immediately fall because the JavaScript engine retains allocated pages and
-shared libraries. Calendar and System Monitor share one WebView;
-Launcher is still native GTK pending its Svelte migration.
+shared libraries. All three built-in overlays (Calendar, System Monitor,
+Launcher) share the same WebView; the launcher exclusively requests keyboard
+focus while active. The GTK widget view and native CSS have been retired.
