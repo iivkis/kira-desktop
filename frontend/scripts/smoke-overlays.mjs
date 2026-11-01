@@ -17,6 +17,18 @@ const testIcon = 'data:image/svg+xml;base64,' + Buffer.from(
 ).toString('base64');
 
 function scriptFor(steps) {
+  const telemetry = JSON.stringify({
+    core: true, niri: true,
+    metrics: {
+      cpu_percent: 5, cpu_temperature_c: 32.4,
+      gpus: [{ label: 'GPU / NVIDIA (card1)', utilization_percent: null, temperature_c: null }],
+      memory_total_kib: 15_500_000, memory_available_kib: 9_400_000,
+      swap_total_kib: 7_700_000, swap_free_kib: 7_679_000,
+      root_total_kib: 95_600_000, root_available_kib: 57_400_000,
+      uptime_seconds: 132000, load: [0.2, 0.3, 0.15],
+      battery_percent: null, battery_charging: null,
+    },
+  });
   return '<script>' +
     'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
       'if (String(message).startsWith("size:")) {' +
@@ -41,6 +53,8 @@ function scriptFor(steps) {
             : kind === 'filter'
               ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : kind === 'metrics'
+                ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
                 kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
@@ -64,6 +78,10 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
+      'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
+      'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
+      'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
       'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
       'document.documentElement.setAttribute("data-smoke-editable-selectable", !editable || getComputedStyle(editable).userSelect === "text");' +
@@ -105,6 +123,15 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       !output.includes('data-smoke-editable-selectable="true"')) {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
   }
+  if (heightMode === 'system') {
+    const charts = Number(output.match(/data-smoke-system-charts="(\\d+)"/)?.[1] ?? 0);
+    if (charts < 2 || !output.includes('data-smoke-system-swap="true"') ||
+        !output.includes('data-smoke-system-unknown="true"') ||
+        !output.includes('data-smoke-system-no-scrollbar="true"')) {
+      throw new Error(name + ': expected live SVG gauges/trends, true fractional swap, ' +
+        'GPU unavailable label, and hidden scrollbar, found ' + charts + ' charts');
+    }
+  }
   if (heightMode === 'scroll') {
     if (size !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
@@ -131,6 +158,10 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
+  await smoke('system-live-telemetry', [
+    { delay: 25, kind: 'system', generation: 1 },
+    { delay: 170, kind: 'metrics' },
+  ], 'Kira System Monitor', 'system');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
   await smoke('launcher-square-with-themed-icons', [
     { delay: 25, kind: 'launcher', generation: 1 },
