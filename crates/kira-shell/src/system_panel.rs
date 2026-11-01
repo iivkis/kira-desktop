@@ -26,7 +26,7 @@ pub fn disk() -> Option<(u64, u64)> {
     (total > 0 && available <= total).then_some((total, available))
 }
 
-/// A bounded channel prevents stale 100ms samples from building up in a
+/// A bounded channel prevents stale 500ms samples from building up in a
 /// busy GTK main loop. This worker only exists on Overview while visible.
 struct PulseFeed {
     running: Arc<AtomicBool>,
@@ -100,7 +100,7 @@ impl Model {
                     Ok(()) | Err(mpsc::TrySendError::Full(_)) => {}
                     Err(mpsc::TrySendError::Disconnected(_)) => break,
                 }
-                // The interval is measured start-to-start, not IO + 100ms.
+                // The interval is measured start-to-start, not IO + 500ms.
                 // Skip missed cycles instead of flooding the GTK/UI channel.
                 if let Some(remaining) = PULSE_INTERVAL.checked_sub(started.elapsed()) {
                     std::thread::sleep(remaining);
