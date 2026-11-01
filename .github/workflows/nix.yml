@@ -55,15 +55,15 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      # Persist Nix store outputs (including Crane's third-party Rust artifacts)
-      # between fresh GitHub runners. A miss still builds normally.
+      # Persist Nix store outputs, including Crane's compiled dependencies.
+      # Do not run Nix GC here: unrooted cargoArtifacts would be deleted
+      # before upload, making the cache useless for incremental Rust builds.
       - name: Cache Nix store
         id: nix-cache
         uses: nix-community/cache-nix-action@v7
         with:
-          primary-key: nix-v1-${{ runner.os }}-${{ hashFiles('flake.lock', 'Cargo.lock', 'Cargo.toml', 'crates/**/Cargo.toml', 'frontend/package-lock.json') }}
-          restore-prefixes-first-match: nix-v1-${{ runner.os }}-
-          gc-max-store-size-linux: 3G
+          primary-key: nix-v2-${{ runner.os }}-${{ hashFiles('flake.lock', 'Cargo.lock', 'Cargo.toml', 'crates/**/Cargo.toml', 'frontend/package-lock.json') }}
+          restore-prefixes-first-match: nix-v2-${{ runner.os }}-
 
       # Cache the developer-shell Cargo check/test compiler outputs separately.
       # Crane's sandboxed nix build is served by the Nix store cache above.
