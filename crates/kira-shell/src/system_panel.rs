@@ -45,11 +45,7 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(
-        metrics: Rc<RefCell<Snapshot>>,
-        core: Rc<Cell<bool>>,
-        niri: Rc<Cell<bool>>,
-    ) -> Self {
+    pub fn new(metrics: Rc<RefCell<Snapshot>>, core: Rc<Cell<bool>>, niri: Rc<Cell<bool>>) -> Self {
         Self {
             metrics,
             core,
@@ -100,15 +96,19 @@ impl Model {
             Ok(snapshot) => {
                 // The native reader bounds scans to 4096 PIDs; preserve the
                 // searchable full snapshot. Svelte renders only 36 visible rows.
-                let rows: Vec<_> = snapshot.rows.iter().map(|row| {
-                    serde_json::json!({
-                        "pid": row.pid,
-                        "name": row.name,
-                        "state": row.state.to_string(),
-                        "cpu_percent": row.cpu_percent,
-                        "rss_kib": row.rss_kib,
+                let rows: Vec<_> = snapshot
+                    .rows
+                    .iter()
+                    .map(|row| {
+                        serde_json::json!({
+                            "pid": row.pid,
+                            "name": row.name,
+                            "state": row.state.to_string(),
+                            "cpu_percent": row.cpu_percent,
+                            "rss_kib": row.rss_kib,
+                        })
                     })
-                }).collect();
+                    .collect();
                 serde_json::json!({
                     "rows": rows,
                     "total": snapshot.total,
@@ -129,31 +129,41 @@ impl Model {
     pub fn report(&self) -> String {
         let s = self.metrics.borrow();
         let pair = |total: Option<u64>, available: Option<u64>| {
-            total.zip(available).map_or("UNAVAILABLE".to_string(), |(total, avail)| {
-                format!("{} / {}", bytes_label(total.saturating_sub(avail)), bytes_label(total))
-            })
+            total
+                .zip(available)
+                .map_or("UNAVAILABLE".to_string(), |(total, avail)| {
+                    format!(
+                        "{} / {}",
+                        bytes_label(total.saturating_sub(avail)),
+                        bytes_label(total)
+                    )
+                })
         };
         let load = s.load.map_or("UNAVAILABLE".to_string(), |v| {
             format!("{:.2} / {:.2} / {:.2}", v[0], v[1], v[2])
         });
-        let uptime = s.uptime_seconds.map_or("UNAVAILABLE".to_string(), |seconds| {
-            let days = seconds / 86_400;
-            let hours = (seconds % 86_400) / 3_600;
-            let minutes = (seconds % 3_600) / 60;
-            if days > 0 {
-                format!("{days}d {hours}h {minutes}m")
-            } else {
-                format!("{hours}h {minutes}m")
-            }
-        });
-        let power = s.battery_percent.map_or("NOT DETECTED".to_string(), |battery| {
-            let suffix = match s.battery_charging {
-                Some(true) => " / AC OR CHARGING",
-                Some(false) => " / DISCHARGING",
-                None => "",
-            };
-            format!("{battery}%{suffix}")
-        });
+        let uptime = s
+            .uptime_seconds
+            .map_or("UNAVAILABLE".to_string(), |seconds| {
+                let days = seconds / 86_400;
+                let hours = (seconds % 86_400) / 3_600;
+                let minutes = (seconds % 3_600) / 60;
+                if days > 0 {
+                    format!("{days}d {hours}h {minutes}m")
+                } else {
+                    format!("{hours}h {minutes}m")
+                }
+            });
+        let power = s
+            .battery_percent
+            .map_or("NOT DETECTED".to_string(), |battery| {
+                let suffix = match s.battery_charging {
+                    Some(true) => " / AC OR CHARGING",
+                    Some(false) => " / DISCHARGING",
+                    None => "",
+                };
+                format!("{battery}%{suffix}")
+            });
         let root = pair(s.root_total_kib, s.root_available_kib);
         let memory = pair(s.memory_total_kib, s.memory_available_kib);
         let swap = pair(s.swap_total_kib, s.swap_free_kib);
@@ -161,7 +171,9 @@ impl Model {
             "CORE OFFLINE"
         } else if !self.niri.get() {
             "NIRI DISCONNECTED"
-        } else if s.root_total_kib.zip(s.root_available_kib)
+        } else if s
+            .root_total_kib
+            .zip(s.root_available_kib)
             .and_then(|(total, avail)| percent_used(total, avail))
             .is_some_and(|p| p >= 90)
         {
@@ -173,9 +185,18 @@ impl Model {
         };
         format!(
             "KIRA SYSTEM / {health}\nCore: {}\nNiri: {}\nCPU: {}\nMemory: {memory}\nSwap: {swap}\nStorage /: {root}\nLoad 1/5/15: {load}\nUptime: {uptime}\nBattery: {power}",
-            if self.core.get() { "CONNECTED" } else { "OFFLINE" },
-            if self.niri.get() { "CONNECTED" } else { "DISCONNECTED" },
-            s.cpu_percent.map_or("MEASURING".into(), |v| format!("{v}%")),
+            if self.core.get() {
+                "CONNECTED"
+            } else {
+                "OFFLINE"
+            },
+            if self.niri.get() {
+                "CONNECTED"
+            } else {
+                "DISCONNECTED"
+            },
+            s.cpu_percent
+                .map_or("MEASURING".into(), |v| format!("{v}%")),
         )
     }
 }
