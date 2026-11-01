@@ -101,7 +101,8 @@ button.kira-day:hover:not(:disabled) {
   background: rgba(0,0,0,0.34);
   color: @kira_orange;
 }
-button.kira-day.kira-day-adjacent { color: rgba(229,229,229,0.5); }
+/* Adjacent-month days remain interactive: keep normal-text contrast >= 4.5:1. */
+button.kira-day.kira-day-adjacent { color: rgba(229,229,229,0.60); }
 button.kira-day.kira-day-today:not(.kira-day-selected) {
   box-shadow: inset 0 -2px @kira_orange;
   color: @kira_orange;
@@ -111,6 +112,11 @@ button.kira-day.kira-day-selected:hover {
   background: @kira_orange;
   color: @kira_black;
   font-weight: 850;
+}
+/* Orange-on-orange is invisible. Use a dark inset focus ring on selected days. */
+button.kira-day.kira-day-selected:focus-visible {
+  outline: 2px solid @kira_black;
+  outline-offset: -3px;
 }
 button.kira-day:disabled { opacity: 0; }
 

@@ -1,7 +1,7 @@
 # Kira Desktop · Design System
 
-**Status:** implemented visual system for the Svelte Top Bar and native GTK
-Launcher. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
+**Status:** implemented visual system for the Svelte Top Bar, native GTK
+Launcher and custom Calendar. Visual acceptance is still open. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
 Dock, notifications and other desktop surfaces remain future milestones.
 
 ## Kira official visual direction
@@ -202,7 +202,8 @@ nix develop --command task dev:preview
 ```
 
 Run a manual visual review in nested Niri at common display scales and
-sizes. The automated tests verify palette, contrast, semantic Tailwind v4 tokens,
+sizes. Track remaining confirmed and suspected visual issues in
+[VISUAL_REVIEW.md](VISUAL_REVIEW.md). The automated tests verify palette, contrast, semantic Tailwind v4 tokens,
 structural zones, the native row selection rail, and accessible state
 controls. The production Vite build compiles utilities into one inlined
 WebKit CSS asset. Automated tests do **not** replace screenshot or

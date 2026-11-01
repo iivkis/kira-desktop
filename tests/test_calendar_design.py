@@ -59,6 +59,35 @@ class CalendarDesignTests(unittest.TestCase):
         today = CSS.split("button.kira-calendar-today-button {", 1)[1].split("}", 1)[0]
         self.assertIn("background: transparent;", today)
 
+    def test_selected_keyboard_focus_contrasts_with_selected_fill(self):
+        # Orange selection cannot also use an orange focus ring.
+        rule = CSS.split("button.kira-day.kira-day-selected:focus-visible {", 1)[1].split("}", 1)[0]
+        self.assertIn("outline: 2px solid @kira_black;", rule)
+        self.assertIn("outline-offset: -3px;", rule)
+
+    def test_interactive_adjacent_days_pass_normal_text_contrast(self):
+        match = re.search(
+            r"button\.kira-day\.kira-day-adjacent\s*\{\s*"
+            r"color:\s*rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\);",
+            CSS,
+        )
+        self.assertIsNotNone(match)
+        r, g, b = map(int, match.groups()[:3])
+        alpha = float(match.group(4))
+        background = (20, 33, 61)
+        foreground = tuple(alpha * c + (1 - alpha) * bg
+                           for c, bg in zip((r, g, b), background))
+
+        def luminance(channels):
+            def linear(v):
+                v /= 255.0
+                return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+            return sum(weight * linear(channel) for weight, channel in
+                       zip((0.2126, 0.7152, 0.0722), channels))
+
+        lighter, darker = sorted((luminance(foreground), luminance(background)), reverse=True)
+        self.assertGreaterEqual((lighter + 0.05) / (darker + 0.05), 4.5)
+
     def test_date_model_and_keyboard(self):
         for token in (
             "pub fn month_grid", "pub fn shift_month", "pub fn iso_week",

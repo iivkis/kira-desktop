@@ -58,7 +58,7 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('aria-pressed={workspace.is_focused}');
     expect(workspaces).toContain('data-urgent={workspace.is_urgent}');
     expect(workspaces).toContain('disabled={pending}');
-    expect(workspaces).toContain('focus-visible:outline-kira-text');
+    expect(workspaces).toContain('focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2');
     expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
     expect(core).toContain('aria-live="polite"');
     expect(core).toContain('data-phase={health.phase}');

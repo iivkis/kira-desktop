@@ -39,7 +39,7 @@
       >
         <button
           type="button"
-          class={`grid h-full w-full cursor-pointer place-items-center rounded-[inherit] border-0 bg-transparent px-[9px] font-inherit text-inherit focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-progress ${workspace.is_focused ? 'focus-visible:outline-kira-text' : 'focus-visible:outline-kira-accent'}`}
+          class={`grid h-full w-full cursor-pointer place-items-center rounded-[inherit] border-0 bg-transparent px-[9px] font-inherit text-inherit focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-progress ${workspace.is_focused ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2' : 'focus-visible:outline-kira-accent'}`}
           aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
             + (workspace.output ? ' on ' + workspace.output : '')}
           aria-pressed={workspace.is_focused}
