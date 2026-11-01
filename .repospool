@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3810
+index_bytes=3862
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,87 +15,88 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	4358579aad56edb6af793fe6130605c0d246773e
-F	.cargo/config.toml	98	108	3
-F	.github/workflows/ci.yml	1467	113	46
-F	.github/workflows/nix.yml	1258	161	38
-F	.github/workflows/overlay-smoke.yml	912	201	34
-F	.github/workflows/publish-repospool.yml	3048	237	83
-F	.gitignore	178	322	11
-F	.repospoolignore	1028	335	47
-F	Cargo.toml	494	384	22
-F	README.md	9636	408	219
-F	Taskfile.yml	5957	629	185
-F	config/kira.kdl.example	358	816	8
-F	crates/kira-core/Cargo.toml	207	826	10
-F	crates/kira-core/src/config.rs	15217	838	399
-F	crates/kira-core/src/main.rs	18357	1239	480
-F	crates/kira-core/src/niri.rs	16767	1721	453
-F	crates/kira-ipc/Cargo.toml	170	2176	9
-F	crates/kira-ipc/src/client.rs	10376	2187	277
-F	crates/kira-ipc/src/lib.rs	9053	2466	302
-F	crates/kira-shell/Cargo.toml	297	2770	12
-F	crates/kira-shell/src/calendar.rs	31111	2784	854
-F	crates/kira-shell/src/launcher.rs	2568	3640	81
-F	crates/kira-shell/src/main.rs	17601	3723	414
-F	crates/kira-shell/src/native_ui.rs	2413	4139	61
-F	crates/kira-shell/src/process_monitor.rs	6245	4202	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4406	214
-F	crates/kira-shell/src/system_panel.rs	7948	4622	226
-F	docs/CONFIG.md	5801	4850	125
-F	docs/DESIGN_SYSTEM.md	15048	4977	276
-F	docs/DEVELOPMENT.md	25624	5255	515
-F	docs/QA_VISUAL.md	12284	5772	149
-F	docs/SPECIFICATION.md	28960	5923	421
-F	docs/UI_ARCHITECTURE.md	5743	6346	90
-F	docs/VISUAL_REVIEW.md	9754	6438	84
-F	flake.nix	2651	6524	76
-F	frontend/index.html	2737	6602	66
-F	frontend/package.json	650	6670	23
-F	frontend/scripts/inline-assets.mjs	4457	6695	103
-F	frontend/scripts/inline-assets.test.mjs	4645	6800	106
-F	frontend/scripts/smoke-overlays.mjs	4141	6908	88
-F	frontend/src/App.svelte	8659	6998	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7200	84
-F	frontend/src/lib/bootstrap.ts	2613	7286	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7358	38
-F	frontend/src/lib/calendar-model.ts	3453	7398	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7472	177
-F	frontend/src/lib/components/LauncherWidget.svelte	6492	7651	137
-F	frontend/src/lib/components/SystemHealth.svelte	1684	7790	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	7835	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8026	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8089	29
-F	frontend/src/lib/launcher-model.ts	778	8120	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8140	89
-F	frontend/src/lib/lazy-widget.ts	1984	8231	63
-F	frontend/src/lib/sdk/core.test.ts	17180	8296	349
-F	frontend/src/lib/sdk/core.ts	14103	8647	389
-F	frontend/src/lib/system-health.test.ts	2348	9038	41
-F	frontend/src/lib/system-health.ts	2831	9081	60
-F	frontend/src/lib/system-model.test.ts	2988	9143	57
-F	frontend/src/lib/system-model.ts	3411	9202	76
-F	frontend/src/lib/themes/kira-default.css	1687	9280	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9334	101
-F	frontend/src/lib/themes/kira-default.ts	777	9437	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9461	79
-F	frontend/src/lib/time.test.ts	263	9542	8
-F	frontend/src/lib/time.ts	320	9552	9
-F	frontend/src/main.ts	4907	9563	112
-F	frontend/src/style.css	1329	9677	44
-F	frontend/tsconfig.json	403	9723	16
-F	frontend/vite.config.ts	224	9741	8
-F	nix/package.nix	3132	9751	117
-F	scripts/dev_preview.py	18147	9870	403	x
-F	scripts/qa_visual.py	12052	10275	299
-F	tests/test_calendar_design.py	6837	10576	121
-F	tests/test_detailed_health.py	5197	10699	101
-F	tests/test_dev_preview.py	9339	10802	219
-F	tests/test_launcher_design.py	4192	11023	84
-F	tests/test_native_theme.py	1567	11109	36
-F	tests/test_popup_geometry.py	4488	11147	79
-F	tests/test_qa_visual.py	10549	11228	217
-F	tests/test_ui_bootstrap_contract.py	1103	11447	29
+C	02b0925c3b1b5e15d0133039f1ca7f3416ec893d
+F	.cargo/config.toml	98	109	3
+F	.github/workflows/ci.yml	1467	114	46
+F	.github/workflows/nix.yml	1258	162	38
+F	.github/workflows/overlay-smoke.yml	912	202	34
+F	.github/workflows/publish-repospool.yml	3048	238	83
+F	.gitignore	178	323	11
+F	.repospoolignore	1028	336	47
+F	Cargo.toml	494	385	22
+F	README.md	9636	409	219
+F	Taskfile.yml	5957	630	185
+F	config/kira.kdl.example	358	817	8
+F	crates/kira-core/Cargo.toml	207	827	10
+F	crates/kira-core/src/config.rs	15217	839	399
+F	crates/kira-core/src/main.rs	18357	1240	480
+F	crates/kira-core/src/niri.rs	16767	1722	453
+F	crates/kira-ipc/Cargo.toml	170	2177	9
+F	crates/kira-ipc/src/client.rs	10376	2188	277
+F	crates/kira-ipc/src/lib.rs	9053	2467	302
+F	crates/kira-shell/Cargo.toml	297	2771	12
+F	crates/kira-shell/src/calendar.rs	33667	2785	915
+F	crates/kira-shell/src/launcher.rs	2568	3702	81
+F	crates/kira-shell/src/main.rs	17601	3785	414
+F	crates/kira-shell/src/native_ui.rs	2857	4201	73
+F	crates/kira-shell/src/process_monitor.rs	6245	4276	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4480	214
+F	crates/kira-shell/src/system_panel.rs	7948	4696	226
+F	docs/CONFIG.md	5801	4924	125
+F	docs/DESIGN_SYSTEM.md	15048	5051	276
+F	docs/DEVELOPMENT.md	26566	5329	531
+F	docs/QA_VISUAL.md	12284	5862	149
+F	docs/SPECIFICATION.md	28960	6013	421
+F	docs/UI_ARCHITECTURE.md	6685	6436	106
+F	docs/VISUAL_REVIEW.md	9754	6544	84
+F	flake.nix	2651	6630	76
+F	frontend/index.html	2737	6708	66
+F	frontend/package.json	650	6776	23
+F	frontend/scripts/inline-assets.mjs	4457	6801	103
+F	frontend/scripts/inline-assets.test.mjs	4645	6906	106
+F	frontend/scripts/smoke-overlays.mjs	6900	7014	130
+F	frontend/src/App.svelte	8659	7146	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7348	84
+F	frontend/src/lib/bootstrap.ts	2613	7434	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7506	38
+F	frontend/src/lib/calendar-model.ts	3453	7546	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7620	177
+F	frontend/src/lib/components/LauncherWidget.svelte	6492	7799	137
+F	frontend/src/lib/components/SystemHealth.svelte	1684	7938	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	7983	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8174	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8237	29
+F	frontend/src/lib/launcher-model.ts	778	8268	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8288	89
+F	frontend/src/lib/lazy-widget.ts	1984	8379	63
+F	frontend/src/lib/overlay-size.ts	1090	8444	29
+F	frontend/src/lib/sdk/core.test.ts	17903	8475	364
+F	frontend/src/lib/sdk/core.ts	14567	8841	398
+F	frontend/src/lib/system-health.test.ts	2348	9241	41
+F	frontend/src/lib/system-health.ts	2831	9284	60
+F	frontend/src/lib/system-model.test.ts	2988	9346	57
+F	frontend/src/lib/system-model.ts	3411	9405	76
+F	frontend/src/lib/themes/kira-default.css	1687	9483	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9537	101
+F	frontend/src/lib/themes/kira-default.ts	777	9640	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9664	79
+F	frontend/src/lib/time.test.ts	263	9745	8
+F	frontend/src/lib/time.ts	320	9755	9
+F	frontend/src/main.ts	5907	9766	127
+F	frontend/src/style.css	2051	9895	62
+F	frontend/tsconfig.json	403	9959	16
+F	frontend/vite.config.ts	224	9977	8
+F	nix/package.nix	3132	9987	117
+F	scripts/dev_preview.py	18147	10106	403	x
+F	scripts/qa_visual.py	12052	10511	299
+F	tests/test_calendar_design.py	6835	10812	121
+F	tests/test_detailed_health.py	5195	10935	101
+F	tests/test_dev_preview.py	9339	11038	219
+F	tests/test_launcher_design.py	4192	11259	84
+F	tests/test_native_theme.py	1567	11345	36
+F	tests/test_popup_geometry.py	6956	11383	118
+F	tests/test_qa_visual.py	10549	11503	217
+F	tests/test_ui_bootstrap_contract.py	1103	11722	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -2823,6 +2824,7 @@ struct CalendarOverlay {
     document: String,
     host_ready: Cell<bool>,
     widget_ready: Cell<bool>,
+    content_height: Cell<i32>,
     active: Cell<Option<Surface>>,
     system: RefCell<Option<crate::system_panel::Model>>,
     launcher: RefCell<Option<crate::launcher::Catalog>>,
@@ -2877,6 +2879,7 @@ impl CalendarOverlay {
         self.active.set(None);
         self.launcher.borrow_mut().take();
         self.widget_ready.set(false);
+        self.content_height.set(0);
         self.revealed.set(false);
         self.paint_pending.set(false);
         self.open_started.take();
@@ -2939,6 +2942,7 @@ impl CalendarOverlay {
         self.requested.set(true);
         self.revealed.set(false);
         self.widget_ready.set(false);
+        self.content_height.set(0);
         self.paint_pending.set(false);
         self.was_active.set(false);
         self.open_started.set(Some(Instant::now()));
@@ -2947,6 +2951,9 @@ impl CalendarOverlay {
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
+        // The next widget will report its intrinsic height before reveal.
+        // Reset the previous widget's geometry while still transparent.
+        crate::native_ui::resize_webview_popup(&self.window, 420, 1);
         let generation = self.generation.get();
         if defer_present {
             // Start replacing the Svelte DOM while the old buffer is NOT
@@ -3005,8 +3012,9 @@ impl CalendarOverlay {
         };
         // Only hardcoded, trusted Svelte widget types may be selected.
         let kind = kind.name();
+        let max_height = crate::native_ui::webview_popup_height_limit(&self.window);
         let script = format!(
-            "window.dispatchEvent(new CustomEvent('kira:overlay:show', {{ detail: {{ kind: '{kind}', generation: {generation} }} }}));"
+            "window.dispatchEvent(new CustomEvent('kira:overlay:show', {{ detail: {{ kind: '{kind}', generation: {generation}, maxHeight: {max_height} }} }}));"
         );
         self.view.evaluate_javascript(
             &script,
@@ -3022,7 +3030,11 @@ impl CalendarOverlay {
     }
 
     fn request_paint(&self) {
-        if !self.requested.get() || !self.widget_ready.get() || self.paint_pending.replace(true) {
+        if !self.requested.get()
+            || !self.widget_ready.get()
+            || self.content_height.get() == 0
+            || self.paint_pending.replace(true)
+        {
             return;
         }
         let generation = self.generation.get();
@@ -3094,8 +3106,27 @@ impl CalendarOverlay {
                     self.send_metrics();
                 }
                 self.widget_ready.set(true);
-                self.request_paint();
-                self.schedule_reveal_fallback(generation);
+                if self.content_height.get() > 0 {
+                    self.request_paint();
+                    self.schedule_reveal_fallback(generation);
+                }
+            }
+            Some(UiCommand::ContentHeight(generation, height))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
+                // Layout-driven dimensions come only from the bounded,
+                // trusted overlay channel. Ignore stale generations and
+                // no-op resizes to avoid feedback from ResizeObserver.
+                let clamped =
+                    height.min(crate::native_ui::webview_popup_height_limit(&self.window));
+                if clamped != self.content_height.get() {
+                    self.content_height.set(clamped);
+                    crate::native_ui::resize_webview_popup(&self.window, 420, clamped);
+                }
+                if self.widget_ready.get() && !self.paint_pending.get() && !self.revealed.get() {
+                    self.request_paint();
+                    self.schedule_reveal_fallback(generation);
+                }
             }
             Some(UiCommand::Painted(generation))
                 if self.requested.get()
@@ -3273,6 +3304,7 @@ enum UiCommand<'a> {
     HostReady,
     Mounted(u32),
     Painted(u32),
+    ContentHeight(u32, i32),
     CopyDate(&'a str),
     ProcessesTab(bool),
     CopyReport,
@@ -3336,6 +3368,25 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         }
         return value.parse().ok().map(UiCommand::Mounted);
     }
+    if let Some(value) = message.strip_prefix("size:") {
+        let (generation, height) = value.split_once(':')?;
+        if generation.is_empty()
+            || generation.len() > 10
+            || !generation.bytes().all(|b| b.is_ascii_digit())
+            || height.is_empty()
+            || height.len() > 5
+            || !height.bytes().all(|b| b.is_ascii_digit())
+        {
+            return None;
+        }
+        return Some(UiCommand::ContentHeight(
+            generation.parse::<u32>().ok().filter(|v| *v > 0)?,
+            height
+                .parse::<i32>()
+                .ok()
+                .filter(|v| (1..=20_000).contains(v))?,
+        ));
+    }
     if let Some(value) = message.strip_prefix("painted:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
             return None;
@@ -3381,7 +3432,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     window.set_margin(Edge::Right, 12);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
-    crate::native_ui::configure_webview_popup(&window, 420, 620);
+    crate::native_ui::configure_webview_popup(&window, 420, 1);
 
     // The calendar has no general Core RPC bridge, only its own messages.
     let context = webkit6::WebContext::new();
@@ -3399,6 +3450,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         document,
         host_ready: Cell::new(false),
         widget_ready: Cell::new(false),
+        content_height: Cell::new(0),
         active: Cell::new(None),
         system: RefCell::new(None),
         launcher: RefCell::new(None),
@@ -3586,6 +3638,12 @@ mod tests {
             "mounted:",
             "mounted:abc",
             "mounted:4294967296",
+            "size:",
+            "size:0:100",
+            "size:1:0",
+            "size:1:20001",
+            "size:1:-1",
+            "size:1:4;rm",
             "copy:",
             "copy:2026-02-30",
             "copy:1900-02-29",
@@ -3619,6 +3677,10 @@ mod tests {
             Some(UiCommand::LaunchApp(12, 42))
         );
         assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
+        assert_eq!(
+            calendar_command("size:42:512"),
+            Some(UiCommand::ContentHeight(42, 512))
+        );
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
             calendar_command("copy:2024-02-29"),
@@ -4164,13 +4226,10 @@ pub fn restrict_webview_navigation(view: &webkit6::WebView) {
     });
 }
 
-/// WebKit views fill their window instead of reporting a useful natural size.
-/// Cap dimensions to the actual logical monitor, with safe narrow-screen margins.
-fn apply_webview_size(
-    window: &gtk::ApplicationWindow,
-    preferred_width: i32,
-    preferred_height: i32,
-) {
+/// WebKit does not expose its HTML's intrinsic height as a GTK size request.
+/// The trusted Svelte host measures its natural root height and sends it to
+/// GTK, which uses the current *logical output* for the 70% upper bound.
+fn output_size(window: &gtk::ApplicationWindow) -> (i32, i32) {
     let display = gtk::prelude::WidgetExt::display(window);
     let monitor = window
         .surface()
@@ -4181,18 +4240,33 @@ fn apply_webview_size(
                 .item(0)
                 .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
         });
-    let (output_width, output_height) = monitor
+    monitor
         .map(|m| (m.geometry().width(), m.geometry().height()))
-        .unwrap_or((800, 800));
+        .unwrap_or((800, 800))
+}
+
+pub fn webview_popup_height_limit(window: &gtk::ApplicationWindow) -> i32 {
+    let (_, output_height) = output_size(window);
+    (i64::from(output_height.max(1)) * 7 / 10).max(1) as i32
+}
+
+/// Window sizing is driven by Svelte's measured root, never by a fixed
+/// WebKit default. Do NOT reset size on GTK's map callback: a widget may
+/// already have reported its correct height while the surface was hidden.
+pub fn resize_webview_popup(
+    window: &gtk::ApplicationWindow,
+    preferred_width: i32,
+    content_height: i32,
+) -> i32 {
+    let (output_width, _) = output_size(window);
     let width = preferred_width.min(output_width.saturating_sub(24)).max(1);
-    let height_limit = (i64::from(output_height.max(1)) * 7 / 10) as i32;
-    let height = preferred_height.min(height_limit).max(1);
+    let height = content_height.clamp(1, webview_popup_height_limit(window));
     window.set_default_size(width, height);
+    height
 }
 
 pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, height: i32) {
-    apply_webview_size(window, width, height);
-    window.connect_map(move |window| apply_webview_size(window, width, height));
+    resize_webview_popup(window, width, height);
 }
 
 /// The offset below the 42px Top Bar.
@@ -5768,6 +5842,22 @@ WebKit/layer-shell window and validates the copied ISO date with a small
 independent leap-year check before touching the system clipboard.
 The obsolete duplicate Rust month-grid model has been deleted.
 
+
+### Content-sized popup geometry
+
+Calendar, System Monitor and Launcher use **natural Svelte content height** rather
+than the old 620px fixed GTK window size. `observeOverlaySize` reads the
+active widget's root `getBoundingClientRect().height` and sends
+`size:<generation>:<height>` through the private, allowlisted WebKit bridge.
+Rust rejects stale generations and invalid sizes and clamps GTK's default
+height to **70% of the current output's logical height**. The native output
+height is passed to Svelte as an absolute CSS-pixel `maxHeight`: never use
+`70vh` here, because WebKit viewport height is itself controlled by GTK and
+can form a layout feedback loop. Under the cap the window hugs its content;
+over it, Calendar/Overview scroll vertically, while Launcher/Processes scroll
+their result lists. `ResizeObserver` is disconnected when Svelte unmounts,
+and the original single warm WebView and safe center/corner relocation remain.
+
 FILE	docs/QA_VISUAL.md
 # Этап 0: Visual QA и проверка Nix-пакета
 
@@ -6434,6 +6524,22 @@ shared libraries. All three built-in overlays (Calendar, System Monitor,
 Launcher) share the same WebView; the launcher exclusively requests keyboard
 focus while active. The GTK widget view and native CSS have been retired.
 
+
+### Content-sized popup geometry
+
+Calendar, System Monitor and Launcher use **natural Svelte content height** rather
+than the old 620px fixed GTK window size. `observeOverlaySize` reads the
+active widget's root `getBoundingClientRect().height` and sends
+`size:<generation>:<height>` through the private, allowlisted WebKit bridge.
+Rust rejects stale generations and invalid sizes and clamps GTK's default
+height to **70% of the current output's logical height**. The native output
+height is passed to Svelte as an absolute CSS-pixel `maxHeight`: never use
+`70vh` here, because WebKit viewport height is itself controlled by GTK and
+can form a layout feedback loop. Under the cap the window hugs its content;
+over it, Calendar/Overview scroll vertically, while Launcher/Processes scroll
+their result lists. `ResizeObserver` is disconnected when Svelte unmounts,
+and the original single warm WebView and safe center/corner relocation remain.
+
 FILE	docs/VISUAL_REVIEW.md
 # Kira Desktop — visual design review
 
@@ -6921,14 +7027,27 @@ const chrome = process.env.CHROME_BIN || 'google-chrome';
 const dir = await mkdtemp(join(tmpdir(), 'kira-overlay-smoke-'));
 
 function scriptFor(steps) {
-  return '<script>window.addEventListener("load", () => {' +
+  return '<script>' +
+    'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
+      'if (String(message).startsWith("size:")) {' +
+        'document.documentElement.setAttribute("data-smoke-size", String(message));' +
+        'const count = Number(document.documentElement.getAttribute("data-smoke-resizes") || 0) + 1;' +
+        'document.documentElement.setAttribute("data-smoke-resizes", count);' +
+      '}' +
+    '}}}};' +
+    'window.addEventListener("load", () => {' +
     steps.map(({ delay, kind, generation }) =>
       'setTimeout(() => {' +
         (kind === 'hide'
           ? 'window.dispatchEvent(new CustomEvent("kira:overlay:hide", {detail: {generation: ' +
             generation + '}}));'
-          : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
-            kind + '", generation: ' + generation + '}}));') +
+          : kind === 'catalog'
+            ? 'window.dispatchEvent(new CustomEvent("kira:launcher:apps", {detail: {apps: Array.from({length: 80}, (_, id) => ({id, name: "Application " + id, description: "Test entry"}))}}));'
+            : kind === 'filter'
+              ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
+                'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
+                kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
     ).join('') +
     // Test the live DOM, not strings in the bundled Svelte templates.
@@ -6936,11 +7055,16 @@ function scriptFor(steps) {
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+      'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
+      'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
+      'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
+      'const list = document.querySelector("[role=listbox]");' +
+      'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
     '}, 1150);' +
     '});</script>';
 }
 
-async function smoke(name, steps, expected) {
+async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', scriptFor(steps) + '</head>');
@@ -6958,13 +7082,37 @@ async function smoke(name, steps, expected) {
     const found = output.match(/data-smoke-result="([^"]+)"/)?.[1] ?? 'no result';
     throw new Error(name + ': expected live Svelte ' + expected + ', found ' + found);
   }
-  console.log('OK: ' + name + ' mounted ' + expected);
+  const size = Number(output.match(/data-smoke-height="(\d+)"/)?.[1] ?? 0);
+  const nativeMessage = output.match(/data-smoke-size="size:(\d+):(\d+)"/);
+  const resizeCount = Number(output.match(/data-smoke-resizes="(\d+)"/)?.[1] ?? 0);
+  if (!nativeMessage || size <= 0 || size > 420 || Number(nativeMessage[2]) <= 0 ||
+      Number(nativeMessage[2]) > 420 || resizeCount > 12) {
+    throw new Error(name + ': popup size bridge/cap invalid (height=' +
+      size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
+  }
+  if (heightMode === 'scroll') {
+    if (size !== 420 || !output.includes('data-smoke-list-scroll="true"')) {
+      throw new Error(name + ': long launcher list should fill the cap and scroll internally');
+    }
+  } else if (heightMode === 'shrink' && size >= 420) {
+    throw new Error(name + ': filtered launcher should shrink below the cap');
+  }
+  console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
+  await smoke('launcher-long-list', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+  ], 'Kira Launcher', 'scroll');
+  await smoke('launcher-filter-shrinks-window', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+    { delay: 230, kind: 'filter' },
+  ], 'Kira Launcher', 'shrink');
   await smoke('switch-to-system', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 120, kind: 'hide', generation: 1 },
@@ -7565,7 +7713,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 
 <main
   data-kira-ui-root
-  class="flex h-full min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
+  class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
   <section class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
@@ -7724,7 +7872,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira Launcher"
-  class="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-kira-muted/30 bg-kira-bg text-kira-text">
+  class="flex h-auto min-h-0 w-full flex-col overflow-hidden rounded-lg border border-kira-muted/30 bg-kira-bg text-kira-text">
   <header class="shrink-0 px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0">
@@ -7909,7 +8057,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
-  class="flex h-full min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
+  class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header class="shrink-0 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div>
@@ -8292,9 +8440,40 @@ export function createLazyWidget<Instance>(
   return { show, hide };
 }
 
+FILE	frontend/src/lib/overlay-size.ts
+import { notifyOverlayHeight } from './sdk/core';
+
+/**
+ * Svelte's intrinsic root height, not the WebKit viewport, drives the GTK
+ * layer-shell surface. The CSS max-height is a native monitor-sized pixel
+ * cap, so resizing the viewport cannot make the measurement oscillate.
+ */
+export function observeOverlaySize(root: HTMLElement, generation: number): () => void {
+  let lastHeight = 0;
+  let stopped = false;
+  const measure = () => {
+    if (stopped || !root.isConnected) return;
+    const height = Math.ceil(root.getBoundingClientRect().height);
+    if (!Number.isSafeInteger(height) || height <= 0 || height > 20000 || height === lastHeight) return;
+    lastHeight = height;
+    notifyOverlayHeight(generation, height);
+  };
+
+  // The first size report is synchronous and precedes mounted:<generation>,
+  // allowing GTK to set window geometry before the double-rAF reveal.
+  measure();
+  const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+  observer?.observe(root);
+
+  return () => {
+    stopped = true;
+    observer?.disconnect();
+  };
+}
+
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -8313,6 +8492,21 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('reports only bounded positive widget heights scoped to the current generation', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(notifyOverlayHeight(3, 420)).toBe(true);
+    for (const generation of [0, -1, 1.5, Number.NaN, 4294967296]) {
+      expect(notifyOverlayHeight(generation, 210)).toBe(false);
+    }
+    for (const height of [0, -1, 1.5, 20001, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(notifyOverlayHeight(3, height)).toBe(false);
+    }
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual(['size:3:420']);
   });
 
   it('allows only generation-scoped indexed Gio launches, no path or shell command', () => {
@@ -8883,6 +9077,15 @@ function sendCalendarUi(command: string): boolean {
 /** The WebKit document is ready, but no widget has been mounted yet. */
 export function notifyCalendarHostReady(): void {
   sendCalendarUi('host-ready');
+}
+
+/** Report a measured, clamped Svelte widget root height. Native GTK
+ * validates the generation and enforces the real monitor's 70% limit.
+ */
+export function notifyOverlayHeight(generation: number, height: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      !Number.isSafeInteger(height) || height < 1 || height > 20000) return false;
+  return sendCalendarUi('size:' + generation + ':' + height);
 }
 
 /** A specific popup generation has finished its lazy Svelte mount. */
@@ -9567,6 +9770,7 @@ import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
+import { observeOverlaySize } from './lib/overlay-size';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
 
@@ -9599,6 +9803,7 @@ whenDocumentReady(document, () => {
         // Both components are prebundled, but neither owns DOM, timers or
         // subscriptions until its popup is explicitly requested.
         const kind = requestedKind;
+        let stopSizing: (() => void) | null = null;
         return {
           mount() {
             const instance = kind === 'calendar'
@@ -9620,9 +9825,16 @@ whenDocumentReady(document, () => {
             return instance;
           },
           unmount(instance: ReturnType<typeof mount>) {
+            stopSizing?.();
+            stopSizing = null;
             return unmount(instance);
           },
           onMounted(generation: number) {
+            const root = target.querySelector<HTMLElement>('main[data-kira-ui-root]');
+            if (!root) throw new Error('Overlay root missing when measuring size');
+            // Size must reach GTK before mounted, otherwise a 1px popup
+            // could become visible before the first actual resize.
+            stopSizing = observeOverlaySize(root, generation);
             report('Overlay Svelte ' + kind + ' mounted; generation=' + generation);
             notifyCalendarMounted(generation);
           },
@@ -9631,13 +9843,19 @@ whenDocumentReady(document, () => {
       (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
     window.addEventListener('kira:overlay:show', (event: Event) => {
-      const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
+      const detail = (event as CustomEvent<{ kind: string; generation: number; maxHeight: number }>).detail;
       if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||
           !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
-          detail.generation > 0xffffffff || detail.generation <= lastGeneration) {
+          detail.generation > 0xffffffff || detail.generation <= lastGeneration ||
+          !Number.isSafeInteger(detail.maxHeight) || detail.maxHeight < 1 ||
+          detail.maxHeight > 20000) {
         report('Overlay rejected invalid or stale show payload');
         return;
       }
+      // An output-sized limit in absolute CSS pixels prevents the layout
+      // from feeding WebKit's own changing viewport dimensions back into
+      // the popup height (which otherwise causes resize oscillation).
+      document.documentElement.style.setProperty('--kira-overlay-max-height', detail.maxHeight + 'px');
       lastGeneration = detail.generation;
       visibleGeneration = detail.generation;
       report('Overlay received show: ' + detail.kind + ' generation=' + detail.generation);
@@ -9703,6 +9921,24 @@ FILE	frontend/src/style.css
     width: 100%;
     height: 100%;
     overflow: hidden;
+  }
+
+  /* Top Bar stays full-height within its own WebKit surface.
+   * Overlay documents must have an intrinsic page height instead.
+   * Otherwise html/body/#app's 100% viewport height forces every
+   * popup to the previous window size regardless of Svelte content. */
+  html[data-kira-surface="calendar"],
+  html[data-kira-surface="calendar"] body,
+  html[data-kira-surface="calendar"] #app {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  html[data-kira-surface="calendar"] main[data-kira-ui-root] {
+    max-height: var(--kira-overlay-max-height, 560px);
+    /* Calendar/Overview use page scrolling; Launcher and Processes
+     * keep their own list scrollers inside a constrained flex column. */
   }
 
   /* Keep an explicit keyboard-visible outline even outside our components. */
@@ -10609,7 +10845,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn('set_namespace(Some("kira-overlay"))', RUST)
         self.assertIn("set_exclusive_zone(0)", RUST)
         self.assertIn("set_keyboard_mode(KeyboardMode::OnDemand)", RUST)
-        self.assertIn("native_ui::configure_webview_popup(&window, 420, 620)", RUST)
+        self.assertIn("native_ui::configure_webview_popup(&window, 420, 1)", RUST)
         self.assertIn("native_ui::POPUP_TOP_MARGIN", RUST)
         self.assertIn("restrict_webview_navigation(&view)", RUST)
         self.assertIn('register_script_message_handler("kiraCalendarUi", None)', RUST)
@@ -10725,7 +10961,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('aria-haspopup="dialog"', HEALTH)
         self.assertIn('set_exclusive_zone(0)', OVERLAY)
         self.assertIn('set_namespace(Some("kira-overlay"))', OVERLAY)
-        self.assertIn('configure_webview_popup(&window, 420, 620)', OVERLAY)
+        self.assertIn('configure_webview_popup(&window, 420, 1)', OVERLAY)
         self.assertIn("self.active.set(Some(kind))", OVERLAY)
         self.assertIn("state.show(Surface::System)", OVERLAY)
         self.assertIn("state.show(Surface::Calendar)", OVERLAY)
@@ -11201,18 +11437,57 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertEqual(CALENDAR.count("webkit6::WebView::builder()"), 1)
         self.assertNotIn("window.close()", CALENDAR)
 
+    def test_svelte_intrinsic_height_and_scroll_are_bound_to_native_cap(self):
+        style = (ROOT / "frontend/src/style.css").read_text()
+        entry = (ROOT / "frontend/src/main.ts").read_text()
+        sdk = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+        measure = (ROOT / "frontend/src/lib/overlay-size.ts").read_text()
+        components = [
+            (ROOT / "frontend/src/lib/components/" / name).read_text()
+            for name in ("CalendarWidget.svelte", "SystemWidget.svelte",
+                         "LauncherWidget.svelte")
+        ]
+        self.assertIn('html[data-kira-surface="calendar"] #app', style)
+        self.assertIn('max-height: var(--kira-overlay-max-height, 560px)', style)
+        self.assertIn('detail.maxHeight + \'px\'', entry)
+        self.assertIn('observeOverlaySize(root, generation)', entry)
+        self.assertIn('stopSizing?.()', entry)
+        self.assertIn('notifyCalendarMounted(generation)', entry)
+        self.assertLess(entry.index('observeOverlaySize(root, generation)'),
+                        entry.index('notifyCalendarMounted(generation)'))
+        self.assertIn('new ResizeObserver(measure)', measure)
+        self.assertIn('root.getBoundingClientRect().height', measure)
+        self.assertIn('observer?.disconnect()', measure)
+        self.assertIn("sendCalendarUi('size:' + generation + ':' + height)", sdk)
+        self.assertIn('Some(UiCommand::ContentHeight(generation, height))', CALENDAR)
+        self.assertIn('self.generation.get() == generation', CALENDAR)
+        self.assertIn('height.min(crate::native_ui::webview_popup_height_limit', CALENDAR)
+        self.assertIn('self.content_height.get() == 0', CALENDAR)
+        for source in components:
+            self.assertIn('flex h-auto min-h-0 w-full flex-col', source)
+            self.assertNotIn('flex h-full min-h-0 w-full flex-col', source)
+        self.assertIn('overflow-y-auto', components[0])
+        self.assertIn('overflow-y-auto', components[1])
+        self.assertIn('overflow-y-auto', components[2])
+
     def test_half_margin_and_monitor_relative_height(self):
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", HELPERS)
         self.assertIn("i64::from(output_height.max(1)) * 7 / 10", HELPERS)
         self.assertIn("monitor_at_surface(&surface)", HELPERS)
-        self.assertIn("connect_map(move |window|", HELPERS)
+        self.assertNotIn("connect_map(move |window|", HELPERS)
         self.assertIn("window.set_default_size(width, height)", HELPERS)
         self.assertNotIn("gtk::ScrolledWindow", HELPERS)
         self.assertNotIn("gtk::ScrolledWindow", MONITOR)
         self.assertNotIn("gtk::ApplicationWindow::new", MONITOR)
         self.assertIn("native_ui::configure_webview_popup", CALENDAR)
         self.assertIn("output_width.saturating_sub(24)", HELPERS)
-        self.assertIn("height = preferred_height.min(height_limit)", HELPERS)
+        self.assertIn("height = content_height.clamp(1, webview_popup_height_limit(window))", HELPERS)
+        self.assertIn("pub fn resize_webview_popup(", HELPERS)
+        self.assertIn("pub fn webview_popup_height_limit(", HELPERS)
+        self.assertIn("self.content_height.set(clamped)", CALENDAR)
+        self.assertIn("resize_webview_popup(&self.window, 420, clamped)", CALENDAR)
+        self.assertIn("maxHeight: {max_height}", CALENDAR)
+        self.assertIn('size:42:512', CALENDAR)
         for source in (CALENDAR,):
             self.assertNotIn("408, 600", source)
             self.assertNotIn("378, 490", source)
