@@ -31,6 +31,19 @@ Continuity, Temporal Memory, and Causal Consistency**. For each animation:
 Existing animations are reviewed against this contract **when touched**;
 do not claim an unreviewed legacy animation already complies.
 
+## Interactive optics (mandatory for WebKit click targets)
+
+All clickable controls in Calendar, System Monitor, Launcher and new WebKit
+widgets use the shared `tenetHoverLens` root action from
+`frontend/src/lib/tenet-hover-lens.ts`. Mouse/pen hover should visibly
+refract/lens and gently deform optical content, while leaving the
+actual clickable hitbox fixed. Pointer exit replays **the same recorded
+hover path backwards**, never a new randomized movement. Disabled buttons
+and touch input do not activate it; reduced motion and unmount clear all
+GSAP effects and CSS artifacts. Retain native focus-visible affordances
+and avoid transform competition with Calendar day/clock timelines.
+See `docs/TENET_MOTION.md#hover--pointer-optics--стандарт-активных-элементов`.
+
 ## Visual stack (mandatory)
 
 - **Apache ECharts** is the project's charting library for all new or redesigned
