@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3943
+index_bytes=3945
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	2d5bdd47bb280f5d474b45aaafe1f38af5c6337e
+C	d50115eb2986b1fcd57e716214b3ffa076de2827
 F	.cargo/config.toml	98	110	3
 F	.github/workflows/ci.yml	4355	115	112
 F	.github/workflows/nix.yml	1258	229	38
@@ -24,80 +24,80 @@ F	.github/workflows/publish-repospool.yml	3048	305	83
 F	.gitignore	178	390	11
 F	.repospoolignore	1028	403	47
 F	Cargo.toml	494	452	22
-F	README.md	10491	476	235
-F	Taskfile.yml	5957	713	185
-F	config/kira.kdl.example	358	900	8
-F	crates/kira-core/Cargo.toml	207	910	10
-F	crates/kira-core/src/config.rs	15217	922	399
-F	crates/kira-core/src/main.rs	26110	1323	675
-F	crates/kira-core/src/niri.rs	16767	2000	453
-F	crates/kira-ipc/Cargo.toml	170	2455	9
-F	crates/kira-ipc/src/client.rs	10376	2466	277
-F	crates/kira-ipc/src/lib.rs	9053	2745	302
-F	crates/kira-shell/Cargo.toml	297	3049	12
-F	crates/kira-shell/src/calendar.rs	38040	3063	1020
-F	crates/kira-shell/src/launcher.rs	14114	4085	392
-F	crates/kira-shell/src/main.rs	19285	4479	447
-F	crates/kira-shell/src/native_ui.rs	2857	4928	73
-F	crates/kira-shell/src/process_monitor.rs	6245	5003	202
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5207	116
-F	crates/kira-shell/src/system_metrics.rs	7010	5325	214
-F	crates/kira-shell/src/system_panel.rs	7948	5541	226
-F	docs/CONFIG.md	5801	5769	125
-F	docs/DESIGN_SYSTEM.md	15048	5896	276
-F	docs/DEVELOPMENT.md	27700	6174	547
-F	docs/QA_VISUAL.md	12284	6723	149
-F	docs/SPECIFICATION.md	28960	6874	421
-F	docs/UI_ARCHITECTURE.md	6737	7297	106
-F	docs/VISUAL_REVIEW.md	9754	7405	84
-F	flake.nix	3181	7491	91
-F	frontend/index.html	2737	7584	66
-F	frontend/package.json	650	7652	23
-F	frontend/scripts/inline-assets.mjs	4457	7677	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7782	106
-F	frontend/scripts/smoke-overlays.mjs	10812	7890	175
-F	frontend/src/App.svelte	8659	8067	200
-F	frontend/src/lib/bootstrap.test.ts	3408	8269	84
-F	frontend/src/lib/bootstrap.ts	2613	8355	70
-F	frontend/src/lib/calendar-model.test.ts	2097	8427	38
-F	frontend/src/lib/calendar-model.ts	3453	8467	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	8541	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	8720	176
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8898	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	8943	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	9134	61
-F	frontend/src/lib/launcher-model.test.ts	1370	9197	29
-F	frontend/src/lib/launcher-model.ts	778	9228	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	9248	89
-F	frontend/src/lib/lazy-widget.ts	1984	9339	63
-F	frontend/src/lib/overlay-size.ts	1090	9404	29
-F	frontend/src/lib/sdk/core.test.ts	20006	9435	403
-F	frontend/src/lib/sdk/core.ts	15992	9840	432
-F	frontend/src/lib/system-health.test.ts	2348	10274	41
-F	frontend/src/lib/system-health.ts	2831	10317	60
-F	frontend/src/lib/system-model.test.ts	2988	10379	57
-F	frontend/src/lib/system-model.ts	3411	10438	76
-F	frontend/src/lib/themes/kira-default.css	1687	10516	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	10570	101
-F	frontend/src/lib/themes/kira-default.ts	777	10673	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	10697	79
-F	frontend/src/lib/time.test.ts	263	10778	8
-F	frontend/src/lib/time.ts	320	10788	9
-F	frontend/src/main.ts	5907	10799	127
-F	frontend/src/style.css	2993	10928	91
-F	frontend/tsconfig.json	403	11021	16
-F	frontend/vite.config.ts	224	11039	8
-F	nix/package.nix	3132	11049	117
-F	scripts/dev_preview.py	18147	11168	403	x
-F	scripts/qa_visual.py	12052	11573	299
-F	tests/test_calendar_design.py	6835	11874	121
-F	tests/test_detailed_health.py	5195	11997	101
-F	tests/test_dev_preview.py	9339	12100	219
-F	tests/test_launcher_design.py	9956	12321	182
-F	tests/test_native_theme.py	1567	12505	36
-F	tests/test_popup_geometry.py	6956	12543	118
-F	tests/test_qa_visual.py	10549	12663	217
-F	tests/test_ui_bootstrap_contract.py	1103	12882	29
+F	README.md	11192	476	247
+F	Taskfile.yml	5957	725	185
+F	config/kira.kdl.example	358	912	8
+F	crates/kira-core/Cargo.toml	207	922	10
+F	crates/kira-core/src/config.rs	15217	934	399
+F	crates/kira-core/src/main.rs	32080	1335	839
+F	crates/kira-core/src/niri.rs	16767	2176	453
+F	crates/kira-ipc/Cargo.toml	170	2631	9
+F	crates/kira-ipc/src/client.rs	17794	2642	458
+F	crates/kira-ipc/src/lib.rs	10460	3102	336
+F	crates/kira-shell/Cargo.toml	297	3440	12
+F	crates/kira-shell/src/calendar.rs	38040	3454	1020
+F	crates/kira-shell/src/launcher.rs	14114	4476	392
+F	crates/kira-shell/src/main.rs	19285	4870	447
+F	crates/kira-shell/src/native_ui.rs	2857	5319	73
+F	crates/kira-shell/src/process_monitor.rs	6245	5394	202
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5598	116
+F	crates/kira-shell/src/system_metrics.rs	7010	5716	214
+F	crates/kira-shell/src/system_panel.rs	7948	5932	226
+F	docs/CONFIG.md	5801	6160	125
+F	docs/DESIGN_SYSTEM.md	15048	6287	276
+F	docs/DEVELOPMENT.md	27700	6565	547
+F	docs/QA_VISUAL.md	12284	7114	149
+F	docs/SPECIFICATION.md	28960	7265	421
+F	docs/UI_ARCHITECTURE.md	6737	7688	106
+F	docs/VISUAL_REVIEW.md	9754	7796	84
+F	flake.nix	3181	7882	91
+F	frontend/index.html	2737	7975	66
+F	frontend/package.json	650	8043	23
+F	frontend/scripts/inline-assets.mjs	4457	8068	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8173	106
+F	frontend/scripts/smoke-overlays.mjs	10812	8281	175
+F	frontend/src/App.svelte	8659	8458	200
+F	frontend/src/lib/bootstrap.test.ts	3408	8660	84
+F	frontend/src/lib/bootstrap.ts	2613	8746	70
+F	frontend/src/lib/calendar-model.test.ts	2097	8818	38
+F	frontend/src/lib/calendar-model.ts	3453	8858	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	8932	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	9111	176
+F	frontend/src/lib/components/SystemHealth.svelte	1684	9289	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	9334	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	9525	61
+F	frontend/src/lib/launcher-model.test.ts	1370	9588	29
+F	frontend/src/lib/launcher-model.ts	778	9619	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	9639	89
+F	frontend/src/lib/lazy-widget.ts	1984	9730	63
+F	frontend/src/lib/overlay-size.ts	1090	9795	29
+F	frontend/src/lib/sdk/core.test.ts	20006	9826	403
+F	frontend/src/lib/sdk/core.ts	15992	10231	432
+F	frontend/src/lib/system-health.test.ts	2348	10665	41
+F	frontend/src/lib/system-health.ts	2831	10708	60
+F	frontend/src/lib/system-model.test.ts	2988	10770	57
+F	frontend/src/lib/system-model.ts	3411	10829	76
+F	frontend/src/lib/themes/kira-default.css	1687	10907	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	10961	101
+F	frontend/src/lib/themes/kira-default.ts	777	11064	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	11088	79
+F	frontend/src/lib/time.test.ts	263	11169	8
+F	frontend/src/lib/time.ts	320	11179	9
+F	frontend/src/main.ts	5907	11190	127
+F	frontend/src/style.css	2993	11319	91
+F	frontend/tsconfig.json	403	11412	16
+F	frontend/vite.config.ts	224	11430	8
+F	nix/package.nix	3132	11440	117
+F	scripts/dev_preview.py	18147	11559	403	x
+F	scripts/qa_visual.py	12052	11964	299
+F	tests/test_calendar_design.py	6835	12265	121
+F	tests/test_detailed_health.py	5195	12388	101
+F	tests/test_dev_preview.py	9339	12491	219
+F	tests/test_launcher_design.py	9956	12712	182
+F	tests/test_native_theme.py	1567	12896	36
+F	tests/test_popup_geometry.py	6956	12934	118
+F	tests/test_qa_visual.py	10549	13054	217
+F	tests/test_ui_bootstrap_contract.py	1103	13273	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -605,6 +605,18 @@ on its separate nightly/manual workflow.
 To **enforce** the native job on protected branches, require the status check
 `Native Shell check` in the repository's branch protection/ruleset, alongside
 `Core + Svelte checks`.
+
+## IPC subscription liveness
+
+Core pushes workspace and validated KDL config updates immediately when they change.
+If nothing changes, it sends a read-only JSON-RPC heartbeat every **5 seconds**
+on each subscription using the same request id and the distinct
+`{"heartbeat":true}` result. Heartbeats do **not** repeat workspace/config
+snapshots or generate browser events. Shell's blocking IPC workers use a
+**15-second socket read timeout**: a connected but unresponsive Core causes
+the existing reconnect loop to run, mark workspaces offline, and retry. The
+last valid config is retained while reconnecting. The heartbeat is internal
+to the Core/Shell protocol, not part of the WebKit JS allowlist.
 
 ## Incremental and release build caching
 
@@ -1494,40 +1506,117 @@ async fn read_bounded_line<R: AsyncBufRead + Unpin>(
     }
 }
 
-/// Keep a single read-only JSON-RPC connection open and send the latest
-/// workspace state whenever Core's Niri watch channel changes. Every frame
-/// uses the original subscription request id and is newline-delimited.
-async fn stream_workspaces(
+/// Serialize each subscription frame with the original JSON-RPC id.
+async fn send_subscription_frame(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    frame: RpcResponse,
+) -> io::Result<()> {
+    writer.write_all(&serde_json::to_vec(&frame)?).await?;
+    writer.write_all(b"\n").await
+}
+
+/// Keep subscriptions healthy when Niri has no new events. A heartbeat is a
+/// distinct frame, never a repeated workspace state or a JS-visible event.
+async fn stream_workspaces_with_heartbeat(
     writer: &mut tokio::net::unix::OwnedWriteHalf,
     mut workspaces: watch::Receiver<WorkspaceState>,
     id: u64,
+    heartbeat_every: std::time::Duration,
 ) -> io::Result<()> {
+    let snapshot = workspaces.borrow_and_update().clone();
+    send_subscription_frame(
+        writer,
+        RpcResponse::success(id, serde_json::to_value(snapshot)?),
+    )
+    .await?;
+    let mut heartbeat = tokio::time::interval_at(
+        tokio::time::Instant::now() + heartbeat_every,
+        heartbeat_every,
+    );
+    heartbeat.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
     loop {
-        let snapshot = workspaces.borrow_and_update().clone();
-        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
-        writer.write_all(&serde_json::to_vec(&response)?).await?;
-        writer.write_all(b"\n").await?;
-        if workspaces.changed().await.is_err() {
-            return Ok(());
+        tokio::select! {
+            changed = workspaces.changed() => {
+                if changed.is_err() {
+                    return Ok(());
+                }
+                let snapshot = workspaces.borrow_and_update().clone();
+                send_subscription_frame(
+                    writer,
+                    RpcResponse::success(id, serde_json::to_value(snapshot)?),
+                ).await?;
+            }
+            _ = heartbeat.tick() => {
+                send_subscription_frame(writer, RpcResponse::heartbeat(id)).await?;
+            }
         }
     }
 }
 
-/// Internal read-only Core stream for active validated UI settings.
-async fn stream_config(
+async fn stream_workspaces(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    workspaces: watch::Receiver<WorkspaceState>,
+    id: u64,
+) -> io::Result<()> {
+    stream_workspaces_with_heartbeat(
+        writer,
+        workspaces,
+        id,
+        kira_ipc::SUBSCRIPTION_HEARTBEAT_INTERVAL,
+    )
+    .await
+}
+
+/// Internal config stream also sends heartbeats without changing its last
+/// known good settings. No KDL validation or disk IO occurs on heartbeats.
+async fn stream_config_with_heartbeat(
     writer: &mut tokio::net::unix::OwnedWriteHalf,
     mut config: watch::Receiver<ConfigState>,
     id: u64,
+    heartbeat_every: std::time::Duration,
 ) -> io::Result<()> {
+    let snapshot = config.borrow_and_update().clone();
+    send_subscription_frame(
+        writer,
+        RpcResponse::success(id, serde_json::to_value(snapshot)?),
+    )
+    .await?;
+    let mut heartbeat = tokio::time::interval_at(
+        tokio::time::Instant::now() + heartbeat_every,
+        heartbeat_every,
+    );
+    heartbeat.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
     loop {
-        let snapshot = config.borrow_and_update().clone();
-        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
-        writer.write_all(&serde_json::to_vec(&response)?).await?;
-        writer.write_all(b"\n").await?;
-        if config.changed().await.is_err() {
-            return Ok(());
+        tokio::select! {
+            changed = config.changed() => {
+                if changed.is_err() {
+                    return Ok(());
+                }
+                let snapshot = config.borrow_and_update().clone();
+                send_subscription_frame(
+                    writer,
+                    RpcResponse::success(id, serde_json::to_value(snapshot)?),
+                ).await?;
+            }
+            _ = heartbeat.tick() => {
+                send_subscription_frame(writer, RpcResponse::heartbeat(id)).await?;
+            }
         }
     }
+}
+
+async fn stream_config(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    config: watch::Receiver<ConfigState>,
+    id: u64,
+) -> io::Result<()> {
+    stream_config_with_heartbeat(
+        writer,
+        config,
+        id,
+        kira_ipc::SUBSCRIPTION_HEARTBEAT_INTERVAL,
+    )
+    .await
 }
 
 async fn serve(
@@ -1670,6 +1759,93 @@ async fn main() -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn quiet_workspace_stream_emits_heartbeat_without_replaying_state() {
+        use tokio::io::AsyncBufReadExt;
+        let directory = std::env::temp_dir().join(format!(
+            "kira-heartbeat-ws-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("ipc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_tx, rx) = watch::channel(WorkspaceState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let (_, mut writer) = stream.into_split();
+            stream_workspaces_with_heartbeat(
+                &mut writer,
+                rx,
+                91,
+                std::time::Duration::from_millis(30),
+            )
+            .await
+            .unwrap();
+        });
+        let stream = UnixStream::connect(&path).await.unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut first = String::new();
+        let mut heartbeat = String::new();
+        tokio::time::timeout(std::time::Duration::from_secs(1), async {
+            reader.read_line(&mut first).await.unwrap();
+            reader.read_line(&mut heartbeat).await.unwrap();
+        })
+        .await
+        .unwrap();
+        let snapshot: RpcResponse = serde_json::from_str(&first).unwrap();
+        assert_eq!(snapshot.id, Some(91));
+        assert_eq!(snapshot.result.unwrap()["connected"], false);
+        let beat: RpcResponse = serde_json::from_str(&heartbeat).unwrap();
+        assert_eq!(beat.id, Some(91));
+        assert!(kira_ipc::is_subscription_heartbeat(
+            beat.result.as_ref().unwrap()
+        ));
+        server.abort();
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[tokio::test]
+    async fn quiet_config_stream_emits_heartbeat_without_config_change() {
+        use tokio::io::AsyncBufReadExt;
+        let directory = std::env::temp_dir().join(format!(
+            "kira-heartbeat-config-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("ipc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_tx, rx) = watch::channel(ConfigState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let (_, mut writer) = stream.into_split();
+            stream_config_with_heartbeat(&mut writer, rx, 92, std::time::Duration::from_millis(30))
+                .await
+                .unwrap();
+        });
+        let stream = UnixStream::connect(&path).await.unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut first = String::new();
+        let mut heartbeat = String::new();
+        tokio::time::timeout(std::time::Duration::from_secs(1), async {
+            reader.read_line(&mut first).await.unwrap();
+            reader.read_line(&mut heartbeat).await.unwrap();
+        })
+        .await
+        .unwrap();
+        let snapshot: RpcResponse = serde_json::from_str(&first).unwrap();
+        assert_eq!(snapshot.id, Some(92));
+        assert_eq!(snapshot.result.unwrap()["config"]["compact"], false);
+        let beat: RpcResponse = serde_json::from_str(&heartbeat).unwrap();
+        assert_eq!(beat.id, Some(92));
+        assert!(kira_ipc::is_subscription_heartbeat(
+            beat.result.as_ref().unwrap()
+        ));
+        server.abort();
+        fs::remove_dir_all(directory).unwrap();
+    }
 
     #[tokio::test]
     async fn bounded_reader_preserves_consecutive_messages() {
@@ -2515,9 +2691,21 @@ pub fn call(socket: &Path, request: &RpcRequest) -> io::Result<RpcResponse> {
 /// Returns on disconnect so the caller can reconnect and mark the UI offline.
 pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
     socket: &Path,
+    on_state: F,
+) -> io::Result<()> {
+    subscribe_workspaces_with_timeout(socket, on_state, crate::SUBSCRIPTION_READ_TIMEOUT)
+}
+
+fn subscribe_workspaces_with_timeout<F: FnMut(crate::WorkspaceState)>(
+    socket: &Path,
     mut on_state: F,
+    read_timeout: Duration,
 ) -> io::Result<()> {
     let mut stream = UnixStream::connect(socket)?;
+    // Core heartbeats keep genuinely idle subscriptions alive. If Core hangs
+    // while keeping its socket open, the timeout returns control to Shell,
+    // whose existing reconnect loop clears the stale workspace snapshot.
+    stream.set_read_timeout(Some(read_timeout))?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
     let request = RpcRequest {
         params: None,
@@ -2559,6 +2747,9 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
         let state = reply.result.ok_or_else(|| {
             io::Error::new(io::ErrorKind::InvalidData, "Workspace result missing")
         })?;
+        if crate::is_subscription_heartbeat(&state) {
+            continue; // Liveness is not a new workspace snapshot.
+        }
         let state: crate::WorkspaceState = serde_json::from_value(state)?;
         on_state(state);
     }
@@ -2569,9 +2760,18 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
 /// reconnect. No JS command or filesystem write is exposed.
 pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
     socket: &Path,
+    on_state: F,
+) -> io::Result<()> {
+    subscribe_config_with_timeout(socket, on_state, crate::SUBSCRIPTION_READ_TIMEOUT)
+}
+
+fn subscribe_config_with_timeout<F: FnMut(crate::ConfigState)>(
+    socket: &Path,
     mut on_state: F,
+    read_timeout: Duration,
 ) -> io::Result<()> {
     let mut stream = UnixStream::connect(socket)?;
+    stream.set_read_timeout(Some(read_timeout))?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
     let request = RpcRequest {
         params: None,
@@ -2613,6 +2813,9 @@ pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
         let value = reply
             .result
             .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Config result missing"))?;
+        if crate::is_subscription_heartbeat(&value) {
+            continue; // Keep the last known good config unchanged.
+        }
         on_state(serde_json::from_value(value)?);
     }
 }
@@ -2727,6 +2930,160 @@ mod tests {
     }
 
     #[test]
+    fn workspace_heartbeats_do_not_emit_duplicate_snapshots() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-heartbeat-ws-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            assert!(request.contains("subscribe_workspaces"));
+            let mut stream = reader.into_inner();
+            for frame in [
+                crate::RpcResponse::success(
+                    0,
+                    serde_json::json!({"connected": false, "workspaces": []}),
+                ),
+                crate::RpcResponse::heartbeat(0),
+                crate::RpcResponse::heartbeat(0),
+                crate::RpcResponse::success(
+                    0,
+                    serde_json::json!({"connected": true, "workspaces": []}),
+                ),
+            ] {
+                serde_json::to_writer(&mut stream, &frame).unwrap();
+                stream.write_all(b"\n").unwrap();
+            }
+        });
+        let mut observed = Vec::new();
+        assert!(subscribe_workspaces(&path, |state| observed.push(state.connected)).is_err());
+        assert_eq!(observed, vec![false, true]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn config_heartbeats_preserve_last_valid_settings() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-heartbeat-config-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            assert!(request.contains("subscribe_config"));
+            let mut stream = reader.into_inner();
+            let state = crate::ConfigState::default();
+            for frame in [
+                crate::RpcResponse::success(0, serde_json::to_value(&state).unwrap()),
+                crate::RpcResponse::heartbeat(0),
+                crate::RpcResponse::heartbeat(0),
+            ] {
+                serde_json::to_writer(&mut stream, &frame).unwrap();
+                stream.write_all(b"\n").unwrap();
+            }
+        });
+        let mut observed = Vec::new();
+        assert!(subscribe_config(&path, |state| observed.push(state)).is_err());
+        assert_eq!(observed, vec![crate::ConfigState::default()]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn silent_but_open_workspace_socket_times_out() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-silent-ws-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            let mut stream = reader.into_inner();
+            let frame = crate::RpcResponse::success(
+                0,
+                serde_json::json!({"connected": true, "workspaces": []}),
+            );
+            serde_json::to_writer(&mut stream, &frame).unwrap();
+            stream.write_all(b"\n").unwrap();
+            thread::sleep(Duration::from_millis(500)); // TCP/Unix connection stays open.
+        });
+        let mut observed = Vec::new();
+        let error = subscribe_workspaces_with_timeout(
+            &path,
+            |state| observed.push(state.connected),
+            Duration::from_millis(150),
+        )
+        .unwrap_err();
+        assert!(matches!(
+            error.kind(),
+            io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut
+        ));
+        assert_eq!(observed, vec![true]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn silent_but_open_config_socket_times_out() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-silent-config-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            let mut stream = reader.into_inner();
+            let frame = crate::RpcResponse::success(
+                0,
+                serde_json::to_value(crate::ConfigState::default()).unwrap(),
+            );
+            serde_json::to_writer(&mut stream, &frame).unwrap();
+            stream.write_all(b"\n").unwrap();
+            thread::sleep(Duration::from_millis(500));
+        });
+        let mut observed = Vec::new();
+        let error = subscribe_config_with_timeout(
+            &path,
+            |state| observed.push(state),
+            Duration::from_millis(150),
+        )
+        .unwrap_err();
+        assert!(matches!(
+            error.kind(),
+            io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut
+        ));
+        assert_eq!(observed, vec![crate::ConfigState::default()]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
     fn missing_socket_returns_error() {
         let response = call(
             Path::new("/nonexistent/kira-desktop.sock"),
@@ -2747,10 +3104,23 @@ FILE	crates/kira-ipc/src/lib.rs
 
 pub mod client;
 
+use std::time::Duration;
+
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 pub const PROTOCOL_VERSION: &str = "2.0";
+
+/// Read-only subscription streams send a heartbeat even when Niri and KDL
+/// have not changed. Clients reconnect after three missed heartbeat periods.
+pub const SUBSCRIPTION_HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
+pub const SUBSCRIPTION_READ_TIMEOUT: Duration = Duration::from_secs(15);
+
+/// Heartbeats share the subscription's JSON-RPC id but never represent state.
+/// Match the *entire* shape so malformed results cannot silently mask errors.
+pub fn is_subscription_heartbeat(value: &Value) -> bool {
+    value == &json!({"heartbeat": true})
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RpcRequest {
@@ -2826,6 +3196,10 @@ pub struct ConfigState {
 }
 
 impl RpcResponse {
+    pub fn heartbeat(id: u64) -> Self {
+        Self::success(id, json!({"heartbeat": true}))
+    }
+
     pub fn success(id: u64, value: Value) -> Self {
         Self {
             jsonrpc: PROTOCOL_VERSION.into(),
@@ -2880,6 +3254,23 @@ pub fn dispatch_with_state(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn heartbeat_cannot_be_mistaken_for_workspace_or_config_state() {
+        let frame = RpcResponse::heartbeat(73);
+        assert_eq!(frame.id, Some(73));
+        assert_eq!(frame.jsonrpc, PROTOCOL_VERSION);
+        assert!(frame.error.is_none());
+        assert!(is_subscription_heartbeat(frame.result.as_ref().unwrap()));
+        assert!(!is_subscription_heartbeat(&json!({"heartbeat": false})));
+        assert!(!is_subscription_heartbeat(
+            &json!({"heartbeat": true, "connected": true})
+        ));
+        assert!(!is_subscription_heartbeat(
+            &json!(WorkspaceState::default())
+        ));
+        assert!(!is_subscription_heartbeat(&json!(ConfigState::default())));
+    }
 
     #[test]
     fn ping_round_trip() {
