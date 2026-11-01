@@ -162,8 +162,12 @@ mod tests {
         assert!(frame.error.is_none());
         assert!(is_subscription_heartbeat(frame.result.as_ref().unwrap()));
         assert!(!is_subscription_heartbeat(&json!({"heartbeat": false})));
-        assert!(!is_subscription_heartbeat(&json!({"heartbeat": true, "connected": true})));
-        assert!(!is_subscription_heartbeat(&json!(WorkspaceState::default())));
+        assert!(!is_subscription_heartbeat(
+            &json!({"heartbeat": true, "connected": true})
+        ));
+        assert!(!is_subscription_heartbeat(
+            &json!(WorkspaceState::default())
+        ));
         assert!(!is_subscription_heartbeat(&json!(ConfigState::default())));
     }
 
