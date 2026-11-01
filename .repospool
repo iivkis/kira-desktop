@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3871
+index_bytes=3872
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	54f8c96e5515be013cf0a9e0fd9b69666c1d4f86
+C	6ed022bcd8a65283fb0e94ca8f48bccd84bddc26
 F	.cargo/config.toml	98	109	3
 F	.github/workflows/ci.yml	1467	114	46
 F	.github/workflows/nix.yml	1258	162	38
@@ -36,67 +36,67 @@ F	crates/kira-ipc/src/client.rs	10376	2188	277
 F	crates/kira-ipc/src/lib.rs	9053	2467	302
 F	crates/kira-shell/Cargo.toml	297	2771	12
 F	crates/kira-shell/src/calendar.rs	35633	2785	966
-F	crates/kira-shell/src/launcher.rs	6220	3753	185
-F	crates/kira-shell/src/main.rs	17601	3940	414
-F	crates/kira-shell/src/native_ui.rs	2857	4356	73
-F	crates/kira-shell/src/process_monitor.rs	6245	4431	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4635	214
-F	crates/kira-shell/src/system_panel.rs	7948	4851	226
-F	docs/CONFIG.md	5801	5079	125
-F	docs/DESIGN_SYSTEM.md	15048	5206	276
-F	docs/DEVELOPMENT.md	26972	5484	537
-F	docs/QA_VISUAL.md	12284	6023	149
-F	docs/SPECIFICATION.md	28960	6174	421
-F	docs/UI_ARCHITECTURE.md	6737	6597	106
-F	docs/VISUAL_REVIEW.md	9754	6705	84
-F	flake.nix	2651	6791	76
-F	frontend/index.html	2737	6869	66
-F	frontend/package.json	650	6937	23
-F	frontend/scripts/inline-assets.mjs	4457	6962	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7067	106
-F	frontend/scripts/smoke-overlays.mjs	8443	7175	151
-F	frontend/src/App.svelte	8659	7328	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7530	84
-F	frontend/src/lib/bootstrap.ts	2613	7616	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7688	38
-F	frontend/src/lib/calendar-model.ts	3453	7728	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7802	177
-F	frontend/src/lib/components/LauncherWidget.svelte	7671	7981	167
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8150	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	8195	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8386	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8449	29
-F	frontend/src/lib/launcher-model.ts	778	8480	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8500	89
-F	frontend/src/lib/lazy-widget.ts	1984	8591	63
-F	frontend/src/lib/overlay-size.ts	1090	8656	29
-F	frontend/src/lib/sdk/core.test.ts	20006	8687	403
-F	frontend/src/lib/sdk/core.ts	15992	9092	432
-F	frontend/src/lib/system-health.test.ts	2348	9526	41
-F	frontend/src/lib/system-health.ts	2831	9569	60
-F	frontend/src/lib/system-model.test.ts	2988	9631	57
-F	frontend/src/lib/system-model.ts	3411	9690	76
-F	frontend/src/lib/themes/kira-default.css	1687	9768	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9822	101
-F	frontend/src/lib/themes/kira-default.ts	777	9925	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9949	79
-F	frontend/src/lib/time.test.ts	263	10030	8
-F	frontend/src/lib/time.ts	320	10040	9
-F	frontend/src/main.ts	5907	10051	127
-F	frontend/src/style.css	2051	10180	62
-F	frontend/tsconfig.json	403	10244	16
-F	frontend/vite.config.ts	224	10262	8
-F	nix/package.nix	3132	10272	117
-F	scripts/dev_preview.py	18147	10391	403	x
-F	scripts/qa_visual.py	12052	10796	299
-F	tests/test_calendar_design.py	6835	11097	121
-F	tests/test_detailed_health.py	5195	11220	101
-F	tests/test_dev_preview.py	9339	11323	219
-F	tests/test_launcher_design.py	6054	11544	115
-F	tests/test_native_theme.py	1567	11661	36
-F	tests/test_popup_geometry.py	6956	11699	118
-F	tests/test_qa_visual.py	10549	11819	217
-F	tests/test_ui_bootstrap_contract.py	1103	12038	29
+F	crates/kira-shell/src/launcher.rs	7606	3753	223
+F	crates/kira-shell/src/main.rs	17601	3978	414
+F	crates/kira-shell/src/native_ui.rs	2857	4394	73
+F	crates/kira-shell/src/process_monitor.rs	6245	4469	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4673	214
+F	crates/kira-shell/src/system_panel.rs	7948	4889	226
+F	docs/CONFIG.md	5801	5117	125
+F	docs/DESIGN_SYSTEM.md	15048	5244	276
+F	docs/DEVELOPMENT.md	27412	5522	543
+F	docs/QA_VISUAL.md	12284	6067	149
+F	docs/SPECIFICATION.md	28960	6218	421
+F	docs/UI_ARCHITECTURE.md	6737	6641	106
+F	docs/VISUAL_REVIEW.md	9754	6749	84
+F	flake.nix	2651	6835	76
+F	frontend/index.html	2737	6913	66
+F	frontend/package.json	650	6981	23
+F	frontend/scripts/inline-assets.mjs	4457	7006	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7111	106
+F	frontend/scripts/smoke-overlays.mjs	9478	7219	162
+F	frontend/src/App.svelte	8659	7383	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7585	84
+F	frontend/src/lib/bootstrap.ts	2613	7671	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7743	38
+F	frontend/src/lib/calendar-model.ts	3453	7783	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7857	177
+F	frontend/src/lib/components/LauncherWidget.svelte	7752	8036	167
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8205	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	8250	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8441	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8504	29
+F	frontend/src/lib/launcher-model.ts	778	8535	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8555	89
+F	frontend/src/lib/lazy-widget.ts	1984	8646	63
+F	frontend/src/lib/overlay-size.ts	1090	8711	29
+F	frontend/src/lib/sdk/core.test.ts	20006	8742	403
+F	frontend/src/lib/sdk/core.ts	15992	9147	432
+F	frontend/src/lib/system-health.test.ts	2348	9581	41
+F	frontend/src/lib/system-health.ts	2831	9624	60
+F	frontend/src/lib/system-model.test.ts	2988	9686	57
+F	frontend/src/lib/system-model.ts	3411	9745	76
+F	frontend/src/lib/themes/kira-default.css	1687	9823	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9877	101
+F	frontend/src/lib/themes/kira-default.ts	777	9980	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	10004	79
+F	frontend/src/lib/time.test.ts	263	10085	8
+F	frontend/src/lib/time.ts	320	10095	9
+F	frontend/src/main.ts	5907	10106	127
+F	frontend/src/style.css	2445	10235	76
+F	frontend/tsconfig.json	403	10313	16
+F	frontend/vite.config.ts	224	10331	8
+F	nix/package.nix	3132	10341	117
+F	scripts/dev_preview.py	18147	10460	403	x
+F	scripts/qa_visual.py	12052	10865	299
+F	tests/test_calendar_design.py	6835	11166	121
+F	tests/test_detailed_health.py	5195	11289	101
+F	tests/test_dev_preview.py	9339	11392	219
+F	tests/test_launcher_design.py	7638	11613	142
+F	tests/test_native_theme.py	1567	11757	36
+F	tests/test_popup_geometry.py	6956	11795	118
+F	tests/test_qa_visual.py	10549	11915	217
+F	tests/test_ui_bootstrap_contract.py	1103	12134	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3761,17 +3761,10 @@ use gtk::gio::prelude::*;
 const MAX_ICON_BYTES: usize = 128 * 1024;
 const ICON_BATCH_LIMIT: usize = 16;
 
-/// Browser images receive only bounded data URIs from the GTK icon theme,
-/// never local paths, arbitrary file URLs or executable commands.
-fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
-    let paintable = theme.lookup_by_gicon(
-        icon,
-        40,
-        1,
-        gtk::TextDirection::None,
-        gtk::IconLookupFlags::empty(),
-    );
-    let file = paintable.file()?;
+/// Browser images receive only bounded data URIs, never local paths,
+/// arbitrary file URLs or executable commands. This also handles desktop
+/// entries with an absolute Icon=/path/to/icon.png (Gio FileIcon).
+fn file_data_url(file: &gio::File) -> Option<String> {
     if !file.is_native() {
         return None;
     }
@@ -3820,6 +3813,48 @@ fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
         "data:{mime};base64,{}",
         gtk::glib::base64_encode(content)
     ))
+}
+
+fn icon_data_url(icon: &gio::Icon, theme: &gtk::IconTheme) -> Option<String> {
+    // FileIcon is common for user-installed .desktop apps (including Nix
+    // profiles). Ask GIO for its exact local file before attempting the theme
+    // lookup, which may otherwise resolve to a generic missing-icon image.
+    if let Some(file_icon) = icon.downcast_ref::<gio::FileIcon>()
+        && let Some(image) = file_data_url(&file_icon.file())
+    {
+        return Some(image);
+    }
+    theme
+        .lookup_by_gicon(
+            icon,
+            40,
+            1,
+            gtk::TextDirection::None,
+            gtk::IconLookupFlags::empty(),
+        )
+        .file()
+        .and_then(|file| file_data_url(&file))
+}
+
+/// Use an actual system-theme generic application icon when a desktop
+/// entry has no icon or its configured icon is missing. A branded icon
+/// cannot be reconstructed from a nonexistent theme asset.
+fn generic_icon_data_url(theme: &gtk::IconTheme) -> Option<String> {
+    const NAME: &str = "application-x-executable";
+    if !theme.has_icon(NAME) {
+        return None;
+    }
+    theme
+        .lookup_icon(
+            NAME,
+            &[],
+            40,
+            1,
+            gtk::TextDirection::None,
+            gtk::IconLookupFlags::empty(),
+        )
+        .file()
+        .and_then(|file| file_data_url(&file))
 }
 
 /// Only an index into this server-side snapshot is accepted from Svelte.
@@ -3879,6 +3914,7 @@ impl Catalog {
     pub fn icons_json(&self, ids: &[usize]) -> serde_json::Value {
         let theme =
             gtk::gdk::Display::default().map(|display| gtk::IconTheme::for_display(&display));
+        let generic = theme.as_ref().and_then(generic_icon_data_url);
         let icons: Vec<_> = ids
             .iter()
             .take(ICON_BATCH_LIMIT)
@@ -3889,11 +3925,13 @@ impl Catalog {
                     cache
                         .entry(*id)
                         .or_insert_with(|| {
-                            info.icon().and_then(|gicon| {
-                                theme
-                                    .as_ref()
-                                    .and_then(|theme| icon_data_url(&gicon, theme))
-                            })
+                            info.icon()
+                                .and_then(|gicon| {
+                                    theme
+                                        .as_ref()
+                                        .and_then(|theme| icon_data_url(&gicon, theme))
+                                })
+                                .or_else(|| generic.clone())
                         })
                         .clone()
                 };
@@ -5583,9 +5621,15 @@ Launcher now resolves the system's themed GIO icons through GTK IconTheme
 only for the currently rendered rows. The Rust bridge accepts up to 16 app
 indices per request, caps individual icon files at 128 KiB, checks image
 signatures, and returns image-only data URIs (no paths/URLs). Svelte caches
-images only during the visible launcher's lifetime and uses an initial-letter
-fallback for unavailable icons. Its outer WebKit surface is square with no
-decorative border or shadow.
+images only during the visible launcher's lifetime. The icon adapter
+first reads any local GIO FileIcon from the desktop entry, then uses GTK
+IconTheme, and finally tries the theme's generic
+`application-x-executable` icon if an app-specific asset is missing.
+The first letter is the final fallback when the theme provides no readable
+image. The 36px icon slot is uniform, with a 32px image contained inside.
+The launcher list uses hidden scrollbars in WebKit but retains scroll
+functionality, and selected rows no longer have rounded right corners.
+Its outer WebKit surface is square with no decorative border or shadow.
 No generic command execution is exposed.
 
 When adding npm dependencies, commit the updated
@@ -7229,6 +7273,13 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
+      'document.documentElement.setAttribute("data-smoke-scrollbar-hidden", !!list && getComputedStyle(list).scrollbarWidth === "none");' +
+      'if (list && list.scrollHeight > list.clientHeight) list.scrollTop = 80;' +
+      'document.documentElement.setAttribute("data-smoke-scrolled", !!list && list.scrollTop > 0);' +
+      'const firstIcon = document.querySelector("[role=listbox] img[src^=\\"data:image/\\"]");' +
+      'document.documentElement.setAttribute("data-smoke-icon-width", firstIcon ? Math.round(firstIcon.getBoundingClientRect().width) : 0);' +
+      'const firstRow = document.querySelector("[role=listbox] [role=option]");' +
+      'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
     '}, 1150);' +
@@ -7262,13 +7313,17 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
   }
   if (heightMode === 'scroll') {
-    if (size !== 420 || !output.includes('data-smoke-list-scroll="true"')) {
+    if (size !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
+        !output.includes('data-smoke-scrollbar-hidden="true"') ||
+        !output.includes('data-smoke-scrolled="true"') ||
+        !output.includes('data-smoke-row-square="true"')) {
       throw new Error(name + ': long launcher list should fill the cap and scroll internally');
     }
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
   if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
+      !output.includes('data-smoke-icon-width="32"') ||
       Number(output.match(/data-smoke-icon-count="(\d+)"/)?.[1] ?? 0) < 1)) {
     const square = output.match(/data-smoke-square="([^"]+)"/)?.[1] ?? 'unset';
     const icons = output.match(/data-smoke-icon-count="([^"]+)"/)?.[1] ?? 'unset';
@@ -8105,17 +8160,17 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       <span class="text-[10px] font-bold tabular-nums text-kira-muted">{matches.length} / {apps.length} APPS</span>
     </div>
     <div id="kira-launcher-results" bind:this={results}
-      class="min-h-0 flex-1 overflow-y-auto" role="listbox" aria-label="Matching applications">
+      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1" role="listbox" aria-label="Matching applications">
       {#each displayed as app, index (app.id)}
         <button type="button" role="option" aria-selected={index === activeIndex}
           onclick={() => choose(index)}
           title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 rounded-md py-2 pr-2 text-left focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+          class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
           <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
-          <span class="flex size-9 shrink-0 items-center justify-center bg-kira-bg text-sm font-extrabold text-kira-text" aria-hidden="true">
+          <span class="flex size-9 shrink-0 items-center justify-center overflow-hidden bg-kira-surface-soft text-[12px] font-bold text-kira-muted" aria-hidden="true">
             {#if icons[app.id]}
-              <img class="size-9 object-contain" src={icons[app.id]} alt="" loading="lazy"
+              <img class="size-8 object-contain" src={icons[app.id]} alt="" loading="lazy"
                 onerror={() => { delete icons[app.id]; }} />
             {:else}
               {app.name.slice(0, 1).toLocaleUpperCase() || 'K'}
@@ -8123,7 +8178,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
           </span>
           <span class="min-w-0 flex-1">
             <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
-            <span class="block truncate text-[11px] text-kira-muted">{app.description.trim() || 'Installed application'}</span>
+            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim() || 'Installed application'}</span>
           </span>
         </button>
       {:else}
@@ -10226,6 +10281,20 @@ FILE	frontend/src/style.css
      * keep their own list scrollers inside a constrained flex column. */
   }
 
+  /* The launcher list still scrolls with mouse wheel, touchpad and
+   * keyboard, but a WebKitGTK scrollbar must not overlap the right edge
+   * of the highlighted row. Keep this scoped to Launcher only. */
+  .kira-launcher-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .kira-launcher-scroll::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   /* Keep an explicit keyboard-visible outline even outside our components. */
   :focus-visible {
     outline-color: var(--kira-color-accent);
@@ -11586,7 +11655,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("overflow-hidden bg-kira-bg text-kira-text", root_markup)
         self.assertNotIn("rounded-lg", root_markup)
         self.assertNotIn("border-kira-muted", root_markup)
-        self.assertIn("<img class=\"size-9 object-contain\"", WIDGET)
+        self.assertIn("<img class=\"size-8 object-contain\"", WIDGET)
         self.assertIn("src={icons[app.id]}", WIDGET)
         self.assertIn("app.name.slice(0, 1)", WIDGET)
         self.assertIn("onLauncherIcons(batch", WIDGET)
@@ -11594,8 +11663,9 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("needed.slice(i, i + 16)", WIDGET)
         self.assertIn("stopIcons();", WIDGET)
         self.assertIn("gtk::IconTheme::for_display(&display)", RUST)
-        self.assertIn("theme.lookup_by_gicon(", RUST)
-        self.assertIn("paintable.file()?", RUST)
+        self.assertIn(".lookup_by_gicon(", RUST)
+        self.assertIn(".file()", RUST)
+        self.assertIn("file_data_url(&file)", RUST)
         self.assertIn("file.load_bytes(None::<&gio::Cancellable>)", RUST)
         self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
         self.assertIn("const ICON_BATCH_LIMIT: usize = 16;", RUST)
@@ -11609,6 +11679,32 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("raw_ids.split(',')", OVERLAY)
         self.assertIn("ids.contains(&id)", OVERLAY)
         self.assertIn("iconDataUri.test(icon.data_url)", SDK)
+        self.assertNotIn("file://", RUST)
+        self.assertNotIn("std::process::Command", RUST)
+
+    def test_scrollbar_does_not_cover_selected_row(self):
+        style = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn('class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
+        self.assertIn(".kira-launcher-scroll {", style)
+        self.assertIn("scrollbar-width: none;", style)
+        self.assertIn(".kira-launcher-scroll::-webkit-scrollbar", style)
+        self.assertIn("display: none;", style)
+        self.assertIn("overflow-y-auto", WIDGET)
+        self.assertNotIn("gap-3 rounded-md py-2 pr-2", WIDGET)
+        self.assertIn("focus-visible:-outline-offset-2", WIDGET)
+        self.assertIn("size-9 shrink-0 items-center justify-center overflow-hidden", WIDGET)
+        self.assertIn("bg-kira-surface-soft", WIDGET)
+        self.assertIn("line-clamp-2 text-[11px] leading-4", WIDGET)
+
+    def test_file_icon_and_generic_fallback_resolve_without_browser_paths(self):
+        self.assertIn("icon.downcast_ref::<gio::FileIcon>()", RUST)
+        self.assertIn("file_data_url(&file_icon.file())", RUST)
+        self.assertIn('const NAME: &str = "application-x-executable";', RUST)
+        self.assertIn("theme.has_icon(NAME)", RUST)
+        self.assertIn("generic_icon_data_url", RUST)
+        self.assertIn("or_else(|| generic.clone())", RUST)
+        self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
+        self.assertIn("icons: RefCell<HashMap<usize, Option<String>>>", RUST)
         self.assertNotIn("file://", RUST)
         self.assertNotIn("std::process::Command", RUST)
 
