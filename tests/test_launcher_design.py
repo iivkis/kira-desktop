@@ -45,7 +45,10 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertNotIn("border-kira-muted", root_markup)
         self.assertIn("<img class=\"size-8 object-contain\"", WIDGET)
         self.assertIn("src={icons[app.id]}", WIDGET)
-        self.assertIn("app.name.slice(0, 1)", WIDGET)
+        self.assertIn("data-kira-icon-placeholder", WIDGET)
+        self.assertIn("data-kira-icon-slot", WIDGET)
+        self.assertIn("icons[app.id] ? 'bg-transparent' : 'bg-kira-surface-soft'", WIDGET)
+        self.assertIn('class="size-5 text-kira-muted"', WIDGET)
         self.assertIn("onLauncherIcons(batch", WIDGET)
         self.assertIn("requestLauncherIcons(generation, batch)", WIDGET)
         self.assertIn("needed.slice(i, i + 16)", WIDGET)
@@ -83,6 +86,21 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("size-9 shrink-0 items-center justify-center overflow-hidden", WIDGET)
         self.assertIn("bg-kira-surface-soft", WIDGET)
         self.assertIn("line-clamp-2 text-[11px] leading-4", WIDGET)
+
+    def test_global_widget_selection_is_disabled_except_editable_fields(self):
+        style = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn("#app {", style)
+        self.assertIn("-webkit-user-select: none;", style)
+        self.assertIn("user-select: none;", style)
+        self.assertIn("input, textarea", style)
+        self.assertIn('[contenteditable]:not([contenteditable="false"])', style)
+        self.assertIn("-webkit-user-select: text;", style)
+        self.assertIn("user-select: text;", style)
+        # The same #app hosts the Top Bar and all three lazy overlays.
+        for widget in ("CalendarWidget.svelte", "SystemWidget.svelte",
+                       "LauncherWidget.svelte"):
+            source = (ROOT / "frontend/src/lib/components" / widget).read_text()
+            self.assertIn("data-kira-ui-root", source)
 
     def test_file_icon_and_generic_fallback_resolve_without_browser_paths(self):
         self.assertIn("icon.downcast_ref::<gio::FileIcon>()", RUST)
