@@ -38,11 +38,7 @@ pub const POPUP_TOP_MARGIN: i32 = 25;
 /// Let GTK use the natural content height, capped at 70% of the monitor.
 /// Fixed preferred heights used to force needless scrolling on tall outputs.
 /// Recheck the actual surface monitor after mapping.
-fn apply_popup_height(
-    window: &gtk::ApplicationWindow,
-    scroll: &gtk::ScrolledWindow,
-    width: i32,
-) {
+fn apply_popup_height(window: &gtk::ApplicationWindow, scroll: &gtk::ScrolledWindow, width: i32) {
     let display = gtk::prelude::WidgetExt::display(window);
     let monitor = window
         .surface()
@@ -63,11 +59,7 @@ fn apply_popup_height(
     window.set_default_size(width, -1);
 }
 
-pub fn configure_popup(
-    window: &gtk::ApplicationWindow,
-    scroll: &gtk::ScrolledWindow,
-    width: i32,
-) {
+pub fn configure_popup(window: &gtk::ApplicationWindow, scroll: &gtk::ScrolledWindow, width: i32) {
     apply_popup_height(window, scroll, width);
     let scroll = scroll.clone();
     window.connect_map(move |window| {
