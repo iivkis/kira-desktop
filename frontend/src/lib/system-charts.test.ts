@@ -44,7 +44,7 @@ describe('System Monitor ECharts telemetry model', () => {
     const missing = appendPulse([], {
       cpu_percent: null, memory_total_kib: null, memory_available_kib: null,
     }, 500);
-    expect(missing[0]).toEqual({ time: 100, cpu: null, ram: null, gpu: null });
+    expect(missing[0]).toEqual({ time: 500, cpu: null, ram: null, gpu: null });
   });
 
   it('charts only real samples and caps history at thirty points', () => {
