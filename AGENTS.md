@@ -1,5 +1,36 @@
 # Kira Desktop contributor and agent rules
 
+## TENET Motion System (mandatory for ALL animation work)
+
+**Read [docs/TENET_MOTION.md](docs/TENET_MOTION.md) before creating, editing,
+reviewing or replacing any animation** in any Kira Desktop widget, surface or
+component. It is the normative motion specification, not optional inspiration.
+This includes GSAP effects, ECharts transitions, GTK/native visual motion,
+hover/focus reactions, animated data readouts, and future widgets.
+
+The five required laws are **Reverse Causality, Dual Time Flow, Physical
+Continuity, Temporal Memory, and Causal Consistency**. For each animation:
+
+- Choose FORWARD (+1), INVERTED (-1), or a synchronized DUAL scene **by
+  event sequence**, never by merely reversing the CSS direction or axis.
+  Simple functional feedback may remain FORWARD; do not invert everything.
+- For an inverted effect, record one event's **original states, paths, easing,
+  impacts, and secondary traces**. Reverse that exact history. A new user
+  interaction may randomize a new event, but the *return* must not reroll it.
+- Keep both time flows anchored to one real contact/activation point and
+  restore exact final geometry with no stuck fragments or jumps. Handle
+  interruptions, repeat clicks, Escape, unmount and motion changes.
+- Keep all actual actions, time displays, telemetry, focus, keyboard behavior,
+  and accessibility truthful and immediate. Respect reduced motion and
+  use only the approved Kira palette.
+- In PR notes, identify the timeline directions, contact event, recorded
+  trajectory and reset path. Test playback/restore, repeated clicks,
+  reduced motion, lifecycle cleanup and the offline WebKit bundle. Verify
+  native visual behavior in nested Niri when available.
+
+Existing animations are reviewed against this contract **when touched**;
+do not claim an unreviewed legacy animation already complies.
+
 ## Visual stack (mandatory)
 
 - **Apache ECharts** is the project's charting library for all new or redesigned

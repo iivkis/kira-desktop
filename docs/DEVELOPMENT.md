@@ -38,6 +38,36 @@ See [UI_ARCHITECTURE.md](UI_ARCHITECTURE.md) for the staged migration.
 The Svelte Calendar host is integrated and covered by frontend, Rust and
 Nix tests; real multi-scale nested Niri graphical QA remains pending.
 
+## TENET Motion System · required for every animation
+
+The authoritative motion contract is [TENET Motion System](TENET_MOTION.md).
+**Every new or modified animation** must be reviewed against its five laws:
+Reverse Causality, Dual Time Flow, Physical Continuity, Temporal Memory and
+Causal Consistency. This applies to GSAP/WebKit widgets, chart presentation,
+native/GTK visual motion, and upcoming desktop surfaces. A plain forward
+interaction is allowed when it follows these laws; do **not** reverse all
+motion merely to satisfy the theme.
+
+Before changing a motion effect:
+
+1. Mark which elements use FORWARD and which use INVERTED event sequences;
+   define the actual trigger and shared contact point.
+2. Record the original geometry and a single interaction's movement,
+   easing, secondary effects and random parameters. A reverse phase must
+   use the **same event history**, not newly generated paths.
+3. Define final/restored state, interruption and repeated-click behavior.
+   Clean up GSAP timelines, observers and any fallback timers on unmount.
+4. Test keyboard interaction, accessible labels, real time and metric
+   accuracy, `prefers-reduced-motion`, browser offline packaging and
+   representative narrow-screen WebKitGTK behavior.
+5. Explain the causal model and test evidence in the PR description.
+   State explicitly if actual nested Niri visual QA was not performed.
+
+GSAP remains the project's JavaScript motion engine. Apache ECharts remains
+the charting engine; its animations cannot fabricate or invert real samples.
+Retain Kira's canonical palette, 42px top bar, truthful interaction and
+existing read-only bridge.
+
 ## Kira Default visual design
 
 The Svelte 5 Top Bar uses **Tailwind CSS v4** through `@tailwindcss/vite`.
