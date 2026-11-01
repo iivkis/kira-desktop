@@ -4,6 +4,7 @@ mod calendar;
 mod launcher;
 mod native_ui;
 mod process_monitor;
+mod renderer_recovery;
 mod system_metrics;
 mod system_panel;
 use std::cell::{Cell, RefCell};
@@ -11,7 +12,7 @@ use std::env;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::sync::mpsc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
@@ -251,8 +252,40 @@ fn main() {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
         });
-        view.connect_web_process_terminated(|_, reason| {
-            eprintln!("kira-shell: WebKit renderer terminated: {reason:?}");
+        // The WebKit child can die while the GTK layer-shell window stays
+        // alive. Reload the original trusted HTML after a bounded backoff;
+        // never recreate the IPC/GTK handlers or silently navigate elsewhere.
+        let bar_document = html.clone();
+        let recovery = Rc::new(RefCell::new(renderer_recovery::RendererRecovery::default()));
+        view.connect_web_process_terminated(move |webview, reason| {
+            use renderer_recovery::RetryDecision;
+            match recovery.borrow_mut().on_terminated(Instant::now()) {
+                RetryDecision::After(delay) => {
+                    eprintln!(
+                        "kira-shell: Top Bar WebKit renderer terminated ({reason:?}); retrying in {} ms",
+                        delay.as_millis()
+                    );
+                    let weak_view = webview.downgrade();
+                    let document = bar_document.clone();
+                    let recovery = recovery.clone();
+                    gtk::glib::timeout_add_local_once(delay, move || {
+                        recovery.borrow_mut().retry_started();
+                        if let Some(webview) = weak_view.upgrade()
+                            && webview.root().is_some()
+                        {
+                            webview.load_html(&document, None);
+                        }
+                    });
+                }
+                RetryDecision::AlreadyPending => {
+                    eprintln!("kira-shell: Top Bar renderer recovery already scheduled");
+                }
+                RetryDecision::Exhausted => {
+                    eprintln!(
+                        "kira-shell: Top Bar renderer crashed repeatedly; restart kira-shell to recover"
+                    );
+                }
+            }
         });
         view.connect_load_changed(|webview, event| {
             if event == webkit6::LoadEvent::Finished {

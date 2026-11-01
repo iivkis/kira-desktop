@@ -107,3 +107,6 @@ jobs:
       - name: Compile native GTK/WebKit Shell (including test targets)
         if: steps.changes.outputs.shell == 'true'
         run: nix develop .#ci --command cargo check --locked -p kira-shell --all-targets
+      - name: Test native Shell recovery and safety contracts
+        if: steps.changes.outputs.shell == 'true'
+        run: nix develop .#ci --command cargo test --locked -p kira-shell --bin kira-shell
