@@ -76,7 +76,10 @@ function createWarpFilter(root: HTMLElement) {
 export function tenetHoverLens(root: HTMLElement) {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-  const warp = createWarpFilter(root);
+  // Do not instantiate even the SVG noise field until the first genuine
+  // mouse hover. Closed/idle widgets allocate no material compositor work.
+  let warp: ReturnType<typeof createWarpFilter> | null = null;
+  const ensureWarp = () => warp ?? (warp = createWarpFilter(root));
   const field: Field = { amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026 };
   let active: HTMLElement | null = null;
   let painted: HTMLElement | null = null;
@@ -133,7 +136,7 @@ export function tenetHoverLens(root: HTMLElement) {
     field.phaseX = 0;
     field.phaseY = 0;
     field.frequency = 0.026;
-    warp.apply(field);
+    warp?.apply(field);
   }
 
   function forwardTo(point: LensPoint, duration: number) {
@@ -141,7 +144,7 @@ export function tenetHoverLens(root: HTMLElement) {
     forward = gsap.to(field, {
       ...fieldAt(point),
       duration, ease: 'power3.out', overwrite: true,
-      onUpdate: () => warp.apply(field),
+      onUpdate: () => warp?.apply(field),
     });
   }
 
@@ -159,7 +162,7 @@ export function tenetHoverLens(root: HTMLElement) {
     const point = lensPoint(event.clientX, event.clientY,
       rect.left, rect.top, rect.width, rect.height);
     history = rememberLensPoint([], point);
-    painted.style.filter = 'url("#' + warp.id + '")';
+    painted.style.filter = 'url("#' + ensureWarp().id + '")';
     painted.dataset.tenetWarpPixels = 'true';
     target.dataset.tenetWarpState = 'forward';
     // Initial contact bends the real pixels; the material settles with
@@ -188,13 +191,13 @@ export function tenetHoverLens(root: HTMLElement) {
     for (const point of reversePoints) {
       reverse.to(field, {
         ...fieldAt(point), duration: 0.035, ease: 'none',
-        onUpdate: () => warp.apply(field),
+        onUpdate: () => warp?.apply(field),
       });
     }
     reverse.to(field, {
       amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026,
       duration: 0.25, ease: 'power3.out',
-      onUpdate: () => warp.apply(field),
+      onUpdate: () => warp?.apply(field),
     });
     // If WebKitGTK throttles animation frames, the control still recovers.
     restoreTimer = window.setTimeout(restore, 1000);
@@ -222,7 +225,8 @@ export function tenetHoverLens(root: HTMLElement) {
       motion.removeEventListener('change', onEnvironmentChange);
       finePointer.removeEventListener('change', onEnvironmentChange);
       restore();
-      warp.svg.remove();
+      warp?.svg.remove();
+      warp = null;
     },
   };
 }
