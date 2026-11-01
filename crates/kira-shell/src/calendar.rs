@@ -91,6 +91,7 @@ impl CalendarOverlay {
         self.reposition_pending.set(false);
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
+            model.set_pulse_active(false);
         }
         self.active.set(None);
         self.launcher.borrow_mut().take();
@@ -144,6 +145,7 @@ impl CalendarOverlay {
         if self.active.get() == Some(Surface::System) && kind != Surface::System {
             if let Some(model) = self.system.borrow().as_ref() {
                 model.set_processes_active(false);
+                model.set_pulse_active(false);
             }
         }
         self.position_for(kind);
@@ -367,6 +369,7 @@ impl CalendarOverlay {
             {
                 if let Some(model) = self.system.borrow().as_ref() {
                     model.set_processes_active(active);
+                    model.set_pulse_active(!active);
                 }
             }
             Some(UiCommand::CopyReport)
@@ -536,6 +539,20 @@ impl CalendarOverlay {
                     }
                 },
             );
+        }
+    }
+
+    fn poll_pulse(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::System) {
+            return;
+        }
+        let pulse = self
+            .system
+            .borrow()
+            .as_ref()
+            .and_then(|model| model.poll_pulse());
+        if let Some(payload) = pulse {
+            self.dispatch_data("kira:system:pulse", payload);
         }
     }
 
@@ -817,6 +834,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
         if let Some(state) = weak.upgrade() {
             state.poll_launcher();
+            // Reuse the existing 30ms GTK source for the 100ms CPU/RAM
+            // stream. Never schedule WebKit scripts on a worker thread.
+            state.poll_pulse();
             gtk::glib::ControlFlow::Continue
         } else {
             gtk::glib::ControlFlow::Break
@@ -921,6 +941,9 @@ pub fn toggle_system(
         return;
     }
     *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
+    if let Some(model) = state.system.borrow().as_ref() {
+        model.set_pulse_active(true);
+    }
     state.last_metrics.set(None);
     state.show(Surface::System);
 }

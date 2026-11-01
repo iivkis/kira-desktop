@@ -151,7 +151,7 @@ diagnostic bars. The visual hierarchy is intentional:
    lanes**. Low CPU loads must remain visible using a bounded, adaptive
    percentage axis; each lane's axis displays its real endpoints, and GPU has
    its own lane only while a real utilization sensor is available. History is
-   30 measured samples maximum, never fabricated.
+   bounded to 600 genuine 100ms CPU/RAM samples, never fabricated.
 3. **Tertiary:** compact Swap and Root Storage figures, then a concise hardware
    / thermal row and OS metadata, with no empty card for unavailable GPU data.
    Nonzero fractional swap use is not rounded down to a misleading 0%.
@@ -162,6 +162,26 @@ diagnostic bars. The visual hierarchy is intentional:
    entrances and readout updates, with reduced-motion support and lifecycle
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
+
+### 100ms CPU/RAM pulse
+
+The **SYSTEM / PULSE** dials and activity lanes receive genuine Linux
+`/proc/stat` and `/proc/meminfo` measurements **every 100 milliseconds**,
+in a dedicated read-only worker, only while the System Monitor's Overview
+tab is visible. A bounded, single-slot channel sends the latest pulse
+through the existing GTK event loop to a strictly validated
+`kira:system:pulse` event. ECharts keeps no more than 600 real samples
+(60 seconds). No 100ms interpolation, browser polling or fake zero values.
+
+The full system feed, including GPU, CPU/GPU temperatures, battery, root
+storage, and KDL/Core status, still refreshes every two seconds. GPU
+readings appear only once per actual slow sample, not twenty times as
+invented high-frequency measurements. Process RSS/PSS scanning still runs
+only on the Processes tab at its original slower cadence.
+
+Closing Overview, switching tabs, or dismissing the overlay stops the
+fast worker and clears the chart listener. A closed WebKit view never
+continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 ### Popup geometry
 

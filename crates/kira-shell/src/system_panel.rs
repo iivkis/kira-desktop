@@ -7,7 +7,9 @@ use std::sync::{Arc, mpsc};
 use std::time::Duration;
 
 use crate::process_monitor::{ProcessSampler, ProcessSnapshot};
-use crate::system_metrics::{Snapshot, bytes_label, percent_used};
+use crate::system_metrics::{
+    PULSE_INTERVAL, Pulse, PulseSampler, Snapshot, bytes_label, percent_used,
+};
 
 /// Root filesystem data is queried on the GTK thread, like the Top Bar.
 pub fn disk() -> Option<(u64, u64)> {
@@ -22,6 +24,19 @@ pub fn disk() -> Option<(u64, u64)> {
     let total = info.attribute_uint64("filesystem::size") / 1024;
     let available = info.attribute_uint64("filesystem::free") / 1024;
     (total > 0 && available <= total).then_some((total, available))
+}
+
+/// A bounded channel prevents stale 100ms samples from building up in a
+/// busy GTK main loop. This worker only exists on Overview while visible.
+struct PulseFeed {
+    running: Arc<AtomicBool>,
+    receiver: mpsc::Receiver<Pulse>,
+}
+
+impl Drop for PulseFeed {
+    fn drop(&mut self) {
+        self.running.store(false, Ordering::Relaxed);
+    }
 }
 
 struct ProcessFeed {
@@ -42,6 +57,7 @@ pub struct Model {
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
     processes: RefCell<Option<ProcessFeed>>,
+    pulse: RefCell<Option<PulseFeed>>,
 }
 
 impl Model {
@@ -51,6 +67,7 @@ impl Model {
             core,
             niri,
             processes: RefCell::new(None),
+            pulse: RefCell::new(None),
         }
     }
 
@@ -60,6 +77,47 @@ impl Model {
             "core": self.core.get(),
             "niri": self.niri.get(),
         })
+    }
+
+    pub fn set_pulse_active(&self, active: bool) {
+        let mut feed = self.pulse.borrow_mut();
+        if !active {
+            *feed = None;
+            return;
+        }
+        if feed.is_some() {
+            return;
+        }
+        let (sender, receiver) = mpsc::sync_channel(1);
+        let running = Arc::new(AtomicBool::new(true));
+        let alive = running.clone();
+        std::thread::spawn(move || {
+            let mut sampler = PulseSampler::default();
+            while alive.load(Ordering::Relaxed) {
+                let started = std::time::Instant::now();
+                let pulse = sampler.sample();
+                match sender.try_send(pulse) {
+                    Ok(()) | Err(mpsc::TrySendError::Full(_)) => {}
+                    Err(mpsc::TrySendError::Disconnected(_)) => break,
+                }
+                // The interval is measured start-to-start, not IO + 100ms.
+                // Skip missed cycles instead of flooding the GTK/UI channel.
+                if let Some(remaining) = PULSE_INTERVAL.checked_sub(started.elapsed()) {
+                    std::thread::sleep(remaining);
+                }
+            }
+        });
+        *feed = Some(PulseFeed { running, receiver });
+    }
+
+    pub fn poll_pulse(&self) -> Option<serde_json::Value> {
+        self.pulse
+            .borrow()
+            .as_ref()?
+            .receiver
+            .try_recv()
+            .ok()
+            .map(|pulse| pulse.as_json())
     }
 
     pub fn set_processes_active(&self, active: bool) {
@@ -239,10 +297,22 @@ mod tests {
             Rc::new(Cell::new(false)),
         );
         assert!(model.processes.borrow().is_none());
+        assert!(model.pulse.borrow().is_none());
+        model.set_pulse_active(true);
+        assert!(model.pulse.borrow().is_some());
+        model.set_pulse_active(true); // Idempotent, no duplicate worker.
+        model.set_pulse_active(false);
+        assert!(model.pulse.borrow().is_none());
         model.set_processes_active(true);
         assert!(model.processes.borrow().is_some());
         model.set_processes_active(false);
         assert!(model.processes.borrow().is_none());
+        assert!(model.pulse.borrow().is_none());
+        model.set_pulse_active(true);
+        assert!(model.pulse.borrow().is_some());
+        model.set_pulse_active(true); // Idempotent, no duplicate worker.
+        model.set_pulse_active(false);
+        assert!(model.pulse.borrow().is_none());
         assert!(model.report().contains("CORE OFFLINE"));
     }
 }
