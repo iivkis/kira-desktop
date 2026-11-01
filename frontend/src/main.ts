@@ -1,7 +1,7 @@
-import { flushSync, mount } from 'svelte';
+import { flushSync, mount, unmount } from 'svelte';
 import App from './App.svelte';
-import CalendarWidget from './lib/components/CalendarWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './lib/sdk/core';
+import { closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
+import { createLazyWidget } from './lib/lazy-widget';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
 
@@ -16,37 +16,61 @@ function report(message: string): void {
 Reflect.set(window, '__kiraEntryStarted', true);
 report('Svelte entrypoint evaluating; document.readyState=' + document.readyState);
 
-// The original Vite <script type="module"> ran after parsing the body.
-// Our single-file build inlines it as a classic <script> in <head>, so
-// attempting mount() immediately would fail because #app does not exist yet.
+// The inline bundle is a classic <script> in <head>; wait for #app.
+// Calendar's page is bootstrapped without mounting any Svelte widget.
 whenDocumentReady(document, () => {
   report('Svelte bootstrap after DOMContentLoaded; readyState=' + document.readyState);
   const target = document.getElementById('app');
+  if (document.documentElement.dataset.kiraSurface === 'calendar') {
+    if (!target) {
+      report('Calendar bootstrap failure: #app missing');
+      return;
+    }
+    const host = createLazyWidget(
+      async () => {
+        // Imports and creates the widget on demand, not during prewarm. Vite
+        // inlines this chunk so WebKit load_html has no external requests.
+        const { default: CalendarWidget } = await import('./lib/components/CalendarWidget.svelte');
+        return {
+          mount() {
+            const instance = mount(CalendarWidget, {
+              target,
+              props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
+            });
+            flushSync();
+            if (!target.querySelector('main[data-kira-ui-root][aria-label="Kira Calendar"]')) {
+              throw new Error('Calendar Svelte root missing after mount');
+            }
+            return instance;
+          },
+          unmount(instance: ReturnType<typeof mount>) {
+            return unmount(instance);
+          },
+          onMounted: notifyCalendarMounted,
+        };
+      },
+      (error) => report('Calendar lazy mount/unmount failed: ' + String(error)),
+    );
+    window.addEventListener('kira:calendar:show', (event: Event) => {
+      host.show((event as CustomEvent<{ generation: number }>).detail?.generation);
+    });
+    window.addEventListener('kira:calendar:hide', () => host.hide());
+    // Remove the HTML fallback so no widget DOM remains when hidden.
+    target.querySelector('#kira-loading')?.remove();
+    Reflect.set(window, '__kiraMountReturned', true);
+    report('Calendar host ready; no widget mounted');
+    notifyCalendarHostReady();
+    return;
+  }
+
   const mounted = startUi(
     target,
     (container) => {
-      // The same self-contained frontend is hosted by the Top Bar and
-      // independent layer-shell popups. Rust sets the surface marker before
-      // load_html(), never from a navigable URL or an untrusted message.
-      if (document.documentElement.dataset.kiraSurface === 'calendar') {
-        mount(CalendarWidget, {
-          target: container,
-          props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
-        });
-      } else {
-        mount(App, { target: container });
-      }
+      mount(App, { target: container });
       flushSync();
     },
     report,
   );
   Reflect.set(window, '__kiraMountReturned', mounted);
-  if (mounted) {
-    report('Svelte entrypoint mounted');
-    // Let the GTK host map the prepared popup only after the Svelte root is
-    // actually mounted. A second frame acknowledgement gates its opacity.
-    if (document.documentElement.dataset.kiraSurface === 'calendar') {
-      notifyCalendarMounted();
-    }
-  }
+  if (mounted) report('Svelte entrypoint mounted');
 });
