@@ -29,6 +29,24 @@
     overflow: hidden;
   }
 
+  /* Top Bar stays full-height within its own WebKit surface.
+   * Overlay documents must have an intrinsic page height instead.
+   * Otherwise html/body/#app's 100% viewport height forces every
+   * popup to the previous window size regardless of Svelte content. */
+  html[data-kira-surface="calendar"],
+  html[data-kira-surface="calendar"] body,
+  html[data-kira-surface="calendar"] #app {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  html[data-kira-surface="calendar"] main[data-kira-ui-root] {
+    max-height: var(--kira-overlay-max-height, 560px);
+    /* Calendar/Overview use page scrolling; Launcher and Processes
+     * keep their own list scrollers inside a constrained flex column. */
+  }
+
   /* Keep an explicit keyboard-visible outline even outside our components. */
   :focus-visible {
     outline-color: var(--kira-color-accent);
