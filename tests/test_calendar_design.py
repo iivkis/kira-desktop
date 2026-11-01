@@ -38,11 +38,27 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("native_ui::POPUP_TOP_MARGIN", RUST)
         self.assertIn("restrict_webview_navigation(&view)", RUST)
         self.assertIn('register_script_message_handler("kiraCalendarUi", None)', RUST)
-        self.assertIn("view.load_html(&document, None)", RUST)
+        self.assertIn("view.load_html(&overlay.document, None)", RUST)
         self.assertNotIn('register_script_message_handler("kira", None)', RUST)
         self.assertNotIn("gtk::CssProvider", RUST)
         self.assertIn("pub fn restrict_webview_navigation", NATIVE)
         self.assertIn("pub fn configure_webview_popup", NATIVE)
+
+    def test_calendar_is_preloaded_and_reused_without_a_blank_surface(self):
+        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source)", SHELL)
+        self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", RUST)
+        self.assertIn("fn ensure(application: &gtk::Application, html: &str)", RUST)
+        self.assertIn("self.window.set_visible(false)", RUST)
+        self.assertIn("self.window.set_opacity(0.0)", RUST)
+        self.assertIn("self.window.set_opacity(1.0)", RUST)
+        self.assertIn("self.request_paint()", RUST)
+        self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)
+        self.assertIn("self.generation.get() == generation", RUST)
+        self.assertNotIn("window.close()", RUST)
+        self.assertIn("pub fn prewarm(", RUST)
+        self.assertIn("requestAnimationFrame", RUST)
+        self.assertIn('sendCalendarUi(\'ready\')', SDK)
+        self.assertIn("notifyCalendarMounted();", ENTRY)
 
     def test_surface_is_selected_by_trusted_html_marker(self):
         self.assertIn('data-kira-surface=\\"calendar\\"', RUST)
