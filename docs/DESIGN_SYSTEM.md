@@ -141,6 +141,28 @@ native top bar. The system monitor's Processes view retains searchable,
 sortable RSS and PSS process data while the Overview chart uses only the
 existing read-only native telemetry feed.
 
+### System Monitor Overview visual acceptance
+
+The Overview is an **editorial instrument panel**, not a stack of identical
+diagnostic bars. The visual hierarchy is intentional:
+1. **Primary:** two large ECharts SVG dials for actual CPU and RAM usage, each
+   with accessible HTML numbers and accurate unknown state.
+2. **Secondary:** activity history in **separate, clearly labeled CPU and RAM
+   lanes**. Low CPU loads must remain visible using a bounded, adaptive
+   percentage axis; each lane's axis displays its real endpoints, and GPU has
+   its own lane only while a real utilization sensor is available. History is
+   30 measured samples maximum, never fabricated.
+3. **Tertiary:** compact Swap and Root Storage figures, then a concise hardware
+   / thermal row and OS metadata, with no empty card for unavailable GPU data.
+   Nonzero fractional swap use is not rounded down to a misleading 0%.
+4. **Scrolling:** GTK/WebKit scrollbar chrome is hidden on the monitor but
+   mouse, touchpad and keyboard scrolling remain operable. Content must not
+   be cropped to conceal overflow.
+5. **Motion:** ECharts animates only actual sample changes. GSAP marks tab
+   entrances and readout updates, with reduced-motion support and lifecycle
+   disposal. Visual tests must check the **real packaged overlay** at a
+   narrow width in isolated Niri, not infer beauty from passing unit tests.
+
 ### Popup geometry
 
 Calendar and System Monitor share a **25 logical pixel** top margin,
