@@ -55,5 +55,6 @@ export function systemHealth(
     return { label: 'LOW BAT', phase: 'warning', details };
   }
   if (metrics.cpu_percent >= 95) return { label: 'BUSY', phase: 'warning', details };
+  if (disk === null) return { label: 'PARTIAL', phase: 'pending', details };
   return { label: 'READY', phase: 'ready', details };
 }
