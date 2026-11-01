@@ -109,9 +109,11 @@ impl CalendarOverlay {
                     && state.generation.get() == generation
                     && !state.revealed.get()
                 {
-                    eprintln!("kira-shell: Overlay did not mount within 3s (host ready: {}, widget ready: {}); hiding popup",
+                    eprintln!(
+                        "kira-shell: Overlay did not mount within 3s (host ready: {}, widget ready: {}); hiding popup",
                         state.host_ready.get(),
-                        state.widget_ready.get());
+                        state.widget_ready.get()
+                    );
                     state.hide();
                 }
             }
