@@ -151,7 +151,7 @@ diagnostic bars. The visual hierarchy is intentional:
    lanes**. Low CPU loads must remain visible using a bounded, adaptive
    percentage axis; each lane's axis displays its real endpoints, and GPU has
    its own lane only while a real utilization sensor is available. History is
-   bounded to 600 genuine 100ms CPU/RAM samples, never fabricated.
+   bounded to 120 genuine 500ms CPU/RAM samples, never fabricated.
 3. **Tertiary:** compact Swap and Root Storage figures, then a concise hardware
    / thermal row and OS metadata, with no empty card for unavailable GPU data.
    Nonzero fractional swap use is not rounded down to a misleading 0%.
@@ -163,15 +163,15 @@ diagnostic bars. The visual hierarchy is intentional:
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
 
-### 100ms CPU/RAM pulse
+### 500ms CPU/RAM pulse
 
 The **SYSTEM / PULSE** dials and activity lanes receive genuine Linux
-`/proc/stat` and `/proc/meminfo` measurements **every 100 milliseconds**,
+`/proc/stat` and `/proc/meminfo` measurements **every 500 milliseconds**,
 in a dedicated read-only worker, only while the System Monitor's Overview
 tab is visible. A bounded, single-slot channel sends the latest pulse
 through the existing GTK event loop to a strictly validated
-`kira:system:pulse` event. ECharts keeps no more than 600 real samples
-(60 seconds). No 100ms interpolation, browser polling or fake zero values.
+`kira:system:pulse` event. ECharts keeps no more than 120 real samples
+(60 seconds). No 500ms interpolation, browser polling or fake zero values.
 
 The full system feed, including GPU, CPU/GPU temperatures, battery, root
 storage, and KDL/Core status, still refreshes every two seconds. GPU
