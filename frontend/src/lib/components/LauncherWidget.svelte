@@ -109,7 +109,7 @@
         <p class="mt-1 text-xs text-kira-muted">Search your installed tools.</p>
       </div>
       <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
-        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body class="inline-block">×</span></button>
     </div>
   </header>
 
@@ -151,7 +151,7 @@
               </svg>
             {/if}
           </span>
-          <span class="min-w-0 flex-1">
+          <span data-tenet-lens-body class="min-w-0 flex-1">
             <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
             <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim() || 'Installed application'}</span>
           </span>
