@@ -44,7 +44,9 @@ impl CalendarOverlay {
         if self.host_ready.get() {
             self.view.evaluate_javascript(
                 "window.dispatchEvent(new Event('kira:calendar:hide'));",
-                None, None, None::<&gtk::gio::Cancellable>,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
                 |result| {
                     if let Err(error) = result {
                         eprintln!("kira-shell: Calendar hide delivery failed: {error}");
@@ -62,7 +64,8 @@ impl CalendarOverlay {
         self.paint_pending.set(false);
         self.was_active.set(false);
         self.open_started.set(Some(Instant::now()));
-        self.generation.set(self.generation.get().wrapping_add(1).max(1));
+        self.generation
+            .set(self.generation.get().wrapping_add(1).max(1));
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
@@ -95,7 +98,10 @@ impl CalendarOverlay {
             "window.dispatchEvent(new CustomEvent('kira:calendar:show', {{ detail: {{ generation: {generation} }} }}));"
         );
         self.view.evaluate_javascript(
-            &script, None, None, None::<&gtk::gio::Cancellable>,
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
             |result| {
                 if let Err(error) = result {
                     eprintln!("kira-shell: Calendar mount delivery failed: {error}");
@@ -383,7 +389,9 @@ mod tests {
             "painted:2;exit",
             "painted:-1",
             "painted:18446744073709551616",
-            "mounted:", "mounted:abc", "mounted:4294967296",
+            "mounted:",
+            "mounted:abc",
+            "mounted:4294967296",
             "copy:",
             "copy:2026-02-30",
             "copy:1900-02-29",
