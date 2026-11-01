@@ -81,6 +81,12 @@ official visual language of Kira Desktop.
   to the clipboard only on click.
   Clicking time again or pressing Escape closes; focus loss also dismisses
   after activation. The calendar and Launcher close each other when opened.
+  The calendar uses **GSAP** for a staggered section entrance,
+  directional month/year transitions, and a restrained selected-day pop.
+  Only opacity/transform are animated: actual date arithmetic, keyboard
+  focus, clipboard, and the 42px top bar remain unchanged. Motion is
+  disabled by `prefers-reduced-motion`, interrupted transitions are killed,
+  and all GSAP tweens/listeners are cleaned up when the calendar unmounts.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   Search, catalog, stable application icons, and an orange selection rail
   communicate function without painting the entire row orange.
