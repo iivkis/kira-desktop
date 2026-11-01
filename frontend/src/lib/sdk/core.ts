@@ -183,6 +183,11 @@ function sendCalendarUi(command: string): boolean {
   }
 }
 
+/** Emitted only by the calendar bootstrap after mount() and flushSync(). */
+export function notifyCalendarMounted(): void {
+  sendCalendarUi('ready');
+}
+
 export function closeCalendarOverlay(): void {
   sendCalendarUi('close');
 }
@@ -190,7 +195,7 @@ export function closeCalendarOverlay(): void {
 export function copyCalendarDate(date: string): void {
   // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
   // revalidates the exact date, including month lengths and leap years.
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) return;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
   sendCalendarUi('copy:' + date);
 }
 
