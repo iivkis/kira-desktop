@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, openLauncher } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -18,6 +18,18 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('opens native read-only system monitor only through the fixed bridge', () => {
+    expect(toggleSystemPanel()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraSystem: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleSystemPanel()).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith('toggle');
+    postMessage.mockImplementation(() => { throw new Error('gone'); });
+    expect(toggleSystemPanel()).toBe(false);
   });
 
   it('toggles the calendar via a dedicated fixed-purpose host bridge', () => {

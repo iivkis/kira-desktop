@@ -43,12 +43,13 @@ official visual language of Kira Desktop.
 ### Implementation rules: KISS + DRY
 
 1. **Single native palette:** `native-palette.css` declares the five GTK
-   colors for Launcher and Calendar. `native_ui.rs` assembles it with each
+   colors for Launcher, Calendar and the System Monitor. `native_ui.rs` assembles it with each
    overlay stylesheet, and `test_native_theme.py` verifies the values match
    Svelte's canonical palette. Do not duplicate `@define-color` in widgets.
 2. **Small shared operations:** the common overlay helper only installs style
    providers, finds windows and dismisses them. Keep Launcher search/launch
-   and Calendar date-picker state in their own modules.
+   Calendar date-picker state and read-only System Monitor telemetry in
+   their own modules.
 3. **No premature abstraction:** two similarly named elements are not
    necessarily the same component. Extract code only when it has the same
    semantics and at least two real callers.
@@ -85,10 +86,44 @@ official visual language of Kira Desktop.
   communicate function without painting the entire row orange.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
   and visible keyboard focus remain distinct. Niri events are authoritative.
-- **System health:** combine existing Core RPC and Niri EventStream status:
-  READY only when both connected, otherwise STARTING/WAITING/CORE OFF/
-  NIRI OFF. A round/hollow/square dot reinforces the textual state;
-  hover shows Core version and Niri IPC connection. No new telemetry or polling.
+- **System health:** the Top Bar is a compact **system** indicator, not just
+  a Core heartbeat. READY requires Core/Niri connectivity **and** actual
+  CPU/memory samples; LOW DISK, LOW MEM, LOW BAT or BUSY report measured
+  pressure, and CHECKING is shown until first valid samples. Hover offers
+  a short truthful snapshot; clicking opens the native System Monitor.
+  PARTIAL indicates that CPU and RAM have been sampled but root disk data
+  is unavailable, so the status never claims full readiness without it.
+  It has the same Black heading / Prussian Blue workbench / Black details
+  composition as the Calendar and Launcher, uses small orange progress
+  meters and real values from Linux /proc, sysfs and Gio's root filesystem
+  information. It shows Core and Niri, CPU, RAM, swap, root storage,
+  1/5/15 load, uptime and battery (if present). Missing readings are
+  UNAVAILABLE / NOT DETECTED rather than zero. A fixed-purpose WebKit
+  `kiraSystem` channel only accepts `toggle` and cannot run commands.
+  The monitor updates every two seconds and can copy a plain-text report.
+  The system popover contains **two custom flat tabs**: 01 OVERVIEW
+  (the existing diagnostics) and 02 PROCESSES (the read-only mini task
+  monitor). The second tab reads readable tasks from Linux /proc only
+  while active, displaying process name, PID, sampled CPU percentage
+  relative to the entire host, and resident memory (RSS), with a search
+  field, reversible sorting by clicking PROCESS/PID/CPU/RAM headers
+  (orange active state and direction arrow), an independently scrollable
+  top-36 list
+  and honest counts. Samples update every two seconds on a worker.
+  Initial CPU has no historical baseline and is displayed as a dash,
+  and unreadable RSS/processes are not replaced with fake zero.
+  The UI never reads process command-line arguments or offers termination.
+  A PID plus kernel start-time identity prevents reuse from attributing
+  another process's CPU history. No new Core JSON-RPC methods or
+  user-data collection are introduced.
+
+### Popup geometry
+
+Calendar and System Monitor share a **25 logical pixel** top margin,
+half the previous 50px. A single GTK helper caps each popup's
+scrollable viewport at **70% of the logical height of its monitor**,
+recalculating after the Wayland surface maps. Both remain non-exclusive
+overlays; Top Bar still reserves 42px.
 
 ### Geometry and motion
 

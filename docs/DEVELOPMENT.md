@@ -25,26 +25,43 @@ component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
 focus, Core state and live KDL config updates remain behavioral concerns,
 not CSS assumptions.
 
-The narrow Svelte host bridge exposes only `openLauncher()` and
-`toggleCalendar()` for native overlays. Both share the same private,
+The narrow Svelte host bridge exposes `openLauncher()`,
+`toggleCalendar()` and `toggleSystemPanel()` for native overlays. All three share the same private,
 non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
-The native **GTK4 Launcher and Calendar** cannot use Tailwind; their
-`crates/kira-shell/src/launcher.css` and `calendar.css` retain
-matching GTK themes. The calendar is an independent, non-exclusive layer
+The native Calendar and System Monitor use the shared
+`native_ui::configure_popup` helper to size their windows to the natural
+height of the content, up to 70% of the logical monitor height. The old
+490/600px preferred heights were forcing unnecessary scrolling on taller
+outputs. The top margin remains 25px, and overflow scrolls only when the
+content actually exceeds the 70% cap.
+
+The Process Monitor lives in two small Rust modules:
+`process_monitor.rs` parses /proc on a worker and computes CPU from
+consecutive total-host tick counters, keyed by (PID, start-time) to
+avoid reuse. `process_page.rs` renders the custom GTK Processes tab,
+search and ascending/descending sorting by clicking the four
+table column headers, with no redundant SORT toolbar. No process termination, command lines, extra Core
+RPC or permanent process enumeration is included. The Nix CI executes
+both `system_metrics::tests` and `process_monitor::tests`.
+
+The native **GTK4 Launcher, Calendar and System Monitor** cannot use
+Tailwind; their `crates/kira-shell/src/launcher.css`,
+`calendar.css` and `system_panel.css` retain matching GTK themes. The calendar is an independent, non-exclusive layer
 surface toggled through the narrow `kiraCalendar` WebKit channel, so
 opening it never changes the 42px Niri reservation.
 The WebKit host continues to embed a single production CSS file, including
 Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 
 GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
-not separately in the two overlay stylesheets. Shared native CSS installation
+not separately in the overlay stylesheets. Shared native CSS installation
 and overlay lookup/dismiss helpers live in
 `crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
-interaction logic stays in `launcher.rs` or `calendar.rs`, following KISS
-and DRY without introducing a generic overlay framework. When changing any
+interaction logic stays in `launcher.rs`, `calendar.rs` or
+`system_panel.rs`, following KISS and DRY without introducing a generic
+overlay framework. When changing any
 native CSS asset, verify it remains included by `nix/package.nix`.
 
 When adding npm dependencies, commit the updated
@@ -58,6 +75,18 @@ See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibilit
 spacing, contrast and future widget conventions. The small HTML fallback in
 `frontend/index.html` uses the exact canonical colors because it runs before
 CSS assets finish loading.
+
+## Automatic rustfmt in CI
+
+The lightweight GitHub Actions CI runs `cargo fmt --all` **before tests**.
+For first-party feature branches it commits any resulting Rust changes
+and pushes the formatting-only commit without force-pushing. The same
+working tree is then checked and tested. No changes means no commit.
+Forked PRs and the protected `main` branch are check-only, with no
+formatting push. Checkout credentials are not persisted: a token is
+available only to the trusted push step. Formatting commits pushed using
+`GITHUB_TOKEN` do not launch an endless second CI run. Local
+`task fmt` still checks style.
 
 ## Safe nested development preview
 
