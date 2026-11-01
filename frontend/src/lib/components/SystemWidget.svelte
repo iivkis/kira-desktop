@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, revealStagger } from '../motion';
-  import { tenetHoverLens } from '../tenet-hover-lens';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -64,7 +63,7 @@
 
 <svelte:window onkeydown={keydown} />
 
-<main data-kira-ui-root aria-label="Kira System Monitor" use:tenetHoverLens
+<main data-kira-ui-root aria-label="Kira System Monitor"
   class="kira-monitor-scroll flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header class="shrink-0 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
@@ -76,7 +75,7 @@
           class:text-kira-muted={health !== 'ALL SYSTEMS NOMINAL'} aria-live="polite">{health}</p>
       </div>
       <button type="button" onclick={onClose} aria-label="Close system monitor" title="Close (Esc)"
-        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body class="inline-block">×</span></button>
+        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
     </div>
   </header>
 
@@ -84,12 +83,12 @@
     <button type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'overview' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
-      <span data-tenet-lens-body class="inline-block">01 / OVERVIEW</span>
+      01 / OVERVIEW
     </button>
     <button type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
       class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'processes' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
-      <span data-tenet-lens-body class="inline-block">02 / PROCESSES</span>
+      02 / PROCESSES
     </button>
   </nav>
 
@@ -199,7 +198,7 @@
         </span>
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[10px] font-bold tracking-wide text-kira-accent
-            focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body class="inline-block">COPY REPORT</span></button>
+            focus-visible:outline-2 focus-visible:outline-kira-accent">COPY REPORT</button>
       </footer>
     </div>
   {:else}
@@ -215,7 +214,7 @@
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
             aria-label={'Sort by ' + column.label}>
-            <span data-tenet-lens-body class="inline-block">{column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}</span>
+            {column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}
           </button>
         {/each}
       </div>
