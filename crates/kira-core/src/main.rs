@@ -102,7 +102,7 @@ async fn stream_state<T: Clone + serde::Serialize>(
         let snapshot = updates.borrow_and_update().clone();
         let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
         writer.write_all(&serde_json::to_vec(&response)?).await?;
-        writer.write_all(b"\\n").await?;
+        writer.write_all(b"\n").await?;
         if updates.changed().await.is_err() {
             return Ok(());
         }
