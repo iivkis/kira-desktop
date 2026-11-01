@@ -24,8 +24,16 @@ export interface WorkspaceState {
 /** Linux resource snapshot forwarded by the trusted native Shell.
  * Null means unavailable, never zero. Units are KiB and seconds.
  */
+export interface GpuMetrics {
+  label: string;
+  utilization_percent: number | null;
+  temperature_c: number | null;
+}
+
 export interface SystemMetrics {
   cpu_percent: number | null;
+  cpu_temperature_c: number | null;
+  gpus: GpuMetrics[];
   memory_total_kib: number | null;
   memory_available_kib: number | null;
   swap_total_kib: number | null;
@@ -62,7 +70,14 @@ function isSystemMetrics(value: unknown): value is SystemMetrics {
   const valid = (n: unknown) => n === null ||
     (typeof n === 'number' && Number.isFinite(n) && n >= 0);
   const percent = (n: unknown) => valid(n) && (n === null || (typeof n === 'number' && n <= 100));
+  const temperature = (n: unknown) => n === null ||
+    (typeof n === 'number' && Number.isFinite(n) && n >= -40 && n <= 150);
   return percent(value.cpu_percent) &&
+    temperature(value.cpu_temperature_c) &&
+    Array.isArray(value.gpus) && value.gpus.length <= 8 &&
+    value.gpus.every((gpu: unknown) => isRecord(gpu) &&
+      typeof gpu.label === 'string' && gpu.label.length <= 80 &&
+      percent(gpu.utilization_percent) && temperature(gpu.temperature_c)) &&
     valid(value.memory_total_kib) && valid(value.memory_available_kib) &&
     valid(value.root_total_kib) && valid(value.root_available_kib) &&
     percent(value.battery_percent) &&
@@ -86,6 +101,7 @@ export interface ProcessRow {
   state: string;
   cpu_percent: number | null;
   rss_kib: number | null;
+  pss_kib: number | null;
 }
 
 export interface SystemProcesses {
@@ -121,7 +137,8 @@ export function onSystemProcesses(callback: (data: SystemProcesses) => void): ()
       typeof row.name === 'string' && row.name.length <= 64 &&
       typeof row.state === 'string' && row.state.length === 1 &&
       (row.cpu_percent === null || (typeof row.cpu_percent === 'number' && Number.isFinite(row.cpu_percent) && row.cpu_percent >= 0 && row.cpu_percent <= 100)) &&
-      (row.rss_kib === null || (Number.isSafeInteger(row.rss_kib) && (row.rss_kib as number) >= 0)));
+      (row.rss_kib === null || (Number.isSafeInteger(row.rss_kib) && (row.rss_kib as number) >= 0)) &&
+      (row.pss_kib === null || (Number.isSafeInteger(row.pss_kib) && (row.pss_kib as number) >= 0)));
   }, callback);
 }
 
