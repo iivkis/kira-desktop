@@ -46,7 +46,6 @@ until a screenshot/keyboard test is performed in Niri.
 | **P2** | Typography | Top Bar overline is **8px**; secondary labels in GTK calendar/Launcher are often **10px**, date help **10px**, descriptions **11px**. Size alone is not a WCAG violation, but can undermine the promised readable “premium” hierarchy. | Review readability at 100/125/150/200% and varying font settings; target at least **10–11px for functional metadata** where layout allows. Large editorial headings can remain distinctive. |
 | **P2** | Typographic identity | The Svelte theme declares an Inter/Segoe/Noto stack while both native GTK styles rely on the environment's GTK font. Cyrillic date labels are locale-rendered, but controls read `TODAY`, `COPY DATE`, `APPLICATION CATALOG`, etc. This may feel inconsistent when moving between three surfaces. | Specify a shared **typographic hierarchy** and Cyrillic-capable fallback on GTK; decide whether interface copy is intentionally English or localized. Verify month-name widths and fallback glyphs. |
 | **P2** | Calendar controls | [Calendar CSS](../crates/kira-shell/src/calendar.css) includes the proper keyboard-focus selectors, but `Today`, `Copy Date`, arrow groups, selected and current days still require real pointer+keyboard state review. An HTML `aria-haspopup="dialog"` exists on the clock, but no `aria-expanded` state is tracked across the separate GTK window. | Tab/Shift+Tab, Enter, arrow navigation, ESC, PageUp/Down, Home, copying, and opening/closing by pointer and keyboard; ensure consistently visible focus and expected accessible state across process boundaries. |
-| **P3** | Token/code hygiene | [kira-default.css](../frontend/src/lib/themes/kira-default.css) retains unused `--kira-border-strong`, `--kira-shadow-brutal` and `--kira-shadow-panel`. These legacy concepts contradict the restrained, near-borderless current style if reused indiscriminately. Canonical color values are also repeated in GTK CSS. | Deprecate/remove dead tokens after downstream search; keep cross-surface canonical palette and style tests, not manual divergence. |
 | **P3** | Documentation | Specification §15 previously called Launcher and Calendar future work; the implementation now contains both. | Update status accurately (done in this audit); maintain explicit *implemented vs visually accepted* distinction. |
 
 ## Design-system conformity matrix
@@ -82,3 +81,12 @@ lookup/dismiss logic. Shared canonical GTK declarations now live in
 **does not** unify their layouts or behavior: these surfaces have different
 interaction models. Nix explicitly retains the new stylesheet, and one
 cross-surface test checks canonical palette alignment and assembly.
+
+## KISS / DRY follow-up: unused Svelte theme tokens
+
+The unused `--kira-border-strong`, `--kira-shadow-brutal` and
+`--kira-shadow-panel` definitions were removed after checking all committed
+source references. They had no consumers beyond their declaration and tests.
+The five canonical colors, semantic aliases, motion tokens and GTK palette
+are unchanged. The theme contract now prevents these obsolete variables
+from reappearing unintentionally.
