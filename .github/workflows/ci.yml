@@ -40,7 +40,7 @@ jobs:
 
       - name: Commit and push rustfmt on first-party feature branches
         if: >-
-          (github.event_name == 'push' && github.ref != 'refs/heads/main') ||
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != 'refs/heads/main') ||
           (github.event_name == 'pull_request' &&
            github.event.pull_request.head.repo.full_name == github.repository &&
            github.event.pull_request.head.ref != 'main')
@@ -64,7 +64,7 @@ jobs:
 
       - name: Check formatting only on main and external PRs
         if: >-
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+          (github.event_name == 'push' && (github.ref == 'refs/heads/main' || !startsWith(github.ref, 'refs/heads/'))) ||
           (github.event_name == 'pull_request' &&
            github.event.pull_request.head.repo.full_name != github.repository)
         run: |
