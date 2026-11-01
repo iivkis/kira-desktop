@@ -172,40 +172,117 @@ async fn read_bounded_line<R: AsyncBufRead + Unpin>(
     }
 }
 
-/// Keep a single read-only JSON-RPC connection open and send the latest
-/// workspace state whenever Core's Niri watch channel changes. Every frame
-/// uses the original subscription request id and is newline-delimited.
-async fn stream_workspaces(
+/// Serialize each subscription frame with the original JSON-RPC id.
+async fn send_subscription_frame(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    frame: RpcResponse,
+) -> io::Result<()> {
+    writer.write_all(&serde_json::to_vec(&frame)?).await?;
+    writer.write_all(b"\n").await
+}
+
+/// Keep subscriptions healthy when Niri has no new events. A heartbeat is a
+/// distinct frame, never a repeated workspace state or a JS-visible event.
+async fn stream_workspaces_with_heartbeat(
     writer: &mut tokio::net::unix::OwnedWriteHalf,
     mut workspaces: watch::Receiver<WorkspaceState>,
     id: u64,
+    heartbeat_every: std::time::Duration,
 ) -> io::Result<()> {
+    let snapshot = workspaces.borrow_and_update().clone();
+    send_subscription_frame(
+        writer,
+        RpcResponse::success(id, serde_json::to_value(snapshot)?),
+    )
+    .await?;
+    let mut heartbeat = tokio::time::interval_at(
+        tokio::time::Instant::now() + heartbeat_every,
+        heartbeat_every,
+    );
+    heartbeat.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
     loop {
-        let snapshot = workspaces.borrow_and_update().clone();
-        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
-        writer.write_all(&serde_json::to_vec(&response)?).await?;
-        writer.write_all(b"\n").await?;
-        if workspaces.changed().await.is_err() {
-            return Ok(());
+        tokio::select! {
+            changed = workspaces.changed() => {
+                if changed.is_err() {
+                    return Ok(());
+                }
+                let snapshot = workspaces.borrow_and_update().clone();
+                send_subscription_frame(
+                    writer,
+                    RpcResponse::success(id, serde_json::to_value(snapshot)?),
+                ).await?;
+            }
+            _ = heartbeat.tick() => {
+                send_subscription_frame(writer, RpcResponse::heartbeat(id)).await?;
+            }
         }
     }
 }
 
-/// Internal read-only Core stream for active validated UI settings.
-async fn stream_config(
+async fn stream_workspaces(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    workspaces: watch::Receiver<WorkspaceState>,
+    id: u64,
+) -> io::Result<()> {
+    stream_workspaces_with_heartbeat(
+        writer,
+        workspaces,
+        id,
+        kira_ipc::SUBSCRIPTION_HEARTBEAT_INTERVAL,
+    )
+    .await
+}
+
+/// Internal config stream also sends heartbeats without changing its last
+/// known good settings. No KDL validation or disk IO occurs on heartbeats.
+async fn stream_config_with_heartbeat(
     writer: &mut tokio::net::unix::OwnedWriteHalf,
     mut config: watch::Receiver<ConfigState>,
     id: u64,
+    heartbeat_every: std::time::Duration,
 ) -> io::Result<()> {
+    let snapshot = config.borrow_and_update().clone();
+    send_subscription_frame(
+        writer,
+        RpcResponse::success(id, serde_json::to_value(snapshot)?),
+    )
+    .await?;
+    let mut heartbeat = tokio::time::interval_at(
+        tokio::time::Instant::now() + heartbeat_every,
+        heartbeat_every,
+    );
+    heartbeat.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
     loop {
-        let snapshot = config.borrow_and_update().clone();
-        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
-        writer.write_all(&serde_json::to_vec(&response)?).await?;
-        writer.write_all(b"\n").await?;
-        if config.changed().await.is_err() {
-            return Ok(());
+        tokio::select! {
+            changed = config.changed() => {
+                if changed.is_err() {
+                    return Ok(());
+                }
+                let snapshot = config.borrow_and_update().clone();
+                send_subscription_frame(
+                    writer,
+                    RpcResponse::success(id, serde_json::to_value(snapshot)?),
+                ).await?;
+            }
+            _ = heartbeat.tick() => {
+                send_subscription_frame(writer, RpcResponse::heartbeat(id)).await?;
+            }
         }
     }
+}
+
+async fn stream_config(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    config: watch::Receiver<ConfigState>,
+    id: u64,
+) -> io::Result<()> {
+    stream_config_with_heartbeat(
+        writer,
+        config,
+        id,
+        kira_ipc::SUBSCRIPTION_HEARTBEAT_INTERVAL,
+    )
+    .await
 }
 
 async fn serve(
@@ -348,6 +425,93 @@ async fn main() -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn quiet_workspace_stream_emits_heartbeat_without_replaying_state() {
+        use tokio::io::AsyncBufReadExt;
+        let directory = std::env::temp_dir().join(format!(
+            "kira-heartbeat-ws-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("ipc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_tx, rx) = watch::channel(WorkspaceState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let (_, mut writer) = stream.into_split();
+            stream_workspaces_with_heartbeat(
+                &mut writer,
+                rx,
+                91,
+                std::time::Duration::from_millis(30),
+            )
+            .await
+            .unwrap();
+        });
+        let stream = UnixStream::connect(&path).await.unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut first = String::new();
+        let mut heartbeat = String::new();
+        tokio::time::timeout(std::time::Duration::from_secs(1), async {
+            reader.read_line(&mut first).await.unwrap();
+            reader.read_line(&mut heartbeat).await.unwrap();
+        })
+        .await
+        .unwrap();
+        let snapshot: RpcResponse = serde_json::from_str(&first).unwrap();
+        assert_eq!(snapshot.id, Some(91));
+        assert_eq!(snapshot.result.unwrap()["connected"], false);
+        let beat: RpcResponse = serde_json::from_str(&heartbeat).unwrap();
+        assert_eq!(beat.id, Some(91));
+        assert!(kira_ipc::is_subscription_heartbeat(
+            beat.result.as_ref().unwrap()
+        ));
+        server.abort();
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[tokio::test]
+    async fn quiet_config_stream_emits_heartbeat_without_config_change() {
+        use tokio::io::AsyncBufReadExt;
+        let directory = std::env::temp_dir().join(format!(
+            "kira-heartbeat-config-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("ipc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let (_tx, rx) = watch::channel(ConfigState::default());
+        let server = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let (_, mut writer) = stream.into_split();
+            stream_config_with_heartbeat(&mut writer, rx, 92, std::time::Duration::from_millis(30))
+                .await
+                .unwrap();
+        });
+        let stream = UnixStream::connect(&path).await.unwrap();
+        let mut reader = BufReader::new(stream);
+        let mut first = String::new();
+        let mut heartbeat = String::new();
+        tokio::time::timeout(std::time::Duration::from_secs(1), async {
+            reader.read_line(&mut first).await.unwrap();
+            reader.read_line(&mut heartbeat).await.unwrap();
+        })
+        .await
+        .unwrap();
+        let snapshot: RpcResponse = serde_json::from_str(&first).unwrap();
+        assert_eq!(snapshot.id, Some(92));
+        assert_eq!(snapshot.result.unwrap()["config"]["compact"], false);
+        let beat: RpcResponse = serde_json::from_str(&heartbeat).unwrap();
+        assert_eq!(beat.id, Some(92));
+        assert!(kira_ipc::is_subscription_heartbeat(
+            beat.result.as_ref().unwrap()
+        ));
+        server.abort();
+        fs::remove_dir_all(directory).unwrap();
+    }
 
     #[tokio::test]
     async fn bounded_reader_preserves_consecutive_messages() {
