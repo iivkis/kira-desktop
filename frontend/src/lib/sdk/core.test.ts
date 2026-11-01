@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -136,6 +136,41 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(onChange).toHaveBeenCalledOnce();
     stop();
     expect(removeEventListener).toHaveBeenCalledWith('kira:workspaces', handler);
+  });
+
+  it('validates native metrics, delivers valid samples and unsubscribes', () => {
+    const handlers = new Map<string, EventListener>();
+    const addEventListener = vi.fn((name: string, listener: EventListener) => handlers.set(name, listener));
+    const removeEventListener = vi.fn();
+    globalThis.window = { addEventListener, removeEventListener } as unknown as Window & typeof globalThis;
+    const changed = vi.fn();
+    const stop = onSystemMetrics(changed);
+    const listener = handlers.get('kira:system-metrics');
+    expect(listener).toBeDefined();
+    const metrics = {
+      cpu_percent: 42, memory_total_kib: 16000, memory_available_kib: 8000,
+      root_total_kib: 20000, root_available_kib: 12000,
+      battery_percent: null, battery_charging: null,
+    };
+    for (const invalid of [
+      null, { ...metrics, cpu_percent: 120 }, { ...metrics, cpu_percent: -1 },
+      { ...metrics, root_available_kib: Number.NaN }, { ...metrics, battery_percent: 101 },
+      { ...metrics, battery_charging: 'unknown' },
+    ]) {
+      listener!({ detail: invalid } as unknown as Event);
+    }
+    expect(changed).not.toHaveBeenCalled();
+    listener!({ detail: metrics } as unknown as Event);
+    expect(changed).toHaveBeenCalledExactlyOnceWith(metrics);
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:system-metrics', listener);
+  });
+
+  it('returns an inert event unsubscribe without a browser window', () => {
+    globalThis.window = undefined as unknown as Window & typeof globalThis;
+    expect(() => onSystemMetrics(vi.fn())()).not.toThrow();
+    expect(() => onWorkspaceUpdate(vi.fn())()).not.toThrow();
+    expect(() => onConfigUpdate(vi.fn())()).not.toThrow();
   });
 
   it('reads validated config state through read-only JSON-RPC', async () => {
