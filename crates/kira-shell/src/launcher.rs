@@ -25,7 +25,7 @@ struct AppEntry {
 }
 
 enum WorkerRequest {
-    Icons(Vec<(usize, Option<PathBuf>)>),
+    Icons(Vec<(usize, Option<PathBuf>, Option<PathBuf>)>),
     Launch(usize),
 }
 
@@ -125,8 +125,8 @@ impl Catalog {
                 let app = apps.get(*id)?;
                 Some((
                     *id,
-                    resolve_icon_path(app.icon.as_deref(), theme.as_ref())
-                        .or_else(|| generic.clone()),
+                    resolve_icon_path(app.icon.as_deref(), theme.as_ref()),
+                    generic.clone(),
                 ))
             })
             .collect();
@@ -191,11 +191,11 @@ fn run_worker(requests: Receiver<WorkerRequest>, results: Sender<WorkerResponse>
                 let icons = paths
                     .into_iter()
                     .take(ICON_BATCH_LIMIT)
-                    .filter(|(id, _)| *id < apps.len())
-                    .map(|(id, path)| {
+                    .filter(|(id, _, _)| *id < apps.len())
+                    .map(|(id, path, fallback)| {
                         let icon = cache
                             .entry(id)
-                            .or_insert_with(|| path.as_deref().and_then(file_data_url))
+                            .or_insert_with(|| encode_icon(path.as_deref(), fallback.as_deref()))
                             .clone();
                         (id, icon)
                     })
@@ -262,6 +262,14 @@ fn generic_icon_path(theme: &gtk::IconTheme) -> Option<PathBuf> {
         )
         .file()
         .and_then(|file| file.is_native().then(|| file.path()).flatten())
+}
+
+/// Prefer the requested app icon; use the system-theme generic icon if
+/// a file is missing, too large or has an invalid signature.
+fn encode_icon(primary: Option<&Path>, fallback: Option<&Path>) -> Option<String> {
+    primary
+        .and_then(file_data_url)
+        .or_else(|| fallback.and_then(file_data_url))
 }
 
 /// Read only small, signature-checked image files into bounded data URIs.
@@ -343,6 +351,24 @@ mod tests {
         file.write_all(&vec![b'x'; MAX_ICON_BYTES]).unwrap();
         drop(file);
         assert!(file_data_url(&huge).is_none());
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn invalid_app_icon_falls_back_to_valid_generic_icon() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-icon-fallback-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let broken = directory.join("broken.png");
+        let generic = directory.join("generic.png");
+        std::fs::write(&broken, b"not an image").unwrap();
+        std::fs::write(&generic, b"\x89PNG\r\n\x1a\nimage").unwrap();
+        assert!(encode_icon(Some(&broken), Some(&generic))
+            .unwrap()
+            .starts_with("data:image/png;base64,"));
         std::fs::remove_dir_all(directory).unwrap();
     }
 
