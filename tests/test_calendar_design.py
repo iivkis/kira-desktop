@@ -72,7 +72,7 @@ class CalendarDesignTests(unittest.TestCase):
 
     def test_calendar_commands_are_allowlisted_and_dates_revalidated(self):
         self.assertIn("calendar_command(message)", RUST)
-        self.assertIn("CivilDate::new(year, month, day)?", RUST)
+        self.assertIn("valid_date(year, month, day)", RUST)
         self.assertIn("display.clipboard().set_text(date)", RUST)
         self.assertIn("fn rejects_untrusted_calendar_commands()", RUST)
         self.assertIn('sendCalendarUi("close")'.replace('"', "'"), SDK)
