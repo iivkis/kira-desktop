@@ -71,8 +71,7 @@ fn compare_rows(a: &ProcessRow, b: &ProcessRow, sort: SortState) -> Ordering {
                 .then(a.pid.cmp(&b.pid));
         }
         Sort::Memory => {
-            return compare_known(a.rss_kib, b.rss_kib, sort.descending)
-                .then(a.pid.cmp(&b.pid));
+            return compare_known(a.rss_kib, b.rss_kib, sort.descending).then(a.pid.cmp(&b.pid));
         }
     };
     let result = if sort.descending {
