@@ -45,6 +45,7 @@ struct CalendarOverlay {
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
+    reposition_pending: Cell<bool>,
     revealed: Cell<bool>,
     paint_pending: Cell<bool>,
     generation: Cell<u32>,
@@ -86,6 +87,7 @@ impl CalendarOverlay {
 
     fn hide(&self) {
         self.requested.set(false);
+        self.reposition_pending.set(false);
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
         }
@@ -118,8 +120,25 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // A live surface switches components in place. Do not unmap/remap
-        // the Wayland popup or queue a separate hide against the new view.
+        // Moving an already mapped layer-shell surface causes Niri to display
+        // its previous WebKit buffer for a frame at the NEW coordinates.
+        // Unmap first and allow the compositor to process that unmap in a
+        // different main-loop iteration before remapping at the new anchors.
+        // Switching Calendar <-> System keeps its instant in-place path.
+        let relocating = self.window.is_visible()
+            && self
+                .active
+                .get()
+                .is_some_and(|old| (old == Surface::Launcher) != (kind == Surface::Launcher));
+        let defer_present = relocating || self.reposition_pending.get();
+        if relocating {
+            // Unmapping can trigger is_active_notify: it must not count as
+            // an outside click that closes the *new* popup.
+            self.was_active.set(false);
+            self.window.set_visible(false);
+        }
+        self.reposition_pending.set(defer_present);
+
         if self.active.get() == Some(Surface::System) && kind != Surface::System {
             if let Some(model) = self.system.borrow().as_ref() {
                 model.set_processes_active(false);
@@ -145,14 +164,33 @@ impl CalendarOverlay {
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
-        self.window.present();
+        let generation = self.generation.get();
+        if defer_present {
+            // Start replacing the Svelte DOM while the old buffer is NOT
+            // mapped. The window is revealed only after the new generation
+            // has mounted and painted (or the verified-DOM fallback runs).
+            self.request_mount();
+            let weak = Rc::downgrade(self);
+            gtk::glib::timeout_add_local_once(Duration::from_millis(32), move || {
+                if let Some(state) = weak.upgrade()
+                    && state.requested.get()
+                    && state.generation.get() == generation
+                {
+                    state.reposition_pending.set(false);
+                    state.window.present();
+                }
+            });
+        } else {
+            self.window.present();
+            self.request_mount();
+        }
         eprintln!(
-            "kira-shell: Overlay requested: {} generation {} (host ready: {})",
+            "kira-shell: Overlay requested: {} generation {} (host ready: {}, reposition: {})",
             kind.name(),
-            self.generation.get(),
-            self.host_ready.get()
+            generation,
+            self.host_ready.get(),
+            defer_present
         );
-        self.request_mount();
 
         // A dead renderer should not leave an invisible focus-stealing popup.
         let generation = self.generation.get();
@@ -583,6 +621,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
+        reposition_pending: Cell::new(false),
         revealed: Cell::new(false),
         paint_pending: Cell::new(false),
         generation: Cell::new(0),
