@@ -5,10 +5,10 @@
   import { GridComponent } from 'echarts/components';
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
-  import type { SystemMetrics } from '../sdk/core';
+  import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
   import { percentUsed } from '../system-model';
   import {
-    activityAxis, appendTelemetry, gpuPeak, telemetrySummary,
+    activityAxis, appendPulse, gpuPeak,
     type TelemetryPoint,
   } from '../system-charts';
 
@@ -22,15 +22,20 @@
   let trend: EChartsType | null = null;
   let reduced = false;
   let history: TelemetryPoint[] = [];
-  let lastSample: SystemMetrics | null = null;
+  let pulse = $state<SystemPulse | null>(null);
+  let lastPulse: SystemPulse | null = null;
+  let lastMetrics: SystemMetrics | null = null;
+  let pendingGpu: number | null | undefined;
 
   const accent = '#fca311';
   const white = '#ffffff';
   const muted = '#e5e5e5';
   const prussian = '#14213d';
 
-  const ram = $derived(metrics
-    ? percentUsed(metrics.memory_total_kib, metrics.memory_available_kib) : null);
+  const cpu = $derived(pulse ? pulse.cpu_percent : metrics?.cpu_percent ?? null);
+  const ram = $derived(pulse
+    ? percentUsed(pulse.memory_total_kib, pulse.memory_available_kib)
+    : metrics ? percentUsed(metrics.memory_total_kib, metrics.memory_available_kib) : null);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
   const trendHeight = $derived(gpuAvailable ? 296 : 202);
   const dialLabel = (value: number | null) => value === null ? '—' : value + '%';
@@ -49,14 +54,14 @@
     });
     gauges?.setOption({
       animation: !reduced,
-      animationDuration: reduced ? 0 : 700,
-      animationDurationUpdate: reduced ? 0 : 530,
+      animationDuration: reduced ? 0 : 85,
+      animationDurationUpdate: reduced ? 0 : 85,
       animationEasingUpdate: 'cubicOut',
       series: [
-        dial('CPU', metrics?.cpu_percent ?? null, '25%', accent),
+        dial('CPU', cpu, '25%', accent),
         dial('RAM', ram, '75%', white),
       ],
-    }, { notMerge: true });
+    }, { lazyUpdate: true });
 
     const panels: { field: 'cpu' | 'ram' | 'gpu'; name: string; color: string }[] = [
       { field: 'cpu', name: 'CPU ACTIVITY', color: accent },
@@ -66,8 +71,8 @@
 
     trend?.setOption({
       animation: !reduced,
-      animationDuration: reduced ? 0 : 460,
-      animationDurationUpdate: reduced ? 0 : 420,
+      animationDuration: reduced ? 0 : 85,
+      animationDurationUpdate: reduced ? 0 : 85,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
       grid: panels.map((_, i) => ({
@@ -95,23 +100,30 @@
       series: panels.map((panel, i) => ({
         name: panel.name, type: 'line' as const,
         xAxisIndex: i, yAxisIndex: i,
-        smooth: 0.27, silent: true,
+        smooth: 0.18, silent: true,
         showSymbol: history.length < 3, symbolSize: 5,
-        connectNulls: false,
+        connectNulls: panel.field === 'gpu',
         data: history.map(point => point[panel.field]),
         lineStyle: { color: panel.color, width: 2.5 },
         itemStyle: { color: panel.color },
         areaStyle: { color: panel.color, opacity: panel.field === 'cpu' ? 0.18 : 0.09 },
       })),
-    }, { notMerge: true });
+    }, { notMerge: true, lazyUpdate: true });
   }
 
-  // One history point per *native* sample, not per chart resize or DOM update.
+  // One history point per actual native pulse. No 100ms JS timer and no
+  // GPU replication between slow readings. The bounded list is one minute.
   $effect(() => {
-    const sample = metrics;
-    if (sample && sample !== lastSample) {
-      history = appendTelemetry(history, sample, Date.now());
-      lastSample = sample;
+    const current = metrics;
+    const sample = pulse;
+    if (current && current !== lastMetrics) {
+      pendingGpu = gpuPeak(current);
+      lastMetrics = current;
+    }
+    if (sample && sample !== lastPulse) {
+      history = appendPulse(history, sample, Date.now(), pendingGpu ?? null);
+      pendingGpu = undefined;
+      lastPulse = sample;
     }
     draw();
   });
@@ -119,6 +131,7 @@
   onMount(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced = motion.matches;
+    const stopPulse = onSystemPulse(sample => { pulse = sample; });
     gauges = echarts.init(gaugeNode, undefined, { renderer: 'svg' });
     trend = echarts.init(trendNode, undefined, { renderer: 'svg' });
     const resize = () => { gauges?.resize(); trend?.resize(); };
@@ -129,6 +142,7 @@
     motion.addEventListener('change', onMotionChange);
     draw();
     return () => {
+      stopPulse();
       observer.disconnect();
       motion.removeEventListener('change', onMotionChange);
       gauges?.dispose();
@@ -136,7 +150,9 @@
       gauges = null;
       trend = null;
       history = [];
-      lastSample = null;
+      lastPulse = null;
+      lastMetrics = null;
+      pendingGpu = undefined;
     };
   });
 </script>
@@ -145,15 +161,15 @@
   <section aria-label="CPU and memory utilization">
     <div class="flex items-center justify-between">
       <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">SYSTEM / PULSE</h2>
-      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 2S</span>
+      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 100MS</span>
     </div>
     <div class="relative mt-1 h-[164px]">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 grid grid-cols-2">
         <div class="flex flex-col items-center justify-center">
           <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums text-kira-accent"
-            aria-label={'CPU utilization ' + (metrics?.cpu_percent === null || !metrics ? 'unavailable' : metrics.cpu_percent + ' percent')}>
-            {dialLabel(metrics?.cpu_percent ?? null)}
+            aria-label={'CPU utilization ' + (cpu === null ? 'unavailable' : cpu + ' percent')}>
+            {dialLabel(cpu)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
         </div>
@@ -170,12 +186,13 @@
   <section aria-label="Live resource activity">
     <div class="flex items-center justify-between">
       <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">ACTIVITY / LIVE</h2>
-      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · ADAPTIVE SCALE</span>
+      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · 100MS PULSE</span>
     </div>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
         role="img" aria-label={'Measured history with individually labelled adaptive percentage scales. ' +
-          telemetrySummary(metrics)}></div>
+          'CPU ' + (cpu === null ? 'unavailable' : cpu + '%') +
+          ', RAM ' + (ram === null ? 'unavailable' : ram + '%')}></div>
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
         <div class="absolute left-9 top-[96px] text-[10px] font-bold tracking-wide text-kira-text">RAM</div>
