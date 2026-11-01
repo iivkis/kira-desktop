@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	5fe89bb22d34be6537abd4863f9cb4c8cce881a2
+C	4358579aad56edb6af793fe6130605c0d246773e
 F	.cargo/config.toml	98	108	3
 F	.github/workflows/ci.yml	1467	113	46
 F	.github/workflows/nix.yml	1258	161	38
@@ -35,67 +35,67 @@ F	crates/kira-ipc/Cargo.toml	170	2176	9
 F	crates/kira-ipc/src/client.rs	10376	2187	277
 F	crates/kira-ipc/src/lib.rs	9053	2466	302
 F	crates/kira-shell/Cargo.toml	297	2770	12
-F	crates/kira-shell/src/calendar.rs	29324	2784	815
-F	crates/kira-shell/src/launcher.rs	2568	3601	81
-F	crates/kira-shell/src/main.rs	17601	3684	414
-F	crates/kira-shell/src/native_ui.rs	2413	4100	61
-F	crates/kira-shell/src/process_monitor.rs	6245	4163	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4367	214
-F	crates/kira-shell/src/system_panel.rs	7948	4583	226
-F	docs/CONFIG.md	5801	4811	125
-F	docs/DESIGN_SYSTEM.md	15048	4938	276
-F	docs/DEVELOPMENT.md	25624	5216	515
-F	docs/QA_VISUAL.md	12284	5733	149
-F	docs/SPECIFICATION.md	28960	5884	421
-F	docs/UI_ARCHITECTURE.md	5421	6307	85
-F	docs/VISUAL_REVIEW.md	9754	6394	84
-F	flake.nix	2651	6480	76
-F	frontend/index.html	2737	6558	66
-F	frontend/package.json	650	6626	23
-F	frontend/scripts/inline-assets.mjs	4457	6651	103
-F	frontend/scripts/inline-assets.test.mjs	4645	6756	106
-F	frontend/scripts/smoke-overlays.mjs	4141	6864	88
-F	frontend/src/App.svelte	8659	6954	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7156	84
-F	frontend/src/lib/bootstrap.ts	2613	7242	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7314	38
-F	frontend/src/lib/calendar-model.ts	3453	7354	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7428	177
-F	frontend/src/lib/components/LauncherWidget.svelte	6492	7607	137
-F	frontend/src/lib/components/SystemHealth.svelte	1684	7746	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	7791	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	7982	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8045	29
-F	frontend/src/lib/launcher-model.ts	778	8076	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8096	89
-F	frontend/src/lib/lazy-widget.ts	1984	8187	63
-F	frontend/src/lib/sdk/core.test.ts	17180	8252	349
-F	frontend/src/lib/sdk/core.ts	14103	8603	389
-F	frontend/src/lib/system-health.test.ts	2348	8994	41
-F	frontend/src/lib/system-health.ts	2831	9037	60
-F	frontend/src/lib/system-model.test.ts	2988	9099	57
-F	frontend/src/lib/system-model.ts	3411	9158	76
-F	frontend/src/lib/themes/kira-default.css	1687	9236	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9290	101
-F	frontend/src/lib/themes/kira-default.ts	777	9393	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9417	79
-F	frontend/src/lib/time.test.ts	263	9498	8
-F	frontend/src/lib/time.ts	320	9508	9
-F	frontend/src/main.ts	4907	9519	112
-F	frontend/src/style.css	1329	9633	44
-F	frontend/tsconfig.json	403	9679	16
-F	frontend/vite.config.ts	224	9697	8
-F	nix/package.nix	3132	9707	117
-F	scripts/dev_preview.py	18147	9826	403	x
-F	scripts/qa_visual.py	12052	10231	299
-F	tests/test_calendar_design.py	6837	10532	121
-F	tests/test_detailed_health.py	5197	10655	101
-F	tests/test_dev_preview.py	9339	10758	219
-F	tests/test_launcher_design.py	4192	10979	84
-F	tests/test_native_theme.py	1567	11065	36
-F	tests/test_popup_geometry.py	2885	11103	54
-F	tests/test_qa_visual.py	10549	11159	217
-F	tests/test_ui_bootstrap_contract.py	1103	11378	29
+F	crates/kira-shell/src/calendar.rs	31111	2784	854
+F	crates/kira-shell/src/launcher.rs	2568	3640	81
+F	crates/kira-shell/src/main.rs	17601	3723	414
+F	crates/kira-shell/src/native_ui.rs	2413	4139	61
+F	crates/kira-shell/src/process_monitor.rs	6245	4202	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4406	214
+F	crates/kira-shell/src/system_panel.rs	7948	4622	226
+F	docs/CONFIG.md	5801	4850	125
+F	docs/DESIGN_SYSTEM.md	15048	4977	276
+F	docs/DEVELOPMENT.md	25624	5255	515
+F	docs/QA_VISUAL.md	12284	5772	149
+F	docs/SPECIFICATION.md	28960	5923	421
+F	docs/UI_ARCHITECTURE.md	5743	6346	90
+F	docs/VISUAL_REVIEW.md	9754	6438	84
+F	flake.nix	2651	6524	76
+F	frontend/index.html	2737	6602	66
+F	frontend/package.json	650	6670	23
+F	frontend/scripts/inline-assets.mjs	4457	6695	103
+F	frontend/scripts/inline-assets.test.mjs	4645	6800	106
+F	frontend/scripts/smoke-overlays.mjs	4141	6908	88
+F	frontend/src/App.svelte	8659	6998	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7200	84
+F	frontend/src/lib/bootstrap.ts	2613	7286	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7358	38
+F	frontend/src/lib/calendar-model.ts	3453	7398	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7472	177
+F	frontend/src/lib/components/LauncherWidget.svelte	6492	7651	137
+F	frontend/src/lib/components/SystemHealth.svelte	1684	7790	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	7835	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8026	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8089	29
+F	frontend/src/lib/launcher-model.ts	778	8120	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8140	89
+F	frontend/src/lib/lazy-widget.ts	1984	8231	63
+F	frontend/src/lib/sdk/core.test.ts	17180	8296	349
+F	frontend/src/lib/sdk/core.ts	14103	8647	389
+F	frontend/src/lib/system-health.test.ts	2348	9038	41
+F	frontend/src/lib/system-health.ts	2831	9081	60
+F	frontend/src/lib/system-model.test.ts	2988	9143	57
+F	frontend/src/lib/system-model.ts	3411	9202	76
+F	frontend/src/lib/themes/kira-default.css	1687	9280	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9334	101
+F	frontend/src/lib/themes/kira-default.ts	777	9437	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9461	79
+F	frontend/src/lib/time.test.ts	263	9542	8
+F	frontend/src/lib/time.ts	320	9552	9
+F	frontend/src/main.ts	4907	9563	112
+F	frontend/src/style.css	1329	9677	44
+F	frontend/tsconfig.json	403	9723	16
+F	frontend/vite.config.ts	224	9741	8
+F	nix/package.nix	3132	9751	117
+F	scripts/dev_preview.py	18147	9870	403	x
+F	scripts/qa_visual.py	12052	10275	299
+F	tests/test_calendar_design.py	6837	10576	121
+F	tests/test_detailed_health.py	5197	10699	101
+F	tests/test_dev_preview.py	9339	10802	219
+F	tests/test_launcher_design.py	4192	11023	84
+F	tests/test_native_theme.py	1567	11109	36
+F	tests/test_popup_geometry.py	4488	11147	79
+F	tests/test_qa_visual.py	10549	11228	217
+F	tests/test_ui_bootstrap_contract.py	1103	11447	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -2828,6 +2828,7 @@ struct CalendarOverlay {
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
+    reposition_pending: Cell<bool>,
     revealed: Cell<bool>,
     paint_pending: Cell<bool>,
     generation: Cell<u32>,
@@ -2869,6 +2870,7 @@ impl CalendarOverlay {
 
     fn hide(&self) {
         self.requested.set(false);
+        self.reposition_pending.set(false);
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
         }
@@ -2901,8 +2903,25 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // A live surface switches components in place. Do not unmap/remap
-        // the Wayland popup or queue a separate hide against the new view.
+        // Moving an already mapped layer-shell surface causes Niri to display
+        // its previous WebKit buffer for a frame at the NEW coordinates.
+        // Unmap first and allow the compositor to process that unmap in a
+        // different main-loop iteration before remapping at the new anchors.
+        // Switching Calendar <-> System keeps its instant in-place path.
+        let relocating = self.window.is_visible()
+            && self
+                .active
+                .get()
+                .is_some_and(|old| (old == Surface::Launcher) != (kind == Surface::Launcher));
+        let defer_present = relocating || self.reposition_pending.get();
+        if relocating {
+            // Unmapping can trigger is_active_notify: it must not count as
+            // an outside click that closes the *new* popup.
+            self.was_active.set(false);
+            self.window.set_visible(false);
+        }
+        self.reposition_pending.set(defer_present);
+
         if self.active.get() == Some(Surface::System) && kind != Surface::System {
             if let Some(model) = self.system.borrow().as_ref() {
                 model.set_processes_active(false);
@@ -2928,14 +2947,33 @@ impl CalendarOverlay {
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
-        self.window.present();
+        let generation = self.generation.get();
+        if defer_present {
+            // Start replacing the Svelte DOM while the old buffer is NOT
+            // mapped. The window is revealed only after the new generation
+            // has mounted and painted (or the verified-DOM fallback runs).
+            self.request_mount();
+            let weak = Rc::downgrade(self);
+            gtk::glib::timeout_add_local_once(Duration::from_millis(32), move || {
+                if let Some(state) = weak.upgrade()
+                    && state.requested.get()
+                    && state.generation.get() == generation
+                {
+                    state.reposition_pending.set(false);
+                    state.window.present();
+                }
+            });
+        } else {
+            self.window.present();
+            self.request_mount();
+        }
         eprintln!(
-            "kira-shell: Overlay requested: {} generation {} (host ready: {})",
+            "kira-shell: Overlay requested: {} generation {} (host ready: {}, reposition: {})",
             kind.name(),
-            self.generation.get(),
-            self.host_ready.get()
+            generation,
+            self.host_ready.get(),
+            defer_present
         );
-        self.request_mount();
 
         // A dead renderer should not leave an invisible focus-stealing popup.
         let generation = self.generation.get();
@@ -3366,6 +3404,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
+        reposition_pending: Cell::new(false),
         revealed: Cell::new(false),
         paint_pending: Cell::new(false),
         generation: Cell::new(0),
@@ -6327,7 +6366,12 @@ clears all Wayland layer-shell anchors and uses exclusive zone -1 so the
 compositor centers it on the full output. Calendar and System Monitor
 restore the top/right anchors, 25px top margin, 12px right margin and
 exclusive zone 0 when selected. The same GTK window and WebKit view
-survive these repositionings. The browser cannot create an ordinary
+survive these repositionings. **When switching between the centered
+Launcher and corner popups, the GTK surface is first unmapped**, its
+anchors are changed while hidden, and remapping is deferred one compositor
+turn; the previous WebKit framebuffer must never travel visibly across
+the output. Calendar ↔ System remain immediate, in-place switches. The
+browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 
 ## Migration, in small reviewable steps
@@ -11130,6 +11174,31 @@ class PopupGeometryTests(unittest.TestCase):
         )
         # The shared layer-shell window and WebKit renderer stay in place.
         self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", CALENDAR)
+        self.assertNotIn("window.close()", CALENDAR)
+
+    def test_switching_launcher_never_moves_a_mapped_webkit_buffer(self):
+        # Calendar/System can switch in place. Moving to/from the centered
+        # Launcher must unmap before changing layer-shell anchors, then
+        # remap on a subsequent compositor frame with the new Svelte DOM.
+        self.assertIn("let relocating = self.window.is_visible()", CALENDAR)
+        self.assertIn("(old == Surface::Launcher) != (kind == Surface::Launcher)", CALENDAR)
+        self.assertIn("let defer_present = relocating || self.reposition_pending.get();", CALENDAR)
+        self.assertIn("self.window.set_visible(false);", CALENDAR)
+        self.assertIn("self.reposition_pending.set(defer_present);", CALENDAR)
+        show = CALENDAR.split("fn show(self: &Rc<Self>, kind: Surface)", 1)[1].split(
+            "fn request_mount(", 1
+        )[0]
+        self.assertLess(show.index("self.window.set_visible(false)"),
+                        show.index("self.position_for(kind);"))
+        self.assertIn("self.was_active.set(false);", show)
+        self.assertIn("self.window.set_opacity(0.0);", show)
+        self.assertIn("Duration::from_millis(32)", show)
+        self.assertIn("state.generation.get() == generation", show)
+        self.assertIn("state.window.present();", show)
+        self.assertIn("self.request_mount();", show)
+        self.assertIn("reposition_pending: Cell<bool>", CALENDAR)
+        # The current shared WebKit process must not be restarted on moves.
+        self.assertEqual(CALENDAR.count("webkit6::WebView::builder()"), 1)
         self.assertNotIn("window.close()", CALENDAR)
 
     def test_half_margin_and_monitor_relative_height(self):
