@@ -834,7 +834,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
         if let Some(state) = weak.upgrade() {
             state.poll_launcher();
-            // Reuse the existing 30ms GTK source for the 100ms CPU/RAM
+            // Reuse the existing 30ms GTK source for the 500ms CPU/RAM
             // stream. Never schedule WebKit scripts on a worker thread.
             state.poll_pulse();
             gtk::glib::ControlFlow::Continue
