@@ -29,7 +29,7 @@ class NativeThemeContractTests(unittest.TestCase):
         self.assertEqual(colors, {k: value for k, (_, value) in expected.items()})
         for key, (frontend_name, value) in expected.items():
             self.assertIn(f"--{frontend_name}: {value};", FRONTEND, key)
-        for css in ("launcher.css", "calendar.css", "system_panel.css"):
+        for css in ("launcher.css", "system_panel.css"):
             source = (NATIVE / css).read_text()
             self.assertNotIn("@define-color", source, css)
             self.assertNotRegex(source, r"#[0-9a-fA-F]{8}\b")
@@ -37,15 +37,17 @@ class NativeThemeContractTests(unittest.TestCase):
     def test_shared_style_provider_is_loaded_before_component_css(self):
         self.assertIn('include_str!("native-palette.css")', HELPERS)
         self.assertIn('format!("{}\\n{}", include_str!("native-palette.css"), styles)', HELPERS)
-        for component in (LAUNCHER, CALENDAR, (NATIVE / "system_panel.rs").read_text()):
+        for component in (LAUNCHER, (NATIVE / "system_panel.rs").read_text()):
             self.assertIn("native_ui::install_styles(", component)
             self.assertIn("native_ui::dismiss_overlay(", component)
             self.assertNotIn("gtk::CssProvider::new()", component)
         self.assertIn("native_ui::find_overlay(", LAUNCHER)
         self.assertIn("mod native_ui;", SHELL)
+        self.assertNotIn("native_ui::install_styles(", CALENDAR)
+        self.assertIn("webkit6::WebView::builder()", CALENDAR)
 
     def test_nix_keeps_shared_css_in_native_rust_source(self):
-        for asset in ("launcher.css", "calendar.css", "native-palette.css", "system_panel.css"):
+        for asset in ("launcher.css", "native-palette.css", "system_panel.css"):
             self.assertIn(f'/crates/kira-shell/src/{asset}', NIX)
 
 
