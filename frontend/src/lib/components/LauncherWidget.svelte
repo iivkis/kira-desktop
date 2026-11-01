@@ -143,7 +143,7 @@
           </span>
           <span class="min-w-0 flex-1">
             <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
-            <span class="block truncate text-[11px] text-kira-muted">{app.description.trim() || 'Installed application'}</span>
+            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim() || 'Installed application'}</span>
           </span>
         </button>
       {:else}
