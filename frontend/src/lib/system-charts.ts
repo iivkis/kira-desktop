@@ -1,7 +1,7 @@
-/** Bounded, honest, two-second system telemetry for Apache ECharts.
+/** Bounded real native telemetry for Apache ECharts (100ms CPU/RAM, 2s GPU).
  * This module is intentionally DOM-independent so the data rules are testable.
  */
-import type { SystemMetrics } from './sdk/core';
+import type { SystemMetrics, SystemPulse } from './sdk/core';
 import { percentUsed } from './system-model';
 
 export interface Meter {
@@ -17,7 +17,8 @@ export interface TelemetryPoint {
   gpu: number | null;
 }
 
-export const MAX_TELEMETRY_POINTS = 30; // At two-second cadence, up to one minute.
+export const MAX_TELEMETRY_POINTS = 30; // Legacy 2-second samples.
+export const MAX_PULSE_POINTS = 600; // 100ms * 600 = 60 seconds.
 
 export function gpuPeak(metrics: SystemMetrics): number | null {
   const values = metrics.gpus
@@ -51,6 +52,25 @@ export function appendTelemetry(
     gpu: gpuPeak(metrics),
   }];
   return next.slice(-MAX_TELEMETRY_POINTS);
+}
+
+/** One real sample per native 100ms pulse. GPU is populated only on the
+ * next pulse after a genuine two-second GPU reading, never interpolated or
+ * multiplied into twenty fictitious 100ms measurements.
+ */
+export function appendPulse(
+  history: readonly TelemetryPoint[],
+  pulse: SystemPulse,
+  time: number,
+  gpuReading: number | null = null,
+): TelemetryPoint[] {
+  const next = [...history, {
+    time,
+    cpu: pulse.cpu_percent,
+    ram: percentUsed(pulse.memory_total_kib, pulse.memory_available_kib),
+    gpu: gpuReading,
+  }];
+  return next.slice(-MAX_PULSE_POINTS);
 }
 
 /** Explicit, labelled local axis ranges make low activity readable without
