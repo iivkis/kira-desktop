@@ -109,7 +109,10 @@ impl ProcessPage {
                         sampler = ProcessSampler::default();
                         was_active = true;
                     }
-                    if sender.send(sampler.sample().map_err(|e| e.to_string())).is_err() {
+                    if sender
+                        .send(sampler.sample().map_err(|e| e.to_string()))
+                        .is_err()
+                    {
                         break;
                     }
                 } else {
@@ -119,10 +122,19 @@ impl ProcessPage {
             }
         });
         let page = Rc::new(Self {
-            root, rows, summary, query: RefCell::new(String::new()),
-            sort: Cell::new(Sort::Cpu), latest: RefCell::new(None),
-            error: RefCell::new(None), cpu_button, memory_button, pid_button,
-            running, active, receiver: RefCell::new(receiver),
+            root,
+            rows,
+            summary,
+            query: RefCell::new(String::new()),
+            sort: Cell::new(Sort::Cpu),
+            latest: RefCell::new(None),
+            error: RefCell::new(None),
+            cpu_button,
+            memory_button,
+            pid_button,
+            running,
+            active,
+            receiver: RefCell::new(receiver),
         });
         page.update_sort_styles();
         page.show_empty("OPEN PROCESSES TO SAMPLE");
@@ -213,20 +225,26 @@ impl ProcessPage {
             return;
         };
         let query = self.query.borrow();
-        let mut rows: Vec<&ProcessRow> = snapshot.rows.iter()
+        let mut rows: Vec<&ProcessRow> = snapshot
+            .rows
+            .iter()
             .filter(|row| {
-                query.is_empty() ||
-                row.name.to_lowercase().contains(query.as_str()) ||
-                row.pid.to_string().contains(query.as_str())
+                query.is_empty()
+                    || row.name.to_lowercase().contains(query.as_str())
+                    || row.pid.to_string().contains(query.as_str())
             })
             .collect();
         match self.sort.get() {
-            Sort::Cpu => rows.sort_by(|a, b|
-                b.cpu_percent.partial_cmp(&a.cpu_percent).unwrap_or(Ordering::Equal)
+            Sort::Cpu => rows.sort_by(|a, b| {
+                b.cpu_percent
+                    .partial_cmp(&a.cpu_percent)
+                    .unwrap_or(Ordering::Equal)
                     .then_with(|| b.rss_kib.cmp(&a.rss_kib))
-                    .then(a.pid.cmp(&b.pid))),
-            Sort::Memory => rows.sort_by(|a, b|
-                b.rss_kib.cmp(&a.rss_kib).then_with(|| a.pid.cmp(&b.pid))),
+                    .then(a.pid.cmp(&b.pid))
+            }),
+            Sort::Memory => {
+                rows.sort_by(|a, b| b.rss_kib.cmp(&a.rss_kib).then_with(|| a.pid.cmp(&b.pid)))
+            }
             Sort::Pid => rows.sort_by_key(|row| row.pid),
         }
         let matches = rows.len();
@@ -238,17 +256,22 @@ impl ProcessPage {
             horizontal.add_css_class("kira-process-row");
             let name = text(&row.name, "kira-process-name", true, 0);
             name.set_tooltip_text(Some(&format!(
-                "{} / PID {} / STATE {}", row.name, row.pid, row.state
+                "{} / PID {} / STATE {}",
+                row.name, row.pid, row.state
             )));
             horizontal.append(&name);
             horizontal.append(&text(&row.pid.to_string(), "kira-process-number", false, 6));
             horizontal.append(&text(
                 &row.cpu_percent.map_or("—".into(), |p| format!("{p:.1}%")),
-                "kira-process-number", false, 7,
+                "kira-process-number",
+                false,
+                7,
             ));
             horizontal.append(&text(
                 &row.rss_kib.map_or("—".into(), bytes_label),
-                "kira-process-number", false, 8,
+                "kira-process-number",
+                false,
+                8,
             ));
             self.rows.append(&horizontal);
         }
@@ -257,8 +280,14 @@ impl ProcessPage {
         }
         self.summary.set_text(&format!(
             "SHOWING {} OF {} MATCHES  /  {} SCANNED{}",
-            matches.min(VISIBLE_ROWS), matches, snapshot.total,
-            if snapshot.truncated { "  /  LIMIT REACHED" } else { "" }
+            matches.min(VISIBLE_ROWS),
+            matches,
+            snapshot.total,
+            if snapshot.truncated {
+                "  /  LIMIT REACHED"
+            } else {
+                ""
+            }
         ));
     }
 }

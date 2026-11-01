@@ -68,7 +68,8 @@ fn rss_kib(input: &str) -> Option<u64> {
         line.strip_prefix("VmRSS:")?
             .split_whitespace()
             .next()?
-            .parse::<u64>().ok()
+            .parse::<u64>()
+            .ok()
     })
 }
 
@@ -91,9 +92,10 @@ pub struct ProcessSampler {
 
 impl ProcessSampler {
     pub fn sample(&mut self) -> io::Result<ProcessSnapshot> {
-        let total = cpu_ticks(&fs::read_to_string("/proc/stat")?)
-            .map(|x| x.0);
-        let total_delta = self.previous_total.zip(total)
+        let total = cpu_ticks(&fs::read_to_string("/proc/stat")?).map(|x| x.0);
+        let total_delta = self
+            .previous_total
+            .zip(total)
             .and_then(|(before, after)| after.checked_sub(before));
         self.previous_total = total;
         let mut next = HashMap::new();
@@ -102,7 +104,11 @@ impl ProcessSampler {
         let mut truncated = false;
         let entries = fs::read_dir("/proc")?;
         for entry in entries.flatten() {
-            let Some(pid) = entry.file_name().to_str().and_then(|v| v.parse::<u32>().ok()) else {
+            let Some(pid) = entry
+                .file_name()
+                .to_str()
+                .and_then(|v| v.parse::<u32>().ok())
+            else {
                 continue;
             };
             if scanned >= MAX_SCANNED {
@@ -116,10 +122,15 @@ impl ProcessSampler {
                 continue;
             };
             let identity = (pid, stat.start_ticks);
-            let usage = cpu_percent(self.previous.get(&identity).copied(), stat.ticks, total_delta);
+            let usage = cpu_percent(
+                self.previous.get(&identity).copied(),
+                stat.ticks,
+                total_delta,
+            );
             next.insert(identity, stat.ticks);
             let rss = fs::read_to_string(path.join("status"))
-                .ok().and_then(|s| rss_kib(&s));
+                .ok()
+                .and_then(|s| rss_kib(&s));
             rows.push(ProcessRow {
                 pid,
                 name: stat.name,
@@ -129,7 +140,11 @@ impl ProcessSampler {
             });
         }
         self.previous = next;
-        Ok(ProcessSnapshot { rows, total: scanned, truncated })
+        Ok(ProcessSnapshot {
+            rows,
+            total: scanned,
+            truncated,
+        })
     }
 }
 
