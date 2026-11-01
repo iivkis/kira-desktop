@@ -80,6 +80,8 @@ function scriptFor(steps, observationMs = 1150) {
                   'const rect = target.getBoundingClientRect();' +
                   'window.__kiraLensInitialRect = [rect.left,rect.top,rect.width,rect.height];' +
                   'target.dispatchEvent(new PointerEvent("pointerover",{bubbles:true,pointerType:"mouse",clientX:rect.left+rect.width*0.25,clientY:rect.top+rect.height*0.25}));' +
+                  'const immediatePaint=target.querySelector("[data-tenet-lens-body]")||target;' +
+                  'window.__kiraLensStarted=target.dataset.tenetWarpState==="forward" && immediatePaint.dataset.tenetWarpPixels==="true" && !!immediatePaint.style.filter && !target.style.filter;' +
                   'setTimeout(()=>{' +
                     'const paint=target.querySelector("[data-tenet-lens-body]")||target;' +
                     'const filter=document.querySelector("feDisplacementMap");' +
@@ -143,6 +145,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-lens-enter", !!window.__kiraLensReacted);' +
       'document.documentElement.setAttribute("data-smoke-lens-move", !!window.__kiraWarpChanged);' +
       'document.documentElement.setAttribute("data-smoke-lens-seen", !!window.__kiraLensInitialRect);' +
+      'document.documentElement.setAttribute("data-smoke-lens-started", !!window.__kiraLensStarted);' +
       'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted && !!window.__kiraWarpChanged);' +
       'document.documentElement.setAttribute("data-smoke-warp-svg", !!document.querySelector("filter[id^=kira-temporal-warp] feTurbulence") && !!document.querySelector("filter[id^=kira-temporal-warp] feDisplacementMap"));' +
       'document.documentElement.setAttribute("data-smoke-warp-smooth", !!window.__kiraWarpSmooth);' +
@@ -170,7 +173,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'lens' ? 2450 : heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode.startsWith('lens') ? 2450 : heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -179,7 +182,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
-    '--virtual-time-budget=' + (heightMode === 'lens' ? 3000 : heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
+    '--virtual-time-budget=' + (heightMode.startsWith('lens') ? 3000 : heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -197,6 +200,15 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   if (!output.includes('data-smoke-unselectable="true"') ||
       !output.includes('data-smoke-editable-selectable="true"')) {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
+  }
+  if (heightMode === 'lens-system' &&
+      (!output.includes('data-smoke-lens-started="true"') ||
+       !output.includes('data-smoke-warp-svg="true"') ||
+       !output.includes('data-smoke-warp-smooth="true"') ||
+       !output.includes('data-smoke-warp-reset="true"') ||
+       !output.includes('data-smoke-lens-hitbox="true"'))) {
+    const flags = output.match(/data-smoke-(?:lens|warp)-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': system tab text-only filter and border preservation: ' + flags.join(', '));
   }
   if (heightMode === 'lens' &&
       (!output.includes('data-smoke-lens-reacted="true"') ||
@@ -279,7 +291,7 @@ try {
     { delay: 1150, kind: 'lens-over' },
     { delay: 1400, kind: 'lens-move' },
     { delay: 1540, kind: 'lens-out' },
-  ], 'Kira System Monitor', 'lens');
+  ], 'Kira System Monitor', 'lens-system');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
