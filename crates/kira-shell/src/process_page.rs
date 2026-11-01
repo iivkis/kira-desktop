@@ -411,6 +411,11 @@ mod tests {
     fn clicking_current_header_reverses_direction() {
         let initial = SortState::new(Sort::Cpu);
         assert!(initial.descending);
+        // New CPU/RAM selections default to descending, even after
+        // switching columns; repeated clicks reverse the direction.
+        assert!(SortState::new(Sort::Memory).descending);
+        assert!(SortState::new(Sort::Name).clicked(Sort::Cpu).descending);
+        assert!(SortState::new(Sort::Pid).clicked(Sort::Memory).descending);
         assert!(!initial.clicked(Sort::Cpu).descending);
         assert!(initial.clicked(Sort::Cpu).clicked(Sort::Cpu).descending);
         assert!(!initial.clicked(Sort::Name).descending);

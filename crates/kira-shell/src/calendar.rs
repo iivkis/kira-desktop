@@ -244,7 +244,7 @@ pub fn toggle(application: &gtk::Application) {
 
     let scroll = gtk::ScrolledWindow::new();
     scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
-    crate::native_ui::configure_popup(&window, &scroll, 378, 490);
+    crate::native_ui::configure_popup(&window, &scroll, 378);
     window.set_child(Some(&scroll));
 
     let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
