@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3646
+index_bytes=3748
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,84 +15,86 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	8b5a0de54d3a4735b8280bd54a84dbbbe5254ba4
-F	.cargo/config.toml	98	105	3
-F	.github/workflows/ci.yml	1467	110	46
-F	.github/workflows/nix.yml	1258	158	38
-F	.github/workflows/publish-repospool.yml	3048	198	83
-F	.gitignore	178	283	11
-F	.repospoolignore	1028	296	47
-F	Cargo.toml	494	345	22
-F	README.md	9636	369	219
-F	Taskfile.yml	5957	590	185
-F	config/kira.kdl.example	358	777	8
-F	crates/kira-core/Cargo.toml	207	787	10
-F	crates/kira-core/src/config.rs	15217	799	399
-F	crates/kira-core/src/main.rs	18357	1200	480
-F	crates/kira-core/src/niri.rs	16767	1682	453
-F	crates/kira-ipc/Cargo.toml	170	2137	9
-F	crates/kira-ipc/src/client.rs	10376	2148	277
-F	crates/kira-ipc/src/lib.rs	9053	2427	302
-F	crates/kira-shell/Cargo.toml	297	2731	12
-F	crates/kira-shell/src/calendar.rs	20756	2745	604
-F	crates/kira-shell/src/launcher.css	2924	3351	119
-F	crates/kira-shell/src/launcher.rs	10885	3472	300
-F	crates/kira-shell/src/main.rs	17534	3774	413
-F	crates/kira-shell/src/native-palette.css	353	4189	7
-F	crates/kira-shell/src/native_ui.rs	4908	4198	124
-F	crates/kira-shell/src/process_monitor.rs	6245	4324	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4528	214
-F	crates/kira-shell/src/system_panel.rs	7948	4744	226
-F	docs/CONFIG.md	5801	4972	125
-F	docs/DESIGN_SYSTEM.md	15048	5099	276
-F	docs/DEVELOPMENT.md	25461	5377	514
-F	docs/QA_VISUAL.md	12284	5893	149
-F	docs/SPECIFICATION.md	28960	6044	421
-F	docs/UI_ARCHITECTURE.md	4933	6467	79
-F	docs/VISUAL_REVIEW.md	9754	6548	84
-F	flake.nix	2651	6634	76
-F	frontend/index.html	2737	6712	66
-F	frontend/package.json	650	6780	23
-F	frontend/scripts/inline-assets.mjs	4457	6805	103
-F	frontend/scripts/inline-assets.test.mjs	4645	6910	106
-F	frontend/src/App.svelte	8659	7018	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7220	84
-F	frontend/src/lib/bootstrap.ts	2613	7306	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7378	38
-F	frontend/src/lib/calendar-model.ts	3453	7418	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7492	177
-F	frontend/src/lib/components/SystemHealth.svelte	1684	7671	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	7716	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	7907	61
-F	frontend/src/lib/lazy-widget.test.ts	3236	7970	89
-F	frontend/src/lib/lazy-widget.ts	1984	8061	63
-F	frontend/src/lib/sdk/core.test.ts	14975	8126	302
-F	frontend/src/lib/sdk/core.ts	12313	8430	344
-F	frontend/src/lib/system-health.test.ts	2348	8776	41
-F	frontend/src/lib/system-health.ts	2831	8819	60
-F	frontend/src/lib/system-model.test.ts	2988	8881	57
-F	frontend/src/lib/system-model.ts	3411	8940	76
-F	frontend/src/lib/themes/kira-default.css	1687	9018	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9072	101
-F	frontend/src/lib/themes/kira-default.ts	777	9175	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9199	79
-F	frontend/src/lib/time.test.ts	263	9280	8
-F	frontend/src/lib/time.ts	320	9290	9
-F	frontend/src/main.ts	3622	9301	88
-F	frontend/src/style.css	1329	9391	44
-F	frontend/tsconfig.json	403	9437	16
-F	frontend/vite.config.ts	224	9455	8
-F	nix/package.nix	3347	9465	120
-F	scripts/dev_preview.py	18147	9587	403	x
-F	scripts/qa_visual.py	12052	9992	299
-F	tests/test_calendar_design.py	6649	10293	118
-F	tests/test_detailed_health.py	5197	10413	101
-F	tests/test_dev_preview.py	9339	10516	219
-F	tests/test_launcher_design.py	2915	10737	61
-F	tests/test_native_theme.py	2646	10800	57
-F	tests/test_popup_geometry.py	1728	10859	35
-F	tests/test_qa_visual.py	10549	10896	217
-F	tests/test_ui_bootstrap_contract.py	1103	11115	29
+C	b776f8aa0124e0aa12ca413e82aee48b438976cd
+F	.cargo/config.toml	98	107	3
+F	.github/workflows/ci.yml	1467	112	46
+F	.github/workflows/nix.yml	1258	160	38
+F	.github/workflows/overlay-smoke.yml	912	200	34
+F	.github/workflows/publish-repospool.yml	3048	236	83
+F	.gitignore	178	321	11
+F	.repospoolignore	1028	334	47
+F	Cargo.toml	494	383	22
+F	README.md	9636	407	219
+F	Taskfile.yml	5957	628	185
+F	config/kira.kdl.example	358	815	8
+F	crates/kira-core/Cargo.toml	207	825	10
+F	crates/kira-core/src/config.rs	15217	837	399
+F	crates/kira-core/src/main.rs	18357	1238	480
+F	crates/kira-core/src/niri.rs	16767	1720	453
+F	crates/kira-ipc/Cargo.toml	170	2175	9
+F	crates/kira-ipc/src/client.rs	10376	2186	277
+F	crates/kira-ipc/src/lib.rs	9053	2465	302
+F	crates/kira-shell/Cargo.toml	297	2769	12
+F	crates/kira-shell/src/calendar.rs	22638	2783	647
+F	crates/kira-shell/src/launcher.css	2924	3432	119
+F	crates/kira-shell/src/launcher.rs	10885	3553	300
+F	crates/kira-shell/src/main.rs	17534	3855	413
+F	crates/kira-shell/src/native-palette.css	353	4270	7
+F	crates/kira-shell/src/native_ui.rs	4908	4279	124
+F	crates/kira-shell/src/process_monitor.rs	6245	4405	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4609	214
+F	crates/kira-shell/src/system_panel.rs	7948	4825	226
+F	docs/CONFIG.md	5801	5053	125
+F	docs/DESIGN_SYSTEM.md	15048	5180	276
+F	docs/DEVELOPMENT.md	25461	5458	514
+F	docs/QA_VISUAL.md	12284	5974	149
+F	docs/SPECIFICATION.md	28960	6125	421
+F	docs/UI_ARCHITECTURE.md	4933	6548	79
+F	docs/VISUAL_REVIEW.md	9754	6629	84
+F	flake.nix	2651	6715	76
+F	frontend/index.html	2737	6793	66
+F	frontend/package.json	650	6861	23
+F	frontend/scripts/inline-assets.mjs	4457	6886	103
+F	frontend/scripts/inline-assets.test.mjs	4645	6991	106
+F	frontend/scripts/smoke-overlays.mjs	3577	7099	77
+F	frontend/src/App.svelte	8659	7178	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7380	84
+F	frontend/src/lib/bootstrap.ts	2613	7466	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7538	38
+F	frontend/src/lib/calendar-model.ts	3453	7578	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7652	177
+F	frontend/src/lib/components/SystemHealth.svelte	1684	7831	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	7876	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8067	61
+F	frontend/src/lib/lazy-widget.test.ts	3236	8130	89
+F	frontend/src/lib/lazy-widget.ts	1984	8221	63
+F	frontend/src/lib/sdk/core.test.ts	14975	8286	302
+F	frontend/src/lib/sdk/core.ts	12313	8590	344
+F	frontend/src/lib/system-health.test.ts	2348	8936	41
+F	frontend/src/lib/system-health.ts	2831	8979	60
+F	frontend/src/lib/system-model.test.ts	2988	9041	57
+F	frontend/src/lib/system-model.ts	3411	9100	76
+F	frontend/src/lib/themes/kira-default.css	1687	9178	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9232	101
+F	frontend/src/lib/themes/kira-default.ts	777	9335	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9359	79
+F	frontend/src/lib/time.test.ts	263	9440	8
+F	frontend/src/lib/time.ts	320	9450	9
+F	frontend/src/main.ts	4562	9461	109
+F	frontend/src/style.css	1329	9572	44
+F	frontend/tsconfig.json	403	9618	16
+F	frontend/vite.config.ts	224	9636	8
+F	nix/package.nix	3347	9646	120
+F	scripts/dev_preview.py	18147	9768	403	x
+F	scripts/qa_visual.py	12052	10173	299
+F	tests/test_calendar_design.py	6837	10474	121
+F	tests/test_detailed_health.py	5197	10597	101
+F	tests/test_dev_preview.py	9339	10700	219
+F	tests/test_launcher_design.py	2915	10921	61
+F	tests/test_native_theme.py	2646	10984	57
+F	tests/test_popup_geometry.py	1728	11043	35
+F	tests/test_qa_visual.py	10549	11080	217
+F	tests/test_ui_bootstrap_contract.py	1103	11299	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -193,6 +195,42 @@ jobs:
       # three separate cargo test invocations in different profiles.
       - name: Build packaged Core, Shell and Svelte frontend
         run: nix build .#default -L
+
+FILE	.github/workflows/overlay-smoke.yml
+name: Overlay browser smoke
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - 'crates/kira-shell/src/calendar.rs'
+      - '.github/workflows/overlay-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: overlay-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend
+        run: npm ci --prefix frontend --no-audit --no-fund
+      - name: Build self-contained overlay HTML
+        run: npm run build --prefix frontend
+      - name: Validate real Calendar and System mounts
+        run: node frontend/scripts/smoke-overlays.mjs
 
 FILE	.github/workflows/publish-repospool.yml
 name: Publish RepoSpool context
@@ -2804,17 +2842,21 @@ impl CalendarOverlay {
         self.revealed.set(false);
         self.paint_pending.set(false);
         self.open_started.take();
-        // Tear down the Svelte component on hide, preserving only the
-        // warm WebKit host. The JS host serializes rapid hide/show events.
+        // Deliver a generation-scoped hide. WebKit evaluates scripts
+        // asynchronously: a stale hide must never unmount a newer show.
         if self.host_ready.get() {
+            let generation = self.generation.get();
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('kira:overlay:hide', {{ detail: {{ generation: {generation} }} }}));"
+            );
             self.view.evaluate_javascript(
-                "window.dispatchEvent(new Event('kira:overlay:hide'));",
+                &script,
                 None,
                 None,
                 None::<&gtk::gio::Cancellable>,
                 |result| {
                     if let Err(error) = result {
-                        eprintln!("kira-shell: Calendar hide delivery failed: {error}");
+                        eprintln!("kira-shell: Overlay hide delivery failed: {error}");
                     }
                 },
             );
@@ -2823,6 +2865,13 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
+        // A live surface switches components in place. Do not unmap/remap
+        // the Wayland popup or queue a separate hide against the new view.
+        if self.active.get() == Some(Surface::System) && kind != Surface::System {
+            if let Some(model) = self.system.borrow().as_ref() {
+                model.set_processes_active(false);
+            }
+        }
         self.active.set(Some(kind));
         self.requested.set(true);
         self.revealed.set(false);
@@ -2836,6 +2885,12 @@ impl CalendarOverlay {
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
         self.window.present();
+        eprintln!(
+            "kira-shell: Overlay requested: {} generation {} (host ready: {})",
+            kind.name(),
+            self.generation.get(),
+            self.host_ready.get()
+        );
         self.request_mount();
 
         // A dead renderer should not leave an invisible focus-stealing popup.
@@ -2847,7 +2902,11 @@ impl CalendarOverlay {
                     && state.generation.get() == generation
                     && !state.revealed.get()
                 {
-                    eprintln!("kira-shell: Svelte overlay did not paint within 3s; hiding popup");
+                    eprintln!(
+                        "kira-shell: Overlay did not mount within 3s (host ready: {}, widget ready: {}); hiding popup",
+                        state.host_ready.get(),
+                        state.widget_ready.get()
+                    );
                     state.hide();
                 }
             }
@@ -2904,10 +2963,44 @@ impl CalendarOverlay {
             },
         );
     }
+    // Compositors may throttle requestAnimationFrame for a transparent
+    // popup. A verified, synchronously flushed Svelte mount must never
+    // remain invisible solely because the paint acknowledgement was skipped.
+    fn schedule_reveal_fallback(self: &Rc<Self>, generation: u32) {
+        let weak = Rc::downgrade(self);
+        gtk::glib::timeout_add_local_once(Duration::from_millis(150), move || {
+            let Some(state) = weak.upgrade() else {
+                return;
+            };
+            if state.requested.get()
+                && state.generation.get() == generation
+                && state.widget_ready.get()
+                && !state.revealed.get()
+            {
+                eprintln!(
+                    "kira-shell: Overlay frame acknowledgement delayed; revealing verified Svelte DOM"
+                );
+                state.reveal();
+            }
+        });
+    }
 
-    fn on_message(&self, message: &str) {
+    fn reveal(&self) {
+        self.revealed.set(true);
+        self.paint_pending.set(false);
+        self.window.set_opacity(1.0);
+        if let Some(start) = self.open_started.take() {
+            eprintln!(
+                "kira-shell: Overlay visible after {} ms",
+                start.elapsed().as_millis()
+            );
+        }
+    }
+
+    fn on_message(self: &Rc<Self>, message: &str) {
         match calendar_command(message) {
             Some(UiCommand::HostReady) => {
+                eprintln!("kira-shell: Shared Svelte overlay host ready");
                 self.host_ready.set(true);
                 self.request_mount();
             }
@@ -2920,21 +3013,15 @@ impl CalendarOverlay {
                 }
                 self.widget_ready.set(true);
                 self.request_paint();
+                self.schedule_reveal_fallback(generation);
             }
             Some(UiCommand::Painted(generation))
                 if self.requested.get()
+                    && self.widget_ready.get()
                     && self.paint_pending.get()
                     && self.generation.get() == generation =>
             {
-                self.revealed.set(true);
-                self.paint_pending.set(false);
-                self.window.set_opacity(1.0);
-                if let Some(start) = self.open_started.take() {
-                    eprintln!(
-                        "kira-shell: Overlay visible after {} ms",
-                        start.elapsed().as_millis()
-                    );
-                }
+                self.reveal();
             }
             Some(UiCommand::Close) if self.requested.get() => self.hide(),
             Some(UiCommand::CopyDate(date))
@@ -3251,12 +3338,9 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         eprintln!("kira-shell: Overlay HTML root not found");
         return;
     };
-    if state.requested.get() {
-        let was_calendar = state.active.get() == Some(Surface::Calendar);
+    if state.requested.get() && state.active.get() == Some(Surface::Calendar) {
         state.hide();
-        if was_calendar {
-            return;
-        }
+        return;
     }
     crate::launcher::dismiss(application);
     state.show(Surface::Calendar);
@@ -3273,12 +3357,9 @@ pub fn toggle_system(
         eprintln!("kira-shell: Overlay HTML root not found");
         return;
     };
-    if state.requested.get() {
-        let was_system = state.active.get() == Some(Surface::System);
+    if state.requested.get() && state.active.get() == Some(Surface::System) {
         state.hide();
-        if was_system {
-            return;
-        }
+        return;
     }
     crate::launcher::dismiss(application);
     *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
@@ -7014,6 +7095,85 @@ test('refuses to silently accept multiple JS chunks', async () => {
   });
 });
 
+FILE	frontend/scripts/smoke-overlays.mjs
+#!/usr/bin/env node
+/**
+ * Real browser smoke for the built, self-contained WebKit HTML document.
+ * Catch host/DOM integration bugs that TypeScript and static contracts miss.
+ * Runs after frontend:build in CI; requires Chrome on the runner.
+ */
+import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+
+const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const chrome = process.env.CHROME_BIN || 'google-chrome';
+const dir = await mkdtemp(join(tmpdir(), 'kira-overlay-smoke-'));
+
+function scriptFor(steps) {
+  return '<script>window.addEventListener("load", () => {' +
+    steps.map(({ delay, kind, generation }) =>
+      'setTimeout(() => {' +
+        (kind === 'hide'
+          ? 'window.dispatchEvent(new CustomEvent("kira:overlay:hide", {detail: {generation: ' +
+            generation + '}}));'
+          : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
+            kind + '", generation: ' + generation + '}}));') +
+        '}, ' + delay + ');'
+    ).join('') +
+    // Test the live DOM, not strings in the bundled Svelte templates.
+    'setTimeout(() => {' +
+      'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
+      'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
+      'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+    '}, 1150);' +
+    '});</script>';
+}
+
+async function smoke(name, steps, expected) {
+  const document = html
+    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('</head>', scriptFor(steps) + '</head>');
+  if (!document.includes('data-kira-surface="calendar"')) {
+    throw new Error('Overlay marker was not inserted in the production HTML');
+  }
+  const path = join(dir, name + '.html');
+  await writeFile(path, document);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu',
+    '--disable-dev-shm-usage', '--disable-background-networking',
+    '--virtual-time-budget=1800', '--dump-dom', 'file://' + path,
+  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
+  if (!output.includes('data-smoke-result="' + expected + '"')) {
+    const found = output.match(/data-smoke-result="([^"]+)"/)?.[1] ?? 'no result';
+    throw new Error(name + ': expected live Svelte ' + expected + ', found ' + found);
+  }
+  console.log('OK: ' + name + ' mounted ' + expected);
+}
+
+try {
+  await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
+  await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
+  await smoke('switch-to-system', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 120, kind: 'hide', generation: 1 },
+    { delay: 140, kind: 'system', generation: 2 },
+    // Must not destroy System when an older hide arrives out of order.
+    { delay: 175, kind: 'hide', generation: 1 },
+  ], 'Kira System Monitor');
+  await smoke('switch-back-to-calendar', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 120, kind: 'hide', generation: 1 },
+    { delay: 145, kind: 'system', generation: 2 },
+    { delay: 245, kind: 'hide', generation: 2 },
+    { delay: 265, kind: 'calendar', generation: 3 },
+    { delay: 280, kind: 'hide', generation: 2 },
+  ], 'Kira Calendar');
+} finally {
+  await rm(dir, { recursive: true, force: true });
+}
+
 FILE	frontend/src/App.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
@@ -9329,6 +9489,8 @@ whenDocumentReady(document, () => {
       return;
     }
     let requestedKind: 'calendar' | 'system' = 'calendar';
+    let visibleGeneration: number | null = null;
+    let lastGeneration = 0;
     const host = createLazyWidget(
       async () => {
         // Both components are prebundled, but neither owns DOM, timers or
@@ -9355,18 +9517,37 @@ whenDocumentReady(document, () => {
           unmount(instance: ReturnType<typeof mount>) {
             return unmount(instance);
           },
-          onMounted: notifyCalendarMounted,
+          onMounted(generation: number) {
+            report('Overlay Svelte ' + kind + ' mounted; generation=' + generation);
+            notifyCalendarMounted(generation);
+          },
         };
       },
       (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
-      if (detail?.kind !== 'calendar' && detail?.kind !== 'system') return;
+      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system') ||
+          !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
+          detail.generation > 0xffffffff || detail.generation <= lastGeneration) {
+        report('Overlay rejected invalid or stale show payload');
+        return;
+      }
+      lastGeneration = detail.generation;
+      visibleGeneration = detail.generation;
+      report('Overlay received show: ' + detail.kind + ' generation=' + detail.generation);
       requestedKind = detail.kind;
       host.show(detail.generation);
     });
-    window.addEventListener('kira:overlay:hide', () => host.hide());
+    window.addEventListener('kira:overlay:hide', (event: Event) => {
+      const generation = (event as CustomEvent<{ generation: number }>).detail?.generation;
+      if (generation !== visibleGeneration) {
+        report('Overlay ignored stale hide generation=' + generation);
+        return;
+      }
+      visibleGeneration = null;
+      host.hide();
+    });
     // Remove the HTML fallback so no widget DOM remains when hidden.
     target.querySelector('#kira-loading')?.remove();
     Reflect.set(window, '__kiraMountReturned', true);
@@ -10343,6 +10524,9 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("self.window.set_visible(false)", RUST)
         self.assertIn("self.window.set_opacity(0.0)", RUST)
         self.assertIn("self.window.set_opacity(1.0)", RUST)
+        self.assertIn("self.schedule_reveal_fallback(generation)", RUST)
+        self.assertIn("Duration::from_millis(150)", RUST)
+        self.assertIn("state.widget_ready.get()", RUST)
         self.assertIn("self.request_paint()", RUST)
         self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)
         self.assertIn("self.generation.get() == generation", RUST)
@@ -10351,7 +10535,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("requestAnimationFrame", RUST)
         self.assertIn("sendCalendarUi('host-ready')", SDK)
         self.assertIn("sendCalendarUi('mounted:' + generation)", SDK)
-        self.assertIn("onMounted: notifyCalendarMounted", ENTRY)
+        self.assertIn("notifyCalendarMounted(generation)", ENTRY)
 
     def test_lazy_svelte_mount_and_dispose_on_hide(self):
         self.assertIn("self.view.evaluate_javascript(", RUST)
