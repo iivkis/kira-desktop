@@ -112,6 +112,7 @@ fn bind_core_socket(path: &Path) -> io::Result<(File, SocketGuard, UnixListener)
         .read(true)
         .write(true)
         .create(true)
+        .truncate(false) // Persist the inode shared by future Core startups.
         .mode(0o600)
         .open(PathBuf::from(lock_path))?;
     lock.try_lock().map_err(|error| {
@@ -561,6 +562,27 @@ mod tests {
         drop(listener);
         drop(guard);
         drop(lock);
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn refuses_legacy_live_listener_without_sidecar_lock() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-legacy-live-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let listener = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        let original = fs::symlink_metadata(&path).unwrap();
+
+        let error = bind_core_socket(&path).err().unwrap();
+        assert_eq!(error.kind(), io::ErrorKind::AddrInUse);
+        assert_eq!(fs::symlink_metadata(&path).unwrap().ino(), original.ino());
+        assert!(StdUnixStream::connect(&path).is_ok());
+
+        drop(listener);
         fs::remove_dir_all(directory).unwrap();
     }
 
