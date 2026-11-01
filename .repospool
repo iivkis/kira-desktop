@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4250
+index_bytes=4251
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	d0cba8a51bdb035681f66efe1671cfa259869b30
+C	59122aaa0c301c4a5804b251c1e4d710be98c1e7
 F	.cargo/config.toml	98	116	3
 F	.github/workflows/ci.yml	4355	121	112
 F	.github/workflows/frontend-nix.yml	1398	235	43
@@ -46,64 +46,64 @@ F	crates/kira-shell/src/renderer_recovery.rs	3634	5799	116
 F	crates/kira-shell/src/system_metrics.rs	19842	5917	559
 F	crates/kira-shell/src/system_panel.rs	11356	6478	318
 F	docs/CONFIG.md	5801	6798	125
-F	docs/DESIGN_SYSTEM.md	19310	6925	348
-F	docs/DEVELOPMENT.md	27700	7275	547
-F	docs/QA_VISUAL.md	12284	7824	149
-F	docs/SPECIFICATION.md	28960	7975	421
-F	docs/UI_ARCHITECTURE.md	6737	8398	106
-F	docs/VISUAL_REVIEW.md	9754	8506	84
-F	flake.nix	3181	8592	91
-F	frontend/index.html	2737	8685	66
-F	frontend/package.json	720	8753	27
-F	frontend/scripts/inline-assets.mjs	4457	8782	103
-F	frontend/scripts/inline-assets.test.mjs	4645	8887	106
-F	frontend/scripts/smoke-overlays.mjs	15101	8995	233
-F	frontend/src/App.svelte	8659	9230	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9432	84
-F	frontend/src/lib/bootstrap.ts	2613	9518	70
-F	frontend/src/lib/calendar-model.test.ts	2097	9590	38
-F	frontend/src/lib/calendar-model.ts	3453	9630	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7948	9704	180
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	9886	176
-F	frontend/src/lib/components/SystemCharts.svelte	8889	10064	205
-F	frontend/src/lib/components/SystemHealth.svelte	1684	10271	43
-F	frontend/src/lib/components/SystemWidget.svelte	13245	10316	245
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10563	61
-F	frontend/src/lib/launcher-model.test.ts	1370	10626	29
-F	frontend/src/lib/launcher-model.ts	778	10657	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	10677	89
-F	frontend/src/lib/lazy-widget.ts	1984	10768	63
-F	frontend/src/lib/motion.ts	3802	10833	113
-F	frontend/src/lib/overlay-size.ts	1090	10948	29
-F	frontend/src/lib/sdk/core.test.ts	22258	10979	444
-F	frontend/src/lib/sdk/core.ts	17793	11425	473
-F	frontend/src/lib/system-charts.test.ts	4098	11900	95
-F	frontend/src/lib/system-charts.ts	3759	11997	109
-F	frontend/src/lib/system-health.test.ts	2385	12108	42
-F	frontend/src/lib/system-health.ts	2831	12152	60
-F	frontend/src/lib/system-model.test.ts	3900	12214	73
-F	frontend/src/lib/system-model.ts	4434	12289	102
-F	frontend/src/lib/themes/kira-default.css	1687	12393	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	12447	101
-F	frontend/src/lib/themes/kira-default.ts	777	12550	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	12574	79
-F	frontend/src/lib/time.test.ts	263	12655	8
-F	frontend/src/lib/time.ts	320	12665	9
-F	frontend/src/main.ts	5907	12676	127
-F	frontend/src/style.css	3447	12805	107
-F	frontend/tsconfig.json	403	12914	16
-F	frontend/vite.config.ts	224	12932	8
-F	nix/package.nix	3132	12942	117
-F	scripts/dev_preview.py	18147	13061	403	x
-F	scripts/qa_visual.py	12052	13466	299
-F	tests/test_calendar_design.py	6835	13767	121
-F	tests/test_detailed_health.py	5195	13890	101
-F	tests/test_dev_preview.py	9339	13993	219
-F	tests/test_launcher_design.py	9956	14214	182
-F	tests/test_native_theme.py	1567	14398	36
-F	tests/test_popup_geometry.py	6956	14436	118
-F	tests/test_qa_visual.py	10549	14556	217
-F	tests/test_ui_bootstrap_contract.py	1103	14775	29
+F	docs/DESIGN_SYSTEM.md	19796	6925	355
+F	docs/DEVELOPMENT.md	27700	7282	547
+F	docs/QA_VISUAL.md	12284	7831	149
+F	docs/SPECIFICATION.md	28960	7982	421
+F	docs/UI_ARCHITECTURE.md	6737	8405	106
+F	docs/VISUAL_REVIEW.md	9754	8513	84
+F	flake.nix	3181	8599	91
+F	frontend/index.html	2737	8692	66
+F	frontend/package.json	720	8760	27
+F	frontend/scripts/inline-assets.mjs	4457	8789	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8894	106
+F	frontend/scripts/smoke-overlays.mjs	15525	9002	236
+F	frontend/src/App.svelte	8659	9240	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9442	84
+F	frontend/src/lib/bootstrap.ts	2613	9528	70
+F	frontend/src/lib/calendar-model.test.ts	2687	9600	49
+F	frontend/src/lib/calendar-model.ts	4009	9651	88
+F	frontend/src/lib/components/CalendarWidget.svelte	8652	9741	193
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	9936	176
+F	frontend/src/lib/components/SystemCharts.svelte	9169	10114	210
+F	frontend/src/lib/components/SystemHealth.svelte	1684	10326	43
+F	frontend/src/lib/components/SystemWidget.svelte	13245	10371	245
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10618	61
+F	frontend/src/lib/launcher-model.test.ts	1370	10681	29
+F	frontend/src/lib/launcher-model.ts	778	10712	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	10732	89
+F	frontend/src/lib/lazy-widget.ts	1984	10823	63
+F	frontend/src/lib/motion.ts	5930	10888	174
+F	frontend/src/lib/overlay-size.ts	1090	11064	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11095	444
+F	frontend/src/lib/sdk/core.ts	17793	11541	473
+F	frontend/src/lib/system-charts.test.ts	4900	12016	113
+F	frontend/src/lib/system-charts.ts	4060	12131	115
+F	frontend/src/lib/system-health.test.ts	2385	12248	42
+F	frontend/src/lib/system-health.ts	2831	12292	60
+F	frontend/src/lib/system-model.test.ts	3900	12354	73
+F	frontend/src/lib/system-model.ts	4983	12429	113
+F	frontend/src/lib/themes/kira-default.css	1687	12544	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	12598	101
+F	frontend/src/lib/themes/kira-default.ts	777	12701	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	12725	79
+F	frontend/src/lib/time.test.ts	263	12806	8
+F	frontend/src/lib/time.ts	320	12816	9
+F	frontend/src/main.ts	5907	12827	127
+F	frontend/src/style.css	3447	12956	107
+F	frontend/tsconfig.json	403	13065	16
+F	frontend/vite.config.ts	224	13083	8
+F	nix/package.nix	3132	13093	117
+F	scripts/dev_preview.py	18147	13212	403	x
+F	scripts/qa_visual.py	12052	13617	299
+F	tests/test_calendar_design.py	6835	13918	121
+F	tests/test_detailed_health.py	5195	14041	101
+F	tests/test_dev_preview.py	9339	14144	219
+F	tests/test_launcher_design.py	9956	14365	182
+F	tests/test_native_theme.py	1567	14549	36
+F	tests/test_popup_geometry.py	6956	14587	118
+F	tests/test_qa_visual.py	10549	14707	217
+F	tests/test_ui_bootstrap_contract.py	1103	14926	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7011,6 +7011,11 @@ official visual language of Kira Desktop.
   focus, clipboard, and the 42px top bar remain unchanged. Motion is
   disabled by `prefers-reduced-motion`, interrupted transitions are killed,
   and all GSAP tweens/listeners are cleaned up when the calendar unmounts.
+  The live wall clock uses GSAP **odometer rolls per changed numeral**,
+  keeping unchanged digits and separators fixed. The displayed text and
+  datetime always come from the same localized clock reading; animation
+  cannot delay or falsify the actual time. Digit rolls are interrupted
+  cleanly on a subsequent tick and disabled by `prefers-reduced-motion`.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   Search, catalog, stable application icons, and an orange selection rail
   communicate function without painting the entire row orange.
@@ -7078,10 +7083,12 @@ diagnostic bars. The visual hierarchy is intentional:
 1. **Primary:** two large ECharts SVG dials for actual CPU and RAM usage, each
    with accessible HTML numbers and accurate unknown state.
 2. **Secondary:** activity history in **separate, clearly labeled CPU and RAM
-   lanes**. Low CPU loads must remain visible using a bounded, adaptive
-   percentage axis; each lane's axis displays its real endpoints, and GPU has
-   its own lane only while a real utilization sensor is available. History is
-   bounded to 120 genuine 500ms CPU/RAM samples, never fabricated.
+   lanes**, both sampled at 500 ms and using the **same adaptive-axis rules**
+   and continuous ECharts update strategy. RAM keeps measured hundredth-percent
+   precision instead of rounding away real movement, while accessible axis
+   labels disclose the actual zoom. GPU has its own lane only when a real
+   utilization sensor is available. History is bounded to 120 genuine
+   500ms CPU/RAM samples, never fabricated.
 3. **Tertiary:** compact Swap and Root Storage figures, then a concise hardware
    / thermal row and OS metadata, with no empty card for unavailable GPU data.
    Nonzero fractional swap use is not rounded down to a misleading 0%.
@@ -9080,6 +9087,8 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'const clock = document.querySelector("[data-calendar-clock]");' +
+      'document.documentElement.setAttribute("data-smoke-calendar-odometer", !!clock && clock.querySelectorAll("[data-clock-digit]").length === 6 && !!clock.getAttribute("aria-label") && !!clock.getAttribute("datetime") && clock.querySelectorAll("[data-clock-cell]").length === 6);' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
@@ -9130,7 +9139,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   }
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
-       !output.includes('data-smoke-calendar-picked="true"'))) {
+       !output.includes('data-smoke-calendar-picked="true"') ||
+       !output.includes('data-smoke-calendar-odometer="true"'))) {
     const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
@@ -9588,7 +9598,7 @@ export function whenDocumentReady(
 
 FILE	frontend/src/lib/calendar-model.test.ts
 import { describe, expect, it } from 'vitest';
-import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth } from './calendar-model';
+import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth, clockGlyphs, localClockText } from './calendar-model';
 
 describe('Svelte Calendar Gregorian model', () => {
   it('respects leap years, including century rules', () => {
@@ -9619,6 +9629,17 @@ describe('Svelte Calendar Gregorian model', () => {
     expect(dayOfYear({ year: 2026, month: 11, day: 1 })).toBe(305);
     expect(dayOfYear({ year: 2024, month: 12, day: 31 })).toBe(366);
   });
+  it('splits localized live clock into rolling numerals and static separators', () => {
+    const date = new Date(2026, 10, 1, 12, 34, 59);
+    const text = localClockText(date, 'en-GB');
+    expect(text).toBe('12:34:59');
+    expect(clockGlyphs(text).filter(part => part.digit).map(part => part.char).join('')).toBe('123459');
+    expect(clockGlyphs(text).filter(part => !part.digit)).toEqual([
+      { char: ':', digit: false }, { char: ':', digit: false },
+    ]);
+    expect(clockGlyphs('١٢:٣٤:٥٩').filter(part => part.digit)).toHaveLength(6);
+  });
+
   it('avoids the JavaScript Date year-1900 trap', () => {
     expect(isoDate(shiftDays({ year: 1, month: 1, day: 1 }, 1)!)).toBe('0001-01-02');
     expect(shiftDays({ year: 1, month: 1, day: 1 }, -1)).toBeNull();
@@ -9700,12 +9721,28 @@ export function localDateLabel(date: CivilDate, locale?: string, options?: Intl.
   return new Intl.DateTimeFormat(locale, options ?? { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(value);
 }
 
+/** A single localized, actual wall-clock value drives the calendar time and
+ * its decorative GSAP digit rolls. Avoid separate clocks for the animation.
+ */
+export function localClockText(value: Date, locale?: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+  }).format(value);
+}
+
+export function clockGlyphs(value: string): { char: string; digit: boolean }[] {
+  return Array.from(value, char => ({
+    char,
+    digit: /\p{Decimal_Number}/u.test(char),
+  }));
+}
+
 FILE	frontend/src/lib/components/CalendarWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { calendarGridMotion, revealStagger } from '../motion';
+  import { calendarGridMotion, revealStagger, rollingClockDigit } from '../motion';
   import {
-    dayOfYear, isoDate, isoWeek, localDateLabel, monthGrid,
+    clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
   } from '../calendar-model';
 
@@ -9725,6 +9762,8 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   let selected = $state<CivilDate>(today);
   let visible = $state({ year: today.year, month: today.month });
 
+  const clockText = $derived(localClockText(now, locale));
+  const clockParts = $derived(clockGlyphs(clockText));
   const weeks = $derived(monthGrid(visible.year, visible.month));
   const selectedIso = $derived(isoDate(selected));
   const todayIso = $derived(isoDate(today));
@@ -9805,8 +9844,19 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
     <div class="min-w-0">
       <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
-      <time class="mt-1 block text-4xl font-extrabold tabular-nums" datetime={now.toISOString()}>
-        {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).format(now)}
+      <time class="mt-1 flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
+        datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
+        {#each clockParts as part, index (index)}
+          {#if part.digit}
+            <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
+              aria-hidden="true" data-clock-cell>
+              <span class="flex h-full w-full items-center justify-center"
+                data-clock-digit use:rollingClockDigit={part.char}>{part.char}</span>
+            </span>
+          {:else}
+            <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
+          {/if}
+        {/each}
       </time>
       <p class="mt-1 text-xs text-kira-muted">
         {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now)}
@@ -10069,7 +10119,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
-  import { percentUsed } from '../system-model';
+  import { percentUsedPrecise } from '../system-model';
   import {
     activityAxis, appendPulse, gpuPeak,
     type TelemetryPoint,
@@ -10097,11 +10147,12 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
 
   const cpu = $derived(pulse ? pulse.cpu_percent : metrics?.cpu_percent ?? null);
   const ram = $derived(pulse
-    ? percentUsed(pulse.memory_total_kib, pulse.memory_available_kib)
-    : metrics ? percentUsed(metrics.memory_total_kib, metrics.memory_available_kib) : null);
+    ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
+    : metrics ? percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib) : null);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
   const trendHeight = $derived(gpuAvailable ? 296 : 202);
-  const dialLabel = (value: number | null) => value === null ? '—' : value + '%';
+  const dialLabel = (value: number | null, precise = false) =>
+    value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
 
   function draw(): void {
     const dial = (name: string, value: number | null, center: string, color: string) => ({
@@ -10138,10 +10189,12 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
       animationDurationUpdate: reduced ? 0 : 350,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
-      grid: panels.map((_, i) => ({
-        left: 34, right: 8, top: i * 96 + 28, height: 56,
+      grid: panels.map((panel, i) => ({
+        id: 'grid-' + panel.field,
+        left: 41, right: 8, top: i * 96 + 28, height: 56,
       })),
-      xAxis: panels.map((_, i) => ({
+      xAxis: panels.map((panel, i) => ({
+        id: 'x-' + panel.field,
         type: 'category' as const, gridIndex: i, boundaryGap: false,
         data: history.map(point => String(point.time)),
         axisLine: { show: false }, axisTick: { show: false },
@@ -10150,17 +10203,19 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
       yAxis: panels.map((panel, i) => {
         const axis = activityAxis(history, panel.field);
         return {
+          id: 'y-' + panel.field,
           type: 'value' as const, gridIndex: i,
-          min: axis.min, max: axis.max, splitNumber: 2,
+          min: axis.min, max: axis.max, interval: (axis.max - axis.min) / 2,
           axisLine: { show: false }, axisTick: { show: false },
           axisLabel: {
             color: muted, fontSize: 9, margin: 7,
-            formatter: (v: number) => v === axis.min || v === axis.max ? v + '%' : '',
+            formatter: (v: number) => Number(v.toFixed(1)) + '%',
           },
           splitLine: { lineStyle: { color: prussian, width: 1 } },
         };
       }),
       series: panels.map((panel, i) => ({
+        id: 'series-' + panel.field,
         name: panel.name, type: 'line' as const,
         xAxisIndex: i, yAxisIndex: i,
         smooth: 0.18, silent: true,
@@ -10171,7 +10226,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
         itemStyle: { color: panel.color },
         areaStyle: { color: panel.color, opacity: panel.field === 'cpu' ? 0.18 : 0.09 },
       })),
-    }, { notMerge: true, lazyUpdate: true });
+    }, { replaceMerge: ['grid', 'xAxis', 'yAxis', 'series'], lazyUpdate: true });
   }
 
   // One history point per actual native pulse. No 500ms JS timer and no
@@ -10238,8 +10293,8 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
         </div>
         <div class="flex flex-col items-center justify-center">
           <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums"
-            aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram + ' percent')}>
-            {dialLabel(ram)}
+            aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
+            {dialLabel(ram, true)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
         </div>
@@ -10940,6 +10995,67 @@ export function calendarGridMotion(
     destroy() {
       motion.removeEventListener('change', onMotionChange);
       clear();
+    },
+  };
+}
+
+/** Odometer-style clock glyph with short, interruptible GSAP transitions.
+ * The actual character, ARIA label and datetime remain Svelte-owned. This
+ * action decorates only changed numerals, never replays unchanged digits.
+ */
+export function rollingClockDigit(node: HTMLElement, initial: string) {
+  let previous = initial;
+  let animation: gsap.core.Timeline | null = null;
+  let ghost: HTMLSpanElement | null = null;
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const stop = () => {
+    animation?.kill();
+    animation = null;
+    ghost?.remove();
+    ghost = null;
+    gsap.set(node, { clearProps: 'opacity,transform,filter,color' });
+  };
+  const onMotionChange = () => { if (motion.matches) stop(); };
+  motion.addEventListener('change', onMotionChange);
+
+  return {
+    update(next: string) {
+      if (next === previous) return;
+      const outgoing = previous;
+      previous = next;
+      stop();
+      if (motion.matches) return;
+
+      const parent = node.parentElement;
+      if (!parent) return;
+      ghost = node.ownerDocument.createElement('span');
+      ghost.textContent = outgoing;
+      ghost.setAttribute('aria-hidden', 'true');
+      ghost.className = 'pointer-events-none absolute inset-0 flex items-center justify-center text-kira-muted';
+      parent.appendChild(ghost);
+
+      const currentGhost = ghost;
+      animation = gsap.timeline({
+        defaults: { duration: 0.42, ease: 'power3.out' },
+        onComplete: () => {
+          currentGhost.remove();
+          if (ghost === currentGhost) ghost = null;
+          animation = null;
+          gsap.set(node, { clearProps: 'opacity,transform,filter,color' });
+        },
+      });
+      animation.fromTo(node,
+        { yPercent: 85, autoAlpha: 0, filter: 'blur(2px)', color: '#fca311' },
+        { yPercent: 0, autoAlpha: 1, filter: 'blur(0px)', color: 'inherit' },
+        0);
+      animation.to(currentGhost, {
+        yPercent: -85, autoAlpha: 0, duration: 0.35, ease: 'power2.inOut',
+      }, 0);
+    },
+    destroy() {
+      motion.removeEventListener('change', onMotionChange);
+      stop();
     },
   };
 }
@@ -11972,15 +12088,33 @@ describe('System Monitor ECharts telemetry model', () => {
 
   it('keeps low CPU load visible while retaining an honest labeled zero origin', () => {
     const low = [2, 4, 5].map((cpu, time) => ({ time, cpu, ram: 39, gpu: null }));
-    expect(activityAxis(low, 'cpu')).toEqual({ min: 0, max: 15 });
-    expect(activityAxis(low, 'ram')).toEqual({ min: 35, max: 45 });
+    expect(activityAxis(low, 'cpu')).toEqual({ min: 0, max: 7 });
+    expect(activityAxis(low, 'ram')).toEqual({ min: 37, max: 41 });
     expect(activityAxis(low, 'gpu')).toEqual({ min: 0, max: 100 });
     expect(activityAxis([{ time: 0, cpu: 91, ram: 99, gpu: 0 }], 'cpu'))
-      .toEqual({ min: 0, max: 100 });
+      .toEqual({ min: 89, max: 93 });
     expect(activityAxis([{ time: 0, cpu: 0, ram: 0, gpu: 0 }], 'ram'))
-      .toEqual({ min: 0, max: 5 });
+      .toEqual({ min: 0, max: 4 });
     expect(activityAxis([{ time: 0, cpu: null, ram: null, gpu: null }], 'cpu'))
       .toEqual({ min: 0, max: 100 });
+  });
+
+  it('gives identical CPU and RAM history the exact same adaptive scale', () => {
+    const samples = [39.12, 39.25, 39.31].map((value, time) =>
+      ({ time, cpu: value, ram: value, gpu: null }));
+    expect(activityAxis(samples, 'cpu')).toEqual(activityAxis(samples, 'ram'));
+  });
+
+  it('preserves sub-percent RAM changes from each true 500ms pulse', () => {
+    const a = appendPulse([], {
+      cpu_percent: 5, memory_total_kib: 1_000_000, memory_available_kib: 608_800,
+    }, 500);
+    const b = appendPulse(a, {
+      cpu_percent: 6, memory_total_kib: 1_000_000, memory_available_kib: 608_100,
+    }, 1000);
+    expect(b.map(point => point.cpu)).toEqual([5, 6]);
+    expect(b.map(point => point.ram)).toEqual([39.12, 39.19]);
+    expect(b.map(point => point.time)).toEqual([500, 1000]);
   });
 
   it('adds one bar per detected GPU, retaining unknown readings', () => {
@@ -11998,7 +12132,7 @@ FILE	frontend/src/lib/system-charts.ts
  * This module is intentionally DOM-independent so the data rules are testable.
  */
 import type { SystemMetrics, SystemPulse } from './sdk/core';
-import { percentUsed } from './system-model';
+import { percentUsedPrecise } from './system-model';
 
 export interface Meter {
   title: string;
@@ -12044,7 +12178,7 @@ export function appendTelemetry(
   const next = [...history, {
     time,
     cpu: metrics.cpu_percent,
-    ram: percentUsed(metrics.memory_total_kib, metrics.memory_available_kib),
+    ram: percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib),
     gpu: gpuPeak(metrics),
   }];
   return next.slice(-MAX_TELEMETRY_POINTS);
@@ -12063,15 +12197,17 @@ export function appendPulse(
   const next = [...history, {
     time,
     cpu: pulse.cpu_percent,
-    ram: percentUsed(pulse.memory_total_kib, pulse.memory_available_kib),
+    ram: percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib),
     gpu: gpuReading,
   }];
   return next.slice(-MAX_PULSE_POINTS);
 }
 
-/** Explicit, labelled local axis ranges make low activity readable without
- * pretending the chart spans 0–100%. Missing samples cannot create fake peaks.
- * CPU/GPU retain a true zero origin; RAM focuses on its measured range.
+/** CPU and RAM use the SAME bounded adaptive-window rule.
+ * CPU was previously zero-anchored while RAM was zoomed; that made the
+ * plots behave differently despite identical 500ms pulse events.
+ * The per-lane min/max are always printed alongside the plot, so zoom
+ * never claims a larger change than actually occurred.
  */
 export function activityAxis(
   samples: readonly TelemetryPoint[],
@@ -12082,14 +12218,18 @@ export function activityAxis(
     .filter((value): value is number =>
       value !== null && Number.isFinite(value) && value >= 0 && value <= 100);
   if (!values.length) return { min: 0, max: 100 };
-  if (field !== 'ram') {
-    const max = Math.min(100, Math.max(15, Math.ceil(Math.max(...values) * 1.25 / 5) * 5));
-    return { min: 0, max };
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  const spread = high - low;
+  const padding = Math.max(2, spread * 0.25);
+  let min = Math.max(0, Math.floor((low - padding) * 10) / 10);
+  let max = Math.min(100, Math.ceil((high + padding) * 10) / 10);
+  // Keep a minimum four-point interval without falsely exceeding 0–100%.
+  if (max - min < 4) {
+    min = Math.max(0, Math.floor((low - 2) * 10) / 10);
+    max = Math.min(100, Math.max(min + 4, Math.ceil((high + 2) * 10) / 10));
+    min = Math.max(0, Math.min(min, max - 4));
   }
-  const minSample = Math.min(...values);
-  const maxSample = Math.max(...values);
-  const min = Math.max(0, Math.floor((minSample - 3) / 5) * 5);
-  const max = Math.min(100, Math.max(min + 5, Math.ceil((maxSample + 3) / 5) * 5));
   return { min, max };
 }
 
@@ -12099,7 +12239,7 @@ export function telemetrySummary(metrics: SystemMetrics | null): string {
   const value = (percent: number | null) => percent === null ? 'unavailable' : percent + '%';
   return [
     'CPU ' + value(metrics.cpu_percent),
-    'RAM ' + value(percentUsed(metrics.memory_total_kib, metrics.memory_available_kib)),
+    'RAM ' + value(percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib)),
     'GPU peak ' + value(gpuPeak(metrics)),
   ].join(', ');
 }
@@ -12334,6 +12474,17 @@ export function sortedProcesses(rows: ProcessRow[], query: string, state: SortSt
 export function percentUsed(total: number | null, available: number | null): number | null {
   if (total === null || available === null || total <= 0 || available > total) return null;
   return Math.floor(100 * (total - available) / total);
+}
+
+/** Unrounded-to-integer utilization for actual chart traces.
+ * The headline status still uses whole percentages, but per-pulse RAM
+ * changes of 0.1% must not disappear from its time series.
+ */
+export function percentUsedPrecise(total: number | null, available: number | null): number | null {
+  if (total === null || available === null ||
+      !Number.isFinite(total) || !Number.isFinite(available) ||
+      total <= 0 || available < 0 || available > total) return null;
+  return Math.round((100 * (total - available) / total) * 100) / 100;
 }
 
 /** Percentage for compact telemetry labels, without pretending a small
