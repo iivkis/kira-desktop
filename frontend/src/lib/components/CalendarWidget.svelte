@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
+  import { tenetHoverLens } from '../tenet-hover-lens';
   import {
     clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -98,6 +99,7 @@
 <main
   data-kira-ui-root
   use:tenetCalendarReveal
+  use:tenetHoverLens
   class="relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
@@ -108,7 +110,7 @@
         aria-label="Make the clock digits fly and return"
         title="Click for a little clock chaos"
         class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
-        <time class="flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
+        <time data-tenet-lens-body class="flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
           datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
         {#each clockParts as part, index (index)}
           {#if part.digit}
@@ -146,7 +148,7 @@
             onclick={() => navigate(step)}
             title={step === -12 ? 'Previous year' : step === -1 ? 'Previous month' : step === 1 ? 'Next month' : 'Next year'}
             aria-label={step === -12 ? 'Previous year' : step === -1 ? 'Previous month' : step === 1 ? 'Next month' : 'Next year'}
-          >{step === -12 ? '«' : step === -1 ? '‹' : step === 1 ? '›' : '»'}</button>
+          ><span data-tenet-lens-body>{step === -12 ? '«' : step === -1 ? '‹' : step === 1 ? '›' : '»'}</span></button>
         {/each}
       </div>
     </div>
@@ -173,7 +175,7 @@
               data-calendar-day
               data-calendar-selected={isoDate(date) === selectedIso}
               onclick={() => choose(date)}
-            >{date.day}</button>
+            ><span data-tenet-lens-body>{date.day}</span></button>
           {:else}
             <span aria-hidden="true"></span>
           {/if}
@@ -190,9 +192,9 @@
     </p>
     <div class="mt-3 flex items-center justify-between">
       <button type="button" onclick={goToday}
-        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">TODAY</button>
+        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body>TODAY</span></button>
       <button type="button" onclick={() => onCopy(selectedIso)}
-        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">COPY DATE</button>
+        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body>COPY DATE</span></button>
     </div>
   </section>
 </main>
