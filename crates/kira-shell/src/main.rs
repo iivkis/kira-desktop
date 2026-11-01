@@ -8,7 +8,6 @@ mod process_monitor;
 mod process_page;
 mod system_metrics;
 mod system_panel;
-mod ui_assets;
 use std::cell::{Cell, RefCell};
 use std::env;
 use std::path::{Path, PathBuf};
@@ -41,10 +40,9 @@ fn ui_index() -> PathBuf {
     directory.join("index.html")
 }
 
-// Navigation is limited to the exact packaged UI document. Prefix matching
-// would allow unrelated file:// paths (or attacker-controlled remote pages).
-fn permitted_ui_page(requested_uri: &str, index_uri: &str) -> bool {
-    requested_uri == index_uri
+// Never allow navigation away from the self-contained UI document.
+fn permitted_ui_page(requested_uri: &str) -> bool {
+    requested_uri == "about:blank"
 }
 
 fn core_socket() -> Option<PathBuf> {
@@ -84,9 +82,8 @@ fn main() {
         std::process::exit(1);
     }
 
-    // The build embeds CSS and JS in index.html. Load it directly as an
-    // about:blank document so WebKit never needs to execute scripts from a
-    // custom URI origin. Keep the previous scheme for opt-in diagnostics.
+    // Production assets are inlined into index.html. WebKit loads one
+    // self-contained document without external script or stylesheet requests.
     let html = std::fs::read_to_string(&index).unwrap_or_else(|error| {
         eprintln!(
             "kira-shell: failed to read UI HTML {}: {error}",
@@ -94,7 +91,6 @@ fn main() {
         );
         std::process::exit(1);
     });
-    let use_legacy_scheme = env::var_os("KIRA_WEBKIT_LEGACY_SCHEME").is_some();
 
     // A nested preview must not activate another GTK application with the same ID
     // already running in the user's primary desktop session.
@@ -121,45 +117,8 @@ fn main() {
         window.set_anchor(Edge::Right, true);
         window.set_exclusive_zone(BAR_HEIGHT);
 
-        // Vite's production JS is an ES module. The file:// scheme blocks
-        // module requests in WebKitGTK; serve packaged files as a private
-        // CORS-enabled scheme instead of granting file:// broad access.
+        // Keep a dedicated context for the locked-down, self-contained UI.
         let context = webkit6::WebContext::new();
-        if let Some(security) = context.security_manager() {
-            security.register_uri_scheme_as_local("kira-ui");
-            security.register_uri_scheme_as_secure("kira-ui");
-            security.register_uri_scheme_as_cors_enabled("kira-ui");
-            security.register_uri_scheme_as_display_isolated("kira-ui");
-        }
-
-        let ui_root = index.parent().expect("UI index must have a parent").to_path_buf();
-        context.register_uri_scheme("kira-ui", move |request| {
-            let Some(uri) = request.uri() else {
-                let mut error = gtk::glib::Error::new(
-                    gtk::gio::IOErrorEnum::InvalidArgument,
-                    "Missing Kira UI asset URI",
-                );
-                request.finish_error(&mut error);
-                return;
-            };
-            match ui_assets::read_asset(uri.as_str(), &ui_root) {
-                Ok((content, mime)) => {
-                    let length = content.len() as i64;
-                    let bytes = gtk::glib::Bytes::from_owned(content);
-                    let stream = gtk::gio::MemoryInputStream::from_bytes(&bytes);
-                    request.finish(&stream, length, Some(mime));
-                }
-                Err(error) => {
-                    eprintln!("kira-shell: UI asset denied: {uri}: {error}");
-                    let mut webkit_error = gtk::glib::Error::new(
-                        gtk::gio::IOErrorEnum::NotFound,
-                        "Kira UI asset not found",
-                    );
-                    request.finish_error(&mut webkit_error);
-                }
-            }
-        });
-
         let manager = webkit6::UserContentManager::new();
         let view = webkit6::WebView::builder()
             .web_context(&context)
@@ -368,11 +327,6 @@ fn main() {
             gtk::glib::ControlFlow::Continue
         });
 
-        let allowed_uri = if use_legacy_scheme {
-            ui_assets::UI_DOCUMENT_URI.to_string()
-        } else {
-            "about:blank".to_string()
-        };
         view.connect_decide_policy(move |_, decision, kind| {
             if kind == webkit6::PolicyDecisionType::NewWindowAction {
                 decision.ignore();
@@ -384,7 +338,7 @@ fn main() {
                     .and_then(|navigation| navigation.navigation_action())
                     .and_then(|action| action.request())
                     .and_then(|request| request.uri())
-                    .is_some_and(|uri| permitted_ui_page(uri.as_str(), &allowed_uri));
+                    .is_some_and(|uri| permitted_ui_page(uri.as_str()));
                 if !permitted {
                     decision.ignore();
                     return true;
@@ -392,13 +346,8 @@ fn main() {
             }
             false
         });
-        if use_legacy_scheme {
-            eprintln!("kira-shell: diagnostic legacy scheme {}", ui_assets::UI_DOCUMENT_URI);
-            view.load_uri(ui_assets::UI_DOCUMENT_URI);
-        } else {
-            eprintln!("kira-shell: loading self-contained HTML using WebKit load_html()");
-            view.load_html(&html, None);
-        }
+        eprintln!("kira-shell: loading self-contained HTML using WebKit load_html()");
+        view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
     });
@@ -454,11 +403,13 @@ mod tests {
 
     #[test]
     fn navigation_is_restricted_to_exact_ui_document() {
-        for local in [ui_assets::UI_DOCUMENT_URI, "about:blank"] {
-            assert!(permitted_ui_page(local, local));
-            assert!(!permitted_ui_page("https://evil.example/", local));
-            assert!(!permitted_ui_page("kira-ui://app/index.html.evil", local));
-            assert!(!permitted_ui_page("file:///etc/passwd", local));
+        assert!(permitted_ui_page("about:blank"));
+        for uri in [
+            "https://evil.example/",
+            "kira-ui://app/index.html",
+            "file:///etc/passwd",
+        ] {
+            assert!(!permitted_ui_page(uri));
         }
     }
 

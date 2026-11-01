@@ -2,9 +2,9 @@
 /**
  * Inline the single production Vite JS/CSS bundles into index.html.
  *
- * WebKitGTK's private URI scheme loads HTML, but ES module subrequests can
- * fail with opaque "Script error." on certain WebKit versions. A classic,
- * self-contained script avoids module fetching and reports meaningful errors.
+ * WebKitGTK loads the packaged HTML as a self-contained document.
+ * Inlining a classic script avoids ES module subrequests and opaque
+ * "Script error." failures on some WebKit versions.
  * Fails closed when Vite emits an incompatible/multi-chunk bundle.
  */
 import { readFile, writeFile } from 'node:fs/promises';
