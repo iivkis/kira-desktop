@@ -23,7 +23,14 @@ function scriptFor(steps) {
           : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
             kind + '", generation: ' + generation + '}}));') +
         '}, ' + delay + ');'
-    ).join('') + '});</script>';
+    ).join('') +
+    // Test the live DOM, not strings in the bundled Svelte templates.
+    'setTimeout(() => {' +
+      'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
+      'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
+      'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+    '}, 1150);' +
+    '});</script>';
 }
 
 async function smoke(name, steps, expected) {
@@ -40,15 +47,9 @@ async function smoke(name, steps, expected) {
     '--disable-dev-shm-usage', '--disable-background-networking',
     '--virtual-time-budget=1800', '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
-  if (!output.includes('aria-label="' + expected + '"')) {
-    throw new Error(name + ': expected Svelte ' + expected + ' DOM missing after show');
-  }
-  if (output.includes('id="kira-loading"')) {
-    throw new Error(name + ': stale bootstrap fallback remained mounted');
-  }
-  const other = expected === 'Kira Calendar' ? 'Kira System Monitor' : 'Kira Calendar';
-  if (output.includes('aria-label="' + other + '"')) {
-    throw new Error(name + ': a hidden widget was still mounted');
+  if (!output.includes('data-smoke-result="' + expected + '"')) {
+    const found = output.match(/data-smoke-result="([^"]+)"/)?.[1] ?? 'no result';
+    throw new Error(name + ': expected live Svelte ' + expected + ', found ' + found);
   }
   console.log('OK: ' + name + ' mounted ' + expected);
 }
