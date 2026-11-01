@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import {
     dayOfYear, isoDate, isoWeek, localDateLabel, monthGrid,
-    shiftMonth, todayCivilDate, type CivilDate,
+    shiftDays, shiftMonth, todayCivilDate, type CivilDate,
   } from '../calendar-model';
 
   // The GTK/WebKit host manages window lifecycle and native clipboard.
@@ -55,8 +55,38 @@
     visible = { year: selected.year, month: selected.month };
   }
 
+  function focusSelectedDay() {
+    void tick().then(() => {
+      document.querySelector<HTMLButtonElement>('button[data-calendar-selected="true"]')?.focus();
+    });
+  }
+
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') onClose();
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+      return;
+    }
+    // Arrow navigation belongs to the day grid, not the close/toolbar buttons.
+    if (!(event.target instanceof HTMLElement) || !event.target.hasAttribute('data-calendar-day')) return;
+    const step = event.key === 'ArrowLeft' ? -1
+      : event.key === 'ArrowRight' ? 1
+        : event.key === 'ArrowUp' ? -7
+          : event.key === 'ArrowDown' ? 7
+            : null;
+    if (step !== null) {
+      event.preventDefault();
+      const next = shiftDays(selected, step);
+      if (next) { choose(next); focusSelectedDay(); }
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      goToday();
+      focusSelectedDay();
+    } else if (event.key === 'PageUp' || event.key === 'PageDown') {
+      event.preventDefault();
+      navigate((event.key === 'PageUp' ? -1 : 1) * (event.ctrlKey ? 12 : 1));
+      focusSelectedDay();
+    }
   }
 </script>
 
@@ -119,6 +149,8 @@
                 (isoDate(date) === todayIso && isoDate(date) !== selectedIso ? 'underline decoration-kira-accent underline-offset-4' : '')}
               aria-label={localDateLabel(date, locale)}
               aria-pressed={isoDate(date) === selectedIso}
+              data-calendar-day
+              data-calendar-selected={isoDate(date) === selectedIso}
               onclick={() => choose(date)}
             >{date.day}</button>
           {:else}
