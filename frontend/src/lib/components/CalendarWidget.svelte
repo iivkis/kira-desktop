@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import { calendarGridMotion, revealStagger } from '../motion';
   import {
     dayOfYear, isoDate, isoWeek, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -94,10 +95,11 @@
 
 <main
   data-kira-ui-root
+  use:revealStagger
   class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
-  <section class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
+  <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
     <div class="min-w-0">
       <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
       <time class="mt-1 block text-4xl font-extrabold tabular-nums" datetime={now.toISOString()}>
@@ -112,7 +114,7 @@
       title="Close calendar" aria-label="Close calendar">×</button>
   </section>
 
-  <section class="min-h-0 flex-1 bg-kira-surface px-4 py-4" aria-label="Date picker">
+  <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 py-4" aria-label="Date picker">
     <div class="mb-4 flex items-center justify-between gap-2">
       <div class="min-w-0">
         <div class="text-[10px] font-semibold tracking-wider text-kira-muted">SELECT DATE</div>
@@ -131,7 +133,8 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates">
+    <div class="grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates"
+      use:calendarGridMotion={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
       <span class="py-2 text-[10px] font-bold text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
         <span class="py-2 text-[10px] font-bold text-kira-muted">{label}</span>
@@ -161,7 +164,7 @@
     </div>
   </section>
 
-  <section class="shrink-0 bg-kira-bg px-5 pb-5 pt-4">
+  <section data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-5 pt-4">
     <p class="text-sm font-bold" aria-live="polite">{localDateLabel(selected, locale)}</p>
     <p class="mt-1 text-[10px] font-semibold tracking-wider text-kira-muted">
       ISO WEEK {String(week.week).padStart(2, '0')} / {week.year}
