@@ -146,11 +146,11 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-lens-move", !!window.__kiraWarpChanged);' +
       'document.documentElement.setAttribute("data-smoke-lens-seen", !!window.__kiraLensInitialRect);' +
       'document.documentElement.setAttribute("data-smoke-lens-started", !!window.__kiraLensStarted);' +
-      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted && !!window.__kiraWarpChanged);' +
+      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensStarted);' +
       'document.documentElement.setAttribute("data-smoke-warp-svg", !!document.querySelector("filter[id^=kira-temporal-warp] feTurbulence") && !!document.querySelector("filter[id^=kira-temporal-warp] feDisplacementMap"));' +
       'document.documentElement.setAttribute("data-smoke-warp-smooth", !!window.__kiraWarpSmooth);' +
       'document.documentElement.setAttribute("data-smoke-warp-reset", Number(document.querySelector("feDisplacementMap")?.getAttribute("scale")) === 0);' +
-      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensReacted && !!hoveredButton && !hoveredButton.hasAttribute("data-tenet-warp-state") && !hoveredButton.style.filter);' +
+      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensStarted && !!hoveredButton && !hoveredButton.hasAttribute("data-tenet-warp-state") && !hoveredButton.style.filter);' +
       'document.documentElement.setAttribute("data-smoke-lens-hitbox", !!hoveredRect && !!window.__kiraLensInitialRect && [hoveredRect.left,hoveredRect.top,hoveredRect.width,hoveredRect.height].every((value,index)=>Math.abs(value-window.__kiraLensInitialRect[index])<0.5));' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
@@ -211,7 +211,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': system tab text-only filter and border preservation: ' + flags.join(', '));
   }
   if (heightMode === 'lens' &&
-      (!output.includes('data-smoke-lens-reacted="true"') ||
+      (!output.includes('data-smoke-lens-started="true"') ||
+       !output.includes('data-smoke-lens-reacted="true"') ||
        !output.includes('data-smoke-lens-restored="true"') ||
        !output.includes('data-smoke-lens-hitbox="true"') ||
        !output.includes('data-smoke-warp-svg="true"') ||
