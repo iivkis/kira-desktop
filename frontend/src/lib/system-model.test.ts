@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel } from './system-model';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel } from './system-model';
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
 const processes: ProcessRow[] = [
@@ -39,6 +39,14 @@ describe('Svelte System Monitor model', () => {
     expect(percentUsed(0, 0)).toBeNull();
     expect(percentUsed(100, 150)).toBeNull();
     expect(percentUsed(100, 0)).toBe(100);
+    expect(usageLabel(null, null)).toBe('UNAVAILABLE');
+    expect(usageLabel(0, 0)).toBe('NOT CONFIGURED');
+    expect(usageLabel(100000, 100000)).toBe('0%');
+    expect(usageLabel(7700000, 7679000)).toBe('0.3%');
+    expect(usageLabel(1000000, 999999)).toBe('<0.1%');
+    expect(usageLabel(100, 60)).toBe('40%');
+    expect(usageLabel(100, 120)).toBe('UNAVAILABLE');
+
     expect(fractionLabel(null, null)).toBe('UNAVAILABLE');
     expect(bytesLabel(1_048_576)).toBe('1.0 GiB');
     expect(processMemoryLabel(null)).toBe('—');

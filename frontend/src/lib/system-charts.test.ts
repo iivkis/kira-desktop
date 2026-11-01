@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { SystemMetrics } from './sdk/core';
 import {
-  appendTelemetry, chartMeters, gpuPeak, MAX_TELEMETRY_POINTS, telemetrySummary,
+  activityAxis, appendTelemetry, chartMeters, gpuPeak, MAX_TELEMETRY_POINTS, telemetrySummary,
 } from './system-charts';
 
 const metrics: SystemMetrics = {
@@ -41,6 +41,19 @@ describe('System Monitor ECharts telemetry model', () => {
       { time: 1, cpu: null, ram: null, gpu: null },
     ]);
     expect(telemetrySummary(absent)).toContain('GPU peak unavailable');
+  });
+
+  it('keeps low CPU load visible while retaining an honest labeled zero origin', () => {
+    const low = [2, 4, 5].map((cpu, time) => ({ time, cpu, ram: 39, gpu: null }));
+    expect(activityAxis(low, 'cpu')).toEqual({ min: 0, max: 15 });
+    expect(activityAxis(low, 'ram')).toEqual({ min: 35, max: 45 });
+    expect(activityAxis(low, 'gpu')).toEqual({ min: 0, max: 100 });
+    expect(activityAxis([{ time: 0, cpu: 91, ram: 99, gpu: 0 }], 'cpu'))
+      .toEqual({ min: 0, max: 100 });
+    expect(activityAxis([{ time: 0, cpu: 0, ram: 0, gpu: 0 }], 'ram'))
+      .toEqual({ min: 0, max: 5 });
+    expect(activityAxis([{ time: 0, cpu: null, ram: null, gpu: null }], 'cpu'))
+      .toEqual({ min: 0, max: 100 });
   });
 
   it('adds one bar per detected GPU, retaining unknown readings', () => {

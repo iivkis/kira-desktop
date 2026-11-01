@@ -48,6 +48,20 @@ export function percentUsed(total: number | null, available: number | null): num
   return Math.floor(100 * (total - available) / total);
 }
 
+/** Percentage for compact telemetry labels, without pretending a small
+ * but nonzero swap allocation is 0%. This does not alter pressure thresholds.
+ */
+export function usageLabel(total: number | null, available: number | null): string {
+  if (total === null || available === null || total < 0 || available < 0 ||
+      available > total) return 'UNAVAILABLE';
+  if (total === 0) return 'NOT CONFIGURED';
+  const used = 100 * (total - available) / total;
+  if (used === 0) return '0%';
+  if (used < 0.1) return '<0.1%';
+  if (used < 1) return used.toFixed(1) + '%';
+  return Math.round(used) + '%';
+}
+
 export function bytesLabel(kib: number): string {
   return kib >= 1_048_576 ? (kib / 1_048_576).toFixed(1) + ' GiB' : Math.round(kib / 1024) + ' MiB';
 }
