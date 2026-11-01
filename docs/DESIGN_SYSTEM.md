@@ -101,7 +101,19 @@ official visual language of Kira Desktop.
   UNAVAILABLE / NOT DETECTED rather than zero. A fixed-purpose WebKit
   `kiraSystem` channel only accepts `toggle` and cannot run commands.
   The monitor updates every two seconds and can copy a plain-text report.
-  No new Core JSON-RPC methods or user-data collection are introduced.
+  The system popover contains **two custom flat tabs**: 01 OVERVIEW
+  (the existing diagnostics) and 02 PROCESSES (the read-only mini task
+  monitor). The second tab reads readable tasks from Linux /proc only
+  while active, displaying process name, PID, sampled CPU percentage
+  relative to the entire host, and resident memory (RSS), with a search
+  field, CPU/RAM/PID sorting, an independently scrollable top-36 list
+  and honest counts. Samples update every two seconds on a worker.
+  Initial CPU has no historical baseline and is displayed as a dash,
+  and unreadable RSS/processes are not replaced with fake zero.
+  The UI never reads process command-line arguments or offers termination.
+  A PID plus kernel start-time identity prevents reuse from attributing
+  another process's CPU history. No new Core JSON-RPC methods or
+  user-data collection are introduced.
 
 ### Geometry and motion
 

@@ -62,3 +62,37 @@ class DetailedHealthContractTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class ProcessesTabContractTests(unittest.TestCase):
+    def test_custom_tabs_and_safe_data_model(self):
+        page = (ROOT / "crates/kira-shell/src/process_page.rs").read_text()
+        reader = (ROOT / "crates/kira-shell/src/process_monitor.rs").read_text()
+        self.assertIn('01  OVERVIEW', RUST)
+        self.assertIn('02  PROCESSES', RUST)
+        self.assertIn('set_visible_child_name("overview")', RUST)
+        self.assertIn('set_visible_child_name("processes")', RUST)
+        self.assertIn('page_processes.set_active(true)', RUST)
+        self.assertIn('page_overview.set_active(false)', RUST)
+        self.assertIn('process_page.poll()', RUST)
+        self.assertIn('gtk::SearchEntry::new()', page)
+        self.assertIn('Sort::Cpu', page)
+        self.assertIn('Sort::Memory', page)
+        self.assertIn('Sort::Pid', page)
+        self.assertIn('VISIBLE_ROWS: usize = 36', page)
+        self.assertIn('ProcessSampler::default()', page)
+        self.assertIn('std::thread::spawn', page)
+        self.assertIn('Arc<AtomicBool>', page)
+        for file in ('/proc', '/proc/stat', 'stat', 'status'):
+            self.assertIn(file, reader)
+        self.assertIn('pid, stat.start_ticks', reader)
+        self.assertIn('fn parse_stat(', reader)
+        self.assertNotIn('std::process::Command', reader)
+        self.assertNotIn('Command::new', page)
+        self.assertNotIn('kill(', page)
+
+    def test_visual_style_uses_shared_palette_without_framed_notebook(self):
+        for selector in ('.kira-system-tabs', 'button.kira-system-tab',
+                         '.kira-process-page', '.kira-process-row',
+                         'entry.kira-process-search', 'button.kira-process-sort'):
+            self.assertIn(selector, CSS)
+        self.assertNotIn('@define-color', CSS)
