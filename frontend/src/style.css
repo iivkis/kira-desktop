@@ -92,62 +92,11 @@
     height: 0;
   }
 
-  /* TENET optical hover: the clickable hitbox never shifts. An amber/white
-   * refraction field bends in response to the real pointer, then reconstructs
-   * its recorded movement in reverse. Only the currently active control
-   * receives backdrop filtering; no shader or permanent animation loop.
+  /* TENET material deformation is a real in-document SVG displacement
+   * filter on the clickable surface, not pseudo-element glass or blur.
+   * The filtered pixels may bend, while the native hitbox remains stable.
+   * Motion is owned and cleaned up by tenet-hover-lens.ts (GSAP).
    */
-  .kira-tenet-lens-target {
-    position: relative;
-    isolation: isolate;
-    --kira-lens-opacity: 0;
-    --kira-lens-x: 50%;
-    --kira-lens-y: 50%;
-    --kira-lens-dx: 0px;
-    --kira-lens-dy: 0px;
-    --kira-lens-shear: 0deg;
-  }
-
-  .kira-tenet-lens-target::before,
-  .kira-tenet-lens-target::after {
-    content: '';
-    position: absolute;
-    pointer-events: none;
-    inset: -2px;
-    opacity: var(--kira-lens-opacity);
-    z-index: 2;
-    border-radius: inherit;
-  }
-
-  .kira-tenet-lens-target::before {
-    background: radial-gradient(ellipse 48% 88% at var(--kira-lens-x) var(--kira-lens-y),
-      rgb(229 229 229 / 16%) 0%, rgb(252 163 17 / 9%) 33%,
-      rgb(20 33 61 / 4%) 55%, transparent 75%);
-    -webkit-backdrop-filter: blur(1px) contrast(1.12);
-    backdrop-filter: blur(1px) contrast(1.12);
-    transform: translate3d(var(--kira-lens-dx), var(--kira-lens-dy), 0)
-      skewX(var(--kira-lens-shear));
-  }
-
-  .kira-tenet-lens-target::after {
-    inset: -3px;
-    border: 1px solid rgb(252 163 17 / 55%);
-    background: linear-gradient(118deg, transparent 15%, rgb(229 229 229 / 18%) 48%,
-      rgb(252 163 17 / 12%) 54%, transparent 82%);
-    transform: translate3d(var(--kira-lens-dx), var(--kira-lens-dy), 0)
-      skewX(var(--kira-lens-shear)) scaleX(1.035);
-  }
-
-  .kira-tenet-lens-target [data-tenet-lens-body] {
-    display: inline-block;
-    transform-origin: center center;
-    will-change: transform;
-  }
-
-  @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
-    .kira-tenet-lens-target::before,
-    .kira-tenet-lens-target::after { display: none; }
-  }
 
   /* Keep an explicit keyboard-visible outline even outside our components. */
   :focus-visible {
