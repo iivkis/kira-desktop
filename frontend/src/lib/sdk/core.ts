@@ -89,7 +89,7 @@ export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () 
   return onNativeEvent('kira:system-metrics', isSystemMetrics, callback);
 }
 
-/** Lightweight native CPU/RAM samples at 100ms, only while Overview is open.
+/** Lightweight native CPU/RAM samples at 500ms, only while Overview is open.
  * Expensive GPU/hwmon/process/storage measurements remain on slower feeds.
  */
 export interface SystemPulse {
