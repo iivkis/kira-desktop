@@ -29,6 +29,21 @@
     overflow: hidden;
   }
 
+  /* Desktop widgets are controls, not selectable web documents.
+   * This covers the Top Bar and every lazy Svelte overlay (Calendar,
+   * System Monitor and Launcher). Keep editable text selectable so
+   * typing, selection, cut/copy/paste and input IME still behave normally. */
+  #app {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  #app :is(input, textarea, [contenteditable]:not([contenteditable="false"])),
+  #app [contenteditable]:not([contenteditable="false"]) * {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
   /* Top Bar stays full-height within its own WebKit surface.
    * Overlay documents must have an intrinsic page height instead.
    * Otherwise html/body/#app's 100% viewport height forces every
