@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3748
+index_bytes=3810
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,86 +15,87 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	b776f8aa0124e0aa12ca413e82aee48b438976cd
-F	.cargo/config.toml	98	107	3
-F	.github/workflows/ci.yml	1467	112	46
-F	.github/workflows/nix.yml	1258	160	38
-F	.github/workflows/overlay-smoke.yml	912	200	34
-F	.github/workflows/publish-repospool.yml	3048	236	83
-F	.gitignore	178	321	11
-F	.repospoolignore	1028	334	47
-F	Cargo.toml	494	383	22
-F	README.md	9636	407	219
-F	Taskfile.yml	5957	628	185
-F	config/kira.kdl.example	358	815	8
-F	crates/kira-core/Cargo.toml	207	825	10
-F	crates/kira-core/src/config.rs	15217	837	399
-F	crates/kira-core/src/main.rs	18357	1238	480
-F	crates/kira-core/src/niri.rs	16767	1720	453
-F	crates/kira-ipc/Cargo.toml	170	2175	9
-F	crates/kira-ipc/src/client.rs	10376	2186	277
-F	crates/kira-ipc/src/lib.rs	9053	2465	302
-F	crates/kira-shell/Cargo.toml	297	2769	12
-F	crates/kira-shell/src/calendar.rs	22638	2783	647
-F	crates/kira-shell/src/launcher.css	2924	3432	119
-F	crates/kira-shell/src/launcher.rs	10885	3553	300
-F	crates/kira-shell/src/main.rs	17534	3855	413
-F	crates/kira-shell/src/native-palette.css	353	4270	7
-F	crates/kira-shell/src/native_ui.rs	4908	4279	124
-F	crates/kira-shell/src/process_monitor.rs	6245	4405	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4609	214
-F	crates/kira-shell/src/system_panel.rs	7948	4825	226
-F	docs/CONFIG.md	5801	5053	125
-F	docs/DESIGN_SYSTEM.md	15048	5180	276
-F	docs/DEVELOPMENT.md	25461	5458	514
-F	docs/QA_VISUAL.md	12284	5974	149
-F	docs/SPECIFICATION.md	28960	6125	421
-F	docs/UI_ARCHITECTURE.md	4933	6548	79
-F	docs/VISUAL_REVIEW.md	9754	6629	84
-F	flake.nix	2651	6715	76
-F	frontend/index.html	2737	6793	66
-F	frontend/package.json	650	6861	23
-F	frontend/scripts/inline-assets.mjs	4457	6886	103
-F	frontend/scripts/inline-assets.test.mjs	4645	6991	106
-F	frontend/scripts/smoke-overlays.mjs	3577	7099	77
-F	frontend/src/App.svelte	8659	7178	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7380	84
-F	frontend/src/lib/bootstrap.ts	2613	7466	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7538	38
-F	frontend/src/lib/calendar-model.ts	3453	7578	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	7652	177
-F	frontend/src/lib/components/SystemHealth.svelte	1684	7831	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	7876	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8067	61
-F	frontend/src/lib/lazy-widget.test.ts	3236	8130	89
-F	frontend/src/lib/lazy-widget.ts	1984	8221	63
-F	frontend/src/lib/sdk/core.test.ts	14975	8286	302
-F	frontend/src/lib/sdk/core.ts	12313	8590	344
-F	frontend/src/lib/system-health.test.ts	2348	8936	41
-F	frontend/src/lib/system-health.ts	2831	8979	60
-F	frontend/src/lib/system-model.test.ts	2988	9041	57
-F	frontend/src/lib/system-model.ts	3411	9100	76
-F	frontend/src/lib/themes/kira-default.css	1687	9178	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9232	101
-F	frontend/src/lib/themes/kira-default.ts	777	9335	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9359	79
-F	frontend/src/lib/time.test.ts	263	9440	8
-F	frontend/src/lib/time.ts	320	9450	9
-F	frontend/src/main.ts	4562	9461	109
-F	frontend/src/style.css	1329	9572	44
-F	frontend/tsconfig.json	403	9618	16
-F	frontend/vite.config.ts	224	9636	8
-F	nix/package.nix	3347	9646	120
-F	scripts/dev_preview.py	18147	9768	403	x
-F	scripts/qa_visual.py	12052	10173	299
-F	tests/test_calendar_design.py	6837	10474	121
-F	tests/test_detailed_health.py	5197	10597	101
-F	tests/test_dev_preview.py	9339	10700	219
-F	tests/test_launcher_design.py	2915	10921	61
-F	tests/test_native_theme.py	2646	10984	57
-F	tests/test_popup_geometry.py	1728	11043	35
-F	tests/test_qa_visual.py	10549	11080	217
-F	tests/test_ui_bootstrap_contract.py	1103	11299	29
+C	6cabc662e0e0cfae9e766e6517688fd00676da2a
+F	.cargo/config.toml	98	108	3
+F	.github/workflows/ci.yml	1467	113	46
+F	.github/workflows/nix.yml	1258	161	38
+F	.github/workflows/overlay-smoke.yml	912	201	34
+F	.github/workflows/publish-repospool.yml	3048	237	83
+F	.gitignore	178	322	11
+F	.repospoolignore	1028	335	47
+F	Cargo.toml	494	384	22
+F	README.md	9636	408	219
+F	Taskfile.yml	5957	629	185
+F	config/kira.kdl.example	358	816	8
+F	crates/kira-core/Cargo.toml	207	826	10
+F	crates/kira-core/src/config.rs	15217	838	399
+F	crates/kira-core/src/main.rs	18357	1239	480
+F	crates/kira-core/src/niri.rs	16767	1721	453
+F	crates/kira-ipc/Cargo.toml	170	2176	9
+F	crates/kira-ipc/src/client.rs	10376	2187	277
+F	crates/kira-ipc/src/lib.rs	9053	2466	302
+F	crates/kira-shell/Cargo.toml	297	2770	12
+F	crates/kira-shell/src/calendar.rs	27842	2784	783
+F	crates/kira-shell/src/launcher.rs	2570	3569	81
+F	crates/kira-shell/src/main.rs	17601	3652	414
+F	crates/kira-shell/src/native_ui.rs	2413	4068	61
+F	crates/kira-shell/src/process_monitor.rs	6245	4131	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4335	214
+F	crates/kira-shell/src/system_panel.rs	7948	4551	226
+F	docs/CONFIG.md	5801	4779	125
+F	docs/DESIGN_SYSTEM.md	15048	4906	276
+F	docs/DEVELOPMENT.md	25624	5184	515
+F	docs/QA_VISUAL.md	12284	5701	149
+F	docs/SPECIFICATION.md	28960	5852	421
+F	docs/UI_ARCHITECTURE.md	5097	6275	80
+F	docs/VISUAL_REVIEW.md	9754	6357	84
+F	flake.nix	2651	6443	76
+F	frontend/index.html	2737	6521	66
+F	frontend/package.json	650	6589	23
+F	frontend/scripts/inline-assets.mjs	4457	6614	103
+F	frontend/scripts/inline-assets.test.mjs	4645	6719	106
+F	frontend/scripts/smoke-overlays.mjs	4141	6827	88
+F	frontend/src/App.svelte	8659	6917	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7119	84
+F	frontend/src/lib/bootstrap.ts	2613	7205	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7277	38
+F	frontend/src/lib/calendar-model.ts	3453	7317	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	7391	177
+F	frontend/src/lib/components/LauncherWidget.svelte	6492	7570	137
+F	frontend/src/lib/components/SystemHealth.svelte	1684	7709	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	7754	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	7945	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8008	29
+F	frontend/src/lib/launcher-model.ts	778	8039	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8059	89
+F	frontend/src/lib/lazy-widget.ts	1984	8150	63
+F	frontend/src/lib/sdk/core.test.ts	17180	8215	349
+F	frontend/src/lib/sdk/core.ts	14103	8566	389
+F	frontend/src/lib/system-health.test.ts	2348	8957	41
+F	frontend/src/lib/system-health.ts	2831	9000	60
+F	frontend/src/lib/system-model.test.ts	2988	9062	57
+F	frontend/src/lib/system-model.ts	3411	9121	76
+F	frontend/src/lib/themes/kira-default.css	1687	9199	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9253	101
+F	frontend/src/lib/themes/kira-default.ts	777	9356	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9380	79
+F	frontend/src/lib/time.test.ts	263	9461	8
+F	frontend/src/lib/time.ts	320	9471	9
+F	frontend/src/main.ts	4907	9482	112
+F	frontend/src/style.css	1329	9596	44
+F	frontend/tsconfig.json	403	9642	16
+F	frontend/vite.config.ts	224	9660	8
+F	nix/package.nix	3132	9670	117
+F	scripts/dev_preview.py	18147	9789	403	x
+F	scripts/qa_visual.py	12052	10194	299
+F	tests/test_calendar_design.py	6837	10495	121
+F	tests/test_detailed_health.py	5197	10618	101
+F	tests/test_dev_preview.py	9339	10721	219
+F	tests/test_launcher_design.py	3934	10942	80
+F	tests/test_native_theme.py	1567	11024	36
+F	tests/test_popup_geometry.py	1569	11062	33
+F	tests/test_qa_visual.py	10549	11097	217
+F	tests/test_ui_bootstrap_contract.py	1103	11316	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -2798,6 +2799,7 @@ const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\"
 enum Surface {
     Calendar,
     System,
+    Launcher,
 }
 
 impl Surface {
@@ -2805,6 +2807,7 @@ impl Surface {
         match self {
             Self::Calendar => "calendar",
             Self::System => "system",
+            Self::Launcher => "launcher",
         }
     }
 }
@@ -2822,6 +2825,7 @@ struct CalendarOverlay {
     widget_ready: Cell<bool>,
     active: Cell<Option<Surface>>,
     system: RefCell<Option<crate::system_panel::Model>>,
+    launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
     revealed: Cell<bool>,
@@ -2838,6 +2842,7 @@ impl CalendarOverlay {
             model.set_processes_active(false);
         }
         self.active.set(None);
+        self.launcher.borrow_mut().take();
         self.widget_ready.set(false);
         self.revealed.set(false);
         self.paint_pending.set(false);
@@ -2873,6 +2878,13 @@ impl CalendarOverlay {
             }
         }
         self.active.set(Some(kind));
+        // The launcher needs reliable keyboard focus for type-to-search;
+        // other popups preserve their former on-demand keyboard behavior.
+        self.window.set_keyboard_mode(if kind == Surface::Launcher {
+            KeyboardMode::Exclusive
+        } else {
+            KeyboardMode::OnDemand
+        });
         self.requested.set(true);
         self.revealed.set(false);
         self.widget_ready.set(false);
@@ -2921,7 +2933,7 @@ impl CalendarOverlay {
         let Some(kind) = self.active.get() else {
             return;
         };
-        // Only the two hardcoded, trusted Svelte widget types may be selected.
+        // Only hardcoded, trusted Svelte widget types may be selected.
         let kind = kind.name();
         let script = format!(
             "window.dispatchEvent(new CustomEvent('kira:overlay:show', {{ detail: {{ kind: '{kind}', generation: {generation} }} }}));"
@@ -3051,7 +3063,77 @@ impl CalendarOverlay {
                     display.clipboard().set_text(&model.report());
                 }
             }
+            Some(UiCommand::LauncherCatalog(generation))
+                if self.requested.get()
+                    && self.active.get() == Some(Surface::Launcher)
+                    && self.generation.get() == generation =>
+            {
+                let needs_catalog = self.launcher.borrow().is_none();
+                if needs_catalog {
+                    *self.launcher.borrow_mut() = Some(crate::launcher::Catalog::discover());
+                }
+                let data = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.as_json());
+                if let Some(payload) = data {
+                    self.dispatch_launcher("kira:launcher:apps", payload);
+                }
+            }
+            Some(UiCommand::LaunchApp(generation, id))
+                if self.requested.get()
+                    && self.revealed.get()
+                    && self.active.get() == Some(Surface::Launcher)
+                    && self.generation.get() == generation =>
+            {
+                let result = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.launch(id));
+                match result {
+                    Some(Ok(())) => self.hide(),
+                    Some(Err(error)) => {
+                        self.dispatch_launcher(
+                            "kira:launcher:error",
+                            serde_json::json!({ "message": error }),
+                        );
+                    }
+                    None => {
+                        self.dispatch_launcher(
+                            "kira:launcher:error",
+                            serde_json::json!({ "message": "Application catalog unavailable" }),
+                        );
+                    }
+                }
+            }
             _ => eprintln!("kira-shell: ignored invalid/stale Overlay UI command"),
+        }
+    }
+
+    fn dispatch_launcher(&self, event: &str, payload: serde_json::Value) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Launcher) {
+            return;
+        }
+        // Serialize data twice so installed app names never become JS source.
+        if let Ok(serialized) = serde_json::to_string(&payload)
+            && let Ok(encoded) = serde_json::to_string(&serialized)
+        {
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('{event}', {{ detail: JSON.parse({encoded}) }}));"
+            );
+            self.view.evaluate_javascript(
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Launcher catalog delivery failed: {error}");
+                    }
+                },
+            );
         }
     }
 
@@ -3124,6 +3206,8 @@ enum UiCommand<'a> {
     CopyDate(&'a str),
     ProcessesTab(bool),
     CopyReport,
+    LauncherCatalog(u32),
+    LaunchApp(u32, usize),
 }
 
 /// Revalidate date-copy requests without duplicating the Svelte date grid.
@@ -3149,6 +3233,32 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         "tab:overview" => return Some(UiCommand::ProcessesTab(false)),
         "copy-report" => return Some(UiCommand::CopyReport),
         _ => {}
+    }
+    if let Some(value) = message.strip_prefix("apps-request:") {
+        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+            return None;
+        }
+        return value
+            .parse::<u32>()
+            .ok()
+            .filter(|v| *v > 0)
+            .map(UiCommand::LauncherCatalog);
+    }
+    if let Some(value) = message.strip_prefix("launch:") {
+        let (generation, id) = value.split_once(':')?;
+        if generation.is_empty()
+            || generation.len() > 10
+            || !generation.bytes().all(|b| b.is_ascii_digit())
+            || id.is_empty()
+            || id.len() > 4
+            || !id.bytes().all(|b| b.is_ascii_digit())
+        {
+            return None;
+        }
+        return Some(UiCommand::LaunchApp(
+            generation.parse::<u32>().ok().filter(|v| *v > 0)?,
+            id.parse::<usize>().ok().filter(|v| *v < 1024)?,
+        ));
     }
     if let Some(value) = message.strip_prefix("mounted:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
@@ -3221,6 +3331,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         widget_ready: Cell::new(false),
         active: Cell::new(None),
         system: RefCell::new(None),
+        launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
         revealed: Cell::new(false),
@@ -3342,8 +3453,21 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         state.hide();
         return;
     }
-    crate::launcher::dismiss(application);
     state.show(Surface::Calendar);
+}
+
+pub fn open_launcher(application: &gtk::Application, html: &str) {
+    let Some(state) = ensure(application, html) else {
+        eprintln!("kira-shell: Overlay HTML root not found");
+        return;
+    };
+    // Opening the launcher again should focus its existing search field.
+    if state.requested.get() && state.active.get() == Some(Surface::Launcher) {
+        state.window.present();
+        return;
+    }
+    state.launcher.borrow_mut().take();
+    state.show(Surface::Launcher);
 }
 
 pub fn toggle_system(
@@ -3361,7 +3485,6 @@ pub fn toggle_system(
         state.hide();
         return;
     }
-    crate::launcher::dismiss(application);
     *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
     state.last_metrics.set(None);
     state.show(Surface::System);
@@ -3382,6 +3505,12 @@ mod tests {
             "painted:-1",
             "painted:18446744073709551616",
             "tab:everything",
+            "apps-request:",
+            "apps-request:abc",
+            "launch:1:1024",
+            "launch:1:-1",
+            "launch:1:0;sh",
+            "launch:18446744073709551616:0",
             "copy:2026-01-01;exit",
             "mounted:",
             "mounted:abc",
@@ -3410,6 +3539,14 @@ mod tests {
             Some(UiCommand::ProcessesTab(false))
         );
         assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
+        assert_eq!(
+            calendar_command("apps-request:12"),
+            Some(UiCommand::LauncherCatalog(12))
+        );
+        assert_eq!(
+            calendar_command("launch:12:42"),
+            Some(UiCommand::LaunchApp(12, 42))
+        );
         assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
@@ -3428,426 +3565,86 @@ mod tests {
     }
 }
 
-FILE	crates/kira-shell/src/launcher.css
-/* Kira Launcher. Native colors loaded from native-palette.css. */
-window.kira-launcher-window { background: transparent; }
-
-/* One structural panel edge. Internally, contrast comes from materials and
- * typography, not from shadows and outlines around each interactive item. */
-.kira-launcher-card {
-  background: @kira_black;
-  color: @kira_white;
-  border: 1px solid rgba(229, 229, 229, 0.32);
-  border-radius: 10px;
-}
-
-.kira-launcher-intro {
-  padding: 22px 24px 18px;
-  background: @kira_black;
-}
-.kira-eyebrow {
-  color: @kira_orange;
-  font-size: 10px;
-  font-weight: 800;
-}
-.kira-heading {
-  color: @kira_white;
-  font-size: 32px;
-  font-weight: 800;
-}
-.kira-subheading {
-  color: @kira_alabaster_grey;
-  font-size: 12px;
-}
-
-.kira-workbench {
-  padding: 16px 18px 12px;
-  background: @kira_prussian_blue;
-}
-.kira-workbench-eyebrow,
-.kira-catalog-label {
-  color: @kira_alabaster_grey;
-  font-size: 10px;
-  font-weight: 700;
-}
-.kira-catalog-header { padding-top: 7px; }
-.kira-count {
-  color: @kira_alabaster_grey;
-  font-size: 10px;
-  font-weight: 700;
-}
-
-entry.kira-search-field {
-  min-height: 42px;
-  padding: 7px 12px;
-  background: @kira_black;
-  color: @kira_white;
-  border: 1px solid rgba(229, 229, 229, 0.38);
-  border-radius: 6px;
-}
-entry.kira-search-field:focus { border-color: @kira_orange; }
-
-list.kira-app-list {
-  background: @kira_prussian_blue;
-  color: @kira_white;
-}
-row.kira-app-row {
-  margin: 2px 0;
-  padding: 7px 8px 7px 0;
-  border: 0;
-  border-radius: 5px;
-  background: transparent;
-  color: @kira_white;
-}
-row.kira-app-row:hover:not(:selected) {
-  background: rgba(0, 0, 0, 0.24);
-}
-/* Selection is a local orange marker, not a full-width orange slab. */
-row.kira-app-row:selected {
-  background: rgba(0, 0, 0, 0.55);
-  color: @kira_white;
-}
-.kira-app-rail {
-  min-width: 3px;
-  min-height: 38px;
-  background: transparent;
-}
-row.kira-app-row:selected .kira-app-rail { background: @kira_orange; }
-.kira-app-icon-shell {
-  min-width: 38px;
-  min-height: 38px;
-  padding: 6px;
-  border: 0;
-  border-radius: 6px;
-  background: @kira_black;
-  color: @kira_white;
-}
-.kira-app-icon-fallback { color: @kira_white; font-weight: 800; }
-.kira-app-name { color: @kira_white; font-size: 14px; font-weight: 750; }
-.kira-app-detail { color: @kira_alabaster_grey; font-size: 11px; }
-row.kira-app-row:selected .kira-app-name { color: @kira_orange; }
-row.kira-app-row:selected .kira-app-detail { color: @kira_alabaster_grey; }
-
-.kira-empty { color: @kira_alabaster_grey; padding: 16px; }
-.kira-launch-error {
-  color: @kira_orange;
-  font-size: 11px;
-  margin: 0 20px;
-}
-.kira-launcher-footer {
-  padding: 14px 24px;
-  background: @kira_black;
-}
-.kira-keycap {
-  padding: 4px 6px;
-  border: 1px solid rgba(229, 229, 229, 0.35);
-  border-radius: 4px;
-  background: transparent;
-  color: @kira_white;
-  font-size: 10px;
-  font-weight: 700;
-}
-.kira-key-hint { color: @kira_alabaster_grey; font-size: 10px; }
-
 FILE	crates/kira-shell/src/launcher.rs
-//! Native launcher: desktop entries via Gio, never shell-interpolated commands.
-use std::cell::RefCell;
-use std::rc::Rc;
-use std::sync::Once;
-
+//! Trusted GIO desktop-app adapter for the Svelte Launcher. No GTK widgets,
+//! command strings, executable paths, terminal spawning or Core RPC.
 use gtk::gio;
-use gtk::prelude::*;
-use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+use gtk::gio::prelude::*;
 
-const TITLE: &str = "Kira Launcher";
-
-struct App {
-    info: gio::AppInfo,
-    search: String,
+/// Only an index into this server-side snapshot is accepted from Svelte.
+/// Never use a web-supplied executable path, desktop ID or shell command.
+pub struct Catalog {
+    apps: Vec<gio::AppInfo>,
 }
 
-fn installed_apps() -> Vec<App> {
-    let mut apps: Vec<_> = gio::AppInfo::all()
-        .into_iter()
-        .filter(|info| info.should_show())
-        .map(|info| {
-            let search = format!(
-                "{} {}",
-                info.display_name(),
-                info.description()
-                    .map(|value| value.to_string())
+impl Catalog {
+    pub fn discover() -> Self {
+        let mut apps: Vec<_> = gio::AppInfo::all()
+            .into_iter()
+            .filter(|info| info.should_show())
+            .collect();
+        apps.sort_by_key(|info| info.display_name().to_string().to_lowercase());
+        apps.truncate(1024);
+        Self { apps }
+    }
+
+    pub fn as_json(&self) -> serde_json::Value {
+        let apps: Vec<_> = self
+            .apps
+            .iter()
+            .enumerate()
+            .map(|(id, info)| {
+                let name: String = info
+                    .display_name()
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(120)
+                    .collect();
+                let description: String = info
+                    .description()
+                    .map(|v| v.to_string())
                     .unwrap_or_default()
-            )
-            .to_lowercase();
-            App { info, search }
-        })
-        .collect();
-    apps.sort_by_key(|app| app.info.display_name().to_string().to_lowercase());
-    apps
-}
-
-fn label(value: &str, class: &str) -> gtk::Label {
-    let label = gtk::Label::new(Some(value));
-    label.add_css_class(class);
-    label.set_xalign(0.0);
-    label.set_ellipsize(gtk::pango::EllipsizeMode::End);
-    label
-}
-
-// GtkListBoxRow::index() is a view position, not an application's identity.
-// Filtering and selection must always resolve a row to its original Gio entry.
-fn app_index(row: &gtk::ListBoxRow) -> Option<usize> {
-    row.widget_name().strip_prefix("kira-app-")?.parse().ok()
-}
-
-fn visible_rows(list: &gtk::ListBox, count: usize) -> Vec<gtk::ListBoxRow> {
-    (0..count)
-        .filter_map(|index| list.row_at_index(index as i32))
-        .filter(|row| row.is_child_visible())
-        .collect()
-}
-
-fn launch(
-    apps: &[App],
-    row: &gtk::ListBoxRow,
-    window: &gtk::ApplicationWindow,
-    error: &gtk::Label,
-) {
-    let Some(index) = app_index(row) else {
-        return;
-    };
-    if let Some(app) = apps.get(index) {
-        match app.info.launch(&[], None::<&gio::AppLaunchContext>) {
-            Ok(()) => window.close(),
-            Err(failure) => {
-                error.set_text(&format!(
-                    "Cannot open {}: {failure}",
-                    app.info.display_name()
-                ));
-                error.set_visible(true);
-            }
-        }
-    }
-}
-
-fn install_style() {
-    static ONCE: Once = Once::new();
-    ONCE.call_once(|| crate::native_ui::install_styles(include_str!("launcher.css")));
-}
-
-/// Close only the Launcher when switching native overlays.
-pub fn dismiss(application: &gtk::Application) -> bool {
-    crate::native_ui::dismiss_overlay(application, TITLE)
-}
-
-/// Show a single keyboard-accessible layer-shell overlay without reserving space.
-pub fn show(application: &gtk::Application) {
-    if let Some(existing) = crate::native_ui::find_overlay(application, TITLE) {
-        existing.present();
-        return;
-    }
-    crate::calendar::dismiss(application);
-    crate::system_panel::dismiss(application);
-    install_style();
-    let window = gtk::ApplicationWindow::new(application);
-    window.set_title(Some(TITLE));
-    window.set_decorated(false);
-    window.set_default_size(600, 520);
-    window.add_css_class("kira-launcher-window");
-    window.init_layer_shell();
-    window.set_namespace(Some("kira-launcher"));
-    window.set_layer(Layer::Overlay);
-    window.set_anchor(Edge::Top, true);
-    window.set_margin(Edge::Top, 58);
-    window.set_exclusive_zone(0);
-    window.set_keyboard_mode(KeyboardMode::Exclusive);
-
-    let frame = gtk::Box::new(gtk::Orientation::Vertical, 0);
-    frame.set_margin_start(12);
-    frame.set_margin_end(12);
-    frame.set_margin_top(6);
-    frame.set_margin_bottom(12);
-    let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
-    card.add_css_class("kira-launcher-card");
-    frame.append(&card);
-    window.set_child(Some(&frame));
-
-    // Editorial hierarchy: a quiet black intro and a Prussian Blue workspace.
-    // This is one panel with two clear regions, not a stack of framed chips.
-    let intro = gtk::Box::new(gtk::Orientation::Vertical, 6);
-    intro.add_css_class("kira-launcher-intro");
-    intro.append(&label("KIRA  /  APPLICATION INDEX", "kira-eyebrow"));
-    intro.append(&label("Applications", "kira-heading"));
-    intro.append(&label("Search your installed tools.", "kira-subheading"));
-    card.append(&intro);
-
-    let workbench = gtk::Box::new(gtk::Orientation::Vertical, 10);
-    workbench.add_css_class("kira-workbench");
-    card.append(&workbench);
-    workbench.append(&label("FIND  /  OPEN", "kira-workbench-eyebrow"));
-
-    let entry = gtk::SearchEntry::new();
-    entry.add_css_class("kira-search-field");
-    entry.set_placeholder_text(Some("Search applications…"));
-    workbench.append(&entry);
-
-    let header = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-    header.add_css_class("kira-catalog-header");
-    header.append(&label("APPLICATION CATALOG", "kira-catalog-label"));
-    let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    spacer.set_hexpand(true);
-    header.append(&spacer);
-    let count = label("", "kira-count");
-    count.set_xalign(1.0);
-    header.append(&count);
-    workbench.append(&header);
-
-    let apps = Rc::new(installed_apps());
-    let list = gtk::ListBox::new();
-    list.add_css_class("kira-app-list");
-    list.set_selection_mode(gtk::SelectionMode::Single);
-    list.set_activate_on_single_click(true);
-    for (index, app) in apps.iter().enumerate() {
-        let row = gtk::ListBoxRow::new();
-        row.add_css_class("kira-app-row");
-        row.set_widget_name(&format!("kira-app-{index}"));
-        let content = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-        let rail = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        rail.add_css_class("kira-app-rail");
-        content.append(&rail);
-        let icon_shell = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-        icon_shell.add_css_class("kira-app-icon-shell");
-        if let Some(icon) = app.info.icon() {
-            let image = gtk::Image::from_gicon(&icon);
-            image.set_pixel_size(24);
-            icon_shell.append(&image);
-        } else {
-            icon_shell.append(&label("K", "kira-app-icon-fallback"));
-        }
-        content.append(&icon_shell);
-        let description = gtk::Box::new(gtk::Orientation::Vertical, 3);
-        description.set_hexpand(true);
-        description.append(&label(&app.info.display_name(), "kira-app-name"));
-        let secondary = app
-            .info
-            .description()
-            .map(|value| value.to_string())
-            .unwrap_or_default();
-        let secondary = if secondary.trim().is_empty() {
-            "Installed application"
-        } else {
-            secondary.trim()
-        };
-        description.append(&label(secondary, "kira-app-detail"));
-        content.append(&description);
-        row.set_child(Some(&content));
-        list.append(&row);
-    }
-    let empty = label("No matching applications", "kira-empty");
-    empty.set_margin_top(16);
-    empty.set_margin_bottom(16);
-    list.set_placeholder(Some(&empty));
-    let scroll = gtk::ScrolledWindow::new();
-    scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
-    scroll.set_min_content_height(200);
-    scroll.set_vexpand(true);
-    scroll.set_child(Some(&list));
-    workbench.append(&scroll);
-
-    let error = label("", "kira-launch-error");
-    error.set_visible(false);
-    card.append(&error);
-    let footer = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-    footer.add_css_class("kira-launcher-footer");
-    for (key, description) in [("↑ ↓", "Navigate"), ("ENTER", "Open"), ("ESC", "Close")] {
-        footer.append(&label(key, "kira-keycap"));
-        footer.append(&label(description, "kira-key-hint"));
-    }
-    card.append(&footer);
-
-    let filter = Rc::new(RefCell::new(String::new()));
-    let filtered_apps = apps.clone();
-    let query = filter.clone();
-    list.set_filter_func(move |row| {
-        app_index(row)
-            .and_then(|index| filtered_apps.get(index))
-            .is_some_and(|app| app.search.contains(query.borrow().as_str()))
-    });
-    count.set_text(&format!("{} APPS", apps.len()));
-    if let Some(row) = list.row_at_index(0) {
-        list.select_row(Some(&row));
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(240)
+                    .collect();
+                serde_json::json!({
+                    "id": id,
+                    "name": name,
+                    "description": description,
+                })
+            })
+            .collect();
+        serde_json::json!({ "apps": apps })
     }
 
-    let search_list = list.clone();
-    let search_apps = apps.clone();
-    entry.connect_search_changed(move |entry| {
-        *filter.borrow_mut() = entry.text().to_string().to_lowercase();
-        search_list.invalidate_filter();
-        let visible = visible_rows(&search_list, search_apps.len());
-        count.set_text(&format!("{} / {} APPS", visible.len(), search_apps.len()));
-        search_list.select_row(visible.first());
-    });
-    let activate_apps = apps.clone();
-    let activate_window = window.clone();
-    let activate_error = error.clone();
-    list.connect_row_activated(move |_, row| {
-        launch(&activate_apps, row, &activate_window, &activate_error);
-    });
-
-    let keys = gtk::EventControllerKey::new();
-    keys.set_propagation_phase(gtk::PropagationPhase::Capture);
-    let key_list = list.clone();
-    let key_apps = apps.clone();
-    let key_window = window.clone();
-    let key_error = error.clone();
-    keys.connect_key_pressed(move |_, key, _, _| match key {
-        gtk::gdk::Key::Escape => {
-            key_window.close();
-            gtk::glib::Propagation::Stop
-        }
-        gtk::gdk::Key::Down | gtk::gdk::Key::Up => {
-            let visible = visible_rows(&key_list, key_apps.len());
-            if !visible.is_empty() {
-                let current = key_list
-                    .selected_row()
-                    .and_then(|selected| visible.iter().position(|row| row == &selected));
-                let next = match (current, key) {
-                    (Some(index), gtk::gdk::Key::Down) => (index + 1).min(visible.len() - 1),
-                    (Some(index), _) => index.saturating_sub(1),
-                    (None, _) => 0,
-                };
-                key_list.select_row(visible.get(next));
-            }
-            gtk::glib::Propagation::Stop
-        }
-        gtk::gdk::Key::Return | gtk::gdk::Key::KP_Enter => {
-            if let Some(row) = key_list.selected_row() {
-                launch(&key_apps, &row, &key_window, &key_error);
-            }
-            gtk::glib::Propagation::Stop
-        }
-        _ => gtk::glib::Propagation::Proceed,
-    });
-    window.add_controller(keys);
-    window.present();
-    entry.grab_focus();
+    pub fn launch(&self, id: usize) -> Result<(), String> {
+        let info = self.apps.get(id).ok_or("Unknown application index")?;
+        info.launch(&[], None::<&gio::AppLaunchContext>())
+            .map_err(|error| {
+                error
+                    .to_string()
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(180)
+                    .collect()
+            })
+    }
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn launcher_style_has_all_sections() {
-        let css = include_str!("launcher.css");
-        for selector in [
-            ".kira-launcher-card",
-            ".kira-app-row:selected",
-            ".kira-keycap",
-            ".kira-eyebrow",
-            ".kira-heading",
-            ".kira-app-icon-shell",
-        ] {
-            assert!(css.contains(selector), "missing {selector}");
-        }
+    fn out_of_range_id_cannot_launch_arbitrary_programs() {
+        let catalog = Catalog { apps: vec![] };
+        assert_eq!(catalog.launch(0), Err("Unknown application index".into()));
+        assert_eq!(
+            catalog.launch(usize::MAX),
+            Err("Unknown application index".into())
+        );
+        assert_eq!(catalog.as_json(), serde_json::json!({"apps":[]}));
     }
 }
 
@@ -4062,9 +3859,10 @@ fn main() {
         // A dedicated fixed-purpose message from the trusted, navigation-locked
         // local UI. Never forward launcher requests to Core or execute JS text.
         let launcher_application = app.clone();
+        let launcher_html = html.clone();
         manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
             if value.to_string() == "open" {
-                launcher::show(&launcher_application);
+                calendar::open_launcher(&launcher_application, &launcher_html);
             }
         });
         assert!(manager.register_script_message_handler("kiraLauncher", None));
@@ -4266,34 +4064,9 @@ mod tests {
     }
 }
 
-FILE	crates/kira-shell/src/native-palette.css
-/* Native GTK canonical Kira Default colors. Single source for native overlays.
- * Svelte's matching tokens are verified in tests/test_native_theme.py. */
-@define-color kira_black #000000ff;
-@define-color kira_prussian_blue #14213dff;
-@define-color kira_orange #fca311ff;
-@define-color kira_alabaster_grey #e5e5e5ff;
-@define-color kira_white #ffffffff;
-
 FILE	crates/kira-shell/src/native_ui.rs
-//! Shared native overlay plumbing. Layout, interaction and state remain local
-//! to each overlay: only identical infrastructure belongs here.
+//! Shared layer-shell/WebKit infrastructure for Svelte overlays.
 use gtk::prelude::*;
-
-/// Keep palette declarations and component rules in one provider so GTK named
-/// colors resolve reliably, including in Nix's source-filtered package.
-pub fn install_styles(styles: &str) {
-    let provider = gtk::CssProvider::new();
-    let complete = format!("{}\n{}", include_str!("native-palette.css"), styles);
-    provider.load_from_data(&complete);
-    if let Some(display) = gtk::gdk::Display::default() {
-        gtk::style_context_add_provider_for_display(
-            &display,
-            &provider,
-            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-        );
-    }
-}
 
 /// Every WebKit surface renders a self-contained trusted HTML document.
 /// Block arbitrary navigation and new windows, including from popup widgets.
@@ -4351,55 +4124,8 @@ pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, heig
     window.connect_map(move |window| apply_webview_size(window, width, height));
 }
 
-pub fn find_overlay(application: &gtk::Application, title: &str) -> Option<gtk::Window> {
-    application
-        .windows()
-        .into_iter()
-        .find(|window| window.title().as_deref() == Some(title))
-}
-
-pub fn dismiss_overlay(application: &gtk::Application, title: &str) -> bool {
-    if let Some(window) = find_overlay(application, title) {
-        window.close();
-        return true;
-    }
-    false
-}
-
-/// The old 50px popup offset left too much space below the Top Bar.
+/// The offset below the 42px Top Bar.
 pub const POPUP_TOP_MARGIN: i32 = 25;
-
-/// Let GTK use the natural content height, capped at 70% of the monitor.
-/// Fixed preferred heights used to force needless scrolling on tall outputs.
-/// Recheck the actual surface monitor after mapping.
-fn apply_popup_height(window: &gtk::ApplicationWindow, scroll: &gtk::ScrolledWindow, width: i32) {
-    let display = gtk::prelude::WidgetExt::display(window);
-    let monitor = window
-        .surface()
-        .and_then(|surface| display.monitor_at_surface(&surface))
-        .or_else(|| {
-            display
-                .monitors()
-                .item(0)
-                .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
-        });
-    let output_height = monitor.map_or(800, |m| m.geometry().height()).max(1);
-    let height_limit = (i64::from(output_height) * 7 / 10) as i32;
-    scroll.set_min_content_height(1);
-    scroll.set_max_content_height(height_limit);
-    scroll.set_propagate_natural_height(true);
-    // -1 allows the scroll's natural (bounded) height, rather than
-    // forcing the former 490px/600px default sizes.
-    window.set_default_size(width, -1);
-}
-
-pub fn configure_popup(window: &gtk::ApplicationWindow, scroll: &gtk::ScrolledWindow, width: i32) {
-    apply_popup_height(window, scroll, width);
-    let scroll = scroll.clone();
-    window.connect_map(move |window| {
-        apply_popup_height(window, &scroll, width);
-    });
-}
 
 FILE	crates/kira-shell/src/process_monitor.rs
 //! Read-only Linux process accounting for the System Monitor.
@@ -5476,18 +5202,19 @@ serializes asynchronous mount/unmount across rapid toggles and skips stale
 show generations. The single offline frontend bundle contains all component
 code in advance, but creates and destroys active component instances on
 demand. It makes no network requests.
-This does **not** guarantee WebKit process RSS returns to zero. Calendar and
-System Monitor share the same warmed host with no third WebKit process.
-Process scanning starts only on the Processes tab and ends on hide.
+This does **not** guarantee WebKit process RSS returns to zero. Calendar, System Monitor and Launcher share the same warmed host with
+no additional WebKit process. Process scanning starts only on the Processes
+tab and ends on hide. The Launcher discovers GIO entries on demand, discards
+its catalog on hide and can launch only an index into that native snapshot.
 Use PSS and CPU sampling for actual resource measurements.
 
 ## Widget architecture migration
 
 The intended architecture is Rust for Core, GIO/system integration and the
 GTK/WebKit layer-shell **window host**, with **all widget views in Svelte 5**.
-The GTK Launcher remains the last built-in native widget deviation.
-The Calendar and System Monitor now render `CalendarWidget.svelte` and
-`SystemWidget.svelte` inside one shared WebKit/layer-shell overlay.
+All three built-in widgets are Svelte 5: `CalendarWidget.svelte`,
+`SystemWidget.svelte` and `LauncherWidget.svelte` use one shared,
+prewarmed WebKit/layer-shell overlay.
 Do not build additional widget layouts in GTK.
 
 See [UI_ARCHITECTURE.md](UI_ARCHITECTURE.md) for the staged migration.
@@ -5519,7 +5246,7 @@ non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
-The Svelte Calendar/System Monitor shared WebKit surface uses
+The shared Calendar/System Monitor/Launcher WebKit surface uses
 `configure_webview_popup`, which caps both width and height against the
 actual logical output, up to 70% of its height; HTML handles inner
 overflow. The top margin remains 25px.
@@ -5536,24 +5263,24 @@ Python contracts and Rust Core/IPC tests. Native shell test groups can be
 run locally with `nix develop --command cargo test --locked -p kira-shell`
 or before a release; the nightly/manual Nix workflow verifies full packaging.
 
-The remaining **GTK4 Launcher** uses native `launcher.css`.
-The Svelte Calendar and System Monitor reuse Tailwind
-and the canonical frontend palette. It is an independent, non-exclusive
-layer-shell WebKit surface toggled through `kiraCalendar`; inside that
-window only `kiraCalendarUi` provides close and strictly validated ISO
-date copy. Opening it does not change the 42px Niri reservation.
+All overlay widgets use Tailwind and the canonical frontend palette.
+Their non-exclusive layer-shell WebKit window accepts only fixed-purpose
+`kiraCalendarUi` commands: validated date copy, read-only system tabs,
+generation-scoped GIO catalog lookup and indexed desktop-app launch.
+The WebKit view cannot supply arbitrary executable paths, shell commands
+or a general Core RPC method. Opening it does not change the 42px Niri reservation.
 The WebKit host continues to embed a single production CSS file, including
 Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 
-GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
-not separately in the overlay stylesheets. Shared native CSS installation
-and overlay lookup/dismiss helpers live in
-`crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
-native GTK interaction stays in `launcher.rs`. The shared
-`calendar.rs` WebKit host manages one popup and two Svelte widgets,
-while `system_panel.rs` handles read-only system data and process
-sampling. No generic command execution is exposed. When changing any
-native CSS asset, verify it remains included by `nix/package.nix`.
+The five canonical colors live in the frontend theme; obsolete GTK
+launcher/system monitor styles and palette have been removed. The shared
+`native_ui.rs` keeps WebKit navigation restrictions and monitor-aware
+popup sizing. `calendar.rs` manages one window and three lazily mounted
+Svelte widgets. `launcher.rs` holds only a bounded GIO AppInfo catalog
+and calls `AppInfo::launch()` for a validated index, while
+`system_panel.rs` handles read-only system data and process sampling.
+Launcher currently uses a letter fallback instead of native themed icons.
+No generic command execution is exposed.
 
 When adding npm dependencies, commit the updated
 `frontend/package-lock.json` and update `npmDepsHash` in
@@ -6561,10 +6288,9 @@ bridge, not a second UI component framework.
 | Svelte 5 / Tailwind | Top Bar, launcher, calendar, system monitor, processes, future user widgets | Raw shell commands, unvalidated Niri/OS privileges |
 | Typed WebKit bridge | Minimal allowlisted native calls; read-only events | Generic command execution or navigation to outside content |
 
-The top bar's 42 px exclusive zone **cannot contain popovers**. The
-Calendar and System Monitor share **one** non-exclusive GTK layer-shell
-window and its prewarmed WebKit view, which mounts the selected Svelte
-component from the same self-contained frontend bundle. The browser cannot create an ordinary
+The top bar's 42 px exclusive zone **cannot contain popovers**. The Calendar, System Monitor and Launcher share **one** non-exclusive GTK
+layer-shell window and prewarmed WebKit view. At most one Svelte widget is
+mounted at a time; the rest own no live timers or DOM. The browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 
 ## Migration, in small reviewable steps
@@ -6580,10 +6306,11 @@ top-level window with the required layer-shell Wayland behavior by itself.
 2. **Calendar graphic acceptance.** Frontend, GTK/Nix, and security contract
    tests run in CI. The actual separate Wayland window still needs a
    manual nested-Niri graphical smoke-test at multiple scales before release.
-3. **Launcher.** Move search, rows, icons, selection, and keyboard handling
-   to Svelte. Keep GIO XDG application discovery and launch in Rust behind
-   a minimal typed, allowlisted IPC contract. Never accept a shell command
-   or application executable path from untrusted UI input.
+3. **Launcher (implemented).** Svelte owns search, selection, layout and
+   keyboard events. Rust GIO discovers desktop entries and launches by
+   bounded, generation-scoped catalog index. Browser cannot supply executable
+   paths or shell commands. Application icon imagery uses an initial-letter
+   fallback pending optional themed icon support.
 4. **System Monitor / processes (implemented).** The existing warm WebKit
    overlay now mounts `SystemWidget.svelte` or `CalendarWidget.svelte` on
    demand, never both. Rust keeps read-only kernel metrics, a bounded
@@ -6622,8 +6349,9 @@ in the single offline HTML bundle, but the DOM, effects, timers and component
 instance are created only on show. The live instance is unloaded on hide.
 This does **not** unload the prebundled JS bytes or the base WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
 immediately fall because the JavaScript engine retains allocated pages and
-shared libraries. Calendar and System Monitor share one WebView;
-Launcher is still native GTK pending its Svelte migration.
+shared libraries. All three built-in overlays (Calendar, System Monitor,
+Launcher) share the same WebView; the launcher exclusively requests keyboard
+focus while active. The GTK widget view and native CSS have been retired.
 
 FILE	docs/VISUAL_REVIEW.md
 # Kira Desktop — visual design review
@@ -7155,6 +6883,7 @@ async function smoke(name, steps, expected) {
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
+  await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
   await smoke('switch-to-system', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 120, kind: 'hide', generation: 1 },
@@ -7170,6 +6899,16 @@ try {
     { delay: 265, kind: 'calendar', generation: 3 },
     { delay: 280, kind: 'hide', generation: 2 },
   ], 'Kira Calendar');
+  await smoke('three-widget-cycle', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 130, kind: 'system', generation: 2 },
+    { delay: 240, kind: 'launcher', generation: 3 },
+    { delay: 255, kind: 'hide', generation: 1 },
+    { delay: 350, kind: 'calendar', generation: 4 },
+    { delay: 365, kind: 'hide', generation: 2 },
+    { delay: 480, kind: 'launcher', generation: 5 },
+    { delay: 495, kind: 'hide', generation: 4 },
+  ], 'Kira Launcher');
 } finally {
   await rm(dir, { recursive: true, force: true });
 }
@@ -7827,6 +7566,145 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   </section>
 </main>
 
+FILE	frontend/src/lib/components/LauncherWidget.svelte
+<script lang="ts">
+  import { onMount, tick } from 'svelte';
+  import {
+    launchDesktopApp, onLauncherCatalog, onLauncherError,
+    requestLauncherCatalog, type LauncherApp,
+  } from '../sdk/core';
+  import { filterLauncherApps, nextLauncherSelection } from '../launcher-model';
+
+  let { onClose, generation }: { onClose: () => void; generation: number } = $props();
+
+  let apps = $state<LauncherApp[]>([]);
+  let loaded = $state(false);
+  let error = $state('');
+  let query = $state('');
+  let selected = $state(0);
+  let search: HTMLInputElement;
+  let results: HTMLDivElement;
+
+  const matches = $derived(filterLauncherApps(apps, query));
+  // Render a bounded viewport instead of hundreds of application DOM nodes.
+  const displayed = $derived(matches.slice(0, 80));
+  const activeIndex = $derived(Math.min(selected, displayed.length - 1));
+
+  onMount(() => {
+    const stopCatalog = onLauncherCatalog(catalog => {
+      apps = catalog.apps;
+      loaded = true;
+      error = '';
+      selected = 0;
+    });
+    const stopError = onLauncherError(message => { error = message; });
+    if (!requestLauncherCatalog(generation)) {
+      error = 'Application service unavailable';
+    }
+    void tick().then(() => search?.focus());
+    return () => {
+      stopCatalog();
+      stopError();
+    };
+  });
+
+  function choose(index: number) {
+    const app = displayed[index];
+    if (!app) return;
+    selected = index;
+    error = '';
+    if (!launchDesktopApp(generation, app.id)) {
+      error = 'Cannot contact application service';
+    }
+  }
+
+  function keydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      selected = nextLauncherSelection(selected, displayed.length, event.key === 'ArrowDown' ? 1 : -1);
+      void tick().then(() => {
+        const item = results?.querySelector<HTMLElement>('[aria-selected="true"]');
+        item?.scrollIntoView({ block: 'nearest' });
+      });
+      return;
+    }
+    if (event.key === 'Enter' && !event.isComposing) {
+      event.preventDefault();
+      choose(activeIndex);
+    }
+  }
+</script>
+
+<svelte:window onkeydown={keydown} />
+
+<main data-kira-ui-root aria-label="Kira Launcher"
+  class="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-kira-muted/30 bg-kira-bg text-kira-text">
+  <header class="shrink-0 px-5 pb-4 pt-5">
+    <div class="flex items-start justify-between gap-2">
+      <div class="min-w-0">
+        <span class="text-[10px] font-extrabold tracking-[0.16em] text-kira-accent">KIRA / APPLICATION INDEX</span>
+        <h1 class="mt-1 text-[30px] font-extrabold leading-tight">Applications</h1>
+        <p class="mt-1 text-xs text-kira-muted">Search your installed tools.</p>
+      </div>
+      <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
+        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+    </div>
+  </header>
+
+  <section class="flex min-h-0 flex-1 flex-col gap-3 bg-kira-surface px-4 py-4">
+    <label for="kira-launcher-query" class="text-[10px] font-bold tracking-[0.1em] text-kira-muted">FIND / OPEN</label>
+    <input id="kira-launcher-query" type="search" bind:this={search} bind:value={query}
+      oninput={() => { selected = 0; error = ''; }}
+      autocomplete="off" spellcheck="false"
+      aria-label="Search applications" aria-controls="kira-launcher-results"
+      placeholder="Search applications…"
+      class="h-11 w-full shrink-0 rounded-md border border-kira-muted/40 bg-kira-bg px-3 text-sm text-kira-text outline-none placeholder:text-kira-muted focus-visible:border-kira-accent"/>
+    <div class="flex items-center justify-between gap-2">
+      <span class="text-[10px] font-bold tracking-wider text-kira-muted">APPLICATION CATALOG</span>
+      <span class="text-[10px] font-bold tabular-nums text-kira-muted">{matches.length} / {apps.length} APPS</span>
+    </div>
+    <div id="kira-launcher-results" bind:this={results}
+      class="min-h-0 flex-1 overflow-y-auto" role="listbox" aria-label="Matching applications">
+      {#each displayed as app, index (app.id)}
+        <button type="button" role="option" aria-selected={index === activeIndex}
+          onclick={() => choose(index)}
+          title={app.name + ' / ' + (app.description || 'Installed application')}
+          class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 rounded-md py-2 pr-2 text-left focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+            (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
+          <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
+          <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-kira-bg text-sm font-extrabold text-kira-text" aria-hidden="true">
+            {app.name.slice(0, 1).toLocaleUpperCase() || 'K'}
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
+            <span class="block truncate text-[11px] text-kira-muted">{app.description.trim() || 'Installed application'}</span>
+          </span>
+        </button>
+      {:else}
+        <p class="py-8 text-center text-xs text-kira-muted" role="status">
+          {#if error}{error}{:else if !loaded}LOADING APPLICATIONS…{:else}No matching applications{/if}
+        </p>
+      {/each}
+    </div>
+    {#if error && displayed.length}
+      <p class="shrink-0 text-xs font-medium text-kira-accent" role="alert">{error}</p>
+    {/if}
+    {#if matches.length > displayed.length}
+      <p class="shrink-0 text-[10px] text-kira-muted">Showing first {displayed.length} matches. Refine search for more.</p>
+    {/if}
+  </section>
+  <footer class="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 px-5 py-3 text-[10px] text-kira-muted">
+    <kbd class="rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">↑ ↓</kbd><span>Navigate</span>
+    <kbd class="ml-2 rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">ENTER</kbd><span>Open</span>
+    <kbd class="ml-2 rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">ESC</kbd><span>Close</span>
+  </footer>
+</main>
+
 FILE	frontend/src/lib/components/SystemHealth.svelte
 <script lang="ts">
   import { systemHealth, type CoreConnectionStatus } from '../system-health';
@@ -8126,6 +8004,57 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
   </ol>
 {/if}
 
+FILE	frontend/src/lib/launcher-model.test.ts
+import { describe, expect, it } from 'vitest';
+import { filterLauncherApps, nextLauncherSelection } from './launcher-model';
+import type { LauncherApp } from './sdk/core';
+
+const apps: LauncherApp[] = [
+  { id: 7, name: 'Firefox', description: 'Web browser' },
+  { id: 2, name: 'Files', description: 'Browse folders' },
+  { id: 21, name: 'Terminal', description: 'Command line' },
+];
+
+describe('launcher model', () => {
+  it('searches display names and descriptions without losing native GIO identity', () => {
+    expect(filterLauncherApps(apps, 'fire').map(app => app.id)).toEqual([7]);
+    expect(filterLauncherApps(apps, 'browse folders').map(app => app.id)).toEqual([2]);
+    expect(filterLauncherApps(apps, 'WEB BROWSER').map(app => app.id)).toEqual([7]);
+    expect(filterLauncherApps(apps, 'terminal command').map(app => app.id)).toEqual([21]);
+    expect(filterLauncherApps(apps, 'unavailable')).toEqual([]);
+    expect(filterLauncherApps(apps, '')).toEqual(apps);
+    expect(apps[0].id).toBe(7);
+  });
+
+  it('bounds keyboard selection to visible results and handles empty lists', () => {
+    expect(nextLauncherSelection(0, 4, -1)).toBe(0);
+    expect(nextLauncherSelection(3, 4, 1)).toBe(3);
+    expect(nextLauncherSelection(1, 4, 1)).toBe(2);
+    expect(nextLauncherSelection(0, 0, 1)).toBe(0);
+    expect(nextLauncherSelection(0, 0, -1)).toBe(0);
+  });
+});
+
+FILE	frontend/src/lib/launcher-model.ts
+import type { LauncherApp } from './sdk/core';
+
+/** Search by desktop application's display name and description. The id stays
+ * tied to the original native GIO catalog, even after filtering.
+ */
+export function filterLauncherApps(apps: readonly LauncherApp[], query: string): LauncherApp[] {
+  const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) return [...apps];
+  return apps.filter(app => {
+    const haystack = (app.name + ' ' + app.description).toLocaleLowerCase();
+    return terms.every(term => haystack.includes(term));
+  });
+}
+
+export function nextLauncherSelection(current: number, count: number, direction: -1 | 1): number {
+  if (count <= 0) return 0;
+  return Math.max(0, Math.min(count - 1, current + direction));
+}
+
 FILE	frontend/src/lib/lazy-widget.test.ts
 import { describe, expect, it, vi } from 'vitest';
 import { createLazyWidget } from './lazy-widget';
@@ -8284,7 +8213,7 @@ export function createLazyWidget<Instance>(
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -8303,6 +8232,53 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('allows only generation-scoped indexed Gio launches, no path or shell command', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    closeLauncherOverlay();
+    expect(requestLauncherCatalog(8)).toBe(true);
+    expect(launchDesktopApp(8, 42)).toBe(true);
+    for (const bad of [-1, 1.5, 1024, Number.NaN]) {
+      expect(launchDesktopApp(8, bad)).toBe(false);
+    }
+    expect(launchDesktopApp(0, 1)).toBe(false);
+    expect(launchDesktopApp(4294967296, 1)).toBe(false);
+    expect(requestLauncherCatalog(-1)).toBe(false);
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual([
+      'close', 'apps-request:8', 'launch:8:42',
+    ]);
+  });
+
+  it('validates launcher catalogs, errors and unsubscribes after hide', () => {
+    const handlers = new Map<string, EventListener>();
+    const removeEventListener = vi.fn();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
+      removeEventListener,
+    } as unknown as Window & typeof globalThis;
+    const onCatalog = vi.fn();
+    const onError = vi.fn();
+    const stopCatalog = onLauncherCatalog(onCatalog);
+    const stopError = onLauncherError(onError);
+    const dispatch = (name: string, detail: unknown) => {
+      handlers.get(name)!({ detail } as unknown as Event);
+    };
+    dispatch('kira:launcher:apps', {
+      apps: [{ id: 7, name: 'Browser', description: 'Open the web' }],
+    });
+    expect(onCatalog).toHaveBeenCalledOnce();
+    dispatch('kira:launcher:apps', { apps: [{ id: 1024, name: 'Unknown', description: '' }] });
+    dispatch('kira:launcher:apps', { apps: [{ id: 1, name: 'x'.repeat(121), description: '' }] });
+    expect(onCatalog).toHaveBeenCalledOnce();
+    dispatch('kira:launcher:error', { message: 'Cannot open application' });
+    expect(onError).toHaveBeenCalledWith('Cannot open application');
+    stopCatalog();
+    stopError();
+    expect(removeEventListener).toHaveBeenCalledTimes(2);
   });
 
   it('opens native read-only system monitor only through the fixed bridge', () => {
@@ -8856,6 +8832,51 @@ export function setSystemMonitorTab(tab: 'overview' | 'processes'): void {
 
 export function copySystemReport(): void {
   sendCalendarUi('copy-report');
+}
+
+export interface LauncherApp {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface LauncherCatalog {
+  apps: LauncherApp[];
+}
+
+/** The launcher receives a bounded, read-only catalog from native GIO. */
+export function onLauncherCatalog(callback: (catalog: LauncherCatalog) => void): () => void {
+  return onNativeEvent('kira:launcher:apps', (value): value is LauncherCatalog =>
+    isRecord(value) && Array.isArray(value.apps) && value.apps.length <= 1024 &&
+    value.apps.every((app: unknown) =>
+      isRecord(app) && Number.isSafeInteger(app.id) &&
+      (app.id as number) >= 0 && (app.id as number) < 1024 &&
+      typeof app.name === 'string' && app.name.length <= 120 &&
+      typeof app.description === 'string' && app.description.length <= 240),
+  callback);
+}
+
+export function onLauncherError(callback: (message: string) => void): () => void {
+  return onNativeEvent('kira:launcher:error',
+    (value): value is { message: string } =>
+      isRecord(value) && typeof value.message === 'string' && value.message.length <= 180,
+    (value) => callback(value.message));
+}
+
+/** Index belongs to Rust's GIO catalog, never an executable path or a command. */
+export function requestLauncherCatalog(generation: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return false;
+  return sendCalendarUi('apps-request:' + generation);
+}
+
+export function launchDesktopApp(generation: number, id: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      !Number.isSafeInteger(id) || id < 0 || id >= 1024) return false;
+  return sendCalendarUi('launch:' + generation + ':' + id);
+}
+
+export function closeLauncherOverlay(): void {
+  sendCalendarUi('close');
 }
 
 /** Open or close the shared Svelte read-only system monitor. */
@@ -9462,7 +9483,8 @@ import { flushSync, mount, unmount } from 'svelte';
 import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
+import LauncherWidget from './lib/components/LauncherWidget.svelte';
+import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
@@ -9488,7 +9510,7 @@ whenDocumentReady(document, () => {
       report('Calendar bootstrap failure: #app missing');
       return;
     }
-    let requestedKind: 'calendar' | 'system' = 'calendar';
+    let requestedKind: 'calendar' | 'system' | 'launcher' = 'calendar';
     let visibleGeneration: number | null = null;
     let lastGeneration = 0;
     const host = createLazyWidget(
@@ -9503,12 +9525,14 @@ whenDocumentReady(document, () => {
                 target,
                 props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
               })
-              : mount(SystemWidget, {
-                target,
-                props: { onClose: closeSystemOverlay, onCopy: copySystemReport, onTab: setSystemMonitorTab },
-              });
+              : kind === 'system'
+                ? mount(SystemWidget, {
+                  target,
+                  props: { onClose: closeSystemOverlay, onCopy: copySystemReport, onTab: setSystemMonitorTab },
+                })
+                : mount(LauncherWidget, { target, props: { onClose: closeLauncherOverlay, generation: visibleGeneration ?? 0 } });
             flushSync();
-            const label = kind === 'calendar' ? 'Kira Calendar' : 'Kira System Monitor';
+            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {
               throw new Error('Svelte ' + kind + ' root missing after mount');
             }
@@ -9527,7 +9551,7 @@ whenDocumentReady(document, () => {
     );
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
-      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system') ||
+      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||
           !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
           detail.generation > 0xffffffff || detail.generation <= lastGeneration) {
         report('Overlay rejected invalid or stale show payload');
@@ -9686,14 +9710,11 @@ let
   # cleanCargoSource excludes unrelated frontend/docs changes from the Rust
   # derivation. Crane creates a dummy source tree for buildDepsOnly, so edits
   # to .rs files do NOT invalidate compiled GTK/WebKit/GObject Rust crates.
-  # Cargo source filtering would drop GTK CSS included by native_ui.rs and
-  # the overlays. Retain only these assets, without pulling in frontend edits.
+  # Every widget is rendered in the independently packaged Svelte bundle;
+  # native Rust sources contain no GTK presentation CSS.
   rustSrc = lib.cleanSourceWith {
     src = ../.;
-    filter = path: type:
-      (lib.hasSuffix "/crates/kira-shell/src/launcher.css" (toString path))
-      || (lib.hasSuffix "/crates/kira-shell/src/native-palette.css" (toString path))
-      || craneLib.filterCargoSources path type;
+    filter = craneLib.filterCargoSources;
   };
   commonRustArgs = {
     src = rustSrc;
@@ -10918,122 +10939,120 @@ if __name__ == "__main__":
     unittest.main()
 
 FILE	tests/test_launcher_design.py
-"""Contract checks for the GTK native editorial launcher, without a display."""
+"""Svelte Launcher: trusted GIO lookup, shared WebKit, no native GTK view."""
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = (ROOT / "crates/kira-shell/src/launcher.css").read_text()
-RUST = (ROOT / "crates/kira-shell/src/launcher.rs").read_text()
-HOST = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+SOURCE = ROOT / "crates/kira-shell/src"
+RUST = (SOURCE / "launcher.rs").read_text()
+OVERLAY = (SOURCE / "calendar.rs").read_text()
+HOST = (SOURCE / "main.rs").read_text()
+ENTRY = (ROOT / "frontend/src/main.ts").read_text()
+WIDGET = (ROOT / "frontend/src/lib/components/LauncherWidget.svelte").read_text()
+MODEL = (ROOT / "frontend/src/lib/launcher-model.ts").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
 
 
 class LauncherDesignTests(unittest.TestCase):
-    def test_selection_visual_contract(self):
-        self.assertIn("row.kira-app-row:selected .kira-app-rail", CSS)
-        self.assertIn("background: @kira_orange;", CSS)
-        self.assertIn("row.kira-app-row:selected .kira-app-name", CSS)
-        self.assertIn("color: @kira_orange;", CSS)
-        self.assertNotIn("box-shadow:", CSS)
-        self.assertNotIn("border: 2px", CSS)
-        self.assertIn("border: 1px solid", CSS)
-
-    def test_visual_hierarchy_and_states(self):
-        for selector in (
-            ".kira-launcher-card", ".kira-launcher-intro", ".kira-workbench",
-            ".kira-workbench-eyebrow", ".kira-catalog-label", ".kira-eyebrow",
-            ".kira-heading", "entry.kira-search-field:focus",
-            "row.kira-app-row:hover", "row.kira-app-row:selected",
-            ".kira-app-rail", ".kira-app-icon-shell", ".kira-app-detail",
-            ".kira-keycap",
+    def test_svelte_owns_presentation_and_keyboard_navigation(self):
+        for value in (
+            'aria-label="Kira Launcher"', 'data-kira-ui-root',
+            'KIRA / APPLICATION INDEX', 'Search applications…',
+            'APPLICATION CATALOG', 'role="listbox"',
+            'aria-selected={index === activeIndex}',
+            "event.key === 'ArrowDown'", "event.key === 'ArrowUp'",
+            "event.key === 'Escape'", "event.key === 'Enter'",
+            'search?.focus()', 'onclick={() => choose(index)}',
+            'No matching applications', 'KIRA',
         ):
-            self.assertIn(selector, CSS)
+            if value == 'KIRA':
+                continue
+            self.assertIn(value, WIDGET)
+        self.assertIn('filterLauncherApps(apps, query)', WIDGET)
+        self.assertIn('nextLauncherSelection(', WIDGET)
+        self.assertIn('matches.slice(0, 80)', WIDGET)
+        self.assertIn('app.id', WIDGET)
+        self.assertIn('toLocaleLowerCase()', MODEL)
+        self.assertNotIn('gtk::ListBox', RUST)
+        self.assertNotIn('gtk::SearchEntry', RUST)
+        self.assertNotIn('gtk::ApplicationWindow', RUST)
+        self.assertNotIn('gtk::CssProvider', RUST)
 
-    def test_editorial_surface_not_monolithic_highlight(self):
-        self.assertIn("background: @kira_black;", CSS)
-        self.assertIn("background: @kira_prussian_blue;", CSS)
-        self.assertIn("row.kira-app-row:selected .kira-app-rail", CSS)
-        self.assertNotIn("row.kira-app-row:selected {\n  background: @kira_orange;", CSS)
-        self.assertIn('intro.add_css_class("kira-launcher-intro")', RUST)
-        self.assertIn('workbench.add_css_class("kira-workbench")', RUST)
-        self.assertIn('rail.add_css_class("kira-app-rail")', RUST)
-
-    def test_native_wiring_and_search(self):
+    def test_native_app_identity_and_safe_launch(self):
         for required in (
-            'include_str!("launcher.css")', "gio::AppInfo::all()",
-            "info.should_show()", "set_filter_func", "connect_search_changed",
-            "connect_key_pressed", "KeyboardMode::Exclusive", "set_exclusive_zone(0)",
-            'app.info.launch(&[], None::<&gio::AppLaunchContext>)',
+            'gio::AppInfo::all()', 'info.should_show()',
+            'pub fn launch(&self, id: usize)', 'self.apps.get(id)',
+            'info.launch(&[], None::<&gio::AppLaunchContext>())',
+            'apps.truncate(1024)', '"id": id',
         ):
             self.assertIn(required, RUST)
-        self.assertIn('mod launcher;', HOST)
-        self.assertIn('register_script_message_handler("kiraLauncher"', HOST)
-        self.assertIn('launcher::show(', HOST)
+        self.assertNotIn('std::process::Command', RUST)
+        self.assertNotIn('Command::new', RUST)
+        self.assertNotIn('shell', RUST.lower().split('pub fn launch', 1)[-1])
+        self.assertIn('self.launcher.borrow_mut().take()', OVERLAY)
+        self.assertIn('Some(UiCommand::LauncherCatalog(generation))', OVERLAY)
+        self.assertIn('Some(UiCommand::LaunchApp(generation, id))', OVERLAY)
+        self.assertIn('self.generation.get() == generation', OVERLAY)
+        self.assertIn('self.revealed.get()', OVERLAY)
+        self.assertIn('calendar::open_launcher(', HOST)
+        self.assertIn('register_script_message_handler("kiraLauncher", None)', HOST)
+        self.assertIn('postNativeCommand(\'kiraLauncher\', \'open\')', SDK)
+        self.assertIn("sendCalendarUi('launch:' + generation + ':' + id)", SDK)
+        self.assertIn("sendCalendarUi('apps-request:' + generation)", SDK)
 
-    def test_native_row_identity_survives_filtering(self):
-        self.assertIn('fn app_index(row: &gtk::ListBoxRow)', RUST)
-        self.assertIn('row.set_widget_name(&format!("kira-app-{index}"))', RUST)
-        self.assertNotIn('row.index()', RUST.split('fn app_index', 1)[1].split('fn visible_rows', 1)[1])
-        self.assertIn('.is_child_visible()', RUST)
+    def test_one_shared_overlay_and_retired_gtk_assets(self):
+        self.assertIn('mount(LauncherWidget', ENTRY)
+        self.assertIn('mount(CalendarWidget', ENTRY)
+        self.assertIn('mount(SystemWidget', ENTRY)
+        self.assertIn("detail?.kind !== 'launcher'", ENTRY)
+        self.assertIn('Self::Launcher => "launcher"', OVERLAY)
+        self.assertIn('KeyboardMode::Exclusive', OVERLAY)
+        self.assertIn('set_exclusive_zone(0)', OVERLAY)
+        self.assertIn('native_ui::configure_webview_popup', OVERLAY)
+        self.assertFalse((SOURCE / "launcher.css").exists())
+        self.assertFalse((SOURCE / "native-palette.css").exists())
+        self.assertIn('data-kira-ui-root', WIDGET)
+        self.assertNotIn('launcher::show(', HOST)
+        self.assertNotIn('crate::launcher::dismiss(', OVERLAY)
 
 
 if __name__ == "__main__":
     unittest.main()
 
 FILE	tests/test_native_theme.py
-"""Single native palette and shared overlay plumbing; no GTK display required."""
-import re
+"""The Shell hosts GTK layer surfaces; all widget presentation is Svelte."""
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NATIVE = ROOT / "crates/kira-shell/src"
-PALETTE = (NATIVE / "native-palette.css").read_text()
 HELPERS = (NATIVE / "native_ui.rs").read_text()
 LAUNCHER = (NATIVE / "launcher.rs").read_text()
-CALENDAR = (NATIVE / "calendar.rs").read_text()
+OVERLAY = (NATIVE / "calendar.rs").read_text()
 FRONTEND = (ROOT / "frontend/src/lib/themes/kira-default.css").read_text()
 NIX = (ROOT / "nix/package.nix").read_text()
 SHELL = (NATIVE / "main.rs").read_text()
 
 
 class NativeThemeContractTests(unittest.TestCase):
-    def test_one_canonical_palette_for_both_native_overlays(self):
-        colors = dict(re.findall(
-            r"@define-color (kira_[a-z_]+) (#[0-9a-fA-F]{8});", PALETTE
-        ))
-        expected = {
-            "kira_black": ("black", "#000000ff"),
-            "kira_prussian_blue": ("prussian-blue", "#14213dff"),
-            "kira_orange": ("orange", "#fca311ff"),
-            "kira_alabaster_grey": ("alabaster-grey", "#e5e5e5ff"),
-            "kira_white": ("white", "#ffffffff"),
-        }
-        self.assertEqual(colors, {k: value for k, (_, value) in expected.items()})
-        for key, (frontend_name, value) in expected.items():
-            self.assertIn(f"--{frontend_name}: {value};", FRONTEND, key)
-        for css in ("launcher.css",):
-            source = (NATIVE / css).read_text()
-            self.assertNotIn("@define-color", source, css)
-            self.assertNotRegex(source, r"#[0-9a-fA-F]{8}\b")
+    def test_all_five_canonical_colors_live_in_svelte_theme(self):
+        for key in ("black", "prussian-blue", "orange", "alabaster-grey", "white"):
+            self.assertIn("--" + key + ": ", FRONTEND)
+        for file in ("launcher.css", "system_panel.css", "native-palette.css"):
+            self.assertFalse((NATIVE / file).exists(), file)
+            self.assertNotIn(file, NIX)
+        self.assertNotIn("include_str!", HELPERS)
+        self.assertNotIn("gtk::CssProvider", HELPERS)
 
-    def test_shared_style_provider_is_loaded_before_component_css(self):
-        self.assertIn('include_str!("native-palette.css")', HELPERS)
-        self.assertIn('format!("{}\\n{}", include_str!("native-palette.css"), styles)', HELPERS)
-        for component in (LAUNCHER,):
-            self.assertIn("native_ui::install_styles(", component)
-            self.assertIn("native_ui::dismiss_overlay(", component)
-            self.assertNotIn("gtk::CssProvider::new()", component)
-        self.assertIn("native_ui::find_overlay(", LAUNCHER)
+    def test_native_code_is_only_webkit_layer_shell_and_gio(self):
+        self.assertIn("webkit6::WebView::builder()", OVERLAY)
+        self.assertIn("pub fn restrict_webview_navigation", HELPERS)
+        self.assertIn("pub fn configure_webview_popup", HELPERS)
+        self.assertIn("gio::AppInfo::all()", LAUNCHER)
+        self.assertNotIn("gtk::SearchEntry", LAUNCHER)
+        self.assertNotIn("gtk::Box", LAUNCHER)
         self.assertIn("mod native_ui;", SHELL)
-        self.assertNotIn("native_ui::install_styles(", CALENDAR)
-        self.assertIn("webkit6::WebView::builder()", CALENDAR)
-        self.assertNotIn('system_panel.css', NIX)
-        self.assertNotIn("gtk::ProgressBar", (NATIVE / "system_panel.rs").read_text())
-
-    def test_nix_keeps_shared_css_in_native_rust_source(self):
-        for asset in ("launcher.css", "native-palette.css"):
-            self.assertIn(f'/crates/kira-shell/src/{asset}', NIX)
 
 
 if __name__ == "__main__":
@@ -11053,13 +11072,11 @@ MONITOR = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
 class PopupGeometryTests(unittest.TestCase):
     def test_half_margin_and_monitor_relative_height(self):
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", HELPERS)
-        self.assertIn("i64::from(output_height) * 7 / 10", HELPERS)
+        self.assertIn("i64::from(output_height.max(1)) * 7 / 10", HELPERS)
         self.assertIn("monitor_at_surface(&surface)", HELPERS)
         self.assertIn("connect_map(move |window|", HELPERS)
-        self.assertIn("scroll.set_max_content_height(height_limit)", HELPERS)
-        self.assertIn("scroll.set_propagate_natural_height(true)", HELPERS)
-        self.assertIn("window.set_default_size(width, -1)", HELPERS)
-        self.assertNotIn("window.set_default_size(width, 490)", HELPERS)
+        self.assertIn("window.set_default_size(width, height)", HELPERS)
+        self.assertNotIn("gtk::ScrolledWindow", HELPERS)
         self.assertNotIn("gtk::ScrolledWindow", MONITOR)
         self.assertNotIn("gtk::ApplicationWindow::new", MONITOR)
         self.assertIn("native_ui::configure_webview_popup", CALENDAR)
