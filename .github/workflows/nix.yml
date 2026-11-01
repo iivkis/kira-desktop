@@ -63,5 +63,7 @@ jobs:
         run: nix build .#frontend -L --show-trace
       - name: Type-check native GTK Shell before release packaging
         run: nix develop --command cargo check --locked -p kira-shell
+      - name: Run real Rust unit tests for Linux system metrics
+        run: nix develop --command cargo test --locked -p kira-shell system_metrics::tests -- --nocapture
       - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace
