@@ -227,10 +227,10 @@ fn hwmon_temperature_for_device(path: &Path, cpu: bool) -> Option<f64> {
 fn cpu_temperature(sys: &Path) -> Option<f64> {
     if let Ok(entries) = fs::read_dir(sys.join("class/hwmon")) {
         for entry in entries.flatten() {
-        let path = entry.path();
-        let Some(name) = read_small(&path.join("name")) else {
-            continue;
-        };
+            let path = entry.path();
+            let Some(name) = read_small(&path.join("name")) else {
+                continue;
+            };
             if matches!(
                 name.trim(),
                 "coretemp" | "k10temp" | "zenpower" | "cpu_thermal" | "cpu-thermal"
