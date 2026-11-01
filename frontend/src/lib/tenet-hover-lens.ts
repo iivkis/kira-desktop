@@ -190,17 +190,17 @@ export function tenetHoverLens(root: HTMLElement) {
     // segment has a continuous material field and a shared temporal cursor.
     for (const point of reversePoints) {
       reverse.to(field, {
-        ...fieldAt(point), duration: 0.035, ease: 'none',
+        ...fieldAt(point), duration: 0.025, ease: 'none',
         onUpdate: () => warp?.apply(field),
       });
     }
     reverse.to(field, {
       amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026,
-      duration: 0.25, ease: 'power3.out',
+      duration: 0.20, ease: 'power3.out',
       onUpdate: () => warp?.apply(field),
     });
     // If WebKitGTK throttles animation frames, the control still recovers.
-    restoreTimer = window.setTimeout(restore, 1000);
+    restoreTimer = window.setTimeout(restore, 750);
   }
 
   const onEnvironmentChange = () => {
