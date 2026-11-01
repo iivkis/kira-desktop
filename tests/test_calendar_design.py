@@ -16,7 +16,7 @@ NIX = (ROOT / "nix/package.nix").read_text()
 class CalendarDesignTests(unittest.TestCase):
     def test_only_custom_calendar_grid(self):
         self.assertIn("gtk::Grid::new()", RUST)
-        self.assertIn("crate::native_ui::configure_popup(&window, &scroll, 378, 490)", RUST)
+        self.assertIn("crate::native_ui::configure_popup(&window, &scroll, 378)", RUST)
         self.assertIn("crate::native_ui::POPUP_TOP_MARGIN", RUST)
         self.assertIn("gtk::Button::new()", RUST)
         self.assertIn("month_grid(state.year, state.month)", RUST)
