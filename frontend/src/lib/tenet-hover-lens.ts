@@ -21,6 +21,7 @@ export function tenetHoverLens(root: HTMLElement) {
   let enterTween: gsap.core.Tween | null = null;
   let pointerTween: gsap.core.Tween | null = null;
   let returnTimeline: gsap.core.Timeline | null = null;
+  let restoreTimer: number | null = null;
   let contentTween: gsap.core.Tween | null = null;
   let content: HTMLElement | null = null;
 
@@ -33,6 +34,10 @@ export function tenetHoverLens(root: HTMLElement) {
     finePointer.matches && (event.pointerType === 'mouse' || event.pointerType === 'pen');
 
   function endAnimations() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
     enterTween?.kill();
     pointerTween?.kill();
     returnTimeline?.kill();
@@ -143,6 +148,10 @@ export function tenetHoverLens(root: HTMLElement) {
         ease: 'power2.out',
       }, '<');
     }
+    // GTK/WebKit may suspend requestAnimationFrame while transitioning
+    // overlays. A one-shot safeguard restores everything, then cancels
+    // itself on normal GSAP completion or new input.
+    restoreTimer = window.setTimeout(reset, 750);
   }
 
   const onMotionChange = () => { if (motion.matches || !finePointer.matches) reset(); };
