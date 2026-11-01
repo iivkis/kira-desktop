@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=2301
+index_bytes=3057
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,58 +15,73 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	70acbd1f5b828e6f650fad40bcf18fd07939c08c
-F	.cargo/config.toml	98	79	3
-F	.github/workflows/ci.yml	968	84	44
-F	.github/workflows/nix.yml	1867	130	62
-F	.github/workflows/publish-repospool.yml	3048	194	83
-F	.gitignore	178	279	11
-F	.repospoolignore	1028	292	47
-F	Cargo.toml	494	341	22
-F	README.md	9524	365	219
-F	Taskfile.yml	5878	586	183
-F	config/kira.kdl.example	358	771	8
-F	crates/kira-core/Cargo.toml	207	781	10
-F	crates/kira-core/src/config.rs	15217	793	399
-F	crates/kira-core/src/main.rs	18357	1194	480
-F	crates/kira-core/src/niri.rs	16767	1676	453
-F	crates/kira-ipc/Cargo.toml	170	2131	9
-F	crates/kira-ipc/src/client.rs	10376	2142	277
-F	crates/kira-ipc/src/lib.rs	9053	2421	302
-F	crates/kira-shell/Cargo.toml	297	2725	12
-F	crates/kira-shell/src/main.rs	16482	2739	387
-F	crates/kira-shell/src/ui_assets.rs	4873	3128	148
-F	docs/CONFIG.md	5801	3278	125
-F	docs/DESIGN_SYSTEM.md	5364	3405	123
-F	docs/DEVELOPMENT.md	19012	3530	396
-F	docs/QA_VISUAL.md	6159	3928	98
-F	docs/SPECIFICATION.md	27547	4028	406
-F	flake.nix	2408	4436	68
-F	frontend/index.html	2592	4506	64
-F	frontend/package.json	586	4572	21
-F	frontend/scripts/inline-assets.mjs	4498	4595	103
-F	frontend/scripts/inline-assets.test.mjs	4645	4700	106
-F	frontend/src/App.svelte	5407	4808	135
-F	frontend/src/lib/bootstrap.test.ts	3378	4945	84
-F	frontend/src/lib/bootstrap.ts	2318	5031	65
-F	frontend/src/lib/components/CoreStatus.svelte	2056	5098	91
-F	frontend/src/lib/components/WorkspacePreview.svelte	5392	5191	177
-F	frontend/src/lib/sdk/core.test.ts	7168	5370	137
-F	frontend/src/lib/sdk/core.ts	5435	5509	168
-F	frontend/src/lib/themes/kira-default.css	1340	5679	41
-F	frontend/src/lib/themes/kira-default.test.ts	3402	5722	70
-F	frontend/src/lib/themes/kira-default.ts	867	5794	24
-F	frontend/src/lib/time.test.ts	263	5820	8
-F	frontend/src/lib/time.ts	320	5830	9
-F	frontend/src/main.ts	1167	5841	35
-F	frontend/src/style.css	4842	5878	256
-F	frontend/tsconfig.json	403	6136	16
-F	frontend/vite.config.ts	164	6154	7
-F	nix/package.nix	2948	6163	112
-F	scripts/dev_preview.py	18147	6277	403	x
-F	scripts/qa_visual.py	12052	6682	299
-F	tests/test_dev_preview.py	9339	6983	219
-F	tests/test_qa_visual.py	10549	7204	217
+C	2ec583ee587fedd1e5080c43d2931ec7a2dc180f
+F	.cargo/config.toml	98	94	3
+F	.github/workflows/ci.yml	968	99	44
+F	.github/workflows/nix.yml	2201	145	67
+F	.github/workflows/publish-repospool.yml	3048	214	83
+F	.gitignore	178	299	11
+F	.repospoolignore	1028	312	47
+F	Cargo.toml	494	361	22
+F	README.md	9636	385	219
+F	Taskfile.yml	6329	606	192
+F	config/kira.kdl.example	358	800	8
+F	crates/kira-core/Cargo.toml	207	810	10
+F	crates/kira-core/src/config.rs	15217	822	399
+F	crates/kira-core/src/main.rs	18357	1223	480
+F	crates/kira-core/src/niri.rs	16767	1705	453
+F	crates/kira-ipc/Cargo.toml	170	2160	9
+F	crates/kira-ipc/src/client.rs	10376	2171	277
+F	crates/kira-ipc/src/lib.rs	9053	2450	302
+F	crates/kira-shell/Cargo.toml	297	2754	12
+F	crates/kira-shell/src/calendar.css	4347	2768	152
+F	crates/kira-shell/src/calendar.rs	18181	2922	506
+F	crates/kira-shell/src/calendar_model.rs	5491	3430	156
+F	crates/kira-shell/src/launcher.css	2924	3588	119
+F	crates/kira-shell/src/launcher.rs	10838	3709	299
+F	crates/kira-shell/src/main.rs	17551	4010	411
+F	crates/kira-shell/src/native-palette.css	353	4423	7
+F	crates/kira-shell/src/native_ui.rs	1168	4432	33
+F	crates/kira-shell/src/ui_assets.rs	4873	4467	148
+F	docs/CONFIG.md	5801	4617	125
+F	docs/DESIGN_SYSTEM.md	12912	4744	241
+F	docs/DEVELOPMENT.md	21604	4987	445
+F	docs/QA_VISUAL.md	9796	5434	126
+F	docs/SPECIFICATION.md	28382	5562	414
+F	docs/VISUAL_REVIEW.md	9754	5978	84
+F	flake.nix	2651	6064	76
+F	frontend/index.html	2737	6142	66
+F	frontend/package.json	650	6210	23
+F	frontend/scripts/inline-assets.mjs	4498	6235	103
+F	frontend/scripts/inline-assets.test.mjs	4645	6340	106
+F	frontend/src/App.svelte	8083	6448	184
+F	frontend/src/lib/bootstrap.test.ts	3408	6634	84
+F	frontend/src/lib/bootstrap.ts	2613	6720	70
+F	frontend/src/lib/components/SystemHealth.svelte	1189	6792	37
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	6831	61
+F	frontend/src/lib/sdk/core.test.ts	8465	6894	166
+F	frontend/src/lib/sdk/core.ts	6351	7062	194
+F	frontend/src/lib/system-health.test.ts	1390	7258	34
+F	frontend/src/lib/system-health.ts	1260	7294	31
+F	frontend/src/lib/themes/kira-default.css	1687	7327	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	7381	101
+F	frontend/src/lib/themes/kira-default.ts	777	7484	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4139	7508	74
+F	frontend/src/lib/time.test.ts	263	7584	8
+F	frontend/src/lib/time.ts	320	7594	9
+F	frontend/src/main.ts	1167	7605	35
+F	frontend/src/style.css	1329	7642	44
+F	frontend/tsconfig.json	403	7688	16
+F	frontend/vite.config.ts	224	7706	8
+F	nix/package.nix	3426	7716	121
+F	scripts/dev_preview.py	18147	7839	403	x
+F	scripts/qa_visual.py	12052	8244	299
+F	tests/test_calendar_design.py	5299	8545	111
+F	tests/test_dev_preview.py	9339	8658	219
+F	tests/test_launcher_design.py	2915	8879	61
+F	tests/test_native_theme.py	2421	8942	53
+F	tests/test_qa_visual.py	10549	8997	217
+F	tests/test_ui_bootstrap_contract.py	1103	9216	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -129,8 +144,9 @@ jobs:
 FILE	.github/workflows/nix.yml
 name: NixOS integration
 
-# Native GTK/WebKit compilation is tested by building the actual package.
-# Do not compile the same heavy Rust bindings again in a separate cargo check.
+# Validate GTK API compatibility before the slow release package build.
+# The native check uses the development profile to report type errors early,
+# while the package build still validates the full distributed artifact.
 on:
   push:
     branches: [main]
@@ -187,6 +203,10 @@ jobs:
         run: nix flake check --no-build
       - name: Validate nested Niri preview config
         run: nix develop --command python3 scripts/dev_preview.py --validate-config
+      - name: Build packaged Tailwind frontend and verify npm lock/hash first
+        run: nix build .#frontend -L --show-trace
+      - name: Type-check native GTK Shell before release packaging
+        run: nix develop --command cargo check --locked -p kira-shell
       - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace
 
@@ -381,8 +401,8 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 | --- | --- |
 | `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded Unix socket client, unit tests |
 | `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over a configurable user-owned Unix socket |
-| `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge |
-| `frontend/` | Svelte 5, TypeScript, Vite, Kira Default premium tokens, themed top bar, typed SDK, Core connection status, Vitest |
+| `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge and a native Gio application Launcher |
+| `frontend/` | Svelte 5, Tailwind CSS v4 via Vite, typed Kira Default design tokens, editorial top bar, native Launcher trigger, Core status and workspace SDK, Vitest |
 | `Taskfile.yml` | Shared commands for development and CI |
 | `flake.nix`, `nix/package.nix` | Nix development shell and installable packaged Core/Shell/frontend |
 | `Cargo.lock`, `flake.lock`, `frontend/package-lock.json` | Locked dependencies for reproducibility |
@@ -497,20 +517,20 @@ A new dependency-cache derivation must be compiled once on the first build;
 changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
 Nix inputs may legitimately invalidate the cache.
 
-## Default theme: Black, Bordeaux and Taupe
+## Default theme: Black, Prussian Blue and Orange
 
-The built-in **Kira Default** theme now uses the project's five-color palette:
+The built-in **Kira Default** dark theme uses five fully opaque colors:
 
-`#0a0908` Black · `#49111c` Night Bordeaux · `#f2f4f3` White Smoke ·
-`#a9927d` Dusty Taupe · `#5e503f` Stone Brown.
+`#000000ff` Black · `#14213dff` Prussian Blue · `#fca311ff` Orange ·
+`#e5e5e5ff` Alabaster Grey · `#ffffffff` White.
 
-It is the default in the Svelte Top Bar and its pre-mount WebKit loading
-screen; no environment variable or KDL option is required. CSS variables and
-the TypeScript palette share the same five base values. Dusty Taupe is used
-for legible focus/secondary text; Stone Brown is structural rather than
-low-contrast body text. See [design system](docs/DESIGN_SYSTEM.md) for exact
-tokens and accessibility checks. Choosing alternative palettes through
-KDL remains a future feature.
+These colors drive the Svelte Top Bar, pre-mount WebKit loading screen and
+native GTK Launcher. Black is the background, Prussian Blue makes structured
+surfaces, Orange marks focus and selection, Alabaster Grey is secondary text,
+and White is primary text. Selected Orange surfaces use **Black** text for
+contrast. Semantic tokens derive from the five canonical palette values;
+custom KDL theme overrides remain a future feature. See the
+[design system](docs/DESIGN_SYSTEM.md) for exact mappings and WCAG checks.
 
 ## Validated KDL settings (Stage 2 draft)
 
@@ -613,6 +633,8 @@ tasks:
       - test -s docs/DESIGN_SYSTEM.md
       - test -s frontend/src/lib/themes/kira-default.css
       - test -s frontend/src/lib/themes/kira-default.ts
+      - test -s frontend/src/style.css
+      - test -s frontend/vite.config.ts
       - test -s docs/DEVELOPMENT.md
       - test -s Cargo.toml
       - test -s crates/kira-ipc/src/lib.rs
@@ -644,6 +666,13 @@ tasks:
     desc: Run Core/IPC and frontend tests.
     cmds:
       - cargo test --locked -p kira-ipc -p kira-core --all-targets
+      # The date model is pure Rust: run its leap-year/ISO-week tests even
+      # on lightweight runners without GTK/WebKit development libraries.
+      - |
+        tmpdir="$(mktemp -d)"
+        trap 'rm -rf "$tmpdir"' EXIT
+        rustc --edition=2021 --test crates/kira-shell/src/calendar_model.rs -o "$tmpdir/kira-calendar-tests"
+        "$tmpdir/kira-calendar-tests"
       - npm run test:ci --prefix frontend
       - python3 -m unittest discover -s tests -p 'test_*.py'
 
@@ -2735,9 +2764,1255 @@ webkit6 = "0.6.1"
 kira-ipc = { path = "../kira-ipc" }
 serde_json.workspace = true
 
+FILE	crates/kira-shell/src/calendar.css
+/* Custom Kira date picker. Native colors loaded from native-palette.css. */
+window.kira-calendar-window { background: transparent; }
+.kira-calendar-card {
+  background: @kira_black;
+  border: 1px solid rgba(229, 229, 229, 0.28);
+  border-radius: 10px;
+  color: @kira_white;
+}
+.kira-calendar-hero { padding: 19px 22px 17px; background: @kira_black; }
+.kira-calendar-eyebrow { color: @kira_orange; font-size: 10px; font-weight: 800; }
+.kira-calendar-time { color: @kira_white; font-size: 43px; font-weight: 800; }
+.kira-calendar-today-date { color: @kira_alabaster_grey; font-size: 13px; }
+.kira-calendar-timezone { color: @kira_orange; font-size: 10px; font-weight: 650; }
+.kira-calendar-workbench {
+  padding: 15px 19px 18px;
+  background: @kira_prussian_blue;
+}
+.kira-calendar-section {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 750;
+}
+.kira-calendar-toolbar { padding: 2px 0 5px; }
+.kira-calendar-toolbar-divider { margin: 5px 3px; background: rgba(229,229,229,0.18); }
+.kira-calendar-month {
+  color: @kira_white;
+  font-size: 15px;
+  font-weight: 750;
+}
+.kira-calendar-year {
+  min-width: 40px;
+  color: @kira_alabaster_grey;
+  font-size: 12px;
+  font-weight: 700;
+}
+button.kira-calendar-nav {
+  min-width: 29px;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_alabaster_grey;
+  font-size: 21px;
+  font-weight: 700;
+}
+button.kira-calendar-nav:hover { background: rgba(0,0,0,0.32); color: @kira_orange; }
+button.kira-calendar-nav:active { background: rgba(0,0,0,0.52); }
+button.kira-calendar-nav:disabled { color: rgba(229,229,229,0.24); }
+button.kira-calendar-nav:focus-visible,
+button.kira-calendar-today-button:focus-visible,
+button.kira-calendar-copy:focus-visible,
+button.kira-day:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: -2px;
+}
+button.kira-calendar-close { font-size: 23px; }
+
+button.kira-calendar-today-button {
+  min-height: 29px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_orange;
+  font-size: 10px;
+  font-weight: 800;
+}
+button.kira-calendar-today-button:hover { background: rgba(0,0,0,0.30); }
+
+.kira-calendar-grid {
+  padding: 4px 0;
+  background: @kira_prussian_blue;
+}
+.kira-grid-header,
+.kira-grid-week {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 650;
+}
+.kira-grid-header { padding-bottom: 6px; }
+.kira-grid-week { color: rgba(229,229,229,0.6); }
+button.kira-day {
+  min-height: 36px;
+  min-width: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_white;
+  font-size: 12px;
+  font-weight: 650;
+}
+button.kira-day:hover:not(:disabled) {
+  background: rgba(0,0,0,0.34);
+  color: @kira_orange;
+}
+/* Adjacent-month days remain interactive: keep normal-text contrast >= 4.5:1. */
+button.kira-day.kira-day-adjacent { color: rgba(229,229,229,0.60); }
+button.kira-day.kira-day-today:not(.kira-day-selected) {
+  box-shadow: inset 0 -2px @kira_orange;
+  color: @kira_orange;
+}
+button.kira-day.kira-day-selected,
+button.kira-day.kira-day-selected:hover {
+  background: @kira_orange;
+  color: @kira_black;
+  font-weight: 850;
+}
+/* Orange-on-orange is invisible. Use a dark inset focus ring on selected days. */
+button.kira-day.kira-day-selected:focus-visible {
+  outline: 2px solid @kira_black;
+  outline-offset: -3px;
+}
+button.kira-day:disabled { opacity: 0; }
+
+.kira-calendar-footer {
+  padding: 16px 22px 18px;
+  background: @kira_black;
+}
+.kira-calendar-selected { color: @kira_white; font-size: 15px; font-weight: 750; }
+.kira-calendar-meta,
+.kira-calendar-hint {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 650;
+}
+.kira-calendar-actions { margin-top: 8px; }
+/* COPY DATE matches the quiet typographic TODAY action. No chip, border,
+ * background, or tab indicator. Only keyboard focus adds an outline. */
+button.kira-calendar-copy {
+  min-height: 29px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: @kira_orange;
+  font-size: 10px;
+  font-weight: 800;
+}
+button.kira-calendar-copy:hover {
+  background: transparent;
+  color: @kira_white;
+}
+button.kira-calendar-copy:active {
+  background: transparent;
+  color: @kira_alabaster_grey;
+}
+button.kira-calendar-copy:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: 2px;
+}
+
+FILE	crates/kira-shell/src/calendar.rs
+//! Editorial calendar layer-shell overlay with a native *custom* month grid.
+//! Uses GTK Grid/Buttons, not GtkCalendar, so controls, day states and layout
+//! belong to Kira while dates remain real local Gregorian dates.
+use std::cell::{Cell, RefCell};
+use std::rc::Rc;
+use std::sync::Once;
+
+use gtk::prelude::*;
+use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+
+use crate::calendar_model::{CivilDate, days_in_month, month_grid, shift_month};
+
+const TITLE: &str = "Kira Calendar";
+
+fn label(value: &str, class: &str) -> gtk::Label {
+    let result = gtk::Label::new(Some(value));
+    result.add_css_class(class);
+    result.set_xalign(0.0);
+    result
+}
+
+fn format_date(date: &gtk::glib::DateTime, pattern: &str) -> String {
+    date.format(pattern)
+        .map(|text| text.to_string())
+        .unwrap_or_default()
+}
+
+fn local_datetime(date: CivilDate) -> Option<gtk::glib::DateTime> {
+    gtk::glib::DateTime::from_local(
+        date.year,
+        i32::from(date.month),
+        i32::from(date.day),
+        12,
+        0,
+        0.0,
+    )
+    .ok()
+}
+
+fn today() -> CivilDate {
+    gtk::glib::DateTime::now_local()
+        .ok()
+        .and_then(|now| CivilDate::new(now.year(), now.month() as u8, now.day_of_month() as u8))
+        .unwrap_or(CivilDate {
+            year: 1970,
+            month: 1,
+            day: 1,
+        })
+}
+
+fn locale_date(date: CivilDate, pattern: &str) -> String {
+    local_datetime(date)
+        .map(|dt| format_date(&dt, pattern))
+        .unwrap_or_else(|| date.iso())
+}
+
+fn refresh_clock(clock: &gtk::Label, date: &gtk::Label, zone: &gtk::Label) {
+    if let Ok(now) = gtk::glib::DateTime::now_local() {
+        clock.set_text(&format_date(&now, "%H:%M:%S"));
+        date.set_text(&format_date(&now, "%A, %d %B %Y"));
+        zone.set_text(&format!("LOCAL TIME  /  {}", format_date(&now, "%Z")));
+    }
+}
+
+#[derive(Clone, Copy)]
+struct PickerState {
+    month: u8,
+    year: i32,
+    selected: CivilDate,
+    today: CivilDate,
+}
+
+struct Picker {
+    state: RefCell<PickerState>,
+    grid: gtk::Grid,
+    month_text: gtk::Label,
+    year_text: gtk::Label,
+    selected_text: gtk::Label,
+    meta_text: gtk::Label,
+    copy: gtk::Button,
+    prev_month: gtk::Button,
+    next_month: gtk::Button,
+    prev_year: gtk::Button,
+    next_year: gtk::Button,
+}
+
+impl Picker {
+    fn navigate(self: &Rc<Self>, months: i32) {
+        let mut state = self.state.borrow_mut();
+        if let Some((year, month)) = shift_month(state.year, state.month, months) {
+            // Keep selection visible and clamp February/short-month dates.
+            // Month/year navigation should never strand the highlighted day
+            // on an invisible month while the details show another date.
+            let day = state.selected.day.min(days_in_month(year, month));
+            state.selected = CivilDate::new(year, month, day).expect("valid day");
+            state.year = year;
+            state.month = month;
+            drop(state);
+            self.render(false);
+        }
+    }
+
+    fn select(self: &Rc<Self>, date: CivilDate, focus: bool) {
+        let mut state = self.state.borrow_mut();
+        state.selected = date;
+        state.year = date.year;
+        state.month = date.month;
+        drop(state);
+        self.render(focus);
+    }
+
+    fn render(self: &Rc<Self>, focus_selected: bool) {
+        let state = *self.state.borrow();
+        let month_start = CivilDate::new(state.year, state.month, 1).expect("valid month");
+        self.month_text.set_text(&locale_date(month_start, "%B"));
+        self.year_text.set_text(&state.year.to_string());
+        self.prev_month
+            .set_sensitive(shift_month(state.year, state.month, -1).is_some());
+        self.next_month
+            .set_sensitive(shift_month(state.year, state.month, 1).is_some());
+        self.prev_year
+            .set_sensitive(shift_month(state.year, state.month, -12).is_some());
+        self.next_year
+            .set_sensitive(shift_month(state.year, state.month, 12).is_some());
+        self.selected_text
+            .set_text(&locale_date(state.selected, "%A, %d %B %Y"));
+        let (iso_year, iso_week) = state.selected.iso_week();
+        self.meta_text.set_text(&format!(
+            "ISO WEEK {:02}  /  {}    DAY {:03} / {}",
+            iso_week,
+            iso_year,
+            state.selected.day_of_year(),
+            state.selected.year
+        ));
+        self.copy.set_label("COPY DATE");
+        while let Some(child) = self.grid.first_child() {
+            self.grid.remove(&child);
+        }
+
+        let week_header = label("WK", "kira-grid-header");
+        week_header.set_xalign(0.5);
+        self.grid.attach(&week_header, 0, 0, 1, 1);
+        // 2024-01-01 is a Monday; GLib names respect the user's locale.
+        for weekday in 0..7 {
+            let reference = CivilDate::new(2024, 1, weekday + 1).expect("weekday");
+            let caption = label(&locale_date(reference, "%a"), "kira-grid-header");
+            caption.set_xalign(0.5);
+            self.grid.attach(&caption, i32::from(weekday) + 1, 0, 1, 1);
+        }
+
+        let mut selected_button = None;
+        for (row, week) in month_grid(state.year, state.month).iter().enumerate() {
+            let week_number = week[0].map(|date| date.iso_week().1).unwrap_or(0);
+            let week_label = label(&format!("{week_number:02}"), "kira-grid-week");
+            week_label.set_xalign(0.5);
+            self.grid.attach(&week_label, 0, row as i32 + 1, 1, 1);
+
+            for (column, date) in week.iter().enumerate() {
+                let button = gtk::Button::new();
+                button.add_css_class("kira-day");
+                button.set_hexpand(true);
+                button.set_size_request(34, 36);
+                if let Some(date) = date {
+                    button.set_label(&date.day.to_string());
+                    button.set_tooltip_text(Some(&locale_date(*date, "%A, %d %B %Y")));
+                    if date.month != state.month || date.year != state.year {
+                        button.add_css_class("kira-day-adjacent");
+                    }
+                    if *date == state.today {
+                        button.add_css_class("kira-day-today");
+                    }
+                    if *date == state.selected {
+                        button.add_css_class("kira-day-selected");
+                        button.set_tooltip_text(Some(&format!(
+                            "{} / SELECTED",
+                            locale_date(*date, "%A, %d %B %Y")
+                        )));
+                        selected_button = Some(button.clone());
+                    }
+                    let weak = Rc::downgrade(self);
+                    let date = *date;
+                    button.connect_clicked(move |_| {
+                        if let Some(picker) = weak.upgrade() {
+                            picker.select(date, true);
+                        }
+                    });
+                } else {
+                    button.set_sensitive(false);
+                }
+                self.grid
+                    .attach(&button, column as i32 + 1, row as i32 + 1, 1, 1);
+            }
+        }
+
+        if focus_selected {
+            if let Some(button) = selected_button {
+                button.grab_focus();
+            }
+        }
+    }
+}
+
+fn navigation_button(text: &str, tooltip: &str) -> gtk::Button {
+    let button = gtk::Button::with_label(text);
+    button.add_css_class("kira-calendar-nav");
+    button.set_tooltip_text(Some(tooltip));
+    button.set_size_request(29, 32);
+    button
+}
+
+/// Close only this overlay, never the persistent 42px Top Bar.
+pub fn dismiss(application: &gtk::Application) -> bool {
+    crate::native_ui::dismiss_overlay(application, TITLE)
+}
+
+fn install_style() {
+    static ONCE: Once = Once::new();
+    ONCE.call_once(|| crate::native_ui::install_styles(include_str!("calendar.css")));
+}
+
+/// Toggled only by the trusted 'kiraCalendar' WebKit handler.
+pub fn toggle(application: &gtk::Application) {
+    if dismiss(application) {
+        return;
+    }
+    crate::launcher::dismiss(application);
+    install_style();
+
+    let window = gtk::ApplicationWindow::new(application);
+    window.set_title(Some(TITLE));
+    window.set_decorated(false);
+    window.set_default_size(378, 490);
+    window.add_css_class("kira-calendar-window");
+    window.init_layer_shell();
+    window.set_namespace(Some("kira-calendar"));
+    window.set_layer(Layer::Overlay);
+    window.set_anchor(Edge::Top, true);
+    window.set_anchor(Edge::Right, true);
+    window.set_margin(Edge::Top, 50);
+    window.set_margin(Edge::Right, 12);
+    window.set_exclusive_zone(0);
+    window.set_keyboard_mode(KeyboardMode::OnDemand);
+
+    let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    card.add_css_class("kira-calendar-card");
+    window.set_child(Some(&card));
+
+    let hero = gtk::Box::new(gtk::Orientation::Vertical, 8);
+    hero.add_css_class("kira-calendar-hero");
+    let hero_top = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+    let eyebrow = label("KIRA  /  TIME & DATE", "kira-calendar-eyebrow");
+    eyebrow.set_hexpand(true);
+    hero_top.append(&eyebrow);
+    let close = navigation_button("×", "Close calendar (Esc)");
+    close.add_css_class("kira-calendar-close");
+    let close_window = window.downgrade();
+    close.connect_clicked(move |_| {
+        if let Some(window) = close_window.upgrade() {
+            window.close();
+        }
+    });
+    hero_top.append(&close);
+    hero.append(&hero_top);
+
+    let clock = label("", "kira-calendar-time");
+    hero.append(&clock);
+    let today_date = label("", "kira-calendar-today-date");
+    hero.append(&today_date);
+    let timezone = label("", "kira-calendar-timezone");
+    hero.append(&timezone);
+    card.append(&hero);
+    refresh_clock(&clock, &today_date, &timezone);
+
+    let workbench = gtk::Box::new(gtk::Orientation::Vertical, 12);
+    workbench.add_css_class("kira-calendar-workbench");
+    card.append(&workbench);
+    let heading = gtk::Box::new(gtk::Orientation::Horizontal, 6);
+    heading.append(&label("CALENDAR  /  SELECT A DAY", "kira-calendar-section"));
+    let gap = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    gap.set_hexpand(true);
+    heading.append(&gap);
+    let reset = gtk::Button::with_label("↺  TODAY");
+    reset.add_css_class("kira-calendar-today-button");
+    reset.set_tooltip_text(Some("Go to current local date"));
+    heading.append(&reset);
+    workbench.append(&heading);
+
+    // One month and one year control group, both using the same custom
+    // navigation language. No GtkCalendar heading/buttons are involved.
+    let toolbar = gtk::Box::new(gtk::Orientation::Horizontal, 4);
+    toolbar.add_css_class("kira-calendar-toolbar");
+    let prev_month = navigation_button("‹", "Previous month");
+    let next_month = navigation_button("›", "Next month");
+    let prev_year = navigation_button("‹", "Previous year");
+    let next_year = navigation_button("›", "Next year");
+    let month_text = label("", "kira-calendar-month");
+    month_text.set_xalign(0.5);
+    month_text.set_hexpand(true);
+    let year_text = label("", "kira-calendar-year");
+    year_text.set_xalign(0.5);
+    toolbar.append(&prev_month);
+    toolbar.append(&month_text);
+    toolbar.append(&next_month);
+    let divider = gtk::Separator::new(gtk::Orientation::Vertical);
+    divider.add_css_class("kira-calendar-toolbar-divider");
+    toolbar.append(&divider);
+    toolbar.append(&prev_year);
+    toolbar.append(&year_text);
+    toolbar.append(&next_year);
+    workbench.append(&toolbar);
+
+    let grid = gtk::Grid::new();
+    grid.add_css_class("kira-calendar-grid");
+    grid.set_column_homogeneous(true);
+    grid.set_row_spacing(3);
+    grid.set_column_spacing(3);
+    grid.set_hexpand(true);
+    workbench.append(&grid);
+
+    let footer = gtk::Box::new(gtk::Orientation::Vertical, 9);
+    footer.add_css_class("kira-calendar-footer");
+    card.append(&footer);
+    footer.append(&label("SELECTED DATE", "kira-calendar-eyebrow"));
+    let selected_text = label("", "kira-calendar-selected");
+    selected_text.set_ellipsize(gtk::pango::EllipsizeMode::End);
+    footer.append(&selected_text);
+    let meta_text = label("", "kira-calendar-meta");
+    footer.append(&meta_text);
+
+    let actions = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+    actions.add_css_class("kira-calendar-actions");
+    let hint = label("ESC  /  CLOSE", "kira-calendar-hint");
+    hint.set_hexpand(true);
+    actions.append(&hint);
+    let copy = gtk::Button::with_label("COPY DATE");
+    copy.add_css_class("kira-calendar-copy");
+    copy.set_tooltip_text(Some("Copy selected date as YYYY-MM-DD"));
+    actions.append(&copy);
+    footer.append(&actions);
+
+    let date = today();
+    let picker = Rc::new(Picker {
+        state: RefCell::new(PickerState {
+            month: date.month,
+            year: date.year,
+            selected: date,
+            today: date,
+        }),
+        grid,
+        month_text,
+        year_text,
+        selected_text,
+        meta_text,
+        copy: copy.clone(),
+        prev_month: prev_month.clone(),
+        next_month: next_month.clone(),
+        prev_year: prev_year.clone(),
+        next_year: next_year.clone(),
+    });
+    picker.render(false);
+
+    for (button, months) in [
+        (&prev_month, -1),
+        (&next_month, 1),
+        (&prev_year, -12),
+        (&next_year, 12),
+    ] {
+        let weak = Rc::downgrade(&picker);
+        button.connect_clicked(move |_| {
+            if let Some(picker) = weak.upgrade() {
+                picker.navigate(months);
+            }
+        });
+    }
+    let weak = Rc::downgrade(&picker);
+    reset.connect_clicked(move |_| {
+        if let Some(picker) = weak.upgrade() {
+            picker.select(today(), true);
+        }
+    });
+    let weak = Rc::downgrade(&picker);
+    copy.connect_clicked(move |_| {
+        if let Some(picker) = weak.upgrade() {
+            let value = picker.state.borrow().selected.iso();
+            if let Some(display) = gtk::gdk::Display::default() {
+                display.clipboard().set_text(&value);
+                picker.copy.set_label("COPIED ✓");
+            }
+        }
+    });
+
+    // Keep the model alive for as long as its GTK window lives. The day and
+    // navigation callbacks are Weak<Picker>, so there is no widget reference
+    // cycle when the window is closed.
+    let owner = picker.clone();
+    window.connect_close_request(move |_| {
+        let _ = &owner;
+        gtk::glib::Propagation::Proceed
+    });
+
+    let weak_window = window.downgrade();
+    let weak_clock = clock.downgrade();
+    let weak_date = today_date.downgrade();
+    let weak_zone = timezone.downgrade();
+    let weak_picker = Rc::downgrade(&picker);
+    gtk::glib::timeout_add_seconds_local(1, move || {
+        match (
+            weak_window.upgrade(),
+            weak_clock.upgrade(),
+            weak_date.upgrade(),
+            weak_zone.upgrade(),
+            weak_picker.upgrade(),
+        ) {
+            (Some(_), Some(clock), Some(date), Some(zone), Some(picker)) => {
+                refresh_clock(&clock, &date, &zone);
+                let current = today();
+                if picker.state.borrow().today != current {
+                    picker.state.borrow_mut().today = current;
+                    picker.render(false);
+                }
+                gtk::glib::ControlFlow::Continue
+            }
+            _ => gtk::glib::ControlFlow::Break,
+        }
+    });
+
+    let keys = gtk::EventControllerKey::new();
+    keys.set_propagation_phase(gtk::PropagationPhase::Capture);
+    let key_picker = Rc::downgrade(&picker);
+    let key_window = window.downgrade();
+    keys.connect_key_pressed(move |_, key, _, modifiers| {
+        if key == gtk::gdk::Key::Escape {
+            if let Some(window) = key_window.upgrade() {
+                window.close();
+            }
+            return gtk::glib::Propagation::Stop;
+        }
+        let Some(picker) = key_picker.upgrade() else {
+            return gtk::glib::Propagation::Proceed;
+        };
+        let selected = picker.state.borrow().selected;
+        let next = match key {
+            gtk::gdk::Key::Left => selected.shift_days(-1),
+            gtk::gdk::Key::Right => selected.shift_days(1),
+            gtk::gdk::Key::Up => selected.shift_days(-7),
+            gtk::gdk::Key::Down => selected.shift_days(7),
+            gtk::gdk::Key::Home => Some(today()),
+            gtk::gdk::Key::Page_Up => {
+                picker.navigate(
+                    if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
+                        -12
+                    } else {
+                        -1
+                    },
+                );
+                return gtk::glib::Propagation::Stop;
+            }
+            gtk::gdk::Key::Page_Down => {
+                picker.navigate(
+                    if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
+                        12
+                    } else {
+                        1
+                    },
+                );
+                return gtk::glib::Propagation::Stop;
+            }
+            _ => return gtk::glib::Propagation::Proceed,
+        };
+        if let Some(date) = next {
+            picker.select(date, true);
+        }
+        gtk::glib::Propagation::Stop
+    });
+    window.add_controller(keys);
+
+    let was_active = Rc::new(Cell::new(false));
+    window.connect_is_active_notify(move |window| {
+        if window.is_active() {
+            was_active.set(true);
+        } else if was_active.get() {
+            window.close();
+        }
+    });
+    window.present();
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn custom_picker_style_contract() {
+        let css = include_str!("calendar.css");
+        for selector in [
+            ".kira-calendar-hero",
+            ".kira-calendar-workbench",
+            ".kira-calendar-grid",
+            "button.kira-day",
+            ".kira-day-selected",
+            ".kira-day-today",
+            ".kira-calendar-nav",
+            ".kira-calendar-copy",
+        ] {
+            assert!(css.contains(selector), "missing {selector}");
+        }
+    }
+}
+
+FILE	crates/kira-shell/src/calendar_model.rs
+//! Pure Gregorian date arithmetic for Kira's own date picker.
+//! No GTK state or time-zone conversion is used in the calendar grid.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CivilDate {
+    pub year: i32,
+    pub month: u8,
+    pub day: u8,
+}
+
+impl CivilDate {
+    pub fn new(year: i32, month: u8, day: u8) -> Option<Self> {
+        if !(1..=9999).contains(&year) || !(1..=12).contains(&month) {
+            return None;
+        }
+        if day == 0 || day > days_in_month(year, month) {
+            return None;
+        }
+        Some(Self { year, month, day })
+    }
+
+    pub fn days(self) -> i64 {
+        let year = self.year - i32::from(self.month <= 2);
+        let era = year.div_euclid(400);
+        let yoe = year - era * 400;
+        let month = i32::from(self.month);
+        let mp = month + if month > 2 { -3 } else { 9 };
+        let doy = (153 * mp + 2) / 5 + i32::from(self.day) - 1;
+        let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+        i64::from(era) * 146097 + i64::from(doe) - 719468
+    }
+
+    pub fn from_days(days: i64) -> Option<Self> {
+        let z = days + 719468;
+        let era = z.div_euclid(146097);
+        let doe = z - era * 146097;
+        let yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+        let mut year = yoe + era * 400;
+        let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+        let mp = (5 * doy + 2) / 153;
+        let day = doy - (153 * mp + 2) / 5 + 1;
+        let month = mp + if mp < 10 { 3 } else { -9 };
+        year += i64::from(month <= 2);
+        let year = i32::try_from(year).ok()?;
+        Self::new(year, u8::try_from(month).ok()?, u8::try_from(day).ok()?)
+    }
+
+    /// Monday = 0, Sunday = 6.
+    pub fn weekday(self) -> i64 {
+        (self.days() + 3).rem_euclid(7)
+    }
+
+    pub fn shift_days(self, offset: i64) -> Option<Self> {
+        Self::from_days(self.days() + offset)
+    }
+
+    pub fn day_of_year(self) -> u16 {
+        (self.days() - Self::new(self.year, 1, 1).expect("valid year").days() + 1) as u16
+    }
+
+    pub fn iso_week(self) -> (i32, u8) {
+        // The ISO week-year is the Gregorian year of this week's Thursday.
+        let thursday = self.days() + 3 - self.weekday();
+        let iso_year = Self::from_days(thursday).map_or(self.year, |d| d.year);
+        let jan4 = Self::new(iso_year, 1, 4).expect("valid ISO year");
+        let week1_monday = jan4.days() - jan4.weekday();
+        (
+            iso_year,
+            u8::try_from((self.days() - self.weekday() - week1_monday) / 7 + 1).unwrap_or(1),
+        )
+    }
+
+    pub fn iso(self) -> String {
+        format!("{:04}-{:02}-{:02}", self.year, self.month, self.day)
+    }
+}
+
+pub fn days_in_month(year: i32, month: u8) -> u8 {
+    match month {
+        4 | 6 | 9 | 11 => 30,
+        2 if year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) => 29,
+        2 => 28,
+        _ => 31,
+    }
+}
+
+pub fn shift_month(year: i32, month: u8, months: i32) -> Option<(i32, u8)> {
+    let serial = (year - 1) * 12 + i32::from(month) - 1 + months;
+    if !(0..9999 * 12).contains(&serial) {
+        return None;
+    }
+    Some((serial / 12 + 1, (serial % 12 + 1) as u8))
+}
+
+/// Always six stable Monday-first rows; partial weeks show adjoining dates.
+pub fn month_grid(year: i32, month: u8) -> [[Option<CivilDate>; 7]; 6] {
+    let first = CivilDate::new(year, month, 1).expect("valid calendar month");
+    let monday = first.days() - first.weekday();
+    std::array::from_fn(|row| {
+        std::array::from_fn(|column| CivilDate::from_days(monday + (row * 7 + column) as i64))
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn leap_years_and_century_rules() {
+        assert_eq!(days_in_month(2024, 2), 29);
+        assert_eq!(days_in_month(1900, 2), 28);
+        assert_eq!(days_in_month(2000, 2), 29);
+        assert!(CivilDate::new(2025, 2, 29).is_none());
+    }
+
+    #[test]
+    fn dates_round_trip_across_gregorian_boundaries() {
+        for date in [
+            (1, 1, 1),
+            (1900, 3, 1),
+            (1970, 1, 1),
+            (2000, 2, 29),
+            (2026, 11, 1),
+            (9999, 12, 31),
+        ] {
+            let original = CivilDate::new(date.0, date.1, date.2).unwrap();
+            assert_eq!(CivilDate::from_days(original.days()), Some(original));
+        }
+        assert_eq!(CivilDate::new(2026, 11, 1).unwrap().weekday(), 6);
+    }
+
+    #[test]
+    fn monday_first_month_grid_and_adjacent_days() {
+        let grid = month_grid(2026, 11);
+        assert_eq!(grid[0][0].unwrap().iso(), "2026-10-26");
+        assert_eq!(grid[0][6].unwrap().iso(), "2026-11-01");
+        assert_eq!(grid[5][6].unwrap().iso(), "2026-12-06");
+        assert_eq!(grid[0][0].unwrap().iso_week(), (2026, 44));
+    }
+
+    #[test]
+    fn iso_week_year_crossing_and_day_of_year() {
+        assert_eq!(CivilDate::new(2021, 1, 1).unwrap().iso_week(), (2020, 53));
+        assert_eq!(CivilDate::new(2018, 12, 31).unwrap().iso_week(), (2019, 1));
+        assert_eq!(CivilDate::new(2026, 11, 1).unwrap().day_of_year(), 305);
+        assert_eq!(CivilDate::new(2024, 12, 31).unwrap().day_of_year(), 366);
+    }
+
+    #[test]
+    fn month_navigation_handles_years_and_limits() {
+        assert_eq!(shift_month(2026, 1, -1), Some((2025, 12)));
+        assert_eq!(shift_month(2026, 12, 1), Some((2027, 1)));
+        assert_eq!(shift_month(2026, 11, -12), Some((2025, 11)));
+        assert_eq!(shift_month(1, 1, -1), None);
+        assert_eq!(shift_month(9999, 12, 1), None);
+    }
+}
+
+FILE	crates/kira-shell/src/launcher.css
+/* Kira Launcher. Native colors loaded from native-palette.css. */
+window.kira-launcher-window { background: transparent; }
+
+/* One structural panel edge. Internally, contrast comes from materials and
+ * typography, not from shadows and outlines around each interactive item. */
+.kira-launcher-card {
+  background: @kira_black;
+  color: @kira_white;
+  border: 1px solid rgba(229, 229, 229, 0.32);
+  border-radius: 10px;
+}
+
+.kira-launcher-intro {
+  padding: 22px 24px 18px;
+  background: @kira_black;
+}
+.kira-eyebrow {
+  color: @kira_orange;
+  font-size: 10px;
+  font-weight: 800;
+}
+.kira-heading {
+  color: @kira_white;
+  font-size: 32px;
+  font-weight: 800;
+}
+.kira-subheading {
+  color: @kira_alabaster_grey;
+  font-size: 12px;
+}
+
+.kira-workbench {
+  padding: 16px 18px 12px;
+  background: @kira_prussian_blue;
+}
+.kira-workbench-eyebrow,
+.kira-catalog-label {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 700;
+}
+.kira-catalog-header { padding-top: 7px; }
+.kira-count {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+entry.kira-search-field {
+  min-height: 42px;
+  padding: 7px 12px;
+  background: @kira_black;
+  color: @kira_white;
+  border: 1px solid rgba(229, 229, 229, 0.38);
+  border-radius: 6px;
+}
+entry.kira-search-field:focus { border-color: @kira_orange; }
+
+list.kira-app-list {
+  background: @kira_prussian_blue;
+  color: @kira_white;
+}
+row.kira-app-row {
+  margin: 2px 0;
+  padding: 7px 8px 7px 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: @kira_white;
+}
+row.kira-app-row:hover:not(:selected) {
+  background: rgba(0, 0, 0, 0.24);
+}
+/* Selection is a local orange marker, not a full-width orange slab. */
+row.kira-app-row:selected {
+  background: rgba(0, 0, 0, 0.55);
+  color: @kira_white;
+}
+.kira-app-rail {
+  min-width: 3px;
+  min-height: 38px;
+  background: transparent;
+}
+row.kira-app-row:selected .kira-app-rail { background: @kira_orange; }
+.kira-app-icon-shell {
+  min-width: 38px;
+  min-height: 38px;
+  padding: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: @kira_black;
+  color: @kira_white;
+}
+.kira-app-icon-fallback { color: @kira_white; font-weight: 800; }
+.kira-app-name { color: @kira_white; font-size: 14px; font-weight: 750; }
+.kira-app-detail { color: @kira_alabaster_grey; font-size: 11px; }
+row.kira-app-row:selected .kira-app-name { color: @kira_orange; }
+row.kira-app-row:selected .kira-app-detail { color: @kira_alabaster_grey; }
+
+.kira-empty { color: @kira_alabaster_grey; padding: 16px; }
+.kira-launch-error {
+  color: @kira_orange;
+  font-size: 11px;
+  margin: 0 20px;
+}
+.kira-launcher-footer {
+  padding: 14px 24px;
+  background: @kira_black;
+}
+.kira-keycap {
+  padding: 4px 6px;
+  border: 1px solid rgba(229, 229, 229, 0.35);
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_white;
+  font-size: 10px;
+  font-weight: 700;
+}
+.kira-key-hint { color: @kira_alabaster_grey; font-size: 10px; }
+
+FILE	crates/kira-shell/src/launcher.rs
+//! Native launcher: desktop entries via Gio, never shell-interpolated commands.
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::sync::Once;
+
+use gtk::gio;
+use gtk::prelude::*;
+use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+
+const TITLE: &str = "Kira Launcher";
+
+struct App {
+    info: gio::AppInfo,
+    search: String,
+}
+
+fn installed_apps() -> Vec<App> {
+    let mut apps: Vec<_> = gio::AppInfo::all()
+        .into_iter()
+        .filter(|info| info.should_show())
+        .map(|info| {
+            let search = format!(
+                "{} {}",
+                info.display_name(),
+                info.description()
+                    .map(|value| value.to_string())
+                    .unwrap_or_default()
+            )
+            .to_lowercase();
+            App { info, search }
+        })
+        .collect();
+    apps.sort_by_key(|app| app.info.display_name().to_string().to_lowercase());
+    apps
+}
+
+fn label(value: &str, class: &str) -> gtk::Label {
+    let label = gtk::Label::new(Some(value));
+    label.add_css_class(class);
+    label.set_xalign(0.0);
+    label.set_ellipsize(gtk::pango::EllipsizeMode::End);
+    label
+}
+
+// GtkListBoxRow::index() is a view position, not an application's identity.
+// Filtering and selection must always resolve a row to its original Gio entry.
+fn app_index(row: &gtk::ListBoxRow) -> Option<usize> {
+    row.widget_name().strip_prefix("kira-app-")?.parse().ok()
+}
+
+fn visible_rows(list: &gtk::ListBox, count: usize) -> Vec<gtk::ListBoxRow> {
+    (0..count)
+        .filter_map(|index| list.row_at_index(index as i32))
+        .filter(|row| row.is_child_visible())
+        .collect()
+}
+
+fn launch(
+    apps: &[App],
+    row: &gtk::ListBoxRow,
+    window: &gtk::ApplicationWindow,
+    error: &gtk::Label,
+) {
+    let Some(index) = app_index(row) else {
+        return;
+    };
+    if let Some(app) = apps.get(index) {
+        match app.info.launch(&[], None::<&gio::AppLaunchContext>) {
+            Ok(()) => window.close(),
+            Err(failure) => {
+                error.set_text(&format!(
+                    "Cannot open {}: {failure}",
+                    app.info.display_name()
+                ));
+                error.set_visible(true);
+            }
+        }
+    }
+}
+
+fn install_style() {
+    static ONCE: Once = Once::new();
+    ONCE.call_once(|| crate::native_ui::install_styles(include_str!("launcher.css")));
+}
+
+/// Close only the Launcher when switching native overlays.
+pub fn dismiss(application: &gtk::Application) -> bool {
+    crate::native_ui::dismiss_overlay(application, TITLE)
+}
+
+/// Show a single keyboard-accessible layer-shell overlay without reserving space.
+pub fn show(application: &gtk::Application) {
+    if let Some(existing) = crate::native_ui::find_overlay(application, TITLE) {
+        existing.present();
+        return;
+    }
+    crate::calendar::dismiss(application);
+    install_style();
+    let window = gtk::ApplicationWindow::new(application);
+    window.set_title(Some(TITLE));
+    window.set_decorated(false);
+    window.set_default_size(600, 520);
+    window.add_css_class("kira-launcher-window");
+    window.init_layer_shell();
+    window.set_namespace(Some("kira-launcher"));
+    window.set_layer(Layer::Overlay);
+    window.set_anchor(Edge::Top, true);
+    window.set_margin(Edge::Top, 58);
+    window.set_exclusive_zone(0);
+    window.set_keyboard_mode(KeyboardMode::Exclusive);
+
+    let frame = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    frame.set_margin_start(12);
+    frame.set_margin_end(12);
+    frame.set_margin_top(6);
+    frame.set_margin_bottom(12);
+    let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    card.add_css_class("kira-launcher-card");
+    frame.append(&card);
+    window.set_child(Some(&frame));
+
+    // Editorial hierarchy: a quiet black intro and a Prussian Blue workspace.
+    // This is one panel with two clear regions, not a stack of framed chips.
+    let intro = gtk::Box::new(gtk::Orientation::Vertical, 6);
+    intro.add_css_class("kira-launcher-intro");
+    intro.append(&label("KIRA  /  APPLICATION INDEX", "kira-eyebrow"));
+    intro.append(&label("Applications", "kira-heading"));
+    intro.append(&label("Search your installed tools.", "kira-subheading"));
+    card.append(&intro);
+
+    let workbench = gtk::Box::new(gtk::Orientation::Vertical, 10);
+    workbench.add_css_class("kira-workbench");
+    card.append(&workbench);
+    workbench.append(&label("FIND  /  OPEN", "kira-workbench-eyebrow"));
+
+    let entry = gtk::SearchEntry::new();
+    entry.add_css_class("kira-search-field");
+    entry.set_placeholder_text(Some("Search applications…"));
+    workbench.append(&entry);
+
+    let header = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+    header.add_css_class("kira-catalog-header");
+    header.append(&label("APPLICATION CATALOG", "kira-catalog-label"));
+    let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    spacer.set_hexpand(true);
+    header.append(&spacer);
+    let count = label("", "kira-count");
+    count.set_xalign(1.0);
+    header.append(&count);
+    workbench.append(&header);
+
+    let apps = Rc::new(installed_apps());
+    let list = gtk::ListBox::new();
+    list.add_css_class("kira-app-list");
+    list.set_selection_mode(gtk::SelectionMode::Single);
+    list.set_activate_on_single_click(true);
+    for (index, app) in apps.iter().enumerate() {
+        let row = gtk::ListBoxRow::new();
+        row.add_css_class("kira-app-row");
+        row.set_widget_name(&format!("kira-app-{index}"));
+        let content = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+        let rail = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        rail.add_css_class("kira-app-rail");
+        content.append(&rail);
+        let icon_shell = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        icon_shell.add_css_class("kira-app-icon-shell");
+        if let Some(icon) = app.info.icon() {
+            let image = gtk::Image::from_gicon(&icon);
+            image.set_pixel_size(24);
+            icon_shell.append(&image);
+        } else {
+            icon_shell.append(&label("K", "kira-app-icon-fallback"));
+        }
+        content.append(&icon_shell);
+        let description = gtk::Box::new(gtk::Orientation::Vertical, 3);
+        description.set_hexpand(true);
+        description.append(&label(&app.info.display_name(), "kira-app-name"));
+        let secondary = app
+            .info
+            .description()
+            .map(|value| value.to_string())
+            .unwrap_or_default();
+        let secondary = if secondary.trim().is_empty() {
+            "Installed application"
+        } else {
+            secondary.trim()
+        };
+        description.append(&label(secondary, "kira-app-detail"));
+        content.append(&description);
+        row.set_child(Some(&content));
+        list.append(&row);
+    }
+    let empty = label("No matching applications", "kira-empty");
+    empty.set_margin_top(16);
+    empty.set_margin_bottom(16);
+    list.set_placeholder(Some(&empty));
+    let scroll = gtk::ScrolledWindow::new();
+    scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+    scroll.set_min_content_height(200);
+    scroll.set_vexpand(true);
+    scroll.set_child(Some(&list));
+    workbench.append(&scroll);
+
+    let error = label("", "kira-launch-error");
+    error.set_visible(false);
+    card.append(&error);
+    let footer = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+    footer.add_css_class("kira-launcher-footer");
+    for (key, description) in [("↑ ↓", "Navigate"), ("ENTER", "Open"), ("ESC", "Close")] {
+        footer.append(&label(key, "kira-keycap"));
+        footer.append(&label(description, "kira-key-hint"));
+    }
+    card.append(&footer);
+
+    let filter = Rc::new(RefCell::new(String::new()));
+    let filtered_apps = apps.clone();
+    let query = filter.clone();
+    list.set_filter_func(move |row| {
+        app_index(row)
+            .and_then(|index| filtered_apps.get(index))
+            .is_some_and(|app| app.search.contains(query.borrow().as_str()))
+    });
+    count.set_text(&format!("{} APPS", apps.len()));
+    if let Some(row) = list.row_at_index(0) {
+        list.select_row(Some(&row));
+    }
+
+    let search_list = list.clone();
+    let search_apps = apps.clone();
+    entry.connect_search_changed(move |entry| {
+        *filter.borrow_mut() = entry.text().to_string().to_lowercase();
+        search_list.invalidate_filter();
+        let visible = visible_rows(&search_list, search_apps.len());
+        count.set_text(&format!("{} / {} APPS", visible.len(), search_apps.len()));
+        search_list.select_row(visible.first());
+    });
+    let activate_apps = apps.clone();
+    let activate_window = window.clone();
+    let activate_error = error.clone();
+    list.connect_row_activated(move |_, row| {
+        launch(&activate_apps, row, &activate_window, &activate_error);
+    });
+
+    let keys = gtk::EventControllerKey::new();
+    keys.set_propagation_phase(gtk::PropagationPhase::Capture);
+    let key_list = list.clone();
+    let key_apps = apps.clone();
+    let key_window = window.clone();
+    let key_error = error.clone();
+    keys.connect_key_pressed(move |_, key, _, _| match key {
+        gtk::gdk::Key::Escape => {
+            key_window.close();
+            gtk::glib::Propagation::Stop
+        }
+        gtk::gdk::Key::Down | gtk::gdk::Key::Up => {
+            let visible = visible_rows(&key_list, key_apps.len());
+            if !visible.is_empty() {
+                let current = key_list
+                    .selected_row()
+                    .and_then(|selected| visible.iter().position(|row| row == &selected));
+                let next = match (current, key) {
+                    (Some(index), gtk::gdk::Key::Down) => (index + 1).min(visible.len() - 1),
+                    (Some(index), _) => index.saturating_sub(1),
+                    (None, _) => 0,
+                };
+                key_list.select_row(visible.get(next));
+            }
+            gtk::glib::Propagation::Stop
+        }
+        gtk::gdk::Key::Return | gtk::gdk::Key::KP_Enter => {
+            if let Some(row) = key_list.selected_row() {
+                launch(&key_apps, &row, &key_window, &key_error);
+            }
+            gtk::glib::Propagation::Stop
+        }
+        _ => gtk::glib::Propagation::Proceed,
+    });
+    window.add_controller(keys);
+    window.present();
+    entry.grab_focus();
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn launcher_style_has_all_sections() {
+        let css = include_str!("launcher.css");
+        for selector in [
+            ".kira-launcher-card",
+            ".kira-app-row:selected",
+            ".kira-keycap",
+            ".kira-eyebrow",
+            ".kira-heading",
+            ".kira-app-icon-shell",
+        ] {
+            assert!(css.contains(selector), "missing {selector}");
+        }
+    }
+}
+
 FILE	crates/kira-shell/src/main.rs
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
+mod calendar;
+mod calendar_model;
+mod launcher;
+mod native_ui;
 mod ui_assets;
 use std::env;
 use std::path::{Path, PathBuf};
@@ -2891,7 +4166,7 @@ fn main() {
             .web_context(&context)
             .user_content_manager(&manager)
             .build();
-        view.set_background_color(&gtk::gdk::RGBA::new(0.09, 0.09, 0.12, 1.0));
+        view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
 
         // GTK and WebKit are not Send: socket IO runs on workers, UI updates
         // return to the GTK main loop through this channel.
@@ -2956,6 +4231,26 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraDiagnostics", None));
 
+        // A dedicated fixed-purpose message from the trusted, navigation-locked
+        // local UI. Never forward launcher requests to Core or execute JS text.
+        let launcher_application = app.clone();
+        manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
+            if value.to_string() == "open" {
+                launcher::show(&launcher_application);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraLauncher", None));
+
+        // Separate, fixed-purpose UI control. Never interpret arbitrary JS
+        // messages or expand the Core JSON-RPC method allowlist.
+        let calendar_application = app.clone();
+        manager.connect_script_message_received(Some("kiraCalendar"), move |_, value| {
+            if value.to_string() == "toggle" {
+                calendar::toggle(&calendar_application);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraCalendar", None));
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -2968,7 +4263,7 @@ fn main() {
                 let webview = webview.clone();
                 gtk::glib::timeout_add_local_once(Duration::from_millis(1500), move || {
                     webview.evaluate_javascript(
-                        "if (!document.querySelector('main.bar')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
+                        "if (!document.querySelector('main[data-kira-ui-root]')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
                         None,
                         None,
                         None::<&gtk::gio::Cancellable>,
@@ -3122,6 +4417,50 @@ mod tests {
         let result = process_message(r#"{"jsonrpc":"2.0","id":3,"method":"ping"}"#, None);
         assert_eq!(result.error.unwrap().code, -32000);
     }
+}
+
+FILE	crates/kira-shell/src/native-palette.css
+/* Native GTK canonical Kira Default colors. Single source for native overlays.
+ * Svelte's matching tokens are verified in tests/test_native_theme.py. */
+@define-color kira_black #000000ff;
+@define-color kira_prussian_blue #14213dff;
+@define-color kira_orange #fca311ff;
+@define-color kira_alabaster_grey #e5e5e5ff;
+@define-color kira_white #ffffffff;
+
+FILE	crates/kira-shell/src/native_ui.rs
+//! Shared native overlay plumbing. Layout, interaction and state remain local
+//! to each overlay: only identical infrastructure belongs here.
+use gtk::prelude::*;
+
+/// Keep palette declarations and component rules in one provider so GTK named
+/// colors resolve reliably, including in Nix's source-filtered package.
+pub fn install_styles(styles: &str) {
+    let provider = gtk::CssProvider::new();
+    let complete = format!("{}\n{}", include_str!("native-palette.css"), styles);
+    provider.load_from_data(&complete);
+    if let Some(display) = gtk::gdk::Display::default() {
+        gtk::style_context_add_provider_for_display(
+            &display,
+            &provider,
+            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+        );
+    }
+}
+
+pub fn find_overlay(application: &gtk::Application, title: &str) -> Option<gtk::Window> {
+    application
+        .windows()
+        .into_iter()
+        .find(|window| window.title().as_deref() == Some(title))
+}
+
+pub fn dismiss_overlay(application: &gtk::Application, title: &str) -> bool {
+    if let Some(window) = find_overlay(application, title) {
+        window.close();
+        return true;
+    }
+    false
 }
 
 FILE	crates/kira-shell/src/ui_assets.rs
@@ -3404,91 +4743,189 @@ evaluation or an extension/command system.
 FILE	docs/DESIGN_SYSTEM.md
 # Kira Desktop · Design System
 
-**Status:** first implementation of Kira Default for the Svelte top bar. This
-document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование);
-the other desktop surfaces are not implemented yet.
+**Status:** implemented visual system for the Svelte Top Bar, native GTK
+Launcher and custom Calendar. Visual acceptance is still open. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
+Dock, notifications and other desktop surfaces remain future milestones.
 
-## Visual direction
+## Kira official visual direction
 
-Kira is calm, deliberate and refined. Prefer proportion, legibility and quiet
-depth over trendy effects. A premium interface should feel cohesive even when
-reduced motion is enabled and visual effects are unavailable.
+**Neo-Brutalism + Editorial Design + Expressive Minimalism** is the
+official visual language of Kira Desktop.
 
-- Consistent 4 px spacing grid with 8 px as the preferred increment.
-- Compact, carefully aligned typography; a limited range of weights.
-- Soft corners (6–12 px), measured separators, restrained overlays.
-- State communicated with color **and** shape/position/text.
-- Micro-transitions around 150–200 ms, disabled with `prefers-reduced-motion`.
-- High-contrast text, visible keyboard focus and no fake interactive controls.
+- **Neo-Brutalism:** deliberate geometry, high-contrast states and visible
+  structure where it carries meaning. It does **not** mean borders and offset
+  shadows on every element.
+- **Editorial Design:** a strong type hierarchy (eyebrow, heading,
+  description, metadata), measured spacing and deliberate grouping.
+- **Expressive Minimalism:** one canonical accent, every element functional,
+  short quiet motion rather than decoration.
+- **KISS:** keep each UI feature and interaction easy to trace. Prefer a small
+  direct function over an abstract component framework; new layers must solve
+  a demonstrated problem.
+- **DRY:** define shared palettes and genuinely identical infrastructure once.
+  Keep distinct behaviors separate, even when they both use GTK buttons.
+
+### Visual rules
+
+1. Organize the Top Bar as three intentionally different **materials**:
+   Prussian Blue identity, Black workspace navigation, subdued Blue system.
+2. Keep the main orange fill on the current workspace; add only a narrow
+   orange baseline/mark to connect brand and active navigation.
+3. Build a compact typographic hierarchy: wordmark and workspace kicker/title.
+   The right edge is a **single vertically centered utility row**, not
+   stacked SYSTEM/LOCAL labels with inconsistent inner widget heights.
+4. Keep the full Top Bar at exactly 42 logical pixels; the navigation is
+   real Niri state and the text is sourced from the current KDL config.
+5. Divide the Launcher into a Black editorial intro and a Blue working area
+   for search and catalog; avoid filling the entire selected row with orange.
+6. A slim orange selection rail and orange item title identify the active
+   application; the catalog retains descriptive text and system icons.
+7. Preserve visible keyboard focus, urgent/offline states, reduced-motion,
+   and readable contrast. Decoration must not disguise function.
+
+### Implementation rules: KISS + DRY
+
+1. **Single native palette:** `native-palette.css` declares the five GTK
+   colors for Launcher and Calendar. `native_ui.rs` assembles it with each
+   overlay stylesheet, and `test_native_theme.py` verifies the values match
+   Svelte's canonical palette. Do not duplicate `@define-color` in widgets.
+2. **Small shared operations:** the common overlay helper only installs style
+   providers, finds windows and dismisses them. Keep Launcher search/launch
+   and Calendar date-picker state in their own modules.
+3. **No premature abstraction:** two similarly named elements are not
+   necessarily the same component. Extract code only when it has the same
+   semantics and at least two real callers.
+4. **Behavior before snapshots:** prefer unit tests of dates, state and real
+   interactions; supplement with visual Niri QA for layout and focus. Never
+   treat checking CSS class strings as proof that UI looks correct.
+5. **Preserve public contracts:** Niri's 42px exclusive zone, the bounded
+   WebKit bridge, KDL config and keyboard access are not negotiable during
+   style or internal structure refactors.
+
+### Component principles
+
+- **Top Bar:** a 42 px strip with three continuous horizontal zones:
+  Blue brand, Black workspaces and metadata, softer Blue system status/clock.
+  The right zone is a condensed single line: combined Core + Niri health,
+  subtle divider and local time, all sharing one optical vertical center.
+  Date and diagnostic details are available via native title tooltips.
+  The time is a semantic button that toggles a separate native calendar overlay;
+  the Top Bar remains 42 px tall.
+- **Calendar overlay:** top-right native GTK layer surface with no exclusive
+  zone. Black time hero, Prussian Blue month/day selector and Black detail
+  footer; the time updates live, a custom Monday-first 6×7 GTK Grid of
+  accessible buttons supports month/year navigation, adjacent-month dates,
+  ISO weeks and arrow/PageUp/PageDown/Home keyboard navigation. Selecting
+  a date exposes the correct ISO week-year and day of year.
+  Today and Copy Date are both flat orange typographic commands, without
+  background fills, framed chips or active-tab underlines. Copy Date keeps
+  hover/pressed text feedback and a keyboard-only focus outline, and writes
+  to the clipboard only on click.
+  Clicking time again or pressing Escape closes; focus loss also dismisses
+  after activation. The calendar and Launcher close each other when opened.
+- **Launcher:** Black editorial introduction and Prussian Blue workbench.
+  Search, catalog, stable application icons, and an orange selection rail
+  communicate function without painting the entire row orange.
+- **Workspace controls:** orange filled selection only; hover/active/urgent
+  and visible keyboard focus remain distinct. Niri events are authoritative.
+- **System health:** combine existing Core RPC and Niri EventStream status:
+  READY only when both connected, otherwise STARTING/WAITING/CORE OFF/
+  NIRI OFF. A round/hollow/square dot reinforces the textual state;
+  hover shows Core version and Niri IPC connection. No new telemetry or polling.
+
+### Geometry and motion
+
+Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
+controls, and **one deliberate surface contrast per functional region**.
+An orange line can anchor a section, but offset shadows and nested borders
+are not a shortcut to depth. Use 120–180 ms transitions without positional
+jumps. Keep interaction functional without motion. Niri's reserved 42 px
+height is unchanged, including the bottom accent rule.
 
 ## Kira Default · canonical palette
 
-The project owner's five-color **Black / Night Bordeaux / White Smoke /
-Dusty Taupe / Stone Brown** palette is now the default. No other base
-HEX colors are permitted in Kira Default.
+The default dark theme uses exactly five fully opaque RGBA hex colors,
+provided by the project owner. No additional base colors are permitted.
 
-| Name | HEX | Intended role |
-| --- | --- | --- |
-| Black | `#0a0908` | App background and text on selected workspaces |
-| Night Bordeaux | `#49111c` | Elevated surfaces and subdued wine-toned materials |
-| White Smoke | `#f2f4f3` | Main text on black and Bordeaux |
-| Dusty Taupe | `#a9927d` | Readable secondary text, active states and focus accent |
-| Stone Brown | `#5e503f` | Structural border detail, not small text |
+| Name | CSS variable | RGBA HEX | Intended role |
+| --- | --- | --- | --- |
+| Black | `--black` | `#000000ff` | Background, text on Orange |
+| Prussian Blue | `--prussian-blue` | `#14213dff` | Surfaces, structural depth |
+| Orange | `--orange` | `#fca311ff` | Selection, focus, interactive accent |
+| Alabaster Grey | `--alabaster-grey` | `#e5e5e5ff` | Secondary text and borders |
+| White | `--white` | `#ffffffff` | Primary text on dark surfaces |
 
-The source of truth is
-[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts);
-the loaded CSS lives in
+The canonical values are declared in
+[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts).
+The frontend exposes them through
 [`kira-default.css`](../frontend/src/lib/themes/kira-default.css).
-Contract tests verify that the exact five literal colors and their
-semantic aliases remain synchronized.
+Native GTK declares the same five colors **once** in
+[`native-palette.css`](../crates/kira-shell/src/native-palette.css),
+assembled with each overlay stylesheet by
+[`native_ui.rs`](../crates/kira-shell/src/native_ui.rs).
+Contract tests verify the values match; each overlay owns only its
+component selectors, not a second color palette.
 
 ## Public CSS contract
 
-| Semantic variable | Canonical HEX or alias | Intended usage |
+| Semantic variable | Canonical alias | Intended usage |
 | --- | --- | --- |
-| `--kira-color-background` | `#0a0908` | Main background |
-| `--kira-color-surface` | `#49111c` | Elevated Bordeaux surface |
-| `--kira-color-muted` | `#a9927d` | Readable secondary text |
-| `--kira-color-accent` | `var(--kira-color-muted)` | Selection and keyboard focus |
-| `--kira-color-text` | `#f2f4f3` | Main readable foreground |
-| `--kira-color-earth` | `#5e503f` | Brown structural detailing |
+| `--kira-color-background` | `var(--black)` | Background |
+| `--kira-color-surface` | `var(--prussian-blue)` | Elevated surfaces |
+| `--kira-color-muted` | `var(--alabaster-grey)` | Secondary text |
+| `--kira-color-accent` | `var(--orange)` | Selection and keyboard focus |
+| `--kira-color-text` | `var(--white)` | Primary text |
+| `--kira-color-earth` | `var(--prussian-blue)` | Legacy structural alias |
+| `--kira-color-on-accent` | `var(--black)` | Legible text on Orange |
 
 Derived tokens: `--kira-color-on-accent`,
 `--kira-color-text-secondary`, `--kira-color-surface-subtle`
 and `--kira-color-border` blend or alias these five colors.
 Layout and motion tokens begin with `--kira-space-`,
-`--kira-radius-` and `--kira-motion-`.
+`--kira-radius-` and `--kira-motion-`. Legacy structural tokens
+remain for compatibility but are **not** instructions to draw borders
+or hard shadows on every component.
+
+## Tailwind CSS v4 frontend contract
+
+`frontend/src/style.css` imports `tailwindcss` and the canonical color
+tokens, and maps semantic colors with CSS-first `@theme inline`.
+`frontend/vite.config.ts` uses `@tailwindcss/vite`. Keep utility classes
+**literal** in Svelte templates: Tailwind's scanner cannot infer runtime
+class-name concatenation. Conditionals must contain complete class strings.
 
 Example for a future Svelte widget:
 
 ```svelte
-<div class="widget">Widget content</div>
-
-<style>
-  .widget {
-    padding: var(--kira-space-3);
-    border-radius: var(--kira-radius-md);
-    background: var(--kira-color-surface);
-    color: var(--kira-color-text);
-  }
-</style>
+<div class="rounded-md bg-kira-surface p-3 text-kira-text">
+  Widget content
+</div>
 ```
 
-**Never hardcode colors in component styles.** Themes must be changed at
-the semantic token layer. User-overridable themes via KDL are still a
-future increment; the current KDL configuration only adjusts bar behavior.
+Use `bg-kira-accent text-kira-on-accent` for an active control, and explicit
+`focus-visible:outline-2 focus-visible:outline-kira-accent` for keyboard
+focus. Keep responsive and reduced-motion variants close to their markup.
+Use `frontend/src/style.css` only for global browser constraints and
+theme mapping, not for another manual component stylesheet.
+
+**Never hardcode colors in Svelte utility class values.** Theme changes
+belong to semantic tokens, not each component. GTK is a separate
+native CSS surface sharing the same five-color palette. User-overridable
+themes via KDL remain a future feature; current KDL config adjusts bar
+behavior only.
 
 ## Color contrast and accessibility
 
-Representative WCAG relative contrast ratios:
+Representative WCAG relative contrast ratios (each canonical alpha is `ff`):
 
-- White Smoke on Black: **18.01:1**.
-- White Smoke on Night Bordeaux: **13.77:1**.
-- Dusty Taupe on Black: **6.72:1**.
-- Dusty Taupe on Night Bordeaux: **5.14:1**.
-- Black on Dusty Taupe: **6.72:1**, suitable for selected chip text.
-- **Do not use Stone Brown as small text on Black:** only **2.55:1**.
-  It is used for structural borders and mixed with Taupe for visibility.
+- White on Black: **21.00:1**.
+- White on Prussian Blue: **15.97:1**.
+- Alabaster Grey on Black: **16.67:1**.
+- Alabaster Grey on Prussian Blue: **12.68:1**.
+- Orange on Black: **10.39:1**.
+- Orange on Prussian Blue: **7.90:1**.
+- Black on Orange: **10.39:1**, used on selected chips.
+- **White on Orange is 2.02:1**: use Black for text on Orange.
 
 Regular-size text requires at least 4.5:1, and meaningful non-text indicators
 at least 3:1 as applicable under WCAG. Do not indicate focus by color alone:
@@ -3497,17 +4934,34 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
 
 ## Current component implementation
 
-- `frontend/src/App.svelte`: premium 42 px top bar, balanced left/center/right
-  regions, brand and local clock.
+- `frontend/src/App.svelte`: identity / workspace / system architecture.
+  The configurable title is a compact second-line workspace descriptor;
+  compact and narrow screens collapse secondary labels.
 - `frontend/src/lib/components/WorkspacePreview.svelte`: real Niri workspaces
   with accessible clickable buttons, live focus/active/urgent state, and
   stable workspace IDs for the intentional `FocusWorkspace` action.
-- `frontend/src/lib/components/CoreStatus.svelte`: status badge with
-  text and a dot, tied to the existing real Core bridge; an accessible
-  `role="status"` communicates transitions.
-- `frontend/src/style.css`: responsive layout and focus styling. The UI
-  stays 42 px tall to match the native layer-shell reservation.
+- `frontend/src/lib/components/SystemHealth.svelte` and
+  `frontend/src/lib/system-health.ts`: a compact, centered readiness indicator
+  derived from real Core and Niri states. Accessible `role="status"`
+  announces changes; unavailable details remain visible instead of an
+  unexplained indicator.
+- `frontend/src/style.css`: Tailwind v4 import, semantic `@theme inline`
+  aliases and minimal global styles. Responsive composition and focus rules
+  live in Svelte utility classes; the native 42 px reservation is unchanged.
 - `frontend/index.html`: uses matching fallback colors before Svelte mounts.
+- `crates/kira-shell/src/calendar.rs` and `calendar.css`: native time/date
+  overlay, live timezone-aware clock and fully custom date-picker Grid (no GtkCalendar). The dedicated
+  WebKit `kiraCalendar` bridge accepts exactly the literal `toggle`;
+  it never forwards commands to Core.
+- `crates/kira-shell/src/launcher.rs` and `launcher.css`: GTK layer-shell
+  editorial introduction, Blue workbench, Gio application catalog, orange
+  rail selection, pointer/keyboard activation and canonical five-color theme.
+
+The KIRA button uses the dedicated `kiraLauncher` WebKit handler, which accepts
+only the literal `open` message. Actual process launch uses registered Gio
+`AppInfo` desktop entries, not interpolated shell commands. The Launcher is
+non-persistent and has no exclusive zone. Esc closes it; Up/Down select and
+Enter launches the selected application.
 
 ## Verification
 
@@ -3518,13 +4972,16 @@ nix develop --command task dev:preview
 ```
 
 Run a manual visual review in nested Niri at common display scales and
-sizes. The automated tests verify palette constants, color contrast,
-required token names and reduced-motion support. They do **not** replace
-a screenshot or interactive accessibility test of the WebKit surface.
+sizes. Track remaining confirmed and suspected visual issues in
+[VISUAL_REVIEW.md](VISUAL_REVIEW.md). The automated tests verify palette, contrast, semantic Tailwind v4 tokens,
+structural zones, the native row selection rail, and accessible state
+controls. The production Vite build compiles utilities into one inlined
+WebKit CSS asset. Automated tests do **not** replace screenshot or
+interactive GTK/WebKit review. Native compilation is checked by the Nix
+workflow.
 
-Next design-system milestones: shared interactive primitives, complete
-keyboard accessibility, configurable KDL theme overrides, Launcher, Dock,
-notifications, and their consistent states.
+Next design-system milestones: shared interactive primitives, configurable KDL
+theme overrides, Dock, notifications and their consistent states.
 
 FILE	docs/DEVELOPMENT.md
 # Developing Kira Desktop
@@ -3537,11 +4994,51 @@ The GitHub Actions workflows are split into fast, non-graphical checks (`.github
 
 ## Kira Default visual design
 
-The premium visual baseline is implemented using semantic CSS tokens in
-`frontend/src/lib/themes/kira-default.css` and typed color metadata in
-`frontend/src/lib/themes/kira-default.ts`. `WorkspacePreview.svelte` and
-`CoreStatus.svelte` demonstrate theme-aware components without hardcoded HEX
-values. The workspace widget now receives Niri events and supports explicit mouse clicks to focus a known workspace.
+The Svelte 5 Top Bar uses **Tailwind CSS v4** through `@tailwindcss/vite`.
+`frontend/src/style.css` imports Tailwind and exposes semantic utility colors
+via `@theme inline`: `bg-kira-bg`, `bg-kira-surface`,
+`bg-kira-surface-soft`, `text-kira-muted`, `text-kira-text`,
+`bg-kira-accent`, and `text-kira-on-accent`. No JavaScript Tailwind
+configuration file, shadcn dependency, PostCSS plugin or runtime CSS engine
+is needed.
+
+The five canonical colors remain defined in
+`frontend/src/lib/themes/kira-default.css` and typed in
+`frontend/src/lib/themes/kira-default.ts`. Svelte components
+(`App.svelte`, `WorkspacePreview.svelte`, `SystemHealth.svelte`) use
+utility classes directly; their visual styling is no longer duplicated in
+component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
+focus, Core state and live KDL config updates remain behavioral concerns,
+not CSS assumptions.
+
+The narrow Svelte host bridge exposes only `openLauncher()` and
+`toggleCalendar()` for native overlays. Both share the same private,
+non-throwing message helper, while Rust checks the literal `open` and
+`toggle` payloads independently. If the native handler is missing or
+fails, the UI reports the overlay offline instead of throwing.
+
+The native **GTK4 Launcher and Calendar** cannot use Tailwind; their
+`crates/kira-shell/src/launcher.css` and `calendar.css` retain
+matching GTK themes. The calendar is an independent, non-exclusive layer
+surface toggled through the narrow `kiraCalendar` WebKit channel, so
+opening it never changes the 42px Niri reservation.
+The WebKit host continues to embed a single production CSS file, including
+Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
+
+GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
+not separately in the two overlay stylesheets. Shared native CSS installation
+and overlay lookup/dismiss helpers live in
+`crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
+interaction logic stays in `launcher.rs` or `calendar.rs`, following KISS
+and DRY without introducing a generic overlay framework. When changing any
+native CSS asset, verify it remains included by `nix/package.nix`.
+
+When adding npm dependencies, commit the updated
+`frontend/package-lock.json` and update `npmDepsHash` in
+`nix/package.nix`; otherwise `npm ci` or the Nix frontend package fails.
+`nix build .#frontend` isolates the frontend package so the npm lock/hash
+can be validated before the expensive native GTK/Rust build. The Nix
+integration CI runs this check first.
 
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibility,
 spacing, contrast and future widget conventions. The small HTML fallback in
@@ -3924,6 +5421,15 @@ The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Updat
 
 Do not claim implementation or isolation of untrusted plugins until the code and tests exist.
 
+
+The custom calendar date grid lives in
+`crates/kira-shell/src/calendar.rs` (GTK4 layout and buttons) and
+`calendar_model.rs` (pure Gregorian date arithmetic). The latter is tested
+with `rustc --test` as part of the fast cross-platform `task test`, so
+leap years, Monday-first weeks and ISO week-year transitions are verified
+without needing GTK libraries. A separate `nix develop --command
+cargo check --locked -p kira-shell` checks the native GTK bindings.
+
 FILE	docs/QA_VISUAL.md
 # Этап 0: Visual QA и проверка Nix-пакета
 
@@ -3999,14 +5505,42 @@ SHA-256, `captured_review_pending`). Скриншоты **не выгружаю�
 
 - Top Bar на верхнем крае, высота 42 логических пикселя, нет обрезанных
   областей, пустых полос и смещений.
-- KIRA, workspaces preview, центр, `CORE Online`, часы отображаются
-  без наложений.
+- Верхняя панель занимает ровно 42 px: слева синяя зона KIRA с оранжевой
+  меткой, в центре чёрная рабочая область, справа более спокойная системная
+  область. Нижняя цветная линия не добавляет высоты.
+- Выбранное рабочее пространство выделено оранжевым блоком, а остальные
+  состояния различимы; нет отдельных тяжёлых рамок или теней у кнопок.
+- Справа один вертикально центрированный ряд: READY/STARTING/CORE OFF/
+  NIRI OFF, тонкий разделитель и часы. Отдельных заголовков SYSTEM/LOCAL
+  больше нет, статус Core не проваливается вниз относительно часов.
+- READY показывается только когда Core и Niri подключены; при отсутствии
+  Core/Niri виден конкретный текст ошибки. Подсказка статуса содержит версию
+  Core и состояние Niri, а подсказка часов — полную дату.
+- При ширине до 540 px здоровая подпись READY скрывается, точка и часы
+  остаются, но сообщения об ошибках не скрываются.
+- В таб-навигации видно фокус как на выбранном workspace, так и на обычном;
+  active/urgent и отключённый Core остаются различимыми.
 - На дробных масштабах нет заметного размытия или дробных щелей.
 - Цвета соответствуют Kira Default, фокус и выбранное пространство
   различимы не только цветом.
 - Дополнительно **вручную** открыть `task dev:preview` и проверить
   узкие и широкие размеры окна (ориентиры 800/1024/1280 пикселей).
   Скриншоты разных scale **не равны** проверке разных ширин.
+- Открыть Launcher через кнопку KIRA: проверить чёрный редакционный
+  заголовок, синюю рабочую зону, тёмное поле поиска, иконки, боковую
+  оранжевую метку выделения, подсказки клавиш, Esc/↑/↓/Enter и ошибку
+  запуска. Оранжевый не должен заливать всю строку. Проверить также,
+  что окно не резервирует дополнительное место на экране.
+- Нажать на часы: проверить отдельное окно под правым краем Top Bar
+  без дополнительной резервации экранного пространства, с текущим временем,
+  датой и локальным часовым поясом. Часы внутри обновляются каждую секунду.
+- Проверить собственную сетку (не GtkCalendar): 6 строк, 7 дней от
+  понедельника, ISO-недели, выбор соседнего месяца, навигацию месяц/год,
+  клавиши стрелок, PageUp/PageDown, Ctrl+PageUp/Down и Home. Проверить
+  февраль 2024/2025, стык декабря/января, ISO-неделю и номер дня года. TODAY возвращает сегодня; COPY DATE отображается простым оранжевым текстом без фона, рамки или нижней линии, как текстовая команда TODAY; клавиатурный фокус видим. COPY DATE копирует
+  именно выбранную дату и меняет подпись на COPIED. Проверить Escape,
+  повторный клик по часам, закрытие при потере фокуса, взаимодействие с
+  Launcher, Tab/focus и узкий монитор.
 - После завершения убедиться, что основные приложения Niri не были
   затронуты и остались запущены.
 
@@ -4146,7 +5680,7 @@ kira-desktop/
 
 ```kdl
 theme "dark" {
-    accent "#a9927d"
+    accent "#fca311ff"
     radius 12
 }
 
@@ -4345,31 +5879,35 @@ Frontend должен предоставлять npm scripts `check`, `test:ci`,
 - **Согласованность.** Top Bar, Dock, Launcher, уведомления, меню,
   настройки и виджеты образуют одну дизайн-систему со всеми состояниями:
   default, hover, focus, active, disabled, loading, error.
+- **KISS.** Минимум необходимой сложности: понятные функции, явные состояния,
+  отсутствие дополнительных уровней абстракции ради самих абстракций.
+- **DRY.** Общие дизайн-токены и одинаковая инфраструктура живут в одном
+  месте; различающуюся логику компонентов не объединять искусственно.
 - **Практичность.** Премиальный вид не может ухудшать отзывчивость,
   доступность, контрастность или клавиатурное управление.
 
 ### 15.2. Каноническая палитра Kira Default
 
 По умолчанию используется **тёмная тема Kira Default** из **ровно пяти**
-базовых цветов, заданных владельцем проекта:
+базовых цветов с непрозрачным альфа-каналом `ff`, заданных владельцем проекта:
 
-| Имя | HEX | RGB | Назначение |
+| Имя | HEX RGBA | RGB | Назначение |
 | --- | --- | --- | --- |
-| **Black** | `#0a0908` | `rgb(10, 9, 8)` | Главный фон и текст на акцентных элементах |
-| **Night Bordeaux** | `#49111c` | `rgb(73, 17, 28)` | Приподнятые поверхности |
-| **White Smoke** | `#f2f4f3` | `rgb(242, 244, 243)` | Основной текст |
-| **Dusty Taupe** | `#a9927d` | `rgb(169, 146, 125)` | Читаемый вторичный текст, выделение и фокус |
-| **Stone Brown** | `#5e503f` | `rgb(94, 80, 63)` | Конструктивные детали и границы |
+| **Black** | `#000000ff` | `rgb(0, 0, 0)` | Главный фон и текст на оранжевых элементах |
+| **Prussian Blue** | `#14213dff` | `rgb(20, 33, 61)` | Поверхности, структура |
+| **Orange** | `#fca311ff` | `rgb(252, 163, 17)` | Выделение, активные элементы, фокус |
+| **Alabaster Grey** | `#e5e5e5ff` | `rgb(229, 229, 229)` | Вторичный текст и границы |
+| **White** | `#ffffffff` | `rgb(255, 255, 255)` | Основной текст на тёмном фоне |
 
 Каноническая машинно-читаемая запись:
 
 ```json
 {
-  "Black": "#0a0908",
-  "Night Bordeaux": "#49111c",
-  "White Smoke": "#f2f4f3",
-  "Dusty Taupe": "#a9927d",
-  "Stone Brown": "#5e503f"
+  "Black": "#000000ff",
+  "Prussian Blue": "#14213dff",
+  "Orange": "#fca311ff",
+  "Alabaster Grey": "#e5e5e5ff",
+  "White": "#ffffffff"
 }
 ```
 
@@ -4380,21 +5918,22 @@ CSV, массивы, XML и другие формы являются предс�
 
 ### 15.3. Семантические токены
 
-Все компоненты обязаны использовать семантические CSS-переменные:
+Все компоненты обязаны использовать семантические CSS-переменные.
+В дополнение к исходным `--black`, `--prussian-blue`, `--orange`,
+`--alabaster-grey` и `--white` определены роли:
 
 | CSS-токен | Значение в Kira Default | Роль |
 | --- | --- | --- |
-| `--kira-color-background` | `#0a0908` | Фон |
-| `--kira-color-surface` | `#49111c` | Поверхности |
-| `--kira-color-muted` | `#a9927d` | Вторичный текст |
-| `--kira-color-accent` | `var(--kira-color-muted)` | Выделение и фокус |
-| `--kira-color-text` | `#f2f4f3` | Основной текст |
-| `--kira-color-earth` | `#5e503f` | Основа для границ |
+| `--kira-color-background` | `var(--black)` | Фон |
+| `--kira-color-surface` | `var(--prussian-blue)` | Поверхности |
+| `--kira-color-muted` | `var(--alabaster-grey)` | Вторичный текст |
+| `--kira-color-accent` | `var(--orange)` | Выделение и фокус |
+| `--kira-color-text` | `var(--white)` | Основной текст |
+| `--kira-color-on-accent` | `var(--black)` | Контрастный текст на Orange |
+| `--kira-color-earth` | `var(--prussian-blue)` | Совместимый псевдоним |
 
-Stone Brown намеренно не используется как мелкий текст на Black: контраст
-недостаточен. Dusty Taupe используется в двух ролях (muted и accent), чтобы
-обеспечить доступность без придумывания шестого базового цвета.
 Для hover, border, disabled и overlay допустимы производные оттенки.
+GTK Launcher использует ту же палитру через именованные цвета CSS.
 
 ### 15.4. Контрастность и доступность
 
@@ -4402,14 +5941,16 @@ Stone Brown намеренно не используется как мелкий
 
 | Текст / фон | Контраст | Применение |
 | --- | --- | --- |
-| White Smoke / Black | **18.01:1** | Основной текст |
-| White Smoke / Night Bordeaux | **13.77:1** | Текст на поверхностях |
-| Dusty Taupe / Black | **6.72:1** | Вторичный текст и акцент |
-| Dusty Taupe / Night Bordeaux | **5.14:1** | Акцент на бордовой поверхности |
-| Black / Dusty Taupe | **6.72:1** | Текст на активном workspace |
+| White / Black | **21.00:1** | Основной текст |
+| White / Prussian Blue | **15.97:1** | Основной текст на поверхности |
+| Alabaster Grey / Black | **16.67:1** | Вторичный текст |
+| Alabaster Grey / Prussian Blue | **12.68:1** | Вторичный текст на поверхности |
+| Orange / Black | **10.39:1** | Акцент на фоне |
+| Orange / Prussian Blue | **7.90:1** | Акцент на поверхности |
+| Black / Orange | **10.39:1** | Текст на активном workspace |
 
-**Stone Brown / Black** имеет контраст всего **2.55:1**: этот цвет
-допустим для декоративных границ, но не для обычного мелкого текста.
+**White / Orange** имеет контраст всего **2.02:1**; на оранжевых
+элементах используется чёрный текст, не белый.
 
 Критерии приёмки:
 
@@ -4423,14 +5964,101 @@ Stone Brown намеренно не используется как мелкий
   Niri при различных размерах и масштабах дисплея. Успешный CI сам
   по себе не подтверждает премиальный визуальный результат.
 
-**Статус реализации:** базовые CSS-токены `Kira Default`, переиспользуемые
-компоненты Workspaces Preview и Core Status, а также визуальная тема Top Bar
-реализованы. Это **первый этап** дизайн-системы, не подтверждение готовности
-всех поверхностей и виджетов. Клавиатурные сценарии будущих интерактивных
-компонентов, пользовательские темы, Launcher, Dock и уведомления ещё предстоит
-реализовать и визуально проверить.
+**Статус реализации:** фирменные токены Kira Default, Top Bar на Svelte 5 +
+Tailwind CSS v4, нативные GTK Launcher и собственный Calendar Picker
+реализованы. Внедрена базовая клавиатурная навигация. Это **не означает
+завершённой визуальной приёмки**: проверка размеров, масштабов,
+локализации и всех интерактивных состояний остаётся открытой. Dock,
+уведомления, настройки и пользовательские темы относятся к будущим этапам.
+Текущие замечания и приоритеты ревью: [VISUAL_REVIEW.md](VISUAL_REVIEW.md).
 
 Практические правила и API токенов: [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md).
+
+FILE	docs/VISUAL_REVIEW.md
+# Kira Desktop — visual design review
+
+**Reviewed:** 2026-11-01  
+**Branch:** `feat/neo-editorial-shell` · PR #18  
+**Reference:** [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md), [SPECIFICATION.md §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование), and user-provided nested-Niri screenshots.
+
+## Scope and verdict
+
+Reviewed the **currently implemented** Svelte Top Bar, GTK Launcher,
+custom GTK Calendar, canonical color tokens, typography, hover/focus/selected/
+disabled/error states, popup geometry, and visual QA. Dock, notifications,
+settings surfaces, and configurable themes **do not yet exist** and therefore
+cannot be signed off.
+
+**Design direction: GOOD. Visual acceptance: CONDITIONAL.** The Black /
+Prussian Blue / Orange / Alabaster Grey / White palette is preserved. The
+Top Bar uses three functional color zones and a compact system group; Launcher
+and Calendar use Black editorial headings, Blue working regions and restrained
+local Orange states. Double-bordered cards and offset widget shadows are
+absent from the implemented UI. The most recent user screenshots show
+substantially improved compositional coherence.
+
+This audit is based on repository source and screenshots already supplied
+in the conversation. **No new pixel-by-pixel rendering or visual run in Niri
+was performed by the reviewer.** Build, type-check and source-string tests
+cannot substitute for actual display-scale and interaction acceptance.
+
+## Verified deviations fixed as part of this review
+
+| Priority | Issue and evidence | Correction |
+| --- | --- | --- |
+| P1 | [Calendar day selection](../crates/kira-shell/src/calendar.css): selected day is Orange, but the generic focus outline is also Orange. Contrast of the focus edge against its selected fill is **1:1**. | Add an inset **Black** outline specifically for `.kira-day-selected:focus-visible`. Contrast Black/Orange is approximately **10.39:1**. |
+| P1 | [Calendar adjacent-month days](../crates/kira-shell/src/calendar.css) used `rgba(229,229,229,0.5)` over Prussian Blue, approximately **4.20:1**, despite being interactive 12px text. Specification requires normal text >= 4.5:1. | Increase opacity to **0.60** (approximately **5.44:1**); add a numeric contrast regression test. |
+| P1 | [Workspace focus](../frontend/src/lib/components/WorkspacePreview.svelte) used a White outline for a selected Orange chip: White/Orange is only **2.02:1**, and the positive offset places focus against dark surrounding material. | Change selected-state focus to an **inset Black** outline on Orange. Ordinary workspace focus remains Orange. |
+
+The fixes above are source-backed changes, not claimed visually verified
+until a screenshot/keyboard test is performed in Niri.
+
+## Outstanding findings
+
+| Priority | Surface | Finding | Required acceptance |
+| --- | --- | --- | --- |
+| **P1** | Calendar, Launcher | [Calendar](../crates/kira-shell/src/calendar.rs) uses a fixed **378×490** default size, Top margin **50**, Right **12**. [Launcher](../crates/kira-shell/src/launcher.rs) uses **600×520**, Top margin **58**. No monitor-aware clamping or adaptive layout is visible. **Potential** clipping on narrow/short outputs or large text; not proven in the provided screenshots. | Test logical displays **360×640, 600×480, 800×600**, window scaling 100/125/150/200%; add bounds-aware position and scroll/collapse if failure reproduced. Ensure that close/Today/Copy remain reachable. |
+| **P1** | Visual QA | [qa_visual.py](../scripts/qa_visual.py) optionally captures nested Niri at four scales but does **not** open Launcher/Calendar, exercise interaction states, or judge screenshots automatically. Existing static CSS tests verify selector presence, not pixels. | Expand explicit opt-in screenshot matrix to include both open overlays, selected and focused controls, and warning states; review images manually and save acceptance notes. No automatic false-green “visual pass”. |
+| **P2** | Top Bar | [App.svelte](../frontend/src/App.svelte) uses a **42px** `overflow-hidden` root and several `shrink-0` warnings/right-hand controls. With many workspace names and error messages, a narrow viewport may clip useful content. Current tests look for class strings rather than overflow outcomes. | Test 360, 540, 800, 1024 and 1280 logical widths with **1/8/32 workspaces**, long localized names, seconds enabled and Core/Niri/calendar error labels. Preserve clock and keyboard access; degrade secondary metadata first. |
+| **P2** | Typography | Top Bar overline is **8px**; secondary labels in GTK calendar/Launcher are often **10px**, date help **10px**, descriptions **11px**. Size alone is not a WCAG violation, but can undermine the promised readable “premium” hierarchy. | Review readability at 100/125/150/200% and varying font settings; target at least **10–11px for functional metadata** where layout allows. Large editorial headings can remain distinctive. |
+| **P2** | Typographic identity | The Svelte theme declares an Inter/Segoe/Noto stack while both native GTK styles rely on the environment's GTK font. Cyrillic date labels are locale-rendered, but controls read `TODAY`, `COPY DATE`, `APPLICATION CATALOG`, etc. This may feel inconsistent when moving between three surfaces. | Specify a shared **typographic hierarchy** and Cyrillic-capable fallback on GTK; decide whether interface copy is intentionally English or localized. Verify month-name widths and fallback glyphs. |
+| **P2** | Calendar controls | [Calendar CSS](../crates/kira-shell/src/calendar.css) includes the proper keyboard-focus selectors, but `Today`, `Copy Date`, arrow groups, selected and current days still require real pointer+keyboard state review. An HTML `aria-haspopup="dialog"` exists on the clock, but no `aria-expanded` state is tracked across the separate GTK window. | Tab/Shift+Tab, Enter, arrow navigation, ESC, PageUp/Down, Home, copying, and opening/closing by pointer and keyboard; ensure consistently visible focus and expected accessible state across process boundaries. |
+| **P3** | Token/code hygiene | [kira-default.css](../frontend/src/lib/themes/kira-default.css) retains unused `--kira-border-strong`, `--kira-shadow-brutal` and `--kira-shadow-panel`. These legacy concepts contradict the restrained, near-borderless current style if reused indiscriminately. Canonical color values are also repeated in GTK CSS. | Deprecate/remove dead tokens after downstream search; keep cross-surface canonical palette and style tests, not manual divergence. |
+| **P3** | Documentation | Specification §15 previously called Launcher and Calendar future work; the implementation now contains both. | Update status accurately (done in this audit); maintain explicit *implemented vs visually accepted* distinction. |
+
+## Design-system conformity matrix
+
+| Principle | Finding | Evidence / limits |
+| --- | --- | --- |
+| Five canonical colors | **Pass** | Typed palette + Svelte token aliases + named GTK color declarations match five agreed values. Derived rgba and color-mixes are allowed. |
+| Neo-Brutalist geometry | **Pass** | Single strong selected workspace, orange active rail in Launcher, own date picker with restrained states. No return of stacked borders and hard offset widget shadows. |
+| Editorial hierarchy | **Pass with caveats** | Clear hero/working/footer zones and strong scale contrast. Microcopy sizes and cross-framework font parity still need verification. |
+| Expressive minimalism | **Pass** | Few accent fills, informationally useful surfaces, flat Today/Copy text actions. |
+| Keyboard and contrast | **Fixed deviations, pending acceptance** | Focus and adjacent-day contrast fixes in code. Actual GTK keyboard-focus visuals still unconfirmed. |
+| Responsive geometry | **Unverified / at risk** | Responsive Top Bar classes exist; GTK windows have fixed default dimensions. |
+| Visual regression evidence | **Not accepted** | CI is valuable for compilation and behavior, but no reviewed screenshots for the current branch at all required sizes/states. |
+
+## Recommended next acceptance pass
+
+1. **Block on accessibility:** build and inspect the new inset Black focus ring on both Calendar's selected Orange day and focused Orange workspace; confirm adjacent-month days are readable.
+2. **Block on clipping:** check 360×640, 600×480, 800×600 and 1024×768 logical sizes, then 100/125/150/200% scales. Popovers must stay visible and be dismissible.
+3. **Verify status/error variants:** Niri disconnected, Core disconnected/connecting, long workspace names, multiple workspaces, clock seconds and local date.
+4. **Verify native controls:** Launcher search/row selection/scroll/Enter/Esc; Calendar Today/Copy/month-year navigation/adjacent months, tooltips and Tab focus.
+5. **Only then approve visual identity** and update [QA_VISUAL.md](QA_VISUAL.md) with actual inspected screenshots and results. Do not merge a “visual-ready” claim based only on CI.
+
+**Verdict:** architecture and brand language meet the intent; the remaining
+scope is measured polish and verified responsive/accessibility behavior, not
+another aesthetic redesign.
+
+## KISS / DRY follow-up: native overlay infrastructure
+
+The Launcher and Calendar previously each declared all five identical
+`@define-color` values and repeated GTK CSS-provider installation and window
+lookup/dismiss logic. Shared canonical GTK declarations now live in
+`native-palette.css` and the small `native_ui.rs` helper. This deliberately
+**does not** unify their layouts or behavior: these surfaces have different
+interaction models. Nix explicitly retains the new stylesheet, and one
+cross-surface test checks canonical palette alignment and assembly.
 
 FILE	flake.nix
 {
@@ -4486,7 +6114,15 @@ FILE	flake.nix
 
       packages = forAllSystems (pkgs:
         if hasApplicationSources
-        then { default = pkgs.callPackage ./nix/package.nix { craneLib = crane.mkLib pkgs; }; }
+        then
+          let
+            app = pkgs.callPackage ./nix/package.nix { craneLib = crane.mkLib pkgs; };
+          in {
+            default = app;
+            # Fast isolated UI build, useful for validating npmDepsHash without
+            # compiling GTK/WebKit Rust dependencies.
+            frontend = app.frontend;
+          }
         else { }
       );
 
@@ -4508,7 +6144,7 @@ FILE	frontend/index.html
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a0908" />
+    <meta name="theme-color" content="#000000ff" />
     <title>Kira Desktop</title>
     <script>
       // Head runs before the compiled Svelte bundle. Track boot milestones
@@ -4551,7 +6187,9 @@ FILE	frontend/index.html
               entryStarted: window.__kiraEntryStarted === true,
               mountReturned: window.__kiraMountReturned === true,
             });
-            pending.textContent = 'Kira UI did not start (' + stage + '). Check terminal logs.';
+            pending.textContent = window.__kiraBoot.bootstrapError
+              ? 'Kira UI error: ' + String(window.__kiraBoot.bootstrapError).slice(0,220)
+              : 'Kira UI did not start (' + stage + '). Check terminal logs.';
             report('Svelte not mounted: ' + stage);
           }
         }, 2500);
@@ -4560,7 +6198,7 @@ FILE	frontend/index.html
   </head>
   <body>
     <div id="app">
-      <div id="kira-loading" style="height:42px; display:flex; align-items:center; padding:0 14px; font:12px system-ui; background:#0a0908; color:#f2f4f3;">
+      <div id="kira-loading" style="height:42px; display:flex; align-items:center; padding:0 14px; font:12px system-ui; background:#000000ff; color:#ffffffff;">
         Kira Desktop · Loading interface…
       </div>
     </div>
@@ -4582,9 +6220,11 @@ FILE	frontend/package.json
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.1.0",
+    "@tailwindcss/vite": "^4.1.0",
     "@types/node": "^22.0.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
+    "tailwindcss": "^4.1.0",
     "typescript": "^5.8.0",
     "vite": "^7.0.0",
     "vitest": "^3.2.0"
@@ -4807,10 +6447,10 @@ test('refuses to silently accept multiple JS chunks', async () => {
 FILE	frontend/src/App.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
-  import CoreStatus from './lib/components/CoreStatus.svelte';
+  import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -4818,6 +6458,16 @@ FILE	frontend/src/App.svelte
   let workspaceState = $state<WorkspaceState | null>(null);
   let workspacePending = $state(false);
   let workspaceActionError = $state<string | null>(null);
+  let launcherUnavailable = $state(false);
+  let calendarUnavailable = $state(false);
+
+  function activateCalendar() {
+    calendarUnavailable = !toggleCalendar();
+  }
+
+  function activateLauncher() {
+    launcherUnavailable = !openLauncher();
+  }
 
   async function activateWorkspace(id: string) {
     if (workspacePending || !workspaceState?.connected ||
@@ -4900,44 +6550,83 @@ FILE	frontend/src/App.svelte
   });
 </script>
 
-<main class="bar" class:compact={configState.config.compact} aria-label="Kira Desktop top bar">
-  <section class="bar__start" aria-label="Kira and workspaces">
-    <div class="brand" aria-label="Kira Desktop">
-      <span class="brand__symbol" aria-hidden="true">K</span>
-      <span class="brand__wordmark" aria-hidden="true">KIRA</span>
-    </div>
-    <span class="bar__separator" aria-hidden="true"></span>
-    <WorkspacePreview state={workspaceState} showNames={configState.config.show_names}
-      limit={configState.config.max_workspaces} pending={workspacePending}
-      onFocus={(id) => { void activateWorkspace(id); }} />
+<main
+  class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden bg-kira-bg text-kira-text after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-surface"
+  aria-label="Kira Desktop top bar"
+  data-kira-ui-root
+  data-compact={configState.config.compact}
+>
+  <section
+    class={`relative z-10 flex shrink-0 items-stretch bg-kira-surface after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-accent ${configState.config.compact ? 'w-[84px]' : 'w-[102px] max-[540px]:w-[78px]'}`}
+    aria-label="Kira Launcher"
+  >
+    <button
+      type="button"
+      class={`flex h-full w-full cursor-pointer items-center border-0 bg-transparent text-left text-kira-text transition-colors duration-150 hover:bg-kira-accent/10 active:bg-kira-bg/20 focus-visible:-outline-offset-4 focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none ${configState.config.compact ? 'gap-[7px] px-[10px]' : 'gap-[10px] px-[14px] max-[540px]:gap-[6px] max-[540px]:px-[9px]'}`}
+      aria-label="Open applications launcher"
+      title="Open applications"
+      onclick={activateLauncher}
+    >
+      <span class="h-[19px] w-[3px] shrink-0 bg-kira-accent" aria-hidden="true"></span>
+      <span class="text-[13px] font-extrabold tracking-[0.11em] max-[540px]:text-xs">KIRA</span>
+    </button>
+  </section>
+
+  <section
+    class={`flex min-w-0 flex-1 items-center pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'gap-[13px] px-4 max-[540px]:gap-[7px] max-[540px]:px-[7px]'}`}
+    aria-label="Niri workspaces"
+  >
+    <WorkspacePreview
+      state={workspaceState}
+      showNames={configState.config.show_names}
+      limit={configState.config.max_workspaces}
+      pending={workspacePending}
+      onFocus={(id) => { void activateWorkspace(id); }}
+    />
+    {#if !configState.config.compact}
+      <div class="flex min-w-0 max-w-[176px] flex-col justify-center gap-[2px] overflow-hidden max-[820px]:hidden" title={configState.config.title}>
+        <span class="whitespace-nowrap text-[8px] leading-none font-semibold tracking-[0.11em] text-kira-muted/80">WORKSPACE</span>
+        <span class="max-w-40 truncate text-[10px] leading-tight font-bold tracking-[0.06em] text-kira-text">
+          {configState.config.title === 'KIRA DESKTOP' ? 'DESKTOP' : configState.config.title}
+        </span>
+      </div>
+    {/if}
+    {#if launcherUnavailable}
+      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
+    {/if}
     {#if workspaceActionError}
-      <span class="workspace-action-error" role="alert" title={workspaceActionError}>WS !</span>
+      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
 
-  <div class="bar__center" aria-label="Kira Desktop environment">
-    <span class="bar__center-line" aria-hidden="true"></span>
-    <span class="bar__center-title">
-      {#if configState.config.title === 'KIRA DESKTOP'}KIRA <span>DESKTOP</span>{:else}{configState.config.title}{/if}
-    </span>
-    <span class="bar__center-line" aria-hidden="true"></span>
-  </div>
-
-  <section class="bar__end" aria-label="Core and clock">
+  <section
+    class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}
+    aria-label="System status and local time"
+  >
     {#if configState.error}
-      <span class="config-warning" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
-    <CoreStatus status={coreStatus} version={coreVersion} />
-    <span class="bar__separator" aria-hidden="true"></span>
-    <div class="clock">
-      <svg class="clock__icon" aria-hidden="true" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.3"></circle>
-        <path d="M8 4.6V8.1L10.2 9.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-      <time datetime={now.toISOString()} aria-label={'Local time ' + formatClock(now, undefined, configState.config.show_seconds)}>
+    <SystemHealth
+      coreStatus={coreStatus}
+      coreVersion={coreVersion}
+      niriConnected={workspaceState?.connected ?? null}
+    />
+    <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
+    {#if calendarUnavailable}
+      <span class="shrink-0 text-[10px] font-bold text-kira-accent" role="status">CALENDAR OFFLINE</span>
+    {/if}
+    <button
+      type="button"
+      class="shrink-0 cursor-pointer rounded-sm border-0 bg-transparent px-1 py-2 leading-none text-kira-text transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
+      title="Open calendar and date details"
+      aria-label={'Open calendar, local time ' + formatClock(now, undefined, configState.config.show_seconds)}
+      aria-haspopup="dialog"
+      onclick={activateCalendar}
+    >
+      <time class="whitespace-nowrap text-[13px] font-bold tracking-[0.03em] tabular-nums max-[540px]:text-xs" datetime={now.toISOString()}>
         {formatClock(now, undefined, configState.config.show_seconds)}
       </time>
-    </div>
+    </button>
   </section>
 </main>
 
@@ -4951,7 +6640,7 @@ function targetFixture() {
   const target = {
     querySelector: vi.fn((selector: string) => {
       if (selector === '#kira-loading') return loading;
-      if (selector === 'main.bar') return mounted ? {} : null;
+      if (selector === 'main[data-kira-ui-root]') return mounted ? {} : null;
       return null;
     }),
   } as unknown as HTMLElement;
@@ -4984,7 +6673,7 @@ describe('Svelte bootstrap diagnostics', () => {
     const { target, loading } = targetFixture();
     const logs: string[] = [];
     expect(startUi(target, () => undefined, (value) => logs.push(value))).toBe(false);
-    expect(logs.join(' ')).toContain('main.bar is missing');
+    expect(logs.join(' ')).toContain('main[data-kira-ui-root] is missing');
     expect(loading.remove).not.toHaveBeenCalled();
   });
 
@@ -5063,13 +6752,18 @@ export function startUi(
     report('bootstrap: entering Svelte mount');
     mountAndFlush(target);
     report('bootstrap: Svelte mount and flush returned');
-    if (!target.querySelector('main.bar')) {
-      throw new Error('Svelte mount returned but main.bar is missing after flushSync');
+    // A semantic mount marker is independent of Tailwind / component CSS.
+    if (!target.querySelector('main[data-kira-ui-root]')) {
+      throw new Error('Svelte mount returned but main[data-kira-ui-root] is missing after flushSync');
     }
     fallback?.remove();
     return true;
   } catch (error) {
     const detail = describeBootstrapError(error);
+    if (typeof window !== 'undefined') {
+      const boot = Reflect.get(window, '__kiraBoot');
+      if (boot && typeof boot === 'object') Reflect.set(boot, 'bootstrapError', detail);
+    }
     report('bootstrap exception: ' + detail);
     if (fallback) {
       fallback.textContent = 'Kira UI error: ' + detail.slice(0, 220);
@@ -5094,98 +6788,44 @@ export function whenDocumentReady(
   }
 }
 
-FILE	frontend/src/lib/components/CoreStatus.svelte
+FILE	frontend/src/lib/components/SystemHealth.svelte
 <script lang="ts">
-  type Status = 'connecting' | 'connected' | 'unavailable';
+  import { systemHealth, type CoreConnectionStatus } from '../system-health';
 
   let {
-    status,
-    version,
+    coreStatus,
+    coreVersion,
+    niriConnected,
   }: {
-    status: Status;
-    version: string;
+    coreStatus: CoreConnectionStatus;
+    coreVersion: string;
+    niriConnected: boolean | null;
   } = $props();
 
-  const labels: Record<Status, string> = {
-    connecting: 'Connecting',
-    connected: 'Online',
-    unavailable: 'Offline',
-  };
+  const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected));
 </script>
 
 <div
-  class="core-status"
-  data-status={status}
+  class="inline-flex h-6 shrink-0 items-center justify-center gap-[6px] whitespace-nowrap"
   role="status"
   aria-live="polite"
   aria-atomic="true"
-  aria-label={'Kira Core: ' + labels[status]}
-  title={status === 'connected' ? 'Kira Core v' + version : 'Kira Core: ' + labels[status]}
+  aria-label={health.details.replace('\n', '; ')}
+  title={health.details}
+  data-phase={health.phase}
 >
-  <span class="core-status__signal" aria-hidden="true"></span>
-  <span class="core-status__name">CORE</span>
-  <span class="core-status__value">{labels[status]}</span>
+  <span
+    class={`h-[7px] w-[7px] shrink-0 border ${health.phase === 'ready'
+      ? 'rounded-full border-kira-muted bg-kira-muted'
+      : health.phase === 'error'
+        ? 'rounded-[2px] border-kira-accent bg-kira-accent'
+        : 'rounded-full border-kira-muted bg-transparent'}`}
+    aria-hidden="true"
+  ></span>
+  <span class={`text-[10px] leading-none font-semibold tracking-[0.02em] ${health.phase === 'error'
+    ? 'text-kira-accent'
+    : 'text-kira-text'} ${health.phase === 'ready' ? 'max-[540px]:hidden' : ''}`}>{health.label}</span>
 </div>
-
-<style>
-  .core-status {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    height: 27px;
-    max-width: 156px;
-    padding: 0 10px;
-    border: 1px solid var(--kira-color-border);
-    border-radius: var(--kira-radius-md);
-    background: var(--kira-color-surface-subtle);
-    color: var(--kira-color-text);
-    white-space: nowrap;
-  }
-
-  .core-status__signal {
-    flex: none;
-    width: 6px;
-    height: 6px;
-    border: 1px solid var(--kira-color-muted);
-    border-radius: 50%;
-    background: transparent;
-  }
-
-  .core-status[data-status='connected'] .core-status__signal {
-    border-color: var(--kira-color-accent);
-    background: var(--kira-color-accent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--kira-color-accent) 20%, transparent);
-  }
-
-  .core-status[data-status='connecting'] .core-status__signal {
-    border-color: var(--kira-color-muted);
-    background: var(--kira-color-muted);
-  }
-
-  .core-status__name {
-    font-size: 9px;
-    font-weight: 750;
-    letter-spacing: 0.11em;
-    opacity: 0.86;
-  }
-
-  .core-status__value {
-    overflow: hidden;
-    font-size: 10px;
-    font-weight: 600;
-    text-overflow: ellipsis;
-  }
-
-  @media (max-width: 490px) {
-    .core-status {
-      padding-inline: 8px;
-    }
-
-    .core-status__name {
-      display: none;
-    }
-  }
-</style>
 
 FILE	frontend/src/lib/components/WorkspacePreview.svelte
 <script lang="ts">
@@ -5199,8 +6839,8 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
     pending: boolean;
   } = $props();
 
-  // Limit visible chips without hiding the active/focused workspace when
-  // there are many outputs. This never changes Niri's actual workspaces.
+  // Follow Niri focus, not DOM position; do not lose the current workspace
+  // when the configured visible-workspace limit is reached.
   let visible = $derived.by(() => {
     const all = state?.workspaces ?? [];
     const count = Math.max(1, Math.min(32, limit));
@@ -5210,23 +6850,26 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 </script>
 
 {#if !state}
-  <span class="workspace-status" role="status" aria-live="polite">NIRI…</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite">NIRI…</span>
 {:else if !state.connected}
-  <span class="workspace-status" role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
 {:else if state.workspaces.length === 0}
-  <span class="workspace-status" role="status" aria-live="polite">NO WORKSPACES</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite">NO WORKSPACES</span>
 {:else}
-  <ol class="workspace-preview" aria-label="Niri workspaces">
+  <ol class="flex max-w-[min(40vw,348px)] shrink-0 items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Niri workspaces">
     {#each visible as workspace (workspace.id)}
       <li
-        class="workspace-preview__item"
-        class:preview-selected={workspace.is_focused}
-        class:preview-active={workspace.is_active}
-        class:preview-urgent={workspace.is_urgent}
+        class={`relative h-7 min-w-8 max-w-[90px] shrink-0 rounded-md text-[11px] font-bold tabular-nums transition-colors duration-150 motion-reduce:transition-none ${workspace.is_focused
+          ? 'bg-kira-accent text-kira-on-accent'
+          : workspace.is_active
+            ? 'bg-kira-surface-soft text-kira-text'
+            : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'}`}
+        data-focused={workspace.is_focused}
+        data-urgent={workspace.is_urgent}
       >
         <button
           type="button"
-          class="workspace-preview__button"
+          class={`grid h-full w-full cursor-pointer place-items-center rounded-[inherit] border-0 bg-transparent px-[9px] font-inherit text-inherit focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-progress ${workspace.is_focused ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2' : 'focus-visible:outline-kira-accent'}`}
           aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
             + (workspace.output ? ' on ' + workspace.output : '')}
           aria-pressed={workspace.is_focused}
@@ -5234,14 +6877,12 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
             + (workspace.output ? ' on ' + workspace.output : '')
             + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
             + (workspace.is_urgent ? ' (urgent)' : '')}
-          disabled={pending || workspace.is_focused}
+          disabled={pending}
           onclick={() => onFocus(workspace.id)}
         >
-          <span class="workspace-preview__label">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
-          {#if workspace.is_focused}
-            <span class="workspace-preview__selected-mark" aria-hidden="true"></span>
-          {:else if workspace.is_urgent}
-            <span class="workspace-preview__urgent-mark" aria-hidden="true"></span>
+          <span class="block max-w-[72px] truncate whitespace-nowrap">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
+          {#if workspace.is_urgent}
+            <span class={`pointer-events-none absolute bottom-[2px] left-1/2 h-[2px] w-2 -translate-x-1/2 ${workspace.is_focused ? 'bg-kira-on-accent' : 'bg-kira-accent'}`} aria-hidden="true"></span>
           {/if}
         </button>
       </li>
@@ -5249,126 +6890,9 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
   </ol>
 {/if}
 
-<style>
-  .workspace-status {
-    display: flex;
-    align-items: center;
-    height: 27px;
-    color: var(--kira-color-muted);
-    font-size: 9px;
-    font-weight: 650;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
-
-  .workspace-preview {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    max-width: min(33vw, 330px);
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .workspace-preview::-webkit-scrollbar { display: none; }
-
-  .workspace-preview__item {
-    position: relative;
-    display: grid;
-    flex: none;
-    place-items: center;
-    min-width: 27px;
-    max-width: 76px;
-    height: 27px;
-    padding-inline: 5px;
-    box-sizing: border-box;
-    border-radius: var(--kira-radius-sm);
-    color: color-mix(in srgb, var(--kira-color-text) 80%, var(--kira-color-background));
-    font-size: 11px;
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    transition:
-      background-color var(--kira-motion-fast) var(--kira-motion-easing),
-      color var(--kira-motion-fast) var(--kira-motion-easing);
-  }
-
-  .workspace-preview__button {
-    display: grid;
-    place-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    border: 0;
-    border-radius: inherit;
-    color: inherit;
-    background: transparent;
-    font: inherit;
-    letter-spacing: inherit;
-    cursor: pointer;
-  }
-
-  .workspace-preview__button:disabled {
-    cursor: default;
-  }
-
-  .workspace-preview__button:focus-visible {
-    outline: 2px solid var(--kira-color-accent);
-    outline-offset: 2px;
-  }
-
-  .workspace-preview__item:not(.preview-selected):has(.workspace-preview__button:not(:disabled):hover) {
-    background: var(--kira-color-surface-subtle);
-  }
-
-  .workspace-preview__label {
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 66px;
-  }
-
-  .workspace-preview__item.preview-active:not(.preview-selected) {
-    background: var(--kira-color-surface-subtle);
-    box-shadow: inset 0 0 0 1px var(--kira-color-border);
-  }
-
-  .workspace-preview__item.preview-selected {
-    color: var(--kira-color-on-accent);
-    background: var(--kira-color-accent);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--kira-color-background) 35%, transparent);
-  }
-
-  .workspace-preview__selected-mark {
-    position: absolute;
-    bottom: 2px;
-    width: 8px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--kira-color-background);
-  }
-
-  .workspace-preview__item.preview-urgent:not(.preview-selected) {
-    box-shadow: inset 0 0 0 1px var(--kira-color-accent);
-  }
-
-  .workspace-preview__urgent-mark {
-    position: absolute;
-    bottom: 2px;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--kira-color-accent);
-  }
-</style>
-
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, openLauncher } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -5377,6 +6901,35 @@ afterEach(() => {
 });
 
 describe('Core SDK JSON-RPC bridge', () => {
+  it('opens Launcher via its fixed command and reports missing or failing host bridge', () => {
+    expect(openLauncher()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraLauncher: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(openLauncher()).toBe(true);
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
+    postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
+    expect(openLauncher()).toBe(false);
+  });
+
+  it('toggles the calendar via a dedicated fixed-purpose host bridge', () => {
+    expect(toggleCalendar()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendar: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleCalendar()).toBe(true);
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('toggle');
+  });
+
+  it('does not claim calendar activation when the bridge throws', () => {
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendar: { postMessage: () => { throw new Error('closed'); } } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleCalendar()).toBe(false);
+  });
+
   it('rejects outside the host bridge', async () => {
     await expect(request('ping')).rejects.toThrow('bridge unavailable');
   });
@@ -5602,8 +7155,34 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge } };
   }
+}
+
+/** Only fixed commands are exposed to trusted Svelte components. Keep host
+ * bridge failures non-throwing so an offline overlay does not crash the bar.
+ */
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar', command: 'open' | 'toggle'): boolean {
+  const channel = typeof window === 'undefined'
+    ? undefined
+    : window.webkit?.messageHandlers?.[channelName];
+  if (!channel) return false;
+  try {
+    channel.postMessage(command);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Native launcher control is a fixed-purpose channel, never a shell command. */
+export function openLauncher(): boolean {
+  return postNativeCommand('kiraLauncher', 'open');
+}
+
+/** Toggle the native calendar overlay through its fixed-purpose channel. */
+export function toggleCalendar(): boolean {
+  return postNativeCommand('kiraCalendar', 'toggle');
 }
 
 let nextId = 0;
@@ -5675,39 +7254,119 @@ function send(method: string, params?: { id: string }): Promise<unknown> {
   });
 }
 
+FILE	frontend/src/lib/system-health.test.ts
+import { describe, expect, it } from 'vitest';
+import { systemHealth } from './system-health';
+
+describe('system summary from real Core and Niri signals', () => {
+  it('is ready only when Core and Niri are both connected', () => {
+    const ready = systemHealth('connected', '0.1.0', true);
+    expect(ready.phase).toBe('ready');
+    expect(ready.label).toBe('READY');
+    expect(ready.details).toContain('Kira Core: Online (v0.1.0)');
+    expect(ready.details).toContain('Niri IPC: Connected');
+  });
+
+  it('shows connection progress instead of claiming system readiness', () => {
+    expect(systemHealth('connecting', '', null)).toMatchObject({
+      label: 'STARTING', phase: 'pending',
+    });
+    expect(systemHealth('connected', '0.1.0', null)).toMatchObject({
+      label: 'WAITING', phase: 'pending',
+    });
+  });
+
+  it('prioritizes precise degraded signals', () => {
+    const offlineCore = systemHealth('unavailable', '', false);
+    expect(offlineCore).toMatchObject({ label: 'CORE OFF', phase: 'error' });
+    expect(offlineCore.details).toContain('Niri IPC: Disconnected');
+    expect(systemHealth('connected', '0.1.0', false)).toMatchObject({
+      label: 'NIRI OFF', phase: 'error',
+    });
+  });
+
+  it('does not fabricate a version when Core has not supplied one', () => {
+    expect(systemHealth('connected', '', true).details).toContain('Kira Core: Online\n');
+  });
+});
+
+FILE	frontend/src/lib/system-health.ts
+/** Derive an honest status from both existing, real Core and Niri signals.
+ * No extra polling or optimistic connection indicators.
+ */
+export type CoreConnectionStatus = 'connecting' | 'connected' | 'unavailable';
+export type HealthPhase = 'ready' | 'pending' | 'error';
+
+export interface HealthSummary {
+  label: string;
+  phase: HealthPhase;
+  details: string;
+}
+
+export function systemHealth(
+  core: CoreConnectionStatus,
+  version: string,
+  niriConnected: boolean | null,
+): HealthSummary {
+  const coreDetail = core === 'connected'
+    ? 'Online' + (version ? ' (v' + version + ')' : '')
+    : core === 'connecting' ? 'Connecting' : 'Offline';
+  const niriDetail = niriConnected === null
+    ? 'Waiting for first snapshot'
+    : niriConnected ? 'Connected' : 'Disconnected';
+
+  const details = 'Kira Core: ' + coreDetail + '\nNiri IPC: ' + niriDetail;
+  if (core === 'unavailable') return { label: 'CORE OFF', phase: 'error', details };
+  if (core === 'connecting') return { label: 'STARTING', phase: 'pending', details };
+  if (niriConnected === false) return { label: 'NIRI OFF', phase: 'error', details };
+  if (niriConnected === null) return { label: 'WAITING', phase: 'pending', details };
+  return { label: 'READY', phase: 'ready', details };
+}
+
 FILE	frontend/src/lib/themes/kira-default.css
-/* Kira Default: Black / Night Bordeaux / White Smoke / Dusty Taupe /
- * Stone Brown. Exactly five canonical colors. All additional tones are
- * semantic aliases or mixes of these colors. Components never hardcode HEX.
- * Taupe is both the secondary readable color and interactive accent:
- * Stone Brown is a structural detail, not a low-contrast text color.
+/* Kira Default: Black / Prussian Blue / Orange / Alabaster Grey / White.
+ * Exactly five canonical opaque colors; all other tones are derived.
  */
 :root {
   color-scheme: dark;
 
-  --kira-color-background: #0a0908;
-  --kira-color-surface: #49111c;
-  --kira-color-muted: #a9927d;
-  --kira-color-accent: var(--kira-color-muted);
-  --kira-color-text: #f2f4f3;
-  --kira-color-earth: #5e503f;
+  --black: #000000ff;
+  --prussian-blue: #14213dff;
+  --orange: #fca311ff;
+  --alabaster-grey: #e5e5e5ff;
+  --white: #ffffffff;
 
-  --kira-color-on-accent: var(--kira-color-background);
-  --kira-color-text-secondary: var(--kira-color-muted);
-  --kira-color-surface-subtle: color-mix(in srgb, var(--kira-color-surface) 50%, var(--kira-color-background));
-  --kira-color-border: color-mix(in srgb, var(--kira-color-earth) 80%, var(--kira-color-muted));
+  --kira-color-background: var(--black);
+  --kira-color-surface: var(--prussian-blue);
+  --kira-color-muted: var(--alabaster-grey);
+  --kira-color-accent: var(--orange);
+  --kira-color-text: var(--white);
+  /* Legacy alias retained for external widgets; prefer --kira-color-border. */
+  --kira-color-earth: var(--prussian-blue);
+
+  --kira-color-on-accent: var(--black);
+  --kira-color-text-secondary: var(--alabaster-grey);
+  --kira-color-surface-subtle: color-mix(in srgb, var(--prussian-blue) 75%, var(--black));
+  --kira-color-border: color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
 
   --kira-space-1: 4px;
   --kira-space-2: 8px;
   --kira-space-3: 12px;
   --kira-space-4: 16px;
+  --kira-space-5: 20px;
+  --kira-space-6: 24px;
 
   --kira-radius-sm: 6px;
   --kira-radius-md: 10px;
-  --kira-radius-lg: 12px;
+  --kira-radius-lg: 14px;
 
-  --kira-motion-fast: 150ms;
-  --kira-motion-standard: 200ms;
+  /* Neo-brutalist construction: clear borders and hard, offset depth. */
+  --kira-border-strong: 2px;
+  --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
+  --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
+
+  --kira-motion-fast: 120ms;
+  --kira-motion-standard: 180ms;
   --kira-motion-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -5739,45 +7398,73 @@ function contrast(first: string, second: string): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-describe('Kira Default Bordeaux / Taupe design tokens', () => {
+describe('Kira Default Black / Prussian Blue / Orange design tokens', () => {
   it('contains exactly the five approved canonical base colors', () => {
     expect(Object.values(kiraDefaultPalette)).toEqual([
-      '#0a0908', '#49111c', '#f2f4f3', '#a9927d', '#5e503f',
+      '#000000ff', '#14213dff', '#fca311ff', '#e5e5e5ff', '#ffffffff',
     ]);
     expect(new Set(Object.values(kiraDefaultPalette)).size).toBe(5);
   });
 
-  it('keeps public CSS tokens synchronized with the typed palette', () => {
-    for (const [role, value] of Object.entries(kiraDefaultRoles)) {
-      // Accent aliases the readable muted/taupe token; never add a sixth base.
-      const token = role === 'accent' ? 'var(--kira-color-muted)' : value;
-      expect(css).toContain('--kira-color-' + role + ': ' + token + ';');
+  it('keeps exactly five canonical RGBA hex tokens synchronized', () => {
+    const names = {
+      black: 'black',
+      prussianBlue: 'prussian-blue',
+      orange: 'orange',
+      alabasterGrey: 'alabaster-grey',
+      white: 'white',
+    } as const;
+    for (const role of Object.keys(names) as Array<keyof typeof names>) {
+      expect(css).toContain('--' + names[role] + ': ' + kiraDefaultPalette[role] + ';');
     }
-    const hexDeclarations = [...css.matchAll(/--kira-color-[\w-]+:\s*(#[0-9a-f]{6})\s*;/g)];
-    expect(hexDeclarations).toHaveLength(5);
-    expect(new Set(hexDeclarations.map((match) => match[1]))).toEqual(
-      new Set(Object.values(kiraDefaultPalette)),
-    );
+    const colors = [...css.matchAll(/#[0-9a-f]{8}\b/g)].map((match) => match[0]);
+    expect(colors).toHaveLength(5);
+    expect(new Set(colors)).toEqual(new Set(Object.values(kiraDefaultPalette)));
+    expect(css).not.toMatch(/#[0-9a-f]{6}(?![0-9a-f])/);
   });
 
-  it('chooses text/accent pairs that meet WCAG AA', () => {
-    const { black, nightBordeaux, whiteSmoke, dustyTaupe, stoneBrown } = kiraDefaultPalette;
-    expect(contrast(whiteSmoke, black)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(whiteSmoke, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(dustyTaupe, black)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(dustyTaupe, nightBordeaux)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(black, dustyTaupe)).toBeGreaterThanOrEqual(4.5);
-    // Stone Brown is reserved for structure; low-contrast brown-on-black
-    // must never be used as the primary/muted text.
-    expect(contrast(stoneBrown, black)).toBeLessThan(4.5);
-    expect(kiraDefaultRoles.muted).toBe(dustyTaupe);
-    expect(kiraDefaultRoles.accent).toBe(dustyTaupe);
+  it('maps semantic tokens to canonical colors', () => {
+    const aliases = {
+      background: '--black',
+      surface: '--prussian-blue',
+      muted: '--alabaster-grey',
+      accent: '--orange',
+      text: '--white',
+      earth: '--prussian-blue', // legacy alias for compatibility
+    } as const;
+    const source = {
+      '--black': 'black',
+      '--prussian-blue': 'prussianBlue',
+      '--orange': 'orange',
+      '--alabaster-grey': 'alabasterGrey',
+      '--white': 'white',
+    } as const;
+    for (const role of Object.keys(aliases) as Array<keyof typeof aliases>) {
+      const base = aliases[role];
+      expect(css).toContain('--kira-color-' + role + ': var(' + base + ');');
+      expect(kiraDefaultRoles[role]).toBe(kiraDefaultPalette[source[base]]);
+    }
+    expect(css).toContain('--kira-color-on-accent: var(--black);');
+  });
+
+  it('uses WCAG AA text pairs, including black on Orange', () => {
+    const { black, prussianBlue, orange, alabasterGrey, white } = kiraDefaultPalette;
+    for (const [foreground, background] of [
+      [white, black], [white, prussianBlue],
+      [alabasterGrey, black], [alabasterGrey, prussianBlue],
+      [orange, black], [orange, prussianBlue], [black, orange],
+    ]) {
+      expect(contrast(foreground, background)).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(contrast(white, orange)).toBeLessThan(4.5);
+    expect(kiraDefaultRoles.muted).toBe(alabasterGrey);
+    expect(kiraDefaultRoles.accent).toBe(orange);
   });
 
   it('uses the default palette during pre-mount WebKit loading', () => {
     expect(html).toContain('<meta name="theme-color" content="' + kiraDefaultPalette.black + '"');
     expect(html).toContain('background:' + kiraDefaultPalette.black + ';');
-    expect(html).toContain('color:' + kiraDefaultPalette.whiteSmoke + ';');
+    expect(html).toContain('color:' + kiraDefaultPalette.white + ';');
     expect(html).not.toContain('#22223b');
     expect(html).not.toContain('#f2e9e4');
   });
@@ -5785,36 +7472,113 @@ describe('Kira Default Bordeaux / Taupe design tokens', () => {
   it('defines compact spacing, consistent radii and reduced motion', () => {
     expect(css).toContain('--kira-space-1: 4px;');
     expect(css).toContain('--kira-radius-md: 10px;');
+    expect(css).toContain('--kira-border-strong: 2px;');
+    expect(css).toContain('--kira-shadow-brutal:');
+    expect(css).toContain('--kira-shadow-panel:');
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
     expect(css).toContain('--kira-motion-fast: 0ms;');
   });
 });
 
 FILE	frontend/src/lib/themes/kira-default.ts
-/** Canonical Kira Default palette. Five colors supplied by the project owner.
- * CSS semantic tokens and contrast combinations are contract-tested.
- */
+/** Canonical fully opaque Kira Default palette; CSS and GTK must match. */
 export const kiraDefaultPalette = Object.freeze({
-  black: '#0a0908',
-  nightBordeaux: '#49111c',
-  whiteSmoke: '#f2f4f3',
-  dustyTaupe: '#a9927d',
-  stoneBrown: '#5e503f',
+  black: '#000000ff',
+  prussianBlue: '#14213dff',
+  orange: '#fca311ff',
+  alabasterGrey: '#e5e5e5ff',
+  white: '#ffffffff',
 } as const);
 
-/** Semantic roles, including safe reuse of Dusty Taupe as both secondary text
- * and focus accent. Stone Brown is for structural borders, never small text.
+/** Semantic roles keep color usage accessible. The legacy earth role is
+ * preserved as a structural alias for compatibility with older widgets.
  */
 export const kiraDefaultRoles = Object.freeze({
   background: kiraDefaultPalette.black,
-  surface: kiraDefaultPalette.nightBordeaux,
-  muted: kiraDefaultPalette.dustyTaupe,
-  accent: kiraDefaultPalette.dustyTaupe,
-  text: kiraDefaultPalette.whiteSmoke,
-  earth: kiraDefaultPalette.stoneBrown,
+  surface: kiraDefaultPalette.prussianBlue,
+  muted: kiraDefaultPalette.alabasterGrey,
+  accent: kiraDefaultPalette.orange,
+  text: kiraDefaultPalette.white,
+  earth: kiraDefaultPalette.prussianBlue,
 } as const);
 
 export type KiraThemeRole = keyof typeof kiraDefaultRoles;
+
+FILE	frontend/src/lib/themes/shell-composition.test.ts
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+
+const css = readFileSync(new URL('../../style.css', import.meta.url), 'utf8');
+const markup = readFileSync(new URL('../../App.svelte', import.meta.url), 'utf8');
+const workspaces = readFileSync(new URL('../components/WorkspacePreview.svelte', import.meta.url), 'utf8');
+const core = readFileSync(new URL('../components/SystemHealth.svelte', import.meta.url), 'utf8');
+const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), 'utf8');
+const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
+
+describe('Tailwind v4 frontend and Top Bar architecture', () => {
+  it('uses the Vite plugin, CSS-first tokens and canonical palette', () => {
+    expect(vite).toContain("import tailwindcss from '@tailwindcss/vite'");
+    expect(vite).toContain('tailwindcss()');
+    expect(css).toContain('@import "tailwindcss";');
+    expect(css).toContain('@import "./lib/themes/kira-default.css";');
+    expect(css).toContain('@theme inline {');
+    expect(css).toContain('--color-kira-accent: var(--kira-color-accent);');
+    expect(css).not.toContain('.bar__identity');
+  });
+
+  it('keeps a 42px three-zone Top Bar with compact and responsive layouts', () => {
+    expect(markup).toContain('h-[42px] min-h-[42px]');
+    expect(markup).toContain('bg-kira-surface');
+    expect(markup).toContain('bg-kira-surface-soft');
+    expect(markup).toContain('after:bg-kira-accent');
+    expect(markup).toContain('aria-label="Kira Launcher"');
+    expect(markup).toContain('aria-label="Niri workspaces"');
+    expect(markup).toContain('aria-label="System status and local time"');
+    expect(markup).toContain('configState.config.compact');
+    expect(markup).toContain('class={`flex shrink-0 items-center justify-end gap-3');
+    expect(markup).not.toContain('>SYSTEM</span>');
+    expect(markup).not.toContain('>LOCAL</span>');
+    expect(markup).toContain('niriConnected={workspaceState?.connected ?? null}');
+    expect(markup).toContain('max-[540px]:');
+    expect(markup).not.toContain('<style>');
+    expect(markup).not.toContain('bar__center');
+    // Regression: the Svelte root and bootstrap must share the same marker.
+    expect(markup).toContain('data-kira-ui-root');
+    expect(bootstrap).toContain("querySelector('main[data-kira-ui-root]')");
+    expect(bootstrap).not.toContain('main.bar');
+    expect(markup).not.toContain('box-shadow');
+  });
+
+  it('keeps launcher, KDL settings and live clock functional', () => {
+    expect(markup).toContain('onclick={activateLauncher}');
+    expect(markup).toContain('configState.config.title');
+    expect(markup).toContain('configState.config.show_seconds');
+    expect(markup).toContain('formatClock(now, undefined, configState.config.show_seconds)');
+    expect(markup).toContain('focus-visible:outline-kira-accent');
+    expect(markup).toContain('onclick={activateCalendar}');
+    expect(markup).toContain('aria-haspopup="dialog"');
+    expect(markup).toContain('<time class=');
+    expect(markup).toContain('CALENDAR OFFLINE');
+  });
+
+  it('preserves accessible live workspace and Core states without component CSS', () => {
+    expect(workspaces).toContain('aria-pressed={workspace.is_focused}');
+    expect(workspaces).toContain('data-urgent={workspace.is_urgent}');
+    expect(workspaces).toContain('disabled={pending}');
+    expect(workspaces).toContain('focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2');
+    expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
+    expect(core).toContain('aria-live="polite"');
+    expect(core).toContain('data-phase={health.phase}');
+    expect(core).toContain('aria-label={health.details.replace');
+    expect(core).toContain('border-kira-accent bg-kira-accent');
+    expect(workspaces).not.toContain('<style>');
+    expect(core).not.toContain('<style>');
+    expect(core).not.toContain('min-h-7');
+    expect(markup).toContain('title="Open calendar and date details"');
+    expect(markup).toContain('items-center justify-end');
+    expect(markup).not.toContain('bar__system-item');
+  });
+});
 
 FILE	frontend/src/lib/time.test.ts
 import { describe, expect, it } from 'vitest';
@@ -5875,260 +7639,48 @@ whenDocumentReady(document, () => {
 });
 
 FILE	frontend/src/style.css
-@import './lib/themes/kira-default.css';
+@import "tailwindcss";
+@import "./lib/themes/kira-default.css";
 
-:root {
-  font-family: Inter, 'Segoe UI Variable', 'Noto Sans', system-ui, sans-serif;
-  font-synthesis: none;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  color: var(--kira-color-text);
-  background: var(--kira-color-background);
+/* Tailwind v4 CSS-first theme. The canonical palette remains in
+ * kira-default.css; semantic aliases let KDL themes evolve independently. */
+@theme inline {
+  --color-kira-bg: var(--kira-color-background);
+  --color-kira-surface: var(--kira-color-surface);
+  --color-kira-surface-soft: var(--kira-color-surface-subtle);
+  --color-kira-muted: var(--kira-color-muted);
+  --color-kira-text: var(--kira-color-text);
+  --color-kira-accent: var(--kira-color-accent);
+  --color-kira-on-accent: var(--kira-color-on-accent);
+  --font-sans: Inter, "Segoe UI Variable", "Noto Sans", system-ui, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#app {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-:focus-visible {
-  outline: 2px solid var(--kira-color-accent);
-  outline-offset: 2px;
-}
-
-.bar {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 42px;
-  min-height: 42px;
-  padding: 0 var(--kira-space-4);
-  border-bottom: 1px solid var(--kira-color-border);
-  background: linear-gradient(
-    110deg,
-    var(--kira-color-surface-subtle) 0%,
-    var(--kira-color-background) 41%,
-    color-mix(in srgb, var(--kira-color-surface) 19%, var(--kira-color-background)) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--kira-color-text) 9%, transparent),
-    0 2px 10px color-mix(in srgb, var(--kira-color-background) 25%, transparent);
-  color: var(--kira-color-text);
-}
-
-/* Compact mode keeps the same exclusive 42px Niri layer geometry but
- * spends less horizontal space inside it. No compositor resize needed. */
-.bar.compact {
-  padding-inline: var(--kira-space-2);
-}
-
-.bar.compact .bar__start,
-.bar.compact .bar__end {
-  gap: var(--kira-space-2);
-}
-
-.bar.compact .brand__wordmark,
-.bar.compact .bar__center-line {
-  display: none;
-}
-
-.workspace-action-error {
-  flex: none;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--kira-color-accent);
-  cursor: help;
-  white-space: nowrap;
-}
-
-.config-warning {
-  flex: none;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--kira-color-accent);
-  cursor: help;
-  white-space: nowrap;
-}
-
-.bar::before {
-  position: absolute;
-  top: 0;
-  right: 14%;
-  left: 14%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in srgb, var(--kira-color-accent) 33%, transparent),
-    transparent
-  );
-  content: '';
-  pointer-events: none;
-}
-
-.bar__start,
-.bar__end,
-.brand,
-.clock {
-  display: flex;
-  align-items: center;
-}
-
-.bar__start,
-.bar__end {
-  min-width: 0;
-  gap: var(--kira-space-3);
-}
-
-.bar__start {
-  flex: 1;
-}
-
-.bar__end {
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.brand {
-  gap: 7px;
-  flex: none;
-}
-
-.brand__symbol {
-  display: grid;
-  place-items: center;
-  width: 27px;
-  height: 27px;
-  border: 1px solid color-mix(in srgb, var(--kira-color-accent) 62%, var(--kira-color-background));
-  border-radius: var(--kira-radius-sm);
-  background: color-mix(in srgb, var(--kira-color-accent) 11%, var(--kira-color-background));
-  color: var(--kira-color-accent);
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.08em;
-  line-height: 1;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--kira-color-accent) 12%, transparent);
-}
-
-.brand__wordmark {
-  color: var(--kira-color-text);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  line-height: 1;
-}
-
-.bar__separator {
-  flex: none;
-  width: 1px;
-  height: 15px;
-  background: color-mix(in srgb, var(--kira-color-muted) 27%, transparent);
-}
-
-.bar__center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.bar__center-line {
-  width: 23px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--kira-color-muted));
-  opacity: 0.5;
-}
-
-.bar__center-line:last-child {
-  transform: rotate(180deg);
-}
-
-.bar__center-title {
-  white-space: nowrap;
-  color: var(--kira-color-accent);
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 0.19em;
-}
-
-.bar__center-title span {
-  color: var(--kira-color-text-secondary);
-  font-weight: 550;
-}
-
-.clock {
-  justify-content: flex-end;
-  gap: var(--kira-space-2);
-  min-width: 56px;
-  color: var(--kira-color-text);
-}
-
-.clock__icon {
-  width: 14px;
-  height: 14px;
-  color: var(--kira-color-accent);
-}
-
-.clock time {
-  font-size: 12px;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-}
-
-@media (max-width: 820px) {
-  .bar__center {
-    display: none;
-  }
-}
-
-@media (max-width: 540px) {
-  .bar {
-    padding-inline: var(--kira-space-2);
+@layer base {
+  :root {
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    color: var(--kira-color-text);
+    background: var(--kira-color-background);
   }
 
-  .bar__start,
-  .bar__end {
-    gap: var(--kira-space-2);
+  html, body, #app {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 
-  .brand__wordmark,
-  .clock__icon {
-    display: none;
+  /* Keep an explicit keyboard-visible outline even outside our components. */
+  :focus-visible {
+    outline-color: var(--kira-color-accent);
   }
-}
 
-@media (max-width: 380px) {
-  .bar__end > .bar__separator {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -6153,10 +7705,11 @@ FILE	frontend/tsconfig.json
 FILE	frontend/vite.config.ts
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   base: './',
-  plugins: [svelte()],
+  plugins: [tailwindcss(), svelte()],
 });
 
 FILE	nix/package.nix
@@ -6189,7 +7742,7 @@ let
     inherit version;
     src = ../frontend;
 
-    npmDepsHash = "sha256-1IUE4ratidBWc+ZT2v/Ke0lA3MnmVrPdYz153s6uqps=";
+    npmDepsHash = "sha256-jZ7ayT9r36uj+XVhZXFrHOY8NGwnlKf7kpAwgaT9FuM=";
     npmBuildScript = "build";
 
     installPhase = ''
@@ -6203,7 +7756,16 @@ let
   # cleanCargoSource excludes unrelated frontend/docs changes from the Rust
   # derivation. Crane creates a dummy source tree for buildDepsOnly, so edits
   # to .rs files do NOT invalidate compiled GTK/WebKit/GObject Rust crates.
-  rustSrc = craneLib.cleanCargoSource ../.;
+  # Cargo source filtering would drop GTK CSS included by native_ui.rs and
+  # the overlays. Retain only these assets, without pulling in frontend edits.
+  rustSrc = lib.cleanSourceWith {
+    src = ../.;
+    filter = path: type:
+      (lib.hasSuffix "/crates/kira-shell/src/launcher.css" (toString path))
+      || (lib.hasSuffix "/crates/kira-shell/src/calendar.css" (toString path))
+      || (lib.hasSuffix "/crates/kira-shell/src/native-palette.css" (toString path))
+      || craneLib.filterCargoSources path type;
+  };
   commonRustArgs = {
     src = rustSrc;
     inherit version;
@@ -6979,6 +8541,119 @@ def capture(
         save()
         raise
 
+FILE	tests/test_calendar_design.py
+"""Static GTK integration checks; real compiler + Wayland checks run in Nix CI."""
+import re
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+RUST = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+MODEL = (ROOT / "crates/kira-shell/src/calendar_model.rs").read_text()
+CSS = (ROOT / "crates/kira-shell/src/calendar.css").read_text()
+SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+FRONTEND = (ROOT / "frontend/src/App.svelte").read_text()
+NIX = (ROOT / "nix/package.nix").read_text()
+
+
+class CalendarDesignTests(unittest.TestCase):
+    def test_only_custom_calendar_grid(self):
+        self.assertIn("gtk::Grid::new()", RUST)
+        self.assertIn("gtk::Button::new()", RUST)
+        self.assertIn("month_grid(state.year, state.month)", RUST)
+        self.assertNotIn("gtk::Calendar", RUST)
+        self.assertNotIn("calendar.kira-calendar-grid", CSS)
+        for selector in (
+            "button.kira-day", "button.kira-day.kira-day-selected",
+            "button.kira-calendar-nav", "button.kira-calendar-copy",
+            ".kira-calendar-today-button", ".kira-grid-week",
+            ".kira-calendar-month", ".kira-calendar-year",
+        ):
+            self.assertIn(selector, CSS)
+
+    def test_copy_date_is_plain_orange_text_not_a_tab_or_chip(self):
+        block = CSS.split("button.kira-calendar-copy {", 1)[1].split("}", 1)[0]
+        self.assertIn("min-height: 29px;", block)
+        self.assertIn("padding: 0 4px;", block)
+        self.assertIn("border: 0;", block)
+        self.assertIn("border-radius: 0;", block)
+        self.assertIn("background: transparent;", block)
+        self.assertIn("color: @kira_orange;", block)
+        self.assertNotIn("border-bottom:", block)
+        for state in ("hover", "active"):
+            rule = CSS.split(f"button.kira-calendar-copy:{state} {{", 1)[1].split("}", 1)[0]
+            self.assertIn("background: transparent;", rule)
+            self.assertNotIn("border:", rule)
+        self.assertIn("button.kira-calendar-copy:focus-visible", CSS)
+        self.assertIn('copy.set_label("COPIED ✓")', RUST)
+        today = CSS.split("button.kira-calendar-today-button {", 1)[1].split("}", 1)[0]
+        self.assertIn("background: transparent;", today)
+
+    def test_selected_keyboard_focus_contrasts_with_selected_fill(self):
+        # Orange selection cannot also use an orange focus ring.
+        rule = CSS.split("button.kira-day.kira-day-selected:focus-visible {", 1)[1].split("}", 1)[0]
+        self.assertIn("outline: 2px solid @kira_black;", rule)
+        self.assertIn("outline-offset: -3px;", rule)
+
+    def test_interactive_adjacent_days_pass_normal_text_contrast(self):
+        match = re.search(
+            r"button\.kira-day\.kira-day-adjacent\s*\{\s*"
+            r"color:\s*rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\);",
+            CSS,
+        )
+        self.assertIsNotNone(match)
+        r, g, b = map(int, match.groups()[:3])
+        alpha = float(match.group(4))
+        background = (20, 33, 61)
+        foreground = tuple(alpha * c + (1 - alpha) * bg
+                           for c, bg in zip((r, g, b), background))
+
+        def luminance(channels):
+            def linear(v):
+                v /= 255.0
+                return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+            return sum(weight * linear(channel) for weight, channel in
+                       zip((0.2126, 0.7152, 0.0722), channels))
+
+        lighter, darker = sorted((luminance(foreground), luminance(background)), reverse=True)
+        self.assertGreaterEqual((lighter + 0.05) / (darker + 0.05), 4.5)
+
+    def test_date_model_and_keyboard(self):
+        for token in (
+            "pub fn month_grid", "pub fn shift_month", "pub fn iso_week",
+            "fn leap_years_and_century_rules",
+            "fn dates_round_trip_across_gregorian_boundaries",
+            "fn iso_week_year_crossing_and_day_of_year",
+        ):
+            self.assertIn(token, MODEL)
+        for token in (
+            "set_exclusive_zone(0)", "set_keyboard_mode(KeyboardMode::OnDemand)",
+            "gtk::gdk::Key::Escape", "gtk::gdk::Key::Left",
+            "gtk::gdk::Key::Page_Up", "gtk::gdk::Key::Page_Down",
+            "shift_days(7)", "shift_days(-7)", "clipboard().set_text",
+            "timeout_add_seconds_local(1", "picker.render(false)",
+            "copy.set_tooltip_text", "Rc::downgrade(&picker)",
+        ):
+            self.assertIn(token, RUST)
+
+    def test_webkit_bridge_and_packaged_css(self):
+        self.assertIn("mod calendar;", SHELL)
+        self.assertIn("mod calendar_model;", SHELL)
+        self.assertIn('register_script_message_handler("kiraCalendar", None)', SHELL)
+        self.assertIn('if value.to_string() == "toggle"', SHELL)
+        self.assertIn("postNativeCommand('kiraCalendar', 'toggle')", SDK)
+        self.assertIn("channel.postMessage(command)", SDK)
+        self.assertIn("onclick={activateCalendar}", FRONTEND)
+        self.assertIn('aria-haspopup="dialog"', FRONTEND)
+        self.assertIn("calendar.css", NIX)
+        self.assertIn('include_str!("calendar.css")', RUST)
+        self.assertIn("crate::native_ui::install_styles(", RUST)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
 FILE	tests/test_dev_preview.py
 """Mocked preview lifecycle tests. No graphics hardware or Niri required."""
 import importlib.util
@@ -7200,6 +8875,124 @@ while True: time.sleep(.1)
 if __name__ == "__main__":
     unittest.main()
 
+FILE	tests/test_launcher_design.py
+"""Contract checks for the GTK native editorial launcher, without a display."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+CSS = (ROOT / "crates/kira-shell/src/launcher.css").read_text()
+RUST = (ROOT / "crates/kira-shell/src/launcher.rs").read_text()
+HOST = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+
+
+class LauncherDesignTests(unittest.TestCase):
+    def test_selection_visual_contract(self):
+        self.assertIn("row.kira-app-row:selected .kira-app-rail", CSS)
+        self.assertIn("background: @kira_orange;", CSS)
+        self.assertIn("row.kira-app-row:selected .kira-app-name", CSS)
+        self.assertIn("color: @kira_orange;", CSS)
+        self.assertNotIn("box-shadow:", CSS)
+        self.assertNotIn("border: 2px", CSS)
+        self.assertIn("border: 1px solid", CSS)
+
+    def test_visual_hierarchy_and_states(self):
+        for selector in (
+            ".kira-launcher-card", ".kira-launcher-intro", ".kira-workbench",
+            ".kira-workbench-eyebrow", ".kira-catalog-label", ".kira-eyebrow",
+            ".kira-heading", "entry.kira-search-field:focus",
+            "row.kira-app-row:hover", "row.kira-app-row:selected",
+            ".kira-app-rail", ".kira-app-icon-shell", ".kira-app-detail",
+            ".kira-keycap",
+        ):
+            self.assertIn(selector, CSS)
+
+    def test_editorial_surface_not_monolithic_highlight(self):
+        self.assertIn("background: @kira_black;", CSS)
+        self.assertIn("background: @kira_prussian_blue;", CSS)
+        self.assertIn("row.kira-app-row:selected .kira-app-rail", CSS)
+        self.assertNotIn("row.kira-app-row:selected {\n  background: @kira_orange;", CSS)
+        self.assertIn('intro.add_css_class("kira-launcher-intro")', RUST)
+        self.assertIn('workbench.add_css_class("kira-workbench")', RUST)
+        self.assertIn('rail.add_css_class("kira-app-rail")', RUST)
+
+    def test_native_wiring_and_search(self):
+        for required in (
+            'include_str!("launcher.css")', "gio::AppInfo::all()",
+            "info.should_show()", "set_filter_func", "connect_search_changed",
+            "connect_key_pressed", "KeyboardMode::Exclusive", "set_exclusive_zone(0)",
+            'app.info.launch(&[], None::<&gio::AppLaunchContext>)',
+        ):
+            self.assertIn(required, RUST)
+        self.assertIn('mod launcher;', HOST)
+        self.assertIn('register_script_message_handler("kiraLauncher"', HOST)
+        self.assertIn('launcher::show(', HOST)
+
+    def test_native_row_identity_survives_filtering(self):
+        self.assertIn('fn app_index(row: &gtk::ListBoxRow)', RUST)
+        self.assertIn('row.set_widget_name(&format!("kira-app-{index}"))', RUST)
+        self.assertNotIn('row.index()', RUST.split('fn app_index', 1)[1].split('fn visible_rows', 1)[1])
+        self.assertIn('.is_child_visible()', RUST)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_native_theme.py
+"""Single native palette and shared overlay plumbing; no GTK display required."""
+import re
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+NATIVE = ROOT / "crates/kira-shell/src"
+PALETTE = (NATIVE / "native-palette.css").read_text()
+HELPERS = (NATIVE / "native_ui.rs").read_text()
+LAUNCHER = (NATIVE / "launcher.rs").read_text()
+CALENDAR = (NATIVE / "calendar.rs").read_text()
+FRONTEND = (ROOT / "frontend/src/lib/themes/kira-default.css").read_text()
+NIX = (ROOT / "nix/package.nix").read_text()
+SHELL = (NATIVE / "main.rs").read_text()
+
+
+class NativeThemeContractTests(unittest.TestCase):
+    def test_one_canonical_palette_for_both_native_overlays(self):
+        colors = dict(re.findall(
+            r"@define-color (kira_[a-z_]+) (#[0-9a-fA-F]{8});", PALETTE
+        ))
+        expected = {
+            "kira_black": ("black", "#000000ff"),
+            "kira_prussian_blue": ("prussian-blue", "#14213dff"),
+            "kira_orange": ("orange", "#fca311ff"),
+            "kira_alabaster_grey": ("alabaster-grey", "#e5e5e5ff"),
+            "kira_white": ("white", "#ffffffff"),
+        }
+        self.assertEqual(colors, {k: value for k, (_, value) in expected.items()})
+        for key, (frontend_name, value) in expected.items():
+            self.assertIn(f"--{frontend_name}: {value};", FRONTEND, key)
+        for css in ("launcher.css", "calendar.css"):
+            source = (NATIVE / css).read_text()
+            self.assertNotIn("@define-color", source, css)
+            self.assertNotRegex(source, r"#[0-9a-fA-F]{8}\b")
+
+    def test_shared_style_provider_is_loaded_before_component_css(self):
+        self.assertIn('include_str!("native-palette.css")', HELPERS)
+        self.assertIn('format!("{}\\n{}", include_str!("native-palette.css"), styles)', HELPERS)
+        for component in (LAUNCHER, CALENDAR):
+            self.assertIn("native_ui::install_styles(", component)
+            self.assertIn("native_ui::dismiss_overlay(", component)
+            self.assertNotIn("gtk::CssProvider::new()", component)
+        self.assertIn("native_ui::find_overlay(", LAUNCHER)
+        self.assertIn("mod native_ui;", SHELL)
+
+    def test_nix_keeps_shared_css_in_native_rust_source(self):
+        for asset in ("launcher.css", "calendar.css", "native-palette.css"):
+            self.assertIn(f'/crates/kira-shell/src/{asset}', NIX)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
 FILE	tests/test_qa_visual.py
 """Unit tests for safe visual QA capture without a GPU or a real Niri."""
 import importlib.util
@@ -7414,6 +9207,37 @@ class VisualQATests(unittest.TestCase):
                 self.assertEqual(json.loads(manifests[0].read_text())["status"], "failed")
             finally:
                 server.close()
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_ui_bootstrap_contract.py
+"""Keep GTK, Svelte and WebKit bootstrap health checks framework-independent."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SELECTOR = "main[data-kira-ui-root]"
+
+
+class BootstrapContractTests(unittest.TestCase):
+    def test_svelte_root_matches_webkit_and_bootstrap(self):
+        app = (ROOT / "frontend/src/App.svelte").read_text()
+        bootstrap = (ROOT / "frontend/src/lib/bootstrap.ts").read_text()
+        shell = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+
+        self.assertIn("data-kira-ui-root", app)
+        self.assertIn(SELECTOR, bootstrap)
+        self.assertIn(SELECTOR, shell)
+        self.assertNotIn("main.bar", bootstrap)
+        self.assertNotIn("main.bar", shell)
+
+    def test_failure_is_not_overwritten_by_generic_timeout(self):
+        bootstrap = (ROOT / "frontend/src/lib/bootstrap.ts").read_text()
+        html = (ROOT / "frontend/index.html").read_text()
+        self.assertIn("bootstrapError", bootstrap)
+        self.assertIn("window.__kiraBoot.bootstrapError", html)
 
 
 if __name__ == "__main__":
