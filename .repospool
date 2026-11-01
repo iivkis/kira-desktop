@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3492
+index_bytes=3490
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,81 +15,81 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	c337894aa2b4676ffdcd247b10160e254d91ad73
+C	f700d28fed11e753b6627259b307dac10cdfc85c
 F	.cargo/config.toml	98	102	3
-F	.github/workflows/ci.yml	4105	107	105
-F	.github/workflows/nix.yml	2714	214	73
-F	.github/workflows/publish-repospool.yml	3048	289	83
-F	.gitignore	178	374	11
-F	.repospoolignore	1028	387	47
-F	Cargo.toml	494	436	22
-F	README.md	9636	460	219
-F	Taskfile.yml	5957	681	185
-F	config/kira.kdl.example	358	868	8
-F	crates/kira-core/Cargo.toml	207	878	10
-F	crates/kira-core/src/config.rs	15217	890	399
-F	crates/kira-core/src/main.rs	18357	1291	480
-F	crates/kira-core/src/niri.rs	16767	1773	453
-F	crates/kira-ipc/Cargo.toml	170	2228	9
-F	crates/kira-ipc/src/client.rs	10376	2239	277
-F	crates/kira-ipc/src/lib.rs	9053	2518	302
-F	crates/kira-shell/Cargo.toml	297	2822	12
-F	crates/kira-shell/src/calendar.rs	12799	2836	368
-F	crates/kira-shell/src/launcher.css	2924	3206	119
-F	crates/kira-shell/src/launcher.rs	10885	3327	300
-F	crates/kira-shell/src/main.rs	17475	3629	412
-F	crates/kira-shell/src/native-palette.css	353	4043	7
-F	crates/kira-shell/src/native_ui.rs	4908	4052	124
-F	crates/kira-shell/src/process_monitor.rs	6245	4178	202
-F	crates/kira-shell/src/process_page.rs	16357	4382	466
-F	crates/kira-shell/src/system_metrics.rs	7010	4850	214
-F	crates/kira-shell/src/system_panel.css	5154	5066	148
-F	crates/kira-shell/src/system_panel.rs	17263	5216	496
-F	docs/CONFIG.md	5801	5714	125
-F	docs/DESIGN_SYSTEM.md	15048	5841	276
-F	docs/DEVELOPMENT.md	23849	6119	486
-F	docs/QA_VISUAL.md	12284	6607	149
-F	docs/SPECIFICATION.md	28960	6758	421
-F	docs/UI_ARCHITECTURE.md	3667	7181	60
-F	docs/VISUAL_REVIEW.md	9754	7243	84
-F	flake.nix	2651	7329	76
-F	frontend/index.html	2737	7407	66
-F	frontend/package.json	650	7475	23
-F	frontend/scripts/inline-assets.mjs	4457	7500	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7605	106
-F	frontend/src/App.svelte	8659	7713	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7915	84
-F	frontend/src/lib/bootstrap.ts	2613	8001	70
-F	frontend/src/lib/calendar-model.test.ts	2097	8073	38
-F	frontend/src/lib/calendar-model.ts	3453	8113	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	8187	177
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8366	43
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8411	61
-F	frontend/src/lib/sdk/core.test.ts	12253	8474	245
-F	frontend/src/lib/sdk/core.ts	9240	8721	274
-F	frontend/src/lib/system-health.test.ts	2348	8997	41
-F	frontend/src/lib/system-health.ts	2831	9040	60
-F	frontend/src/lib/themes/kira-default.css	1687	9102	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	9156	101
-F	frontend/src/lib/themes/kira-default.ts	777	9259	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	9283	79
-F	frontend/src/lib/time.test.ts	263	9364	8
-F	frontend/src/lib/time.ts	320	9374	9
-F	frontend/src/main.ts	2063	9385	52
-F	frontend/src/style.css	1329	9439	44
-F	frontend/tsconfig.json	403	9485	16
-F	frontend/vite.config.ts	224	9503	8
-F	nix/package.nix	3430	9513	121
-F	scripts/dev_preview.py	18147	9636	403	x
-F	scripts/qa_visual.py	12052	10041	299
-F	tests/test_calendar_design.py	5173	10342	94
-F	tests/test_detailed_health.py	5510	10438	107
-F	tests/test_dev_preview.py	9339	10547	219
-F	tests/test_launcher_design.py	2915	10768	61
-F	tests/test_native_theme.py	2589	10831	55
-F	tests/test_popup_geometry.py	1675	10888	34
-F	tests/test_qa_visual.py	10549	10924	217
-F	tests/test_ui_bootstrap_contract.py	1103	11143	29
+F	.github/workflows/ci.yml	1467	107	46
+F	.github/workflows/nix.yml	1258	155	38
+F	.github/workflows/publish-repospool.yml	3048	195	83
+F	.gitignore	178	280	11
+F	.repospoolignore	1028	293	47
+F	Cargo.toml	494	342	22
+F	README.md	9636	366	219
+F	Taskfile.yml	5957	587	185
+F	config/kira.kdl.example	358	774	8
+F	crates/kira-core/Cargo.toml	207	784	10
+F	crates/kira-core/src/config.rs	15217	796	399
+F	crates/kira-core/src/main.rs	18357	1197	480
+F	crates/kira-core/src/niri.rs	16767	1679	453
+F	crates/kira-ipc/Cargo.toml	170	2134	9
+F	crates/kira-ipc/src/client.rs	10376	2145	277
+F	crates/kira-ipc/src/lib.rs	9053	2424	302
+F	crates/kira-shell/Cargo.toml	297	2728	12
+F	crates/kira-shell/src/calendar.rs	12799	2742	368
+F	crates/kira-shell/src/launcher.css	2924	3112	119
+F	crates/kira-shell/src/launcher.rs	10885	3233	300
+F	crates/kira-shell/src/main.rs	17475	3535	412
+F	crates/kira-shell/src/native-palette.css	353	3949	7
+F	crates/kira-shell/src/native_ui.rs	4908	3958	124
+F	crates/kira-shell/src/process_monitor.rs	6245	4084	202
+F	crates/kira-shell/src/process_page.rs	16357	4288	466
+F	crates/kira-shell/src/system_metrics.rs	7010	4756	214
+F	crates/kira-shell/src/system_panel.css	5154	4972	148
+F	crates/kira-shell/src/system_panel.rs	17263	5122	496
+F	docs/CONFIG.md	5801	5620	125
+F	docs/DESIGN_SYSTEM.md	15048	5747	276
+F	docs/DEVELOPMENT.md	24557	6025	498
+F	docs/QA_VISUAL.md	12284	6525	149
+F	docs/SPECIFICATION.md	28960	6676	421
+F	docs/UI_ARCHITECTURE.md	3667	7099	60
+F	docs/VISUAL_REVIEW.md	9754	7161	84
+F	flake.nix	2651	7247	76
+F	frontend/index.html	2737	7325	66
+F	frontend/package.json	650	7393	23
+F	frontend/scripts/inline-assets.mjs	4457	7418	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7523	106
+F	frontend/src/App.svelte	8659	7631	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7833	84
+F	frontend/src/lib/bootstrap.ts	2613	7919	70
+F	frontend/src/lib/calendar-model.test.ts	2097	7991	38
+F	frontend/src/lib/calendar-model.ts	3453	8031	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	8105	177
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8284	43
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8329	61
+F	frontend/src/lib/sdk/core.test.ts	12253	8392	245
+F	frontend/src/lib/sdk/core.ts	9240	8639	274
+F	frontend/src/lib/system-health.test.ts	2348	8915	41
+F	frontend/src/lib/system-health.ts	2831	8958	60
+F	frontend/src/lib/themes/kira-default.css	1687	9020	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9074	101
+F	frontend/src/lib/themes/kira-default.ts	777	9177	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9201	79
+F	frontend/src/lib/time.test.ts	263	9282	8
+F	frontend/src/lib/time.ts	320	9292	9
+F	frontend/src/main.ts	2063	9303	52
+F	frontend/src/style.css	1329	9357	44
+F	frontend/tsconfig.json	403	9403	16
+F	frontend/vite.config.ts	224	9421	8
+F	nix/package.nix	3430	9431	121
+F	scripts/dev_preview.py	18147	9554	403	x
+F	scripts/qa_visual.py	12052	9959	299
+F	tests/test_calendar_design.py	5173	10260	94
+F	tests/test_detailed_health.py	5510	10356	107
+F	tests/test_dev_preview.py	9339	10465	219
+F	tests/test_launcher_design.py	2915	10686	61
+F	tests/test_native_theme.py	2589	10749	55
+F	tests/test_popup_geometry.py	1675	10806	34
+F	tests/test_qa_visual.py	10549	10842	217
+F	tests/test_ui_bootstrap_contract.py	1103	11061	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -106,184 +106,90 @@ test-core = "test -p kira-ipc -p kira-core"
 FILE	.github/workflows/ci.yml
 name: CI
 
+# PRs run only the fast Core + Svelte checks. A branch push that already
+# has a PR must not launch the same tests again.
 on:
-  push:
   pull_request:
+  push:
+    branches: [main]
 
-# A trusted branch may receive a formatting-only commit before tests.
 permissions:
   contents: read
 
 concurrency:
   group: ci-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.event.pull_request.head.ref || github.ref_name }}
-  # A newer commit supersedes checks of an obsolete branch snapshot.
   cancel-in-progress: true
 
 jobs:
   check:
-    name: Lightweight Core + Frontend checks
+    name: Core + Svelte checks
     runs-on: ubuntu-24.04
-    permissions:
-      contents: write
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          # PR checkout's default synthetic merge commit is not pushable.
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.sha || github.sha }}
-          persist-credentials: false
-
       - name: Install Task
         uses: arduino/setup-task@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-
-      - name: Autoformat Rust before tests
-        run: cargo fmt --all
-
-      - name: Commit and push rustfmt on first-party feature branches
-        if: >-
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != 'refs/heads/main') ||
-          (github.event_name == 'pull_request' &&
-           github.event.pull_request.head.repo.full_name == github.repository &&
-           github.event.pull_request.head.ref != 'main')
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
-        run: |
-          if git diff --quiet --exit-code -- '*.rs'; then
-            echo "rustfmt: no changes."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- '*.rs'
-          git commit -m "style: apply rustfmt (CI)"
-          # A non-fast-forward push must fail, never overwrite newer work.
-          # The token is scoped to this step, not persisted by checkout.
-          auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
-          # Never rebase arbitrary branch changes inside CI. A newer branch
-          # has its own checks and gets its own rustfmt opportunity.
-          git -c http.extraheader="AUTHORIZATION: basic $auth" \
-            fetch --no-tags origin "refs/heads/$TARGET_BRANCH"
-          if [ "$(git rev-parse FETCH_HEAD)" != "$(git rev-parse HEAD^)" ]; then
-            echo "::notice::Branch advanced; skip obsolete rustfmt push."
-            exit 0
-          fi
-          if ! git -c http.extraheader="AUTHORIZATION: basic $auth" \
-              push origin "HEAD:refs/heads/$TARGET_BRANCH"; then
-            echo "::notice::Branch advanced during push; newer CI will format it."
-          fi
-
-      - name: Check formatting only on main and external PRs
-        if: >-
-          (github.event_name == 'push' && (github.ref == 'refs/heads/main' || !startsWith(github.ref, 'refs/heads/'))) ||
-          (github.event_name == 'pull_request' &&
-           github.event.pull_request.head.repo.full_name != github.repository)
-        run: |
-          if ! git diff --quiet --exit-code -- '*.rs'; then
-            echo "::error::rustfmt required: CI cannot commit to main or a fork."
-            git diff --stat
-            exit 1
-          fi
-
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
       - name: Install frontend dependencies
         run: npm ci --prefix frontend --no-audit --no-fund
-
-      - name: Run code checks and tests
+      # task check already runs cargo fmt --check, Clippy, Rust unit tests,
+      # Svelte type checking, Vitest, Python contracts and config validation.
+      # Never modify/push code from CI: that caused duplicate and cancelled runs.
+      - name: Check code and run tests
         run: task check
-
-      - name: Compile Core
-        run: cargo build --locked -p kira-core -p kira-ipc
-
-      - name: Build static frontend assets
+      - name: Build static Svelte assets
         run: task frontend:build
 
-  # The separate nix.yml workflow validates the GTK/WebKit native Shell.
-
 FILE	.github/workflows/nix.yml
-name: NixOS integration
+name: Nix package (nightly / manual)
 
-# Validate GTK API compatibility before the slow release package build.
-# The native check uses the development profile to report type errors early,
-# while the package build still validates the full distributed artifact.
+# GTK/WebKit native libraries and a full Nix/Crane release rebuild are far
+# too expensive to run on every PR. Use Actions -> Nix package -> Run
+# workflow (select the branch), or rely on the nightly check on main.
 on:
-  push:
-    branches: [main]
-    paths:
-      - flake.nix
-      - flake.lock
-      - nix/**
-      - Cargo.toml
-      - Cargo.lock
-      - crates/**
-      - scripts/**
-      - tests/**
-      - Taskfile.yml
-      - frontend/**
-      - .github/workflows/nix.yml
-  pull_request:
-    paths:
-      - flake.nix
-      - flake.lock
-      - nix/**
-      - Cargo.toml
-      - Cargo.lock
-      - crates/**
-      - scripts/**
-      - tests/**
-      - frontend/**
-      - Taskfile.yml
-      - .github/workflows/nix.yml
   workflow_dispatch:
+  schedule:
+    - cron: '37 3 * * *'
 
 permissions:
   contents: read
 
+concurrency:
+  group: nix-package-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   package:
-    name: Flake, nested Niri config and native Core/Shell package
+    name: Build full Nix release package
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      # Optional cache, disabled unless repo owner sets a cache name.
-      # Uploads only from trusted pushes to main; PRs can read shared outputs.
-      - name: Shared Nix cache (opt-in)
+      - name: Optional shared binary cache
         if: ${{ vars.KIRA_CACHIX_NAME != '' }}
         uses: cachix/cachix-action@v17
         with:
           name: ${{ vars.KIRA_CACHIX_NAME }}
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          skipPush: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
-      - name: Check flake outputs
-        run: nix flake check --no-build
-      - name: Validate nested Niri preview config
-        run: nix develop --command python3 scripts/dev_preview.py --validate-config
-      - name: Build packaged Tailwind frontend and verify npm lock/hash first
-        run: nix build .#frontend -L --show-trace
-      - name: Type-check native GTK Shell before release packaging
-        run: nix develop --command cargo check --locked -p kira-shell
-      - name: Run real Rust unit tests for Linux system metrics
-        run: nix develop --command cargo test --locked -p kira-shell system_metrics::tests -- --nocapture
-      - name: Verify process parser, CPU accounting and PID reuse
-        run: nix develop --command cargo test --locked -p kira-shell process_monitor::tests -- --nocapture
-      - name: Verify interactive process table sorting directions
-        run: nix develop --command cargo test --locked -p kira-shell process_page::tests -- --nocapture
-      - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
-        run: nix build .#default -L --show-trace
+      # The Nix build already compiles the frontend, Core and GTK/WebKit Shell.
+      # Do not additionally rebuild the same crates with cargo check and
+      # three separate cargo test invocations in different profiles.
+      - name: Build packaged Core, Shell and Svelte frontend
+        run: nix build .#default -L
 
 FILE	.github/workflows/publish-repospool.yml
 name: Publish RepoSpool context
@@ -6122,7 +6028,11 @@ FILE	docs/DEVELOPMENT.md
 
 Kira Desktop targets NixOS, Niri and Wayland. Flakes must be enabled. The repository commits the generated `Cargo.lock`, `flake.lock` and `frontend/package-lock.json`, as well as the verified frontend `npmDepsHash`.
 
-The GitHub Actions workflows are split into fast, non-graphical checks (`.github/workflows/ci.yml`) and native Nix integration (`.github/workflows/nix.yml`).
+Pull requests and main pushes run only the lightweight Core + Svelte checks
+(`.github/workflows/ci.yml`). The slow GTK/WebKit/Nix release build
+(`.github/workflows/nix.yml`) runs nightly on main or manually through
+GitHub Actions → **Nix package (nightly / manual)** → **Run workflow**
+(select the desired branch). It does not block PR iteration.
 
 ## Widget architecture migration
 
@@ -6173,8 +6083,10 @@ consecutive total-host tick counters, keyed by (PID, start-time) to
 avoid reuse. `process_page.rs` renders the custom GTK Processes tab,
 search and ascending/descending sorting by clicking the four
 table column headers, with no redundant SORT toolbar. No process termination, command lines, extra Core
-RPC or permanent process enumeration is included. The Nix CI executes
-both `system_metrics::tests` and `process_monitor::tests`.
+RPC or permanent process enumeration is included. The fast CI checks the
+Python contracts and Rust Core/IPC tests. Native shell test groups can be
+run locally with `nix develop --command cargo test --locked -p kira-shell`
+or before a release; the nightly/manual Nix workflow verifies full packaging.
 
 The remaining **GTK4 Launcher and System Monitor** use native
 `launcher.css` and `system_panel.css`. The Svelte Calendar reuses Tailwind
@@ -6198,25 +6110,29 @@ When adding npm dependencies, commit the updated
 `frontend/package-lock.json` and update `npmDepsHash` in
 `nix/package.nix`; otherwise `npm ci` or the Nix frontend package fails.
 `nix build .#frontend` isolates the frontend package so the npm lock/hash
-can be validated before the expensive native GTK/Rust build. The Nix
-integration CI runs this check first.
+can be validated before the expensive native GTK/Rust build. The
+nightly/manual Nix workflow performs one full `nix build .#default`,
+which includes the frontend package.
 
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibility,
 spacing, contrast and future widget conventions. The small HTML fallback in
 `frontend/index.html` uses the exact canonical colors because it runs before
 CSS assets finish loading.
 
-## Automatic rustfmt in CI
+## CI: fast by default
 
-The lightweight GitHub Actions CI runs `cargo fmt --all` **before tests**.
-For first-party feature branches it commits any resulting Rust changes
-and pushes the formatting-only commit without force-pushing. The same
-working tree is then checked and tested. No changes means no commit.
-Forked PRs and the protected `main` branch are check-only, with no
-formatting push. Checkout credentials are not persisted: a token is
-available only to the trusted push step. Formatting commits pushed using
-`GITHUB_TOKEN` do not launch an endless second CI run. Local
-`task fmt` still checks style.
+The lightweight workflow is read-only. It runs `task check` (including
+`cargo fmt --all -- --check`, Clippy, Rust/TypeScript/Svelte/Python tests and
+configuration checks) and `task frontend:build`. npm downloads and Cargo
+dependencies are cached between runs. There is no automatic Rust formatting
+commit, no branch rewrite and no duplicate branch-push/PR jobs.
+
+Native GTK/WebKit compilation and full release packaging are intentionally
+**not PR gates**. To verify a native Shell change before merging, run
+`nix develop --command cargo check --locked -p kira-shell` locally, or
+dispatch `Nix package (nightly / manual)` on that PR's branch in GitHub
+Actions. The scheduled build catches packaging regressions on main; it
+does not run every native Shell unit test.
 
 ## Safe nested development preview
 
@@ -6266,7 +6182,8 @@ nix build
 ./result/bin/kira-shell # terminal 2
 ```
 
-The native Nix package build is tested in CI; verify appearance and behavior manually under Niri. The user confirmed that the nested packaged QA smoke passed locally (Core bootstrap, WebKit/Svelte DOM, clean shutdown), but visual screenshot review remains pending.
+The native Nix package build is tested nightly or on manual dispatch, not per PR;
+verify appearance and behavior manually under Niri. The user confirmed that the nested packaged QA smoke passed locally (Core bootstrap, WebKit/Svelte DOM, clean shutdown), but visual screenshot review remains pending.
 
 ## Build caching and release iteration
 
@@ -6582,7 +6499,8 @@ configuration and is not modified by this feature.
 
 ## Updating dependencies
 
-The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Update them deliberately using the appropriate tooling and commit changes together with any required Nix hash update. The separate Nix integration workflow must pass after dependency changes.
+The initial lockfiles were generated by `.github/workflows/lockfiles.yml`. Update them deliberately using the appropriate tooling and commit changes together with any required Nix hash update. After dependency changes, trigger the Nix package workflow manually for
+the branch before release; PRs no longer start a full native rebuild.
 
 ## Next milestones
 
