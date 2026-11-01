@@ -4,6 +4,8 @@ use std::os::unix::net::UnixStream;
 use std::path::Path;
 use std::time::Duration;
 
+use serde::de::DeserializeOwned;
+
 use crate::{RpcRequest, RpcResponse};
 
 const MAX_RESPONSE_BYTES: u64 = 64 * 1024;
@@ -44,13 +46,12 @@ pub fn call(socket: &Path, request: &RpcRequest) -> io::Result<RpcResponse> {
     Ok(response)
 }
 
-/// Subscribe to live read-only workspace snapshots over one persistent
-/// Core connection. Each JSON-RPC frame repeats the id of the subscription
-/// request; the callback is invoked on the CALLER'S thread, not GTK's loop.
-/// Returns on disconnect so the caller can reconnect and mark the UI offline.
-pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
+/// Shared read-only JSON-RPC subscription transport. The public workspace
+/// and config entrypoints keep their own types and method names.
+fn subscribe<T: DeserializeOwned>(
     socket: &Path,
-    mut on_state: F,
+    method: &str,
+    mut on_state: impl FnMut(T),
 ) -> io::Result<()> {
     let mut stream = UnixStream::connect(socket)?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
@@ -58,7 +59,7 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
         params: None,
         jsonrpc: crate::PROTOCOL_VERSION.into(),
         id: 0,
-        method: "subscribe_workspaces".into(),
+        method: method.into(),
     };
     serde_json::to_writer(&mut stream, &request)?;
     stream.write_all(b"\n")?;
@@ -80,7 +81,7 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
         if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
-                "Invalid workspace frame",
+                "Invalid subscription frame",
             ));
         }
         let reply: RpcResponse = serde_json::from_slice(&line)?;
@@ -88,68 +89,33 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
         {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
-                "Invalid workspace reply",
+                "Invalid subscription reply",
             ));
         }
         let state = reply.result.ok_or_else(|| {
-            io::Error::new(io::ErrorKind::InvalidData, "Workspace result missing")
+            io::Error::new(io::ErrorKind::InvalidData, "Subscription result missing")
         })?;
-        let state: crate::WorkspaceState = serde_json::from_value(state)?;
-        on_state(state);
+        on_state(serde_json::from_value(state)?);
     }
 }
 
-/// Internal read-only config stream. Never called from the GTK main thread.
-/// Returns on disconnect so the Shell can preserve last applied config and
-/// reconnect. No JS command or filesystem write is exposed.
+/// Subscribe to live read-only workspace snapshots over one persistent
+/// Core connection. The callback runs on the caller's thread, never GTK.
+/// Returns on disconnect so the Shell can reconnect and mark the UI offline.
+pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
+    socket: &Path,
+    on_state: F,
+) -> io::Result<()> {
+    subscribe::<crate::WorkspaceState>(socket, "subscribe_workspaces", on_state)
+}
+
+/// Internal read-only config stream. The Shell retains its last-good config
+/// and reconnects after a disconnect. No JS or filesystem writes are exposed.
 pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
     socket: &Path,
-    mut on_state: F,
+    on_state: F,
 ) -> io::Result<()> {
-    let mut stream = UnixStream::connect(socket)?;
-    stream.set_write_timeout(Some(Duration::from_secs(2)))?;
-    let request = RpcRequest {
-        params: None,
-        jsonrpc: crate::PROTOCOL_VERSION.into(),
-        id: 0,
-        method: "subscribe_config".into(),
-    };
-    serde_json::to_writer(&mut stream, &request)?;
-    stream.write_all(b"\n")?;
-    stream.flush()?;
-
-    let mut reader = BufReader::new(stream);
-    loop {
-        let mut line = Vec::new();
-        reader
-            .by_ref()
-            .take(MAX_RESPONSE_BYTES + 1)
-            .read_until(b'\n', &mut line)?;
-        if line.is_empty() {
-            return Err(io::Error::new(
-                io::ErrorKind::UnexpectedEof,
-                "Core config stream closed",
-            ));
-        }
-        if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidData,
-                "Invalid config frame",
-            ));
-        }
-        let reply: RpcResponse = serde_json::from_slice(&line)?;
-        if reply.jsonrpc != crate::PROTOCOL_VERSION || reply.id != Some(0) || reply.error.is_some()
-        {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidData,
-                "Invalid config response",
-            ));
-        }
-        let value = reply
-            .result
-            .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Config result missing"))?;
-        on_state(serde_json::from_value(value)?);
-    }
+    subscribe::<crate::ConfigState>(socket, "subscribe_config", on_state)
 }
 
 #[cfg(test)]
@@ -259,6 +225,61 @@ mod tests {
         server.join().unwrap();
         std::fs::remove_file(path).unwrap();
         std::fs::remove_dir(dir).unwrap();
+    }
+
+    // Both public subscriptions must enforce the same trusted-frame contract.
+    fn assert_subscription_error(method: &str, frame: &[u8], expected: io::ErrorKind) {
+        let dir = std::env::temp_dir().join(format!(
+            "kira-sub-invalid-{}-{method}-{:?}",
+            std::process::id(),
+            thread::current().id()
+        ));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("core.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let frame = frame.to_vec();
+        let expected_method = method.to_string();
+        let server = thread::spawn(move || {
+            let (socket, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(socket);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            let request: RpcRequest = serde_json::from_str(&request).unwrap();
+            assert_eq!(request.method, expected_method);
+            let mut socket = reader.into_inner();
+            socket.write_all(&frame).unwrap();
+            socket.write_all(b"\n").unwrap();
+        });
+        let error = match method {
+            "subscribe_workspaces" => subscribe_workspaces(&path, |_| {}),
+            "subscribe_config" => subscribe_config(&path, |_| {}),
+            _ => unreachable!(),
+        }
+        .unwrap_err();
+        assert_eq!(error.kind(), expected, "{method}");
+        server.join().unwrap();
+        std::fs::remove_file(path).unwrap();
+        std::fs::remove_dir(dir).unwrap();
+    }
+
+    #[test]
+    fn both_subscriptions_reject_an_unexpected_response_id() {
+        let frame = serde_json::to_vec(&crate::RpcResponse::success(
+            12,
+            serde_json::json!({ "connected": true, "workspaces": [] }),
+        ))
+        .unwrap();
+        for method in ["subscribe_workspaces", "subscribe_config"] {
+            assert_subscription_error(method, &frame, io::ErrorKind::InvalidData);
+        }
+    }
+
+    #[test]
+    fn both_subscriptions_reject_oversized_frames() {
+        let frame = vec![b' '; MAX_RESPONSE_BYTES as usize + 1];
+        for method in ["subscribe_workspaces", "subscribe_config"] {
+            assert_subscription_error(method, &frame, io::ErrorKind::InvalidData);
+        }
     }
 
     #[test]

@@ -91,37 +91,19 @@ async fn read_bounded_line<R: AsyncBufRead + Unpin>(
     }
 }
 
-/// Keep a single read-only JSON-RPC connection open and send the latest
-/// workspace state whenever Core's Niri watch channel changes. Every frame
-/// uses the original subscription request id and is newline-delimited.
-async fn stream_workspaces(
+/// Stream the latest read-only state over a single subscribed JSON-RPC
+/// connection. Workspace and config channels share identical framing.
+async fn stream_state<T: Clone + serde::Serialize>(
     writer: &mut tokio::net::unix::OwnedWriteHalf,
-    mut workspaces: watch::Receiver<WorkspaceState>,
+    mut updates: watch::Receiver<T>,
     id: u64,
 ) -> io::Result<()> {
     loop {
-        let snapshot = workspaces.borrow_and_update().clone();
+        let snapshot = updates.borrow_and_update().clone();
         let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
         writer.write_all(&serde_json::to_vec(&response)?).await?;
         writer.write_all(b"\n").await?;
-        if workspaces.changed().await.is_err() {
-            return Ok(());
-        }
-    }
-}
-
-/// Internal read-only Core stream for active validated UI settings.
-async fn stream_config(
-    writer: &mut tokio::net::unix::OwnedWriteHalf,
-    mut config: watch::Receiver<ConfigState>,
-    id: u64,
-) -> io::Result<()> {
-    loop {
-        let snapshot = config.borrow_and_update().clone();
-        let response = RpcResponse::success(id, serde_json::to_value(snapshot)?);
-        writer.write_all(&serde_json::to_vec(&response)?).await?;
-        writer.write_all(b"\n").await?;
-        if config.changed().await.is_err() {
+        if updates.changed().await.is_err() {
             return Ok(());
         }
     }
@@ -144,13 +126,13 @@ async fn serve(
             {
                 // Internal streaming endpoint, not exposed through the WebKit
                 // JS RPC allowlist; one subscription per socket connection.
-                return Ok(stream_workspaces(&mut writer, workspaces, request.id).await?);
+                return Ok(stream_state(&mut writer, workspaces, request.id).await?);
             }
             Ok(request)
                 if request.method == "subscribe_config"
                     && request.jsonrpc == kira_ipc::PROTOCOL_VERSION =>
             {
-                return Ok(stream_config(&mut writer, config, request.id).await?);
+                return Ok(stream_state(&mut writer, config, request.id).await?);
             }
             Ok(request)
                 if request.method == "focus_workspace"

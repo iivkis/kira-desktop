@@ -503,6 +503,7 @@ name = "kira-core"
 version = "0.1.0"
 dependencies = [
  "kira-ipc",
+ "serde",
  "serde_json",
  "tokio",
 ]
