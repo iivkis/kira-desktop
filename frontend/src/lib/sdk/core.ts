@@ -89,6 +89,30 @@ export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () 
   return onNativeEvent('kira:system-metrics', isSystemMetrics, callback);
 }
 
+/** Lightweight native CPU/RAM samples at 100ms, only while Overview is open.
+ * Expensive GPU/hwmon/process/storage measurements remain on slower feeds.
+ */
+export interface SystemPulse {
+  cpu_percent: number | null;
+  memory_total_kib: number | null;
+  memory_available_kib: number | null;
+}
+
+export function onSystemPulse(callback: (pulse: SystemPulse) => void): () => void {
+  const validKiB = (value: unknown) => value === null ||
+    (typeof value === 'number' && Number.isSafeInteger(value) && value >= 0);
+  return onNativeEvent('kira:system:pulse', (value): value is SystemPulse =>
+    isRecord(value) &&
+    (value.cpu_percent === null ||
+      (typeof value.cpu_percent === 'number' && Number.isInteger(value.cpu_percent) &&
+       value.cpu_percent >= 0 && value.cpu_percent <= 100)) &&
+    validKiB(value.memory_total_kib) &&
+    validKiB(value.memory_available_kib) &&
+    (value.memory_total_kib === null || value.memory_available_kib === null ||
+      (value.memory_available_kib as number) <= (value.memory_total_kib as number)),
+    callback);
+}
+
 export interface SystemOverlayData {
   metrics: SystemMetrics;
   core: boolean;
