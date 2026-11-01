@@ -174,13 +174,19 @@ fn utilization(text: &str) -> Option<u8> {
 
 fn hwmon_temperature(root: &Path, cpu: bool) -> Option<f64> {
     let entries = fs::read_dir(root).ok()?;
-    let mut sensors: Vec<(u8, f64)> = Vec::new();
     for directory in entries.flatten() {
-        if !directory.file_name().to_string_lossy().starts_with("hwmon") {
-            continue;
+        if directory.file_name().to_string_lossy().starts_with("hwmon")
+            && let Some(value) = hwmon_temperature_for_device(&directory.path(), cpu)
+        {
+            return Some(value);
         }
-        let path = directory.path();
-        for index in 1..=MAX_HWMON_SENSORS {
+    }
+    None
+}
+
+fn hwmon_temperature_for_device(path: &Path, cpu: bool) -> Option<f64> {
+    let mut sensors: Vec<(u8, f64)> = Vec::new();
+    for index in 1..=MAX_HWMON_SENSORS {
             let input = path.join(format!("temp{index}_input"));
             let Some(value) = read_small(&input).and_then(|text| temperature_c(&text)) else {
                 continue;
@@ -209,7 +215,6 @@ fn hwmon_temperature(root: &Path, cpu: bool) -> Option<f64> {
                 2
             };
             sensors.push((priority, value));
-        }
     }
     sensors.sort_by_key(|sensor| sensor.0);
     sensors.first().map(|sensor| sensor.1)
@@ -219,7 +224,9 @@ fn cpu_temperature(sys: &Path) -> Option<f64> {
     let entries = fs::read_dir(sys.join("class/hwmon")).ok()?;
     for entry in entries.flatten() {
         let path = entry.path();
-        let name = read_small(&path.join("name"))?;
+        let Some(name) = read_small(&path.join("name")) else {
+            continue;
+        };
         if matches!(
             name.trim(),
             "coretemp" | "k10temp" | "zenpower" | "cpu_thermal" | "cpu-thermal"
@@ -244,17 +251,6 @@ fn cpu_temperature(sys: &Path) -> Option<f64> {
         }
     }
     None
-}
-
-fn hwmon_temperature_for_device(path: &Path, cpu: bool) -> Option<f64> {
-    let parent = path.parent()?;
-    // Reuse the bounded sensor parser without traversing unrelated devices:
-    // it only matches hwmon* directories under this parent.
-    let entry = path.file_name()?.to_string_lossy();
-    if !entry.starts_with("hwmon") {
-        return None;
-    }
-    hwmon_temperature(parent, cpu)
 }
 
 fn gpu_label(card: &str, vendor: &str, uevent: &str) -> String {
