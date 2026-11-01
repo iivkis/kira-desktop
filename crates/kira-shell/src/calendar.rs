@@ -251,7 +251,11 @@ impl CalendarOverlay {
     }
 
     fn send_metrics(&self) {
-        let data = self.system.borrow().as_ref().map(|model| model.metrics_json());
+        let data = self
+            .system
+            .borrow()
+            .as_ref()
+            .map(|model| model.metrics_json());
         if let Some(payload) = data {
             self.dispatch_data("kira:system:data", payload);
             self.last_metrics.set(Some(Instant::now()));
@@ -262,10 +266,18 @@ impl CalendarOverlay {
         if !self.requested.get() || self.active.get() != Some(Surface::System) {
             return;
         }
-        if self.last_metrics.get().is_none_or(|then| then.elapsed() >= Duration::from_secs(2)) {
+        if self
+            .last_metrics
+            .get()
+            .is_none_or(|then| then.elapsed() >= Duration::from_secs(2))
+        {
             self.send_metrics();
         }
-        let process = self.system.borrow().as_ref().and_then(|model| model.poll_processes());
+        let process = self
+            .system
+            .borrow()
+            .as_ref()
+            .and_then(|model| model.poll_processes());
         if let Some(payload) = process {
             self.dispatch_data("kira:system:processes", payload);
         }
@@ -564,8 +576,14 @@ mod tests {
         }
         assert_eq!(calendar_command("close"), Some(UiCommand::Close));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
-        assert_eq!(calendar_command("tab:processes"), Some(UiCommand::ProcessesTab(true)));
-        assert_eq!(calendar_command("tab:overview"), Some(UiCommand::ProcessesTab(false)));
+        assert_eq!(
+            calendar_command("tab:processes"),
+            Some(UiCommand::ProcessesTab(true))
+        );
+        assert_eq!(
+            calendar_command("tab:overview"),
+            Some(UiCommand::ProcessesTab(false))
+        );
         assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
         assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
