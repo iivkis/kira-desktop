@@ -95,6 +95,7 @@ pub fn show(application: &gtk::Application) {
         return;
     }
     crate::calendar::dismiss(application);
+    crate::system_panel::dismiss(application);
     install_style();
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));

@@ -224,6 +224,7 @@ pub fn toggle(application: &gtk::Application) {
         return;
     }
     crate::launcher::dismiss(application);
+    crate::system_panel::dismiss(application);
     install_style();
 
     let window = gtk::ApplicationWindow::new(application);

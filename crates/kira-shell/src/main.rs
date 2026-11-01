@@ -4,8 +4,12 @@ mod calendar;
 mod calendar_model;
 mod launcher;
 mod native_ui;
+mod system_metrics;
+mod system_panel;
 mod ui_assets;
+use std::cell::{Cell, RefCell};
 use std::env;
+use std::rc::Rc;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::time::Duration;
@@ -24,6 +28,8 @@ enum ShellDelivery {
     Rpc(String),
     Workspaces(WorkspaceState),
     Config(ConfigState),
+    CoreAvailability(bool),
+    Metrics(system_metrics::Snapshot),
 }
 
 fn ui_index() -> PathBuf {
@@ -163,6 +169,22 @@ fn main() {
         // return to the GTK main loop through this channel.
         let (sender, receiver) = mpsc::channel::<ShellDelivery>();
         let socket = core_socket();
+        let latest_metrics = Rc::new(RefCell::new(system_metrics::Snapshot::default()));
+        let core_online = Rc::new(Cell::new(false));
+        let niri_online = Rc::new(Cell::new(false));
+
+        // Only cheap read-only kernel files are sampled off the GTK thread.
+        // The monitor stops when the UI receiver has been dropped.
+        let metrics_tx = sender.clone();
+        std::thread::spawn(move || {
+            let mut sampler = system_metrics::Sampler::default();
+            loop {
+                if metrics_tx.send(ShellDelivery::Metrics(sampler.sample())).is_err() {
+                    break;
+                }
+                std::thread::sleep(Duration::from_secs(2));
+            }
+        });
 
         // One long-lived, read-only Core subscription. Core receives Niri
         // EventStream and immediately forwards changed snapshots to this
@@ -172,9 +194,11 @@ fn main() {
             std::thread::spawn(move || {
                 loop {
                     let result = kira_ipc::client::subscribe_workspaces(&path, |state| {
+                        let _ = updates.send(ShellDelivery::CoreAvailability(true));
                         let _ = updates.send(ShellDelivery::Workspaces(state));
                     });
-                    // Never show stale workspace data after a Core failure.
+                    // Never show stale status after a Core stream disconnect.
+                    let _ = updates.send(ShellDelivery::CoreAvailability(false));
                     let _ = updates.send(ShellDelivery::Workspaces(WorkspaceState::default()));
                     if let Err(error) = result {
                         eprintln!("kira-shell: Core workspace stream disconnected: {error}");
@@ -242,6 +266,24 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraCalendar", None));
 
+        // Fixed-purpose system diagnostics toggle. GTK samples the kernel
+        // read-only; the page can neither supply metric values nor commands.
+        let system_app = app.clone();
+        let system_stats = latest_metrics.clone();
+        let system_core = core_online.clone();
+        let system_niri = niri_online.clone();
+        manager.connect_script_message_received(Some("kiraSystem"), move |_, value| {
+            if value.to_string() == "toggle" {
+                system_panel::toggle(
+                    &system_app,
+                    system_stats.clone(),
+                    system_core.clone(),
+                    system_niri.clone(),
+                );
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraSystem", None));
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -277,6 +319,7 @@ fn main() {
                 let (event, payload) = match delivery {
                     ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
                     ShellDelivery::Workspaces(state) => {
+                        niri_online.set(state.connected);
                         let Ok(serialized) = serde_json::to_string(&state) else {
                             continue;
                         };
@@ -287,6 +330,14 @@ fn main() {
                             continue;
                         };
                         ("kira:config", serialized)
+                    }
+                    ShellDelivery::CoreAvailability(online) => {
+                        core_online.set(online);
+                        continue;
+                    }
+                    ShellDelivery::Metrics(snapshot) => {
+                        *latest_metrics.borrow_mut() = snapshot.clone();
+                        ("kira:system-metrics", snapshot.as_json().to_string())
                     }
                 };
                 if let Ok(encoded) = serde_json::to_string(&payload) {
