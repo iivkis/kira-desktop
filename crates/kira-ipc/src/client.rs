@@ -391,8 +391,12 @@ mod tests {
             &path,
             |state| observed.push(state.connected),
             Duration::from_millis(150),
-        ).unwrap_err();
-        assert!(matches!(error.kind(), io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut));
+        )
+        .unwrap_err();
+        assert!(matches!(
+            error.kind(),
+            io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut
+        ));
         assert_eq!(observed, vec![true]);
         server.join().unwrap();
         std::fs::remove_dir_all(directory).unwrap();
@@ -427,8 +431,12 @@ mod tests {
             &path,
             |state| observed.push(state),
             Duration::from_millis(150),
-        ).unwrap_err();
-        assert!(matches!(error.kind(), io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut));
+        )
+        .unwrap_err();
+        assert!(matches!(
+            error.kind(),
+            io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut
+        ));
         assert_eq!(observed, vec![crate::ConfigState::default()]);
         server.join().unwrap();
         std::fs::remove_dir_all(directory).unwrap();
