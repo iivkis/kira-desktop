@@ -95,6 +95,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-calendar-odometer", !!clock && clock.querySelectorAll("[data-clock-digit]").length === 6 && !!clock.getAttribute("aria-label") && !!clock.getAttribute("datetime") && clock.querySelectorAll("[data-clock-cell]").length === 6);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
+      'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
