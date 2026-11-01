@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3876
+index_bytes=3880
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,88 +15,88 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	101e02c43c7df7a6b5edc6020a59c7844ceff70c
+C	826026867afd6be6ca247c284c9f73dc9b7b5da0
 F	.cargo/config.toml	98	109	3
-F	.github/workflows/ci.yml	1467	114	46
-F	.github/workflows/nix.yml	1258	162	38
-F	.github/workflows/overlay-smoke.yml	912	202	34
-F	.github/workflows/publish-repospool.yml	3048	238	83
-F	.gitignore	178	323	11
-F	.repospoolignore	1028	336	47
-F	Cargo.toml	494	385	22
-F	README.md	9636	409	219
-F	Taskfile.yml	5957	630	185
-F	config/kira.kdl.example	358	817	8
-F	crates/kira-core/Cargo.toml	207	827	10
-F	crates/kira-core/src/config.rs	15217	839	399
-F	crates/kira-core/src/main.rs	26110	1240	675
-F	crates/kira-core/src/niri.rs	16767	1917	453
-F	crates/kira-ipc/Cargo.toml	170	2372	9
-F	crates/kira-ipc/src/client.rs	10376	2383	277
-F	crates/kira-ipc/src/lib.rs	9053	2662	302
-F	crates/kira-shell/Cargo.toml	297	2966	12
-F	crates/kira-shell/src/calendar.rs	35633	2980	966
-F	crates/kira-shell/src/launcher.rs	7606	3948	223
-F	crates/kira-shell/src/main.rs	17601	4173	414
-F	crates/kira-shell/src/native_ui.rs	2857	4589	73
-F	crates/kira-shell/src/process_monitor.rs	6245	4664	202
-F	crates/kira-shell/src/system_metrics.rs	7010	4868	214
-F	crates/kira-shell/src/system_panel.rs	7948	5084	226
-F	docs/CONFIG.md	5801	5312	125
-F	docs/DESIGN_SYSTEM.md	15048	5439	276
-F	docs/DEVELOPMENT.md	27700	5717	547
-F	docs/QA_VISUAL.md	12284	6266	149
-F	docs/SPECIFICATION.md	28960	6417	421
-F	docs/UI_ARCHITECTURE.md	6737	6840	106
-F	docs/VISUAL_REVIEW.md	9754	6948	84
-F	flake.nix	2651	7034	76
-F	frontend/index.html	2737	7112	66
-F	frontend/package.json	650	7180	23
-F	frontend/scripts/inline-assets.mjs	4457	7205	103
-F	frontend/scripts/inline-assets.test.mjs	4645	7310	106
-F	frontend/scripts/smoke-overlays.mjs	10812	7418	175
-F	frontend/src/App.svelte	8659	7595	200
-F	frontend/src/lib/bootstrap.test.ts	3408	7797	84
-F	frontend/src/lib/bootstrap.ts	2613	7883	70
-F	frontend/src/lib/calendar-model.test.ts	2097	7955	38
-F	frontend/src/lib/calendar-model.ts	3453	7995	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	8069	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	8248	176
-F	frontend/src/lib/components/SystemHealth.svelte	1684	8426	43
-F	frontend/src/lib/components/SystemWidget.svelte	10632	8471	189
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8662	61
-F	frontend/src/lib/launcher-model.test.ts	1370	8725	29
-F	frontend/src/lib/launcher-model.ts	778	8756	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	8776	89
-F	frontend/src/lib/lazy-widget.ts	1984	8867	63
-F	frontend/src/lib/overlay-size.ts	1090	8932	29
-F	frontend/src/lib/sdk/core.test.ts	20006	8963	403
-F	frontend/src/lib/sdk/core.ts	15992	9368	432
-F	frontend/src/lib/system-health.test.ts	2348	9802	41
-F	frontend/src/lib/system-health.ts	2831	9845	60
-F	frontend/src/lib/system-model.test.ts	2988	9907	57
-F	frontend/src/lib/system-model.ts	3411	9966	76
-F	frontend/src/lib/themes/kira-default.css	1687	10044	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	10098	101
-F	frontend/src/lib/themes/kira-default.ts	777	10201	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	10225	79
-F	frontend/src/lib/time.test.ts	263	10306	8
-F	frontend/src/lib/time.ts	320	10316	9
-F	frontend/src/main.ts	5907	10327	127
-F	frontend/src/style.css	2993	10456	91
-F	frontend/tsconfig.json	403	10549	16
-F	frontend/vite.config.ts	224	10567	8
-F	nix/package.nix	3132	10577	117
-F	scripts/dev_preview.py	18147	10696	403	x
-F	scripts/qa_visual.py	12052	11101	299
-F	tests/test_calendar_design.py	6835	11402	121
-F	tests/test_detailed_health.py	5195	11525	101
-F	tests/test_dev_preview.py	9339	11628	219
-F	tests/test_launcher_design.py	8709	11849	160
-F	tests/test_native_theme.py	1567	12011	36
-F	tests/test_popup_geometry.py	6956	12049	118
-F	tests/test_qa_visual.py	10549	12169	217
-F	tests/test_ui_bootstrap_contract.py	1103	12388	29
+F	.github/workflows/ci.yml	4152	114	109
+F	.github/workflows/nix.yml	1258	225	38
+F	.github/workflows/overlay-smoke.yml	912	265	34
+F	.github/workflows/publish-repospool.yml	3048	301	83
+F	.gitignore	178	386	11
+F	.repospoolignore	1028	399	47
+F	Cargo.toml	494	448	22
+F	README.md	10491	472	235
+F	Taskfile.yml	5957	709	185
+F	config/kira.kdl.example	358	896	8
+F	crates/kira-core/Cargo.toml	207	906	10
+F	crates/kira-core/src/config.rs	15217	918	399
+F	crates/kira-core/src/main.rs	26110	1319	675
+F	crates/kira-core/src/niri.rs	16767	1996	453
+F	crates/kira-ipc/Cargo.toml	170	2451	9
+F	crates/kira-ipc/src/client.rs	10376	2462	277
+F	crates/kira-ipc/src/lib.rs	9053	2741	302
+F	crates/kira-shell/Cargo.toml	297	3045	12
+F	crates/kira-shell/src/calendar.rs	35633	3059	966
+F	crates/kira-shell/src/launcher.rs	7606	4027	223
+F	crates/kira-shell/src/main.rs	17601	4252	414
+F	crates/kira-shell/src/native_ui.rs	2857	4668	73
+F	crates/kira-shell/src/process_monitor.rs	6245	4743	202
+F	crates/kira-shell/src/system_metrics.rs	7010	4947	214
+F	crates/kira-shell/src/system_panel.rs	7948	5163	226
+F	docs/CONFIG.md	5801	5391	125
+F	docs/DESIGN_SYSTEM.md	15048	5518	276
+F	docs/DEVELOPMENT.md	27700	5796	547
+F	docs/QA_VISUAL.md	12284	6345	149
+F	docs/SPECIFICATION.md	28960	6496	421
+F	docs/UI_ARCHITECTURE.md	6737	6919	106
+F	docs/VISUAL_REVIEW.md	9754	7027	84
+F	flake.nix	3181	7113	91
+F	frontend/index.html	2737	7206	66
+F	frontend/package.json	650	7274	23
+F	frontend/scripts/inline-assets.mjs	4457	7299	103
+F	frontend/scripts/inline-assets.test.mjs	4645	7404	106
+F	frontend/scripts/smoke-overlays.mjs	10812	7512	175
+F	frontend/src/App.svelte	8659	7689	200
+F	frontend/src/lib/bootstrap.test.ts	3408	7891	84
+F	frontend/src/lib/bootstrap.ts	2613	7977	70
+F	frontend/src/lib/calendar-model.test.ts	2097	8049	38
+F	frontend/src/lib/calendar-model.ts	3453	8089	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	8163	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	8342	176
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8520	43
+F	frontend/src/lib/components/SystemWidget.svelte	10632	8565	189
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8756	61
+F	frontend/src/lib/launcher-model.test.ts	1370	8819	29
+F	frontend/src/lib/launcher-model.ts	778	8850	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	8870	89
+F	frontend/src/lib/lazy-widget.ts	1984	8961	63
+F	frontend/src/lib/overlay-size.ts	1090	9026	29
+F	frontend/src/lib/sdk/core.test.ts	20006	9057	403
+F	frontend/src/lib/sdk/core.ts	15992	9462	432
+F	frontend/src/lib/system-health.test.ts	2348	9896	41
+F	frontend/src/lib/system-health.ts	2831	9939	60
+F	frontend/src/lib/system-model.test.ts	2988	10001	57
+F	frontend/src/lib/system-model.ts	3411	10060	76
+F	frontend/src/lib/themes/kira-default.css	1687	10138	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	10192	101
+F	frontend/src/lib/themes/kira-default.ts	777	10295	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	10319	79
+F	frontend/src/lib/time.test.ts	263	10400	8
+F	frontend/src/lib/time.ts	320	10410	9
+F	frontend/src/main.ts	5907	10421	127
+F	frontend/src/style.css	2993	10550	91
+F	frontend/tsconfig.json	403	10643	16
+F	frontend/vite.config.ts	224	10661	8
+F	nix/package.nix	3132	10671	117
+F	scripts/dev_preview.py	18147	10790	403	x
+F	scripts/qa_visual.py	12052	11195	299
+F	tests/test_calendar_design.py	6835	11496	121
+F	tests/test_detailed_health.py	5195	11619	101
+F	tests/test_dev_preview.py	9339	11722	219
+F	tests/test_launcher_design.py	8709	11943	160
+F	tests/test_native_theme.py	1567	12105	36
+F	tests/test_popup_geometry.py	6956	12143	118
+F	tests/test_qa_visual.py	10549	12263	217
+F	tests/test_ui_bootstrap_contract.py	1103	12482	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -157,6 +157,69 @@ jobs:
         run: task check
       - name: Build static Svelte assets
         run: task frontend:build
+
+  native-shell:
+    # This job always reports a stable status for branch protection, but
+    # only installs GTK/WebKit dependencies for relevant PRs and pushes.
+    name: Native Shell check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect native Shell changes
+        id: changes
+        shell: bash
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            base="$PR_BASE_SHA"
+            head="$PR_HEAD_SHA"
+          else
+            base="$PUSH_BASE_SHA"
+            head="$GITHUB_SHA"
+          fi
+          # If GitHub cannot provide a comparable base (e.g. a force push),
+          # run the check rather than accidentally skipping native code.
+          if ! git cat-file -e "${base}^{commit}" 2>/dev/null ||
+             ! git cat-file -e "${head}^{commit}" 2>/dev/null; then
+            echo "shell=true" >> "$GITHUB_OUTPUT"
+            echo "Revision unavailable; checking Shell conservatively"
+            exit 0
+          fi
+          # Avoid git-diff SIGPIPE under pipefail when grep exits early.
+          changed="$(git diff --name-only "$base" "$head" --)"
+          if grep -Eq \
+            '^(crates/kira-shell/|crates/kira-ipc/|\.cargo/|nix/|Cargo\.toml$|Cargo\.lock$|flake\.nix$|flake\.lock$|Taskfile\.yml$|\.github/workflows/ci\.yml$)' <<< "$changed"; then
+            echo "shell=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "shell=false" >> "$GITHUB_OUTPUT"
+            echo "No native Shell dependency changed; skipping GTK/WebKit setup"
+          fi
+
+      - name: Install Nix for native dependencies
+        if: steps.changes.outputs.shell == 'true'
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Optional shared Nix binary cache
+        if: steps.changes.outputs.shell == 'true' && vars.KIRA_CACHIX_NAME != ''
+        uses: cachix/cachix-action@v17
+        with:
+          name: ${{ vars.KIRA_CACHIX_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Cache Rust dependencies
+        if: steps.changes.outputs.shell == 'true'
+        uses: Swatinem/rust-cache@v2
+      - name: Compile native GTK/WebKit Shell (including test targets)
+        if: steps.changes.outputs.shell == 'true'
+        run: nix develop .#ci --command cargo check --locked -p kira-shell --all-targets
 
 FILE	.github/workflows/nix.yml
 name: Nix package (nightly / manual)
@@ -522,6 +585,22 @@ nix run github:iivkis/repospool -- generate .
 nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
 ```
 
+
+## Pull request checks
+
+The CI workflow reports two stable jobs on pull requests: **Core + Svelte checks**
+and **Native Shell check**. The second job invokes
+`nix develop .#ci --command cargo check --locked -p kira-shell --all-targets`
+when Rust Shell/IPC code, Cargo/Nix dependencies, or the CI configuration changes.
+Unrelated UI/docs-only PRs skip the native dependency setup without leaving a
+missing check status. The slim `.#ci` dev shell excludes the compositor and
+visual-preview tools; Nix binary inputs come from its configured caches, and
+GitHub Actions caches the Rust dependencies. The full Nix release package remains
+on its separate nightly/manual workflow.
+
+To **enforce** the native job on protected branches, require the status check
+`Native Shell check` in the repository's branch protection/ruleset, alongside
+`Core + Svelte checks`.
 
 ## Incremental and release build caching
 
@@ -7079,6 +7158,21 @@ FILE	flake.nix
             export SCCACHE_DIR="''${XDG_CACHE_HOME:-$HOME/.cache}/kira-desktop/sccache"
             export SCCACHE_CACHE_SIZE="''${SCCACHE_CACHE_SIZE:-10G}"
           '';
+        };
+        # Native Shell type-checking in PRs: no compositor, JS toolchain,
+        # screenshot tools or interactive terminal needed. This shell uses
+        # cache.nixos.org (and optional Cachix in CI) for GTK/WebKit inputs;
+        # Rust artifacts are cached separately by GitHub Actions.
+        ci = pkgs.mkShell {
+          packages = with pkgs; [
+            cargo
+            rustc
+            pkg-config
+            gtk4
+            gtk4-layer-shell
+            webkitgtk_6_0
+            pipewire
+          ];
         };
       });
 
