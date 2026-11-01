@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4251
+index_bytes=4353
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,95 +15,97 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	e782b8a4951653052f80fb4b00d94c647433f4ae
-F	.cargo/config.toml	98	116	3
-F	.github/workflows/ci.yml	4355	121	112
-F	.github/workflows/frontend-nix.yml	1398	235	43
-F	.github/workflows/nix.yml	1258	280	38
-F	.github/workflows/overlay-smoke.yml	1064	320	40
-F	.github/workflows/publish-repospool.yml	3048	362	83
-F	.gitignore	178	447	11
-F	.repospoolignore	1028	460	47
-F	AGENTS.md	2145	509	35
-F	Cargo.toml	494	546	22
-F	README.md	11192	570	247
-F	Taskfile.yml	5957	819	185
-F	config/kira.kdl.example	358	1006	8
-F	crates/kira-core/Cargo.toml	207	1016	10
-F	crates/kira-core/src/config.rs	15217	1028	399
-F	crates/kira-core/src/main.rs	32080	1429	839
-F	crates/kira-core/src/niri.rs	16767	2270	453
-F	crates/kira-ipc/Cargo.toml	170	2725	9
-F	crates/kira-ipc/src/client.rs	17794	2736	458
-F	crates/kira-ipc/src/lib.rs	10460	3196	336
-F	crates/kira-shell/Cargo.toml	297	3534	12
-F	crates/kira-shell/src/calendar.rs	38858	3548	1043
-F	crates/kira-shell/src/launcher.rs	14114	4593	392
-F	crates/kira-shell/src/main.rs	19285	4987	447
-F	crates/kira-shell/src/native_ui.rs	2857	5436	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5511	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5799	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5917	559
-F	crates/kira-shell/src/system_panel.rs	11356	6478	318
-F	docs/CONFIG.md	5801	6798	125
-F	docs/DESIGN_SYSTEM.md	20207	6925	361
-F	docs/DEVELOPMENT.md	27700	7288	547
-F	docs/QA_VISUAL.md	12284	7837	149
-F	docs/SPECIFICATION.md	28960	7988	421
-F	docs/UI_ARCHITECTURE.md	6737	8411	106
-F	docs/VISUAL_REVIEW.md	9754	8519	84
-F	flake.nix	3181	8605	91
-F	frontend/index.html	2737	8698	66
-F	frontend/package.json	720	8766	27
-F	frontend/scripts/inline-assets.mjs	4457	8795	103
-F	frontend/scripts/inline-assets.test.mjs	4645	8900	106
-F	frontend/scripts/smoke-overlays.mjs	17116	9008	256
-F	frontend/src/App.svelte	8659	9266	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9468	84
-F	frontend/src/lib/bootstrap.ts	2613	9554	70
-F	frontend/src/lib/calendar-model.test.ts	2687	9626	49
-F	frontend/src/lib/calendar-model.ts	4009	9677	88
-F	frontend/src/lib/components/CalendarWidget.svelte	8978	9767	198
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	9967	176
-F	frontend/src/lib/components/SystemCharts.svelte	9336	10145	212
-F	frontend/src/lib/components/SystemHealth.svelte	1684	10359	43
-F	frontend/src/lib/components/SystemWidget.svelte	13245	10404	245
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10651	61
-F	frontend/src/lib/launcher-model.test.ts	1370	10714	29
-F	frontend/src/lib/launcher-model.ts	778	10745	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	10765	89
-F	frontend/src/lib/lazy-widget.ts	1984	10856	63
-F	frontend/src/lib/motion.ts	8465	10921	241
-F	frontend/src/lib/overlay-size.ts	1090	11164	29
-F	frontend/src/lib/sdk/core.test.ts	22258	11195	444
-F	frontend/src/lib/sdk/core.ts	17793	11641	473
-F	frontend/src/lib/system-charts.test.ts	6312	12116	141
-F	frontend/src/lib/system-charts.ts	5514	12259	149
-F	frontend/src/lib/system-health.test.ts	2385	12410	42
-F	frontend/src/lib/system-health.ts	2831	12454	60
-F	frontend/src/lib/system-model.test.ts	3900	12516	73
-F	frontend/src/lib/system-model.ts	4983	12591	113
-F	frontend/src/lib/themes/kira-default.css	1687	12706	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	12760	101
-F	frontend/src/lib/themes/kira-default.ts	777	12863	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	12887	79
-F	frontend/src/lib/time.test.ts	263	12968	8
-F	frontend/src/lib/time.ts	320	12978	9
-F	frontend/src/main.ts	5907	12989	127
-F	frontend/src/style.css	3447	13118	107
-F	frontend/tsconfig.json	403	13227	16
-F	frontend/vite.config.ts	224	13245	8
-F	nix/package.nix	3132	13255	117
-F	scripts/dev_preview.py	18147	13374	403	x
-F	scripts/qa_visual.py	12052	13779	299
-F	tests/test_calendar_design.py	6835	14080	121
-F	tests/test_detailed_health.py	5195	14203	101
-F	tests/test_dev_preview.py	9339	14306	219
-F	tests/test_launcher_design.py	9956	14527	182
-F	tests/test_native_theme.py	1567	14711	36
-F	tests/test_popup_geometry.py	6956	14749	118
-F	tests/test_qa_visual.py	10549	14869	217
-F	tests/test_ui_bootstrap_contract.py	1103	15088	29
+C	dd701bf26b7ebacc23c1c6470c64b13ce2d86385
+F	.cargo/config.toml	98	118	3
+F	.github/workflows/ci.yml	4355	123	112
+F	.github/workflows/frontend-nix.yml	1398	237	43
+F	.github/workflows/nix.yml	1258	282	38
+F	.github/workflows/overlay-smoke.yml	1064	322	40
+F	.github/workflows/publish-repospool.yml	3048	364	83
+F	.gitignore	178	449	11
+F	.repospoolignore	1028	462	47
+F	AGENTS.md	2145	511	35
+F	Cargo.toml	494	548	22
+F	README.md	11192	572	247
+F	Taskfile.yml	5957	821	185
+F	config/kira.kdl.example	358	1008	8
+F	crates/kira-core/Cargo.toml	207	1018	10
+F	crates/kira-core/src/config.rs	15217	1030	399
+F	crates/kira-core/src/main.rs	32080	1431	839
+F	crates/kira-core/src/niri.rs	16767	2272	453
+F	crates/kira-ipc/Cargo.toml	170	2727	9
+F	crates/kira-ipc/src/client.rs	17794	2738	458
+F	crates/kira-ipc/src/lib.rs	10460	3198	336
+F	crates/kira-shell/Cargo.toml	297	3536	12
+F	crates/kira-shell/src/calendar.rs	38858	3550	1043
+F	crates/kira-shell/src/launcher.rs	14114	4595	392
+F	crates/kira-shell/src/main.rs	19285	4989	447
+F	crates/kira-shell/src/native_ui.rs	2857	5438	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5513	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5801	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5919	559
+F	crates/kira-shell/src/system_panel.rs	11356	6480	318
+F	docs/CONFIG.md	5801	6800	125
+F	docs/DESIGN_SYSTEM.md	20356	6927	363
+F	docs/DEVELOPMENT.md	27700	7292	547
+F	docs/QA_VISUAL.md	12284	7841	149
+F	docs/SPECIFICATION.md	28960	7992	421
+F	docs/UI_ARCHITECTURE.md	6737	8415	106
+F	docs/VISUAL_REVIEW.md	9754	8523	84
+F	flake.nix	3181	8609	91
+F	frontend/index.html	2737	8702	66
+F	frontend/package.json	720	8770	27
+F	frontend/scripts/inline-assets.mjs	4457	8799	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8904	106
+F	frontend/scripts/smoke-overlays.mjs	17254	9012	258
+F	frontend/src/App.svelte	8659	9272	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9474	84
+F	frontend/src/lib/bootstrap.ts	2613	9560	70
+F	frontend/src/lib/calendar-model.test.ts	2687	9632	49
+F	frontend/src/lib/calendar-model.ts	4009	9683	88
+F	frontend/src/lib/clock-flight.test.ts	2404	9773	50
+F	frontend/src/lib/clock-flight.ts	1977	9825	50
+F	frontend/src/lib/components/CalendarWidget.svelte	8978	9877	198
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	10077	176
+F	frontend/src/lib/components/SystemCharts.svelte	9336	10255	212
+F	frontend/src/lib/components/SystemHealth.svelte	1684	10469	43
+F	frontend/src/lib/components/SystemWidget.svelte	13245	10514	245
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10761	61
+F	frontend/src/lib/launcher-model.test.ts	1370	10824	29
+F	frontend/src/lib/launcher-model.ts	778	10855	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	10875	89
+F	frontend/src/lib/lazy-widget.ts	1984	10966	63
+F	frontend/src/lib/motion.ts	8717	11031	244
+F	frontend/src/lib/overlay-size.ts	1090	11277	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11308	444
+F	frontend/src/lib/sdk/core.ts	17793	11754	473
+F	frontend/src/lib/system-charts.test.ts	6312	12229	141
+F	frontend/src/lib/system-charts.ts	5514	12372	149
+F	frontend/src/lib/system-health.test.ts	2385	12523	42
+F	frontend/src/lib/system-health.ts	2831	12567	60
+F	frontend/src/lib/system-model.test.ts	3900	12629	73
+F	frontend/src/lib/system-model.ts	4983	12704	113
+F	frontend/src/lib/themes/kira-default.css	1687	12819	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	12873	101
+F	frontend/src/lib/themes/kira-default.ts	777	12976	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13000	79
+F	frontend/src/lib/time.test.ts	263	13081	8
+F	frontend/src/lib/time.ts	320	13091	9
+F	frontend/src/main.ts	5907	13102	127
+F	frontend/src/style.css	3447	13231	107
+F	frontend/tsconfig.json	403	13340	16
+F	frontend/vite.config.ts	224	13358	8
+F	nix/package.nix	3132	13368	117
+F	scripts/dev_preview.py	18147	13487	403	x
+F	scripts/qa_visual.py	12052	13892	299
+F	tests/test_calendar_design.py	6835	14193	121
+F	tests/test_detailed_health.py	5195	14316	101
+F	tests/test_dev_preview.py	9339	14419	219
+F	tests/test_launcher_design.py	9956	14640	182
+F	tests/test_native_theme.py	1567	14824	36
+F	tests/test_popup_geometry.py	6956	14862	118
+F	tests/test_qa_visual.py	10549	14982	217
+F	tests/test_ui_bootstrap_contract.py	1103	15201	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7017,7 +7019,9 @@ official visual language of Kira Desktop.
   cannot delay or falsify the actual time. Digit rolls are interrupted
   cleanly on a subsequent tick and disabled by `prefers-reduced-motion`.
   Clicking or keyboard-activating the clock launches a deliberately playful
-  GSAP digit scatter. Every digit returns to its exact original position;
+  GSAP digit scatter. Each click randomizes directions, distances and spins:
+  the six digits take distinct directions and no digit repeats its prior
+  click's direction. Every digit returns to its exact original position;
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
@@ -9069,7 +9073,7 @@ function scriptFor(steps, observationMs = 1150) {
               : kind === 'clock-chaos'
                 ? 'document.querySelector("[data-calendar-clock-play]")?.click();' +
                   'setTimeout(() => {' +
-                    'window.__kiraClockFlew = Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
+                    'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
@@ -9207,6 +9211,8 @@ try {
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
+    // Interrupt the still-running first scatter with another click.
+    { delay: 450, kind: 'clock-chaos' },
   ], 'Kira Calendar', 'clock');
   await smoke('calendar-month-and-day-motion', [
     { delay: 25, kind: 'calendar', generation: 1 },
@@ -9761,6 +9767,110 @@ export function clockGlyphs(value: string): { char: string; digit: boolean }[] {
     char,
     digit: /\p{Decimal_Number}/u.test(char),
   }));
+}
+
+FILE	frontend/src/lib/clock-flight.test.ts
+import { describe, expect, it } from 'vitest';
+import { nextClockFlights } from './clock-flight';
+
+describe('Calendar GSAP clock chaos flight plans', () => {
+  it('sends six numerals into six distinct directions on every click', () => {
+    const plan = nextClockFlights(6, [], () => 0.4);
+    expect(plan).toHaveLength(6);
+    expect(new Set(plan.map(digit => digit.sector)).size).toBe(6);
+    for (const digit of plan) {
+      expect(digit.sector).toBeGreaterThanOrEqual(0);
+      expect(digit.sector).toBeLessThan(8);
+      expect(Math.hypot(digit.x, digit.y)).toBeGreaterThanOrEqual(24);
+      expect(Math.hypot(digit.x, digit.y)).toBeLessThan(47);
+      expect(Math.abs(digit.rotation)).toBeGreaterThanOrEqual(32);
+      expect(digit.scale).toBeGreaterThanOrEqual(0.64);
+      expect(digit.opacity).toBeGreaterThanOrEqual(0.48);
+    }
+  });
+
+  it('never sends the same numeral into its previous direction', () => {
+    // Even pathological RNG returning identical values on every draw must
+    // produce a different sector for each digit on consecutive clicks.
+    let previous = nextClockFlights(6, [], () => 0);
+    for (let click = 0; click < 30; click++) {
+      const next = nextClockFlights(6, previous, () => 0);
+      expect(new Set(next.map(digit => digit.sector)).size).toBe(6);
+      expect(next.every((digit, i) => digit.sector !== previous[i].sector)).toBe(true);
+      previous = next;
+    }
+  });
+
+  it('changes angle, distance and spin when the random seed changes', () => {
+    const previous = nextClockFlights(6, [], () => 0.2);
+    const left = nextClockFlights(6, previous, () => 0.1);
+    const right = nextClockFlights(6, previous, () => 0.9);
+    expect(left.map(({ x, y, rotation }) => [x, y, rotation]))
+      .not.toEqual(right.map(({ x, y, rotation }) => [x, y, rotation]));
+    expect(left.every((digit, i) => digit.sector !== previous[i].sector)).toBe(true);
+    expect(right.every((digit, i) => digit.sector !== previous[i].sector)).toBe(true);
+  });
+
+  it('handles empty glyph lists and repeated clicks with more than eight glyphs', () => {
+    expect(nextClockFlights(0)).toEqual([]);
+    expect(nextClockFlights(-2)).toEqual([]);
+    const old = nextClockFlights(10, [], () => 0.5);
+    const next = nextClockFlights(10, old, () => 0.5);
+    expect(next).toHaveLength(10);
+    expect(next.every((digit, i) => digit.sector !== old[i].sector)).toBe(true);
+  });
+});
+
+FILE	frontend/src/lib/clock-flight.ts
+/** A random but non-repeating flight plan for the calendar clock easter egg.
+ *
+ * Every click uses a new randomized direction for every numeral. Adjacent
+ * numerals also choose different 45-degree sectors to avoid synchronized
+ * movement. An individual numeral is explicitly forbidden from revisiting
+ * its sector from the previous click, even when random() returns the same
+ * sequence twice. No DOM, timers or GSAP dependencies: easy to regression-test.
+ */
+export interface ClockFlight {
+  sector: number;
+  x: number;
+  y: number;
+  rotation: number;
+  scale: number;
+  opacity: number;
+}
+
+const SECTORS = 8;
+const directions = Array.from({ length: SECTORS }, (_, index) => index);
+
+export function nextClockFlights(
+  count: number,
+  previous: readonly ClockFlight[] = [],
+  random: () => number = Math.random,
+): ClockFlight[] {
+  const used = new Set<number>();
+  const unit = () => Math.max(0, Math.min(0.9999999999999999, random()));
+  return Array.from({ length: Math.max(0, Math.min(32, Math.floor(count))) }, (_, index) => {
+    const oldSector = previous[index]?.sector;
+    // Try to keep every digit in a distinct direction AND never repeat its
+    // previous direction. More than eight digits can reuse sectors safely.
+    const distinct = directions.filter(sector => !used.has(sector) && sector !== oldSector);
+    const options = distinct.length ? distinct : directions.filter(sector => sector !== oldSector);
+    const sector = options[Math.floor(unit() * options.length)];
+    used.add(sector);
+
+    // Randomize angle inside the selected sector and distance independently.
+    const angle = (sector + 0.16 + unit() * 0.68) * Math.PI / 4;
+    const distance = 24 + unit() * 23;
+    const spin = (unit() < 0.5 ? -1 : 1) * (32 + unit() * 73);
+    return {
+      sector,
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance,
+      rotation: spin,
+      scale: 0.64 + unit() * 0.2,
+      opacity: 0.48 + unit() * 0.29,
+    };
+  });
 }
 
 FILE	frontend/src/lib/components/CalendarWidget.svelte
@@ -10923,6 +11033,7 @@ FILE	frontend/src/lib/motion.ts
  * GTK/Wayland windows, and reduced-motion is a functional no-animation path.
  */
 import { gsap } from 'gsap';
+import { nextClockFlights, type ClockFlight } from './clock-flight';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -11094,7 +11205,7 @@ export function rollingClockDigit(node: HTMLElement, initial: string) {
 }
 
 /** Intentionally useless clock easter egg. Clicking the actual time sends its
- * six glyph cells flying in different directions before restoring every one.
+ * six glyph cells flying in freshly randomized directions before restoring every one.
  * GSAP owns decoration only: the live wall clock and odometer can tick in
  * their inner spans throughout. Repeated clicks restart cleanly.
  */
@@ -11102,6 +11213,7 @@ export function clockJuggle(node: HTMLButtonElement) {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let animation: gsap.core.Timeline | null = null;
   let restoreTimer: number | null = null;
+  let previousFlights: ClockFlight[] = [];
   const cells = () => Array.from(node.querySelectorAll<HTMLElement>('[data-clock-cell]'));
 
   function reset() {
@@ -11123,16 +11235,17 @@ export function clockJuggle(node: HTMLButtonElement) {
     if (motion.matches) return;
     const targets = cells();
     if (!targets.length) return;
-    const xOffsets = [-27, -13, 23, -20, 15, 32];
-    const yOffsets = [-28, 30, -35, 26, -25, 35];
-    const rotations = [-32, 25, 40, -44, -20, 38];
+    // Each click draws a new flight plan. Sector memory survives resets so
+    // even identical random sequences cannot repeat the previous directions.
+    const flights = nextClockFlights(targets.length, previousFlights);
+    previousFlights = flights;
     animation = gsap.timeline({ onComplete: reset });
     animation.to(targets, {
-      x: (index: number) => xOffsets[index % xOffsets.length],
-      y: (index: number) => yOffsets[index % yOffsets.length],
-      rotation: (index: number) => rotations[index % rotations.length],
-      scale: 0.72,
-      opacity: 0.65,
+      x: (index: number) => flights[index].x,
+      y: (index: number) => flights[index].y,
+      rotation: (index: number) => flights[index].rotation,
+      scale: (index: number) => flights[index].scale,
+      opacity: (index: number) => flights[index].opacity,
       duration: 0.27,
       stagger: 0.026,
       ease: 'power3.out',
