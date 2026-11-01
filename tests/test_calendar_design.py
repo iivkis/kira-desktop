@@ -41,18 +41,21 @@ class CalendarDesignTests(unittest.TestCase):
         ):
             self.assertIn(selector, CSS)
 
-    def test_copy_date_is_a_button_and_not_an_underline_tab(self):
+    def test_copy_date_is_plain_orange_text_not_a_tab_or_chip(self):
         block = CSS.split("button.kira-calendar-copy {", 1)[1].split("}", 1)[0]
-        self.assertIn("border: 1px solid @kira_orange;", block)
-        self.assertIn("border-radius: 6px;", block)
-        self.assertIn("background: @kira_prussian_blue;", block)
-        self.assertIn("min-height: 34px;", block)
+        self.assertIn("min-height: 29px;", block)
+        self.assertIn("padding: 0 4px;", block)
+        self.assertIn("border: 0;", block)
+        self.assertIn("border-radius: 0;", block)
+        self.assertIn("background: transparent;", block)
+        self.assertIn("color: @kira_orange;", block)
         self.assertNotIn("border-bottom:", block)
-        self.assertIn("button.kira-calendar-copy:hover", CSS)
-        self.assertIn("button.kira-calendar-copy:active", CSS)
+        for state in ("hover", "active"):
+            rule = CSS.split(f"button.kira-calendar-copy:{state} {{", 1)[1].split("}", 1)[0]
+            self.assertIn("background: transparent;", rule)
+            self.assertNotIn("border:", rule)
         self.assertIn("button.kira-calendar-copy:focus-visible", CSS)
         self.assertIn('copy.set_label("COPIED ✓")', RUST)
-        # The unobtrusive Today command remains flat and text-only.
         today = CSS.split("button.kira-calendar-today-button {", 1)[1].split("}", 1)[0]
         self.assertIn("background: transparent;", today)
 
