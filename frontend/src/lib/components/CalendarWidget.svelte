@@ -94,7 +94,7 @@
 
 <main
   data-kira-ui-root
-  class="flex h-full min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
+  class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
   <section class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
