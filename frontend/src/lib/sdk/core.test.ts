@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -40,6 +40,29 @@ describe('Core SDK JSON-RPC bridge', () => {
     } as unknown as Window & typeof globalThis;
     expect(toggleCalendar()).toBe(true);
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('toggle');
+  });
+
+  it('exposes only close and validated date-copy to the calendar WebKit host', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    closeCalendarOverlay();
+    copyCalendarDate('2024-02-29');
+    for (const invalid of ['bogus', '2024-2-29', '2024-02-29;exit', '', '99999-01-01']) {
+      copyCalendarDate(invalid);
+    }
+    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close', 'copy:2024-02-29']);
+  });
+
+  it('does not throw without a calendar host, or when its channel fails', () => {
+    expect(() => closeCalendarOverlay()).not.toThrow();
+    expect(() => copyCalendarDate('2024-02-29')).not.toThrow();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage: () => { throw new Error('window closed'); } } } },
+    } as unknown as Window & typeof globalThis;
+    expect(() => closeCalendarOverlay()).not.toThrow();
+    expect(() => copyCalendarDate('2024-02-29')).not.toThrow();
   });
 
   it('does not claim calendar activation when the bridge throws', () => {

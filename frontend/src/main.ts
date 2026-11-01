@@ -1,5 +1,7 @@
 import { flushSync, mount } from 'svelte';
 import App from './App.svelte';
+import CalendarWidget from './lib/components/CalendarWidget.svelte';
+import { closeCalendarOverlay, copyCalendarDate } from './lib/sdk/core';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
 
@@ -23,7 +25,17 @@ whenDocumentReady(document, () => {
   const mounted = startUi(
     target,
     (container) => {
-      mount(App, { target: container });
+      // The same self-contained frontend is hosted by the Top Bar and
+      // independent layer-shell popups. Rust sets the surface marker before
+      // load_html(), never from a navigable URL or an untrusted message.
+      if (document.documentElement.dataset.kiraSurface === 'calendar') {
+        mount(CalendarWidget, {
+          target: container,
+          props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
+        });
+      } else {
+        mount(App, { target: container });
+      }
       flushSync();
     },
     report,

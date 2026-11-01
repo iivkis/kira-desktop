@@ -1,7 +1,6 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
-mod calendar_model;
 mod launcher;
 mod native_ui;
 mod process_monitor;
@@ -220,9 +219,10 @@ fn main() {
         // Separate, fixed-purpose UI control. Never interpret arbitrary JS
         // messages or expand the Core JSON-RPC method allowlist.
         let calendar_application = app.clone();
+        let calendar_html = html.clone();
         manager.connect_script_message_received(Some("kiraCalendar"), move |_, value| {
             if value.to_string() == "toggle" {
-                calendar::toggle(&calendar_application);
+                calendar::toggle(&calendar_application, &calendar_html);
             }
         });
         assert!(manager.register_script_message_handler("kiraCalendar", None));
@@ -327,25 +327,7 @@ fn main() {
             gtk::glib::ControlFlow::Continue
         });
 
-        view.connect_decide_policy(move |_, decision, kind| {
-            if kind == webkit6::PolicyDecisionType::NewWindowAction {
-                decision.ignore();
-                return true;
-            }
-            if kind == webkit6::PolicyDecisionType::NavigationAction {
-                let permitted = decision
-                    .downcast_ref::<webkit6::NavigationPolicyDecision>()
-                    .and_then(|navigation| navigation.navigation_action())
-                    .and_then(|action| action.request())
-                    .and_then(|request| request.uri())
-                    .is_some_and(|uri| permitted_ui_page(uri.as_str()));
-                if !permitted {
-                    decision.ignore();
-                    return true;
-                }
-            }
-            false
-        });
+        native_ui::restrict_webview_navigation(&view);
         eprintln!("kira-shell: loading self-contained HTML using WebKit load_html()");
         view.load_html(&html, None);
         window.set_child(Some(&view));
