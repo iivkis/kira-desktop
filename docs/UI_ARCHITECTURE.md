@@ -58,3 +58,21 @@ top-level window with the required layer-shell Wayland behavior by itself.
 The calendar is connected in the Shell now. A green CI validates compilation
 and contracts, **not** final visual behavior under a real Wayland compositor.
 Nested Niri graphical QA remains mandatory before release.
+
+## Lazy widget lifetime and memory ownership
+
+The Calendar layer-shell popup prewarms its **WebKit host** when the bar starts,
+but does not mount a Svelte widget until the user opens it. The trusted GTK
+host dispatches `kira:calendar:show` with a generation ID, then waits for
+`mounted:<generation>` and a double animation frame before revealing the
+window. On hide it dispatches `kira:calendar:hide`; the Svelte lifecycle
+serially awaits `unmount()`, releasing Calendar DOM, effects, window listeners
+and its one-second clock interval. Stale asynchronous mounts/frames are ignored.
+
+The widget is lazy-instantiated and its code is dynamically imported, but
+**Vite inlines the import into the one offline HTML bundle**. This reduces the
+live component footprint, **not** the entire loaded JS bundle or the base
+WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
+immediately fall because the JavaScript engine retains allocated pages and
+shared libraries. Launcher/System Monitor remain GTK pending their Svelte
+migration; they are not yet hosted by this lazy overlay.
