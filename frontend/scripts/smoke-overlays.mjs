@@ -128,8 +128,11 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     if (charts < 2 || !output.includes('data-smoke-system-swap="true"') ||
         !output.includes('data-smoke-system-unknown="true"') ||
         !output.includes('data-smoke-system-no-scrollbar="true"')) {
-      throw new Error(name + ': expected live SVG gauges/trends, true fractional swap, ' +
-        'GPU unavailable label, and hidden scrollbar, found ' + charts + ' charts');
+      const diagnostic = output.match(/data-smoke-system-[a-z-]+="[^"]*"/g) ?? [];
+      const svgs = (output.match(/<svg\\b/g) ?? []).length;
+      const diagnostics = output.match(/data-smoke-result="[^"]*"/g) ?? [];
+      throw new Error(name + ': ECharts SVG=' + charts + ', DOM SVG=' + svgs +
+        ', flags=' + diagnostic.join(' / ') + ', roots=' + diagnostics.join(','));
     }
   }
   if (heightMode === 'scroll') {
