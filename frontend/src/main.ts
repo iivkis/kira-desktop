@@ -1,5 +1,6 @@
 import { flushSync, mount, unmount } from 'svelte';
 import App from './App.svelte';
+import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
@@ -28,9 +29,8 @@ whenDocumentReady(document, () => {
     }
     const host = createLazyWidget(
       async () => {
-        // Imports and creates the widget on demand, not during prewarm. Vite
-        // inlines this chunk so WebKit load_html has no external requests.
-        const { default: CalendarWidget } = await import('./lib/components/CalendarWidget.svelte');
+        // The component code is in the self-contained bundle, but its
+        // Svelte instance/DOM/timer only exist while the popup is visible.
         return {
           mount() {
             const instance = mount(CalendarWidget, {
