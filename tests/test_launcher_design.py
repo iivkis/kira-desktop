@@ -49,7 +49,7 @@ class LauncherDesignTests(unittest.TestCase):
         # Regression: None::<T> is a Rust enum value, never a call.
         # The native Shell is not built in fast CI, so catch this
         # exact invalid syntax in the lightweight contract checks.
-        self.assertNotRegex(RUST, r"None::<[^>\\n]+>\\s*\\(")
+        self.assertNotRegex(RUST, r"None::<[^>\n]+>\s*\(")
         self.assertNotIn('std::process::Command', RUST)
         self.assertNotIn('Command::new', RUST)
         self.assertNotIn('shell', RUST.lower().split('pub fn launch', 1)[-1])
