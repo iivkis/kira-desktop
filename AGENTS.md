@@ -31,18 +31,19 @@ Continuity, Temporal Memory, and Causal Consistency**. For each animation:
 Existing animations are reviewed against this contract **when touched**;
 do not claim an unreviewed legacy animation already complies.
 
-## Interactive optics (mandatory for WebKit click targets)
+## Temporal material deformation (mandatory for clickable WebKit surfaces)
 
-All clickable controls in Calendar, System Monitor, Launcher and new WebKit
-widgets use the shared `tenetHoverLens` root action from
-`frontend/src/lib/tenet-hover-lens.ts`. Mouse/pen hover should visibly
-refract/lens and gently deform optical content, while leaving the
-actual clickable hitbox fixed. Pointer exit replays **the same recorded
-hover path backwards**, never a new randomized movement. Disabled buttons
-and touch input do not activate it; reduced motion and unmount clear all
-GSAP effects and CSS artifacts. Retain native focus-visible affordances
-and avoid transform competition with Calendar day/clock timelines.
-See `docs/TENET_MOTION.md#hover--pointer-optics--стандарт-активных-элементов`.
+Do NOT fake deformation using a blurred lens, pseudo-element border, glow,
+radial gradient or `backdrop-filter`. The approved `tenetHoverLens` action
+(`frontend/src/lib/tenet-hover-lens.ts`) uses **real SVG
+feDisplacementMap deformation of SourceGraphic pixels** driven over time
+by GSAP. It records actual pointer positions and reverses their physical
+field history on exit; when settled, the original image is exactly
+restored. The clickable hitbox cannot move. One filter per mounted widget,
+one active target, strict unmount cleanup, reduced-motion and touch
+support are required. Do not recreate the rejected fake glowing rectangle.
+
+See `docs/TENET_MOTION.md` for the normative motion design and testing rules.
 
 ## Visual stack (mandatory)
 

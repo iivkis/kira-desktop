@@ -80,12 +80,20 @@ function scriptFor(steps, observationMs = 1150) {
                   'const rect = target.getBoundingClientRect();' +
                   'window.__kiraLensInitialRect = [rect.left,rect.top,rect.width,rect.height];' +
                   'target.dispatchEvent(new PointerEvent("pointerover",{bubbles:true,pointerType:"mouse",clientX:rect.left+rect.width*0.25,clientY:rect.top+rect.height*0.25}));' +
-                  'setTimeout(()=>{window.__kiraLensReacted=target.dataset.tenetLensState==="forward";},130);' +
+                  'setTimeout(()=>{' +
+                    'const paint=target.querySelector("[data-tenet-lens-body]")||target;' +
+                    'const filter=document.querySelector("feDisplacementMap");' +
+                    'window.__kiraLensReacted=target.dataset.tenetWarpState==="forward" && paint.dataset.tenetWarpPixels==="true" && paint.style.filter.includes("kira-temporal-warp") && Number(filter?.getAttribute("scale"))>0;' +
+                  '},130);' +
                   '}'
               : kind === 'lens-move'
                 ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
                   'if(target){const rect=target.getBoundingClientRect();' +
-                  'target.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerType:"mouse",clientX:rect.right-2,clientY:rect.bottom-2}));}'
+                  'target.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerType:"mouse",clientX:rect.right-2,clientY:rect.bottom-2}));' +
+                  'setTimeout(()=>{' +
+                    'const offset=document.querySelector("feOffset");' +
+                    'window.__kiraWarpChanged=!!offset && Math.abs(Number(offset.getAttribute("dx")))>1;' +
+                  '},140);}'
               : kind === 'lens-out'
                 ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
                   'target?.dispatchEvent(new PointerEvent("pointerout",{bubbles:true,pointerType:"mouse",relatedTarget:null}));'
@@ -130,8 +138,10 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
       'const hoveredButton = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
       'const hoveredRect = hoveredButton?.getBoundingClientRect();' +
-      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted);' +
-      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensReacted && !!hoveredButton && !hoveredButton.classList.contains("kira-tenet-lens-target") && !hoveredButton.hasAttribute("data-tenet-lens-state"));' +
+      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted && !!window.__kiraWarpChanged);' +
+      'document.documentElement.setAttribute("data-smoke-warp-svg", !!document.querySelector("filter[id^=kira-temporal-warp] feTurbulence") && !!document.querySelector("filter[id^=kira-temporal-warp] feDisplacementMap"));' +
+      'document.documentElement.setAttribute("data-smoke-warp-reset", Number(document.querySelector("feDisplacementMap")?.getAttribute("scale")) === 0);' +
+      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensReacted && !!hoveredButton && !hoveredButton.hasAttribute("data-tenet-warp-state") && !hoveredButton.style.filter);' +
       'document.documentElement.setAttribute("data-smoke-lens-hitbox", !!hoveredRect && !!window.__kiraLensInitialRect && [hoveredRect.left,hoveredRect.top,hoveredRect.width,hoveredRect.height].every((value,index)=>Math.abs(value-window.__kiraLensInitialRect[index])<0.5));' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
@@ -185,9 +195,11 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   if (heightMode === 'lens' &&
       (!output.includes('data-smoke-lens-reacted="true"') ||
        !output.includes('data-smoke-lens-restored="true"') ||
-       !output.includes('data-smoke-lens-hitbox="true"'))) {
-    const flags = output.match(/data-smoke-lens-[a-z-]+="[^"]*"/g) ?? [];
-    throw new Error(name + ': TENET hover refraction and exact reset: ' + flags.join(', '));
+       !output.includes('data-smoke-lens-hitbox="true"') ||
+       !output.includes('data-smoke-warp-svg="true"') ||
+       !output.includes('data-smoke-warp-reset="true"'))) {
+    const flags = output.match(/data-smoke-(?:lens|warp)-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': SVG material deformation and exact restoration: ' + flags.join(', '));
   }
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
