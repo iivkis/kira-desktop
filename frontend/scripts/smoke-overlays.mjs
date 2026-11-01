@@ -75,7 +75,7 @@ function scriptFor(steps, observationMs = 1150) {
                     'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
               : kind === 'lens-over'
-                ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+                ? 'const target = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
                   'if (target) {' +
                   'const rect = target.getBoundingClientRect();' +
                   'window.__kiraLensInitialRect = [rect.left,rect.top,rect.width,rect.height];' +
@@ -84,10 +84,12 @@ function scriptFor(steps, observationMs = 1150) {
                     'const paint=target.querySelector("[data-tenet-lens-body]")||target;' +
                     'const filter=document.querySelector("feDisplacementMap");' +
                     'window.__kiraLensReacted=target.dataset.tenetWarpState==="forward" && paint.dataset.tenetWarpPixels==="true" && paint.style.filter.includes("kira-temporal-warp") && Number(filter?.getAttribute("scale"))>0;' +
+                    'const stages=Array.from(document.querySelectorAll("filter[id^=kira-temporal-warp] feGaussianBlur"));' +
+                    'window.__kiraWarpSmooth=paint!==target && !target.style.filter && stages.length===2 && stages[0].getAttribute("in")==="materialField" && Number(stages[0].getAttribute("stdDeviation"))>=2 && stages[1].getAttribute("in")==="displacedPixels" && Number(stages[1].getAttribute("stdDeviation"))<0.4 && Number(filter.getAttribute("scale"))<=6.5;' +
                   '},130);' +
                   '}'
               : kind === 'lens-move'
-                ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+                ? 'const target = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
                   'if(target){const rect=target.getBoundingClientRect();' +
                   'target.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerType:"mouse",clientX:rect.right-2,clientY:rect.bottom-2}));' +
                   'setTimeout(()=>{' +
@@ -95,7 +97,7 @@ function scriptFor(steps, observationMs = 1150) {
                     'window.__kiraWarpChanged=!!offset && Math.abs(Number(offset.getAttribute("dx")))>1;' +
                   '},140);}'
               : kind === 'lens-out'
-                ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+                ? 'const target = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
                   'target?.dispatchEvent(new PointerEvent("pointerout",{bubbles:true,pointerType:"mouse",relatedTarget:null}));'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
@@ -136,10 +138,11 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
-      'const hoveredButton = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
+      'const hoveredButton = document.querySelector("button[aria-label^=Next],nav[aria-label^=System] button");' +
       'const hoveredRect = hoveredButton?.getBoundingClientRect();' +
       'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted && !!window.__kiraWarpChanged);' +
       'document.documentElement.setAttribute("data-smoke-warp-svg", !!document.querySelector("filter[id^=kira-temporal-warp] feTurbulence") && !!document.querySelector("filter[id^=kira-temporal-warp] feDisplacementMap"));' +
+      'document.documentElement.setAttribute("data-smoke-warp-smooth", !!window.__kiraWarpSmooth);' +
       'document.documentElement.setAttribute("data-smoke-warp-reset", Number(document.querySelector("feDisplacementMap")?.getAttribute("scale")) === 0);' +
       'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensReacted && !!hoveredButton && !hoveredButton.hasAttribute("data-tenet-warp-state") && !hoveredButton.style.filter);' +
       'document.documentElement.setAttribute("data-smoke-lens-hitbox", !!hoveredRect && !!window.__kiraLensInitialRect && [hoveredRect.left,hoveredRect.top,hoveredRect.width,hoveredRect.height].every((value,index)=>Math.abs(value-window.__kiraLensInitialRect[index])<0.5));' +
@@ -197,6 +200,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-lens-restored="true"') ||
        !output.includes('data-smoke-lens-hitbox="true"') ||
        !output.includes('data-smoke-warp-svg="true"') ||
+       !output.includes('data-smoke-warp-smooth="true"') ||
        !output.includes('data-smoke-warp-reset="true"'))) {
     const flags = output.match(/data-smoke-(?:lens|warp)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': SVG material deformation and exact restoration: ' + flags.join(', '));
@@ -267,6 +271,12 @@ try {
     { delay: 1400, kind: 'lens-move' },
     { delay: 1540, kind: 'lens-out' },
   ], 'Kira Calendar', 'lens');
+  await smoke('system-tenet-pointer-smooth-tab', [
+    { delay: 25, kind: 'system', generation: 1 },
+    { delay: 1150, kind: 'lens-over' },
+    { delay: 1400, kind: 'lens-move' },
+    { delay: 1540, kind: 'lens-out' },
+  ], 'Kira System Monitor', 'lens');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
