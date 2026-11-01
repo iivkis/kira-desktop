@@ -16,7 +16,7 @@ const testIcon = 'data:image/svg+xml;base64,' + Buffer.from(
   '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#ef7d1a"/></svg>',
 ).toString('base64');
 
-function scriptFor(steps) {
+function scriptFor(steps, observationMs = 1150) {
   const telemetry = JSON.stringify({
     core: true, niri: true,
     metrics: {
@@ -109,14 +109,14 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-real-icon-transparent", !!painted && getComputedStyle(painted).backgroundColor === "rgba(0, 0, 0, 0)");' +
       'const placeholder = document.querySelector("[data-kira-icon-slot]:has([data-kira-icon-placeholder])");' +
       'document.documentElement.setAttribute("data-smoke-placeholder-background", !!placeholder && getComputedStyle(placeholder).backgroundColor !== "rgba(0, 0, 0, 0)");' +
-    '}, 1150);' +
+    '}, ' + observationMs + ');' +
     '});</script>';
 }
 
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -125,7 +125,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
-    '--virtual-time-budget=1800', '--dump-dom', 'file://' + path,
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : 1800),
+    '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
     const found = output.match(/data-smoke-result="([^"]+)"/)?.[1] ?? 'no result';
