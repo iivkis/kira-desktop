@@ -43,12 +43,13 @@ official visual language of Kira Desktop.
 ### Implementation rules: KISS + DRY
 
 1. **Single native palette:** `native-palette.css` declares the five GTK
-   colors for Launcher and Calendar. `native_ui.rs` assembles it with each
+   colors for Launcher, Calendar and the System Monitor. `native_ui.rs` assembles it with each
    overlay stylesheet, and `test_native_theme.py` verifies the values match
    Svelte's canonical palette. Do not duplicate `@define-color` in widgets.
 2. **Small shared operations:** the common overlay helper only installs style
    providers, finds windows and dismisses them. Keep Launcher search/launch
-   and Calendar date-picker state in their own modules.
+   Calendar date-picker state and read-only System Monitor telemetry in
+   their own modules.
 3. **No premature abstraction:** two similarly named elements are not
    necessarily the same component. Extract code only when it has the same
    semantics and at least two real callers.
@@ -85,10 +86,20 @@ official visual language of Kira Desktop.
   communicate function without painting the entire row orange.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
   and visible keyboard focus remain distinct. Niri events are authoritative.
-- **System health:** combine existing Core RPC and Niri EventStream status:
-  READY only when both connected, otherwise STARTING/WAITING/CORE OFF/
-  NIRI OFF. A round/hollow/square dot reinforces the textual state;
-  hover shows Core version and Niri IPC connection. No new telemetry or polling.
+- **System health:** the Top Bar is a compact **system** indicator, not just
+  a Core heartbeat. READY requires Core/Niri connectivity **and** actual
+  CPU/memory samples; LOW DISK, LOW MEM, LOW BAT or BUSY report measured
+  pressure, and CHECKING is shown until first valid samples. Hover offers
+  a short truthful snapshot; clicking opens the native System Monitor.
+  It has the same Black heading / Prussian Blue workbench / Black details
+  composition as the Calendar and Launcher, uses small orange progress
+  meters and real values from Linux /proc, sysfs and Gio's root filesystem
+  information. It shows Core and Niri, CPU, RAM, swap, root storage,
+  1/5/15 load, uptime and battery (if present). Missing readings are
+  UNAVAILABLE / NOT DETECTED rather than zero. A fixed-purpose WebKit
+  `kiraSystem` channel only accepts `toggle` and cannot run commands.
+  The monitor updates every two seconds and can copy a plain-text report.
+  No new Core JSON-RPC methods or user-data collection are introduced.
 
 ### Geometry and motion
 

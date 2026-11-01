@@ -25,26 +25,27 @@ component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
 focus, Core state and live KDL config updates remain behavioral concerns,
 not CSS assumptions.
 
-The narrow Svelte host bridge exposes only `openLauncher()` and
-`toggleCalendar()` for native overlays. Both share the same private,
+The narrow Svelte host bridge exposes `openLauncher()`,
+`toggleCalendar()` and `toggleSystemPanel()` for native overlays. All three share the same private,
 non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
-The native **GTK4 Launcher and Calendar** cannot use Tailwind; their
-`crates/kira-shell/src/launcher.css` and `calendar.css` retain
-matching GTK themes. The calendar is an independent, non-exclusive layer
+The native **GTK4 Launcher, Calendar and System Monitor** cannot use
+Tailwind; their `crates/kira-shell/src/launcher.css`,
+`calendar.css` and `system_panel.css` retain matching GTK themes. The calendar is an independent, non-exclusive layer
 surface toggled through the narrow `kiraCalendar` WebKit channel, so
 opening it never changes the 42px Niri reservation.
 The WebKit host continues to embed a single production CSS file, including
 Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 
 GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
-not separately in the two overlay stylesheets. Shared native CSS installation
+not separately in the overlay stylesheets. Shared native CSS installation
 and overlay lookup/dismiss helpers live in
 `crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
-interaction logic stays in `launcher.rs` or `calendar.rs`, following KISS
-and DRY without introducing a generic overlay framework. When changing any
+interaction logic stays in `launcher.rs`, `calendar.rs` or
+`system_panel.rs`, following KISS and DRY without introducing a generic
+overlay framework. When changing any
 native CSS asset, verify it remains included by `nix/package.nix`.
 
 When adding npm dependencies, commit the updated
