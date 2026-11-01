@@ -40,6 +40,7 @@ struct CalendarOverlay {
     document: String,
     host_ready: Cell<bool>,
     widget_ready: Cell<bool>,
+    content_height: Cell<i32>,
     active: Cell<Option<Surface>>,
     system: RefCell<Option<crate::system_panel::Model>>,
     launcher: RefCell<Option<crate::launcher::Catalog>>,
@@ -94,6 +95,7 @@ impl CalendarOverlay {
         self.active.set(None);
         self.launcher.borrow_mut().take();
         self.widget_ready.set(false);
+        self.content_height.set(0);
         self.revealed.set(false);
         self.paint_pending.set(false);
         self.open_started.take();
@@ -156,6 +158,7 @@ impl CalendarOverlay {
         self.requested.set(true);
         self.revealed.set(false);
         self.widget_ready.set(false);
+        self.content_height.set(0);
         self.paint_pending.set(false);
         self.was_active.set(false);
         self.open_started.set(Some(Instant::now()));
@@ -164,6 +167,9 @@ impl CalendarOverlay {
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
         self.window.set_opacity(0.0);
+        // The next widget will report its intrinsic height before reveal.
+        // Reset the previous widget's geometry while still transparent.
+        crate::native_ui::resize_webview_popup(&self.window, 420, 1);
         let generation = self.generation.get();
         if defer_present {
             // Start replacing the Svelte DOM while the old buffer is NOT
@@ -222,8 +228,9 @@ impl CalendarOverlay {
         };
         // Only hardcoded, trusted Svelte widget types may be selected.
         let kind = kind.name();
+        let max_height = crate::native_ui::webview_popup_height_limit(&self.window);
         let script = format!(
-            "window.dispatchEvent(new CustomEvent('kira:overlay:show', {{ detail: {{ kind: '{kind}', generation: {generation} }} }}));"
+            "window.dispatchEvent(new CustomEvent('kira:overlay:show', {{ detail: {{ kind: '{kind}', generation: {generation}, maxHeight: {max_height} }} }}));"
         );
         self.view.evaluate_javascript(
             &script,
@@ -239,7 +246,11 @@ impl CalendarOverlay {
     }
 
     fn request_paint(&self) {
-        if !self.requested.get() || !self.widget_ready.get() || self.paint_pending.replace(true) {
+        if !self.requested.get()
+            || !self.widget_ready.get()
+            || self.content_height.get() == 0
+            || self.paint_pending.replace(true)
+        {
             return;
         }
         let generation = self.generation.get();
@@ -311,8 +322,26 @@ impl CalendarOverlay {
                     self.send_metrics();
                 }
                 self.widget_ready.set(true);
-                self.request_paint();
-                self.schedule_reveal_fallback(generation);
+                if self.content_height.get() > 0 {
+                    self.request_paint();
+                    self.schedule_reveal_fallback(generation);
+                }
+            }
+            Some(UiCommand::ContentHeight(generation, height))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
+                // Layout-driven dimensions come only from the bounded,
+                // trusted overlay channel. Ignore stale generations and
+                // no-op resizes to avoid feedback from ResizeObserver.
+                let clamped = height.min(crate::native_ui::webview_popup_height_limit(&self.window));
+                if clamped != self.content_height.get() {
+                    self.content_height.set(clamped);
+                    crate::native_ui::resize_webview_popup(&self.window, 420, clamped);
+                }
+                if self.widget_ready.get() && !self.paint_pending.get() && !self.revealed.get() {
+                    self.request_paint();
+                    self.schedule_reveal_fallback(generation);
+                }
             }
             Some(UiCommand::Painted(generation))
                 if self.requested.get()
@@ -490,6 +519,7 @@ enum UiCommand<'a> {
     HostReady,
     Mounted(u32),
     Painted(u32),
+    ContentHeight(u32, i32),
     CopyDate(&'a str),
     ProcessesTab(bool),
     CopyReport,
@@ -553,6 +583,22 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         }
         return value.parse().ok().map(UiCommand::Mounted);
     }
+    if let Some(value) = message.strip_prefix("size:") {
+        let (generation, height) = value.split_once(':')?;
+        if generation.is_empty()
+            || generation.len() > 10
+            || !generation.bytes().all(|b| b.is_ascii_digit())
+            || height.is_empty()
+            || height.len() > 5
+            || !height.bytes().all(|b| b.is_ascii_digit())
+        {
+            return None;
+        }
+        return Some(UiCommand::ContentHeight(
+            generation.parse::<u32>().ok().filter(|v| *v > 0)?,
+            height.parse::<i32>().ok().filter(|v| (1..=20_000).contains(v))?,
+        ));
+    }
     if let Some(value) = message.strip_prefix("painted:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
             return None;
@@ -598,7 +644,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     window.set_margin(Edge::Right, 12);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
-    crate::native_ui::configure_webview_popup(&window, 420, 620);
+    crate::native_ui::configure_webview_popup(&window, 420, 1);
 
     // The calendar has no general Core RPC bridge, only its own messages.
     let context = webkit6::WebContext::new();
@@ -616,6 +662,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         document,
         host_ready: Cell::new(false),
         widget_ready: Cell::new(false),
+        content_height: Cell::new(0),
         active: Cell::new(None),
         system: RefCell::new(None),
         launcher: RefCell::new(None),
@@ -803,6 +850,12 @@ mod tests {
             "mounted:",
             "mounted:abc",
             "mounted:4294967296",
+            "size:",
+            "size:0:100",
+            "size:1:0",
+            "size:1:20001",
+            "size:1:-1",
+            "size:1:4;rm",
             "copy:",
             "copy:2026-02-30",
             "copy:1900-02-29",
@@ -836,6 +889,10 @@ mod tests {
             Some(UiCommand::LaunchApp(12, 42))
         );
         assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
+        assert_eq!(
+            calendar_command("size:42:512"),
+            Some(UiCommand::ContentHeight(42, 512))
+        );
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
             calendar_command("copy:2024-02-29"),
