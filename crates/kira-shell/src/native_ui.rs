@@ -45,7 +45,7 @@ fn apply_popup_height(
     width: i32,
     preferred_height: i32,
 ) {
-    let display = window.display();
+    let display = gtk::prelude::WidgetExt::display(window);
     let monitor = window
         .surface()
         .and_then(|surface| display.monitor_at_surface(&surface))
