@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -18,6 +18,21 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('reports only bounded positive widget heights scoped to the current generation', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(notifyOverlayHeight(3, 420)).toBe(true);
+    for (const generation of [0, -1, 1.5, Number.NaN, 4294967296]) {
+      expect(notifyOverlayHeight(generation, 210)).toBe(false);
+    }
+    for (const height of [0, -1, 1.5, 20001, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(notifyOverlayHeight(3, height)).toBe(false);
+    }
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual(['size:3:420']);
   });
 
   it('allows only generation-scoped indexed Gio launches, no path or shell command', () => {
