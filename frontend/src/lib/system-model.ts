@@ -48,6 +48,17 @@ export function percentUsed(total: number | null, available: number | null): num
   return Math.floor(100 * (total - available) / total);
 }
 
+/** Unrounded-to-integer utilization for actual chart traces.
+ * The headline status still uses whole percentages, but per-pulse RAM
+ * changes of 0.1% must not disappear from its time series.
+ */
+export function percentUsedPrecise(total: number | null, available: number | null): number | null {
+  if (total === null || available === null ||
+      !Number.isFinite(total) || !Number.isFinite(available) ||
+      total <= 0 || available < 0 || available > total) return null;
+  return Math.round((100 * (total - available) / total) * 100) / 100;
+}
+
 /** Percentage for compact telemetry labels, without pretending a small
  * but nonzero swap allocation is 0%. This does not alter pressure thresholds.
  */
