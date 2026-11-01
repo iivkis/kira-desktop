@@ -36,6 +36,11 @@ jobs:
         with:
           components: rustfmt, clippy
 
+      # Cache downloaded crates and compiled dependencies between CI runs.
+      # Invalidated automatically on toolchain, manifest and lockfile changes.
+      - name: Cache Cargo build artifacts
+        uses: Swatinem/rust-cache@v2
+
       - name: Autoformat Rust before tests
         run: cargo fmt --all
 
@@ -89,6 +94,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          # npm ci still installs cleanly, but packages need not be downloaded again.
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
         run: npm ci --prefix frontend --no-audit --no-fund
