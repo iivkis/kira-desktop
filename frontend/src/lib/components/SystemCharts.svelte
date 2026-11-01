@@ -54,8 +54,8 @@
     });
     gauges?.setOption({
       animation: !reduced,
-      animationDuration: reduced ? 0 : 85,
-      animationDurationUpdate: reduced ? 0 : 85,
+      animationDuration: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 350,
       animationEasingUpdate: 'cubicOut',
       series: [
         dial('CPU', cpu, '25%', accent),
@@ -71,8 +71,8 @@
 
     trend?.setOption({
       animation: !reduced,
-      animationDuration: reduced ? 0 : 85,
-      animationDurationUpdate: reduced ? 0 : 85,
+      animationDuration: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 350,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
       grid: panels.map((_, i) => ({
@@ -111,7 +111,7 @@
     }, { notMerge: true, lazyUpdate: true });
   }
 
-  // One history point per actual native pulse. No 100ms JS timer and no
+  // One history point per actual native pulse. No 500ms JS timer and no
   // GPU replication between slow readings. The bounded list is one minute.
   $effect(() => {
     const current = metrics;
@@ -161,7 +161,7 @@
   <section aria-label="CPU and memory utilization">
     <div class="flex items-center justify-between">
       <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">SYSTEM / PULSE</h2>
-      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 100MS</span>
+      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 500MS</span>
     </div>
     <div class="relative mt-1 h-[164px]">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
@@ -186,7 +186,7 @@
   <section aria-label="Live resource activity">
     <div class="flex items-center justify-between">
       <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">ACTIVITY / LIVE</h2>
-      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · 100MS PULSE</span>
+      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · 500MS PULSE</span>
     </div>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
