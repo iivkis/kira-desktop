@@ -259,22 +259,21 @@ pub fn toggle(
     let window = gtk::ApplicationWindow::new(app);
     window.set_title(Some(TITLE));
     window.set_decorated(false);
-    window.set_default_size(408, 600);
+    // The popup viewport is capped at 70% of its monitor by native_ui.
     window.add_css_class("kira-system-window");
     window.init_layer_shell();
     window.set_namespace(Some("kira-system"));
     window.set_layer(Layer::Overlay);
     window.set_anchor(Edge::Top, true);
     window.set_anchor(Edge::Right, true);
-    window.set_margin(Edge::Top, 50);
+    window.set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
     window.set_margin(Edge::Right, 12);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
 
     let scroll = gtk::ScrolledWindow::new();
     scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
-    scroll.set_propagate_natural_height(true);
-    scroll.set_min_content_height(200);
+    crate::native_ui::configure_popup(&window, &scroll, 408, 600);
     window.set_child(Some(&scroll));
 
     let card = gtk::Box::new(gtk::Orientation::Vertical, 0);

@@ -230,21 +230,26 @@ pub fn toggle(application: &gtk::Application) {
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
     window.set_decorated(false);
-    window.set_default_size(378, 490);
+    // Geometry is monitor-relative and capped inside the shared helper.
     window.add_css_class("kira-calendar-window");
     window.init_layer_shell();
     window.set_namespace(Some("kira-calendar"));
     window.set_layer(Layer::Overlay);
     window.set_anchor(Edge::Top, true);
     window.set_anchor(Edge::Right, true);
-    window.set_margin(Edge::Top, 50);
+    window.set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
     window.set_margin(Edge::Right, 12);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
 
+    let scroll = gtk::ScrolledWindow::new();
+    scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+    crate::native_ui::configure_popup(&window, &scroll, 378, 490);
+    window.set_child(Some(&scroll));
+
     let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
     card.add_css_class("kira-calendar-card");
-    window.set_child(Some(&card));
+    scroll.set_child(Some(&card));
 
     let hero = gtk::Box::new(gtk::Orientation::Vertical, 8);
     hero.add_css_class("kira-calendar-hero");
