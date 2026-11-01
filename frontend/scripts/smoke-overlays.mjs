@@ -62,7 +62,7 @@ function scriptFor(steps, observationMs = 1150) {
               : kind === 'clock-chaos'
                 ? 'document.querySelector("[data-calendar-clock-play]")?.click();' +
                   'setTimeout(() => {' +
-                    'window.__kiraClockFlew = Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
+                    'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
@@ -200,6 +200,8 @@ try {
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
+    // Interrupt the still-running first scatter with another click.
+    { delay: 450, kind: 'clock-chaos' },
   ], 'Kira Calendar', 'clock');
   await smoke('calendar-month-and-day-motion', [
     { delay: 25, kind: 'calendar', generation: 1 },

@@ -3,6 +3,7 @@
  * GTK/Wayland windows, and reduced-motion is a functional no-animation path.
  */
 import { gsap } from 'gsap';
+import { nextClockFlights, type ClockFlight } from './clock-flight';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -174,7 +175,7 @@ export function rollingClockDigit(node: HTMLElement, initial: string) {
 }
 
 /** Intentionally useless clock easter egg. Clicking the actual time sends its
- * six glyph cells flying in different directions before restoring every one.
+ * six glyph cells flying in freshly randomized directions before restoring every one.
  * GSAP owns decoration only: the live wall clock and odometer can tick in
  * their inner spans throughout. Repeated clicks restart cleanly.
  */
@@ -182,6 +183,7 @@ export function clockJuggle(node: HTMLButtonElement) {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let animation: gsap.core.Timeline | null = null;
   let restoreTimer: number | null = null;
+  let previousFlights: ClockFlight[] = [];
   const cells = () => Array.from(node.querySelectorAll<HTMLElement>('[data-clock-cell]'));
 
   function reset() {
@@ -203,16 +205,17 @@ export function clockJuggle(node: HTMLButtonElement) {
     if (motion.matches) return;
     const targets = cells();
     if (!targets.length) return;
-    const xOffsets = [-27, -13, 23, -20, 15, 32];
-    const yOffsets = [-28, 30, -35, 26, -25, 35];
-    const rotations = [-32, 25, 40, -44, -20, 38];
+    // Each click draws a new flight plan. Sector memory survives resets so
+    // even identical random sequences cannot repeat the previous directions.
+    const flights = nextClockFlights(targets.length, previousFlights);
+    previousFlights = flights;
     animation = gsap.timeline({ onComplete: reset });
     animation.to(targets, {
-      x: (index: number) => xOffsets[index % xOffsets.length],
-      y: (index: number) => yOffsets[index % yOffsets.length],
-      rotation: (index: number) => rotations[index % rotations.length],
-      scale: 0.72,
-      opacity: 0.65,
+      x: (index: number) => flights[index].x,
+      y: (index: number) => flights[index].y,
+      rotation: (index: number) => flights[index].rotation,
+      scale: (index: number) => flights[index].scale,
+      opacity: (index: number) => flights[index].opacity,
       duration: 0.27,
       stagger: 0.026,
       ease: 'power3.out',

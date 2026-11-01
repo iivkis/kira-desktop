@@ -93,7 +93,9 @@ official visual language of Kira Desktop.
   cannot delay or falsify the actual time. Digit rolls are interrupted
   cleanly on a subsequent tick and disabled by `prefers-reduced-motion`.
   Clicking or keyboard-activating the clock launches a deliberately playful
-  GSAP digit scatter. Every digit returns to its exact original position;
+  GSAP digit scatter. Each click randomizes directions, distances and spins:
+  the six digits take distinct directions and no digit repeats its prior
+  click's direction. Every digit returns to its exact original position;
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
