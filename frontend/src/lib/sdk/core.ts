@@ -305,12 +305,13 @@ const iconDataUri = /^data:image\/(?:png|jpeg|webp|svg\+xml);base64,[A-Za-z0-9+/
 export function onLauncherIcons(callback: (batch: LauncherIcons) => void): () => void {
   return onNativeEvent('kira:launcher:icons', (value): value is LauncherIcons =>
     isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 16 &&
-    value.icons.every((icon: unknown) =>
-      isRecord(icon) &&
-      Number.isSafeInteger(icon.id) && (icon.id as number) >= 0 && (icon.id as number) < 1024 &&
-      (icon.data_url === null ||
+    value.icons.every((icon: unknown) => {
+      if (!isRecord(icon) || !Number.isSafeInteger(icon.id) ||
+          (icon.id as number) < 0 || (icon.id as number) >= 1024) return false;
+      return icon.data_url === null ||
         (typeof icon.data_url === 'string' && icon.data_url.length <= 180_000 &&
-          iconDataUri.test(icon.data_url))), callback);
+          iconDataUri.test(icon.data_url));
+    }), callback);
 }
 
 export function requestLauncherIcons(generation: number, ids: number[]): boolean {
