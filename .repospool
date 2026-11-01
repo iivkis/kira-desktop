@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3951
+index_bytes=4241
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,89 +15,95 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	41d58d74c0f9579cb4068ef45049c5e7d0876909
-F	.cargo/config.toml	98	110	3
-F	.github/workflows/ci.yml	4355	115	112
-F	.github/workflows/nix.yml	1258	229	38
-F	.github/workflows/overlay-smoke.yml	912	269	34
-F	.github/workflows/publish-repospool.yml	3048	305	83
-F	.gitignore	178	390	11
-F	.repospoolignore	1028	403	47
-F	Cargo.toml	494	452	22
-F	README.md	11192	476	247
-F	Taskfile.yml	5957	725	185
-F	config/kira.kdl.example	358	912	8
-F	crates/kira-core/Cargo.toml	207	922	10
-F	crates/kira-core/src/config.rs	15217	934	399
-F	crates/kira-core/src/main.rs	32080	1335	839
-F	crates/kira-core/src/niri.rs	16767	2176	453
-F	crates/kira-ipc/Cargo.toml	170	2631	9
-F	crates/kira-ipc/src/client.rs	17794	2642	458
-F	crates/kira-ipc/src/lib.rs	10460	3102	336
-F	crates/kira-shell/Cargo.toml	297	3440	12
-F	crates/kira-shell/src/calendar.rs	38040	3454	1020
-F	crates/kira-shell/src/launcher.rs	14114	4476	392
-F	crates/kira-shell/src/main.rs	19285	4870	447
-F	crates/kira-shell/src/native_ui.rs	2857	5319	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5394	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5682	116
-F	crates/kira-shell/src/system_metrics.rs	16187	5800	461
-F	crates/kira-shell/src/system_panel.rs	8819	6263	248
-F	docs/CONFIG.md	5801	6513	125
-F	docs/DESIGN_SYSTEM.md	15048	6640	276
-F	docs/DEVELOPMENT.md	27700	6918	547
-F	docs/QA_VISUAL.md	12284	7467	149
-F	docs/SPECIFICATION.md	28960	7618	421
-F	docs/UI_ARCHITECTURE.md	6737	8041	106
-F	docs/VISUAL_REVIEW.md	9754	8149	84
-F	flake.nix	3181	8235	91
-F	frontend/index.html	2737	8328	66
-F	frontend/package.json	650	8396	23
-F	frontend/scripts/inline-assets.mjs	4457	8421	103
-F	frontend/scripts/inline-assets.test.mjs	4645	8526	106
-F	frontend/scripts/smoke-overlays.mjs	10812	8634	175
-F	frontend/src/App.svelte	8659	8811	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9013	84
-F	frontend/src/lib/bootstrap.ts	2613	9099	70
-F	frontend/src/lib/calendar-model.test.ts	2097	9171	38
-F	frontend/src/lib/calendar-model.ts	3453	9211	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	9285	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	9464	176
-F	frontend/src/lib/components/SystemHealth.svelte	1684	9642	43
-F	frontend/src/lib/components/SystemWidget.svelte	12864	9687	226
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	9915	61
-F	frontend/src/lib/launcher-model.test.ts	1370	9978	29
-F	frontend/src/lib/launcher-model.ts	778	10009	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	10029	89
-F	frontend/src/lib/lazy-widget.ts	1984	10120	63
-F	frontend/src/lib/overlay-size.ts	1090	10185	29
-F	frontend/src/lib/sdk/core.test.ts	20689	10216	411
-F	frontend/src/lib/sdk/core.ts	16727	10629	449
-F	frontend/src/lib/system-health.test.ts	2385	11080	42
-F	frontend/src/lib/system-health.ts	2831	11124	60
-F	frontend/src/lib/system-model.test.ts	3518	11186	65
-F	frontend/src/lib/system-model.ts	3830	11253	88
-F	frontend/src/lib/themes/kira-default.css	1687	11343	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	11397	101
-F	frontend/src/lib/themes/kira-default.ts	777	11500	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	11524	79
-F	frontend/src/lib/time.test.ts	263	11605	8
-F	frontend/src/lib/time.ts	320	11615	9
-F	frontend/src/main.ts	5907	11626	127
-F	frontend/src/style.css	2993	11755	91
-F	frontend/tsconfig.json	403	11848	16
-F	frontend/vite.config.ts	224	11866	8
-F	nix/package.nix	3132	11876	117
-F	scripts/dev_preview.py	18147	11995	403	x
-F	scripts/qa_visual.py	12052	12400	299
-F	tests/test_calendar_design.py	6835	12701	121
-F	tests/test_detailed_health.py	5195	12824	101
-F	tests/test_dev_preview.py	9339	12927	219
-F	tests/test_launcher_design.py	9956	13148	182
-F	tests/test_native_theme.py	1567	13332	36
-F	tests/test_popup_geometry.py	6956	13370	118
-F	tests/test_qa_visual.py	10549	13490	217
-F	tests/test_ui_bootstrap_contract.py	1103	13709	29
+C	f409cb31727073f0dd67aba05cf125d4b7bbb7db
+F	.cargo/config.toml	98	116	3
+F	.github/workflows/ci.yml	4355	121	112
+F	.github/workflows/frontend-nix.yml	1398	235	43
+F	.github/workflows/nix.yml	1258	280	38
+F	.github/workflows/overlay-smoke.yml	912	320	34
+F	.github/workflows/publish-repospool.yml	3048	356	83
+F	.gitignore	178	441	11
+F	.repospoolignore	1028	454	47
+F	AGENTS.md	2145	503	35
+F	Cargo.toml	494	540	22
+F	README.md	11192	564	247
+F	Taskfile.yml	5957	813	185
+F	config/kira.kdl.example	358	1000	8
+F	crates/kira-core/Cargo.toml	207	1010	10
+F	crates/kira-core/src/config.rs	15217	1022	399
+F	crates/kira-core/src/main.rs	32080	1423	839
+F	crates/kira-core/src/niri.rs	16767	2264	453
+F	crates/kira-ipc/Cargo.toml	170	2719	9
+F	crates/kira-ipc/src/client.rs	17794	2730	458
+F	crates/kira-ipc/src/lib.rs	10460	3190	336
+F	crates/kira-shell/Cargo.toml	297	3528	12
+F	crates/kira-shell/src/calendar.rs	38040	3542	1020
+F	crates/kira-shell/src/launcher.rs	14114	4564	392
+F	crates/kira-shell/src/main.rs	19285	4958	447
+F	crates/kira-shell/src/native_ui.rs	2857	5407	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5482	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5770	116
+F	crates/kira-shell/src/system_metrics.rs	16187	5888	461
+F	crates/kira-shell/src/system_panel.rs	8819	6351	248
+F	docs/CONFIG.md	5801	6601	125
+F	docs/DESIGN_SYSTEM.md	16400	6728	300
+F	docs/DEVELOPMENT.md	27700	7030	547
+F	docs/QA_VISUAL.md	12284	7579	149
+F	docs/SPECIFICATION.md	28960	7730	421
+F	docs/UI_ARCHITECTURE.md	6737	8153	106
+F	docs/VISUAL_REVIEW.md	9754	8261	84
+F	flake.nix	3181	8347	91
+F	frontend/index.html	2737	8440	66
+F	frontend/package.json	720	8508	27
+F	frontend/scripts/inline-assets.mjs	4457	8537	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8642	106
+F	frontend/scripts/smoke-overlays.mjs	10812	8750	175
+F	frontend/src/App.svelte	8659	8927	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9129	84
+F	frontend/src/lib/bootstrap.ts	2613	9215	70
+F	frontend/src/lib/calendar-model.test.ts	2097	9287	38
+F	frontend/src/lib/calendar-model.ts	3453	9327	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	9401	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	9580	176
+F	frontend/src/lib/components/SystemCharts.svelte	6517	9758	166
+F	frontend/src/lib/components/SystemHealth.svelte	1684	9926	43
+F	frontend/src/lib/components/SystemWidget.svelte	12867	9971	223
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10196	61
+F	frontend/src/lib/launcher-model.test.ts	1370	10259	29
+F	frontend/src/lib/launcher-model.ts	778	10290	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	10310	89
+F	frontend/src/lib/lazy-widget.ts	1984	10401	63
+F	frontend/src/lib/motion.ts	1596	10466	49
+F	frontend/src/lib/overlay-size.ts	1090	10517	29
+F	frontend/src/lib/sdk/core.test.ts	20689	10548	411
+F	frontend/src/lib/sdk/core.ts	16727	10961	449
+F	frontend/src/lib/system-charts.test.ts	2137	11412	54
+F	frontend/src/lib/system-charts.ts	2101	11468	65
+F	frontend/src/lib/system-health.test.ts	2385	11535	42
+F	frontend/src/lib/system-health.ts	2831	11579	60
+F	frontend/src/lib/system-model.test.ts	3518	11641	65
+F	frontend/src/lib/system-model.ts	3830	11708	88
+F	frontend/src/lib/themes/kira-default.css	1687	11798	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	11852	101
+F	frontend/src/lib/themes/kira-default.ts	777	11955	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	11979	79
+F	frontend/src/lib/time.test.ts	263	12060	8
+F	frontend/src/lib/time.ts	320	12070	9
+F	frontend/src/main.ts	5907	12081	127
+F	frontend/src/style.css	2993	12210	91
+F	frontend/tsconfig.json	403	12303	16
+F	frontend/vite.config.ts	224	12321	8
+F	nix/package.nix	3132	12331	117
+F	scripts/dev_preview.py	18147	12450	403	x
+F	scripts/qa_visual.py	12052	12855	299
+F	tests/test_calendar_design.py	6835	13156	121
+F	tests/test_detailed_health.py	5195	13279	101
+F	tests/test_dev_preview.py	9339	13382	219
+F	tests/test_launcher_design.py	9956	13603	182
+F	tests/test_native_theme.py	1567	13787	36
+F	tests/test_popup_geometry.py	6956	13825	118
+F	tests/test_qa_visual.py	10549	13945	217
+F	tests/test_ui_bootstrap_contract.py	1103	14164	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -224,6 +230,51 @@ jobs:
       - name: Test native Shell recovery and safety contracts
         if: steps.changes.outputs.shell == 'true'
         run: nix develop .#ci --command cargo test --locked -p kira-shell --bin kira-shell
+
+FILE	.github/workflows/frontend-nix.yml
+name: Frontend Nix package
+
+# A changed npm lock must also carry the matching fixed-output Nix hash.
+# This workflow builds only the frontend derivation (not GTK/WebKit Rust).
+on:
+  pull_request:
+    paths:
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - 'nix/package.nix'
+      - '.github/workflows/frontend-nix.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - 'nix/package.nix'
+      - '.github/workflows/frontend-nix.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-nix-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Nix frontend package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate package-lock metadata
+        run: |
+          npm install --prefix frontend --package-lock-only --ignore-scripts --no-audit --no-fund
+          git diff -- frontend/package-lock.json
+          git diff --exit-code -- frontend/package-lock.json
+      - name: Validate locked offline UI package
+        run: nix build .#frontend --no-link --print-build-logs
 
 FILE	.github/workflows/nix.yml
 name: Nix package (nightly / manual)
@@ -447,6 +498,43 @@ Thumbs.db
 **/.env.*
 **/*.pem
 **/*.key
+
+FILE	AGENTS.md
+# Kira Desktop contributor and agent rules
+
+## Visual stack (mandatory)
+
+- **Apache ECharts** is the project's charting library for all new or redesigned
+  charts, gauges, trends and quantitative visualizations. Do not hand-draw charts
+  with ad-hoc CSS bars, SVG paths or an additional charting library.
+  Prefer tree-shakable `echarts/core` imports, register only required modules
+  and choose SVG rendering for compact WebKitGTK overlays.
+- **GSAP** is the project's JavaScript animation library. Use it for deliberate
+  motion such as entry transitions, numeric emphasis and state changes rather
+  than introducing a second JS animation framework or complex CSS keyframes.
+- Respect `prefers-reduced-motion` everywhere, and retain accessible labels,
+  meaningful numeric fallback text, keyboard focus and functional no-motion UI.
+  Never animate fake data into a chart or replace missing sensor data with zero.
+- **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
+  ECharts and GSAP effects on mount, resize charts when geometry changes,
+  dispose chart instances, kill GSAP tweens and detach observers on unmount.
+  Never create unmanaged timers, background data polling or repeated listeners.
+- **Offline WebKit constraint:** The packaged frontend is a single
+  self-contained HTML document. All npm code is bundled locally, with no CDN,
+  runtime fetches, unexpected JS chunks or external stylesheets. Keep
+  `frontend/scripts/inline-assets.mjs` and its tests passing.
+- Retain the canonical five-color Kira palette in
+  `frontend/src/lib/themes/kira-default.css`, the 42px top bar, and the
+  locked-down Rust/GIO ↔ WebKit bridge. Charts are read-only presentation.
+
+## Build and review
+
+Changes to runtime JS dependencies require updates to both
+`frontend/package.json` and `frontend/package-lock.json`, plus the
+frontend Nix dependency hash in `nix/package.nix`. Run `task check`,
+`task frontend:build` and (for frontend lock updates) `nix build .#frontend`.
+Test supported and unavailable metrics, bounded history, reduced motion,
+and open/close cleanup. Visual-QA check the popup in isolated nested Niri.
 
 FILE	Cargo.toml
 [workspace]
@@ -6756,6 +6844,30 @@ official visual language of Kira Desktop.
   another process's CPU history. No new Core JSON-RPC methods or
   user-data collection are introduced.
 
+### Charting and motion libraries (project standard)
+
+**Apache ECharts** is the only supported chart engine for quantitative
+visualizations, including resource gauges/bars and live time-series.
+Import ECharts modularly via `echarts/core` and use the SVG renderer in
+compact WebKitGTK popovers. The system monitor shows actual sampled CPU,
+RAM, GPU and other available percentages, with a bounded 60-second history.
+A missing/unsupported sensor is `UNAVAILABLE`, never a zero-shaped graph.
+Visible text and labels supplement SVG for accessibility.
+
+**GSAP** is the standard for interface animations, including staggered
+tab entrances and gentle reading updates. Animations are short, scoped to
+their own Svelte widget and fully disabled under
+`prefers-reduced-motion: reduce`. On widget unmount, dispose ECharts
+instances and kill GSAP tweens/observers. No canvas/WebGL loops, network
+requests or detached subscriptions may survive a closed overlay.
+
+Both libraries are **bundled into the one self-contained offline HTML**
+that WebKitGTK loads; never use CDNs, runtime dynamic imports, or extra
+asset chunks. Preserve the canonical five-color palette and the 42 px
+native top bar. The system monitor's Processes view retains searchable,
+sortable RSS and PSS process data while the Overview chart uses only the
+existing read-only native telemetry feed.
+
 ### Popup geometry
 
 Calendar and System Monitor share a **25 logical pixel** top margin,
@@ -8414,6 +8526,10 @@ FILE	frontend/package.json
     "typescript": "^5.8.0",
     "vite": "^7.0.0",
     "vitest": "^3.2.0"
+  },
+  "dependencies": {
+    "echarts": "6.1.0",
+    "gsap": "3.15.0"
   }
 }
 
@@ -9638,6 +9754,174 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
   </footer>
 </main>
 
+FILE	frontend/src/lib/components/SystemCharts.svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  // Tree-shaken Apache ECharts. SVG is better suited than a Canvas/WebGL
+  // context to the compact, self-contained WebKitGTK overlay.
+  import * as echarts from 'echarts/core';
+  import { BarChart, LineChart } from 'echarts/charts';
+  import { GridComponent } from 'echarts/components';
+  import { SVGRenderer } from 'echarts/renderers';
+  import type { EChartsType } from 'echarts/core';
+  import type { SystemMetrics } from '../sdk/core';
+  import {
+    appendTelemetry, chartMeters, telemetrySummary,
+    type Meter, type TelemetryPoint,
+  } from '../system-charts';
+
+  echarts.use([BarChart, LineChart, GridComponent, SVGRenderer]);
+
+  let { metrics, meters }: { metrics: SystemMetrics | null; meters: Meter[] } = $props();
+
+  let barsNode: HTMLDivElement;
+  let trendNode: HTMLDivElement;
+  let bars: EChartsType | null = null;
+  let trend: EChartsType | null = null;
+  let history: TelemetryPoint[] = [];
+  let reduced = false;
+
+  // Only the five approved brand colors. Both graphs use the same palette.
+  const accent = '#fca311';
+  const white = '#ffffff';
+  const muted = '#e5e5e5';
+  const prussian = '#14213d';
+
+  const allMeters = $derived(chartMeters(meters, metrics));
+  const chartHeight = $derived(12 + allMeters.length * 28);
+
+  function render(): void {
+    const rows = allMeters;
+    bars?.setOption({
+      animation: !reduced,
+      animationDuration: reduced ? 0 : 500,
+      animationDurationUpdate: reduced ? 0 : 420,
+      animationEasingUpdate: 'cubicOut',
+      grid: { left: 144, right: 34, top: 5, bottom: 5 },
+      xAxis: {
+        type: 'value', min: 0, max: 100,
+        axisLabel: { show: false }, axisLine: { show: false },
+        splitLine: { show: false }, axisTick: { show: false },
+      },
+      yAxis: {
+        type: 'category', inverse: true,
+        data: rows.map(row => row.title),
+        axisLabel: {
+          color: muted, fontSize: 10, width: 130, overflow: 'truncate',
+          formatter: (label: string) => label.length > 22 ? label.slice(0, 20) + '…' : label,
+        },
+        axisLine: { show: false }, axisTick: { show: false },
+      },
+      series: [{
+        type: 'bar',
+        data: rows.map(row => row.percent),
+        barWidth: 8,
+        showBackground: true,
+        backgroundStyle: { color: prussian, borderRadius: 3 },
+        itemStyle: { color: accent, borderRadius: 3 },
+        label: {
+          show: true, position: 'right', color: white, fontSize: 10,
+          formatter: (params: { value: unknown }) =>
+            typeof params.value === 'number' ? params.value + '%' : '',
+        },
+        emphasis: { disabled: true },
+        silent: true,
+      }],
+    }, { notMerge: true, lazyUpdate: false });
+
+    const line = (name: string, color: string, field: 'cpu' | 'ram' | 'gpu') => ({
+      name, type: 'line' as const, smooth: 0.32, silent: true,
+      showSymbol: history.length < 3, symbol: 'circle', symbolSize: 5,
+      connectNulls: false,
+      data: history.map(point => point[field]),
+      lineStyle: { color, width: 2 },
+      itemStyle: { color },
+      areaStyle: { color, opacity: field === 'cpu' ? 0.13 : 0.045 },
+      animationDurationUpdate: reduced ? 0 : 460,
+    });
+    trend?.setOption({
+      animation: !reduced,
+      animationDuration: reduced ? 0 : 480,
+      animationDurationUpdate: reduced ? 0 : 460,
+      animationEasingUpdate: 'cubicOut',
+      grid: { left: 25, right: 9, top: 12, bottom: 10 },
+      xAxis: {
+        type: 'category', boundaryGap: false,
+        data: history.map(point => String(point.time)),
+        axisLine: { show: false }, axisTick: { show: false },
+        axisLabel: { show: false },
+        splitLine: { show: false },
+      },
+      yAxis: {
+        type: 'value', min: 0, max: 100, interval: 50,
+        axisLine: { show: false }, axisTick: { show: false },
+        axisLabel: { color: muted, fontSize: 9, formatter: '{value}' },
+        splitLine: { lineStyle: { color: prussian, width: 1 } },
+      },
+      series: [
+        line('CPU', accent, 'cpu'),
+        line('RAM', white, 'ram'),
+        line('GPU PEAK', muted, 'gpu'),
+      ],
+    }, { notMerge: true, lazyUpdate: false });
+  }
+
+  // The parent receives native samples every two seconds. No polling or
+  // fabricated history is introduced by the chart component.
+  $effect(() => {
+    const current = metrics;
+    const currentMeters = meters;
+    void currentMeters;
+    if (current) history = appendTelemetry(history, current, Date.now());
+    render();
+  });
+
+  onMount(() => {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    reduced = motion.matches;
+    bars = echarts.init(barsNode, undefined, { renderer: 'svg' });
+    trend = echarts.init(trendNode, undefined, { renderer: 'svg' });
+    const resize = () => { bars?.resize(); trend?.resize(); };
+    const resized = new ResizeObserver(resize);
+    resized.observe(barsNode);
+    resized.observe(trendNode);
+    const motionChanged = () => { reduced = motion.matches; render(); };
+    motion.addEventListener('change', motionChanged);
+    render();
+    return () => {
+      resized.disconnect();
+      motion.removeEventListener('change', motionChanged);
+      bars?.dispose();
+      trend?.dispose();
+      bars = null;
+      trend = null;
+      history = [];
+    };
+  });
+</script>
+
+<div class="space-y-3">
+  <div class="flex items-center justify-between gap-2">
+    <h3 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">UTILIZATION / LIVE</h3>
+    <span class="text-[9px] font-semibold text-kira-muted">0–100%</span>
+  </div>
+  <div bind:this={barsNode} class="w-full" style:height={chartHeight + 'px'}
+    role="img" aria-label={'Live utilization bars: ' +
+      allMeters.map(m => m.title + ' ' + m.text).join(', ')}></div>
+  <div class="flex items-center justify-between gap-2">
+    <h3 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">ACTIVITY / LAST 60s</h3>
+    <span class="text-[9px] text-kira-muted">2s SAMPLES</span>
+  </div>
+  <div class="flex gap-4 text-[9px] font-bold text-kira-muted" aria-hidden="true">
+    <span><span class="text-kira-accent">●</span> CPU</span>
+    <span><span class="text-kira-text">●</span> RAM</span>
+    <span><span class="text-kira-muted">●</span> GPU PEAK</span>
+  </div>
+  <div bind:this={trendNode} class="h-[130px] w-full"
+    role="img" aria-label={'Up to thirty actual samples of CPU, RAM and peak GPU utilization. ' +
+      telemetrySummary(metrics)}></div>
+</div>
+
 FILE	frontend/src/lib/components/SystemHealth.svelte
 <script lang="ts">
   import { systemHealth, type CoreConnectionStatus } from '../system-health';
@@ -9686,6 +9970,8 @@ FILE	frontend/src/lib/components/SystemHealth.svelte
 FILE	frontend/src/lib/components/SystemWidget.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
+  import SystemCharts from './SystemCharts.svelte';
+  import { pulseReading, revealStagger } from '../motion';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -9790,8 +10076,8 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   </nav>
 
   {#if active === 'overview'}
-    <div class="flex min-h-0 flex-1 flex-col">
-      <section class="space-y-2 bg-kira-bg px-5 py-4" aria-label="Connections">
+    <div class="flex min-h-0 flex-1 flex-col" use:revealStagger>
+      <section data-kira-enter class="space-y-2 bg-kira-bg px-5 py-4" aria-label="Connections">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">CONNECTIONS / REAL-TIME</h2>
         <div class="flex justify-between gap-3 text-xs"><span class="text-kira-muted">KIRA CORE</span>
           <span class="font-bold">{status?.core ? 'CONNECTED' : 'OFFLINE'}</span></div>
@@ -9799,44 +10085,35 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           <span class="font-bold">{status?.niri ? 'CONNECTED' : 'DISCONNECTED'}</span></div>
       </section>
 
-      <section class="space-y-4 bg-kira-surface px-5 py-4" aria-label="Resource usage">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">RESOURCES / LIVE TELEMETRY</h2>
-        {#each meters as meter (meter.title)}
-          <div class="space-y-2">
-            <div class="flex items-center justify-between gap-2 text-[11px]">
-              <span class="font-semibold text-kira-muted">{meter.title}</span>
-              <span class="text-right font-bold tabular-nums">{meter.text}</span>
+      <section data-kira-enter class="space-y-2 bg-kira-surface px-5 py-4" aria-label="Resource usage">
+        <SystemCharts {metrics} {meters} />
+        <!-- DOM text remains accessible even if ECharts SVG cannot render. -->
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-kira-muted/20 pt-3">
+          {#each meters as meter (meter.title)}
+            <div class="min-w-0">
+              <div class="truncate text-[9px] font-semibold text-kira-muted">{meter.title}</div>
+              <div class="truncate text-[11px] font-bold tabular-nums" use:pulseReading={meter.text}>{meter.text}</div>
             </div>
-            {#if meter.percent !== null}
-              <div class="h-1.5 w-full overflow-hidden rounded-sm bg-kira-bg" role="progressbar"
-                aria-label={meter.title} aria-valuenow={meter.percent} aria-valuemin="0" aria-valuemax="100">
-                <div class="h-full bg-kira-accent" style:width={meter.percent + '%'}></div>
-              </div>
-            {/if}
-          </div>
-        {/each}
+          {/each}
+        </div>
       </section>
 
-      <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="GPU telemetry">
+      <section data-kira-enter class="space-y-3 bg-kira-bg px-5 py-4" aria-label="GPU telemetry">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">GRAPHICS / GPU</h2>
         {#each metrics?.gpus ?? [] as gpu (gpu.label)}
-          <div class="space-y-2">
+          <div class="space-y-2 border-l-2 border-kira-accent bg-kira-surface-soft px-3 py-3">
             <div class="flex items-center justify-between gap-2 text-[11px]">
               <span class="min-w-0 truncate font-semibold text-kira-muted" title={gpu.label}>{gpu.label}</span>
-              <span class="shrink-0 text-right font-bold tabular-nums">
+              <span class="shrink-0 text-right font-bold tabular-nums"
+                use:pulseReading={gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}>
                 {gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}
               </span>
             </div>
-            {#if gpu.utilization_percent !== null}
-              <div class="h-1.5 w-full overflow-hidden rounded-sm bg-kira-surface" role="progressbar"
-                aria-label={gpu.label + ' utilization'} aria-valuenow={gpu.utilization_percent}
-                aria-valuemin="0" aria-valuemax="100">
-                <div class="h-full bg-kira-accent" style:width={gpu.utilization_percent + '%'}></div>
-              </div>
-            {/if}
+            <!-- GPU utilization is charted in Apache ECharts above. -->
             <div class="flex justify-between gap-2 text-[11px]">
               <span class="text-kira-muted">TEMPERATURE</span>
-              <span class="font-bold tabular-nums">{temperatureLabel(gpu.temperature_c)}</span>
+              <span class="font-bold tabular-nums"
+                use:pulseReading={temperatureLabel(gpu.temperature_c)}>{temperatureLabel(gpu.temperature_c)}</span>
             </div>
           </div>
         {:else}
@@ -9844,15 +10121,18 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
         {/each}
       </section>
 
-      <section class="space-y-2 bg-kira-surface px-5 py-4" aria-label="CPU temperature">
+      <section data-kira-enter class="space-y-2 bg-kira-surface px-5 py-4" aria-label="CPU temperature">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">THERMALS / CPU</h2>
         <div class="flex justify-between gap-3 text-[11px]">
           <span class="text-kira-muted">CPU PACKAGE</span>
-          <span class="font-bold tabular-nums">{temperatureLabel(metrics?.cpu_temperature_c ?? null)}</span>
+          <span class="font-bold tabular-nums"
+            use:pulseReading={temperatureLabel(metrics?.cpu_temperature_c ?? null)}>
+            {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
+          </span>
         </div>
       </section>
 
-      <section class="space-y-3 bg-kira-bg px-5 py-4" aria-label="Operating system details">
+      <section data-kira-enter class="space-y-3 bg-kira-bg px-5 py-4" aria-label="Operating system details">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">OPERATING SYSTEM / CONTEXT</h2>
         <div class="flex justify-between gap-3 text-[11px]"><span class="text-kira-muted">UPTIME</span>
           <span class="font-bold tabular-nums">{uptimeLabel(metrics?.uptime_seconds ?? null)}</span></div>
@@ -9870,11 +10150,12 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       </section>
     </div>
   {:else}
-    <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4" aria-label="Processes">
-      <h2 class="mb-3 text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
-      <input type="search" aria-label="Filter by process name or PID" placeholder="Filter by process name or PID"
+    <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
+      aria-label="Processes" use:revealStagger>
+      <h2 data-kira-enter class="mb-3 text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
+      <input data-kira-enter type="search" aria-label="Filter by process name or PID" placeholder="Filter by process name or PID"
         bind:value={query} class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
-      <div class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+      <div data-kira-enter class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
         {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
           <button type="button" onclick={() => changeSort(column.field as SortField)}
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
@@ -9885,7 +10166,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           </button>
         {/each}
       </div>
-      <div class="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
+      <div data-kira-enter class="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
         {#each visible as process (process.pid)}
           <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
             title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
@@ -9902,7 +10183,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
             processes && processes.rows.length ? 'NO MATCHING PROCESSES' : 'SAMPLING / PLEASE WAIT'}</p>
         {/each}
       </div>
-      <footer class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
+      <footer data-kira-enter class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
         <p>SHOWING {visible.length} OF {matching.length} MATCHES / {processes?.total ?? 0} SCANNED
           {processes?.truncated ? ' / LIMIT REACHED' : ''}</p>
         <p>READ ONLY / CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
@@ -10179,6 +10460,57 @@ export function createLazyWidget<Instance>(
   }
 
   return { show, hide };
+}
+
+FILE	frontend/src/lib/motion.ts
+/** GSAP is the project's sole JavaScript motion engine.
+ * Actions are scoped to the short-lived Svelte widget DOM. They never animate
+ * GTK/Wayland windows, and reduced-motion is a functional no-animation path.
+ */
+import { gsap } from 'gsap';
+
+const reducedMotion = () => typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** Deliberately short, staggered entry animation for a newly mounted tab. */
+export function revealStagger(node: HTMLElement) {
+  if (reducedMotion()) return;
+  const targets = node.querySelectorAll<HTMLElement>('[data-kira-enter]');
+  const animation = gsap.fromTo(targets,
+    { autoAlpha: 0, y: 14, scale: 0.985 },
+    {
+      autoAlpha: 1, y: 0, scale: 1, duration: 0.55,
+      stagger: 0.065, ease: 'power3.out',
+      clearProps: 'opacity,visibility,transform',
+    },
+  );
+  return {
+    destroy() {
+      animation.kill();
+      gsap.set(targets, { clearProps: 'opacity,visibility,transform' });
+    },
+  };
+}
+
+/** Flash a new numeric reading once without competing with ECharts updates. */
+export function pulseReading(node: HTMLElement, initial: string) {
+  let previous = initial;
+  return {
+    update(next: string) {
+      if (next === previous) return;
+      previous = next;
+      if (reducedMotion()) return;
+      gsap.killTweensOf(node);
+      gsap.fromTo(node,
+        { color: '#fca311' },
+        { color: '#ffffff', duration: 0.6, ease: 'power2.out', clearProps: 'color' },
+      );
+    },
+    destroy() {
+      gsap.killTweensOf(node);
+      gsap.set(node, { clearProps: 'color' });
+    },
+  };
 }
 
 FILE	frontend/src/lib/overlay-size.ts
@@ -11076,6 +11408,129 @@ function send(method: string, params?: { id: string }): Promise<unknown> {
   });
 }
 
+FILE	frontend/src/lib/system-charts.test.ts
+import { describe, expect, it } from 'vitest';
+import type { SystemMetrics } from './sdk/core';
+import {
+  appendTelemetry, chartMeters, gpuPeak, MAX_TELEMETRY_POINTS, telemetrySummary,
+} from './system-charts';
+
+const metrics: SystemMetrics = {
+  cpu_percent: 31,
+  cpu_temperature_c: 58,
+  gpus: [
+    { label: 'iGPU / Intel (card0)', utilization_percent: null, temperature_c: 48 },
+    { label: 'GPU / AMD (card1)', utilization_percent: 72, temperature_c: 64 },
+  ],
+  memory_total_kib: 1000, memory_available_kib: 200,
+  swap_total_kib: 0, swap_free_kib: 0,
+  root_total_kib: 1000, root_available_kib: 500,
+  uptime_seconds: 300, load: [0.1, 0.2, 0.3],
+  battery_percent: null, battery_charging: null,
+};
+
+describe('System Monitor ECharts telemetry model', () => {
+  it('charts only real samples and caps history at thirty points', () => {
+    let samples = [] as ReturnType<typeof appendTelemetry>;
+    for (let i = 0; i < 50; i++) {
+      samples = appendTelemetry(samples, metrics, 1000 + i * 2000);
+    }
+    expect(samples).toHaveLength(MAX_TELEMETRY_POINTS);
+    expect(samples[0].time).toBe(41_000);
+    expect(samples.at(-1)).toEqual({ time: 99_000, cpu: 31, ram: 80, gpu: 72 });
+  });
+
+  it('never synthesizes zero when GPU, CPU or memory measurements are missing', () => {
+    const absent = {
+      ...metrics,
+      cpu_percent: null,
+      memory_available_kib: null,
+      gpus: metrics.gpus.map(gpu => ({ ...gpu, utilization_percent: null })),
+    };
+    expect(gpuPeak(absent)).toBeNull();
+    expect(appendTelemetry([], absent, 1)).toEqual([
+      { time: 1, cpu: null, ram: null, gpu: null },
+    ]);
+    expect(telemetrySummary(absent)).toContain('GPU peak unavailable');
+  });
+
+  it('adds one bar per detected GPU, retaining unknown readings', () => {
+    const rows = chartMeters([{ title: 'CPU', percent: 31, text: '31%' }], metrics);
+    expect(rows).toHaveLength(3);
+    expect(rows.map(row => row.percent)).toEqual([31, null, 72]);
+    expect(rows[1].text).toBe('UNAVAILABLE');
+    expect(chartMeters([], null)).toEqual([]);
+    expect(telemetrySummary(null)).toBe('Waiting for system telemetry');
+  });
+});
+
+FILE	frontend/src/lib/system-charts.ts
+/** Bounded, honest, two-second system telemetry for Apache ECharts.
+ * This module is intentionally DOM-independent so the data rules are testable.
+ */
+import type { SystemMetrics } from './sdk/core';
+import { percentUsed } from './system-model';
+
+export interface Meter {
+  title: string;
+  percent: number | null;
+  text: string;
+}
+
+export interface TelemetryPoint {
+  time: number;
+  cpu: number | null;
+  ram: number | null;
+  gpu: number | null;
+}
+
+export const MAX_TELEMETRY_POINTS = 30; // At two-second cadence, up to one minute.
+
+export function gpuPeak(metrics: SystemMetrics): number | null {
+  const values = metrics.gpus
+    .map(gpu => gpu.utilization_percent)
+    .filter((value): value is number => value !== null);
+  return values.length ? Math.max(...values) : null;
+}
+
+export function chartMeters(meters: readonly Meter[], metrics: SystemMetrics | null): Meter[] {
+  if (!metrics) return meters.slice();
+  return [
+    ...meters,
+    ...metrics.gpus.map(gpu => ({
+      title: gpu.label,
+      percent: gpu.utilization_percent,
+      text: gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%',
+    })),
+  ];
+}
+
+/** Null samples are missing measurements, never zero. No synthetic points. */
+export function appendTelemetry(
+  history: readonly TelemetryPoint[],
+  metrics: SystemMetrics,
+  time: number,
+): TelemetryPoint[] {
+  const next = [...history, {
+    time,
+    cpu: metrics.cpu_percent,
+    ram: percentUsed(metrics.memory_total_kib, metrics.memory_available_kib),
+    gpu: gpuPeak(metrics),
+  }];
+  return next.slice(-MAX_TELEMETRY_POINTS);
+}
+
+/** Return an accessible live label without depending on SVG rendering. */
+export function telemetrySummary(metrics: SystemMetrics | null): string {
+  if (!metrics) return 'Waiting for system telemetry';
+  const value = (percent: number | null) => percent === null ? 'unavailable' : percent + '%';
+  return [
+    'CPU ' + value(metrics.cpu_percent),
+    'RAM ' + value(percentUsed(metrics.memory_total_kib, metrics.memory_available_kib)),
+    'GPU peak ' + value(gpuPeak(metrics)),
+  ].join(', ');
+}
+
 FILE	frontend/src/lib/system-health.test.ts
 import { describe, expect, it } from 'vitest';
 import { systemHealth } from './system-health';
@@ -11902,7 +12357,7 @@ let
     inherit version;
     src = ../frontend;
 
-    npmDepsHash = "sha256-jZ7ayT9r36uj+XVhZXFrHOY8NGwnlKf7kpAwgaT9FuM=";
+    npmDepsHash = "sha256-MlZUZJG1+rYRn+IZRMN/XAT1sYRTO8bz1vC9URffmCs=";
     npmBuildScript = "build";
 
     installPhase = ''
