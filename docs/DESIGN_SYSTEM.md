@@ -87,6 +87,11 @@ official visual language of Kira Desktop.
   focus, clipboard, and the 42px top bar remain unchanged. Motion is
   disabled by `prefers-reduced-motion`, interrupted transitions are killed,
   and all GSAP tweens/listeners are cleaned up when the calendar unmounts.
+  The live wall clock uses GSAP **odometer rolls per changed numeral**,
+  keeping unchanged digits and separators fixed. The displayed text and
+  datetime always come from the same localized clock reading; animation
+  cannot delay or falsify the actual time. Digit rolls are interrupted
+  cleanly on a subsequent tick and disabled by `prefers-reduced-motion`.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   Search, catalog, stable application icons, and an orange selection rail
   communicate function without painting the entire row orange.
@@ -154,10 +159,12 @@ diagnostic bars. The visual hierarchy is intentional:
 1. **Primary:** two large ECharts SVG dials for actual CPU and RAM usage, each
    with accessible HTML numbers and accurate unknown state.
 2. **Secondary:** activity history in **separate, clearly labeled CPU and RAM
-   lanes**. Low CPU loads must remain visible using a bounded, adaptive
-   percentage axis; each lane's axis displays its real endpoints, and GPU has
-   its own lane only while a real utilization sensor is available. History is
-   bounded to 120 genuine 500ms CPU/RAM samples, never fabricated.
+   lanes**, both sampled at 500 ms and using the **same adaptive-axis rules**
+   and continuous ECharts update strategy. RAM keeps measured hundredth-percent
+   precision instead of rounding away real movement, while accessible axis
+   labels disclose the actual zoom. GPU has its own lane only when a real
+   utilization sensor is available. History is bounded to 120 genuine
+   500ms CPU/RAM samples, never fabricated.
 3. **Tertiary:** compact Swap and Root Storage figures, then a concise hardware
    / thermal row and OS metadata, with no empty card for unavailable GPU data.
    Nonzero fractional swap use is not rounded down to a misleading 0%.
