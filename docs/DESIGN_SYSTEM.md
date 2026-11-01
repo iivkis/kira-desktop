@@ -16,6 +16,11 @@ official visual language of Kira Desktop.
   description, metadata), measured spacing and deliberate grouping.
 - **Expressive Minimalism:** one canonical accent, every element functional,
   short quiet motion rather than decoration.
+- **KISS:** keep each UI feature and interaction easy to trace. Prefer a small
+  direct function over an abstract component framework; new layers must solve
+  a demonstrated problem.
+- **DRY:** define shared palettes and genuinely identical infrastructure once.
+  Keep distinct behaviors separate, even when they both use GTK buttons.
 
 ### Visual rules
 
@@ -34,6 +39,25 @@ official visual language of Kira Desktop.
    application; the catalog retains descriptive text and system icons.
 7. Preserve visible keyboard focus, urgent/offline states, reduced-motion,
    and readable contrast. Decoration must not disguise function.
+
+### Implementation rules: KISS + DRY
+
+1. **Single native palette:** `native-palette.css` declares the five GTK
+   colors for Launcher and Calendar. `native_ui.rs` assembles it with each
+   overlay stylesheet, and `test_native_theme.py` verifies the values match
+   Svelte's canonical palette. Do not duplicate `@define-color` in widgets.
+2. **Small shared operations:** the common overlay helper only installs style
+   providers, finds windows and dismisses them. Keep Launcher search/launch
+   and Calendar date-picker state in their own modules.
+3. **No premature abstraction:** two similarly named elements are not
+   necessarily the same component. Extract code only when it has the same
+   semantics and at least two real callers.
+4. **Behavior before snapshots:** prefer unit tests of dates, state and real
+   interactions; supplement with visual Niri QA for layout and focus. Never
+   treat checking CSS class strings as proof that UI looks correct.
+5. **Preserve public contracts:** Niri's 42px exclusive zone, the bounded
+   WebKit bridge, KDL config and keyboard access are not negotiable during
+   style or internal structure refactors.
 
 ### Component principles
 

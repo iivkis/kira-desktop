@@ -33,6 +33,14 @@ opening it never changes the 42px Niri reservation.
 The WebKit host continues to embed a single production CSS file, including
 Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 
+GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
+not separately in the two overlay stylesheets. Shared native CSS installation
+and overlay lookup/dismiss helpers live in
+`crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
+interaction logic stays in `launcher.rs` or `calendar.rs`, following KISS
+and DRY without introducing a generic overlay framework. When changing any
+native CSS asset, verify it remains included by `nix/package.nix`.
+
 When adding npm dependencies, commit the updated
 `frontend/package-lock.json` and update `npmDepsHash` in
 `nix/package.nix`; otherwise `npm ci` or the Nix frontend package fails.
