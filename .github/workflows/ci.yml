@@ -44,3 +44,6 @@ jobs:
         run: task check
       - name: Build static Svelte assets
         run: task frontend:build
+      # Exercise the actual built HTML with show/hide events in a browser.
+      - name: Smoke test Calendar and System Svelte mounts
+        run: node frontend/scripts/smoke-overlays.mjs
