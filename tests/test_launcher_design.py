@@ -81,6 +81,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("focus-visible:-outline-offset-2", WIDGET)
         self.assertIn("size-9 shrink-0 items-center justify-center overflow-hidden", WIDGET)
         self.assertIn("bg-kira-surface-soft", WIDGET)
+        self.assertIn("line-clamp-2 text-[11px] leading-4", WIDGET)
 
     def test_file_icon_and_generic_fallback_resolve_without_browser_paths(self):
         self.assertIn("icon.downcast_ref::<gio::FileIcon>()", RUST)
