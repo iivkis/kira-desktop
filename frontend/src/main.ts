@@ -1,7 +1,7 @@
 import { flushSync, mount } from 'svelte';
 import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate } from './lib/sdk/core';
+import { closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './lib/sdk/core';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
 
@@ -43,5 +43,10 @@ whenDocumentReady(document, () => {
   Reflect.set(window, '__kiraMountReturned', mounted);
   if (mounted) {
     report('Svelte entrypoint mounted');
+    // Let the GTK host map the prepared popup only after the Svelte root is
+    // actually mounted. A second frame acknowledgement gates its opacity.
+    if (document.documentElement.dataset.kiraSurface === 'calendar') {
+      notifyCalendarMounted();
+    }
   }
 });
