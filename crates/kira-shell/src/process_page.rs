@@ -14,7 +14,7 @@ use crate::system_metrics::bytes_label;
 
 const VISIBLE_ROWS: usize = 36;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum Sort {
     Name,
     Pid,
@@ -418,7 +418,7 @@ mod tests {
             (Sort::Memory, true, [3, 2, 1]),
         ] {
             rows.sort_by(|a, b| compare_rows(a, b, SortState { field, descending }));
-            assert_eq!(rows.map(|row| row.pid), expected);
+            assert_eq!(rows.iter().map(|row| row.pid).collect::<Vec<_>>(), expected.to_vec());
         }
     }
 
