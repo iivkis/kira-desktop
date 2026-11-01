@@ -29,7 +29,10 @@ describe('TENET Calendar temporal contract', () => {
         expect(position(dualTime(t).inverted))
           .toEqual(position(dualTime(1 - t).forward));
       }
-      expect(position(0)).toEqual({ x: 0, y: 0, rotation: 0 });
+      // IEEE-754 -0 is physically identical to +0; compare magnitudes.
+      expect(Math.abs(position(0).x)).toBe(0);
+      expect(Math.abs(position(0).y)).toBe(0);
+      expect(Math.abs(position(0).rotation)).toBe(0);
     }
   });
 
