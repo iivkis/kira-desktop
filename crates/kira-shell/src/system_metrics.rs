@@ -2,11 +2,21 @@
 //! additional dependencies. Optional fields are absent when the kernel does
 //! not provide a metric; lack of data must never be displayed as zero.
 use std::fs;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
+
+#[derive(Debug, Clone)]
+pub struct GpuSnapshot {
+    pub label: String,
+    pub utilization_percent: Option<u8>,
+    pub temperature_c: Option<f64>,
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct Snapshot {
     pub cpu_percent: Option<u8>,
+    pub cpu_temperature_c: Option<f64>,
+    pub gpus: Vec<GpuSnapshot>,
     pub memory_total_kib: Option<u64>,
     pub memory_available_kib: Option<u64>,
     pub swap_total_kib: Option<u64>,
@@ -23,6 +33,12 @@ impl Snapshot {
     pub fn as_json(&self) -> serde_json::Value {
         serde_json::json!({
             "cpu_percent": self.cpu_percent,
+            "cpu_temperature_c": self.cpu_temperature_c,
+            "gpus": self.gpus.iter().map(|gpu| serde_json::json!({
+                "label": gpu.label,
+                "utilization_percent": gpu.utilization_percent,
+                "temperature_c": gpu.temperature_c,
+            })).collect::<Vec<_>>(),
             "memory_total_kib": self.memory_total_kib,
             "memory_available_kib": self.memory_available_kib,
             "swap_total_kib": self.swap_total_kib,
@@ -133,6 +149,166 @@ fn battery() -> (Option<u8>, Option<bool>) {
     (None, None)
 }
 
+// sysfs is kernel-provided; optional sensors must never become zero by default.
+// GPU utilization is driver-dependent (e.g. AMD gpu_busy_percent).
+const MAX_GPUS: usize = 8;
+const MAX_HWMON_SENSORS: usize = 32;
+
+fn read_small(path: &Path) -> Option<String> {
+    use std::io::Read;
+    let mut bytes = Vec::new();
+    fs::File::open(path).ok()?.take(4096).read_to_end(&mut bytes).ok()?;
+    String::from_utf8(bytes).ok()
+}
+
+fn temperature_c(text: &str) -> Option<f64> {
+    let millidegrees = text.trim().parse::<i64>().ok()?;
+    (-40_000..=150_000)
+        .contains(&millidegrees)
+        .then_some(millidegrees as f64 / 1000.0)
+}
+
+fn utilization(text: &str) -> Option<u8> {
+    text.trim().parse::<u8>().ok().filter(|p| *p <= 100)
+}
+
+fn hwmon_temperature(root: &Path, cpu: bool) -> Option<f64> {
+    let entries = fs::read_dir(root).ok()?;
+    let mut sensors: Vec<(u8, f64)> = Vec::new();
+    for directory in entries.flatten() {
+        if !directory.file_name().to_string_lossy().starts_with("hwmon") {
+            continue;
+        }
+        let path = directory.path();
+        for index in 1..=MAX_HWMON_SENSORS {
+            let input = path.join(format!("temp{index}_input"));
+            let Some(value) = read_small(&input).and_then(|text| temperature_c(&text)) else {
+                continue;
+            };
+            let label = read_small(&path.join(format!("temp{index}_label")))
+                .unwrap_or_default()
+                .trim()
+                .to_ascii_lowercase();
+            // CPU: prefer package/die readings. GPU: prefer the edge sensor
+            // over hotspot/junction/VRAM readings on multi-sensor cards.
+            let priority = if cpu {
+                if label.starts_with("package") || label == "tdie" || label == "cpu" {
+                    0
+                } else if label == "tctl" || label.starts_with("core ") {
+                    1
+                } else {
+                    2
+                }
+            } else if label == "edge" || label == "gpu" {
+                0
+            } else if label.contains("junction") || label.contains("hotspot") {
+                1
+            } else if label.contains("mem") {
+                3
+            } else {
+                2
+            };
+            sensors.push((priority, value));
+        }
+    }
+    sensors.sort_by_key(|sensor| sensor.0);
+    sensors.first().map(|sensor| sensor.1)
+}
+
+fn cpu_temperature(sys: &Path) -> Option<f64> {
+    let entries = fs::read_dir(sys.join("class/hwmon")).ok()?;
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let name = read_small(&path.join("name"))?;
+        if matches!(
+            name.trim(),
+            "coretemp" | "k10temp" | "zenpower" | "cpu_thermal" | "cpu-thermal"
+        ) && let Some(temp) = hwmon_temperature_for_device(&path, true)
+        {
+            return Some(temp);
+        }
+    }
+    // Names of thermal zones matter. A generic ACPI/SoC temperature should
+    // not be mislabeled as CPU package temperature.
+    let zones = fs::read_dir(sys.join("class/thermal")).ok()?;
+    for entry in zones.flatten() {
+        if !entry.file_name().to_string_lossy().starts_with("thermal_zone") {
+            continue;
+        }
+        let path = entry.path();
+        let name = read_small(&path.join("type")).unwrap_or_default();
+        if matches!(name.trim(), "x86_pkg_temp" | "cpu-thermal" | "cpu_thermal")
+            && let Some(temp) = read_small(&path.join("temp")).and_then(|s| temperature_c(&s))
+        {
+            return Some(temp);
+        }
+    }
+    None
+}
+
+fn hwmon_temperature_for_device(path: &Path, cpu: bool) -> Option<f64> {
+    let parent = path.parent()?;
+    // Reuse the bounded sensor parser without traversing unrelated devices:
+    // it only matches hwmon* directories under this parent.
+    let entry = path.file_name()?.to_string_lossy();
+    if !entry.starts_with("hwmon") {
+        return None;
+    }
+    hwmon_temperature(parent, cpu)
+}
+
+fn gpu_label(card: &str, vendor: &str, uevent: &str) -> String {
+    let manufacturer = match vendor.trim() {
+        "0x8086" => "Intel",
+        "0x1002" => "AMD",
+        "0x10de" => "NVIDIA",
+        "0x1af4" => "Virtio",
+        _ => "Unknown",
+    };
+    // PCI 00:02.0 is the standard integrated Intel graphics device.
+    // For other GPUs do not guess integrated vs discrete from vendor.
+    let integrated = vendor.trim() == "0x8086"
+        && uevent.lines().any(|line| line == "PCI_SLOT_NAME=0000:00:02.0");
+    let kind = if integrated { "iGPU" } else { "GPU" };
+    format!("{kind} / {manufacturer} ({card})")
+}
+
+fn sample_gpus(sys: &Path) -> Vec<GpuSnapshot> {
+    let Ok(entries) = fs::read_dir(sys.join("class/drm")) else {
+        return Vec::new();
+    };
+    let mut cards: Vec<(String, PathBuf)> = entries
+        .flatten()
+        .filter_map(|entry| {
+            let name = entry.file_name().to_str()?.to_owned();
+            name.strip_prefix("card")?.parse::<u8>().ok()?;
+            let device = entry.path().join("device");
+            device.exists().then_some((name, device))
+        })
+        .collect();
+    cards.sort_by(|a, b| a.0.cmp(&b.0));
+    cards
+        .into_iter()
+        .take(MAX_GPUS)
+        .map(|(card, device)| {
+            let vendor = read_small(&device.join("vendor")).unwrap_or_default();
+            let uevent = read_small(&device.join("uevent")).unwrap_or_default();
+            let utilization_percent = [
+                device.join("gpu_busy_percent"),
+                device.join("gt_busy_percent"),
+                device.join("gt/gt0/gt_busy_percent"),
+            ]
+            .iter()
+            .find_map(|path| read_small(path).and_then(|s| utilization(&s)));
+            GpuSnapshot {
+                label: gpu_label(&card, &vendor, &uevent),
+                utilization_percent,
+                temperature_c: hwmon_temperature(&device.join("hwmon"), false),
+            }
+        })
+        .collect()
+}
+
 #[derive(Default)]
 pub struct Sampler {
     previous_cpu: Option<(u64, u64)>,
@@ -162,6 +338,8 @@ impl Sampler {
                 .map(|v| Duration::from_secs_f64(v).as_secs());
         }
         (s.battery_percent, s.battery_charging) = battery();
+        s.cpu_temperature_c = cpu_temperature(Path::new("/sys"));
+        s.gpus = sample_gpus(Path::new("/sys"));
         s
     }
 }
@@ -199,6 +377,47 @@ mod tests {
         assert_eq!(cpu_usage((100, 70), (200, 130)), Some(40));
         assert_eq!(cpu_usage((100, 70), (100, 70)), None);
         assert_eq!(cpu_usage((100, 70), (90, 60)), None);
+    }
+
+    #[test]
+    fn sensor_parsers_reject_invalid_or_missing_measurements() {
+        assert_eq!(temperature_c("50250\n"), Some(50.25));
+        assert_eq!(temperature_c("151000"), None);
+        assert_eq!(temperature_c("n/a"), None);
+        assert_eq!(utilization("83\n"), Some(83));
+        assert_eq!(utilization("101"), None);
+        assert_eq!(utilization("-1"), None);
+        assert_eq!(gpu_label("card0", "0x8086", "PCI_SLOT_NAME=0000:00:02.0\n"), "iGPU / Intel (card0)");
+        assert_eq!(gpu_label("card1", "0x1002", "PCI_SLOT_NAME=0000:03:00.0\n"), "GPU / AMD (card1)");
+    }
+
+    #[test]
+    fn gpu_and_cpu_sensors_are_optional_and_device_scoped() {
+        let root = std::env::temp_dir().join(format!(
+            "kira-sys-hwmon-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        let hwmon = root.join("class/hwmon/hwmon0");
+        let gpu = root.join("class/drm/card1/device");
+        fs::create_dir_all(&hwmon).unwrap();
+        fs::create_dir_all(gpu.join("hwmon/hwmon2")).unwrap();
+        fs::write(hwmon.join("name"), "k10temp\n").unwrap();
+        fs::write(hwmon.join("temp1_label"), "Tctl\n").unwrap();
+        fs::write(hwmon.join("temp1_input"), "61125\n").unwrap();
+        fs::write(gpu.join("vendor"), "0x1002\n").unwrap();
+        fs::write(gpu.join("gpu_busy_percent"), "47\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp1_label"), "edge\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp1_input"), "55375\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp2_label"), "junction\n").unwrap();
+        fs::write(gpu.join("hwmon/hwmon2/temp2_input"), "79900\n").unwrap();
+        assert_eq!(cpu_temperature(&root), Some(61.125));
+        let cards = sample_gpus(&root);
+        assert_eq!(cards.len(), 1);
+        assert_eq!(cards[0].label, "GPU / AMD (card1)");
+        assert_eq!(cards[0].utilization_percent, Some(47));
+        assert_eq!(cards[0].temperature_c, Some(55.375));
+        fs::remove_dir_all(&root).unwrap();
     }
 
     #[test]
