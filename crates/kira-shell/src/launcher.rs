@@ -52,7 +52,7 @@ impl Catalog {
 
     pub fn launch(&self, id: usize) -> Result<(), String> {
         let info = self.apps.get(id).ok_or("Unknown application index")?;
-        info.launch(&[], None::<&gio::AppLaunchContext>())
+        info.launch(&[], None::<&gio::AppLaunchContext>)
             .map_err(|error| {
                 error
                     .to_string()
