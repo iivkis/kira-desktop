@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=3057
+index_bytes=3439
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,73 +15,80 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	2ec583ee587fedd1e5080c43d2931ec7a2dc180f
-F	.cargo/config.toml	98	94	3
-F	.github/workflows/ci.yml	968	99	44
-F	.github/workflows/nix.yml	2201	145	67
-F	.github/workflows/publish-repospool.yml	3048	214	83
-F	.gitignore	178	299	11
-F	.repospoolignore	1028	312	47
-F	Cargo.toml	494	361	22
-F	README.md	9636	385	219
-F	Taskfile.yml	6329	606	192
-F	config/kira.kdl.example	358	800	8
-F	crates/kira-core/Cargo.toml	207	810	10
-F	crates/kira-core/src/config.rs	15217	822	399
-F	crates/kira-core/src/main.rs	18357	1223	480
-F	crates/kira-core/src/niri.rs	16767	1705	453
-F	crates/kira-ipc/Cargo.toml	170	2160	9
-F	crates/kira-ipc/src/client.rs	10376	2171	277
-F	crates/kira-ipc/src/lib.rs	9053	2450	302
-F	crates/kira-shell/Cargo.toml	297	2754	12
-F	crates/kira-shell/src/calendar.css	4347	2768	152
-F	crates/kira-shell/src/calendar.rs	18181	2922	506
-F	crates/kira-shell/src/calendar_model.rs	5491	3430	156
-F	crates/kira-shell/src/launcher.css	2924	3588	119
-F	crates/kira-shell/src/launcher.rs	10838	3709	299
-F	crates/kira-shell/src/main.rs	17551	4010	411
-F	crates/kira-shell/src/native-palette.css	353	4423	7
-F	crates/kira-shell/src/native_ui.rs	1168	4432	33
-F	crates/kira-shell/src/ui_assets.rs	4873	4467	148
-F	docs/CONFIG.md	5801	4617	125
-F	docs/DESIGN_SYSTEM.md	12912	4744	241
-F	docs/DEVELOPMENT.md	21604	4987	445
-F	docs/QA_VISUAL.md	9796	5434	126
-F	docs/SPECIFICATION.md	28382	5562	414
-F	docs/VISUAL_REVIEW.md	9754	5978	84
-F	flake.nix	2651	6064	76
-F	frontend/index.html	2737	6142	66
-F	frontend/package.json	650	6210	23
-F	frontend/scripts/inline-assets.mjs	4498	6235	103
-F	frontend/scripts/inline-assets.test.mjs	4645	6340	106
-F	frontend/src/App.svelte	8083	6448	184
-F	frontend/src/lib/bootstrap.test.ts	3408	6634	84
-F	frontend/src/lib/bootstrap.ts	2613	6720	70
-F	frontend/src/lib/components/SystemHealth.svelte	1189	6792	37
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	6831	61
-F	frontend/src/lib/sdk/core.test.ts	8465	6894	166
-F	frontend/src/lib/sdk/core.ts	6351	7062	194
-F	frontend/src/lib/system-health.test.ts	1390	7258	34
-F	frontend/src/lib/system-health.ts	1260	7294	31
-F	frontend/src/lib/themes/kira-default.css	1687	7327	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	7381	101
-F	frontend/src/lib/themes/kira-default.ts	777	7484	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4139	7508	74
-F	frontend/src/lib/time.test.ts	263	7584	8
-F	frontend/src/lib/time.ts	320	7594	9
-F	frontend/src/main.ts	1167	7605	35
-F	frontend/src/style.css	1329	7642	44
-F	frontend/tsconfig.json	403	7688	16
-F	frontend/vite.config.ts	224	7706	8
-F	nix/package.nix	3426	7716	121
-F	scripts/dev_preview.py	18147	7839	403	x
-F	scripts/qa_visual.py	12052	8244	299
-F	tests/test_calendar_design.py	5299	8545	111
-F	tests/test_dev_preview.py	9339	8658	219
-F	tests/test_launcher_design.py	2915	8879	61
-F	tests/test_native_theme.py	2421	8942	53
-F	tests/test_qa_visual.py	10549	8997	217
-F	tests/test_ui_bootstrap_contract.py	1103	9216	29
+C	fa9b1d02b26bdc153cb56af70866524854cc32ac
+F	.cargo/config.toml	98	101	3
+F	.github/workflows/ci.yml	4105	106	105
+F	.github/workflows/nix.yml	2714	213	73
+F	.github/workflows/publish-repospool.yml	3048	288	83
+F	.gitignore	178	373	11
+F	.repospoolignore	1028	386	47
+F	Cargo.toml	494	435	22
+F	README.md	9636	459	219
+F	Taskfile.yml	6329	680	192
+F	config/kira.kdl.example	358	874	8
+F	crates/kira-core/Cargo.toml	207	884	10
+F	crates/kira-core/src/config.rs	15217	896	399
+F	crates/kira-core/src/main.rs	18357	1297	480
+F	crates/kira-core/src/niri.rs	16767	1779	453
+F	crates/kira-ipc/Cargo.toml	170	2234	9
+F	crates/kira-ipc/src/client.rs	10376	2245	277
+F	crates/kira-ipc/src/lib.rs	9053	2524	302
+F	crates/kira-shell/Cargo.toml	297	2828	12
+F	crates/kira-shell/src/calendar.css	4347	2842	152
+F	crates/kira-shell/src/calendar.rs	18514	2996	512
+F	crates/kira-shell/src/calendar_model.rs	5491	3510	156
+F	crates/kira-shell/src/launcher.css	2924	3668	119
+F	crates/kira-shell/src/launcher.rs	10885	3789	300
+F	crates/kira-shell/src/main.rs	20290	4091	470
+F	crates/kira-shell/src/native-palette.css	353	4563	7
+F	crates/kira-shell/src/native_ui.rs	2660	4572	68
+F	crates/kira-shell/src/process_monitor.rs	6245	4642	202
+F	crates/kira-shell/src/process_page.rs	16357	4846	466
+F	crates/kira-shell/src/system_metrics.rs	7010	5314	214
+F	crates/kira-shell/src/system_panel.css	5154	5530	148
+F	crates/kira-shell/src/system_panel.rs	17263	5680	496
+F	crates/kira-shell/src/ui_assets.rs	4873	6178	148
+F	docs/CONFIG.md	5801	6328	125
+F	docs/DESIGN_SYSTEM.md	15048	6455	276
+F	docs/DEVELOPMENT.md	23229	6733	474
+F	docs/QA_VISUAL.md	12284	7209	149
+F	docs/SPECIFICATION.md	28382	7360	414
+F	docs/VISUAL_REVIEW.md	9754	7776	84
+F	flake.nix	2651	7862	76
+F	frontend/index.html	2737	7940	66
+F	frontend/package.json	650	8008	23
+F	frontend/scripts/inline-assets.mjs	4498	8033	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8138	106
+F	frontend/src/App.svelte	8659	8246	200
+F	frontend/src/lib/bootstrap.test.ts	3408	8448	84
+F	frontend/src/lib/bootstrap.ts	2613	8534	70
+F	frontend/src/lib/components/SystemHealth.svelte	1684	8606	43
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	8651	61
+F	frontend/src/lib/sdk/core.test.ts	9012	8714	178
+F	frontend/src/lib/sdk/core.ts	8197	8894	236
+F	frontend/src/lib/system-health.test.ts	2348	9132	41
+F	frontend/src/lib/system-health.ts	2831	9175	60
+F	frontend/src/lib/themes/kira-default.css	1687	9237	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	9291	101
+F	frontend/src/lib/themes/kira-default.ts	777	9394	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	9418	79
+F	frontend/src/lib/time.test.ts	263	9499	8
+F	frontend/src/lib/time.ts	320	9509	9
+F	frontend/src/main.ts	1167	9520	35
+F	frontend/src/style.css	1329	9557	44
+F	frontend/tsconfig.json	403	9603	16
+F	frontend/vite.config.ts	224	9621	8
+F	nix/package.nix	3509	9631	122
+F	scripts/dev_preview.py	18147	9755	403	x
+F	scripts/qa_visual.py	12052	10160	299
+F	tests/test_calendar_design.py	5453	10461	113
+F	tests/test_detailed_health.py	5510	10576	107
+F	tests/test_dev_preview.py	9339	10685	219
+F	tests/test_launcher_design.py	2915	10906	61
+F	tests/test_native_theme.py	2503	10969	53
+F	tests/test_popup_geometry.py	1445	11024	31
+F	tests/test_qa_visual.py	10549	11057	217
+F	tests/test_ui_bootstrap_contract.py	1103	11276	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -102,15 +109,27 @@ on:
   push:
   pull_request:
 
+# A trusted branch may receive a formatting-only commit before tests.
 permissions:
   contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  # A newer commit supersedes checks of an obsolete branch snapshot.
+  cancel-in-progress: true
 
 jobs:
   check:
     name: Lightweight Core + Frontend checks
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          # PR checkout's default synthetic merge commit is not pushable.
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
 
       - name: Install Task
         uses: arduino/setup-task@v2
@@ -121,6 +140,55 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+
+      - name: Autoformat Rust before tests
+        run: cargo fmt --all
+
+      - name: Commit and push rustfmt on first-party feature branches
+        if: >-
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != 'refs/heads/main') ||
+          (github.event_name == 'pull_request' &&
+           github.event.pull_request.head.repo.full_name == github.repository &&
+           github.event.pull_request.head.ref != 'main')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          if git diff --quiet --exit-code -- '*.rs'; then
+            echo "rustfmt: no changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.rs'
+          git commit -m "style: apply rustfmt (CI)"
+          # A non-fast-forward push must fail, never overwrite newer work.
+          # The token is scoped to this step, not persisted by checkout.
+          auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          # Never rebase arbitrary branch changes inside CI. A newer branch
+          # has its own checks and gets its own rustfmt opportunity.
+          git -c http.extraheader="AUTHORIZATION: basic $auth" \
+            fetch --no-tags origin "refs/heads/$TARGET_BRANCH"
+          if [ "$(git rev-parse FETCH_HEAD)" != "$(git rev-parse HEAD^)" ]; then
+            echo "::notice::Branch advanced; skip obsolete rustfmt push."
+            exit 0
+          fi
+          if ! git -c http.extraheader="AUTHORIZATION: basic $auth" \
+              push origin "HEAD:refs/heads/$TARGET_BRANCH"; then
+            echo "::notice::Branch advanced during push; newer CI will format it."
+          fi
+
+      - name: Check formatting only on main and external PRs
+        if: >-
+          (github.event_name == 'push' && (github.ref == 'refs/heads/main' || !startsWith(github.ref, 'refs/heads/'))) ||
+          (github.event_name == 'pull_request' &&
+           github.event.pull_request.head.repo.full_name != github.repository)
+        run: |
+          if ! git diff --quiet --exit-code -- '*.rs'; then
+            echo "::error::rustfmt required: CI cannot commit to main or a fork."
+            git diff --stat
+            exit 1
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -207,6 +275,12 @@ jobs:
         run: nix build .#frontend -L --show-trace
       - name: Type-check native GTK Shell before release packaging
         run: nix develop --command cargo check --locked -p kira-shell
+      - name: Run real Rust unit tests for Linux system metrics
+        run: nix develop --command cargo test --locked -p kira-shell system_metrics::tests -- --nocapture
+      - name: Verify process parser, CPU accounting and PID reuse
+        run: nix develop --command cargo test --locked -p kira-shell process_monitor::tests -- --nocapture
+      - name: Verify interactive process table sorting directions
+        run: nix develop --command cargo test --locked -p kira-shell process_page::tests -- --nocapture
       - name: Compile packaged Core, GTK/WebKit Shell and frontend (reuses Crane cargoArtifacts)
         run: nix build .#default -L --show-trace
 
@@ -3145,26 +3219,32 @@ pub fn toggle(application: &gtk::Application) {
         return;
     }
     crate::launcher::dismiss(application);
+    crate::system_panel::dismiss(application);
     install_style();
 
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
     window.set_decorated(false);
-    window.set_default_size(378, 490);
+    // Geometry is monitor-relative and capped inside the shared helper.
     window.add_css_class("kira-calendar-window");
     window.init_layer_shell();
     window.set_namespace(Some("kira-calendar"));
     window.set_layer(Layer::Overlay);
     window.set_anchor(Edge::Top, true);
     window.set_anchor(Edge::Right, true);
-    window.set_margin(Edge::Top, 50);
+    window.set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
     window.set_margin(Edge::Right, 12);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
 
+    let scroll = gtk::ScrolledWindow::new();
+    scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+    crate::native_ui::configure_popup(&window, &scroll, 378);
+    window.set_child(Some(&scroll));
+
     let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
     card.add_css_class("kira-calendar-card");
-    window.set_child(Some(&card));
+    scroll.set_child(Some(&card));
 
     let hero = gtk::Box::new(gtk::Orientation::Vertical, 8);
     hero.add_css_class("kira-calendar-hero");
@@ -3803,6 +3883,7 @@ pub fn show(application: &gtk::Application) {
         return;
     }
     crate::calendar::dismiss(application);
+    crate::system_panel::dismiss(application);
     install_style();
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
@@ -4013,9 +4094,15 @@ mod calendar;
 mod calendar_model;
 mod launcher;
 mod native_ui;
+mod process_monitor;
+mod process_page;
+mod system_metrics;
+mod system_panel;
 mod ui_assets;
+use std::cell::{Cell, RefCell};
 use std::env;
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 use std::sync::mpsc;
 use std::time::Duration;
 
@@ -4033,6 +4120,8 @@ enum ShellDelivery {
     Rpc(String),
     Workspaces(WorkspaceState),
     Config(ConfigState),
+    CoreAvailability(bool),
+    Metrics(system_metrics::Snapshot),
 }
 
 fn ui_index() -> PathBuf {
@@ -4172,6 +4261,22 @@ fn main() {
         // return to the GTK main loop through this channel.
         let (sender, receiver) = mpsc::channel::<ShellDelivery>();
         let socket = core_socket();
+        let latest_metrics = Rc::new(RefCell::new(system_metrics::Snapshot::default()));
+        let core_online = Rc::new(Cell::new(false));
+        let niri_online = Rc::new(Cell::new(false));
+
+        // Only cheap read-only kernel files are sampled off the GTK thread.
+        // The monitor stops when the UI receiver has been dropped.
+        let metrics_tx = sender.clone();
+        std::thread::spawn(move || {
+            let mut sampler = system_metrics::Sampler::default();
+            loop {
+                if metrics_tx.send(ShellDelivery::Metrics(sampler.sample())).is_err() {
+                    break;
+                }
+                std::thread::sleep(Duration::from_secs(2));
+            }
+        });
 
         // One long-lived, read-only Core subscription. Core receives Niri
         // EventStream and immediately forwards changed snapshots to this
@@ -4181,9 +4286,11 @@ fn main() {
             std::thread::spawn(move || {
                 loop {
                     let result = kira_ipc::client::subscribe_workspaces(&path, |state| {
+                        let _ = updates.send(ShellDelivery::CoreAvailability(true));
                         let _ = updates.send(ShellDelivery::Workspaces(state));
                     });
-                    // Never show stale workspace data after a Core failure.
+                    // Never show stale status after a Core stream disconnect.
+                    let _ = updates.send(ShellDelivery::CoreAvailability(false));
                     let _ = updates.send(ShellDelivery::Workspaces(WorkspaceState::default()));
                     if let Err(error) = result {
                         eprintln!("kira-shell: Core workspace stream disconnected: {error}");
@@ -4251,6 +4358,24 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraCalendar", None));
 
+        // Fixed-purpose system diagnostics toggle. GTK samples the kernel
+        // read-only; the page can neither supply metric values nor commands.
+        let system_app = app.clone();
+        let system_stats = latest_metrics.clone();
+        let system_core = core_online.clone();
+        let system_niri = niri_online.clone();
+        manager.connect_script_message_received(Some("kiraSystem"), move |_, value| {
+            if value.to_string() == "toggle" {
+                system_panel::toggle(
+                    &system_app,
+                    system_stats.clone(),
+                    system_core.clone(),
+                    system_niri.clone(),
+                );
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraSystem", None));
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -4286,6 +4411,7 @@ fn main() {
                 let (event, payload) = match delivery {
                     ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
                     ShellDelivery::Workspaces(state) => {
+                        niri_online.set(state.connected);
                         let Ok(serialized) = serde_json::to_string(&state) else {
                             continue;
                         };
@@ -4296,6 +4422,20 @@ fn main() {
                             continue;
                         };
                         ("kira:config", serialized)
+                    }
+                    ShellDelivery::CoreAvailability(online) => {
+                        core_online.set(online);
+                        continue;
+                    }
+                    ShellDelivery::Metrics(mut snapshot) => {
+                        // Gio queries the current root filesystem from the GTK
+                        // thread, while /proc reads happen off-thread.
+                        if let Some((total, available)) = system_panel::disk() {
+                            snapshot.root_total_kib = Some(total);
+                            snapshot.root_available_kib = Some(available);
+                        }
+                        *latest_metrics.borrow_mut() = snapshot.clone();
+                        ("kira:system-metrics", snapshot.as_json().to_string())
                     }
                 };
                 if let Ok(encoded) = serde_json::to_string(&payload) {
@@ -4461,6 +4601,1577 @@ pub fn dismiss_overlay(application: &gtk::Application, title: &str) -> bool {
         return true;
     }
     false
+}
+
+/// The old 50px popup offset left too much space below the Top Bar.
+pub const POPUP_TOP_MARGIN: i32 = 25;
+
+/// Let GTK use the natural content height, capped at 70% of the monitor.
+/// Fixed preferred heights used to force needless scrolling on tall outputs.
+/// Recheck the actual surface monitor after mapping.
+fn apply_popup_height(window: &gtk::ApplicationWindow, scroll: &gtk::ScrolledWindow, width: i32) {
+    let display = gtk::prelude::WidgetExt::display(window);
+    let monitor = window
+        .surface()
+        .and_then(|surface| display.monitor_at_surface(&surface))
+        .or_else(|| {
+            display
+                .monitors()
+                .item(0)
+                .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+        });
+    let output_height = monitor.map_or(800, |m| m.geometry().height()).max(1);
+    let height_limit = (i64::from(output_height) * 7 / 10) as i32;
+    scroll.set_min_content_height(1);
+    scroll.set_max_content_height(height_limit);
+    scroll.set_propagate_natural_height(true);
+    // -1 allows the scroll's natural (bounded) height, rather than
+    // forcing the former 490px/600px default sizes.
+    window.set_default_size(width, -1);
+}
+
+pub fn configure_popup(window: &gtk::ApplicationWindow, scroll: &gtk::ScrolledWindow, width: i32) {
+    apply_popup_height(window, scroll, width);
+    let scroll = scroll.clone();
+    window.connect_map(move |window| {
+        apply_popup_height(window, &scroll, width);
+    });
+}
+
+FILE	crates/kira-shell/src/process_monitor.rs
+//! Read-only Linux process accounting for the System Monitor.
+//! CPU is shown as percentage of the *entire host*, not one logical core.
+//! Sampling and /proc enumeration run only while Processes is the active tab.
+use std::collections::HashMap;
+use std::fs;
+use std::io;
+use std::path::Path;
+
+use crate::system_metrics::cpu_ticks;
+
+const MAX_SCANNED: usize = 4096;
+
+#[derive(Debug, Clone)]
+pub struct ProcessRow {
+    pub pid: u32,
+    pub name: String,
+    pub state: char,
+    pub cpu_percent: Option<f64>,
+    pub rss_kib: Option<u64>,
+}
+
+#[derive(Debug, Clone)]
+pub struct ProcessSnapshot {
+    pub rows: Vec<ProcessRow>,
+    pub total: usize,
+    pub truncated: bool,
+}
+
+#[derive(Debug, PartialEq)]
+struct Stat {
+    name: String,
+    state: char,
+    ticks: u64,
+    start_ticks: u64,
+}
+
+/// /proc/[pid]/stat has a parenthesized comm field, potentially containing
+/// spaces or parentheses. The final ')' marks its end, not split_whitespace.
+fn parse_stat(input: &str) -> Option<Stat> {
+    let begin = input.find('(')?;
+    let end = input.rfind(')')?;
+    if end <= begin {
+        return None;
+    }
+    let name: String = input[begin + 1..end]
+        .chars()
+        .filter(|c| !c.is_control())
+        .take(64)
+        .collect();
+    let fields: Vec<&str> = input[end + 1..].split_whitespace().collect();
+    // After comm, the first field is field 3: state.
+    if fields.len() < 20 {
+        return None;
+    }
+    let state = fields[0].chars().next()?;
+    let user: u64 = fields[11].parse().ok()?;
+    let kernel: u64 = fields[12].parse().ok()?;
+    Some(Stat {
+        name,
+        state,
+        ticks: user.checked_add(kernel)?,
+        start_ticks: fields[19].parse().ok()?,
+    })
+}
+
+fn rss_kib(input: &str) -> Option<u64> {
+    input.lines().find_map(|line| {
+        line.strip_prefix("VmRSS:")?
+            .split_whitespace()
+            .next()?
+            .parse::<u64>()
+            .ok()
+    })
+}
+
+fn cpu_percent(prev: Option<u64>, current: u64, total_delta: Option<u64>) -> Option<f64> {
+    let delta = current.checked_sub(prev?)?;
+    let total = total_delta?;
+    if total == 0 || delta > total {
+        return None;
+    }
+    Some(100.0 * delta as f64 / total as f64)
+}
+
+/// Identity is (PID, kernel start time) so fast PID reuse cannot inherit
+/// another process's past CPU ticks.
+#[derive(Default)]
+pub struct ProcessSampler {
+    previous: HashMap<(u32, u64), u64>,
+    previous_total: Option<u64>,
+}
+
+impl ProcessSampler {
+    pub fn sample(&mut self) -> io::Result<ProcessSnapshot> {
+        let total = cpu_ticks(&fs::read_to_string("/proc/stat")?).map(|x| x.0);
+        let total_delta = self
+            .previous_total
+            .zip(total)
+            .and_then(|(before, after)| after.checked_sub(before));
+        self.previous_total = total;
+        let mut next = HashMap::new();
+        let mut rows = Vec::new();
+        let mut scanned = 0;
+        let mut truncated = false;
+        let entries = fs::read_dir("/proc")?;
+        for entry in entries.flatten() {
+            let Some(pid) = entry
+                .file_name()
+                .to_str()
+                .and_then(|v| v.parse::<u32>().ok())
+            else {
+                continue;
+            };
+            if scanned >= MAX_SCANNED {
+                truncated = true;
+                break;
+            }
+            scanned += 1;
+            let path = entry.path();
+            let Some(stat) = read_stat(&path) else {
+                // Processes can exit during enumeration or be unreadable.
+                continue;
+            };
+            let identity = (pid, stat.start_ticks);
+            let usage = cpu_percent(
+                self.previous.get(&identity).copied(),
+                stat.ticks,
+                total_delta,
+            );
+            next.insert(identity, stat.ticks);
+            let rss = fs::read_to_string(path.join("status"))
+                .ok()
+                .and_then(|s| rss_kib(&s));
+            rows.push(ProcessRow {
+                pid,
+                name: stat.name,
+                state: stat.state,
+                cpu_percent: usage,
+                rss_kib: rss,
+            });
+        }
+        self.previous = next;
+        Ok(ProcessSnapshot {
+            rows,
+            total: scanned,
+            truncated,
+        })
+    }
+}
+
+fn read_stat(path: &Path) -> Option<Stat> {
+    parse_stat(&fs::read_to_string(path.join("stat")).ok()?)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn stat_line(name: &str, utime: u64, stime: u64, start: u64) -> String {
+        let mut fields = vec!["0".to_string(); 20];
+        fields[0] = "S".into();
+        fields[11] = utime.to_string();
+        fields[12] = stime.to_string();
+        fields[19] = start.to_string();
+        format!("42 ({name}) {}", fields.join(" "))
+    }
+
+    #[test]
+    fn parse_process_names_with_spaces_and_parentheses() {
+        let record = parse_stat(&stat_line("renderer (worker) extra)", 20, 5, 902)).unwrap();
+        assert_eq!(record.name, "renderer (worker) extra)");
+        assert_eq!(record.state, 'S');
+        assert_eq!(record.ticks, 25);
+        assert_eq!(record.start_ticks, 902);
+        assert_eq!(parse_stat("42 (truncated"), None);
+    }
+
+    #[test]
+    fn cpu_is_delta_of_total_host_and_never_invented_on_first_sample() {
+        assert_eq!(cpu_percent(None, 120, Some(100)), None);
+        assert_eq!(cpu_percent(Some(100), 150, Some(500)), Some(10.0));
+        assert_eq!(cpu_percent(Some(200), 150, Some(500)), None);
+        assert_eq!(cpu_percent(Some(100), 150, Some(0)), None);
+        assert_eq!(cpu_percent(Some(100), 200, Some(50)), None);
+    }
+
+    #[test]
+    fn rss_and_pid_identity_work_without_cmdline_access() {
+        assert_eq!(rss_kib("Name:\ttest\nVmRSS:\t2048 kB\n"), Some(2048));
+        assert_eq!(rss_kib("Name:\ttest\n"), None);
+        let mut sampler = ProcessSampler::default();
+        sampler.previous.insert((42, 111), 200);
+        assert_eq!(sampler.previous.get(&(42, 222)), None);
+    }
+
+    #[test]
+    fn malformed_stats_are_discarded() {
+        assert_eq!(parse_stat(""), None);
+        assert_eq!(parse_stat("42 () S x"), None);
+        assert_eq!(parse_stat(&stat_line("test", u64::MAX, 1, 9)), None);
+    }
+}
+
+FILE	crates/kira-shell/src/process_page.rs
+//! Native read-only Processes tab. GTK widgets stay on the main loop;
+//! /proc scanning and CPU accounting run only on a worker while tab is active.
+use std::cell::{Cell, RefCell};
+use std::cmp::Ordering;
+use std::rc::{Rc, Weak};
+use std::sync::atomic::{AtomicBool, Ordering as AtomicOrdering};
+use std::sync::{Arc, mpsc};
+use std::time::Duration;
+
+use gtk::prelude::*;
+
+use crate::process_monitor::{ProcessRow, ProcessSampler, ProcessSnapshot};
+use crate::system_metrics::bytes_label;
+
+const VISIBLE_ROWS: usize = 36;
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum Sort {
+    Name,
+    Pid,
+    Cpu,
+    Memory,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+struct SortState {
+    field: Sort,
+    descending: bool,
+}
+
+impl SortState {
+    const fn new(field: Sort) -> Self {
+        Self {
+            field,
+            descending: matches!(field, Sort::Cpu | Sort::Memory),
+        }
+    }
+
+    fn clicked(self, field: Sort) -> Self {
+        if self.field == field {
+            Self {
+                field,
+                descending: !self.descending,
+            }
+        } else {
+            Self::new(field)
+        }
+    }
+}
+
+/// Unknown readings stay at the bottom in either direction.
+fn compare_known<T: PartialOrd>(a: Option<T>, b: Option<T>, descending: bool) -> Ordering {
+    match (a, b) {
+        (Some(a), Some(b)) => {
+            let order = a.partial_cmp(&b).unwrap_or(Ordering::Equal);
+            if descending { order.reverse() } else { order }
+        }
+        (Some(_), None) => Ordering::Less,
+        (None, Some(_)) => Ordering::Greater,
+        (None, None) => Ordering::Equal,
+    }
+}
+
+fn compare_rows(a: &ProcessRow, b: &ProcessRow, sort: SortState) -> Ordering {
+    let result = match sort.field {
+        Sort::Name => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
+        Sort::Pid => a.pid.cmp(&b.pid),
+        Sort::Cpu => {
+            return compare_known(a.cpu_percent, b.cpu_percent, sort.descending)
+                .then_with(|| compare_known(a.rss_kib, b.rss_kib, true))
+                .then(a.pid.cmp(&b.pid));
+        }
+        Sort::Memory => {
+            return compare_known(a.rss_kib, b.rss_kib, sort.descending).then(a.pid.cmp(&b.pid));
+        }
+    };
+    let result = if sort.descending {
+        result.reverse()
+    } else {
+        result
+    };
+    result.then(a.pid.cmp(&b.pid))
+}
+
+pub struct ProcessPage {
+    pub root: gtk::Box,
+    rows: gtk::Box,
+    scroll: gtk::ScrolledWindow,
+    summary: gtk::Label,
+    query: RefCell<String>,
+    sort: Cell<SortState>,
+    latest: RefCell<Option<ProcessSnapshot>>,
+    error: RefCell<Option<String>>,
+    headers: [(gtk::Button, gtk::Label); 4],
+    running: Arc<AtomicBool>,
+    active: Arc<AtomicBool>,
+    receiver: RefCell<mpsc::Receiver<Result<ProcessSnapshot, String>>>,
+}
+
+impl ProcessPage {
+    pub fn new() -> Rc<Self> {
+        let root = gtk::Box::new(gtk::Orientation::Vertical, 12);
+        root.add_css_class("kira-process-page");
+        let section = gtk::Label::new(Some("PROCESSES  /  HOST"));
+        section.set_xalign(0.0);
+        section.add_css_class("kira-system-section");
+        root.append(&section);
+
+        let filter = gtk::SearchEntry::new();
+        filter.set_placeholder_text(Some("Filter by process name or PID"));
+        filter.set_tooltip_text(Some("Search currently readable Linux processes"));
+        filter.add_css_class("kira-process-search");
+        root.append(&filter);
+
+        // The column headings are the sort controls. Clicking the current
+        // heading toggles direction; no second toolbar consumes vertical space.
+        let headings = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        headings.add_css_class("kira-process-headings");
+        let headers = [
+            column_header("PROCESS", true, 0),
+            column_header("PID", false, 6),
+            column_header("CPU", false, 7),
+            column_header("RAM", false, 8),
+        ];
+        for (button, _) in &headers {
+            headings.append(button);
+        }
+        root.append(&headings);
+
+        let scroll = gtk::ScrolledWindow::new();
+        scroll.add_css_class("kira-process-scroll");
+        scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+        scroll.set_min_content_height(260);
+        scroll.set_max_content_height(336);
+        scroll.set_propagate_natural_height(false);
+        let rows = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        rows.add_css_class("kira-process-rows");
+        scroll.set_child(Some(&rows));
+        root.append(&scroll);
+        let summary = gtk::Label::new(Some("WAITING FOR FIRST SAMPLE"));
+        summary.set_xalign(0.0);
+        summary.add_css_class("kira-process-summary");
+        root.append(&summary);
+        let hint = gtk::Label::new(Some("READ ONLY  /  CPU % OF ENTIRE HOST  /  RSS MEMORY"));
+        hint.set_xalign(0.0);
+        hint.set_wrap(true);
+        hint.add_css_class("kira-process-hint");
+        root.append(&hint);
+
+        let (sender, receiver) = mpsc::channel();
+        let active = Arc::new(AtomicBool::new(false));
+        let running = Arc::new(AtomicBool::new(true));
+        let thread_active = active.clone();
+        let thread_running = running.clone();
+        std::thread::spawn(move || {
+            let mut sampler = ProcessSampler::default();
+            let mut was_active = false;
+            while thread_running.load(AtomicOrdering::Relaxed) {
+                if thread_active.load(AtomicOrdering::Relaxed) {
+                    if !was_active {
+                        sampler = ProcessSampler::default();
+                        was_active = true;
+                    }
+                    if sender
+                        .send(sampler.sample().map_err(|e| e.to_string()))
+                        .is_err()
+                    {
+                        break;
+                    }
+                } else {
+                    was_active = false;
+                }
+                std::thread::sleep(Duration::from_secs(2));
+            }
+        });
+        let page = Rc::new(Self {
+            root,
+            rows,
+            scroll,
+            summary,
+            query: RefCell::new(String::new()),
+            sort: Cell::new(SortState::new(Sort::Cpu)),
+            latest: RefCell::new(None),
+            error: RefCell::new(None),
+            headers,
+            running,
+            active,
+            receiver: RefCell::new(receiver),
+        });
+        page.update_sort_styles();
+        page.show_empty("OPEN PROCESSES TO SAMPLE");
+
+        let weak = Rc::downgrade(&page);
+        filter.connect_search_changed(move |entry| {
+            if let Some(page) = weak.upgrade() {
+                *page.query.borrow_mut() = entry.text().to_lowercase();
+                page.scroll.vadjustment().set_value(0.0);
+                page.render();
+            }
+        });
+        for ((button, _), field) in
+            page.headers
+                .iter()
+                .zip([Sort::Name, Sort::Pid, Sort::Cpu, Sort::Memory])
+        {
+            connect_sort(button, field, Rc::downgrade(&page));
+        }
+        page
+    }
+
+    pub fn set_active(&self, active: bool) {
+        self.active.store(active, AtomicOrdering::Relaxed);
+        if active && self.latest.borrow().is_none() {
+            self.show_empty("SAMPLING / PLEASE WAIT");
+        }
+    }
+
+    pub fn poll(&self) {
+        if !self.active.load(AtomicOrdering::Relaxed) {
+            return;
+        }
+        // Drain any queued snapshots, displaying only the latest sample.
+        let mut latest = None;
+        while let Ok(result) = self.receiver.borrow().try_recv() {
+            latest = Some(result);
+        }
+        if let Some(result) = latest {
+            match result {
+                Ok(snapshot) => {
+                    *self.latest.borrow_mut() = Some(snapshot);
+                    *self.error.borrow_mut() = None;
+                }
+                Err(message) => {
+                    *self.latest.borrow_mut() = None;
+                    *self.error.borrow_mut() = Some(message);
+                }
+            }
+            self.render();
+        }
+    }
+
+    fn show_empty(&self, message: &str) {
+        while let Some(child) = self.rows.first_child() {
+            self.rows.remove(&child);
+        }
+        let empty = gtk::Label::new(Some(message));
+        empty.add_css_class("kira-process-empty");
+        empty.set_margin_top(35);
+        self.rows.append(&empty);
+    }
+
+    fn update_sort_styles(&self) {
+        let sort = self.sort.get();
+        for ((button, caption), (field, name)) in self.headers.iter().zip([
+            (Sort::Name, "PROCESS"),
+            (Sort::Pid, "PID"),
+            (Sort::Cpu, "CPU"),
+            (Sort::Memory, "RAM"),
+        ]) {
+            if sort.field == field {
+                button.add_css_class("kira-process-header-active");
+                caption.set_text(&format!(
+                    "{name} {}",
+                    if sort.descending { "↓" } else { "↑" }
+                ));
+                button.set_tooltip_text(Some(if sort.descending {
+                    "Sorted descending; click to sort ascending"
+                } else {
+                    "Sorted ascending; click to sort descending"
+                }));
+            } else {
+                button.remove_css_class("kira-process-header-active");
+                caption.set_text(name);
+                button.set_tooltip_text(Some("Click to sort by this column"));
+            }
+        }
+    }
+
+    fn render(&self) {
+        self.update_sort_styles();
+        if let Some(error) = self.error.borrow().as_ref() {
+            self.summary.set_text("PROCESS DATA UNAVAILABLE");
+            self.show_empty(&format!("CANNOT READ /proc: {error}"));
+            return;
+        }
+        let borrowed = self.latest.borrow();
+        let Some(snapshot) = borrowed.as_ref() else {
+            self.summary.set_text("WAITING FOR FIRST SAMPLE");
+            self.show_empty("SAMPLING / PLEASE WAIT");
+            return;
+        };
+        // Replacing live rows must not throw the user back to the top of
+        // the list every two seconds. Sorting/filtering deliberately resets
+        // the viewport, while refreshes preserve the vertical offset.
+        let adjustment = self.scroll.vadjustment();
+        let previous_position = adjustment.value();
+        let query = self.query.borrow();
+        let mut rows: Vec<&ProcessRow> = snapshot
+            .rows
+            .iter()
+            .filter(|row| {
+                query.is_empty()
+                    || row.name.to_lowercase().contains(query.as_str())
+                    || row.pid.to_string().contains(query.as_str())
+            })
+            .collect();
+        let sort = self.sort.get();
+        rows.sort_by(|a, b| compare_rows(a, b, sort));
+        let matches = rows.len();
+        while let Some(child) = self.rows.first_child() {
+            self.rows.remove(&child);
+        }
+        for row in rows.into_iter().take(VISIBLE_ROWS) {
+            let horizontal = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+            horizontal.add_css_class("kira-process-row");
+            let name = text(&row.name, "kira-process-name", true, 0);
+            name.set_tooltip_text(Some(&format!(
+                "{} / PID {} / STATE {}",
+                row.name, row.pid, row.state
+            )));
+            horizontal.append(&name);
+            horizontal.append(&text(&row.pid.to_string(), "kira-process-number", false, 6));
+            horizontal.append(&text(
+                &row.cpu_percent.map_or("—".into(), |p| format!("{p:.1}%")),
+                "kira-process-number",
+                false,
+                7,
+            ));
+            horizontal.append(&text(
+                &row.rss_kib.map_or("—".into(), bytes_label),
+                "kira-process-number",
+                false,
+                8,
+            ));
+            self.rows.append(&horizontal);
+        }
+        if matches == 0 {
+            self.show_empty("NO MATCHING PROCESSES");
+        }
+        self.summary.set_text(&format!(
+            "SHOWING {} OF {} MATCHES  /  {} SCANNED{}",
+            matches.min(VISIBLE_ROWS),
+            matches,
+            snapshot.total,
+            if snapshot.truncated {
+                "  /  LIMIT REACHED"
+            } else {
+                ""
+            }
+        ));
+        if previous_position > 0.0 {
+            gtk::glib::idle_add_local_once(move || {
+                let max = (adjustment.upper() - adjustment.page_size()).max(0.0);
+                adjustment.set_value(previous_position.min(max));
+            });
+        }
+    }
+}
+
+impl Drop for ProcessPage {
+    fn drop(&mut self) {
+        self.running.store(false, AtomicOrdering::Relaxed);
+    }
+}
+
+fn text(value: &str, class: &str, flexible: bool, width: i32) -> gtk::Label {
+    let label = gtk::Label::new(Some(value));
+    label.add_css_class(class);
+    label.set_xalign(if flexible { 0.0 } else { 1.0 });
+    if flexible {
+        label.set_hexpand(true);
+        label.set_ellipsize(gtk::pango::EllipsizeMode::End);
+    } else {
+        label.set_width_chars(width);
+    }
+    label
+}
+
+fn column_header(name: &str, flexible: bool, width: i32) -> (gtk::Button, gtk::Label) {
+    let button = gtk::Button::new();
+    button.add_css_class("kira-process-header");
+    button.set_hexpand(flexible);
+    let caption = text(name, "kira-process-heading", flexible, width);
+    button.set_child(Some(&caption));
+    (button, caption)
+}
+
+fn connect_sort(button: &gtk::Button, field: Sort, weak: Weak<ProcessPage>) {
+    button.connect_clicked(move |_| {
+        if let Some(page) = weak.upgrade() {
+            page.sort.set(page.sort.get().clicked(field));
+            page.scroll.vadjustment().set_value(0.0);
+            page.render();
+        }
+    });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn process(pid: u32, name: &str, cpu: Option<f64>, rss: Option<u64>) -> ProcessRow {
+        ProcessRow {
+            pid,
+            name: name.to_string(),
+            cpu_percent: cpu,
+            rss_kib: rss,
+            state: 'S',
+        }
+    }
+
+    #[test]
+    fn clicking_current_header_reverses_direction() {
+        let initial = SortState::new(Sort::Cpu);
+        assert!(initial.descending);
+        // New CPU/RAM selections default to descending, even after
+        // switching columns; repeated clicks reverse the direction.
+        assert!(SortState::new(Sort::Memory).descending);
+        assert!(SortState::new(Sort::Name).clicked(Sort::Cpu).descending);
+        assert!(SortState::new(Sort::Pid).clicked(Sort::Memory).descending);
+        assert!(!initial.clicked(Sort::Cpu).descending);
+        assert!(initial.clicked(Sort::Cpu).clicked(Sort::Cpu).descending);
+        assert!(!initial.clicked(Sort::Name).descending);
+        assert!(initial.clicked(Sort::Memory).descending);
+        assert!(!initial.clicked(Sort::Pid).descending);
+    }
+
+    #[test]
+    fn each_column_sorts_both_directions() {
+        let mut rows = [
+            process(3, "zebra", Some(20.0), Some(4000)),
+            process(1, "alpha", Some(80.0), Some(1000)),
+            process(2, "beta", Some(50.0), Some(2000)),
+        ];
+        for (field, descending, expected) in [
+            (Sort::Name, false, [1, 2, 3]),
+            (Sort::Name, true, [3, 2, 1]),
+            (Sort::Pid, false, [1, 2, 3]),
+            (Sort::Pid, true, [3, 2, 1]),
+            (Sort::Cpu, false, [3, 2, 1]),
+            (Sort::Cpu, true, [1, 2, 3]),
+            (Sort::Memory, false, [1, 2, 3]),
+            (Sort::Memory, true, [3, 2, 1]),
+        ] {
+            rows.sort_by(|a, b| compare_rows(a, b, SortState { field, descending }));
+            assert_eq!(
+                rows.iter().map(|row| row.pid).collect::<Vec<_>>(),
+                expected.to_vec()
+            );
+        }
+    }
+
+    #[test]
+    fn missing_metrics_are_last_in_both_directions() {
+        let a = process(1, "alpha", None, None);
+        let b = process(2, "beta", Some(1.0), Some(1024));
+        for descending in [true, false] {
+            for field in [Sort::Cpu, Sort::Memory] {
+                assert_eq!(
+                    compare_rows(&a, &b, SortState { field, descending }),
+                    Ordering::Greater
+                );
+            }
+        }
+    }
+}
+
+FILE	crates/kira-shell/src/system_metrics.rs
+//! Read-only Linux system telemetry. No external commands, privileged APIs or
+//! additional dependencies. Optional fields are absent when the kernel does
+//! not provide a metric; lack of data must never be displayed as zero.
+use std::fs;
+use std::time::Duration;
+
+#[derive(Debug, Clone, Default)]
+pub struct Snapshot {
+    pub cpu_percent: Option<u8>,
+    pub memory_total_kib: Option<u64>,
+    pub memory_available_kib: Option<u64>,
+    pub swap_total_kib: Option<u64>,
+    pub swap_free_kib: Option<u64>,
+    pub uptime_seconds: Option<u64>,
+    pub load: Option<[f64; 3]>,
+    pub battery_percent: Option<u8>,
+    pub battery_charging: Option<bool>,
+    pub root_total_kib: Option<u64>,
+    pub root_available_kib: Option<u64>,
+}
+
+impl Snapshot {
+    pub fn as_json(&self) -> serde_json::Value {
+        serde_json::json!({
+            "cpu_percent": self.cpu_percent,
+            "memory_total_kib": self.memory_total_kib,
+            "memory_available_kib": self.memory_available_kib,
+            "swap_total_kib": self.swap_total_kib,
+            "swap_free_kib": self.swap_free_kib,
+            "uptime_seconds": self.uptime_seconds,
+            "load": self.load,
+            "battery_percent": self.battery_percent,
+            "battery_charging": self.battery_charging,
+            "root_total_kib": self.root_total_kib,
+            "root_available_kib": self.root_available_kib,
+        })
+    }
+
+    pub fn memory_percent(&self) -> Option<u8> {
+        percent_used(self.memory_total_kib?, self.memory_available_kib?)
+    }
+}
+
+pub fn percent_used(total: u64, available: u64) -> Option<u8> {
+    if total == 0 || available > total {
+        return None;
+    }
+    let used = total - available;
+    Some(((u128::from(used) * 100 / u128::from(total)).min(100)) as u8)
+}
+
+fn mem_value(text: &str, key: &str) -> Option<u64> {
+    let line = text
+        .lines()
+        .find(|line| line.starts_with(key) && line.as_bytes().get(key.len()) == Some(&b':'))?;
+    line.split_whitespace().nth(1)?.parse().ok()
+}
+
+fn parse_memory(text: &str, snapshot: &mut Snapshot) {
+    snapshot.memory_total_kib = mem_value(text, "MemTotal");
+    snapshot.memory_available_kib = mem_value(text, "MemAvailable");
+    snapshot.swap_total_kib = mem_value(text, "SwapTotal");
+    snapshot.swap_free_kib = mem_value(text, "SwapFree");
+}
+
+pub(crate) fn cpu_ticks(text: &str) -> Option<(u64, u64)> {
+    let line = text.lines().next()?;
+    let mut tokens = line.split_whitespace();
+    if tokens.next()? != "cpu" {
+        return None;
+    }
+    let ticks = tokens
+        .map(str::parse::<u64>)
+        .collect::<Result<Vec<_>, _>>()
+        .ok()?;
+    if ticks.len() < 4 {
+        return None;
+    }
+    let total = ticks.iter().copied().sum::<u64>();
+    let idle = ticks[3].checked_add(*ticks.get(4).unwrap_or(&0))?;
+    Some((total, idle))
+}
+
+fn cpu_usage(previous: (u64, u64), next: (u64, u64)) -> Option<u8> {
+    let total = next.0.checked_sub(previous.0)?;
+    let idle = next.1.checked_sub(previous.1)?;
+    if total == 0 || idle > total {
+        return None;
+    }
+    Some(
+        (((total - idle) as f64 / total as f64) * 100.0)
+            .round()
+            .clamp(0.0, 100.0) as u8,
+    )
+}
+
+fn parse_load(text: &str) -> Option<[f64; 3]> {
+    let mut words = text.split_whitespace();
+    let vals = [
+        words.next()?.parse::<f64>().ok()?,
+        words.next()?.parse::<f64>().ok()?,
+        words.next()?.parse::<f64>().ok()?,
+    ];
+    vals.iter()
+        .all(|v| v.is_finite() && *v >= 0.0)
+        .then_some(vals)
+}
+
+fn battery() -> (Option<u8>, Option<bool>) {
+    let Ok(entries) = fs::read_dir("/sys/class/power_supply") else {
+        return (None, None);
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let kind = fs::read_to_string(path.join("type")).unwrap_or_default();
+        if kind.trim() != "Battery" {
+            continue;
+        }
+        let percentage = fs::read_to_string(path.join("capacity"))
+            .ok()
+            .and_then(|s| s.trim().parse::<u8>().ok())
+            .filter(|v| *v <= 100);
+        let charging = fs::read_to_string(path.join("status"))
+            .ok()
+            .and_then(|status| match status.trim() {
+                "Charging" | "Full" => Some(true),
+                "Not charging" => None,
+                "Discharging" => Some(false),
+                _ => None,
+            });
+        return (percentage, charging);
+    }
+    (None, None)
+}
+
+#[derive(Default)]
+pub struct Sampler {
+    previous_cpu: Option<(u64, u64)>,
+}
+
+impl Sampler {
+    pub fn sample(&mut self) -> Snapshot {
+        let mut s = Snapshot::default();
+        if let Ok(text) = fs::read_to_string("/proc/stat")
+            && let Some(next) = cpu_ticks(&text)
+        {
+            s.cpu_percent = self.previous_cpu.and_then(|prev| cpu_usage(prev, next));
+            self.previous_cpu = Some(next);
+        }
+        if let Ok(text) = fs::read_to_string("/proc/meminfo") {
+            parse_memory(&text, &mut s);
+        }
+        if let Ok(text) = fs::read_to_string("/proc/loadavg") {
+            s.load = parse_load(&text);
+        }
+        if let Ok(text) = fs::read_to_string("/proc/uptime") {
+            s.uptime_seconds = text
+                .split_whitespace()
+                .next()
+                .and_then(|value| value.parse::<f64>().ok())
+                .filter(|v| v.is_finite() && *v >= 0.0)
+                .map(|v| Duration::from_secs_f64(v).as_secs());
+        }
+        (s.battery_percent, s.battery_charging) = battery();
+        s
+    }
+}
+
+pub fn bytes_label(kib: u64) -> String {
+    let gib = kib as f64 / 1_048_576.0;
+    if gib >= 1.0 {
+        format!("{gib:.1} GiB")
+    } else {
+        format!("{:.0} MiB", kib as f64 / 1024.0)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn memory_ratio_is_bounded_and_not_fabricated() {
+        assert_eq!(percent_used(1000, 90), Some(91));
+        assert_eq!(percent_used(0, 0), None);
+        assert_eq!(percent_used(100, 101), None);
+        let mut s = Snapshot::default();
+        parse_memory(
+            "MemTotal: 16384 kB\nMemAvailable: 4096 kB\nSwapTotal: 1024 kB\nSwapFree: 512 kB\n",
+            &mut s,
+        );
+        assert_eq!(s.memory_percent(), Some(75));
+        assert_eq!(s.swap_free_kib, Some(512));
+    }
+
+    #[test]
+    fn cpu_uses_differences_not_lifetime_average() {
+        assert_eq!(cpu_ticks("cpu  10 10 10 70 0 0 0 0\n"), Some((100, 70)));
+        assert_eq!(cpu_usage((100, 70), (200, 130)), Some(40));
+        assert_eq!(cpu_usage((100, 70), (100, 70)), None);
+        assert_eq!(cpu_usage((100, 70), (90, 60)), None);
+    }
+
+    #[test]
+    fn unavailable_or_malformed_data_is_unknown() {
+        assert_eq!(parse_load("bad data"), None);
+        assert_eq!(
+            parse_load("0.23 1.02 2.33 4/5 111"),
+            Some([0.23, 1.02, 2.33])
+        );
+        assert_eq!(cpu_ticks("cpu 10 foo"), None);
+        assert_eq!(mem_value("MemTotal: x kB", "MemTotal"), None);
+    }
+}
+
+FILE	crates/kira-shell/src/system_panel.css
+/* Kira system dashboard — canonical palette comes from native-palette.css. */
+window.kira-system-window { background: transparent; }
+.kira-system-card {
+  background: @kira_black;
+  border: 1px solid rgba(229,229,229,0.28);
+  border-radius: 10px;
+  color: @kira_white;
+}
+.kira-system-hero { padding: 20px 23px; background: @kira_black; }
+.kira-system-eyebrow { color: @kira_orange; font-size: 10px; font-weight: 800; }
+.kira-system-heading { color: @kira_white; font-size: 29px; font-weight: 800; }
+.kira-system-state { color: @kira_alabaster_grey; font-size: 12px; font-weight: 700; }
+.kira-system-state.kira-system-error,
+.kira-system-state.kira-system-warning { color: @kira_orange; }
+button.kira-system-close {
+  border: 0; border-radius: 4px; background: transparent;
+  color: @kira_alabaster_grey; font-size: 22px;
+  min-width: 26px; min-height: 28px; padding: 0;
+}
+button.kira-system-close:hover { color: @kira_orange; }
+.kira-system-services {
+  padding: 16px 23px;
+  background: @kira_black;
+  border-top: 1px solid rgba(229,229,229,0.18);
+}
+.kira-system-key { color: @kira_alabaster_grey; font-size: 10px; font-weight: 700; }
+.kira-system-value { color: @kira_white; font-size: 11px; font-weight: 750; }
+.kira-system-workbench {
+  padding: 18px 23px;
+  background: @kira_prussian_blue;
+}
+.kira-system-section { color: @kira_alabaster_grey; font-size: 10px; font-weight: 750; }
+.kira-system-metric-heading { margin-top: 7px; }
+.kira-system-metric-name { color: @kira_alabaster_grey; font-size: 10px; font-weight: 700; }
+.kira-system-metric-value { color: @kira_white; font-size: 11px; font-weight: 750; }
+progressbar.kira-system-meter { min-height: 4px; }
+progressbar.kira-system-meter trough {
+  background: rgba(0,0,0,0.42);
+  min-height: 4px;
+  border: 0;
+  border-radius: 0;
+}
+progressbar.kira-system-meter progress {
+  background: @kira_orange;
+  min-height: 4px;
+  border: 0;
+  border-radius: 0;
+}
+.kira-system-details { padding: 17px 23px 19px; background: @kira_black; }
+.kira-system-footer { margin-top: 12px; }
+.kira-system-updated { color: @kira_alabaster_grey; font-size: 10px; }
+button.kira-system-copy {
+  padding: 0 4px; min-height: 30px; border: 0; border-radius: 0;
+  background: transparent; color: @kira_orange; font-size: 10px; font-weight: 800;
+}
+button.kira-system-copy:hover { color: @kira_white; background: transparent; }
+button.kira-system-copy:active { color: @kira_alabaster_grey; }
+button.kira-system-close:focus-visible,
+button.kira-system-copy:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: 2px;
+}
+
+/* Native two-tab system monitor: real hierarchy without boxed GTK tabs. */
+.kira-system-tabs {
+  background: @kira_black;
+  border-bottom: 1px solid rgba(229,229,229,0.22);
+}
+button.kira-system-tab {
+  min-height: 39px;
+  padding: 9px 18px 8px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: @kira_alabaster_grey;
+  font-size: 11px;
+  font-weight: 800;
+}
+button.kira-system-tab:hover { background: rgba(20,33,61,0.5); color: @kira_white; }
+button.kira-system-tab.kira-system-tab-active {
+  border-bottom-color: @kira_orange;
+  color: @kira_orange;
+}
+button.kira-system-tab:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: -4px;
+}
+
+/* Processes: compact, sortable numbers; only actual tasks appear. */
+.kira-process-page { padding: 17px 19px 19px; background: @kira_prussian_blue; }
+entry.kira-process-search {
+  min-height: 36px;
+  padding: 4px 11px;
+  background: @kira_black;
+  color: @kira_white;
+  border: 1px solid rgba(229,229,229,0.34);
+  border-radius: 5px;
+  font-size: 12px;
+}
+entry.kira-process-search:focus-within { border-color: @kira_orange; }
+.kira-process-heading {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 750;
+}
+/* Column headings themselves sort ascending/descending; no extra toolbar. */
+button.kira-process-header {
+  min-width: 0;
+  min-height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: @kira_alabaster_grey;
+}
+button.kira-process-header:hover { background: rgba(0,0,0,0.35); }
+button.kira-process-header:hover .kira-process-heading { color: @kira_white; }
+button.kira-process-header.kira-process-header-active .kira-process-heading {
+  color: @kira_orange;
+}
+button.kira-process-header:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: -2px;
+}
+.kira-process-headings {
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(229,229,229,0.25);
+}
+scrolledwindow.kira-process-scroll { background: transparent; }
+.kira-process-row {
+  min-height: 31px;
+  padding: 0 4px;
+  border-bottom: 1px solid rgba(229,229,229,0.08);
+}
+.kira-process-row:nth-child(even) { background: rgba(0,0,0,0.17); }
+.kira-process-row:hover { background: rgba(0,0,0,0.28); }
+.kira-process-name { color: @kira_white; font-size: 11px; font-weight: 700; }
+.kira-process-number {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 650;
+}
+.kira-process-summary { color: @kira_orange; font-size: 10px; font-weight: 750; }
+.kira-process-hint, .kira-process-empty {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+}
+
+FILE	crates/kira-shell/src/system_panel.rs
+//! A read-only system dashboard under the Top Bar's health indicator.
+//! Canonical native GTK styling; no arbitrary commands and no new Core RPC.
+use std::cell::{Cell, RefCell};
+use std::rc::Rc;
+use std::sync::Once;
+use std::time::Duration;
+
+use gtk::prelude::*;
+use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+
+use crate::system_metrics::{Snapshot, bytes_label, percent_used};
+
+const TITLE: &str = "Kira System";
+
+fn label(text: &str, class: &str) -> gtk::Label {
+    let label = gtk::Label::new(Some(text));
+    label.set_xalign(0.0);
+    label.add_css_class(class);
+    label
+}
+
+struct Metric {
+    value: gtk::Label,
+    bar: gtk::ProgressBar,
+}
+
+fn metric(parent: &gtk::Box, heading: &str) -> Metric {
+    let row = gtk::Box::new(gtk::Orientation::Horizontal, 10);
+    row.add_css_class("kira-system-metric-heading");
+    let name = label(heading, "kira-system-metric-name");
+    name.set_hexpand(true);
+    row.append(&name);
+    let value = label("UNAVAILABLE", "kira-system-metric-value");
+    value.set_xalign(1.0);
+    row.append(&value);
+    parent.append(&row);
+    let bar = gtk::ProgressBar::new();
+    bar.add_css_class("kira-system-meter");
+    bar.set_show_text(false);
+    bar.set_visible(false);
+    parent.append(&bar);
+    Metric { value, bar }
+}
+
+fn percentage(line: &Metric, percent: Option<u8>, detail: String) {
+    line.value.set_text(&detail);
+    line.bar.set_visible(percent.is_some());
+    if let Some(value) = percent {
+        line.bar.set_fraction(f64::from(value) / 100.0);
+    }
+}
+
+pub fn disk() -> Option<(u64, u64)> {
+    let file = gtk::gio::File::for_path("/");
+    let info = file
+        .query_filesystem_info(
+            "filesystem::size,filesystem::free",
+            None::<&gtk::gio::Cancellable>,
+        )
+        .ok()?;
+    let total = info.attribute_uint64("filesystem::size") / 1024;
+    let free = info.attribute_uint64("filesystem::free") / 1024;
+    (total > 0 && free <= total).then_some((total, free))
+}
+
+fn uptime_label(seconds: Option<u64>) -> String {
+    let Some(seconds) = seconds else {
+        return "UNAVAILABLE".into();
+    };
+    let days = seconds / 86_400;
+    let hours = (seconds % 86_400) / 3_600;
+    let minutes = (seconds % 3_600) / 60;
+    if days > 0 {
+        format!("{days}d {hours}h {minutes}m")
+    } else {
+        format!("{hours}h {minutes}m")
+    }
+}
+
+fn summary(
+    core: bool,
+    niri: bool,
+    snapshot: &Snapshot,
+    root: Option<(u64, u64)>,
+) -> (&'static str, &'static str) {
+    if !core {
+        return ("CORE OFFLINE", "kira-system-error");
+    }
+    if !niri {
+        return ("NIRI DISCONNECTED", "kira-system-error");
+    }
+    if let Some((total, available)) = root
+        && total > 0
+        && percent_used(total, available).is_some_and(|used| used >= 90)
+    {
+        return ("LOW STORAGE", "kira-system-warning");
+    }
+    if snapshot.memory_percent().is_some_and(|p| p >= 90) {
+        return ("MEMORY PRESSURE", "kira-system-warning");
+    }
+    if snapshot.battery_percent.is_some_and(|b| b <= 15) && snapshot.battery_charging == Some(false)
+    {
+        return ("LOW BATTERY", "kira-system-warning");
+    }
+    if snapshot.cpu_percent.is_some_and(|p| p >= 95) {
+        return ("SYSTEM BUSY", "kira-system-warning");
+    }
+    if snapshot.cpu_percent.is_none() || snapshot.memory_percent().is_none() {
+        return ("MEASURING", "kira-system-pending");
+    }
+    if root.is_none() {
+        return ("PARTIAL DATA", "kira-system-pending");
+    }
+    ("ALL SYSTEMS NOMINAL", "kira-system-ready")
+}
+
+struct Panel {
+    state: gtk::Label,
+    core: gtk::Label,
+    niri: gtk::Label,
+    cpu: Metric,
+    memory: Metric,
+    swap: Metric,
+    storage: Metric,
+    battery: gtk::Label,
+    load: gtk::Label,
+    uptime: gtk::Label,
+    updated: gtk::Label,
+}
+
+impl Panel {
+    fn refresh(&self, snapshot: &Snapshot, core: bool, niri: bool) -> String {
+        let root = snapshot.root_total_kib.zip(snapshot.root_available_kib);
+        let (headline, class) = summary(core, niri, snapshot, root);
+        self.state.set_text(headline);
+        for state in [
+            "kira-system-ready",
+            "kira-system-error",
+            "kira-system-warning",
+            "kira-system-pending",
+        ] {
+            self.state.remove_css_class(state);
+        }
+        self.state.add_css_class(class);
+        self.core
+            .set_text(if core { "CONNECTED" } else { "OFFLINE" });
+        self.niri
+            .set_text(if niri { "CONNECTED" } else { "DISCONNECTED" });
+
+        let cpu = snapshot.cpu_percent;
+        percentage(
+            &self.cpu,
+            cpu,
+            cpu.map_or("MEASURING".into(), |v| format!("{v}%")),
+        );
+        let mem = snapshot.memory_total_kib.zip(snapshot.memory_available_kib);
+        percentage(
+            &self.memory,
+            snapshot.memory_percent(),
+            mem.map_or("UNAVAILABLE".into(), |(total, avail)| {
+                format!(
+                    "{} / {}",
+                    bytes_label(total.saturating_sub(avail)),
+                    bytes_label(total),
+                )
+            }),
+        );
+        let swap = snapshot.swap_total_kib.zip(snapshot.swap_free_kib);
+        let swap_percent = swap.and_then(|(total, free)| percent_used(total, free));
+        percentage(
+            &self.swap,
+            swap_percent,
+            swap.map_or("UNAVAILABLE".into(), |(total, free)| {
+                if total == 0 {
+                    "NOT CONFIGURED".into()
+                } else {
+                    format!(
+                        "{} / {}",
+                        bytes_label(total.saturating_sub(free)),
+                        bytes_label(total)
+                    )
+                }
+            }),
+        );
+        let disk_percent = root.and_then(|(total, free)| percent_used(total, free));
+        percentage(
+            &self.storage,
+            disk_percent,
+            root.map_or("UNAVAILABLE".into(), |(total, free)| {
+                format!(
+                    "{} / {}",
+                    bytes_label(total.saturating_sub(free)),
+                    bytes_label(total)
+                )
+            }),
+        );
+        self.load
+            .set_text(&snapshot.load.map_or("UNAVAILABLE".into(), |v| {
+                format!("{:.2} / {:.2} / {:.2}", v[0], v[1], v[2])
+            }));
+        self.uptime.set_text(&uptime_label(snapshot.uptime_seconds));
+        self.battery.set_text(
+            &snapshot
+                .battery_percent
+                .map_or("NOT DETECTED".into(), |percent| {
+                    let state = match snapshot.battery_charging {
+                        Some(true) => " / AC OR CHARGING",
+                        Some(false) => " / DISCHARGING",
+                        None => "",
+                    };
+                    format!("{percent}%{state}")
+                }),
+        );
+        if let Ok(now) = gtk::glib::DateTime::now_local() {
+            self.updated.set_text(&format!(
+                "LIVE / {}",
+                now.format("%H:%M:%S")
+                    .map(|v| v.to_string())
+                    .unwrap_or_default()
+            ));
+        }
+        format!(
+            "KIRA SYSTEM / {headline}\nCore: {}\nNiri: {}\nCPU: {}\nMemory: {}\nSwap: {}\nStorage /: {}\nLoad 1/5/15: {}\nUptime: {}\nBattery: {}",
+            self.core.text(),
+            self.niri.text(),
+            self.cpu.value.text(),
+            self.memory.value.text(),
+            self.swap.value.text(),
+            self.storage.value.text(),
+            self.load.text(),
+            self.uptime.text(),
+            self.battery.text(),
+        )
+    }
+}
+
+fn install_style() {
+    static ONCE: Once = Once::new();
+    ONCE.call_once(|| crate::native_ui::install_styles(include_str!("system_panel.css")));
+}
+
+pub fn dismiss(app: &gtk::Application) -> bool {
+    crate::native_ui::dismiss_overlay(app, TITLE)
+}
+
+pub fn toggle(
+    app: &gtk::Application,
+    current: Rc<RefCell<Snapshot>>,
+    core_connected: Rc<Cell<bool>>,
+    niri_connected: Rc<Cell<bool>>,
+) {
+    if dismiss(app) {
+        return;
+    }
+    crate::calendar::dismiss(app);
+    crate::launcher::dismiss(app);
+    install_style();
+
+    let window = gtk::ApplicationWindow::new(app);
+    window.set_title(Some(TITLE));
+    window.set_decorated(false);
+    // The popup viewport is capped at 70% of its monitor by native_ui.
+    window.add_css_class("kira-system-window");
+    window.init_layer_shell();
+    window.set_namespace(Some("kira-system"));
+    window.set_layer(Layer::Overlay);
+    window.set_anchor(Edge::Top, true);
+    window.set_anchor(Edge::Right, true);
+    window.set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
+    window.set_margin(Edge::Right, 12);
+    window.set_exclusive_zone(0);
+    window.set_keyboard_mode(KeyboardMode::OnDemand);
+
+    let scroll = gtk::ScrolledWindow::new();
+    scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+    crate::native_ui::configure_popup(&window, &scroll, 408);
+    window.set_child(Some(&scroll));
+
+    let card = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    card.add_css_class("kira-system-card");
+    scroll.set_child(Some(&card));
+
+    let hero = gtk::Box::new(gtk::Orientation::Vertical, 8);
+    hero.add_css_class("kira-system-hero");
+    let header = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+    let eyebrow = label("KIRA  /  SYSTEM MONITOR", "kira-system-eyebrow");
+    eyebrow.set_hexpand(true);
+    header.append(&eyebrow);
+    let close = gtk::Button::with_label("×");
+    close.add_css_class("kira-system-close");
+    close.set_tooltip_text(Some("Close (Esc)"));
+    let weak_window = window.downgrade();
+    close.connect_clicked(move |_| {
+        if let Some(window) = weak_window.upgrade() {
+            window.close();
+        }
+    });
+    header.append(&close);
+    hero.append(&header);
+    hero.append(&label("System overview", "kira-system-heading"));
+    let state = label("MEASURING", "kira-system-state");
+    hero.append(&state);
+    card.append(&hero);
+
+    // These are Kira's flat editorial tabs, not a themed GtkNotebook.
+    // Each page owns its behavior and only the active Processes page scans
+    // /proc. Overview remains the original system diagnostics surface.
+    let navigation = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    navigation.add_css_class("kira-system-tabs");
+    let overview_tab = gtk::Button::with_label("01  OVERVIEW");
+    overview_tab.add_css_class("kira-system-tab");
+    overview_tab.add_css_class("kira-system-tab-active");
+    let processes_tab = gtk::Button::with_label("02  PROCESSES");
+    processes_tab.add_css_class("kira-system-tab");
+    navigation.append(&overview_tab);
+    navigation.append(&processes_tab);
+    card.append(&navigation);
+
+    let stack = gtk::Stack::new();
+    stack.set_transition_type(gtk::StackTransitionType::None);
+    let overview = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    stack.add_named(&overview, Some("overview"));
+    let process_page = crate::process_page::ProcessPage::new();
+    stack.add_named(&process_page.root, Some("processes"));
+    card.append(&stack);
+    stack.set_visible_child_name("overview");
+
+    let overview_weak = overview_tab.downgrade();
+    let processes_weak = processes_tab.downgrade();
+    let stack_overview = stack.clone();
+    let page_overview = process_page.clone();
+    overview_tab.connect_clicked(move |_| {
+        stack_overview.set_visible_child_name("overview");
+        page_overview.set_active(false);
+        if let Some(button) = overview_weak.upgrade() {
+            button.add_css_class("kira-system-tab-active");
+        }
+        if let Some(button) = processes_weak.upgrade() {
+            button.remove_css_class("kira-system-tab-active");
+        }
+    });
+    let overview_weak = overview_tab.downgrade();
+    let processes_weak = processes_tab.downgrade();
+    let stack_processes = stack.clone();
+    let page_processes = process_page.clone();
+    processes_tab.connect_clicked(move |_| {
+        stack_processes.set_visible_child_name("processes");
+        page_processes.set_active(true);
+        if let Some(button) = overview_weak.upgrade() {
+            button.remove_css_class("kira-system-tab-active");
+        }
+        if let Some(button) = processes_weak.upgrade() {
+            button.add_css_class("kira-system-tab-active");
+        }
+    });
+
+    let services = gtk::Box::new(gtk::Orientation::Vertical, 7);
+    services.add_css_class("kira-system-services");
+    services.append(&label("CONNECTIONS  /  REAL-TIME", "kira-system-eyebrow"));
+    let core_label = label("", "kira-system-value");
+    let niri_label = label("", "kira-system-value");
+    for (name, value) in [("KIRA CORE", &core_label), ("NIRI IPC", &niri_label)] {
+        let row = gtk::Box::new(gtk::Orientation::Horizontal, 10);
+        row.append(&label(name, "kira-system-key"));
+        value.set_xalign(1.0);
+        value.set_hexpand(true);
+        row.append(value);
+        services.append(&row);
+    }
+    overview.append(&services);
+
+    let workbench = gtk::Box::new(gtk::Orientation::Vertical, 10);
+    workbench.add_css_class("kira-system-workbench");
+    workbench.append(&label(
+        "RESOURCES  /  LIVE TELEMETRY",
+        "kira-system-section",
+    ));
+    let cpu = metric(&workbench, "CPU / ALL CORES");
+    let memory = metric(&workbench, "MEMORY / RAM");
+    let swap = metric(&workbench, "SWAP");
+    let storage = metric(&workbench, "STORAGE / ROOT");
+    overview.append(&workbench);
+
+    let details = gtk::Box::new(gtk::Orientation::Vertical, 8);
+    details.add_css_class("kira-system-details");
+    details.append(&label(
+        "OPERATING SYSTEM  /  CONTEXT",
+        "kira-system-eyebrow",
+    ));
+    let uptime = label("", "kira-system-value");
+    let load = label("", "kira-system-value");
+    let battery = label("", "kira-system-value");
+    for (name, value) in [
+        ("UPTIME", &uptime),
+        ("LOAD / 1 5 15", &load),
+        ("POWER", &battery),
+    ] {
+        let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+        let heading = label(name, "kira-system-key");
+        heading.set_hexpand(true);
+        row.append(&heading);
+        value.set_xalign(1.0);
+        row.append(value);
+        details.append(&row);
+    }
+    let footer = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+    footer.add_css_class("kira-system-footer");
+    let updated = label("LIVE", "kira-system-updated");
+    updated.set_hexpand(true);
+    footer.append(&updated);
+    let copy = gtk::Button::with_label("COPY REPORT");
+    copy.add_css_class("kira-system-copy");
+    footer.append(&copy);
+    details.append(&footer);
+    overview.append(&details);
+
+    let panel = Rc::new(Panel {
+        state,
+        core: core_label,
+        niri: niri_label,
+        cpu,
+        memory,
+        swap,
+        storage,
+        battery,
+        load,
+        uptime,
+        updated,
+    });
+    let report = Rc::new(RefCell::new(String::new()));
+    *report.borrow_mut() = panel.refresh(
+        &current.borrow(),
+        core_connected.get(),
+        niri_connected.get(),
+    );
+    let copy_report = report.clone();
+    let copy_button = copy.clone();
+    copy.connect_clicked(move |_| {
+        if let Some(display) = gtk::gdk::Display::default() {
+            display.clipboard().set_text(&copy_report.borrow());
+            copy_button.set_label("COPIED");
+        }
+    });
+
+    let weak_window = window.downgrade();
+    // Retain the view-model while the popup is open. Only the weak window
+    // reference is captured, so closing the popup stops this source and
+    // releases the labels without a reference cycle.
+    gtk::glib::timeout_add_local(Duration::from_secs(2), move || {
+        if weak_window.upgrade().is_none() {
+            return gtk::glib::ControlFlow::Break;
+        }
+        *report.borrow_mut() = panel.refresh(
+            &current.borrow(),
+            core_connected.get(),
+            niri_connected.get(),
+        );
+        copy.set_label("COPY REPORT");
+        gtk::glib::ControlFlow::Continue
+    });
+
+    // Keep process updates on the GTK main loop. Polling stops when the
+    // window is destroyed, releasing the view-model and its scan worker.
+    let weak_window = window.downgrade();
+    gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
+        if weak_window.upgrade().is_none() {
+            return gtk::glib::ControlFlow::Break;
+        }
+        process_page.poll();
+        gtk::glib::ControlFlow::Continue
+    });
+
+    let keys = gtk::EventControllerKey::new();
+    let weak_window = window.downgrade();
+    keys.connect_key_pressed(move |_, key, _, _| {
+        if key == gtk::gdk::Key::Escape {
+            if let Some(window) = weak_window.upgrade() {
+                window.close();
+            }
+            gtk::glib::Propagation::Stop
+        } else {
+            gtk::glib::Propagation::Proceed
+        }
+    });
+    window.add_controller(keys);
+
+    let was_active = Rc::new(Cell::new(false));
+    window.connect_is_active_notify(move |window| {
+        if window.is_active() {
+            was_active.set(true);
+        } else if was_active.get() {
+            window.close();
+        }
+    });
+    window.present();
 }
 
 FILE	crates/kira-shell/src/ui_assets.rs
@@ -4786,12 +6497,13 @@ official visual language of Kira Desktop.
 ### Implementation rules: KISS + DRY
 
 1. **Single native palette:** `native-palette.css` declares the five GTK
-   colors for Launcher and Calendar. `native_ui.rs` assembles it with each
+   colors for Launcher, Calendar and the System Monitor. `native_ui.rs` assembles it with each
    overlay stylesheet, and `test_native_theme.py` verifies the values match
    Svelte's canonical palette. Do not duplicate `@define-color` in widgets.
 2. **Small shared operations:** the common overlay helper only installs style
    providers, finds windows and dismisses them. Keep Launcher search/launch
-   and Calendar date-picker state in their own modules.
+   Calendar date-picker state and read-only System Monitor telemetry in
+   their own modules.
 3. **No premature abstraction:** two similarly named elements are not
    necessarily the same component. Extract code only when it has the same
    semantics and at least two real callers.
@@ -4828,10 +6540,44 @@ official visual language of Kira Desktop.
   communicate function without painting the entire row orange.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
   and visible keyboard focus remain distinct. Niri events are authoritative.
-- **System health:** combine existing Core RPC and Niri EventStream status:
-  READY only when both connected, otherwise STARTING/WAITING/CORE OFF/
-  NIRI OFF. A round/hollow/square dot reinforces the textual state;
-  hover shows Core version and Niri IPC connection. No new telemetry or polling.
+- **System health:** the Top Bar is a compact **system** indicator, not just
+  a Core heartbeat. READY requires Core/Niri connectivity **and** actual
+  CPU/memory samples; LOW DISK, LOW MEM, LOW BAT or BUSY report measured
+  pressure, and CHECKING is shown until first valid samples. Hover offers
+  a short truthful snapshot; clicking opens the native System Monitor.
+  PARTIAL indicates that CPU and RAM have been sampled but root disk data
+  is unavailable, so the status never claims full readiness without it.
+  It has the same Black heading / Prussian Blue workbench / Black details
+  composition as the Calendar and Launcher, uses small orange progress
+  meters and real values from Linux /proc, sysfs and Gio's root filesystem
+  information. It shows Core and Niri, CPU, RAM, swap, root storage,
+  1/5/15 load, uptime and battery (if present). Missing readings are
+  UNAVAILABLE / NOT DETECTED rather than zero. A fixed-purpose WebKit
+  `kiraSystem` channel only accepts `toggle` and cannot run commands.
+  The monitor updates every two seconds and can copy a plain-text report.
+  The system popover contains **two custom flat tabs**: 01 OVERVIEW
+  (the existing diagnostics) and 02 PROCESSES (the read-only mini task
+  monitor). The second tab reads readable tasks from Linux /proc only
+  while active, displaying process name, PID, sampled CPU percentage
+  relative to the entire host, and resident memory (RSS), with a search
+  field, reversible sorting by clicking PROCESS/PID/CPU/RAM headers
+  (orange active state and direction arrow), an independently scrollable
+  top-36 list
+  and honest counts. Samples update every two seconds on a worker.
+  Initial CPU has no historical baseline and is displayed as a dash,
+  and unreadable RSS/processes are not replaced with fake zero.
+  The UI never reads process command-line arguments or offers termination.
+  A PID plus kernel start-time identity prevents reuse from attributing
+  another process's CPU history. No new Core JSON-RPC methods or
+  user-data collection are introduced.
+
+### Popup geometry
+
+Calendar and System Monitor share a **25 logical pixel** top margin,
+half the previous 50px. A single GTK helper caps each popup's
+scrollable viewport at **70% of the logical height of its monitor**,
+recalculating after the Wayland surface maps. Both remain non-exclusive
+overlays; Top Bar still reserves 42px.
 
 ### Geometry and motion
 
@@ -5011,26 +6757,43 @@ component-scoped `<style>` blocks. Niri focus/urgent states, keyboard
 focus, Core state and live KDL config updates remain behavioral concerns,
 not CSS assumptions.
 
-The narrow Svelte host bridge exposes only `openLauncher()` and
-`toggleCalendar()` for native overlays. Both share the same private,
+The narrow Svelte host bridge exposes `openLauncher()`,
+`toggleCalendar()` and `toggleSystemPanel()` for native overlays. All three share the same private,
 non-throwing message helper, while Rust checks the literal `open` and
 `toggle` payloads independently. If the native handler is missing or
 fails, the UI reports the overlay offline instead of throwing.
 
-The native **GTK4 Launcher and Calendar** cannot use Tailwind; their
-`crates/kira-shell/src/launcher.css` and `calendar.css` retain
-matching GTK themes. The calendar is an independent, non-exclusive layer
+The native Calendar and System Monitor use the shared
+`native_ui::configure_popup` helper to size their windows to the natural
+height of the content, up to 70% of the logical monitor height. The old
+490/600px preferred heights were forcing unnecessary scrolling on taller
+outputs. The top margin remains 25px, and overflow scrolls only when the
+content actually exceeds the 70% cap.
+
+The Process Monitor lives in two small Rust modules:
+`process_monitor.rs` parses /proc on a worker and computes CPU from
+consecutive total-host tick counters, keyed by (PID, start-time) to
+avoid reuse. `process_page.rs` renders the custom GTK Processes tab,
+search and ascending/descending sorting by clicking the four
+table column headers, with no redundant SORT toolbar. No process termination, command lines, extra Core
+RPC or permanent process enumeration is included. The Nix CI executes
+both `system_metrics::tests` and `process_monitor::tests`.
+
+The native **GTK4 Launcher, Calendar and System Monitor** cannot use
+Tailwind; their `crates/kira-shell/src/launcher.css`,
+`calendar.css` and `system_panel.css` retain matching GTK themes. The calendar is an independent, non-exclusive layer
 surface toggled through the narrow `kiraCalendar` WebKit channel, so
 opening it never changes the 42px Niri reservation.
 The WebKit host continues to embed a single production CSS file, including
 Tailwind utilities, through `frontend/scripts/inline-assets.mjs`.
 
 GTK colors are declared once in `crates/kira-shell/src/native-palette.css`,
-not separately in the two overlay stylesheets. Shared native CSS installation
+not separately in the overlay stylesheets. Shared native CSS installation
 and overlay lookup/dismiss helpers live in
 `crates/kira-shell/src/native_ui.rs`. All feature-specific layout and
-interaction logic stays in `launcher.rs` or `calendar.rs`, following KISS
-and DRY without introducing a generic overlay framework. When changing any
+interaction logic stays in `launcher.rs`, `calendar.rs` or
+`system_panel.rs`, following KISS and DRY without introducing a generic
+overlay framework. When changing any
 native CSS asset, verify it remains included by `nix/package.nix`.
 
 When adding npm dependencies, commit the updated
@@ -5044,6 +6807,18 @@ See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and specification §15 for accessibilit
 spacing, contrast and future widget conventions. The small HTML fallback in
 `frontend/index.html` uses the exact canonical colors because it runs before
 CSS assets finish loading.
+
+## Automatic rustfmt in CI
+
+The lightweight GitHub Actions CI runs `cargo fmt --all` **before tests**.
+For first-party feature branches it commits any resulting Rust changes
+and pushes the formatting-only commit without force-pushing. The same
+working tree is then checked and tested. No changes means no commit.
+Forked PRs and the protected `main` branch are check-only, with no
+formatting push. Checkout credentials are not persisted: a token is
+available only to the trusted push step. Formatting commits pushed using
+`GITHUB_TOKEN` do not launch an endless second CI run. Local
+`task fmt` still checks style.
 
 ## Safe nested development preview
 
@@ -5513,9 +7288,32 @@ SHA-256, `captured_review_pending`). Скриншоты **не выгружаю�
 - Справа один вертикально центрированный ряд: READY/STARTING/CORE OFF/
   NIRI OFF, тонкий разделитель и часы. Отдельных заголовков SYSTEM/LOCAL
   больше нет, статус Core не проваливается вниз относительно часов.
-- READY показывается только когда Core и Niri подключены; при отсутствии
-  Core/Niri виден конкретный текст ошибки. Подсказка статуса содержит версию
-  Core и состояние Niri, а подсказка часов — полную дату.
+- READY показывается только когда Core/Niri подключены **и** получены
+  корректные значения CPU и RAM. При ошибках ресурсов вместо READY видны
+  LOW DISK / LOW MEM / LOW BAT / BUSY, при отсутствии данных — CHECKING,
+  при отсутствии Core/Niri — конкретная ошибка.
+- При нажатии на системный статус открывается отдельная GTK-панель.
+  Таб 01 OVERVIEW показывает реальные CPU, RAM, swap, размер корневого
+  диска, нагрузку 1/5/15, uptime, питание, Core и Niri. Таб 02 PROCESSES
+  показывает живые имена процессов, PID, CPU (% всего хоста) и RSS RAM,
+  поиск по имени/PID; сортировка кликом по заголовкам PROCESS/PID/CPU/RAM,
+  повторный клик меняет направление (↑/↓). Активная колонка оранжевая,
+  отдельного ряда SORT нет, неизвестные значения всегда внизу.
+  Для календаря и системного монитора проверить отступ сверху 25 вместо
+  50 логических пикселей, **естественную** высоту окна до 70% текущего
+  монитора. Если содержимое занимает меньше этого лимита, никаких лишних
+  прокруток быть не должно; если больше, нижние действия доступны
+  прокруткой. Проверить высоту экрана, масштабы и крупные шрифты.
+  Проверить переключение вкладок без системного GtkNotebook, чтение
+  /proc только при активном PROCESSES, две последовательные пробы для
+  CPU, несуществующие процессы, фильтр без совпадений, переполнение 36
+  строк и прокрутку, неизвестный RSS как «—», отсутствие действий Kill.
+  Проверить исчезновение
+  показателей при недоступном /proc без вымышленных нулей, live-обновление,
+  закрытие по Esc/повторному клику/потере фокуса, Copy Report и
+  взаимоисключение с календарём и Launcher.
+  Подсказка Top Bar содержит реальные текущие данные, а не только Core.
+  Подсказка часов содержит полную дату.
 - При ширине до 540 px здоровая подпись READY скрывается, точка и часы
   остаются, но сообщения об ошибках не скрываются.
 - В таб-навигации видно фокус как на выбранном workspace, так и на обычном;
@@ -6450,7 +8248,7 @@ FILE	frontend/src/App.svelte
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { openLauncher, toggleCalendar, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, defaultUiConfig, type WorkspaceState, type ConfigState } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, toggleSystemPanel, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -6460,6 +8258,12 @@ FILE	frontend/src/App.svelte
   let workspaceActionError = $state<string | null>(null);
   let launcherUnavailable = $state(false);
   let calendarUnavailable = $state(false);
+  let systemUnavailable = $state(false);
+  let systemMetrics = $state<SystemMetrics | null>(null);
+
+  function activateSystemPanel() {
+    systemUnavailable = !toggleSystemPanel();
+  }
 
   function activateCalendar() {
     calendarUnavailable = !toggleCalendar();
@@ -6506,6 +8310,10 @@ FILE	frontend/src/App.svelte
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
+    const stopMetrics = onSystemMetrics((value) => {
+      if (!disposed) systemMetrics = value;
+    });
+
     // Core listens to Niri EventStream. Shell forwards each changed snapshot
     // as kira:workspaces, so focus updates arrive without polling.
     let pushReceived = false;
@@ -6546,6 +8354,7 @@ FILE	frontend/src/App.svelte
       window.clearInterval(statusTimer);
       unsubscribe();
       stopConfig();
+      stopMetrics();
     };
   });
 </script>
@@ -6610,7 +8419,12 @@ FILE	frontend/src/App.svelte
       coreStatus={coreStatus}
       coreVersion={coreVersion}
       niriConnected={workspaceState?.connected ?? null}
+      metrics={systemMetrics}
+      onOpen={activateSystemPanel}
     />
+    {#if systemUnavailable}
+      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+    {/if}
     <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
     {#if calendarUnavailable}
       <span class="shrink-0 text-[10px] font-bold text-kira-accent" role="status">CALENDAR OFFLINE</span>
@@ -6791,41 +8605,47 @@ export function whenDocumentReady(
 FILE	frontend/src/lib/components/SystemHealth.svelte
 <script lang="ts">
   import { systemHealth, type CoreConnectionStatus } from '../system-health';
+  import type { SystemMetrics } from '../sdk/core';
 
   let {
     coreStatus,
     coreVersion,
     niriConnected,
+    metrics,
+    onOpen,
   }: {
     coreStatus: CoreConnectionStatus;
     coreVersion: string;
     niriConnected: boolean | null;
+    metrics: SystemMetrics | null;
+    onOpen: () => void;
   } = $props();
 
-  const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected));
+  const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected, metrics));
 </script>
 
-<div
-  class="inline-flex h-6 shrink-0 items-center justify-center gap-[6px] whitespace-nowrap"
-  role="status"
-  aria-live="polite"
-  aria-atomic="true"
-  aria-label={health.details.replace('\n', '; ')}
-  title={health.details}
+<button
+  type="button"
+  class="inline-flex h-7 shrink-0 cursor-pointer items-center justify-center gap-[6px] rounded-sm border-0 bg-transparent px-1 text-kira-muted transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
+  aria-haspopup="dialog"
+  aria-label={'Open system monitor: ' + health.label}
+  title={health.details + '\nClick for detailed system monitor'}
   data-phase={health.phase}
+  onclick={onOpen}
 >
   <span
     class={`h-[7px] w-[7px] shrink-0 border ${health.phase === 'ready'
       ? 'rounded-full border-kira-muted bg-kira-muted'
-      : health.phase === 'error'
+      : health.phase === 'error' || health.phase === 'warning'
         ? 'rounded-[2px] border-kira-accent bg-kira-accent'
         : 'rounded-full border-kira-muted bg-transparent'}`}
     aria-hidden="true"
   ></span>
-  <span class={`text-[10px] leading-none font-semibold tracking-[0.02em] ${health.phase === 'error'
-    ? 'text-kira-accent'
-    : 'text-kira-text'} ${health.phase === 'ready' ? 'max-[540px]:hidden' : ''}`}>{health.label}</span>
-</div>
+  <span role="status" aria-live="polite" aria-atomic="true"
+    class={`text-[10px] leading-none font-semibold tracking-[0.02em] ${health.phase === 'error' || health.phase === 'warning'
+      ? 'text-kira-accent' : 'text-kira-text'} ${health.phase === 'ready' ? 'max-[540px]:hidden' : ''}`}
+  >{health.label}</span>
+</button>
 
 FILE	frontend/src/lib/components/WorkspacePreview.svelte
 <script lang="ts">
@@ -6892,7 +8712,7 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, openLauncher } from './core';
+import { deliverReply, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -6911,6 +8731,18 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('opens native read-only system monitor only through the fixed bridge', () => {
+    expect(toggleSystemPanel()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraSystem: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleSystemPanel()).toBe(true);
+    expect(postMessage).toHaveBeenCalledWith('toggle');
+    postMessage.mockImplementation(() => { throw new Error('gone'); });
+    expect(toggleSystemPanel()).toBe(false);
   });
 
   it('toggles the calendar via a dedicated fixed-purpose host bridge', () => {
@@ -7082,6 +8914,43 @@ export interface WorkspaceState {
   workspaces: Workspace[];
 }
 
+/** Linux resource snapshot forwarded by the trusted native Shell.
+ * Null means unavailable, never zero. Units are KiB and seconds.
+ */
+export interface SystemMetrics {
+  cpu_percent: number | null;
+  memory_total_kib: number | null;
+  memory_available_kib: number | null;
+  swap_total_kib: number | null;
+  swap_free_kib: number | null;
+  root_total_kib: number | null;
+  root_available_kib: number | null;
+  uptime_seconds: number | null;
+  load: [number, number, number] | null;
+  battery_percent: number | null;
+  battery_charging: boolean | null;
+}
+
+/** Event-driven system metrics: does not add browser polling or an RPC method. */
+export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const listener = (event: Event) => {
+    const value = (event as CustomEvent<SystemMetrics>).detail;
+    const valid = (n: unknown) => n === null ||
+      (typeof n === 'number' && Number.isFinite(n) && n >= 0);
+    if (!value || typeof value !== 'object' ||
+        !valid(value.cpu_percent) || !valid(value.memory_total_kib) ||
+        !valid(value.memory_available_kib) || !valid(value.root_total_kib) ||
+        !valid(value.root_available_kib) ||
+        (value.cpu_percent !== null && value.cpu_percent > 100) ||
+        (value.battery_percent !== null && (!valid(value.battery_percent) || value.battery_percent > 100)) ||
+        ![null, true, false].includes(value.battery_charging)) return;
+    callback(value);
+  };
+  window.addEventListener('kira:system-metrics', listener);
+  return () => window.removeEventListener('kira:system-metrics', listener);
+}
+
 /** Listen for typed workspace push events emitted by the native Shell.
  * No Niri or Core polling is performed here. Unsubscribe on Svelte unmount.
  */
@@ -7155,14 +9024,14 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraSystem?: Bridge } };
   }
 }
 
 /** Only fixed commands are exposed to trusted Svelte components. Keep host
  * bridge failures non-throwing so an offline overlay does not crash the bar.
  */
-function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar', command: 'open' | 'toggle'): boolean {
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem', command: 'open' | 'toggle'): boolean {
   const channel = typeof window === 'undefined'
     ? undefined
     : window.webkit?.messageHandlers?.[channelName];
@@ -7183,6 +9052,11 @@ export function openLauncher(): boolean {
 /** Toggle the native calendar overlay through its fixed-purpose channel. */
 export function toggleCalendar(): boolean {
   return postNativeCommand('kiraCalendar', 'toggle');
+}
+
+/** Open or close the native read-only system monitor. */
+export function toggleSystemPanel(): boolean {
+  return postNativeCommand('kiraSystem', 'toggle');
 }
 
 let nextId = 0;
@@ -7257,45 +9131,54 @@ function send(method: string, params?: { id: string }): Promise<unknown> {
 FILE	frontend/src/lib/system-health.test.ts
 import { describe, expect, it } from 'vitest';
 import { systemHealth } from './system-health';
+import type { SystemMetrics } from './sdk/core';
 
-describe('system summary from real Core and Niri signals', () => {
-  it('is ready only when Core and Niri are both connected', () => {
-    const ready = systemHealth('connected', '0.1.0', true);
-    expect(ready.phase).toBe('ready');
-    expect(ready.label).toBe('READY');
-    expect(ready.details).toContain('Kira Core: Online (v0.1.0)');
-    expect(ready.details).toContain('Niri IPC: Connected');
+const normal: SystemMetrics = {
+  cpu_percent: 24, memory_total_kib: 1000, memory_available_kib: 580,
+  swap_total_kib: 0, swap_free_kib: 0,
+  root_total_kib: 1000, root_available_kib: 500,
+  uptime_seconds: 3600, load: [0.2, 0.3, 0.1],
+  battery_percent: null, battery_charging: null,
+};
+
+describe('read-only system health status', () => {
+  it('does not call the whole system READY merely because Core and Niri work', () => {
+    expect(systemHealth('connected', '0.1.0', true)).toMatchObject({ label: 'CHECKING', phase: 'pending' });
+    expect(systemHealth('connected', '0.1.0', true, normal)).toMatchObject({ label: 'READY', phase: 'ready' });
   });
 
-  it('shows connection progress instead of claiming system readiness', () => {
-    expect(systemHealth('connecting', '', null)).toMatchObject({
-      label: 'STARTING', phase: 'pending',
-    });
-    expect(systemHealth('connected', '0.1.0', null)).toMatchObject({
-      label: 'WAITING', phase: 'pending',
-    });
+  it('prioritizes offline services before resource warnings', () => {
+    expect(systemHealth('connecting', '', null, normal).label).toBe('STARTING');
+    expect(systemHealth('unavailable', '', false, normal)).toMatchObject({ label: 'CORE OFF', phase: 'error' });
+    expect(systemHealth('connected', '', false, normal)).toMatchObject({ label: 'NIRI OFF', phase: 'error' });
+    expect(systemHealth('connected', '', null, normal).label).toBe('WAITING');
   });
 
-  it('prioritizes precise degraded signals', () => {
-    const offlineCore = systemHealth('unavailable', '', false);
-    expect(offlineCore).toMatchObject({ label: 'CORE OFF', phase: 'error' });
-    expect(offlineCore.details).toContain('Niri IPC: Disconnected');
-    expect(systemHealth('connected', '0.1.0', false)).toMatchObject({
-      label: 'NIRI OFF', phase: 'error',
-    });
+  it('shows actual memory, disk and battery pressure', () => {
+    expect(systemHealth('connected', '', true, { ...normal, root_available_kib: 50 }).label).toBe('LOW DISK');
+    expect(systemHealth('connected', '', true, { ...normal, memory_available_kib: 50 }).label).toBe('LOW MEM');
+    expect(systemHealth('connected', '', true, { ...normal, battery_percent: 10, battery_charging: false }).label).toBe('LOW BAT');
+    expect(systemHealth('connected', '', true, { ...normal, battery_percent: 10, battery_charging: true }).label).toBe('READY');
+    expect(systemHealth('connected', '', true, { ...normal, cpu_percent: 98 }).label).toBe('BUSY');
+    expect(systemHealth('connected', '', true, { ...normal, root_total_kib: null }).label).toBe('PARTIAL');
   });
 
-  it('does not fabricate a version when Core has not supplied one', () => {
-    expect(systemHealth('connected', '', true).details).toContain('Kira Core: Online\n');
+  it('never renders an unknown metric as zero', () => {
+    const value = systemHealth('connected', '0.1.0', true, { ...normal, cpu_percent: null });
+    expect(value.label).toBe('CHECKING');
+    expect(value.details).toContain('CPU: Measuring');
+    expect(value.details).toContain('Kira Core: Online (v0.1.0)');
   });
 });
 
 FILE	frontend/src/lib/system-health.ts
-/** Derive an honest status from both existing, real Core and Niri signals.
- * No extra polling or optimistic connection indicators.
+import type { SystemMetrics } from './sdk/core';
+
+/** A system status reflects actual resource conditions as well as services.
+ * Never imply the whole machine is healthy solely because Core responds.
  */
 export type CoreConnectionStatus = 'connecting' | 'connected' | 'unavailable';
-export type HealthPhase = 'ready' | 'pending' | 'error';
+export type HealthPhase = 'ready' | 'pending' | 'warning' | 'error';
 
 export interface HealthSummary {
   label: string;
@@ -7303,10 +9186,17 @@ export interface HealthSummary {
   details: string;
 }
 
+function percentUsed(total: number | null, available: number | null): number | null {
+  if (total === null || available === null || total <= 0 ||
+      available < 0 || available > total) return null;
+  return Math.floor((total - available) / total * 100);
+}
+
 export function systemHealth(
   core: CoreConnectionStatus,
   version: string,
   niriConnected: boolean | null,
+  metrics: SystemMetrics | null = null,
 ): HealthSummary {
   const coreDetail = core === 'connected'
     ? 'Online' + (version ? ' (v' + version + ')' : '')
@@ -7315,11 +9205,31 @@ export function systemHealth(
     ? 'Waiting for first snapshot'
     : niriConnected ? 'Connected' : 'Disconnected';
 
-  const details = 'Kira Core: ' + coreDetail + '\nNiri IPC: ' + niriDetail;
+  const mem = metrics && percentUsed(metrics.memory_total_kib, metrics.memory_available_kib);
+  const disk = metrics && percentUsed(metrics.root_total_kib, metrics.root_available_kib);
+  const details = [
+    'Kira Core: ' + coreDetail,
+    'Niri IPC: ' + niriDetail,
+    'CPU: ' + (metrics?.cpu_percent === null || !metrics ? 'Measuring' : metrics.cpu_percent + '%'),
+    'Memory: ' + (mem === null ? 'Unavailable' : mem + '% used'),
+    'Root disk: ' + (disk === null ? 'Unavailable' : disk + '% used'),
+    'Battery: ' + (metrics?.battery_percent == null ? 'Not detected' : metrics.battery_percent + '%'),
+  ].join('\n');
   if (core === 'unavailable') return { label: 'CORE OFF', phase: 'error', details };
   if (core === 'connecting') return { label: 'STARTING', phase: 'pending', details };
   if (niriConnected === false) return { label: 'NIRI OFF', phase: 'error', details };
   if (niriConnected === null) return { label: 'WAITING', phase: 'pending', details };
+  if (!metrics || mem === null || metrics.cpu_percent === null) {
+    return { label: 'CHECKING', phase: 'pending', details };
+  }
+  if (disk !== null && disk >= 90) return { label: 'LOW DISK', phase: 'warning', details };
+  if (mem >= 90) return { label: 'LOW MEM', phase: 'warning', details };
+  if (metrics.battery_percent !== null && metrics.battery_percent <= 15 &&
+      metrics.battery_charging === false) {
+    return { label: 'LOW BAT', phase: 'warning', details };
+  }
+  if (metrics.cpu_percent >= 95) return { label: 'BUSY', phase: 'warning', details };
+  if (disk === null) return { label: 'PARTIAL', phase: 'pending', details };
   return { label: 'READY', phase: 'ready', details };
 }
 
@@ -7556,6 +9466,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('formatClock(now, undefined, configState.config.show_seconds)');
     expect(markup).toContain('focus-visible:outline-kira-accent');
     expect(markup).toContain('onclick={activateCalendar}');
+    expect(markup).toContain('onOpen={activateSystemPanel}');
+    expect(markup).toContain('metrics={systemMetrics}');
+    expect(markup).toContain('stopMetrics();');
     expect(markup).toContain('aria-haspopup="dialog"');
     expect(markup).toContain('<time class=');
     expect(markup).toContain('CALENDAR OFFLINE');
@@ -7569,7 +9482,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
     expect(core).toContain('aria-live="polite"');
     expect(core).toContain('data-phase={health.phase}');
-    expect(core).toContain('aria-label={health.details.replace');
+    expect(core).toContain('aria-haspopup="dialog"');
+    expect(core).toContain('onclick={onOpen}');
+    expect(core).toContain("aria-label={'Open system monitor: ' + health.label}");
     expect(core).toContain('border-kira-accent bg-kira-accent');
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
@@ -7764,6 +9679,7 @@ let
       (lib.hasSuffix "/crates/kira-shell/src/launcher.css" (toString path))
       || (lib.hasSuffix "/crates/kira-shell/src/calendar.css" (toString path))
       || (lib.hasSuffix "/crates/kira-shell/src/native-palette.css" (toString path))
+      || (lib.hasSuffix "/crates/kira-shell/src/system_panel.css" (toString path))
       || craneLib.filterCargoSources path type;
   };
   commonRustArgs = {
@@ -8560,6 +10476,8 @@ NIX = (ROOT / "nix/package.nix").read_text()
 class CalendarDesignTests(unittest.TestCase):
     def test_only_custom_calendar_grid(self):
         self.assertIn("gtk::Grid::new()", RUST)
+        self.assertIn("crate::native_ui::configure_popup(&window, &scroll, 378)", RUST)
+        self.assertIn("crate::native_ui::POPUP_TOP_MARGIN", RUST)
         self.assertIn("gtk::Button::new()", RUST)
         self.assertIn("month_grid(state.year, state.month)", RUST)
         self.assertNotIn("gtk::Calendar", RUST)
@@ -8653,6 +10571,115 @@ class CalendarDesignTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+FILE	tests/test_detailed_health.py
+"""Read-only system monitor integration and UI affordance checks."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+RUST = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
+MONITOR = (ROOT / "crates/kira-shell/src/system_metrics.rs").read_text()
+CSS = (ROOT / "crates/kira-shell/src/system_panel.css").read_text()
+HOST = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+APP = (ROOT / "frontend/src/App.svelte").read_text()
+COMPONENT = (ROOT / "frontend/src/lib/components/SystemHealth.svelte").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+NIX = (ROOT / "nix/package.nix").read_text()
+
+
+class DetailedHealthContractTests(unittest.TestCase):
+    def test_overlay_is_fixed_purpose_and_nonexclusive(self):
+        self.assertIn('register_script_message_handler("kiraSystem", None)', HOST)
+        self.assertIn('if value.to_string() == "toggle"', HOST)
+        self.assertIn('postNativeCommand(\'kiraSystem\', \'toggle\')', SDK)
+        self.assertIn('onclick={onOpen}', COMPONENT)
+        self.assertIn('aria-haspopup="dialog"', COMPONENT)
+        self.assertIn('set_exclusive_zone(0)', RUST)
+        self.assertIn('set_anchor(Edge::Top, true)', RUST)
+        self.assertIn('set_anchor(Edge::Right, true)', RUST)
+        self.assertIn('crate::native_ui::configure_popup(&window, &scroll, 408)', RUST)
+        self.assertIn('crate::native_ui::POPUP_TOP_MARGIN', RUST)
+        self.assertIn('kira:system-metrics', HOST)
+        self.assertIn('onSystemMetrics(', APP)
+        self.assertIn('stopMetrics();', APP)
+
+    def test_real_sources_no_arbitrary_commands(self):
+        for path in ('/proc/stat', '/proc/meminfo', '/proc/uptime',
+                     '/proc/loadavg', '/sys/class/power_supply'):
+            self.assertIn(path, MONITOR)
+        self.assertIn('query_filesystem_info(', RUST)
+        self.assertIn('None::<&gtk::gio::Cancellable>', RUST)
+        self.assertNotIn('std::process::Command', MONITOR)
+        self.assertNotIn('std::process::Command', RUST)
+        self.assertIn('Memory: ', RUST)
+        self.assertIn('MEASURING', RUST)
+        self.assertIn('NOT DETECTED', RUST)
+
+    def test_shared_native_palette_and_gtk_styles(self):
+        self.assertIn('crate::native_ui::install_styles(', RUST)
+        self.assertIn('include_str!("system_panel.css")', RUST)
+        self.assertIn('system_panel.css', NIX)
+        self.assertIn('.kira-system-hero', CSS)
+        self.assertIn('.kira-system-workbench', CSS)
+        self.assertIn('.kira-system-services', CSS)
+        self.assertIn('progressbar.kira-system-meter', CSS)
+        self.assertIn('button.kira-system-copy', CSS)
+        self.assertNotIn('@define-color', CSS)
+        self.assertNotIn('box-shadow:', CSS)
+        self.assertIn('kira-process-header-active', CSS)
+
+    def test_panel_and_existing_overlays_mutually_exclusive(self):
+        launcher = (ROOT / "crates/kira-shell/src/launcher.rs").read_text()
+        calendar = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+        self.assertIn('crate::system_panel::dismiss(application)', launcher)
+        self.assertIn('crate::system_panel::dismiss(application)', calendar)
+        self.assertIn('crate::calendar::dismiss(app)', RUST)
+        self.assertIn('crate::launcher::dismiss(app)', RUST)
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+class ProcessesTabContractTests(unittest.TestCase):
+    def test_custom_tabs_and_safe_data_model(self):
+        page = (ROOT / "crates/kira-shell/src/process_page.rs").read_text()
+        reader = (ROOT / "crates/kira-shell/src/process_monitor.rs").read_text()
+        self.assertIn('01  OVERVIEW', RUST)
+        self.assertIn('02  PROCESSES', RUST)
+        self.assertIn('set_visible_child_name("overview")', RUST)
+        self.assertIn('set_visible_child_name("processes")', RUST)
+        self.assertIn('page_processes.set_active(true)', RUST)
+        self.assertIn('page_overview.set_active(false)', RUST)
+        self.assertIn('process_page.poll()', RUST)
+        self.assertIn('gtk::SearchEntry::new()', page)
+        self.assertIn('Sort::Cpu', page)
+        self.assertIn('Sort::Memory', page)
+        self.assertIn('Sort::Pid', page)
+        self.assertIn('Sort::Name', page)
+        self.assertIn('fn compare_rows(', page)
+        self.assertIn('fn clicked(self, field: Sort)', page)
+        self.assertIn('fn each_column_sorts_both_directions()', page)
+        self.assertIn('fn missing_metrics_are_last_in_both_directions()', page)
+        self.assertNotIn('sort_controls', page)
+        self.assertIn('VISIBLE_ROWS: usize = 36', page)
+        self.assertIn('ProcessSampler::default()', page)
+        self.assertIn('std::thread::spawn', page)
+        self.assertIn('Arc<AtomicBool>', page)
+        for file in ('/proc', '/proc/stat', 'stat', 'status'):
+            self.assertIn(file, reader)
+        self.assertIn('pid, stat.start_ticks', reader)
+        self.assertIn('fn parse_stat(', reader)
+        self.assertNotIn('std::process::Command', reader)
+        self.assertNotIn('Command::new', page)
+        self.assertNotIn('kill(', page)
+
+    def test_visual_style_uses_shared_palette_without_framed_notebook(self):
+        for selector in ('.kira-system-tabs', 'button.kira-system-tab',
+                         '.kira-process-page', '.kira-process-row',
+                         'entry.kira-process-search', 'button.kira-process-header'):
+            self.assertIn(selector, CSS)
+        self.assertNotIn('@define-color', CSS)
 
 FILE	tests/test_dev_preview.py
 """Mocked preview lifecycle tests. No graphics hardware or Niri required."""
@@ -8970,7 +10997,7 @@ class NativeThemeContractTests(unittest.TestCase):
         self.assertEqual(colors, {k: value for k, (_, value) in expected.items()})
         for key, (frontend_name, value) in expected.items():
             self.assertIn(f"--{frontend_name}: {value};", FRONTEND, key)
-        for css in ("launcher.css", "calendar.css"):
+        for css in ("launcher.css", "calendar.css", "system_panel.css"):
             source = (NATIVE / css).read_text()
             self.assertNotIn("@define-color", source, css)
             self.assertNotRegex(source, r"#[0-9a-fA-F]{8}\b")
@@ -8978,7 +11005,7 @@ class NativeThemeContractTests(unittest.TestCase):
     def test_shared_style_provider_is_loaded_before_component_css(self):
         self.assertIn('include_str!("native-palette.css")', HELPERS)
         self.assertIn('format!("{}\\n{}", include_str!("native-palette.css"), styles)', HELPERS)
-        for component in (LAUNCHER, CALENDAR):
+        for component in (LAUNCHER, CALENDAR, (NATIVE / "system_panel.rs").read_text()):
             self.assertIn("native_ui::install_styles(", component)
             self.assertIn("native_ui::dismiss_overlay(", component)
             self.assertNotIn("gtk::CssProvider::new()", component)
@@ -8986,8 +11013,41 @@ class NativeThemeContractTests(unittest.TestCase):
         self.assertIn("mod native_ui;", SHELL)
 
     def test_nix_keeps_shared_css_in_native_rust_source(self):
-        for asset in ("launcher.css", "calendar.css", "native-palette.css"):
+        for asset in ("launcher.css", "calendar.css", "native-palette.css", "system_panel.css"):
             self.assertIn(f'/crates/kira-shell/src/{asset}', NIX)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_popup_geometry.py
+"""Shared geometry contract for calendar and system popup."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+HELPERS = (ROOT / "crates/kira-shell/src/native_ui.rs").read_text()
+CALENDAR = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+MONITOR = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
+
+
+class PopupGeometryTests(unittest.TestCase):
+    def test_half_margin_and_monitor_relative_height(self):
+        self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", HELPERS)
+        self.assertIn("i64::from(output_height) * 7 / 10", HELPERS)
+        self.assertIn("monitor_at_surface(&surface)", HELPERS)
+        self.assertIn("connect_map(move |window|", HELPERS)
+        self.assertIn("scroll.set_max_content_height(height_limit)", HELPERS)
+        self.assertIn("scroll.set_propagate_natural_height(true)", HELPERS)
+        self.assertIn("window.set_default_size(width, -1)", HELPERS)
+        self.assertNotIn("preferred_height", HELPERS)
+        for source in (CALENDAR, MONITOR):
+            self.assertIn("native_ui::configure_popup", source)
+            self.assertNotIn("408, 600", source)
+            self.assertNotIn("378, 490", source)
+            self.assertIn("native_ui::POPUP_TOP_MARGIN", source)
+            self.assertNotIn("set_margin(Edge::Top, 50)", source)
+            self.assertIn("set_exclusive_zone(0)", source)
 
 
 if __name__ == "__main__":
