@@ -69,10 +69,10 @@ window. On hide it dispatches `kira:calendar:hide`; the Svelte lifecycle
 serially awaits `unmount()`, releasing Calendar DOM, effects, window listeners
 and its one-second clock interval. Stale asynchronous mounts/frames are ignored.
 
-The widget is lazy-instantiated and its code is dynamically imported, but
-**Vite inlines the import into the one offline HTML bundle**. This reduces the
-live component footprint, **not** the entire loaded JS bundle or the base
-WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
+The widget is **lazy-instantiated**; its component code is already present
+in the single offline HTML bundle, but the DOM, effects, timers and component
+instance are created only on show. The live instance is unloaded on hide.
+This does **not** unload the prebundled JS bytes or the base WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
 immediately fall because the JavaScript engine retains allocated pages and
 shared libraries. Launcher/System Monitor remain GTK pending their Svelte
 migration; they are not yet hosted by this lazy overlay.
