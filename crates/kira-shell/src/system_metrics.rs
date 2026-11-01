@@ -63,7 +63,7 @@ fn parse_memory(text: &str, snapshot: &mut Snapshot) {
     snapshot.swap_free_kib = mem_value(text, "SwapFree");
 }
 
-fn cpu_ticks(text: &str) -> Option<(u64, u64)> {
+pub(crate) fn cpu_ticks(text: &str) -> Option<(u64, u64)> {
     let line = text.lines().next()?;
     let mut tokens = line.split_whitespace();
     if tokens.next()? != "cpu" {

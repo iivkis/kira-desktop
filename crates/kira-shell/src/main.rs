@@ -4,6 +4,8 @@ mod calendar;
 mod calendar_model;
 mod launcher;
 mod native_ui;
+mod process_monitor;
+mod process_page;
 mod system_metrics;
 mod system_panel;
 mod ui_assets;

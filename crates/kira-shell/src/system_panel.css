@@ -60,3 +60,86 @@ button.kira-system-copy:focus-visible {
   outline: 2px solid @kira_orange;
   outline-offset: 2px;
 }
+
+/* Native two-tab system monitor: real hierarchy without boxed GTK tabs. */
+.kira-system-tabs {
+  background: @kira_black;
+  border-bottom: 1px solid rgba(229,229,229,0.22);
+}
+button.kira-system-tab {
+  min-height: 39px;
+  padding: 9px 18px 8px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: @kira_alabaster_grey;
+  font-size: 11px;
+  font-weight: 800;
+}
+button.kira-system-tab:hover { background: rgba(20,33,61,0.5); color: @kira_white; }
+button.kira-system-tab.kira-system-tab-active {
+  border-bottom-color: @kira_orange;
+  color: @kira_orange;
+}
+button.kira-system-tab:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: -4px;
+}
+
+/* Processes: compact, sortable numbers; only actual tasks appear. */
+.kira-process-page { padding: 17px 19px 19px; background: @kira_prussian_blue; }
+entry.kira-process-search {
+  min-height: 36px;
+  padding: 4px 11px;
+  background: @kira_black;
+  color: @kira_white;
+  border: 1px solid rgba(229,229,229,0.34);
+  border-radius: 5px;
+  font-size: 12px;
+}
+entry.kira-process-search:focus-within { border-color: @kira_orange; }
+.kira-process-caption, .kira-process-heading {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 750;
+}
+button.kira-process-sort {
+  min-height: 27px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 700;
+}
+button.kira-process-sort:hover { background: rgba(0,0,0,0.35); color: @kira_white; }
+button.kira-process-sort.kira-process-sort-current { color: @kira_orange; }
+button.kira-process-sort:focus-visible {
+  outline: 2px solid @kira_orange;
+  outline-offset: -2px;
+}
+.kira-process-headings {
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(229,229,229,0.25);
+}
+scrolledwindow.kira-process-scroll { background: transparent; }
+.kira-process-row {
+  min-height: 31px;
+  padding: 0 4px;
+  border-bottom: 1px solid rgba(229,229,229,0.08);
+}
+.kira-process-row:nth-child(even) { background: rgba(0,0,0,0.17); }
+.kira-process-row:hover { background: rgba(0,0,0,0.28); }
+.kira-process-name { color: @kira_white; font-size: 11px; font-weight: 700; }
+.kira-process-number {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+  font-weight: 650;
+}
+.kira-process-summary { color: @kira_orange; font-size: 10px; font-weight: 750; }
+.kira-process-hint, .kira-process-empty {
+  color: @kira_alabaster_grey;
+  font-size: 10px;
+}

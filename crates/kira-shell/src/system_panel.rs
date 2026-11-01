@@ -303,6 +303,57 @@ pub fn toggle(
     hero.append(&state);
     card.append(&hero);
 
+    // These are Kira's flat editorial tabs, not a themed GtkNotebook.
+    // Each page owns its behavior and only the active Processes page scans
+    // /proc. Overview remains the original system diagnostics surface.
+    let navigation = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    navigation.add_css_class("kira-system-tabs");
+    let overview_tab = gtk::Button::with_label("01  OVERVIEW");
+    overview_tab.add_css_class("kira-system-tab");
+    overview_tab.add_css_class("kira-system-tab-active");
+    let processes_tab = gtk::Button::with_label("02  PROCESSES");
+    processes_tab.add_css_class("kira-system-tab");
+    navigation.append(&overview_tab);
+    navigation.append(&processes_tab);
+    card.append(&navigation);
+
+    let stack = gtk::Stack::new();
+    stack.set_transition_type(gtk::StackTransitionType::None);
+    let overview = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    stack.add_named(&overview, Some("overview"));
+    let process_page = crate::process_page::ProcessPage::new();
+    stack.add_named(&process_page.root, Some("processes"));
+    card.append(&stack);
+
+    let overview_weak = overview_tab.downgrade();
+    let processes_weak = processes_tab.downgrade();
+    let stack_overview = stack.clone();
+    let page_overview = process_page.clone();
+    overview_tab.connect_clicked(move |_| {
+        stack_overview.set_visible_child_name("overview");
+        page_overview.set_active(false);
+        if let Some(button) = overview_weak.upgrade() {
+            button.add_css_class("kira-system-tab-active");
+        }
+        if let Some(button) = processes_weak.upgrade() {
+            button.remove_css_class("kira-system-tab-active");
+        }
+    });
+    let overview_weak = overview_tab.downgrade();
+    let processes_weak = processes_tab.downgrade();
+    let stack_processes = stack.clone();
+    let page_processes = process_page.clone();
+    processes_tab.connect_clicked(move |_| {
+        stack_processes.set_visible_child_name("processes");
+        page_processes.set_active(true);
+        if let Some(button) = overview_weak.upgrade() {
+            button.remove_css_class("kira-system-tab-active");
+        }
+        if let Some(button) = processes_weak.upgrade() {
+            button.add_css_class("kira-system-tab-active");
+        }
+    });
+
     let services = gtk::Box::new(gtk::Orientation::Vertical, 7);
     services.add_css_class("kira-system-services");
     services.append(&label("CONNECTIONS  /  REAL-TIME", "kira-system-eyebrow"));
@@ -316,7 +367,7 @@ pub fn toggle(
         row.append(value);
         services.append(&row);
     }
-    card.append(&services);
+    overview.append(&services);
 
     let workbench = gtk::Box::new(gtk::Orientation::Vertical, 10);
     workbench.add_css_class("kira-system-workbench");
@@ -328,7 +379,7 @@ pub fn toggle(
     let memory = metric(&workbench, "MEMORY / RAM");
     let swap = metric(&workbench, "SWAP");
     let storage = metric(&workbench, "STORAGE / ROOT");
-    card.append(&workbench);
+    overview.append(&workbench);
 
     let details = gtk::Box::new(gtk::Orientation::Vertical, 8);
     details.add_css_class("kira-system-details");
@@ -361,7 +412,7 @@ pub fn toggle(
     copy.add_css_class("kira-system-copy");
     footer.append(&copy);
     details.append(&footer);
-    card.append(&details);
+    overview.append(&details);
 
     let panel = Rc::new(Panel {
         state,
@@ -405,6 +456,17 @@ pub fn toggle(
             niri_connected.get(),
         );
         copy.set_label("COPY REPORT");
+        gtk::glib::ControlFlow::Continue
+    });
+
+    // Keep process updates on the GTK main loop. Polling stops when the
+    // window is destroyed, releasing the view-model and its scan worker.
+    let weak_window = window.downgrade();
+    gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
+        if weak_window.upgrade().is_none() {
+            return gtk::glib::ControlFlow::Break;
+        }
+        process_page.poll();
         gtk::glib::ControlFlow::Continue
     });
 
