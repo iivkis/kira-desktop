@@ -62,9 +62,9 @@ async function smoke(name, steps, expected) {
     const found = output.match(/data-smoke-result="([^"]+)"/)?.[1] ?? 'no result';
     throw new Error(name + ': expected live Svelte ' + expected + ', found ' + found);
   }
-  const size = Number(output.match(/data-smoke-height="(\\d+)"/)?.[1] ?? 0);
-  const nativeMessage = output.match(/data-smoke-size="size:(\\d+):(\\d+)"/);
-  const resizeCount = Number(output.match(/data-smoke-resizes="(\\d+)"/)?.[1] ?? 0);
+  const size = Number(output.match(/data-smoke-height="(\d+)"/)?.[1] ?? 0);
+  const nativeMessage = output.match(/data-smoke-size="size:(\d+):(\d+)"/);
+  const resizeCount = Number(output.match(/data-smoke-resizes="(\d+)"/)?.[1] ?? 0);
   if (!nativeMessage || size <= 0 || size > 420 || Number(nativeMessage[2]) <= 0 ||
       Number(nativeMessage[2]) > 420 || resizeCount > 12) {
     throw new Error(name + ': popup size bridge/cap invalid (height=' +
