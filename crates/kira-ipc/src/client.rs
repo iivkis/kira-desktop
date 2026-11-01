@@ -50,9 +50,21 @@ pub fn call(socket: &Path, request: &RpcRequest) -> io::Result<RpcResponse> {
 /// Returns on disconnect so the caller can reconnect and mark the UI offline.
 pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
     socket: &Path,
+    on_state: F,
+) -> io::Result<()> {
+    subscribe_workspaces_with_timeout(socket, on_state, crate::SUBSCRIPTION_READ_TIMEOUT)
+}
+
+fn subscribe_workspaces_with_timeout<F: FnMut(crate::WorkspaceState)>(
+    socket: &Path,
     mut on_state: F,
+    read_timeout: Duration,
 ) -> io::Result<()> {
     let mut stream = UnixStream::connect(socket)?;
+    // Core heartbeats keep genuinely idle subscriptions alive. If Core hangs
+    // while keeping its socket open, the timeout returns control to Shell,
+    // whose existing reconnect loop clears the stale workspace snapshot.
+    stream.set_read_timeout(Some(read_timeout))?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
     let request = RpcRequest {
         params: None,
@@ -94,6 +106,9 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
         let state = reply.result.ok_or_else(|| {
             io::Error::new(io::ErrorKind::InvalidData, "Workspace result missing")
         })?;
+        if crate::is_subscription_heartbeat(&state) {
+            continue; // Liveness is not a new workspace snapshot.
+        }
         let state: crate::WorkspaceState = serde_json::from_value(state)?;
         on_state(state);
     }
@@ -104,9 +119,18 @@ pub fn subscribe_workspaces<F: FnMut(crate::WorkspaceState)>(
 /// reconnect. No JS command or filesystem write is exposed.
 pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
     socket: &Path,
+    on_state: F,
+) -> io::Result<()> {
+    subscribe_config_with_timeout(socket, on_state, crate::SUBSCRIPTION_READ_TIMEOUT)
+}
+
+fn subscribe_config_with_timeout<F: FnMut(crate::ConfigState)>(
+    socket: &Path,
     mut on_state: F,
+    read_timeout: Duration,
 ) -> io::Result<()> {
     let mut stream = UnixStream::connect(socket)?;
+    stream.set_read_timeout(Some(read_timeout))?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
     let request = RpcRequest {
         params: None,
@@ -148,6 +172,9 @@ pub fn subscribe_config<F: FnMut(crate::ConfigState)>(
         let value = reply
             .result
             .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Config result missing"))?;
+        if crate::is_subscription_heartbeat(&value) {
+            continue; // Keep the last known good config unchanged.
+        }
         on_state(serde_json::from_value(value)?);
     }
 }
@@ -259,6 +286,152 @@ mod tests {
         server.join().unwrap();
         std::fs::remove_file(path).unwrap();
         std::fs::remove_dir(dir).unwrap();
+    }
+
+    #[test]
+    fn workspace_heartbeats_do_not_emit_duplicate_snapshots() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-heartbeat-ws-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            assert!(request.contains("subscribe_workspaces"));
+            let mut stream = reader.into_inner();
+            for frame in [
+                crate::RpcResponse::success(
+                    0,
+                    serde_json::json!({"connected": false, "workspaces": []}),
+                ),
+                crate::RpcResponse::heartbeat(0),
+                crate::RpcResponse::heartbeat(0),
+                crate::RpcResponse::success(
+                    0,
+                    serde_json::json!({"connected": true, "workspaces": []}),
+                ),
+            ] {
+                serde_json::to_writer(&mut stream, &frame).unwrap();
+                stream.write_all(b"\n").unwrap();
+            }
+        });
+        let mut observed = Vec::new();
+        assert!(subscribe_workspaces(&path, |state| observed.push(state.connected)).is_err());
+        assert_eq!(observed, vec![false, true]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn config_heartbeats_preserve_last_valid_settings() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-heartbeat-config-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            assert!(request.contains("subscribe_config"));
+            let mut stream = reader.into_inner();
+            let state = crate::ConfigState::default();
+            for frame in [
+                crate::RpcResponse::success(0, serde_json::to_value(&state).unwrap()),
+                crate::RpcResponse::heartbeat(0),
+                crate::RpcResponse::heartbeat(0),
+            ] {
+                serde_json::to_writer(&mut stream, &frame).unwrap();
+                stream.write_all(b"\n").unwrap();
+            }
+        });
+        let mut observed = Vec::new();
+        assert!(subscribe_config(&path, |state| observed.push(state)).is_err());
+        assert_eq!(observed, vec![crate::ConfigState::default()]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn silent_but_open_workspace_socket_times_out() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-silent-ws-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            let mut stream = reader.into_inner();
+            let frame = crate::RpcResponse::success(
+                0,
+                serde_json::json!({"connected": true, "workspaces": []}),
+            );
+            serde_json::to_writer(&mut stream, &frame).unwrap();
+            stream.write_all(b"\n").unwrap();
+            thread::sleep(Duration::from_millis(500)); // TCP/Unix connection stays open.
+        });
+        let mut observed = Vec::new();
+        let error = subscribe_workspaces_with_timeout(
+            &path,
+            |state| observed.push(state.connected),
+            Duration::from_millis(150),
+        ).unwrap_err();
+        assert!(matches!(error.kind(), io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut));
+        assert_eq!(observed, vec![true]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn silent_but_open_config_socket_times_out() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-ipc-silent-config-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        let server = thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream);
+            let mut request = String::new();
+            reader.read_line(&mut request).unwrap();
+            let mut stream = reader.into_inner();
+            let frame = crate::RpcResponse::success(
+                0,
+                serde_json::to_value(crate::ConfigState::default()).unwrap(),
+            );
+            serde_json::to_writer(&mut stream, &frame).unwrap();
+            stream.write_all(b"\n").unwrap();
+            thread::sleep(Duration::from_millis(500));
+        });
+        let mut observed = Vec::new();
+        let error = subscribe_config_with_timeout(
+            &path,
+            |state| observed.push(state),
+            Duration::from_millis(150),
+        ).unwrap_err();
+        assert!(matches!(error.kind(), io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut));
+        assert_eq!(observed, vec![crate::ConfigState::default()]);
+        server.join().unwrap();
+        std::fs::remove_dir_all(directory).unwrap();
     }
 
     #[test]
