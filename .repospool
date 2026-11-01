@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4241
+index_bytes=4245
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	f409cb31727073f0dd67aba05cf125d4b7bbb7db
+C	13c9442f59ede4cd5fcf39f2c58366d65ae66c8f
 F	.cargo/config.toml	98	116	3
 F	.github/workflows/ci.yml	4355	121	112
 F	.github/workflows/frontend-nix.yml	1398	235	43
@@ -46,64 +46,64 @@ F	crates/kira-shell/src/renderer_recovery.rs	3634	5770	116
 F	crates/kira-shell/src/system_metrics.rs	16187	5888	461
 F	crates/kira-shell/src/system_panel.rs	8819	6351	248
 F	docs/CONFIG.md	5801	6601	125
-F	docs/DESIGN_SYSTEM.md	16400	6728	300
-F	docs/DEVELOPMENT.md	27700	7030	547
-F	docs/QA_VISUAL.md	12284	7579	149
-F	docs/SPECIFICATION.md	28960	7730	421
-F	docs/UI_ARCHITECTURE.md	6737	8153	106
-F	docs/VISUAL_REVIEW.md	9754	8261	84
-F	flake.nix	3181	8347	91
-F	frontend/index.html	2737	8440	66
-F	frontend/package.json	720	8508	27
-F	frontend/scripts/inline-assets.mjs	4457	8537	103
-F	frontend/scripts/inline-assets.test.mjs	4645	8642	106
-F	frontend/scripts/smoke-overlays.mjs	10812	8750	175
-F	frontend/src/App.svelte	8659	8927	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9129	84
-F	frontend/src/lib/bootstrap.ts	2613	9215	70
-F	frontend/src/lib/calendar-model.test.ts	2097	9287	38
-F	frontend/src/lib/calendar-model.ts	3453	9327	72
-F	frontend/src/lib/components/CalendarWidget.svelte	7716	9401	177
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	9580	176
-F	frontend/src/lib/components/SystemCharts.svelte	6517	9758	166
-F	frontend/src/lib/components/SystemHealth.svelte	1684	9926	43
-F	frontend/src/lib/components/SystemWidget.svelte	12867	9971	223
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10196	61
-F	frontend/src/lib/launcher-model.test.ts	1370	10259	29
-F	frontend/src/lib/launcher-model.ts	778	10290	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	10310	89
-F	frontend/src/lib/lazy-widget.ts	1984	10401	63
-F	frontend/src/lib/motion.ts	1596	10466	49
-F	frontend/src/lib/overlay-size.ts	1090	10517	29
-F	frontend/src/lib/sdk/core.test.ts	20689	10548	411
-F	frontend/src/lib/sdk/core.ts	16727	10961	449
-F	frontend/src/lib/system-charts.test.ts	2137	11412	54
-F	frontend/src/lib/system-charts.ts	2101	11468	65
-F	frontend/src/lib/system-health.test.ts	2385	11535	42
-F	frontend/src/lib/system-health.ts	2831	11579	60
-F	frontend/src/lib/system-model.test.ts	3518	11641	65
-F	frontend/src/lib/system-model.ts	3830	11708	88
-F	frontend/src/lib/themes/kira-default.css	1687	11798	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	11852	101
-F	frontend/src/lib/themes/kira-default.ts	777	11955	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	11979	79
-F	frontend/src/lib/time.test.ts	263	12060	8
-F	frontend/src/lib/time.ts	320	12070	9
-F	frontend/src/main.ts	5907	12081	127
-F	frontend/src/style.css	2993	12210	91
-F	frontend/tsconfig.json	403	12303	16
-F	frontend/vite.config.ts	224	12321	8
-F	nix/package.nix	3132	12331	117
-F	scripts/dev_preview.py	18147	12450	403	x
-F	scripts/qa_visual.py	12052	12855	299
-F	tests/test_calendar_design.py	6835	13156	121
-F	tests/test_detailed_health.py	5195	13279	101
-F	tests/test_dev_preview.py	9339	13382	219
-F	tests/test_launcher_design.py	9956	13603	182
-F	tests/test_native_theme.py	1567	13787	36
-F	tests/test_popup_geometry.py	6956	13825	118
-F	tests/test_qa_visual.py	10549	13945	217
-F	tests/test_ui_bootstrap_contract.py	1103	14164	29
+F	docs/DESIGN_SYSTEM.md	17788	6728	322
+F	docs/DEVELOPMENT.md	27700	7052	547
+F	docs/QA_VISUAL.md	12284	7601	149
+F	docs/SPECIFICATION.md	28960	7752	421
+F	docs/UI_ARCHITECTURE.md	6737	8175	106
+F	docs/VISUAL_REVIEW.md	9754	8283	84
+F	flake.nix	3181	8369	91
+F	frontend/index.html	2737	8462	66
+F	frontend/package.json	720	8530	27
+F	frontend/scripts/inline-assets.mjs	4457	8559	103
+F	frontend/scripts/inline-assets.test.mjs	4645	8664	106
+F	frontend/scripts/smoke-overlays.mjs	12953	8772	209
+F	frontend/src/App.svelte	8659	8983	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9185	84
+F	frontend/src/lib/bootstrap.ts	2613	9271	70
+F	frontend/src/lib/calendar-model.test.ts	2097	9343	38
+F	frontend/src/lib/calendar-model.ts	3453	9383	72
+F	frontend/src/lib/components/CalendarWidget.svelte	7716	9457	177
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	9636	176
+F	frontend/src/lib/components/SystemCharts.svelte	8147	9814	188
+F	frontend/src/lib/components/SystemHealth.svelte	1684	10004	43
+F	frontend/src/lib/components/SystemWidget.svelte	13245	10049	245
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	10296	61
+F	frontend/src/lib/launcher-model.test.ts	1370	10359	29
+F	frontend/src/lib/launcher-model.ts	778	10390	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	10410	89
+F	frontend/src/lib/lazy-widget.ts	1984	10501	63
+F	frontend/src/lib/motion.ts	1596	10566	49
+F	frontend/src/lib/overlay-size.ts	1090	10617	29
+F	frontend/src/lib/sdk/core.test.ts	20689	10648	411
+F	frontend/src/lib/sdk/core.ts	16727	11061	449
+F	frontend/src/lib/system-charts.test.ts	2869	11512	67
+F	frontend/src/lib/system-charts.ts	3102	11581	89
+F	frontend/src/lib/system-health.test.ts	2385	11672	42
+F	frontend/src/lib/system-health.ts	2831	11716	60
+F	frontend/src/lib/system-model.test.ts	3900	11778	73
+F	frontend/src/lib/system-model.ts	4434	11853	102
+F	frontend/src/lib/themes/kira-default.css	1687	11957	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	12011	101
+F	frontend/src/lib/themes/kira-default.ts	777	12114	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	12138	79
+F	frontend/src/lib/time.test.ts	263	12219	8
+F	frontend/src/lib/time.ts	320	12229	9
+F	frontend/src/main.ts	5907	12240	127
+F	frontend/src/style.css	3447	12369	107
+F	frontend/tsconfig.json	403	12478	16
+F	frontend/vite.config.ts	224	12496	8
+F	nix/package.nix	3132	12506	117
+F	scripts/dev_preview.py	18147	12625	403	x
+F	scripts/qa_visual.py	12052	13030	299
+F	tests/test_calendar_design.py	6835	13331	121
+F	tests/test_detailed_health.py	5195	13454	101
+F	tests/test_dev_preview.py	9339	13557	219
+F	tests/test_launcher_design.py	9956	13778	182
+F	tests/test_native_theme.py	1567	13962	36
+F	tests/test_popup_geometry.py	6956	14000	118
+F	tests/test_qa_visual.py	10549	14120	217
+F	tests/test_ui_bootstrap_contract.py	1103	14339	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -6868,6 +6868,28 @@ native top bar. The system monitor's Processes view retains searchable,
 sortable RSS and PSS process data while the Overview chart uses only the
 existing read-only native telemetry feed.
 
+### System Monitor Overview visual acceptance
+
+The Overview is an **editorial instrument panel**, not a stack of identical
+diagnostic bars. The visual hierarchy is intentional:
+1. **Primary:** two large ECharts SVG dials for actual CPU and RAM usage, each
+   with accessible HTML numbers and accurate unknown state.
+2. **Secondary:** activity history in **separate, clearly labeled CPU and RAM
+   lanes**. Low CPU loads must remain visible using a bounded, adaptive
+   percentage axis; each lane's axis displays its real endpoints, and GPU has
+   its own lane only while a real utilization sensor is available. History is
+   30 measured samples maximum, never fabricated.
+3. **Tertiary:** compact Swap and Root Storage figures, then a concise hardware
+   / thermal row and OS metadata, with no empty card for unavailable GPU data.
+   Nonzero fractional swap use is not rounded down to a misleading 0%.
+4. **Scrolling:** GTK/WebKit scrollbar chrome is hidden on the monitor but
+   mouse, touchpad and keyboard scrolling remain operable. Content must not
+   be cropped to conceal overflow.
+5. **Motion:** ECharts animates only actual sample changes. GSAP marks tab
+   entrances and readout updates, with reduced-motion support and lifecycle
+   disposal. Visual tests must check the **real packaged overlay** at a
+   narrow width in isolated Niri, not infer beauty from passing unit tests.
+
 ### Popup geometry
 
 Calendar and System Monitor share a **25 logical pixel** top margin,
@@ -8766,6 +8788,18 @@ const testIcon = 'data:image/svg+xml;base64,' + Buffer.from(
 ).toString('base64');
 
 function scriptFor(steps) {
+  const telemetry = JSON.stringify({
+    core: true, niri: true,
+    metrics: {
+      cpu_percent: 5, cpu_temperature_c: 32.4,
+      gpus: [{ label: 'GPU / NVIDIA (card1)', utilization_percent: null, temperature_c: null }],
+      memory_total_kib: 15_500_000, memory_available_kib: 9_400_000,
+      swap_total_kib: 7_700_000, swap_free_kib: 7_679_000,
+      root_total_kib: 95_600_000, root_available_kib: 57_400_000,
+      uptime_seconds: 132000, load: [0.2, 0.3, 0.15],
+      battery_percent: null, battery_charging: null,
+    },
+  });
   return '<script>' +
     'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
       'if (String(message).startsWith("size:")) {' +
@@ -8790,6 +8824,8 @@ function scriptFor(steps) {
             : kind === 'filter'
               ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : kind === 'metrics'
+                ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
                 kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
@@ -8813,6 +8849,10 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
+      'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
+      'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
+      'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
+      'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
       'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
       'document.documentElement.setAttribute("data-smoke-editable-selectable", !editable || getComputedStyle(editable).userSelect === "text");' +
@@ -8854,6 +8894,18 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       !output.includes('data-smoke-editable-selectable="true"')) {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
   }
+  if (heightMode === 'system') {
+    const charts = Number(output.match(/data-smoke-system-charts="(\d+)"/)?.[1] ?? 0);
+    if (charts < 2 || !output.includes('data-smoke-system-swap="true"') ||
+        !output.includes('data-smoke-system-unknown="true"') ||
+        !output.includes('data-smoke-system-no-scrollbar="true"')) {
+      const diagnostic = output.match(/data-smoke-system-[a-z-]+="[^"]*"/g) ?? [];
+      const svgs = (output.match(/<svg\b/g) ?? []).length;
+      const diagnostics = output.match(/data-smoke-result="[^"]*"/g) ?? [];
+      throw new Error(name + ': ECharts SVG=' + charts + ', DOM SVG=' + svgs +
+        ', flags=' + diagnostic.join(' / ') + ', roots=' + diagnostics.join(','));
+    }
+  }
   if (heightMode === 'scroll') {
     if (size !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
@@ -8880,6 +8932,10 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
+  await smoke('system-live-telemetry', [
+    { delay: 25, kind: 'system', generation: 1 },
+    { delay: 170, kind: 'metrics' },
+  ], 'Kira System Monitor', 'system');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
   await smoke('launcher-square-with-themed-icons', [
     { delay: 25, kind: 'launcher', generation: 1 },
@@ -9757,169 +9813,191 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 FILE	frontend/src/lib/components/SystemCharts.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
-  // Tree-shaken Apache ECharts. SVG is better suited than a Canvas/WebGL
-  // context to the compact, self-contained WebKitGTK overlay.
   import * as echarts from 'echarts/core';
-  import { BarChart, LineChart } from 'echarts/charts';
+  import { GaugeChart, LineChart } from 'echarts/charts';
   import { GridComponent } from 'echarts/components';
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
   import type { SystemMetrics } from '../sdk/core';
+  import { percentUsed } from '../system-model';
   import {
-    appendTelemetry, chartMeters, telemetrySummary,
-    type Meter, type TelemetryPoint,
+    activityAxis, appendTelemetry, gpuPeak, telemetrySummary,
+    type TelemetryPoint,
   } from '../system-charts';
 
-  echarts.use([BarChart, LineChart, GridComponent, SVGRenderer]);
+  echarts.use([GaugeChart, LineChart, GridComponent, SVGRenderer]);
 
-  let { metrics, meters }: { metrics: SystemMetrics | null; meters: Meter[] } = $props();
+  let { metrics }: { metrics: SystemMetrics | null } = $props();
 
-  let barsNode: HTMLDivElement;
+  let gaugeNode: HTMLDivElement;
   let trendNode: HTMLDivElement;
-  let bars: EChartsType | null = null;
+  let gauges: EChartsType | null = null;
   let trend: EChartsType | null = null;
-  let history: TelemetryPoint[] = [];
   let reduced = false;
+  let history: TelemetryPoint[] = [];
+  let lastSample: SystemMetrics | null = null;
 
-  // Only the five approved brand colors. Both graphs use the same palette.
   const accent = '#fca311';
   const white = '#ffffff';
   const muted = '#e5e5e5';
   const prussian = '#14213d';
 
-  const allMeters = $derived(chartMeters(meters, metrics));
-  const chartHeight = $derived(12 + allMeters.length * 28);
+  const ram = $derived(metrics
+    ? percentUsed(metrics.memory_total_kib, metrics.memory_available_kib) : null);
+  const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
+  const trendHeight = $derived(gpuAvailable ? 296 : 202);
+  const dialLabel = (value: number | null) => value === null ? '—' : value + '%';
 
-  function render(): void {
-    const rows = allMeters;
-    bars?.setOption({
-      animation: !reduced,
-      animationDuration: reduced ? 0 : 500,
-      animationDurationUpdate: reduced ? 0 : 420,
-      animationEasingUpdate: 'cubicOut',
-      grid: { left: 144, right: 34, top: 5, bottom: 5 },
-      xAxis: {
-        type: 'value', min: 0, max: 100,
-        axisLabel: { show: false }, axisLine: { show: false },
-        splitLine: { show: false }, axisTick: { show: false },
-      },
-      yAxis: {
-        type: 'category', inverse: true,
-        data: rows.map(row => row.title),
-        axisLabel: {
-          color: muted, fontSize: 10, width: 130, overflow: 'truncate',
-          formatter: (label: string) => label.length > 22 ? label.slice(0, 20) + '…' : label,
-        },
-        axisLine: { show: false }, axisTick: { show: false },
-      },
-      series: [{
-        type: 'bar',
-        data: rows.map(row => row.percent),
-        barWidth: 8,
-        showBackground: true,
-        backgroundStyle: { color: prussian, borderRadius: 3 },
-        itemStyle: { color: accent, borderRadius: 3 },
-        label: {
-          show: true, position: 'right', color: white, fontSize: 10,
-          formatter: (params: { value: unknown }) =>
-            typeof params.value === 'number' ? params.value + '%' : '',
-        },
-        emphasis: { disabled: true },
-        silent: true,
-      }],
-    }, { notMerge: true, lazyUpdate: false });
-
-    const line = (name: string, color: string, field: 'cpu' | 'ram' | 'gpu') => ({
-      name, type: 'line' as const, smooth: 0.32, silent: true,
-      showSymbol: history.length < 3, symbol: 'circle', symbolSize: 5,
-      connectNulls: false,
-      data: history.map(point => point[field]),
-      lineStyle: { color, width: 2 },
-      itemStyle: { color },
-      areaStyle: { color, opacity: field === 'cpu' ? 0.13 : 0.045 },
-      animationDurationUpdate: reduced ? 0 : 460,
+  function draw(): void {
+    const dial = (name: string, value: number | null, center: string, color: string) => ({
+      name, type: 'gauge' as const, center: [center, '50%'],
+      radius: '73%', min: 0, max: 100, startAngle: 90, endAngle: -270,
+      clockwise: true, silent: true, animation: !reduced,
+      progress: { show: value !== null, width: 8, roundCap: true, itemStyle: { color } },
+      axisLine: { roundCap: true, lineStyle: { width: 8, color: [[1, prussian]] } },
+      pointer: { show: false }, anchor: { show: false },
+      axisTick: { show: false }, splitLine: { show: false },
+      axisLabel: { show: false }, title: { show: false }, detail: { show: false },
+      data: value === null ? [] : [{ value }],
     });
+    gauges?.setOption({
+      animation: !reduced,
+      animationDuration: reduced ? 0 : 700,
+      animationDurationUpdate: reduced ? 0 : 530,
+      animationEasingUpdate: 'cubicOut',
+      series: [
+        dial('CPU', metrics?.cpu_percent ?? null, '25%', accent),
+        dial('RAM', ram, '75%', white),
+      ],
+    }, { notMerge: true });
+
+    const panels: { field: 'cpu' | 'ram' | 'gpu'; name: string; color: string }[] = [
+      { field: 'cpu', name: 'CPU ACTIVITY', color: accent },
+      { field: 'ram', name: 'MEMORY ACTIVITY', color: white },
+    ];
+    if (gpuAvailable) panels.push({ field: 'gpu', name: 'GPU ACTIVITY', color: muted });
+
     trend?.setOption({
       animation: !reduced,
-      animationDuration: reduced ? 0 : 480,
-      animationDurationUpdate: reduced ? 0 : 460,
+      animationDuration: reduced ? 0 : 460,
+      animationDurationUpdate: reduced ? 0 : 420,
       animationEasingUpdate: 'cubicOut',
-      grid: { left: 25, right: 9, top: 12, bottom: 10 },
-      xAxis: {
-        type: 'category', boundaryGap: false,
+      tooltip: { show: false },
+      grid: panels.map((_, i) => ({
+        left: 34, right: 8, top: i * 96 + 28, height: 56,
+      })),
+      xAxis: panels.map((_, i) => ({
+        type: 'category' as const, gridIndex: i, boundaryGap: false,
         data: history.map(point => String(point.time)),
         axisLine: { show: false }, axisTick: { show: false },
-        axisLabel: { show: false },
-        splitLine: { show: false },
-      },
-      yAxis: {
-        type: 'value', min: 0, max: 100, interval: 50,
-        axisLine: { show: false }, axisTick: { show: false },
-        axisLabel: { color: muted, fontSize: 9, formatter: '{value}' },
-        splitLine: { lineStyle: { color: prussian, width: 1 } },
-      },
-      series: [
-        line('CPU', accent, 'cpu'),
-        line('RAM', white, 'ram'),
-        line('GPU PEAK', muted, 'gpu'),
-      ],
-    }, { notMerge: true, lazyUpdate: false });
+        axisLabel: { show: false }, splitLine: { show: false },
+      })),
+      yAxis: panels.map((panel, i) => {
+        const axis = activityAxis(history, panel.field);
+        return {
+          type: 'value' as const, gridIndex: i,
+          min: axis.min, max: axis.max, splitNumber: 2,
+          axisLine: { show: false }, axisTick: { show: false },
+          axisLabel: {
+            color: muted, fontSize: 9, margin: 7,
+            formatter: (v: number) => v === axis.min || v === axis.max ? v + '%' : '',
+          },
+          splitLine: { lineStyle: { color: prussian, width: 1 } },
+        };
+      }),
+      series: panels.map((panel, i) => ({
+        name: panel.name, type: 'line' as const,
+        xAxisIndex: i, yAxisIndex: i,
+        smooth: 0.27, silent: true,
+        showSymbol: history.length < 3, symbolSize: 5,
+        connectNulls: false,
+        data: history.map(point => point[panel.field]),
+        lineStyle: { color: panel.color, width: 2.5 },
+        itemStyle: { color: panel.color },
+        areaStyle: { color: panel.color, opacity: panel.field === 'cpu' ? 0.18 : 0.09 },
+      })),
+    }, { notMerge: true });
   }
 
-  // The parent receives native samples every two seconds. No polling or
-  // fabricated history is introduced by the chart component.
+  // One history point per *native* sample, not per chart resize or DOM update.
   $effect(() => {
-    const current = metrics;
-    const currentMeters = meters;
-    void currentMeters;
-    if (current) history = appendTelemetry(history, current, Date.now());
-    render();
+    const sample = metrics;
+    if (sample && sample !== lastSample) {
+      history = appendTelemetry(history, sample, Date.now());
+      lastSample = sample;
+    }
+    draw();
   });
 
   onMount(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced = motion.matches;
-    bars = echarts.init(barsNode, undefined, { renderer: 'svg' });
+    gauges = echarts.init(gaugeNode, undefined, { renderer: 'svg' });
     trend = echarts.init(trendNode, undefined, { renderer: 'svg' });
-    const resize = () => { bars?.resize(); trend?.resize(); };
-    const resized = new ResizeObserver(resize);
-    resized.observe(barsNode);
-    resized.observe(trendNode);
-    const motionChanged = () => { reduced = motion.matches; render(); };
-    motion.addEventListener('change', motionChanged);
-    render();
+    const resize = () => { gauges?.resize(); trend?.resize(); };
+    const observer = new ResizeObserver(resize);
+    observer.observe(gaugeNode);
+    observer.observe(trendNode);
+    const onMotionChange = () => { reduced = motion.matches; draw(); };
+    motion.addEventListener('change', onMotionChange);
+    draw();
     return () => {
-      resized.disconnect();
-      motion.removeEventListener('change', motionChanged);
-      bars?.dispose();
+      observer.disconnect();
+      motion.removeEventListener('change', onMotionChange);
+      gauges?.dispose();
       trend?.dispose();
-      bars = null;
+      gauges = null;
       trend = null;
       history = [];
+      lastSample = null;
     };
   });
 </script>
 
-<div class="space-y-3">
-  <div class="flex items-center justify-between gap-2">
-    <h3 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">UTILIZATION / LIVE</h3>
-    <span class="text-[9px] font-semibold text-kira-muted">0–100%</span>
-  </div>
-  <div bind:this={barsNode} class="w-full" style:height={chartHeight + 'px'}
-    role="img" aria-label={'Live utilization bars: ' +
-      allMeters.map(m => m.title + ' ' + m.text).join(', ')}></div>
-  <div class="flex items-center justify-between gap-2">
-    <h3 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">ACTIVITY / LAST 60s</h3>
-    <span class="text-[9px] text-kira-muted">2s SAMPLES</span>
-  </div>
-  <div class="flex gap-4 text-[9px] font-bold text-kira-muted" aria-hidden="true">
-    <span><span class="text-kira-accent">●</span> CPU</span>
-    <span><span class="text-kira-text">●</span> RAM</span>
-    <span><span class="text-kira-muted">●</span> GPU PEAK</span>
-  </div>
-  <div bind:this={trendNode} class="h-[130px] w-full"
-    role="img" aria-label={'Up to thirty actual samples of CPU, RAM and peak GPU utilization. ' +
-      telemetrySummary(metrics)}></div>
+<div class="space-y-4">
+  <section aria-label="CPU and memory utilization">
+    <div class="flex items-center justify-between">
+      <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">SYSTEM / PULSE</h2>
+      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 2S</span>
+    </div>
+    <div class="relative mt-1 h-[164px]">
+      <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute inset-0 grid grid-cols-2">
+        <div class="flex flex-col items-center justify-center">
+          <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums text-kira-accent"
+            aria-label={'CPU utilization ' + (metrics?.cpu_percent === null || !metrics ? 'unavailable' : metrics.cpu_percent + ' percent')}>
+            {dialLabel(metrics?.cpu_percent ?? null)}
+          </div>
+          <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
+        </div>
+        <div class="flex flex-col items-center justify-center">
+          <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums"
+            aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram + ' percent')}>
+            {dialLabel(ram)}
+          </div>
+          <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section aria-label="Live resource activity">
+    <div class="flex items-center justify-between">
+      <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">ACTIVITY / LIVE</h2>
+      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · ADAPTIVE SCALE</span>
+    </div>
+    <div class="relative mt-3">
+      <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
+        role="img" aria-label={'Measured history with individually labelled adaptive percentage scales. ' +
+          telemetrySummary(metrics)}></div>
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
+        <div class="absolute left-9 top-[96px] text-[10px] font-bold tracking-wide text-kira-text">RAM</div>
+        {#if gpuAvailable}
+          <div class="absolute left-9 top-[192px] text-[10px] font-bold tracking-wide text-kira-muted">GPU</div>
+        {/if}
+      </div>
+    </div>
+  </section>
 </div>
 
 FILE	frontend/src/lib/components/SystemHealth.svelte
@@ -9977,8 +10055,8 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
     type SystemOverlayData, type SystemProcesses,
   } from '../sdk/core';
   import {
-    defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel,
-    sortedProcesses, systemHeadline, temperatureLabel, uptimeLabel, type SortField,
+    defaultSort, fractionLabel, nextSort, processMemoryLabel,
+    sortedProcesses, systemHeadline, temperatureLabel, uptimeLabel, usageLabel, type SortField,
   } from '../system-model';
 
   let { onClose, onCopy, onTab }: {
@@ -9997,20 +10075,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   const health = $derived(systemHeadline(metrics, status?.core ?? false, status?.niri ?? false));
   const matching = $derived(sortedProcesses(processes?.rows ?? [], query, sort));
   const visible = $derived(matching.slice(0, 36));
-  const meters = $derived([
-    { title: 'CPU / ALL CORES', percent: metrics?.cpu_percent ?? null,
-      text: metrics?.cpu_percent === null || !metrics ? 'MEASURING' : metrics.cpu_percent + '%' },
-    { title: 'MEMORY / RAM',
-      percent: percentUsed(metrics?.memory_total_kib ?? null, metrics?.memory_available_kib ?? null),
-      text: fractionLabel(metrics?.memory_total_kib ?? null, metrics?.memory_available_kib ?? null) },
-    { title: 'SWAP',
-      percent: percentUsed(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null),
-      text: metrics?.swap_total_kib === 0 ? 'NOT CONFIGURED'
-        : fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null) },
-    { title: 'STORAGE / ROOT',
-      percent: percentUsed(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null),
-      text: fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null) },
-  ]);
+
 
   onMount(() => {
     const stopMetrics = onSystemOverlayData(data => {
@@ -10047,7 +10112,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
-  class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
+  class="kira-monitor-scroll flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header class="shrink-0 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div>
@@ -10077,77 +10142,112 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 
   {#if active === 'overview'}
     <div class="flex min-h-0 flex-1 flex-col" use:revealStagger>
-      <section data-kira-enter class="space-y-2 bg-kira-bg px-5 py-4" aria-label="Connections">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">CONNECTIONS / REAL-TIME</h2>
-        <div class="flex justify-between gap-3 text-xs"><span class="text-kira-muted">KIRA CORE</span>
-          <span class="font-bold">{status?.core ? 'CONNECTED' : 'OFFLINE'}</span></div>
-        <div class="flex justify-between gap-3 text-xs"><span class="text-kira-muted">NIRI IPC</span>
-          <span class="font-bold">{status?.niri ? 'CONNECTED' : 'DISCONNECTED'}</span></div>
+      <section data-kira-enter class="bg-kira-surface px-5 pb-4 pt-3" aria-label="Live system telemetry">
+        <div class="mb-4 flex items-center gap-4 border-b border-kira-muted/15 pb-3">
+          <div class="flex items-center gap-1.5">
+            <span class="h-1.5 w-1.5 shrink-0 rounded-full"
+              class:bg-kira-accent={status?.core}
+              class:bg-kira-muted={!status?.core}></span>
+            <span class="text-[9px] font-bold tracking-wider">CORE</span>
+            <span class="text-[9px] text-kira-muted">{status?.core ? 'ONLINE' : 'OFFLINE'}</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="h-1.5 w-1.5 shrink-0 rounded-full"
+              class:bg-kira-accent={status?.niri}
+              class:bg-kira-muted={!status?.niri}></span>
+            <span class="text-[9px] font-bold tracking-wider">NIRI</span>
+            <span class="text-[9px] text-kira-muted">{status?.niri ? 'ONLINE' : 'OFFLINE'}</span>
+          </div>
+        </div>
+        <SystemCharts {metrics} />
       </section>
 
-      <section data-kira-enter class="space-y-2 bg-kira-surface px-5 py-4" aria-label="Resource usage">
-        <SystemCharts {metrics} {meters} />
-        <!-- DOM text remains accessible even if ECharts SVG cannot render. -->
-        <div class="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-kira-muted/20 pt-3">
-          {#each meters as meter (meter.title)}
-            <div class="min-w-0">
-              <div class="truncate text-[9px] font-semibold text-kira-muted">{meter.title}</div>
-              <div class="truncate text-[11px] font-bold tabular-nums" use:pulseReading={meter.text}>{meter.text}</div>
-            </div>
-          {/each}
+      <section data-kira-enter class="grid grid-cols-2 gap-px bg-kira-bg"
+        aria-label="Secondary resource metrics">
+        <div class="min-w-0 bg-kira-surface-soft px-5 py-3">
+          <div class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">SWAP / USED</div>
+          <div class="mt-1 text-[23px] font-extrabold leading-tight tracking-tight tabular-nums">
+            {usageLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
+          </div>
+          <div class="mt-1 truncate text-[10px] text-kira-muted"
+            title={fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}>
+            {fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
+          </div>
+        </div>
+        <div class="min-w-0 bg-kira-surface-soft px-5 py-3">
+          <div class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">STORAGE / ROOT</div>
+          <div class="mt-1 text-[23px] font-extrabold leading-tight tracking-tight tabular-nums">
+            {usageLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
+          </div>
+          <div class="mt-1 truncate text-[10px] text-kira-muted"
+            title={fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}>
+            {fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
+          </div>
         </div>
       </section>
 
-      <section data-kira-enter class="space-y-3 bg-kira-bg px-5 py-4" aria-label="GPU telemetry">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">GRAPHICS / GPU</h2>
+      <section data-kira-enter class="space-y-2 bg-kira-bg px-5 py-3"
+        aria-label="Hardware temperatures and graphics">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="text-[10px] font-bold tracking-[0.13em] text-kira-accent">HARDWARE / THERMALS</h2>
+          <div class="flex items-baseline gap-2">
+            <span class="text-[9px] font-semibold tracking-wider text-kira-muted">CPU</span>
+            <span class="text-[14px] font-extrabold tabular-nums"
+              use:pulseReading={temperatureLabel(metrics?.cpu_temperature_c ?? null)}>
+              {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
+            </span>
+          </div>
+        </div>
         {#each metrics?.gpus ?? [] as gpu (gpu.label)}
-          <div class="space-y-2 border-l-2 border-kira-accent bg-kira-surface-soft px-3 py-3">
-            <div class="flex items-center justify-between gap-2 text-[11px]">
-              <span class="min-w-0 truncate font-semibold text-kira-muted" title={gpu.label}>{gpu.label}</span>
-              <span class="shrink-0 text-right font-bold tabular-nums"
-                use:pulseReading={gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}>
-                {gpu.utilization_percent === null ? 'UNAVAILABLE' : gpu.utilization_percent + '%'}
+          <div class="flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-2 text-[11px]">
+            <span class="min-w-0 flex-1 truncate font-semibold" title={gpu.label}>{gpu.label}</span>
+            <div class="flex shrink-0 items-center gap-3">
+              <span class="tabular-nums text-kira-muted" title="GPU utilization">
+                {gpu.utilization_percent === null ? 'LOAD N/A' : gpu.utilization_percent + '%'}
               </span>
-            </div>
-            <!-- GPU utilization is charted in Apache ECharts above. -->
-            <div class="flex justify-between gap-2 text-[11px]">
-              <span class="text-kira-muted">TEMPERATURE</span>
-              <span class="font-bold tabular-nums"
-                use:pulseReading={temperatureLabel(gpu.temperature_c)}>{temperatureLabel(gpu.temperature_c)}</span>
+              <span class="font-bold tabular-nums" title="GPU temperature"
+                use:pulseReading={temperatureLabel(gpu.temperature_c)}>
+                {gpu.temperature_c === null ? 'TEMP N/A' : temperatureLabel(gpu.temperature_c)}
+              </span>
             </div>
           </div>
         {:else}
-          <p class="text-[11px] text-kira-muted">NO GPU DATA / DEVICE NOT DETECTED</p>
+          <p class="text-[10px] text-kira-muted">NO GPU DETECTED</p>
         {/each}
       </section>
 
-      <section data-kira-enter class="space-y-2 bg-kira-surface px-5 py-4" aria-label="CPU temperature">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">THERMALS / CPU</h2>
-        <div class="flex justify-between gap-3 text-[11px]">
-          <span class="text-kira-muted">CPU PACKAGE</span>
-          <span class="font-bold tabular-nums"
-            use:pulseReading={temperatureLabel(metrics?.cpu_temperature_c ?? null)}>
-            {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
-          </span>
+      <section data-kira-enter class="bg-kira-surface-soft px-5 py-3" aria-label="System details">
+        <div class="grid grid-cols-2 gap-x-5 gap-y-3">
+          <div class="min-w-0">
+            <div class="text-[9px] font-bold tracking-wider text-kira-muted">UPTIME</div>
+            <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
+              {uptimeLabel(metrics?.uptime_seconds ?? null)}
+            </div>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[9px] font-bold tracking-wider text-kira-muted">LOAD / 1 5 15</div>
+            <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
+              {metrics?.load?.map(n => n.toFixed(2)).join(' / ') ?? 'UNAVAILABLE'}
+            </div>
+          </div>
+          <div class="col-span-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
+            <span class="text-[9px] font-bold tracking-wider text-kira-muted">POWER</span>
+            <span class="text-right text-[10px] font-bold">
+              {metrics?.battery_percent == null ? 'NOT DETECTED' :
+                metrics.battery_percent + '%' + (metrics.battery_charging === true ? ' / CHARGING' :
+                  metrics.battery_charging === false ? ' / DISCHARGING' : '')}
+            </span>
+          </div>
         </div>
       </section>
-
-      <section data-kira-enter class="space-y-3 bg-kira-bg px-5 py-4" aria-label="Operating system details">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">OPERATING SYSTEM / CONTEXT</h2>
-        <div class="flex justify-between gap-3 text-[11px]"><span class="text-kira-muted">UPTIME</span>
-          <span class="font-bold tabular-nums">{uptimeLabel(metrics?.uptime_seconds ?? null)}</span></div>
-        <div class="flex justify-between gap-3 text-[11px]"><span class="text-kira-muted">LOAD / 1 5 15</span>
-          <span class="font-bold tabular-nums">{metrics?.load?.map(n => n.toFixed(2)).join(' / ') ?? 'UNAVAILABLE'}</span></div>
-        <div class="flex justify-between gap-3 text-[11px]"><span class="text-kira-muted">POWER</span>
-          <span class="text-right font-bold">{metrics?.battery_percent == null ? 'NOT DETECTED' :
-            metrics.battery_percent + '%' + (metrics.battery_charging === true ? ' / CHARGING' :
-              metrics.battery_charging === false ? ' / DISCHARGING' : '')}</span></div>
-        <div class="flex items-center justify-between gap-2 border-t border-kira-muted/20 pt-3">
-          <span class="text-[10px] font-semibold text-kira-muted">LIVE / {refreshed || 'WAITING'}</span>
-          <button type="button" onclick={onCopy}
-            class="px-1 py-2 text-[11px] font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">COPY REPORT</button>
-        </div>
-      </section>
+      <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-2.5">
+        <span class="text-[9px] font-semibold tracking-wider text-kira-muted">
+          LIVE / {refreshed || 'WAITING FOR DATA'}
+        </span>
+        <button type="button" onclick={onCopy}
+          class="px-1 py-2 text-[10px] font-bold tracking-wide text-kira-accent
+            focus-visible:outline-2 focus-visible:outline-kira-accent">COPY REPORT</button>
+      </footer>
     </div>
   {:else}
     <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
@@ -10166,7 +10266,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           </button>
         {/each}
       </div>
-      <div data-kira-enter class="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
+      <div data-kira-enter class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="polite">
         {#each visible as process (process.pid)}
           <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
             title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
@@ -11412,7 +11512,7 @@ FILE	frontend/src/lib/system-charts.test.ts
 import { describe, expect, it } from 'vitest';
 import type { SystemMetrics } from './sdk/core';
 import {
-  appendTelemetry, chartMeters, gpuPeak, MAX_TELEMETRY_POINTS, telemetrySummary,
+  activityAxis, appendTelemetry, chartMeters, gpuPeak, MAX_TELEMETRY_POINTS, telemetrySummary,
 } from './system-charts';
 
 const metrics: SystemMetrics = {
@@ -11452,6 +11552,19 @@ describe('System Monitor ECharts telemetry model', () => {
       { time: 1, cpu: null, ram: null, gpu: null },
     ]);
     expect(telemetrySummary(absent)).toContain('GPU peak unavailable');
+  });
+
+  it('keeps low CPU load visible while retaining an honest labeled zero origin', () => {
+    const low = [2, 4, 5].map((cpu, time) => ({ time, cpu, ram: 39, gpu: null }));
+    expect(activityAxis(low, 'cpu')).toEqual({ min: 0, max: 15 });
+    expect(activityAxis(low, 'ram')).toEqual({ min: 35, max: 45 });
+    expect(activityAxis(low, 'gpu')).toEqual({ min: 0, max: 100 });
+    expect(activityAxis([{ time: 0, cpu: 91, ram: 99, gpu: 0 }], 'cpu'))
+      .toEqual({ min: 0, max: 100 });
+    expect(activityAxis([{ time: 0, cpu: 0, ram: 0, gpu: 0 }], 'ram'))
+      .toEqual({ min: 0, max: 5 });
+    expect(activityAxis([{ time: 0, cpu: null, ram: null, gpu: null }], 'cpu'))
+      .toEqual({ min: 0, max: 100 });
   });
 
   it('adds one bar per detected GPU, retaining unknown readings', () => {
@@ -11518,6 +11631,30 @@ export function appendTelemetry(
     gpu: gpuPeak(metrics),
   }];
   return next.slice(-MAX_TELEMETRY_POINTS);
+}
+
+/** Explicit, labelled local axis ranges make low activity readable without
+ * pretending the chart spans 0–100%. Missing samples cannot create fake peaks.
+ * CPU/GPU retain a true zero origin; RAM focuses on its measured range.
+ */
+export function activityAxis(
+  samples: readonly TelemetryPoint[],
+  field: 'cpu' | 'ram' | 'gpu',
+): { min: number; max: number } {
+  const values = samples
+    .map(point => point[field])
+    .filter((value): value is number =>
+      value !== null && Number.isFinite(value) && value >= 0 && value <= 100);
+  if (!values.length) return { min: 0, max: 100 };
+  if (field !== 'ram') {
+    const max = Math.min(100, Math.max(15, Math.ceil(Math.max(...values) * 1.25 / 5) * 5));
+    return { min: 0, max };
+  }
+  const minSample = Math.min(...values);
+  const maxSample = Math.max(...values);
+  const min = Math.max(0, Math.floor((minSample - 3) / 5) * 5);
+  const max = Math.min(100, Math.max(min + 5, Math.ceil((maxSample + 3) / 5) * 5));
+  return { min, max };
 }
 
 /** Return an accessible live label without depending on SVG rendering. */
@@ -11639,7 +11776,7 @@ export function systemHealth(
 
 FILE	frontend/src/lib/system-model.test.ts
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel } from './system-model';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel } from './system-model';
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
 const processes: ProcessRow[] = [
@@ -11679,6 +11816,14 @@ describe('Svelte System Monitor model', () => {
     expect(percentUsed(0, 0)).toBeNull();
     expect(percentUsed(100, 150)).toBeNull();
     expect(percentUsed(100, 0)).toBe(100);
+    expect(usageLabel(null, null)).toBe('UNAVAILABLE');
+    expect(usageLabel(0, 0)).toBe('NOT CONFIGURED');
+    expect(usageLabel(100000, 100000)).toBe('0%');
+    expect(usageLabel(7700000, 7679000)).toBe('0.3%');
+    expect(usageLabel(1000000, 999999)).toBe('<0.1%');
+    expect(usageLabel(100, 60)).toBe('40%');
+    expect(usageLabel(100, 120)).toBe('UNAVAILABLE');
+
     expect(fractionLabel(null, null)).toBe('UNAVAILABLE');
     expect(bytesLabel(1_048_576)).toBe('1.0 GiB');
     expect(processMemoryLabel(null)).toBe('—');
@@ -11753,6 +11898,20 @@ export function sortedProcesses(rows: ProcessRow[], query: string, state: SortSt
 export function percentUsed(total: number | null, available: number | null): number | null {
   if (total === null || available === null || total <= 0 || available > total) return null;
   return Math.floor(100 * (total - available) / total);
+}
+
+/** Percentage for compact telemetry labels, without pretending a small
+ * but nonzero swap allocation is 0%. This does not alter pressure thresholds.
+ */
+export function usageLabel(total: number | null, available: number | null): string {
+  if (total === null || available === null || total < 0 || available < 0 ||
+      available > total) return 'UNAVAILABLE';
+  if (total === 0) return 'NOT CONFIGURED';
+  const used = 100 * (total - available) / total;
+  if (used === 0) return '0%';
+  if (used < 0.1) return '<0.1%';
+  if (used < 1) return used.toFixed(1) + '%';
+  return Math.round(used) + '%';
 }
 
 export function bytesLabel(kib: number): string {
@@ -12280,6 +12439,22 @@ FILE	frontend/src/style.css
   }
 
   .kira-launcher-scroll::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Hide WebKitGTK's heavy scrollbar chrome on the System Monitor only.
+   * Wheel, touchpad, arrow keys and nested process scrolling remain usable.
+   * Do not disable overflow or clip content to make the scrollbar disappear.
+   */
+  .kira-monitor-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-y: contain;
+  }
+
+  .kira-monitor-scroll::-webkit-scrollbar {
     display: none;
     width: 0;
     height: 0;
