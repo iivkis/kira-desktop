@@ -28,8 +28,13 @@ function scriptFor(steps) {
         (kind === 'hide'
           ? 'window.dispatchEvent(new CustomEvent("kira:overlay:hide", {detail: {generation: ' +
             generation + '}}));'
-          : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
-            kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
+          : kind === 'catalog'
+            ? 'window.dispatchEvent(new CustomEvent("kira:launcher:apps", {detail: {apps: Array.from({length: 80}, (_, id) => ({id, name: "Application " + id, description: "Test entry"}))}}));'
+            : kind === 'filter'
+              ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
+                'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
+                kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
     ).join('') +
     // Test the live DOM, not strings in the bundled Svelte templates.
@@ -40,11 +45,13 @@ function scriptFor(steps) {
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
+      'const list = document.querySelector("[role=listbox]");' +
+      'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
     '}, 1150);' +
     '});</script>';
 }
 
-async function smoke(name, steps, expected) {
+async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', scriptFor(steps) + '</head>');
@@ -70,6 +77,13 @@ async function smoke(name, steps, expected) {
     throw new Error(name + ': popup size bridge/cap invalid (height=' +
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
   }
+  if (heightMode === 'scroll') {
+    if (size !== 420 || !output.includes('data-smoke-list-scroll="true"')) {
+      throw new Error(name + ': long launcher list should fill the cap and scroll internally');
+    }
+  } else if (heightMode === 'shrink' && size >= 420) {
+    throw new Error(name + ': filtered launcher should shrink below the cap');
+  }
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
@@ -77,6 +91,15 @@ try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
+  await smoke('launcher-long-list', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+  ], 'Kira Launcher', 'scroll');
+  await smoke('launcher-filter-shrinks-window', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+    { delay: 230, kind: 'filter' },
+  ], 'Kira Launcher', 'shrink');
   await smoke('switch-to-system', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 120, kind: 'hide', generation: 1 },
