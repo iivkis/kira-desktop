@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	40c2f05ea1d078d5fa97e557077b589c4bd6b36f
+C	95fb8a8a4699346ae678a9104a75412ed8b4611f
 F	.cargo/config.toml	98	125	3
 F	.github/workflows/ci.yml	4355	130	112
 F	.github/workflows/frontend-nix.yml	1398	244	43
@@ -24,95 +24,95 @@ F	.github/workflows/overlay-smoke.yml	1064	329	40
 F	.github/workflows/publish-repospool.yml	3048	371	83
 F	.gitignore	178	456	11
 F	.repospoolignore	1028	469	47
-F	AGENTS.md	4785	518	79
-F	Cargo.toml	494	599	22
-F	README.md	11269	623	248
-F	Taskfile.yml	5957	873	185
-F	config/kira.kdl.example	358	1060	8
-F	crates/kira-core/Cargo.toml	207	1070	10
-F	crates/kira-core/src/config.rs	15217	1082	399
-F	crates/kira-core/src/main.rs	32080	1483	839
-F	crates/kira-core/src/niri.rs	16767	2324	453
-F	crates/kira-ipc/Cargo.toml	170	2779	9
-F	crates/kira-ipc/src/client.rs	17794	2790	458
-F	crates/kira-ipc/src/lib.rs	10460	3250	336
-F	crates/kira-shell/Cargo.toml	297	3588	12
-F	crates/kira-shell/src/calendar.rs	38858	3602	1043
-F	crates/kira-shell/src/launcher.rs	14114	4647	392
-F	crates/kira-shell/src/main.rs	19285	5041	447
-F	crates/kira-shell/src/native_ui.rs	2857	5490	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5565	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5853	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5971	559
-F	crates/kira-shell/src/system_panel.rs	11356	6532	318
-F	docs/CONFIG.md	5801	6852	125
-F	docs/DESIGN_SYSTEM.md	23622	6979	399
-F	docs/DEVELOPMENT.md	29347	7380	577
-F	docs/QA_VISUAL.md	12284	7959	149
-F	docs/SPECIFICATION.md	28960	8110	421
-F	docs/TENET_MOTION.md	23999	8533	158
-F	docs/UI_ARCHITECTURE.md	6737	8693	106
-F	docs/VISUAL_REVIEW.md	9754	8801	84
-F	flake.nix	3181	8887	91
-F	frontend/index.html	2737	8980	66
-F	frontend/package.json	720	9048	27
-F	frontend/scripts/inline-assets.mjs	4457	9077	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9182	106
-F	frontend/scripts/smoke-overlays.mjs	22165	9290	316
-F	frontend/src/App.svelte	8659	9608	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9810	84
-F	frontend/src/lib/bootstrap.ts	2613	9896	70
-F	frontend/src/lib/calendar-model.test.ts	2687	9968	49
-F	frontend/src/lib/calendar-model.ts	4009	10019	88
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10109	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10171	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10202	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10522	50
-F	frontend/src/lib/clock-flight.ts	1977	10574	50
-F	frontend/src/lib/components/CalendarWidget.svelte	9261	10626	200
-F	frontend/src/lib/components/LauncherWidget.svelte	8349	10828	177
-F	frontend/src/lib/components/SystemCharts.svelte	9336	11007	212
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11221	43
-F	frontend/src/lib/components/SystemWidget.svelte	13320	11266	246
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11514	61
-F	frontend/src/lib/launcher-model.test.ts	1370	11577	29
-F	frontend/src/lib/launcher-model.ts	778	11608	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	11628	89
-F	frontend/src/lib/lazy-widget.ts	1984	11719	63
-F	frontend/src/lib/motion.ts	1597	11784	50
-F	frontend/src/lib/overlay-size.ts	1090	11836	29
-F	frontend/src/lib/sdk/core.test.ts	22258	11867	444
-F	frontend/src/lib/sdk/core.ts	17793	12313	473
-F	frontend/src/lib/system-charts.test.ts	6312	12788	141
-F	frontend/src/lib/system-charts.ts	5514	12931	149
-F	frontend/src/lib/system-health.test.ts	2385	13082	42
-F	frontend/src/lib/system-health.ts	2831	13126	60
-F	frontend/src/lib/system-model.test.ts	3900	13188	73
-F	frontend/src/lib/system-model.ts	4983	13263	113
-F	frontend/src/lib/tenet-hover-lens.ts	6739	13378	179
-F	frontend/src/lib/tenet-lens-model.test.ts	1799	13559	44
-F	frontend/src/lib/tenet-lens-model.ts	1381	13605	42
-F	frontend/src/lib/themes/kira-default.css	1687	13649	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13703	101
-F	frontend/src/lib/themes/kira-default.ts	777	13806	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	13830	79
-F	frontend/src/lib/time.test.ts	263	13911	8
-F	frontend/src/lib/time.ts	320	13921	9
-F	frontend/src/main.ts	5907	13932	127
-F	frontend/src/style.css	5364	14061	164
-F	frontend/tsconfig.json	403	14227	16
-F	frontend/vite.config.ts	224	14245	8
-F	nix/package.nix	3132	14255	117
-F	scripts/dev_preview.py	18147	14374	403	x
-F	scripts/qa_visual.py	12052	14779	299
-F	tests/test_calendar_design.py	6835	15080	121
-F	tests/test_detailed_health.py	5195	15203	101
-F	tests/test_dev_preview.py	9339	15306	219
-F	tests/test_launcher_design.py	9956	15527	182
-F	tests/test_native_theme.py	1567	15711	36
-F	tests/test_popup_geometry.py	6956	15749	118
-F	tests/test_qa_visual.py	10549	15869	217
-F	tests/test_ui_bootstrap_contract.py	1103	16088	29
+F	AGENTS.md	4786	518	80
+F	Cargo.toml	494	600	22
+F	README.md	11269	624	248
+F	Taskfile.yml	5957	874	185
+F	config/kira.kdl.example	358	1061	8
+F	crates/kira-core/Cargo.toml	207	1071	10
+F	crates/kira-core/src/config.rs	15217	1083	399
+F	crates/kira-core/src/main.rs	32080	1484	839
+F	crates/kira-core/src/niri.rs	16767	2325	453
+F	crates/kira-ipc/Cargo.toml	170	2780	9
+F	crates/kira-ipc/src/client.rs	17794	2791	458
+F	crates/kira-ipc/src/lib.rs	10460	3251	336
+F	crates/kira-shell/Cargo.toml	297	3589	12
+F	crates/kira-shell/src/calendar.rs	38858	3603	1043
+F	crates/kira-shell/src/launcher.rs	14114	4648	392
+F	crates/kira-shell/src/main.rs	19285	5042	447
+F	crates/kira-shell/src/native_ui.rs	2857	5491	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5566	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5854	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5972	559
+F	crates/kira-shell/src/system_panel.rs	11356	6533	318
+F	docs/CONFIG.md	5801	6853	125
+F	docs/DESIGN_SYSTEM.md	23622	6980	399
+F	docs/DEVELOPMENT.md	29347	7381	577
+F	docs/QA_VISUAL.md	12284	7960	149
+F	docs/SPECIFICATION.md	28960	8111	421
+F	docs/TENET_MOTION.md	24689	8534	165
+F	docs/UI_ARCHITECTURE.md	6737	8701	106
+F	docs/VISUAL_REVIEW.md	9754	8809	84
+F	flake.nix	3181	8895	91
+F	frontend/index.html	2737	8988	66
+F	frontend/package.json	720	9056	27
+F	frontend/scripts/inline-assets.mjs	4457	9085	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9190	106
+F	frontend/scripts/smoke-overlays.mjs	23287	9298	328
+F	frontend/src/App.svelte	8659	9628	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9830	84
+F	frontend/src/lib/bootstrap.ts	2613	9916	70
+F	frontend/src/lib/calendar-model.test.ts	2687	9988	49
+F	frontend/src/lib/calendar-model.ts	4009	10039	88
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10129	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10191	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10222	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10542	50
+F	frontend/src/lib/clock-flight.ts	1977	10594	50
+F	frontend/src/lib/components/CalendarWidget.svelte	9261	10646	200
+F	frontend/src/lib/components/LauncherWidget.svelte	8349	10848	177
+F	frontend/src/lib/components/SystemCharts.svelte	9336	11027	212
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11241	43
+F	frontend/src/lib/components/SystemWidget.svelte	13320	11286	246
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11534	61
+F	frontend/src/lib/launcher-model.test.ts	1370	11597	29
+F	frontend/src/lib/launcher-model.ts	778	11628	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	11648	89
+F	frontend/src/lib/lazy-widget.ts	1984	11739	63
+F	frontend/src/lib/motion.ts	1597	11804	50
+F	frontend/src/lib/overlay-size.ts	1090	11856	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11887	444
+F	frontend/src/lib/sdk/core.ts	17793	12333	473
+F	frontend/src/lib/system-charts.test.ts	6312	12808	141
+F	frontend/src/lib/system-charts.ts	5514	12951	149
+F	frontend/src/lib/system-health.test.ts	2385	13102	42
+F	frontend/src/lib/system-health.ts	2831	13146	60
+F	frontend/src/lib/system-model.test.ts	3900	13208	73
+F	frontend/src/lib/system-model.ts	4983	13283	113
+F	frontend/src/lib/tenet-hover-lens.ts	8909	13398	232
+F	frontend/src/lib/tenet-lens-model.test.ts	1799	13632	44
+F	frontend/src/lib/tenet-lens-model.ts	1381	13678	42
+F	frontend/src/lib/themes/kira-default.css	1687	13722	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13776	101
+F	frontend/src/lib/themes/kira-default.ts	777	13879	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13903	79
+F	frontend/src/lib/time.test.ts	263	13984	8
+F	frontend/src/lib/time.ts	320	13994	9
+F	frontend/src/main.ts	5907	14005	127
+F	frontend/src/style.css	3739	14134	113
+F	frontend/tsconfig.json	403	14249	16
+F	frontend/vite.config.ts	224	14267	8
+F	nix/package.nix	3132	14277	117
+F	scripts/dev_preview.py	18147	14396	403	x
+F	scripts/qa_visual.py	12052	14801	299
+F	tests/test_calendar_design.py	6835	15102	121
+F	tests/test_detailed_health.py	5195	15225	101
+F	tests/test_dev_preview.py	9339	15328	219
+F	tests/test_launcher_design.py	9956	15549	182
+F	tests/test_native_theme.py	1567	15733	36
+F	tests/test_popup_geometry.py	6956	15771	118
+F	tests/test_qa_visual.py	10549	15891	217
+F	tests/test_ui_bootstrap_contract.py	1103	16110	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -548,18 +548,19 @@ Continuity, Temporal Memory, and Causal Consistency**. For each animation:
 Existing animations are reviewed against this contract **when touched**;
 do not claim an unreviewed legacy animation already complies.
 
-## Interactive optics (mandatory for WebKit click targets)
+## Temporal material deformation (mandatory for clickable WebKit surfaces)
 
-All clickable controls in Calendar, System Monitor, Launcher and new WebKit
-widgets use the shared `tenetHoverLens` root action from
-`frontend/src/lib/tenet-hover-lens.ts`. Mouse/pen hover should visibly
-refract/lens and gently deform optical content, while leaving the
-actual clickable hitbox fixed. Pointer exit replays **the same recorded
-hover path backwards**, never a new randomized movement. Disabled buttons
-and touch input do not activate it; reduced motion and unmount clear all
-GSAP effects and CSS artifacts. Retain native focus-visible affordances
-and avoid transform competition with Calendar day/clock timelines.
-See `docs/TENET_MOTION.md#hover--pointer-optics--стандарт-активных-элементов`.
+Do NOT fake deformation using a blurred lens, pseudo-element border, glow,
+radial gradient or `backdrop-filter`. The approved `tenetHoverLens` action
+(`frontend/src/lib/tenet-hover-lens.ts`) uses **real SVG
+feDisplacementMap deformation of SourceGraphic pixels** driven over time
+by GSAP. It records actual pointer positions and reverses their physical
+field history on exit; when settled, the original image is exactly
+restored. The clickable hitbox cannot move. One filter per mounted widget,
+one active target, strict unmount cleanup, reduced-motion and touch
+support are required. Do not recreate the rejected fake glowing rectangle.
+
+See `docs/TENET_MOTION.md` for the normative motion design and testing rules.
 
 ## Visual stack (mandatory)
 
@@ -8641,36 +8642,43 @@ IDLE -> PREPARED -> FORWARD / INVERTED / DUAL -> CONTACT -> SETTLED
 
 Длинный декоративный эффект нельзя навязывать при каждом обычном действии; дополнительные сцены должны быть редкими, легко прерываемыми и ненавязчивыми.
 
-## Hover / Pointer Optics · стандарт активных элементов
+## Temporal Material Deformation · обязательный интерактивный стандарт
 
-**Все кликабельные элементы WebKit-виджетов**, включая Calendar, System
-Monitor и Launcher, получают мягкую реакцию на наведение мыши: оптическую
-«линзу», локальное преломление света, деформацию контура и небольшое смещение
-глифов, когда оно не конфликтует с текущей GSAP-анимацией.
+**Не имитировать деформацию декоративной «лупой».** Для кнопок, вкладок,
+дат календаря и элементов Launcher применяется **реальное изменение
+визуальной геометрии пикселей** через локальный SVG
+`feTurbulence → feOffset → feDisplacementMap(in: SourceGraphic)`, а GSAP
+меняет поле и его амплитуду **во времени**. Никаких наложенных светящихся
+рамок, псевдо-стекла, фонового blur или поддельной призмы.
 
-- **FORWARD (+1):** линза проявляется и перемещается вместе с фактической
-  позицией курсора относительно неподвижного прямоугольника элемента.
-- **INVERTED (−1):** после ухода мыши оптический след проходит **сохранённые
-  координаты курсора в обратном порядке**, затем полностью исчезает.
-- **Temporal Memory:** максимум 16 реальных точек одного наведения; никакого
-  нового случайного пути при восстановлении.
-- **Physical Continuity:** эффект создаётся GSAP через `opacity`, небольшую
-  деформацию вложенных глифов, световой контур и CSS `backdrop-filter`.
-  Положение кликабельного элемента и его hitbox **никогда не смещаются**.
-- **Causal Consistency:** при повторном наведении, нажатии, смене фокуса,
-  изменении системной настройки движения и размонтировании все слои
-  убираются; исходные transform/CSS-переменные восстановлены.
-- **Доступность:** для `prefers-reduced-motion`, touch/грубого указателя и
-  `disabled` эффект отсутствует; фокус клавиатуры и нативный hover-отклик
-  остаются доступными. Декоративные псевдоэлементы не перехватывают события.
-- **Производительность:** один делегированный обработчик на виджет вместо
-  обработчика для каждой строки, обрабатывается только активный элемент;
-  нет постоянного `requestAnimationFrame` или опроса курсора вне hover.
+- **FORWARD (+1):** при наведении реальная типографика/поверхность
+  искажается полем смещения, постепенно реагирующим на положение курсора.
+  Область попадания мыши и фокус **не изменяются**: SVG filter не двигает DOM.
+- **INVERTED (−1):** при уходе выполняется воспроизведение **тех же**
+  сохранённых точек поля в обратном порядке. Сила смещения затухает до нуля,
+  реальное содержимое возвращается к точному неизменённому изображению.
+- **Temporal Memory:** максимум 16 фактических координат одного наведения.
+  Никакой генерации новых точек на возврате и никакой повторной рандомизации
+  поля внутри одного события.
+- **Causal Consistency:** повторное наведение, клик, клавиатурный фокус,
+  уход курсора, закрытие поповера, подавление анимаций и прерывание кадров
+  гарантированно восстанавливают `filter` и все SVG-значения. При размонтировании
+  удаляются `<svg><defs>` и все обработчики.
+- **Производительность:** один фильтр и один набор делегированных событий
+  на **открытый** виджет. В любой момент деформируется только **один**
+  элемент. Никаких дополнительных библиотек, сетевых шейдеров,
+  бесконечной анимации или системных опросов.
+- **Доступность:** `prefers-reduced-motion`, touch/coarse pointer и
+  отключённые кнопки обходят деформацию. Система не препятствует
+  навигации клавиатурой, настоящему времени и телеметрии.
 
-Переиспользуемая реализация: `frontend/src/lib/tenet-hover-lens.ts` и
-`tenet-lens-model.ts`. Не делать новый несогласованный hover-движок
-в каждом виджете. Пользовательское действие никогда не задерживается
-ради преломления.
+Реализация: `frontend/src/lib/tenet-hover-lens.ts`,
+`tenet-lens-model.ts`. Название модуля сохранено для совместимости, но
+псевдоэлементной «линзы» больше нет: меняются **пиксели самой поверхности**.
+Для приёмки нужен браузерный тест с ненулевым `feDisplacementMap.scale`,
+изменением поля при движении мыши, нулевой амплитудой после ухода и
+неизменным DOM hitbox. Настоящий визуальный просмотр в Niri важен
+отдельно от тестов.
 
 ## IV. Критерии приёмки каждой новой анимации
 
@@ -9369,12 +9377,20 @@ function scriptFor(steps, observationMs = 1150) {
                   'const rect = target.getBoundingClientRect();' +
                   'window.__kiraLensInitialRect = [rect.left,rect.top,rect.width,rect.height];' +
                   'target.dispatchEvent(new PointerEvent("pointerover",{bubbles:true,pointerType:"mouse",clientX:rect.left+rect.width*0.25,clientY:rect.top+rect.height*0.25}));' +
-                  'setTimeout(()=>{window.__kiraLensReacted=target.dataset.tenetLensState==="forward";},130);' +
+                  'setTimeout(()=>{' +
+                    'const paint=target.querySelector("[data-tenet-lens-body]")||target;' +
+                    'const filter=document.querySelector("feDisplacementMap");' +
+                    'window.__kiraLensReacted=target.dataset.tenetWarpState==="forward" && paint.dataset.tenetWarpPixels==="true" && paint.style.filter.includes("kira-temporal-warp") && Number(filter?.getAttribute("scale"))>0;' +
+                  '},130);' +
                   '}'
               : kind === 'lens-move'
                 ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
                   'if(target){const rect=target.getBoundingClientRect();' +
-                  'target.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerType:"mouse",clientX:rect.right-2,clientY:rect.bottom-2}));}'
+                  'target.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,pointerType:"mouse",clientX:rect.right-2,clientY:rect.bottom-2}));' +
+                  'setTimeout(()=>{' +
+                    'const offset=document.querySelector("feOffset");' +
+                    'window.__kiraWarpChanged=!!offset && Math.abs(Number(offset.getAttribute("dx")))>1;' +
+                  '},140);}'
               : kind === 'lens-out'
                 ? 'const target = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
                   'target?.dispatchEvent(new PointerEvent("pointerout",{bubbles:true,pointerType:"mouse",relatedTarget:null}));'
@@ -9419,8 +9435,10 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
       'const hoveredButton = document.querySelector("button[aria-label=\\\"Next month\\\"]");' +
       'const hoveredRect = hoveredButton?.getBoundingClientRect();' +
-      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted);' +
-      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensReacted && !!hoveredButton && !hoveredButton.classList.contains("kira-tenet-lens-target") && !hoveredButton.hasAttribute("data-tenet-lens-state"));' +
+      'document.documentElement.setAttribute("data-smoke-lens-reacted", !!window.__kiraLensReacted && !!window.__kiraWarpChanged);' +
+      'document.documentElement.setAttribute("data-smoke-warp-svg", !!document.querySelector("filter[id^=kira-temporal-warp] feTurbulence") && !!document.querySelector("filter[id^=kira-temporal-warp] feDisplacementMap"));' +
+      'document.documentElement.setAttribute("data-smoke-warp-reset", Number(document.querySelector("feDisplacementMap")?.getAttribute("scale")) === 0);' +
+      'document.documentElement.setAttribute("data-smoke-lens-restored", !!window.__kiraLensReacted && !!hoveredButton && !hoveredButton.hasAttribute("data-tenet-warp-state") && !hoveredButton.style.filter);' +
       'document.documentElement.setAttribute("data-smoke-lens-hitbox", !!hoveredRect && !!window.__kiraLensInitialRect && [hoveredRect.left,hoveredRect.top,hoveredRect.width,hoveredRect.height].every((value,index)=>Math.abs(value-window.__kiraLensInitialRect[index])<0.5));' +
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
@@ -9474,9 +9492,11 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   if (heightMode === 'lens' &&
       (!output.includes('data-smoke-lens-reacted="true"') ||
        !output.includes('data-smoke-lens-restored="true"') ||
-       !output.includes('data-smoke-lens-hitbox="true"'))) {
-    const flags = output.match(/data-smoke-lens-[a-z-]+="[^"]*"/g) ?? [];
-    throw new Error(name + ': TENET hover refraction and exact reset: ' + flags.join(', '));
+       !output.includes('data-smoke-lens-hitbox="true"') ||
+       !output.includes('data-smoke-warp-svg="true"') ||
+       !output.includes('data-smoke-warp-reset="true"'))) {
+    const flags = output.match(/data-smoke-(?:lens|warp)-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': SVG material deformation and exact restoration: ' + flags.join(', '));
   }
   if (heightMode === 'calendar' &&
       (!output.includes('data-smoke-calendar-navigated="true"') ||
@@ -13375,103 +13395,176 @@ export function uptimeLabel(seconds: number | null): string {
 }
 
 FILE	frontend/src/lib/tenet-hover-lens.ts
-/** Delegated GSAP hover refraction for all clickable desktop overlay items.
+/** TENET temporal material deformation, not a glow or a glass overlay.
  *
- * The functional button does not change its hitbox or receive transforms.
- * An optical layer is warped under the pointer; an optional inner glyph
- * layer deforms independently of Calendar's existing TENET/clock timelines.
- * On departure, the trace retraces the actual bounded pointer history
- * INVERTED, while the base UI continues FORWARD. One event, same geometry.
+ * An actual SVG feDisplacementMap warps SourceGraphic pixels (the selected
+ * control or its glyphs). GSAP evolves its displacement amplitude and field
+ * phase over time; the cursor writes a bounded causal path. Pointer departure
+ * retraces that same path in reverse before settling to the exact unfiltered
+ * original. The clickable layout rectangle is never transformed.
  */
 import { gsap } from 'gsap';
 import {
   inverseLensPath, lensPoint, rememberLensPoint, type LensPoint,
 } from './tenet-lens-model';
 
+const NS = 'http://www.w3.org/2000/svg';
 const SELECTOR = 'button:not(:disabled), a[href], [role="button"]:not([aria-disabled="true"])';
+let serial = 0;
+
+type Field = { amplitude: number; phaseX: number; phaseY: number; frequency: number };
+
+function svgNode(doc: Document, name: string): SVGElement {
+  return doc.createElementNS(NS, name);
+}
+
+/** One in-document SVG filter per mounted widget. No CDN, image fetch,
+ * permanent animation loop, pseudo-element or backdrop blur.
+ */
+function createWarpFilter(root: HTMLElement) {
+  const id = 'kira-temporal-warp-' + (++serial);
+  const doc = root.ownerDocument;
+  const svg = svgNode(doc, 'svg');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  svg.setAttribute('width', '0');
+  svg.setAttribute('height', '0');
+  svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none';
+  const defs = svgNode(doc, 'defs');
+  const filter = svgNode(doc, 'filter');
+  filter.setAttribute('id', id);
+  filter.setAttribute('x', '-24%');
+  filter.setAttribute('y', '-48%');
+  filter.setAttribute('width', '148%');
+  filter.setAttribute('height', '196%');
+  filter.setAttribute('color-interpolation-filters', 'sRGB');
+
+  const noise = svgNode(doc, 'feTurbulence');
+  noise.setAttribute('type', 'fractalNoise');
+  noise.setAttribute('baseFrequency', '0.026 0.085');
+  noise.setAttribute('numOctaves', '2');
+  noise.setAttribute('seed', String(serial % 97 + 1));
+  noise.setAttribute('result', 'materialField');
+  const offset = svgNode(doc, 'feOffset');
+  offset.setAttribute('in', 'materialField');
+  offset.setAttribute('result', 'shiftedField');
+  const displacement = svgNode(doc, 'feDisplacementMap');
+  displacement.setAttribute('in', 'SourceGraphic');
+  displacement.setAttribute('in2', 'shiftedField');
+  displacement.setAttribute('xChannelSelector', 'R');
+  displacement.setAttribute('yChannelSelector', 'G');
+  displacement.setAttribute('scale', '0');
+  filter.append(noise, offset, displacement);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+  root.appendChild(svg);
+
+  return {
+    id, svg, displacement,
+    apply(field: Field) {
+      displacement.setAttribute('scale', field.amplitude.toFixed(2));
+      offset.setAttribute('dx', field.phaseX.toFixed(2));
+      offset.setAttribute('dy', field.phaseY.toFixed(2));
+      noise.setAttribute('baseFrequency', field.frequency.toFixed(4) + ' 0.085');
+    },
+  };
+}
 
 export function tenetHoverLens(root: HTMLElement) {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  // Do not instantiate even the SVG noise field until the first genuine
+  // mouse hover. Closed/idle widgets allocate no material compositor work.
+  let warp: ReturnType<typeof createWarpFilter> | null = null;
+  const ensureWarp = () => warp ?? (warp = createWarpFilter(root));
+  const field: Field = { amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026 };
   let active: HTMLElement | null = null;
+  let painted: HTMLElement | null = null;
+  let priorFilter = '';
   let history: LensPoint[] = [];
-  let enterTween: gsap.core.Tween | null = null;
-  let pointerTween: gsap.core.Tween | null = null;
-  let returnTimeline: gsap.core.Timeline | null = null;
+  let forward: gsap.core.Tween | null = null;
+  let reverse: gsap.core.Timeline | null = null;
   let restoreTimer: number | null = null;
-  let contentTween: gsap.core.Tween | null = null;
-  let content: HTMLElement | null = null;
 
   const eligible = (event: Event): HTMLElement | null => {
     if (!(event.target instanceof Element)) return null;
-    const candidate = event.target.closest<HTMLElement>(SELECTOR);
-    return candidate && root.contains(candidate) ? candidate : null;
+    const target = event.target.closest<HTMLElement>(SELECTOR);
+    return target && root.contains(target) ? target : null;
   };
-  const enabled = (event: PointerEvent) => !motion.matches &&
-    finePointer.matches && (event.pointerType === 'mouse' || event.pointerType === 'pen');
+  const enabled = (event: PointerEvent) => !motion.matches && finePointer.matches &&
+    (event.pointerType === 'mouse' || event.pointerType === 'pen');
 
-  function endAnimations() {
+  /** Displacement strength and phase are derived from real stored positions.
+   * No random rerolls or invented cursor samples during inverse playback.
+   */
+  function fieldAt(point: LensPoint): Field {
+    return {
+      amplitude: 7 + Math.hypot(point.dx, point.dy) * 0.75,
+      phaseX: point.dx * 3.5,
+      phaseY: point.dy * 2,
+      frequency: 0.024 + point.x * 0.0001,
+    };
+  }
+
+  function kill() {
     if (restoreTimer !== null) {
       window.clearTimeout(restoreTimer);
       restoreTimer = null;
     }
-    enterTween?.kill();
-    pointerTween?.kill();
-    returnTimeline?.kill();
-    contentTween?.kill();
-    enterTween = pointerTween = contentTween = null;
-    returnTimeline = null;
+    forward?.kill();
+    reverse?.kill();
+    forward = null;
+    reverse = null;
   }
 
-  function reset() {
-    endAnimations();
-    if (content) gsap.set(content, { clearProps: 'transform' });
-    if (active) {
-      gsap.set(active, { clearProps:
-        '--kira-lens-opacity,--kira-lens-x,--kira-lens-y,--kira-lens-dx,--kira-lens-dy,--kira-lens-shear' });
-      active.classList.remove('kira-tenet-lens-target');
-      active.removeAttribute('data-tenet-lens-state');
+  function restore() {
+    kill();
+    if (painted) {
+      painted.style.filter = priorFilter;
+      painted.removeAttribute('data-tenet-warp-pixels');
     }
-    content = null;
+    if (active) {
+      active.removeAttribute('data-tenet-warp-state');
+    }
+    painted = null;
     active = null;
     history = [];
+    field.amplitude = 0;
+    field.phaseX = 0;
+    field.phaseY = 0;
+    field.frequency = 0.026;
+    warp?.apply(field);
   }
 
-  function values(point: LensPoint) {
-    return {
-      '--kira-lens-x': point.x + '%',
-      '--kira-lens-y': point.y + '%',
-      '--kira-lens-dx': point.dx + 'px',
-      '--kira-lens-dy': point.dy + 'px',
-      '--kira-lens-shear': point.dx * 0.65 + 'deg',
-    };
+  function forwardTo(point: LensPoint, duration: number) {
+    forward?.kill();
+    forward = gsap.to(field, {
+      ...fieldAt(point),
+      duration, ease: 'power3.out', overwrite: true,
+      onUpdate: () => warp?.apply(field),
+    });
   }
 
   function onOver(event: PointerEvent) {
     if (!enabled(event)) return;
     const target = eligible(event);
     if (!target || target === active) return;
-    reset();
+    restore();
     active = target;
-    content = target.querySelector<HTMLElement>('[data-tenet-lens-body]');
+    // Filter an explicit glyph surface when available. Otherwise distort
+    // the actual painted button including its background and glyphs.
+    painted = target.querySelector<HTMLElement>('[data-tenet-lens-body]') ?? target;
+    priorFilter = painted.style.filter;
     const rect = target.getBoundingClientRect();
     const point = lensPoint(event.clientX, event.clientY,
       rect.left, rect.top, rect.width, rect.height);
     history = rememberLensPoint([], point);
-    target.classList.add('kira-tenet-lens-target');
-    target.dataset.tenetLensState = 'forward';
-    gsap.set(target, { ...values(point), '--kira-lens-opacity': 0 });
-    enterTween = gsap.to(target, {
-      '--kira-lens-opacity': 0.94, duration: 0.22,
-      ease: 'power2.out', overwrite: 'auto',
-    });
-    if (content) {
-      contentTween = gsap.to(content, {
-        x: point.dx * 0.5, y: point.dy * 0.5,
-        skewX: point.dx * 0.55, scale: 1.055,
-        duration: 0.24, ease: 'power2.out', overwrite: 'auto',
-      });
-    }
+    painted.style.filter = 'url("#' + ensureWarp().id + '")';
+    painted.dataset.tenetWarpPixels = 'true';
+    target.dataset.tenetWarpState = 'forward';
+    // Initial contact bends the real pixels; the material settles with
+    // slight inertia as more cursor positions arrive.
+    forwardTo(point, 0.34);
   }
 
   function onMove(event: PointerEvent) {
@@ -13480,67 +13573,45 @@ export function tenetHoverLens(root: HTMLElement) {
     const point = lensPoint(event.clientX, event.clientY,
       rect.left, rect.top, rect.width, rect.height);
     history = rememberLensPoint(history, point);
-    pointerTween?.kill();
-    pointerTween = gsap.to(active, {
-      ...values(point), duration: 0.105, ease: 'power2.out',
-      overwrite: 'auto',
-    });
-    if (content) {
-      contentTween?.kill();
-      contentTween = gsap.to(content, {
-        x: point.dx * 0.5, y: point.dy * 0.5,
-        skewX: point.dx * 0.55, scale: 1.055,
-        duration: 0.16, ease: 'power2.out',
-        overwrite: 'auto',
-      });
-    }
+    forwardTo(point, 0.22);
   }
 
   function onOut(event: PointerEvent) {
-    if (!active) return;
-    const departed = eligible(event);
-    if (departed !== active) return;
-    const next = event.relatedTarget;
-    if (next instanceof Node && active.contains(next)) return;
-    const node = active;
-    const reversed = inverseLensPath(history);
-    endAnimations();
-    node.dataset.tenetLensState = 'inverted';
-    returnTimeline = gsap.timeline({ onComplete: reset });
-    // One recorded sequence. Never sample new mouse positions after departure.
-    for (const point of reversed) {
-      returnTimeline.to(node, {
-        ...values(point), duration: 0.018, ease: 'none',
+    if (!active || eligible(event) !== active) return;
+    if (event.relatedTarget instanceof Node && active.contains(event.relatedTarget)) return;
+    const reversePoints = inverseLensPath(history);
+    kill();
+    active.dataset.tenetWarpState = 'inverted';
+    reverse = gsap.timeline({ onComplete: restore });
+    // Reconstruct the cursor's exact recorded sequence in reverse; each
+    // segment has a continuous material field and a shared temporal cursor.
+    for (const point of reversePoints) {
+      reverse.to(field, {
+        ...fieldAt(point), duration: 0.025, ease: 'none',
+        onUpdate: () => warp?.apply(field),
       });
     }
-    returnTimeline.to(node, {
-      '--kira-lens-opacity': 0,
-      '--kira-lens-dx': '0px', '--kira-lens-dy': '0px',
-      '--kira-lens-shear': '0deg',
-      duration: 0.2, ease: 'power2.out',
+    reverse.to(field, {
+      amplitude: 0, phaseX: 0, phaseY: 0, frequency: 0.026,
+      duration: 0.20, ease: 'power3.out',
+      onUpdate: () => warp?.apply(field),
     });
-    if (content) {
-      returnTimeline.to(content, {
-        x: 0, y: 0, skewX: 0, scale: 1, duration: 0.25,
-        ease: 'power2.out',
-      }, '<');
-    }
-    // GTK/WebKit may suspend requestAnimationFrame while transitioning
-    // overlays. A one-shot safeguard restores everything, then cancels
-    // itself on normal GSAP completion or new input.
-    restoreTimer = window.setTimeout(reset, 750);
+    // If WebKitGTK throttles animation frames, the control still recovers.
+    restoreTimer = window.setTimeout(restore, 750);
   }
 
-  const onMotionChange = () => { if (motion.matches || !finePointer.matches) reset(); };
-  const onDown = () => { if (active) reset(); };
-  const onFocus = () => { if (active) reset(); };
+  const onEnvironmentChange = () => {
+    if (motion.matches || !finePointer.matches) restore();
+  };
+  const onDown = () => restore();
+  const onFocus = () => restore();
   root.addEventListener('pointerover', onOver);
   root.addEventListener('pointermove', onMove);
   root.addEventListener('pointerout', onOut);
   root.addEventListener('pointerdown', onDown);
   root.addEventListener('focusin', onFocus);
-  motion.addEventListener('change', onMotionChange);
-  finePointer.addEventListener('change', onMotionChange);
+  motion.addEventListener('change', onEnvironmentChange);
+  finePointer.addEventListener('change', onEnvironmentChange);
   return {
     destroy() {
       root.removeEventListener('pointerover', onOver);
@@ -13548,9 +13619,11 @@ export function tenetHoverLens(root: HTMLElement) {
       root.removeEventListener('pointerout', onOut);
       root.removeEventListener('pointerdown', onDown);
       root.removeEventListener('focusin', onFocus);
-      motion.removeEventListener('change', onMotionChange);
-      finePointer.removeEventListener('change', onMotionChange);
-      reset();
+      motion.removeEventListener('change', onEnvironmentChange);
+      finePointer.removeEventListener('change', onEnvironmentChange);
+      restore();
+      warp?.svg.remove();
+      warp = null;
     },
   };
 }
@@ -14152,62 +14225,11 @@ FILE	frontend/src/style.css
     height: 0;
   }
 
-  /* TENET optical hover: the clickable hitbox never shifts. An amber/white
-   * refraction field bends in response to the real pointer, then reconstructs
-   * its recorded movement in reverse. Only the currently active control
-   * receives backdrop filtering; no shader or permanent animation loop.
+  /* TENET material deformation is a real in-document SVG displacement
+   * filter on the clickable surface, not pseudo-element glass or blur.
+   * The filtered pixels may bend, while the native hitbox remains stable.
+   * Motion is owned and cleaned up by tenet-hover-lens.ts (GSAP).
    */
-  .kira-tenet-lens-target {
-    position: relative;
-    isolation: isolate;
-    --kira-lens-opacity: 0;
-    --kira-lens-x: 50%;
-    --kira-lens-y: 50%;
-    --kira-lens-dx: 0px;
-    --kira-lens-dy: 0px;
-    --kira-lens-shear: 0deg;
-  }
-
-  .kira-tenet-lens-target::before,
-  .kira-tenet-lens-target::after {
-    content: '';
-    position: absolute;
-    pointer-events: none;
-    inset: -2px;
-    opacity: var(--kira-lens-opacity);
-    z-index: 2;
-    border-radius: inherit;
-  }
-
-  .kira-tenet-lens-target::before {
-    background: radial-gradient(ellipse 48% 88% at var(--kira-lens-x) var(--kira-lens-y),
-      rgb(229 229 229 / 16%) 0%, rgb(252 163 17 / 9%) 33%,
-      rgb(20 33 61 / 4%) 55%, transparent 75%);
-    -webkit-backdrop-filter: blur(1px) contrast(1.12);
-    backdrop-filter: blur(1px) contrast(1.12);
-    transform: translate3d(var(--kira-lens-dx), var(--kira-lens-dy), 0)
-      skewX(var(--kira-lens-shear));
-  }
-
-  .kira-tenet-lens-target::after {
-    inset: -3px;
-    border: 1px solid rgb(252 163 17 / 55%);
-    background: linear-gradient(118deg, transparent 15%, rgb(229 229 229 / 18%) 48%,
-      rgb(252 163 17 / 12%) 54%, transparent 82%);
-    transform: translate3d(var(--kira-lens-dx), var(--kira-lens-dy), 0)
-      skewX(var(--kira-lens-shear)) scaleX(1.035);
-  }
-
-  .kira-tenet-lens-target [data-tenet-lens-body] {
-    display: inline-block;
-    transform-origin: center center;
-    will-change: transform;
-  }
-
-  @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
-    .kira-tenet-lens-target::before,
-    .kira-tenet-lens-target::after { display: none; }
-  }
 
   /* Keep an explicit keyboard-visible outline even outside our components. */
   :focus-visible {
