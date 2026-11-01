@@ -74,6 +74,57 @@ export function onSystemMetrics(callback: (metrics: SystemMetrics) => void): () 
   return onNativeEvent('kira:system-metrics', isSystemMetrics, callback);
 }
 
+export interface SystemOverlayData {
+  metrics: SystemMetrics;
+  core: boolean;
+  niri: boolean;
+}
+
+export interface ProcessRow {
+  pid: number;
+  name: string;
+  state: string;
+  cpu_percent: number | null;
+  rss_kib: number | null;
+}
+
+export interface SystemProcesses {
+  rows: ProcessRow[];
+  total: number;
+  truncated: boolean;
+  error: string | null;
+}
+
+/** Overlay-specific, read-only events with strict bounded payload shapes. */
+export function onSystemOverlayData(callback: (data: SystemOverlayData) => void): () => void {
+  return onNativeEvent('kira:system:data', (value): value is SystemOverlayData =>
+    isRecord(value) && typeof value.core === 'boolean' &&
+    typeof value.niri === 'boolean' && isSystemMetrics(value.metrics) &&
+    isRecord(value.metrics) &&
+    (value.metrics.swap_total_kib === null || Number.isSafeInteger(value.metrics.swap_total_kib)) &&
+    (value.metrics.swap_free_kib === null || Number.isSafeInteger(value.metrics.swap_free_kib)) &&
+    (value.metrics.uptime_seconds === null || Number.isSafeInteger(value.metrics.uptime_seconds)) &&
+    (value.metrics.load === null ||
+      (Array.isArray(value.metrics.load) && value.metrics.load.length === 3 &&
+        value.metrics.load.every((n: unknown) => typeof n === 'number' && Number.isFinite(n) && n >= 0))),
+  callback);
+}
+
+export function onSystemProcesses(callback: (data: SystemProcesses) => void): () => void {
+  return onNativeEvent('kira:system:processes', (value): value is SystemProcesses => {
+    if (!isRecord(value) || !Array.isArray(value.rows) || value.rows.length > 4096 ||
+        !Number.isSafeInteger(value.total) || (value.total as number) < 0 ||
+        typeof value.truncated !== 'boolean' ||
+        !(value.error === null || (typeof value.error === 'string' && value.error.length <= 120))) return false;
+    return value.rows.every((row: unknown) => isRecord(row) &&
+      Number.isSafeInteger(row.pid) && (row.pid as number) >= 0 && (row.pid as number) <= 4294967295 &&
+      typeof row.name === 'string' && row.name.length <= 64 &&
+      typeof row.state === 'string' && row.state.length === 1 &&
+      (row.cpu_percent === null || (typeof row.cpu_percent === 'number' && Number.isFinite(row.cpu_percent) && row.cpu_percent >= 0 && row.cpu_percent <= 100)) &&
+      (row.rss_kib === null || (Number.isSafeInteger(row.rss_kib) && (row.rss_kib as number) >= 0)));
+  }, callback);
+}
+
 /** Listen for typed workspace push events emitted by the native Shell.
  * No Niri or Core polling is performed here. Unsubscribe on Svelte unmount.
  */
@@ -205,7 +256,20 @@ export function copyCalendarDate(date: string): void {
   sendCalendarUi('copy:' + date);
 }
 
-/** Open or close the native read-only system monitor. */
+/** The shared overlay accepts only fixed read-only tab and copy actions. */
+export function closeSystemOverlay(): void {
+  sendCalendarUi('close');
+}
+
+export function setSystemMonitorTab(tab: 'overview' | 'processes'): void {
+  if (tab === 'overview' || tab === 'processes') sendCalendarUi('tab:' + tab);
+}
+
+export function copySystemReport(): void {
+  sendCalendarUi('copy-report');
+}
+
+/** Open or close the shared Svelte read-only system monitor. */
 export function toggleSystemPanel(): boolean {
   return postNativeCommand('kiraSystem', 'toggle');
 }
