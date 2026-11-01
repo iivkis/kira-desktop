@@ -2,7 +2,7 @@
 //! GTK owns the window and clipboard; calendar rendering belongs to Svelte.
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
@@ -28,6 +28,7 @@ struct CalendarOverlay {
     paint_pending: Cell<bool>,
     generation: Cell<u64>,
     was_active: Cell<bool>,
+    open_started: Cell<Option<Instant>>,
 }
 
 impl CalendarOverlay {
@@ -44,6 +45,7 @@ impl CalendarOverlay {
         self.revealed.set(false);
         self.paint_pending.set(false);
         self.was_active.set(false);
+        self.open_started.set(Some(Instant::now()));
         self.generation.set(self.generation.get().wrapping_add(1));
         // An unpainted layer-shell surface must never flash grey. GTK4
         // supports fully transparent toplevels on Wayland.
@@ -95,6 +97,7 @@ impl CalendarOverlay {
     fn on_message(&self, message: &str) {
         match calendar_command(message) {
             Some(UiCommand::Ready) => {
+                eprintln!("kira-shell: Svelte calendar DOM verified");
                 self.ready.set(true);
                 self.request_paint();
             }
@@ -106,6 +109,9 @@ impl CalendarOverlay {
                 self.revealed.set(true);
                 self.paint_pending.set(false);
                 self.window.set_opacity(1.0);
+                if let Some(start) = self.open_started.take() {
+                    eprintln!("kira-shell: Calendar visible after {} ms", start.elapsed().as_millis());
+                }
             }
             Some(UiCommand::Close) if self.requested.get() => self.hide(),
             Some(UiCommand::CopyDate(date)) if self.requested.get() && self.revealed.get() => {
@@ -215,6 +221,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         paint_pending: Cell::new(false),
         generation: Cell::new(0),
         was_active: Cell::new(false),
+        open_started: Cell::new(None),
     });
     let weak = Rc::downgrade(&overlay);
     manager.connect_script_message_received(Some("kiraCalendarUi"), move |_, value| {
