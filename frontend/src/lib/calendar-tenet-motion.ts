@@ -80,8 +80,13 @@ export function tenetCalendarReveal(node: HTMLElement) {
   const targets = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
   const clock = node.querySelector<HTMLElement>('[data-calendar-clock-play]');
   let scene: Scene | null = null;
+  let restoreTimer: number | null = null;
 
   function stop() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
     const old = scene;
     scene = null;
     old?.forward.kill();
@@ -98,6 +103,11 @@ export function tenetCalendarReveal(node: HTMLElement) {
       stop();
       node.dataset.tenetReveal = 'settled';
     });
+    // Hidden/throttled WebKit views may suspend RAF. Never strand fragments.
+    restoreTimer = window.setTimeout(() => {
+      stop();
+      node.dataset.tenetReveal = 'settled';
+    }, 950);
   }
 
   return {
@@ -120,9 +130,14 @@ export function tenetCalendarGrid(
   let lastMonth = initial.month;
   let lastSelected = initial.selected;
   let scene: Scene | null = null;
+  let restoreTimer: number | null = null;
   let activeTargets: HTMLElement[] = [];
 
   function stop() {
+    if (restoreTimer !== null) {
+      window.clearTimeout(restoreTimer);
+      restoreTimer = null;
+    }
     const old = scene;
     scene = null;
     old?.forward.kill();
@@ -154,6 +169,7 @@ export function tenetCalendarGrid(
       node.dataset.tenetScenes = String(Number(node.dataset.tenetScenes || '0') + 1);
       node.dataset.tenetContact = next.selected;
       scene = dualScene(node, selected, activeTargets, direction, stop);
+      restoreTimer = window.setTimeout(stop, 950);
     },
     destroy() {
       motion.removeEventListener('change', onMotionChange);
