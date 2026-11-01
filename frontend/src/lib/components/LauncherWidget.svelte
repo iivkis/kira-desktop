@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { tenetHoverLens } from '../tenet-hover-lens';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
@@ -99,7 +98,7 @@
 
 <svelte:window onkeydown={keydown} />
 
-<main data-kira-ui-root aria-label="Kira Launcher" use:tenetHoverLens
+<main data-kira-ui-root aria-label="Kira Launcher"
   class="flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header class="shrink-0 px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-2">
@@ -109,7 +108,7 @@
         <p class="mt-1 text-xs text-kira-muted">Search your installed tools.</p>
       </div>
       <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
-        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"><span data-tenet-lens-body class="inline-block">×</span></button>
+        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
     </div>
   </header>
 
@@ -151,7 +150,7 @@
               </svg>
             {/if}
           </span>
-          <span data-tenet-lens-body class="min-w-0 flex-1">
+          <span class="min-w-0 flex-1">
             <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
             <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim() || 'Installed application'}</span>
           </span>
