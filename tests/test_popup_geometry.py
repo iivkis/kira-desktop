@@ -11,7 +11,7 @@ MONITOR = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
 class PopupGeometryTests(unittest.TestCase):
     def test_half_margin_and_monitor_relative_height(self):
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", HELPERS)
-        self.assertIn("i64::from(output_height) * 7 / 10", HELPERS)
+        self.assertIn("i64::from(output_height.max(1)) * 7 / 10", HELPERS)
         self.assertIn("monitor_at_surface(&surface)", HELPERS)
         self.assertIn("connect_map(move |window|", HELPERS)
         self.assertIn("window.set_default_size(width, height)", HELPERS)
