@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { SystemMetrics } from './sdk/core';
 import {
-  activityAxis, appendPulse, appendTelemetry, chartMeters, gpuPeak,
+  activityAxis, activitySeries, activityTimeDomain, alignedActivity,
+  appendPulse, appendTelemetry, chartMeters, gpuPeak,
   MAX_PULSE_POINTS, MAX_TELEMETRY_POINTS, telemetrySummary,
 } from './system-charts';
 
@@ -20,6 +21,33 @@ const metrics: SystemMetrics = {
 };
 
 describe('System Monitor ECharts telemetry model', () => {
+  it('uses one truthful time axis and shared first concurrent measurement', () => {
+    const samples = [
+      { time: 1000, cpu: null, ram: 35.12, gpu: null },
+      { time: 1500, cpu: null, ram: 35.20, gpu: null },
+      { time: 2000, cpu: 6, ram: 35.25, gpu: null },
+      { time: 2500, cpu: 8, ram: 35.30, gpu: null },
+    ];
+    const synchronized = alignedActivity(samples);
+    expect(synchronized).toEqual(samples.slice(2));
+    expect(activityTimeDomain(synchronized)).toEqual({ min: 2000, max: 2500 });
+    expect(activitySeries(synchronized, 'cpu')).toEqual([[2000, 6], [2500, 8]]);
+    expect(activitySeries(synchronized, 'ram')).toEqual([[2000, 35.25], [2500, 35.30]]);
+    // A GPU without data must remain unknown, not an artificial zero.
+    expect(activitySeries(synchronized, 'gpu')).toEqual([[2000, null], [2500, null]]);
+  });
+
+  it('keeps the memory plot available when CPU readings never arrive', () => {
+    const samples = [
+      { time: 4000, cpu: null, ram: 40.0, gpu: null },
+      { time: 5000, cpu: null, ram: 40.1, gpu: null },
+    ];
+    expect(alignedActivity(samples)).toEqual(samples);
+    expect(activityTimeDomain(samples)).toEqual({ min: 4000, max: 5000 });
+    expect(activityTimeDomain([])).toEqual({ min: 0, max: 500 });
+    expect(activityTimeDomain(samples.slice(0, 1))).toEqual({ min: 4000, max: 4500 });
+  });
+
   it('keeps 120 genuine 500ms samples for one minute of fast pulse', () => {
     let history = [] as ReturnType<typeof appendPulse>;
     for (let i = 0; i < 145; i++) {
