@@ -12,7 +12,7 @@ use crate::system_metrics::{Snapshot, bytes_label, percent_used};
 /// Root filesystem data is queried on the GTK thread, like the Top Bar.
 pub fn disk() -> Option<(u64, u64)> {
     let file = gtk::gio::File::for_path("/");
-    use gtk::gio::prelude::FileExt;
+    use gtk::gio::prelude::*;
     let info = file
         .query_filesystem_info(
             "filesystem::size,filesystem::free",
