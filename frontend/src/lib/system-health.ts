@@ -15,7 +15,7 @@ export interface HealthSummary {
 function percentUsed(total: number | null, available: number | null): number | null {
   if (total === null || available === null || total <= 0 ||
       available < 0 || available > total) return null;
-  return Math.round((total - available) / total * 100);
+  return Math.floor((total - available) / total * 100);
 }
 
 export function systemHealth(

@@ -2,7 +2,6 @@
 //! additional dependencies. Optional fields are absent when the kernel does
 //! not provide a metric; lack of data must never be displayed as zero.
 use std::fs;
-use std::path::Path;
 use std::time::Duration;
 
 #[derive(Debug, Clone, Default)]
@@ -124,7 +123,8 @@ fn battery() -> (Option<u8>, Option<bool>) {
         let charging = fs::read_to_string(path.join("status"))
             .ok()
             .and_then(|status| match status.trim() {
-                "Charging" | "Full" | "Not charging" => Some(true),
+                "Charging" | "Full" => Some(true),
+                "Not charging" => None,
                 "Discharging" => Some(false),
                 _ => None,
             });

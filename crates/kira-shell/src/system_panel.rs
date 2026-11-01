@@ -91,7 +91,7 @@ fn summary(
     }
     if let Some((total, available)) = root
         && total > 0
-        && available * 100 / total <= 10
+        && percent_used(total, available).is_some_and(|used| used >= 90)
     {
         return ("LOW STORAGE", "kira-system-warning");
     }
@@ -389,14 +389,13 @@ pub fn toggle(
     });
 
     let weak_window = window.downgrade();
-    let weak_panel = Rc::downgrade(&panel);
+    // Retain the view-model while the popup is open. Only the weak window
+    // reference is captured, so closing the popup stops this source and
+    // releases the labels without a reference cycle.
     gtk::glib::timeout_add_local(Duration::from_secs(2), move || {
         if weak_window.upgrade().is_none() {
             return gtk::glib::ControlFlow::Break;
         }
-        let Some(panel) = weak_panel.upgrade() else {
-            return gtk::glib::ControlFlow::Break;
-        };
         *report.borrow_mut() = panel.refresh(
             &current.borrow(),
             core_connected.get(),
