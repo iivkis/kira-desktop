@@ -4,8 +4,10 @@ mod config;
 mod niri;
 
 use std::error::Error;
+use std::fs::{self, File, OpenOptions};
 use std::io;
-use std::os::unix::fs::{FileTypeExt, MetadataExt};
+use std::os::unix::fs::{FileTypeExt, MetadataExt, OpenOptionsExt, PermissionsExt};
+use std::os::unix::net::UnixStream as StdUnixStream;
 use std::path::{Path, PathBuf};
 
 use kira_ipc::{ConfigState, RpcRequest, RpcResponse, WorkspaceState, dispatch_with_state};
@@ -52,6 +54,85 @@ impl Drop for SocketGuard {
             eprintln!("kira-core: cannot remove owned socket: {error}");
         }
     }
+}
+
+/// Only replace an abandoned socket, never a live daemon or another file.
+/// The sidecar lock serializes cooperating Core instances during recovery.
+/// Keep the lock file on disk: unlinking a locked file permits a second lock
+/// on a new inode. The enclosing runtime/preview directory owns its cleanup.
+fn recover_stale_socket(path: &Path, lock: &File) -> io::Result<()> {
+    let occupied = |reason: &'static str| io::Error::new(io::ErrorKind::AddrInUse, reason);
+    let parent = path
+        .parent()
+        .ok_or_else(|| occupied("Core socket has no parent directory"))?;
+    let directory = fs::symlink_metadata(parent)?;
+    let socket = fs::symlink_metadata(path)?;
+    let owner = lock.metadata()?.uid();
+
+    // Automatic deletion is allowed only in a private, same-owner directory.
+    // symlink_metadata prevents a socket-path symlink from being followed.
+    if !directory.file_type().is_dir()
+        || directory.permissions().mode() & 0o022 != 0
+        || directory.uid() != owner
+        || !socket.file_type().is_socket()
+        || socket.uid() != owner
+    {
+        return Err(occupied(
+            "Refusing to replace Core socket outside a private, owner-matched directory",
+        ));
+    }
+
+    match StdUnixStream::connect(path) {
+        Ok(_) => return Err(occupied("Another Core is listening on the socket")),
+        Err(error) if error.kind() == io::ErrorKind::ConnectionRefused => {}
+        Err(error) => return Err(error), // PermissionDenied/other errors are not proof of staleness.
+    }
+
+    // Detect a replacement between the probe and unlink. Together with the
+    // sidecar lock this prevents concurrent Core startups from deleting each
+    // other's freshly bound sockets.
+    let current = fs::symlink_metadata(path)?;
+    if !current.file_type().is_socket()
+        || current.dev() != socket.dev()
+        || current.ino() != socket.ino()
+    {
+        return Err(occupied("Core socket changed during stale-socket recovery"));
+    }
+    fs::remove_file(path)?;
+    eprintln!("kira-core: removed abandoned socket {}", path.display());
+    Ok(())
+}
+
+/// Bind normally, or retry once after verified stale-socket cleanup.
+/// The returned lock must live for as long as the listener is running.
+fn bind_core_socket(path: &Path) -> io::Result<(File, SocketGuard, UnixListener)> {
+    let mut lock_path = path.as_os_str().to_os_string();
+    lock_path.push(".lock");
+    let lock = OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .truncate(false) // Persist the inode shared by future Core startups.
+        .mode(0o600)
+        .open(PathBuf::from(lock_path))?;
+    lock.try_lock().map_err(|error| {
+        io::Error::new(
+            io::ErrorKind::AddrInUse,
+            format!("Another Core holds the socket startup lock: {error}"),
+        )
+    })?;
+
+    let listener = match UnixListener::bind(path) {
+        Ok(listener) => listener,
+        Err(error) if error.kind() == io::ErrorKind::AddrInUse => {
+            recover_stale_socket(path, &lock)?;
+            UnixListener::bind(path)?
+        }
+        Err(error) => return Err(error),
+    };
+    let guard = SocketGuard::new(path)?;
+    // Pattern bindings drop in reverse order: listener, guard, then lock.
+    Ok((lock, guard, listener))
 }
 
 /// Read newline-delimited IPC without growing beyond the configured bound.
@@ -216,9 +297,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let path = kira_ipc::core_socket_path()?;
-    // Binding never unlinks an existing socket: another Core may own it.
-    let listener = UnixListener::bind(&path)?;
-    let _guard = SocketGuard::new(&path)?;
+    // Reclaim only a verified abandoned socket; preserve live Core instances.
+    let (_socket_lock, _guard, listener) = bind_core_socket(&path)?;
     eprintln!("kira-core listening on {}", path.display());
 
     let (config_sender, config_receiver) = watch::channel(ConfigState::default());
@@ -438,6 +518,121 @@ mod tests {
         server.abort();
         std::fs::remove_file(&path).unwrap();
         std::fs::remove_dir(&dir).unwrap();
+    }
+
+    #[tokio::test]
+    async fn replaces_abandoned_socket_after_unclean_shutdown() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-stale-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let old_listener = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        drop(old_listener); // Simulate SIGKILL: the socket path survives.
+        assert!(path.exists());
+
+        let (lock, guard, listener) = bind_core_socket(&path).unwrap();
+        assert!(StdUnixStream::connect(&path).is_ok());
+        drop(listener);
+        drop(guard);
+        drop(lock);
+        assert!(!path.exists());
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[tokio::test]
+    async fn refuses_to_replace_live_socket() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-live-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let (lock, guard, listener) = bind_core_socket(&path).unwrap();
+        let before = fs::symlink_metadata(&path).unwrap();
+
+        assert!(bind_core_socket(&path).is_err());
+        let after = fs::symlink_metadata(&path).unwrap();
+        assert_eq!((before.dev(), before.ino()), (after.dev(), after.ino()));
+        assert!(StdUnixStream::connect(&path).is_ok());
+
+        drop(listener);
+        drop(guard);
+        drop(lock);
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn refuses_legacy_live_listener_without_sidecar_lock() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-legacy-live-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let listener = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        let original = fs::symlink_metadata(&path).unwrap();
+
+        let error = bind_core_socket(&path).err().unwrap();
+        assert_eq!(error.kind(), io::ErrorKind::AddrInUse);
+        assert_eq!(fs::symlink_metadata(&path).unwrap().ino(), original.ino());
+        assert!(StdUnixStream::connect(&path).is_ok());
+
+        drop(listener);
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn never_removes_regular_files_or_symlinks() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-occupied-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        fs::write(&path, "keep me").unwrap();
+        assert!(bind_core_socket(&path).is_err());
+        assert_eq!(fs::read_to_string(&path).unwrap(), "keep me");
+
+        fs::remove_file(&path).unwrap();
+        let target = directory.join("target");
+        fs::write(&target, "also keep me").unwrap();
+        std::os::unix::fs::symlink(&target, &path).unwrap();
+        assert!(bind_core_socket(&path).is_err());
+        assert!(
+            fs::symlink_metadata(&path)
+                .unwrap()
+                .file_type()
+                .is_symlink()
+        );
+        assert_eq!(fs::read_to_string(&target).unwrap(), "also keep me");
+
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn refuses_recovery_in_world_writable_directory() {
+        let directory = std::env::temp_dir().join(format!(
+            "kira-core-public-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("socket");
+        let stale = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        drop(stale);
+        fs::set_permissions(&directory, fs::Permissions::from_mode(0o777)).unwrap();
+
+        assert!(bind_core_socket(&path).is_err());
+        assert!(fs::symlink_metadata(&path).unwrap().file_type().is_socket());
+
+        fs::set_permissions(&directory, fs::Permissions::from_mode(0o700)).unwrap();
+        fs::remove_dir_all(directory).unwrap();
     }
 
     #[test]
