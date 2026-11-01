@@ -335,7 +335,13 @@ fn main() {
                         core_online.set(online);
                         continue;
                     }
-                    ShellDelivery::Metrics(snapshot) => {
+                    ShellDelivery::Metrics(mut snapshot) => {
+                        // Gio queries the current root filesystem from the GTK
+                        // thread, while /proc reads happen off-thread.
+                        if let Some((total, available)) = system_panel::disk() {
+                            snapshot.root_total_kib = Some(total);
+                            snapshot.root_available_kib = Some(available);
+                        }
                         *latest_metrics.borrow_mut() = snapshot.clone();
                         ("kira:system-metrics", snapshot.as_json().to_string())
                     }

@@ -16,6 +16,8 @@ pub struct Snapshot {
     pub load: Option<[f64; 3]>,
     pub battery_percent: Option<u8>,
     pub battery_charging: Option<bool>,
+    pub root_total_kib: Option<u64>,
+    pub root_available_kib: Option<u64>,
 }
 
 impl Snapshot {
@@ -30,6 +32,8 @@ impl Snapshot {
             "load": self.load,
             "battery_percent": self.battery_percent,
             "battery_charging": self.battery_charging,
+            "root_total_kib": self.root_total_kib,
+            "root_available_kib": self.root_available_kib,
         })
     }
 

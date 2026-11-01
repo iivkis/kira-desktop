@@ -50,7 +50,7 @@ fn percentage(line: &Metric, percent: Option<u8>, detail: String) {
     }
 }
 
-fn disk() -> Option<(u64, u64)> {
+pub fn disk() -> Option<(u64, u64)> {
     let file = gtk::gio::File::for_path("/");
     let info = file.query_filesystem_info(
         "filesystem::size,filesystem::free",
@@ -121,7 +121,7 @@ struct Panel {
 
 impl Panel {
     fn refresh(&self, snapshot: &Snapshot, core: bool, niri: bool) -> String {
-        let root = disk();
+        let root = snapshot.root_total_kib.zip(snapshot.root_available_kib);
         let (headline, class) = summary(core, niri, snapshot, root);
         self.state.set_text(headline);
         for state in ["kira-system-ready", "kira-system-error", "kira-system-warning", "kira-system-pending"] {
