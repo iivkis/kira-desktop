@@ -654,7 +654,6 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         state.hide();
         return;
     }
-    crate::launcher::dismiss(application);
     state.show(Surface::Calendar);
 }
 
@@ -687,7 +686,6 @@ pub fn toggle_system(
         state.hide();
         return;
     }
-    crate::launcher::dismiss(application);
     *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
     state.last_metrics.set(None);
     state.show(Surface::System);
