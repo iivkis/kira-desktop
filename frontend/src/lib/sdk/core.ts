@@ -239,6 +239,15 @@ export function notifyCalendarHostReady(): void {
   sendCalendarUi('host-ready');
 }
 
+/** Report a measured, clamped Svelte widget root height. Native GTK
+ * validates the generation and enforces the real monitor's 70% limit.
+ */
+export function notifyOverlayHeight(generation: number, height: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      !Number.isSafeInteger(height) || height < 1 || height > 20000) return false;
+  return sendCalendarUi('size:' + generation + ':' + height);
+}
+
 /** A specific popup generation has finished its lazy Svelte mount. */
 export function notifyCalendarMounted(generation: number): void {
   if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;

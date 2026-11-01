@@ -75,7 +75,7 @@
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
-  class="flex h-full min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
+  class="flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header class="shrink-0 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div>

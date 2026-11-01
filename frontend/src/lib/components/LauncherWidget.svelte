@@ -74,7 +74,7 @@
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira Launcher"
-  class="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-kira-muted/30 bg-kira-bg text-kira-text">
+  class="flex h-auto min-h-0 w-full flex-col overflow-hidden rounded-lg border border-kira-muted/30 bg-kira-bg text-kira-text">
   <header class="shrink-0 px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0">

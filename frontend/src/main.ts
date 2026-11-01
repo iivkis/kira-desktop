@@ -5,6 +5,7 @@ import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
+import { observeOverlaySize } from './lib/overlay-size';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
 import './style.css';
 
@@ -37,6 +38,7 @@ whenDocumentReady(document, () => {
         // Both components are prebundled, but neither owns DOM, timers or
         // subscriptions until its popup is explicitly requested.
         const kind = requestedKind;
+        let stopSizing: (() => void) | null = null;
         return {
           mount() {
             const instance = kind === 'calendar'
@@ -58,9 +60,16 @@ whenDocumentReady(document, () => {
             return instance;
           },
           unmount(instance: ReturnType<typeof mount>) {
+            stopSizing?.();
+            stopSizing = null;
             return unmount(instance);
           },
           onMounted(generation: number) {
+            const root = target.querySelector<HTMLElement>('main[data-kira-ui-root]');
+            if (!root) throw new Error('Overlay root missing when measuring size');
+            // Size must reach GTK before mounted, otherwise a 1px popup
+            // could become visible before the first actual resize.
+            stopSizing = observeOverlaySize(root, generation);
             report('Overlay Svelte ' + kind + ' mounted; generation=' + generation);
             notifyCalendarMounted(generation);
           },
@@ -69,13 +78,19 @@ whenDocumentReady(document, () => {
       (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
     window.addEventListener('kira:overlay:show', (event: Event) => {
-      const detail = (event as CustomEvent<{ kind: string; generation: number }>).detail;
+      const detail = (event as CustomEvent<{ kind: string; generation: number; maxHeight: number }>).detail;
       if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||
           !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
-          detail.generation > 0xffffffff || detail.generation <= lastGeneration) {
+          detail.generation > 0xffffffff || detail.generation <= lastGeneration ||
+          !Number.isSafeInteger(detail.maxHeight) || detail.maxHeight < 1 ||
+          detail.maxHeight > 20000) {
         report('Overlay rejected invalid or stale show payload');
         return;
       }
+      // An output-sized limit in absolute CSS pixels prevents the layout
+      // from feeding WebKit's own changing viewport dimensions back into
+      // the popup height (which otherwise causes resize oscillation).
+      document.documentElement.style.setProperty('--kira-overlay-max-height', detail.maxHeight + 'px');
       lastGeneration = detail.generation;
       visibleGeneration = detail.generation;
       report('Overlay received show: ' + detail.kind + ' generation=' + detail.generation);
