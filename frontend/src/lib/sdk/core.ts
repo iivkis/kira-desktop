@@ -183,9 +183,15 @@ function sendCalendarUi(command: string): boolean {
   }
 }
 
-/** Emitted only by the calendar bootstrap after mount() and flushSync(). */
-export function notifyCalendarMounted(): void {
-  sendCalendarUi('ready');
+/** The WebKit document is ready, but no widget has been mounted yet. */
+export function notifyCalendarHostReady(): void {
+  sendCalendarUi('host-ready');
+}
+
+/** A specific popup generation has finished its lazy Svelte mount. */
+export function notifyCalendarMounted(generation: number): void {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;
+  sendCalendarUi('mounted:' + generation);
 }
 
 export function closeCalendarOverlay(): void {

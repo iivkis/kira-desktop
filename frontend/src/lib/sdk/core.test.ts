@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarMounted } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -60,8 +60,13 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    notifyCalendarMounted();
-    expect(postMessage).toHaveBeenCalledExactlyOnceWith('ready');
+    notifyCalendarHostReady();
+    notifyCalendarMounted(42);
+    notifyCalendarMounted(0);
+    notifyCalendarMounted(-1);
+    notifyCalendarMounted(Number.NaN);
+    notifyCalendarMounted(4294967296);
+    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['host-ready', 'mounted:42']);
   });
 
   it('does not throw without a calendar host, or when its channel fails', () => {

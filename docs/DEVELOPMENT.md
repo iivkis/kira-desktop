@@ -10,6 +10,18 @@ Pull requests and main pushes run only the lightweight Core + Svelte checks
 GitHub Actions → **Nix package (nightly / manual)** → **Run workflow**
 (select the desired branch). It does not block PR iteration.
 
+
+The Calendar is **mounted lazily**: its WebKit process prewarms without a
+Svelte Calendar component. Opening mounts one instance; hiding explicitly
+unmounts it, stopping its one-second clock and releasing DOM/effects while
+retaining the warm WebKit engine for fast reopening. `lazy-widget.ts`
+serializes asynchronous mount/unmount across rapid toggles and skips stale
+show generations. The single offline frontend bundle contains all component
+code in advance, but creates and destroys active component instances on
+demand. It makes no network requests.
+This does **not** guarantee WebKit process RSS returns to zero. Use PSS and CPU
+sampling for actual resource measurements.
+
 ## Widget architecture migration
 
 The intended architecture is Rust for Core, GIO/system integration and the
