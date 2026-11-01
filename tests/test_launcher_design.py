@@ -38,6 +38,37 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertNotIn('gtk::ApplicationWindow', RUST)
         self.assertNotIn('gtk::CssProvider', RUST)
 
+    def test_square_launcher_and_lazily_resolved_native_icons(self):
+        root_markup = WIDGET.split("<main data-kira-ui-root", 1)[1].split("<header", 1)[0]
+        self.assertIn("overflow-hidden bg-kira-bg text-kira-text", root_markup)
+        self.assertNotIn("rounded-lg", root_markup)
+        self.assertNotIn("border-kira-muted", root_markup)
+        self.assertIn("<img class=\"size-9 object-contain\"", WIDGET)
+        self.assertIn("src={icons[app.id]}", WIDGET)
+        self.assertIn("app.name.slice(0, 1)", WIDGET)
+        self.assertIn("onLauncherIcons(batch", WIDGET)
+        self.assertIn("requestLauncherIcons(generation, batch)", WIDGET)
+        self.assertIn("needed.slice(i, i + 16)", WIDGET)
+        self.assertIn("stopIcons();", WIDGET)
+        self.assertIn("gtk::IconTheme::for_display(&display)", RUST)
+        self.assertIn("theme.lookup_by_gicon(", RUST)
+        self.assertIn("paintable.file()?", RUST)
+        self.assertIn("file.load_bytes(None::<&gio::Cancellable>)", RUST)
+        self.assertIn("const MAX_ICON_BYTES: usize = 128 * 1024;", RUST)
+        self.assertIn("const ICON_BATCH_LIMIT: usize = 16;", RUST)
+        self.assertIn("data:{mime};base64", RUST)
+        self.assertIn("icons: RefCell<HashMap<usize, Option<String>>>", RUST)
+        self.assertIn("self.launcher.borrow_mut().take()", OVERLAY)
+        self.assertIn("kira:launcher:icons", OVERLAY)
+        self.assertIn("Some(UiCommand::LauncherIcons(generation, ids))", OVERLAY)
+        self.assertIn("icons-request:", OVERLAY)
+        self.assertIn("self.generation.get() == generation", OVERLAY)
+        self.assertIn("raw_ids.split(',')", OVERLAY)
+        self.assertIn("ids.contains(&id)", OVERLAY)
+        self.assertIn("iconDataUri.test(icon.data_url)", SDK)
+        self.assertNotIn("file://", RUST)
+        self.assertNotIn("std::process::Command", RUST)
+
     def test_native_app_identity_and_safe_launch(self):
         for required in (
             'gio::AppInfo::all()', 'info.should_show()',

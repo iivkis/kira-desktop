@@ -398,6 +398,20 @@ impl CalendarOverlay {
                     self.dispatch_launcher("kira:launcher:apps", payload);
                 }
             }
+            Some(UiCommand::LauncherIcons(generation, ids))
+                if self.requested.get()
+                    && self.active.get() == Some(Surface::Launcher)
+                    && self.generation.get() == generation =>
+            {
+                let data = self
+                    .launcher
+                    .borrow()
+                    .as_ref()
+                    .map(|catalog| catalog.icons_json(&ids));
+                if let Some(payload) = data {
+                    self.dispatch_launcher("kira:launcher:icons", payload);
+                }
+            }
             Some(UiCommand::LaunchApp(generation, id))
                 if self.requested.get()
                     && self.revealed.get()
@@ -525,6 +539,7 @@ enum UiCommand<'a> {
     ProcessesTab(bool),
     CopyReport,
     LauncherCatalog(u32),
+    LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
 }
 
@@ -561,6 +576,33 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
             .ok()
             .filter(|v| *v > 0)
             .map(UiCommand::LauncherCatalog);
+    }
+    if let Some(value) = message.strip_prefix("icons-request:") {
+        let (generation, raw_ids) = value.split_once(':')?;
+        if generation.is_empty()
+            || generation.len() > 10
+            || !generation.bytes().all(|b| b.is_ascii_digit())
+            || raw_ids.len() > 79
+        {
+            return None;
+        }
+        let generation = generation.parse::<u32>().ok().filter(|v| *v > 0)?;
+        let parts: Vec<_> = raw_ids.split(',').collect();
+        if parts.is_empty() || parts.len() > 16 {
+            return None;
+        }
+        let mut ids = Vec::with_capacity(parts.len());
+        for raw in parts {
+            if raw.is_empty() || raw.len() > 4 || !raw.bytes().all(|b| b.is_ascii_digit()) {
+                return None;
+            }
+            let id = raw.parse::<usize>().ok().filter(|id| *id < 1024)?;
+            if ids.contains(&id) {
+                return None;
+            }
+            ids.push(id);
+        }
+        return Some(UiCommand::LauncherIcons(generation, ids));
     }
     if let Some(value) = message.strip_prefix("launch:") {
         let (generation, id) = value.split_once(':')?;
@@ -846,6 +888,15 @@ mod tests {
             "tab:everything",
             "apps-request:",
             "apps-request:abc",
+            "icons-request:",
+            "icons-request:0:1",
+            "icons-request:1:",
+            "icons-request:1:1024",
+            "icons-request:1:1,,2",
+            "icons-request:1:1,1",
+            "icons-request:1:1;sh",
+            "icons-request:1:1:2",
+            "icons-request:4294967296:1",
             "launch:1:1024",
             "launch:1:-1",
             "launch:1:0;sh",

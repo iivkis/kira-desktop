@@ -288,6 +288,40 @@ export interface LauncherCatalog {
   apps: LauncherApp[];
 }
 
+export interface LauncherIcon {
+  id: number;
+  data_url: string | null;
+}
+
+export interface LauncherIcons {
+  icons: LauncherIcon[];
+}
+
+const iconDataUri = /^data:image\/(?:png|jpeg|webp|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/;
+
+/** Native GTK resolves themed icons into bounded image-only data URIs.
+ * Never accept filesystem paths, file://, javascript: or HTTP URLs.
+ */
+export function onLauncherIcons(callback: (batch: LauncherIcons) => void): () => void {
+  return onNativeEvent('kira:launcher:icons', (value): value is LauncherIcons =>
+    isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 16 &&
+    value.icons.every((icon: unknown) => {
+      if (!isRecord(icon) || !Number.isSafeInteger(icon.id) ||
+          (icon.id as number) < 0 || (icon.id as number) >= 1024) return false;
+      return icon.data_url === null ||
+        (typeof icon.data_url === 'string' && icon.data_url.length <= 180_000 &&
+          iconDataUri.test(icon.data_url));
+    }), callback);
+}
+
+export function requestLauncherIcons(generation: number, ids: number[]): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      ids.length === 0 || ids.length > 16 ||
+      new Set(ids).size !== ids.length ||
+      !ids.every(id => Number.isSafeInteger(id) && id >= 0 && id < 1024)) return false;
+  return sendCalendarUi('icons-request:' + generation + ':' + ids.join(','));
+}
+
 /** The launcher receives a bounded, read-only catalog from native GIO. */
 export function onLauncherCatalog(callback: (catalog: LauncherCatalog) => void): () => void {
   return onNativeEvent('kira:launcher:apps', (value): value is LauncherCatalog =>

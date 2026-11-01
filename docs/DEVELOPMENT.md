@@ -96,7 +96,13 @@ popup sizing. `calendar.rs` manages one window and three lazily mounted
 Svelte widgets. `launcher.rs` holds only a bounded GIO AppInfo catalog
 and calls `AppInfo::launch()` for a validated index, while
 `system_panel.rs` handles read-only system data and process sampling.
-Launcher currently uses a letter fallback instead of native themed icons.
+Launcher now resolves the system's themed GIO icons through GTK IconTheme
+only for the currently rendered rows. The Rust bridge accepts up to 16 app
+indices per request, caps individual icon files at 128 KiB, checks image
+signatures, and returns image-only data URIs (no paths/URLs). Svelte caches
+images only during the visible launcher's lifetime and uses an initial-letter
+fallback for unavailable icons. Its outer WebKit surface is square with no
+decorative border or shadow.
 No generic command execution is exposed.
 
 When adding npm dependencies, commit the updated

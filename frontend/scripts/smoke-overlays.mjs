@@ -12,6 +12,9 @@ import { execFileSync } from 'node:child_process';
 const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
 const chrome = process.env.CHROME_BIN || 'google-chrome';
 const dir = await mkdtemp(join(tmpdir(), 'kira-overlay-smoke-'));
+const testIcon = 'data:image/svg+xml;base64,' + Buffer.from(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#ef7d1a"/></svg>',
+).toString('base64');
 
 function scriptFor(steps) {
   return '<script>' +
@@ -20,6 +23,11 @@ function scriptFor(steps) {
         'document.documentElement.setAttribute("data-smoke-size", String(message));' +
         'const count = Number(document.documentElement.getAttribute("data-smoke-resizes") || 0) + 1;' +
         'document.documentElement.setAttribute("data-smoke-resizes", count);' +
+      '}' +
+      'if (String(message).startsWith("icons-request:")) {' +
+        'const ids = String(message).split(":")[2].split(",").map(Number);' +
+        'setTimeout(() => window.dispatchEvent(new CustomEvent("kira:launcher:icons", {detail: {icons: ids.map(id => ({id, data_url: ' +
+          JSON.stringify(testIcon) + '}))}})), 5);' +
       '}' +
     '}}}};' +
     'window.addEventListener("load", () => {' +
@@ -47,6 +55,8 @@ function scriptFor(steps) {
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
+      'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
+      'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
     '}, 1150);' +
     '});</script>';
 }
@@ -84,6 +94,13 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
+  if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
+      Number(output.match(/data-smoke-icon-count="(\d+)"/)?.[1] ?? 0) < 1)) {
+    const square = output.match(/data-smoke-square="([^"]+)"/)?.[1] ?? 'unset';
+    const icons = output.match(/data-smoke-icon-count="([^"]+)"/)?.[1] ?? 'unset';
+    const rows = (output.match(/role="option"/g) ?? []).length;
+    throw new Error(name + ': square=' + square + ', icons=' + icons + ', rows=' + rows);
+  }
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
@@ -91,6 +108,10 @@ try {
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
+  await smoke('launcher-square-with-themed-icons', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+  ], 'Kira Launcher', 'icons');
   await smoke('launcher-long-list', [
     { delay: 25, kind: 'launcher', generation: 1 },
     { delay: 90, kind: 'catalog' },
