@@ -17,7 +17,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("scroll.set_max_content_height(height_limit)", HELPERS)
         self.assertIn("scroll.set_propagate_natural_height(true)", HELPERS)
         self.assertIn("window.set_default_size(width, -1)", HELPERS)
-        self.assertNotIn("preferred_height", HELPERS)
+        self.assertNotIn("window.set_default_size(width, 490)", HELPERS)
         self.assertIn("native_ui::configure_popup", MONITOR)
         self.assertIn("native_ui::configure_webview_popup", CALENDAR)
         self.assertIn("output_width.saturating_sub(24)", HELPERS)

@@ -44,13 +44,19 @@ pub fn restrict_webview_navigation(view: &webkit6::WebView) {
 
 /// WebKit views fill their window instead of reporting a useful natural size.
 /// Cap dimensions to the actual logical monitor, with safe narrow-screen margins.
-fn apply_webview_size(window: &gtk::ApplicationWindow, preferred_width: i32, preferred_height: i32) {
+fn apply_webview_size(
+    window: &gtk::ApplicationWindow,
+    preferred_width: i32,
+    preferred_height: i32,
+) {
     let display = gtk::prelude::WidgetExt::display(window);
     let monitor = window
         .surface()
         .and_then(|surface| display.monitor_at_surface(&surface))
         .or_else(|| {
-            display.monitors().item(0)
+            display
+                .monitors()
+                .item(0)
                 .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
         });
     let (output_width, output_height) = monitor
