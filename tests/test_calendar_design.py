@@ -34,7 +34,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn('set_namespace(Some("kira-overlay"))', RUST)
         self.assertIn("set_exclusive_zone(0)", RUST)
         self.assertIn("set_keyboard_mode(KeyboardMode::OnDemand)", RUST)
-        self.assertIn("native_ui::configure_webview_popup(&window, 420, 620)", RUST)
+        self.assertIn("native_ui::configure_webview_popup(&window, 420, 1)", RUST)
         self.assertIn("native_ui::POPUP_TOP_MARGIN", RUST)
         self.assertIn("restrict_webview_navigation(&view)", RUST)
         self.assertIn('register_script_message_handler("kiraCalendarUi", None)', RUST)
