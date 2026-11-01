@@ -200,6 +200,8 @@ try {
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
+    // Interrupt the still-running first scatter with another click.
+    { delay: 450, kind: 'clock-chaos' },
   ], 'Kira Calendar', 'clock');
   await smoke('calendar-month-and-day-motion', [
     { delay: 25, kind: 'calendar', generation: 1 },
