@@ -115,6 +115,22 @@ nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
 ```
 
 
+## Pull request checks
+
+The CI workflow reports two stable jobs on pull requests: **Core + Svelte checks**
+and **Native Shell check**. The second job invokes
+`nix develop .#ci --command cargo check --locked -p kira-shell --all-targets`
+when Rust Shell/IPC code, Cargo/Nix dependencies, or the CI configuration changes.
+Unrelated UI/docs-only PRs skip the native dependency setup without leaving a
+missing check status. The slim `.#ci` dev shell excludes the compositor and
+visual-preview tools; Nix binary inputs come from its configured caches, and
+GitHub Actions caches the Rust dependencies. The full Nix release package remains
+on its separate nightly/manual workflow.
+
+To **enforce** the native job on protected branches, require the status check
+`Native Shell check` in the repository's branch protection/ruleset, alongside
+`Core + Svelte checks`.
+
 ## Incremental and release build caching
 
 - **Local Rust development:** `nix develop` sets up persistent `sccache`

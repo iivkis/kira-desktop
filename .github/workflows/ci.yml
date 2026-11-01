@@ -44,3 +44,66 @@ jobs:
         run: task check
       - name: Build static Svelte assets
         run: task frontend:build
+
+  native-shell:
+    # This job always reports a stable status for branch protection, but
+    # only installs GTK/WebKit dependencies for relevant PRs and pushes.
+    name: Native Shell check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect native Shell changes
+        id: changes
+        shell: bash
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            base="$PR_BASE_SHA"
+            head="$PR_HEAD_SHA"
+          else
+            base="$PUSH_BASE_SHA"
+            head="$GITHUB_SHA"
+          fi
+          # If GitHub cannot provide a comparable base (e.g. a force push),
+          # run the check rather than accidentally skipping native code.
+          if ! git cat-file -e "${base}^{commit}" 2>/dev/null ||
+             ! git cat-file -e "${head}^{commit}" 2>/dev/null; then
+            echo "shell=true" >> "$GITHUB_OUTPUT"
+            echo "Revision unavailable; checking Shell conservatively"
+            exit 0
+          fi
+          # Avoid git-diff SIGPIPE under pipefail when grep exits early.
+          changed="$(git diff --name-only "$base" "$head" --)"
+          if grep -Eq \
+            '^(crates/kira-shell/|crates/kira-ipc/|\.cargo/|nix/|Cargo\.toml$|Cargo\.lock$|flake\.nix$|flake\.lock$|Taskfile\.yml$|\.github/workflows/ci\.yml$)' <<< "$changed"; then
+            echo "shell=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "shell=false" >> "$GITHUB_OUTPUT"
+            echo "No native Shell dependency changed; skipping GTK/WebKit setup"
+          fi
+
+      - name: Install Nix for native dependencies
+        if: steps.changes.outputs.shell == 'true'
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Optional shared Nix binary cache
+        if: steps.changes.outputs.shell == 'true' && vars.KIRA_CACHIX_NAME != ''
+        uses: cachix/cachix-action@v17
+        with:
+          name: ${{ vars.KIRA_CACHIX_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Cache Rust dependencies
+        if: steps.changes.outputs.shell == 'true'
+        uses: Swatinem/rust-cache@v2
+      - name: Compile native GTK/WebKit Shell (including test targets)
+        if: steps.changes.outputs.shell == 'true'
+        run: nix develop .#ci --command cargo check --locked -p kira-shell --all-targets
