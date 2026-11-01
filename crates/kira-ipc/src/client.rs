@@ -62,7 +62,7 @@ fn subscribe<T: DeserializeOwned>(
         method: method.into(),
     };
     serde_json::to_writer(&mut stream, &request)?;
-    stream.write_all(b"\\n")?;
+    stream.write_all(b"\n")?;
     stream.flush()?;
 
     let mut reader = BufReader::new(stream);
@@ -71,14 +71,14 @@ fn subscribe<T: DeserializeOwned>(
         reader
             .by_ref()
             .take(MAX_RESPONSE_BYTES + 1)
-            .read_until(b'\\n', &mut line)?;
+            .read_until(b'\n', &mut line)?;
         if line.is_empty() {
             return Err(io::Error::new(
                 io::ErrorKind::UnexpectedEof,
                 "Core subscription closed",
             ));
         }
-        if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\\n") {
+        if line.len() as u64 > MAX_RESPONSE_BYTES || !line.ends_with(b"\n") {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
                 "Invalid subscription frame",
