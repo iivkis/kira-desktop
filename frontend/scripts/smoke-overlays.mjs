@@ -143,6 +143,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
+    ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
     '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
@@ -213,6 +214,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': TENET entry/restore failed: ' + stage.join(', '));
+  }
+  if (heightMode === 'reduced' &&
+      (!output.includes('data-smoke-tenet-started="false"') ||
+       !output.includes('data-smoke-tenet-settled="true"'))) {
+    const stages = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': reduced motion must skip animation and fragments: ' + stages.join(', '));
   }
   if (heightMode === 'icons' && (!output.includes('data-smoke-launcher-a11y="true"') || !output.includes('data-smoke-square="true"') ||
       !output.includes('data-smoke-real-icon-transparent="true"') ||
@@ -291,6 +298,9 @@ try {
     { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
+  await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
+  await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
+  await smoke('launcher-reduced-motion', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'reduced');
   await smoke('launcher-square-with-themed-icons', [
     { delay: 25, kind: 'launcher', generation: 1 },
     { delay: 90, kind: 'catalog' },
