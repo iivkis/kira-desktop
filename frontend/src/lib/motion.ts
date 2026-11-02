@@ -85,13 +85,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     master = gsap.timeline({ paused: true, onComplete: settle });
     master.to(content, {
       y: 0,
-      opacity: 1,
-      duration: 0.72,
-      stagger: 0.045,
-      ease: 'sine.inOut',
+      scale: 1,
+      duration: 0.44,
+      stagger: 0.035,
+      ease: 'back.out(1.22)',
       force3D: true,
       overwrite: 'auto',
     }, 0);
+    // Fade is kept separate from the elastic transform: no opacity overshoot.
+    master.to(content, { opacity: 1, duration: 0.22, stagger: 0.035, ease: 'power2.out' }, 0);
     master.fromTo(traces,
       {
         x: (i: number) => flights[i].x,
@@ -101,8 +103,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       },
       {
         x: 0, y: 0, rotation: 0, opacity: 0,
-        duration: 0.72,
-        stagger: { each: 0.015, from: 'end' },
+        duration: 0.44,
+        stagger: { each: 0.012, from: 'end' },
         ease: 'power3.in',
         force3D: true,
         immediateRender: true,
@@ -137,13 +139,14 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   // Prepare the visible geometry while the native window is still
   // transparent. The GTK visible handshake starts the tween from these
   // exact values, eliminating the old full-opacity -> 0.18 snap.
-  // No layout properties change, and the compositor can cache 3 layers.
+  // Only two or three small sections move. The live chart layers remain still.
   if (preference.matches || !content.length) {
     node.dataset.tenetReveal = 'settled';
   } else {
     gsap.set(content, {
-      y: 14,
-      opacity: 0.82,
+      y: 9,
+      scale: 0.988,
+      opacity: 0.94,
       force3D: true,
       willChange: 'transform, opacity',
     });
@@ -163,6 +166,79 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     destroy() {
       window.removeEventListener('kira:overlay:visible', onVisible);
       window.removeEventListener('kira:overlay:hide', onHide);
+      preference.removeEventListener('change', onPreference);
+      settle();
+    },
+  };
+}
+
+/** One real indicator moves between the measured tab geometries, including
+ * interrupted selections. The truthful active state updates in Svelte first.
+ */
+export function tenetFlowIndicator(node: HTMLElement, initial: { active: string }) {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const indicator = node.querySelector<HTMLElement>('[data-kira-flow-indicator]');
+  let active = initial.active;
+  if (!indicator) return { update(_next: { active: string }) {}, destroy() {} };
+
+  function relocate(next: string, animate: boolean) {
+    const button = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-tab]'))
+      .find(item => item.dataset.kiraTab === next);
+    if (!button) return;
+    const x = button.offsetLeft;
+    const width = button.offsetWidth;
+    if (!Number.isFinite(x) || width <= 0) return;
+    if (!animate || preference.matches) {
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { x, width });
+      return;
+    }
+    gsap.to(indicator, {
+      x, width, duration: 0.42, ease: 'back.out(1.18)',
+      overwrite: 'auto', force3D: true,
+    });
+  }
+
+  relocate(active, false);
+  const onPreference = () => { if (preference.matches) relocate(active, false); };
+  preference.addEventListener('change', onPreference);
+  const observer = typeof ResizeObserver === 'undefined' ? null :
+    new ResizeObserver(() => relocate(active, false));
+  observer?.observe(node);
+
+  return {
+    update(next: { active: string }) {
+      if (next.active === active) return;
+      active = next.active;
+      relocate(active, true);
+    },
+    destroy() {
+      observer?.disconnect();
+      preference.removeEventListener('change', onPreference);
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { clearProps: 'transform,width,willChange' });
+    },
+  };
+}
+
+/** Soft panel arrival on tab changes; the initial native mount is excluded. */
+export function tenetPanelArrival(node: HTMLElement) {
+  const root = node.closest<HTMLElement>('[data-kira-ui-root]');
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!root?.dataset.kiraGeneration || preference.matches) return { destroy() {} };
+  let tween: gsap.core.Tween | null = null;
+  const settle = () => {
+    tween?.kill();
+    tween = null;
+    gsap.set(node, { clearProps: 'transform,opacity,visibility,willChange' });
+  };
+  gsap.set(node, { willChange: 'transform, opacity' });
+  tween = gsap.fromTo(node, { y: 6, autoAlpha: 0.94 },
+    { y: 0, autoAlpha: 1, duration: 0.30, ease: 'power3.out', onComplete: settle });
+  const onPreference = () => { if (preference.matches) settle(); };
+  preference.addEventListener('change', onPreference);
+  return {
+    destroy() {
       preference.removeEventListener('change', onPreference);
       settle();
     },

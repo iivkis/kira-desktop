@@ -70,7 +70,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("pub fn prewarm(", RUST)
         self.assertIn("requestAnimationFrame", RUST)
         self.assertIn("sendCalendarUi('host-ready')", SDK)
-        self.assertIn("sendCalendarUi('mounted:' + generation)", SDK)
+        self.assertIn("sendCalendarUi('mounted:' + generation + ':'", SDK)
         self.assertIn("notifyCalendarMounted(generation)", ENTRY)
 
     def test_lazy_svelte_mount_and_dispose_on_hide(self):

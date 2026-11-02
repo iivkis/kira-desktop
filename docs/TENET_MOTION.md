@@ -24,6 +24,19 @@
 
 **Важно:** правила относятся и к обычной анимации. Простые состояния и микроотклики могут оставаться FORWARD, если причинность, непрерывность и доступность соблюдены. Инвертировать *всё* запрещено. Ориентир **70–80% привычного движения** и **20–30% выразительных инверсий** — дизайнерская эвристика, **не** автоматическая квота.
 
+### Обязательное качество: перетекание и упругость
+
+**Анимация TENET обязана быть непрерывной, направленной и физически отзывчивой.** Если объект меняет расположение, размер, выбранное состояние или визуальный акцент, он *движется из своего текущего отрисованного положения* в следующее. Нельзя заменять его двумя элементами, которые попеременно исчезают/появляются. Например, в System Monitor **один** оранжевый индикатор перетекает под другую вкладку; переключение двух `border-bottom` запрещено.
+
+- **Shared element / continuity.** Сохранять идентичность визуального маркера при переходе (один DOM-элемент, измеренная геометрия, FLIP/GSAP). При смене цели посреди анимации перенаправлять текущий tween через `overwrite: 'auto'` без возврата в старое начало.
+- **Elastic landing.** У движущегося элемента есть ускорение, замедление и *сдержанное* пружинящее завершение, а не монотонная «ползучая» поступь. Для акцентных перемещений подходят настроенные `back.out(1.1–1.3)` или эквивалентные физические профили. Упругость не означает хаотичную тряску, бесконечный bounce и перерегулирование прозрачности. Для opacity выбирать отдельный монотонный easing.
+- **Tempo.** Короткий native fade порядка 160 мс, содержимое при открытии около 440 мс с лёгким stagger, перемещение индикатора около 420 мс, отклик новой панели около 300 мс. Это **отправные профили**, не глобальная задержка реальных действий. Длительные `sine.inOut`-въезды целых виджетов не соответствуют характеру Kira.
+- **One event, one trajectory.** При повторном клике, смене вкладки, resize, Escape или закрытии незавершённое движение немедленно принимает новую корректную цель. Для INVERTED событий запоминается исходная история, как предписано законами выше; обычный FORWARD-переход вкладок не нужно искусственно инвертировать.
+- **Visual truth.** Тексты, ARIA, данные, фокус и клики обновляются сразу. Подвижны только визуальные слои, а не настоящая выборка метрик. Прозрачность не должна скрывать важный контент, размеры окна не должны анимироваться и создавать обратную связь с WebKit resize.
+- **Motion budget.** Предпочитать transform/opacity на 1–3 поверхностях, не анимировать множество вложенных ECharts-графиков, не создавать JS-цикл поиска геометрии на каждом кадре. Под `prefers-reduced-motion` выставлять точную конечную геометрию и мгновенно останавливать обе стороны native/WebKit.
+
+Любой новый tabs, segmented control, selection underline, carousel thumb, active row, expandable rail и другой *перемещающийся* указатель должен иметь **один физически сохраняемый маркер** с прерываемым GSAP-переходом. Исключения для дискретных состояний (нет общего объекта для интерполяции) нужно обосновать; мгновенная замена содержимого допустима, но новая панель входит коротко и непрерывно, без фальшивого «сдвига» показаний.
+
 ## I. Шестнадцать правил
 
 ### Фундамент движения
@@ -141,64 +154,15 @@ IDLE -> PREPARED -> FORWARD / INVERTED / DUAL -> CONTACT -> SETTLED
 
 **Нормативный приоритет:** этот документ определяет причинность, время и качество *всех новых/изменяемых анимаций*, [`AGENTS.md`](../AGENTS.md) делает его обязательным для участников и AI-агентов, а [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) сохраняет палитру и общую визуальную иерархию. При конфликте декоративной идеи с доступностью, безопасностью, точностью данных или функциональностью всегда побеждает функциональность.
 
-### Общая анимация появления · DUAL
+### Shared overlay entrance · synchronized native + WebKit (2026-11)
 
-Calendar, Launcher и System Monitor используют одну сцену на открытие:
-секции приходят FORWARD, четыре декоративных следа возвращаются INVERTED
-по сохранённым траекториям к фактической точке контакта часов/заголовка.
-Общий курсор синхронизирует два GSAP timeline через `dualTime(u)`.
-Launcher меняет исходную траекторию, но не подменяет инверсию CSS-зеркалом.
+Calendar, Launcher и System Monitor используют общий жизненный цикл. Тёплый WebView получает содержимое Svelte и реальную высоту, пока GTK-окно прозрачно. Только после подтверждения mount/paint и проверки поколения `kira:overlay:visible` запускает **одну** короткую композицию: native GTK проявляет уже готовый window за 160 мс (`cubic-out`), GSAP мягко собирает 2–3 передние секции за 440 мс (9 px, scale 0.988, opacity 0.94; `back.out(1.22)` с монотонным opacity), а четыре заранее определённых инвертированных следа возвращаются в тот же contact point по сохранённым путям и обратному `power3.in`. Тяжёлые графики System Monitor не перемещаются.
 
-Данные, время, ввод и фокус не задерживаются. На закрытии, повторном
-открытии, смене reduced-motion или после 1100 мс в throttled WebKit
-обе timelines останавливаются, все фрагменты удаляются, а transform,
-opacity и visibility возвращаются к подлинным значениям. Дополнительные
-виджеты, поверхность Dock, hover lens и ложные показания не вводятся.
+Нативное окно **не** масштабируется и не изменяет позицию при reveal. Размер определяется `ResizeObserver` до открытия и не зависит от GSAP transform. Время и реальные данные не тормозятся. Общий event поколения исключает запуск stale WebKit-сцены. Native fade прерывается новым открытием/закрытием и никогда не управляет opacity следующего поколения.
 
-### Native visibility handshake · 2026-11
+При `prefers-reduced-motion: reduce` Svelte передаёт флаг на Rust через ограниченную команду `mounted:<generation>:<0|1>`, а при смене настройки `motion:<generation>:<0|1>`. Нативное окно становится непрозрачным сразу; GSAP оставляет подлинные стили. Если сигнал видимости не пришёл, содержимое восстанавливается через 550 мс без проигрывания; при throttled WebKit откат срабатывает через 1200 мс. Закрытие, размонтирование и смена настроек убивают tweens, слушатели и следы.
 
-The native GTK/Wayland overlay mounts the trusted Svelte DOM while its
-toplevel opacity is **zero**. Starting GSAP in the Svelte action at mount
-played the actual content entrance before the window appeared, leaving
-only residual orange/white fragments visible to users. The native host
-now sends the generation-scoped `kira:overlay:visible` event **after**
-setting the mapped window's opacity to one. A widget starts motion only
-for its own mounted generation. Before that event, all content remains
-fully visible and accessible, with no hidden text or interactive delay.
+### Continuous selection · System Monitor (2026-11)
 
-The new FORWARD phase assembles real header/content/footer sections
-through a clearly perceptible ~0.84s displacement/scale/opacity
-trajectory (max 0.25s stagger). The INVERTED phase retains the saved
-path and easing at the same contact but uses subtle 12×1px traces rather
-than conspicuous 3×3px orange/white squares. The shared cursor still
-synchronizes the two chronologies. Native hide, unmount, preference
-changes and a 1550ms WebKit throttle fallback restore all styles and
-remove all traces. A host lacking the event shows the widget normally
-without motion, instead of animating invisibly.
+Навигация хранит **один** `data-kira-flow-indicator`, а не два активных нижних бордера. `tenetFlowIndicator` измеряет положение и ширину выбранной кнопки, движется через GSAP `back.out(1.18)`, при повторном выборе переназначает цель из текущего положения через `overwrite: 'auto'`. `ResizeObserver` пересчитывает реальные координаты, reduced motion и unmount останавливают tween. `aria-current` и состояние выбранной вкладки меняются сразу; новая панель получает короткое, не мешающее телеметрии появление.
 
-### Smooth native entrance · compositor continuity (2026-11)
-
-On real Niri/WebKitGTK the previous opening could still stutter despite
-the native-visible handshake. Cause: each widget was **re-initialized
-from a fully painted state** after the popup became visible, and a second
-GSAP timeline was forcibly sought on every frame. In System Monitor as
-many as eight heavy telemetry sections moved independently.
-
-The shared entrance stages **three** foreground sections for Calendar
-and Launcher (only **two** for System Monitor, keeping heavy live charts
-completely stationary) at
-14px vertical translation and 0.82 opacity during the native invisible
-phase, ready to be composited with `force3D` / `will-change`. One
-synchronized GSAP timeline animates the actual content to its resting
-position over 0.72s, with only 45ms between sections and smooth
-`sine.inOut` velocity. Saved inverted fragment trajectories use the
-mathematically reversed original `power3.out` ease (`power3.in`) and
-reverse stagger order *within the same timeline*: no per-frame seeking,
-no different random paths and no extra animation clock. Heavy chart
-areas beyond the first groups stay at their real coordinates.
-
-Reduced-motion users see no staging. A stale/missing GTK visibility
-handshake restores the exact content after 550ms and skips animation;
-native hide, preference changes and unmount cancel the scene. A 1200ms
-recovery covers WebKit frame throttling. Animations only change opacity
-and compositor transforms, not sizes or layout metrics.

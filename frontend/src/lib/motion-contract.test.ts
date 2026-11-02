@@ -23,8 +23,9 @@ describe('TENET shared widget appearance', () => {
 
   it('prepares compositor layers before native reveal, no visible opacity snap', () => {
     expect(motion).toContain("gsap.set(content, {");
-    expect(motion).toContain("y: 14,");
-    expect(motion).toContain("opacity: 0.82,");
+    expect(motion).toContain("y: 9,");
+    expect(motion).toContain("scale: 0.988,");
+    expect(motion).toContain("opacity: 0.94,");
     expect(motion).toContain("willChange: 'transform, opacity'");
     expect(motion).toContain("node.dataset.tenetReveal = 'ready'");
     expect(motion).toContain("window.setTimeout(() => {");
@@ -36,8 +37,10 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
     expect(motion).toContain("master.to(content, {");
     expect(motion).toContain("master.fromTo(traces,");
-    expect(motion).toContain("duration: 0.72");
-    expect(motion).toContain("ease: 'sine.inOut'");
+    expect(motion).toContain("duration: 0.44");
+    expect(motion).toContain("duration: 0.22");
+    expect(motion).toContain("ease: 'back.out(1.22)'");
+    expect(motion).not.toContain("ease: 'sine.inOut'");
     expect(motion).toContain("ease: 'power3.in'");
     expect(motion).toContain("from: 'end'");
     expect(motion).toContain("force3D: true");
@@ -55,6 +58,20 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("window.removeEventListener('kira:overlay:visible', onVisible)");
     expect(motion).toContain("preference.removeEventListener");
     expect(motion).toContain("generation === Number(node.dataset.kiraGeneration)");
+  });
+
+  it('uses a single shared tab indicator with interruptible GSAP travel', () => {
+    expect(system).toContain('use:tenetFlowIndicator={{ active }}');
+    expect(system).toContain('data-kira-flow-indicator');
+    expect(system).toContain('data-kira-tab="overview"');
+    expect(system).toContain('data-kira-tab="processes"');
+    expect(system).not.toContain("'border-kira-accent text-kira-accent'");
+    expect(motion).toContain('gsap.to(indicator, {');
+    expect(motion).toContain("overwrite: 'auto', force3D: true");
+    expect(motion).toContain("new ResizeObserver(() => relocate(active, false))");
+    expect(motion).toContain('gsap.killTweensOf(indicator)');
+    expect(motion).toContain('export function tenetPanelArrival');
+    expect(system).toContain('use:tenetPanelArrival');
   });
 
   it('uses physical widget contacts without duplicating legacy stagger animations', () => {
