@@ -128,7 +128,7 @@ function scriptFor(steps, observationMs = 1150) {
       'const sr=shared?.getBoundingClientRect(), cr=chosen?.getBoundingClientRect();' +
       'document.documentElement.dataset.smokeFlowAligned=!!sr && !!cr &&' +
         'Math.abs(sr.left-cr.left)<2 && Math.abs(sr.width-cr.width)<2 &&' +
-        'Math.abs(sr.top-cr.top)<2;' +
+        '(area?.tagName==="NAV"?Math.abs(sr.bottom-cr.bottom):Math.abs(sr.top-cr.top))<2;' +
       'document.documentElement.dataset.smokeFlowGeometry=sr&&cr?' +
         '[sr.left,sr.top,sr.width,sr.height,cr.left,cr.top,cr.width,cr.height].map(n=>Math.round(n)).join(","):"missing";' +
       'document.documentElement.setAttribute("data-smoke-query-value", document.querySelector("input[aria-label=\\\"Search applications\\\"]")?.value ?? "absent");' +
@@ -222,7 +222,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
   if (heightMode === 'flow' && !output.includes('data-smoke-flow-aligned="true"')) {
-    throw new Error(name + ': shared highlight failed to reach the physical selected element');
+    throw new Error(name + ': shared highlight missed selected geometry (' +
+      (output.match(/data-smoke-flow-geometry="([^"]*)"/)?.[1] ?? 'missing') + ')');
   }
   if (heightMode === 'clock' &&
       (!output.includes('data-smoke-clock-chaos-flew="true"') ||
