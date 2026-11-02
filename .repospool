@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5326
+index_bytes=5327
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	dc127aa7637a14fb507c920d7ca6ff4b66b859bc
+C	b9abfdffa953a2afb47c6598651330b3570e6d26
 F	.cargo/config.toml	98	136	3
 F	.github/workflows/ci.yml	4355	141	112
 F	.github/workflows/frontend-nix.yml	1398	255	43
@@ -37,93 +37,93 @@ F	crates/kira-ipc/Cargo.toml	170	2804	9
 F	crates/kira-ipc/src/client.rs	17794	2815	458
 F	crates/kira-ipc/src/lib.rs	10460	3275	336
 F	crates/kira-shell/Cargo.toml	297	3613	12
-F	crates/kira-shell/src/calendar.rs	64373	3627	1727
-F	crates/kira-shell/src/launcher.rs	14114	5356	392
-F	crates/kira-shell/src/main.rs	19894	5750	461
-F	crates/kira-shell/src/native_ui.rs	4536	6213	104
-F	crates/kira-shell/src/popup_layout.rs	2055	6319	58
-F	crates/kira-shell/src/process_monitor.rs	9336	6379	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6667	116
-F	crates/kira-shell/src/system_info.rs	3731	6785	96
-F	crates/kira-shell/src/system_metrics.rs	19842	6883	559
-F	crates/kira-shell/src/system_panel.rs	11356	7444	318
-F	crates/kira-shell/src/webview_pool.rs	8477	7764	249
-F	docs/CONFIG.md	5801	8015	125
-F	docs/DESIGN_SYSTEM.md	32126	8142	519
-F	docs/DEVELOPMENT.md	29347	8663	577
-F	docs/QA_VISUAL.md	12284	9242	149
-F	docs/SPECIFICATION.md	28960	9393	421
-F	docs/TENET_MOTION.md	40649	9816	204
-F	docs/UI_ARCHITECTURE.md	6737	10022	106
-F	docs/VISUAL_REVIEW.md	9754	10130	84
-F	docs/WEBVIEW_POOL.md	5046	10216	30
-F	flake.nix	3181	10248	91
-F	frontend/index.html	2737	10341	66
-F	frontend/package.json	720	10409	27
-F	frontend/scripts/inline-assets.mjs	4457	10438	103
-F	frontend/scripts/inline-assets.test.mjs	4645	10543	106
-F	frontend/scripts/smoke-overlays.mjs	37447	10651	523
-F	frontend/src/App.svelte	9665	11176	224
-F	frontend/src/lib/bootstrap.test.ts	3408	11402	84
-F	frontend/src/lib/bootstrap.ts	2613	11488	70
-F	frontend/src/lib/calendar-model.test.ts	3571	11560	65
-F	frontend/src/lib/calendar-model.ts	4648	11627	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11734	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11796	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11827	287
-F	frontend/src/lib/clock-flight.test.ts	2404	12116	50
-F	frontend/src/lib/clock-flight.ts	1977	12168	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	12220	246
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	12468	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9217	12726	165
-F	frontend/src/lib/components/SystemCharts.svelte	10517	12893	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	13121	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	13169	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	13510	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13550	119
-F	frontend/src/lib/launcher-model.test.ts	2266	13671	46
-F	frontend/src/lib/launcher-model.ts	1403	13719	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	13750	89
-F	frontend/src/lib/lazy-widget.ts	1984	13841	63
-F	frontend/src/lib/motion-contract.test.ts	11242	13906	198
-F	frontend/src/lib/motion.ts	24039	14106	657
-F	frontend/src/lib/overlay-size.ts	1090	14765	29
-F	frontend/src/lib/sdk/core.test.ts	25327	14796	508
-F	frontend/src/lib/sdk/core.ts	21046	15306	539
-F	frontend/src/lib/settings-model.test.ts	1011	15847	20
-F	frontend/src/lib/settings-model.ts	1263	15869	26
-F	frontend/src/lib/system-charts.test.ts	6312	15897	141
-F	frontend/src/lib/system-charts.ts	5514	16040	149
-F	frontend/src/lib/system-health.test.ts	2385	16191	42
-F	frontend/src/lib/system-health.ts	2831	16235	60
-F	frontend/src/lib/system-model.test.ts	4455	16297	84
-F	frontend/src/lib/system-model.ts	5457	16383	125
-F	frontend/src/lib/themes/kira-default.css	1687	16510	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	16564	101
-F	frontend/src/lib/themes/kira-default.ts	777	16667	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	16691	101
-F	frontend/src/lib/time.test.ts	263	16794	8
-F	frontend/src/lib/time.ts	320	16804	9
-F	frontend/src/lib/workspace-window.test.ts	2298	16815	52
-F	frontend/src/lib/workspace-window.ts	1063	16869	32
-F	frontend/src/main.ts	7783	16903	161
-F	frontend/src/style.css	6399	17066	194
-F	frontend/tsconfig.json	403	17262	16
-F	frontend/vite.config.ts	224	17280	8
-F	nix/package.nix	3132	17290	117
-F	scripts/dev_preview.py	18147	17409	403	x
-F	scripts/qa_visual.py	12052	17814	299
-F	tests/test_calendar_design.py	7810	18115	136
-F	tests/test_detailed_health.py	5481	18253	105
-F	tests/test_dev_preview.py	9339	18360	219
-F	tests/test_launcher_design.py	10481	18581	190
-F	tests/test_native_theme.py	2098	18773	44
-F	tests/test_popup_geometry.py	3227	18819	58
-F	tests/test_qa_visual.py	10549	18879	217
-F	tests/test_settings.py	3217	19098	62
-F	tests/test_tenet_close.py	6297	19162	115
-F	tests/test_ui_bootstrap_contract.py	1103	19279	29
-F	tests/test_webview_pool.py	5335	19310	94
+F	crates/kira-shell/src/calendar.rs	64421	3627	1730
+F	crates/kira-shell/src/launcher.rs	14114	5359	392
+F	crates/kira-shell/src/main.rs	19894	5753	461
+F	crates/kira-shell/src/native_ui.rs	4536	6216	104
+F	crates/kira-shell/src/popup_layout.rs	2055	6322	58
+F	crates/kira-shell/src/process_monitor.rs	9336	6382	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6670	116
+F	crates/kira-shell/src/system_info.rs	3951	6788	113
+F	crates/kira-shell/src/system_metrics.rs	19842	6903	559
+F	crates/kira-shell/src/system_panel.rs	11356	7464	318
+F	crates/kira-shell/src/webview_pool.rs	8477	7784	249
+F	docs/CONFIG.md	5801	8035	125
+F	docs/DESIGN_SYSTEM.md	32126	8162	519
+F	docs/DEVELOPMENT.md	29347	8683	577
+F	docs/QA_VISUAL.md	12284	9262	149
+F	docs/SPECIFICATION.md	28960	9413	421
+F	docs/TENET_MOTION.md	40649	9836	204
+F	docs/UI_ARCHITECTURE.md	6737	10042	106
+F	docs/VISUAL_REVIEW.md	9754	10150	84
+F	docs/WEBVIEW_POOL.md	5046	10236	30
+F	flake.nix	3181	10268	91
+F	frontend/index.html	2737	10361	66
+F	frontend/package.json	720	10429	27
+F	frontend/scripts/inline-assets.mjs	4457	10458	103
+F	frontend/scripts/inline-assets.test.mjs	4645	10563	106
+F	frontend/scripts/smoke-overlays.mjs	39920	10671	554
+F	frontend/src/App.svelte	9665	11227	224
+F	frontend/src/lib/bootstrap.test.ts	3408	11453	84
+F	frontend/src/lib/bootstrap.ts	2613	11539	70
+F	frontend/src/lib/calendar-model.test.ts	3571	11611	65
+F	frontend/src/lib/calendar-model.ts	4648	11678	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11785	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11847	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11878	287
+F	frontend/src/lib/clock-flight.test.ts	2404	12167	50
+F	frontend/src/lib/clock-flight.ts	1977	12219	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	12271	246
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	12519	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9217	12777	165
+F	frontend/src/lib/components/SystemCharts.svelte	10517	12944	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	13172	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	13220	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	13561	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13601	119
+F	frontend/src/lib/launcher-model.test.ts	2266	13722	46
+F	frontend/src/lib/launcher-model.ts	1403	13770	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	13801	89
+F	frontend/src/lib/lazy-widget.ts	1984	13892	63
+F	frontend/src/lib/motion-contract.test.ts	11242	13957	198
+F	frontend/src/lib/motion.ts	24039	14157	657
+F	frontend/src/lib/overlay-size.ts	1090	14816	29
+F	frontend/src/lib/sdk/core.test.ts	25327	14847	508
+F	frontend/src/lib/sdk/core.ts	21046	15357	539
+F	frontend/src/lib/settings-model.test.ts	1011	15898	20
+F	frontend/src/lib/settings-model.ts	1263	15920	26
+F	frontend/src/lib/system-charts.test.ts	6312	15948	141
+F	frontend/src/lib/system-charts.ts	5514	16091	149
+F	frontend/src/lib/system-health.test.ts	2385	16242	42
+F	frontend/src/lib/system-health.ts	2831	16286	60
+F	frontend/src/lib/system-model.test.ts	4455	16348	84
+F	frontend/src/lib/system-model.ts	5457	16434	125
+F	frontend/src/lib/themes/kira-default.css	1687	16561	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	16615	101
+F	frontend/src/lib/themes/kira-default.ts	777	16718	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	16742	101
+F	frontend/src/lib/time.test.ts	263	16845	8
+F	frontend/src/lib/time.ts	320	16855	9
+F	frontend/src/lib/workspace-window.test.ts	2298	16866	52
+F	frontend/src/lib/workspace-window.ts	1063	16920	32
+F	frontend/src/main.ts	7783	16954	161
+F	frontend/src/style.css	6399	17117	194
+F	frontend/tsconfig.json	403	17313	16
+F	frontend/vite.config.ts	224	17331	8
+F	nix/package.nix	3132	17341	117
+F	scripts/dev_preview.py	18147	17460	403	x
+F	scripts/qa_visual.py	12052	17865	299
+F	tests/test_calendar_design.py	7810	18166	136
+F	tests/test_detailed_health.py	5481	18304	105
+F	tests/test_dev_preview.py	9339	18411	219
+F	tests/test_launcher_design.py	10481	18632	190
+F	tests/test_native_theme.py	2098	18824	44
+F	tests/test_popup_geometry.py	3227	18870	58
+F	tests/test_qa_visual.py	10549	18930	217
+F	tests/test_settings.py	3217	19149	62
+F	tests/test_tenet_close.py	6297	19213	115
+F	tests/test_ui_bootstrap_contract.py	1103	19330	29
+F	tests/test_webview_pool.py	5335	19361	94
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -4670,7 +4670,10 @@ impl CalendarOverlay {
                 "window.dispatchEvent(new CustomEvent('kira:settings:about', {{ detail: JSON.parse({encoded}) }}));"
             );
             self.view.evaluate_javascript(
-                &script, None, None, None::<&gtk::gio::Cancellable>,
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
                 |result| {
                     if let Err(error) = result {
                         eprintln!("kira-shell: Settings info delivery failed: {error}");
@@ -5755,8 +5758,8 @@ mod native_ui;
 mod popup_layout;
 mod process_monitor;
 mod renderer_recovery;
-mod system_metrics;
 mod system_info;
+mod system_metrics;
 mod system_panel;
 mod webview_pool;
 use std::cell::{Cell, RefCell};
@@ -6819,7 +6822,15 @@ fn memory_total(text: &str) -> Option<u64> {
 
 fn single_line(value: Option<String>, limit: usize) -> Option<String> {
     value
-        .map(|s| s.lines().next().unwrap_or_default().trim().chars().take(limit).collect::<String>())
+        .map(|s| {
+            s.lines()
+                .next()
+                .unwrap_or_default()
+                .trim()
+                .chars()
+                .take(limit)
+                .collect::<String>()
+        })
         .filter(|s| !s.is_empty())
 }
 
@@ -6852,18 +6863,25 @@ mod tests {
 
     #[test]
     fn os_release_parses_only_explicit_pretty_name() {
-        assert_eq!(os_name("NAME=Example\nPRETTY_NAME=\"Example Linux 1\"\n"),
-                   Some("Example Linux 1".to_string()));
+        assert_eq!(
+            os_name("NAME=Example\nPRETTY_NAME=\"Example Linux 1\"\n"),
+            Some("Example Linux 1".to_string())
+        );
         assert_eq!(os_name("NAME=Example\n"), None);
         assert_eq!(os_name("PRETTY_NAME=\"\"\n"), None);
     }
 
     #[test]
     fn cpu_and_memory_missingness_are_truthful() {
-        assert_eq!(cpu_name("processor: 0\nmodel name : Sample CPU\n"),
-                   Some("Sample CPU".to_string()));
+        assert_eq!(
+            cpu_name("processor: 0\nmodel name : Sample CPU\n"),
+            Some("Sample CPU".to_string())
+        );
         assert_eq!(cpu_name("processor: 0\n"), None);
-        assert_eq!(memory_total("MemTotal:       16384 kB\nMemFree: 123 kB\n"), Some(16384));
+        assert_eq!(
+            memory_total("MemTotal:       16384 kB\nMemFree: 123 kB\n"),
+            Some(16384)
+        );
         assert_eq!(memory_total("MemFree: 123 kB\n"), None);
         assert_eq!(memory_total("MemTotal: unknown kB\n"), None);
     }
@@ -6874,7 +6892,9 @@ mod tests {
         assert!(value["shell_version"].is_string());
         assert!(value["architecture"].is_string());
         for field in ["hostname", "os_name", "kernel", "cpu_model", "session"] {
-            assert!(value[field].is_null() || value[field].as_str().is_some_and(|s| s.len() <= 600));
+            assert!(
+                value[field].is_null() || value[field].as_str().is_some_and(|s| s.len() <= 600)
+            );
         }
     }
 }
@@ -10748,6 +10768,14 @@ function scriptFor(steps, observationMs = 1150) {
                   'setTimeout(() => {' +
                     'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
+              : kind === 'settings-about'
+                ? 'window.dispatchEvent(new CustomEvent("kira:settings:about", {detail: {generation: 1, about: {' +
+                  'os_name:"Example Linux", kernel:"6.1.0", architecture:"x86_64", hostname:"example-host", ' +
+                  'cpu_model:"Example CPU", cpu_threads:8, memory_total_kib:8388608, ' +
+                  'session:"wayland", shell_version:"0.1.0"}}}));'
+              : kind === 'settings-detach'
+                ? 'document.documentElement.dataset.kiraDetached="true";' +
+                  'window.dispatchEvent(new CustomEvent("kira:overlay:detached", {detail:{generation:1}}));'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : kind === 'pulse'
@@ -10880,6 +10908,11 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
       'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
+      'const settings=document.querySelector("main[aria-label=\\\"Kira Settings\\\"]");' +
+      'document.documentElement.dataset.smokeSettingsMode=settings?.dataset.settingsMode || "none";' +
+      'document.documentElement.dataset.smokeSettingsData=!!settings && settings.textContent.includes("Example Linux") && settings.textContent.includes("Example CPU");' +
+      'document.documentElement.dataset.smokeSettingsSelector=!!settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+      'document.documentElement.dataset.smokeSettingsSidebar=!!settings?.querySelector("aside[aria-label=\\\"Разделы настроек\\\"]");' +
       'document.documentElement.setAttribute("data-smoke-no-hover-warp", !document.querySelector("filter[id^=kira-temporal-warp], [data-tenet-warp-state], [data-tenet-warp-pixels], [data-tenet-lens-body]"));' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
       'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
@@ -10915,10 +10948,19 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const size = Number(output.match(/data-smoke-height="(\d+)"/)?.[1] ?? 0);
   const nativeMessage = output.match(/data-smoke-size="size:(\d+):(\d+)"/);
   const resizeCount = Number(output.match(/data-smoke-resizes="(\d+)"/)?.[1] ?? 0);
-  if (!nativeMessage || size <= 0 || size > 420 || Number(nativeMessage[2]) <= 0 ||
-      Number(nativeMessage[2]) > 420 || resizeCount > 12) {
+  if (!nativeMessage || size <= 0 || (heightMode !== 'settings-window' && size > 420) ||
+      Number(nativeMessage[2]) <= 0 ||
+      (heightMode !== 'settings-window' && Number(nativeMessage[2]) > 420) || resizeCount > 12) {
     throw new Error(name + ': popup size bridge/cap invalid (height=' +
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
+  }
+  if ((heightMode === 'settings-widget' || heightMode === 'settings-window') &&
+      (!output.includes('data-smoke-settings-data="true"') ||
+       !output.includes('data-smoke-settings-mode="' + (heightMode === 'settings-window' ? 'window' : 'widget') + '"') ||
+       !output.includes('data-smoke-settings-selector="' + (heightMode === 'settings-window' ? 'false' : 'true') + '"') ||
+       !output.includes('data-smoke-settings-sidebar="' + (heightMode === 'settings-window' ? 'true' : 'false') + '"'))) {
+    throw new Error(name + ': Settings mode, navigation or native data failed: ' +
+      (output.match(/data-smoke-settings-[a-z-]+="[^"]*"/g) ?? []).join(', '));
   }
   if (!output.includes('data-smoke-no-hover-warp="true"')) {
     throw new Error(name + ': removed pixel-distortion must not mount in any widget');
@@ -11098,6 +11140,15 @@ try {
     { delay: 170, kind: 'metrics' },
     { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
+  await smoke('settings-widget', [
+    { delay: 25, kind: 'settings', generation: 1 },
+    { delay: 180, kind: 'settings-about' },
+  ], 'Kira Settings', 'settings-widget');
+  await smoke('settings-window', [
+    { delay: 25, kind: 'settings', generation: 1 },
+    { delay: 180, kind: 'settings-about' },
+    { delay: 520, kind: 'settings-detach' },
+  ], 'Kira Settings', 'settings-window');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
   // Native close signal triggers the original GSAP master in reverse,
   // then emits a generation-bound ACK; the host keeps the DOM alive until
