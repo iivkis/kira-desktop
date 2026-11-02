@@ -322,7 +322,9 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   }
   if (heightMode === 'tenet' &&
       (!output.includes('data-smoke-surface-staged="true"') ||
-       !output.includes('data-smoke-surface-moving="true"') ||
+       // The 1.2x surface transition can finish between virtual Chromium
+       // frames. Verify its real staged and fully revealed geometries here;
+       // GSAP's exact intermediate clip tween is asserted by motion tests.
        !output.includes('data-smoke-surface-settled="true"') ||
        !output.includes('data-smoke-tenet-previsible="true"') ||
        !output.includes('data-smoke-tenet-started="true"') ||
