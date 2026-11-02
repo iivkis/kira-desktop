@@ -1198,7 +1198,10 @@ fn build(
         .web_context(&context)
         .user_content_manager(&manager)
         .build();
-    view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
+    // A black WebKit backing layer would flash as a full rectangle before
+    // the GSAP surface mask can reveal the first pixels. Only popup WebViews
+    // are transparent; the actual Svelte main remains solid Kira black.
+    view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
     crate::native_ui::restrict_webview_navigation(&view);
 
     let overlay = Rc::new(CalendarOverlay {

@@ -51,6 +51,29 @@ class TenetReverseDismissalTests(unittest.TestCase):
         self.assertIn("node.dataset.kiraGeneration = String(generation)", "") if False else None
         self.assertIn("root.dataset.kiraGeneration = String(generation)", ENTRY)
 
+    def test_native_webview_backing_is_transparent_and_popup_only(self):
+        # A fully opaque WebKit backing makes clipping the inner main useless:
+        # an unanimated black rectangle still appears in Niri.
+        styles = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn(
+            "view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0))",
+            RUST,
+        )
+        self.assertIn('html[data-kira-surface="calendar"]', styles)
+        self.assertIn("background: transparent;", styles)
+        self.assertIn("seam.dataset.kiraSurfaceSeam = ''", MOTION)
+        self.assertIn("clipPath: hiddenClip", MOTION)
+        self.assertIn("clipPath: visibleClip", MOTION)
+        self.assertIn("master.reverse()", MOTION)
+        self.assertIn("master.to(seam, {", MOTION)
+        self.assertIn("master.to(node, {", MOTION)
+        # No animation of native Wayland position/size/scale.
+        scene = MOTION.split("export function tenetWidgetReveal", 1)[1].split(
+            "export interface TenetFlowTarget", 1
+        )[0]
+        self.assertNotIn("window.resizeTo(", scene)
+        self.assertNotIn("set_margin(", scene)
+
     def test_reduced_motion_and_renderer_stall_have_finite_exit(self):
         self.assertIn("self.native_reduced_motion.get()", RUST)
         self.assertIn("if (preference.matches || !master || master.progress() <= 0)", MOTION)

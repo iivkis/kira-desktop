@@ -69,6 +69,28 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("generation === Number(node.dataset.kiraGeneration)");
   });
 
+  it('materializes the whole opaque WebView surface instead of abruptly mapping a rectangle', () => {
+    expect(motion).toContain("const hiddenClip = direction < 0 ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)'");
+    expect(motion).toContain("const visibleClip = 'inset(0% 0% 0% 0%)'");
+    expect(motion).toContain("gsap.set(node, { clipPath: hiddenClip, willChange: 'clip-path' })");
+    expect(motion).toContain("master.to(node, {");
+    expect(motion).toContain("clipPath: visibleClip");
+    expect(motion).toContain("duration: 0.54");
+    expect(motion).toContain("ease: 'power3.inOut'");
+    expect(motion).toContain("master.to(seam, {");
+    expect(motion).toContain("seam.dataset.kiraSurfaceSeam = ''");
+    expect(motion).toContain("node.dataset.tenetSurface = 'staged'");
+    expect(motion).toContain("node.dataset.tenetSurface = 'materializing'");
+    expect(motion).toContain("node.dataset.tenetSurface = 'dematerializing'");
+    expect(motion).toContain("node.dataset.tenetSurface = 'retracted'");
+    expect(motion).toContain("master.reverse()");
+    expect(motion).toContain("seam.remove()");
+    expect(motion).toContain("gsap.set(node, { clearProps: 'clipPath,willChange' })");
+    expect(styles).toContain('html[data-kira-surface="calendar"] main[data-kira-ui-root]');
+    expect(styles).toContain('[data-kira-surface-seam]');
+    expect(styles).toContain('background: transparent;');
+  });
+
   it('reverses the SAME entrance history before GTK releases the popup', () => {
     expect(motion).toContain("window.addEventListener('kira:overlay:close', onClose)");
     expect(motion).toContain("window.addEventListener('kira:overlay:reopen', onReopen)");
