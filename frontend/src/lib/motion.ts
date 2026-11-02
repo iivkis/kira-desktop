@@ -172,6 +172,10 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       }, 0);
     node.dataset.tenetReveal = 'started';
     node.dataset.tenetSurface = 'materializing';
+    // 20% faster BOTH ways. Retiming the whole recorded timeline, rather
+    // than individual tracks, preserves TENET ordering, spring, seam and
+    // exact reversal; 540ms of choreography now plays in 450ms.
+    master.timeScale(1.2);
     master.play(0);
     // WebKitGTK can throttle frames. Settle the exact ending geometry but
     // preserve the timeline and fragments as temporal memory for closing.
