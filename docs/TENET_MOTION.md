@@ -184,7 +184,9 @@ from a fully painted state** after the popup became visible, and a second
 GSAP timeline was forcibly sought on every frame. In System Monitor as
 many as eight heavy telemetry sections moved independently.
 
-The shared entrance now stages only **three** foreground sections at
+The shared entrance stages **three** foreground sections for Calendar
+and Launcher (only **two** for System Monitor, keeping heavy live charts
+completely stationary) at
 14px vertical translation and 0.82 opacity during the native invisible
 phase, ready to be composited with `force3D` / `will-change`. One
 synchronized GSAP timeline animates the actual content to its resting

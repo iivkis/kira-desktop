@@ -74,8 +74,11 @@ function scriptFor(steps, observationMs = 1150) {
                 // the generation-scoped visible event only AFTER reveal.
                 'setTimeout(()=>{' +
                   'const root=document.querySelector("main[data-kira-ui-root]");' +
+                  'const first=root?.querySelector("[data-kira-enter]");' +
+                  'const staged=first ? Number(getComputedStyle(first).opacity) : 0;' +
+                  'window.__kiraTenetStagedOpacity=staged;' +
                   'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
-                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0;' +
+                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.8 && staged<0.9;' +
                 '},90);' +
                 'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:overlay:visible", {detail:{generation:' +
                   generation + '}})),140);') +
@@ -87,7 +90,8 @@ function scriptFor(steps, observationMs = 1150) {
       'const content=root?.querySelector("[data-kira-enter]");' +
       'const transform=content ? getComputedStyle(content).transform : "none";' +
       'document.documentElement.dataset.smokeTenetStarted=!!root && root.dataset.tenetReveal==="started" && root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
-      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && getComputedStyle(content).opacity!=="1";' +
+      'const opacity=content ? Number(getComputedStyle(content).opacity) : 0;' +
+      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && opacity>window.__kiraTenetStagedOpacity && opacity<1;' +
       '},245);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +

@@ -32,7 +32,7 @@ describe('TENET shared widget appearance', () => {
   });
 
   it('runs the recorded inverse and forward on one GPU-friendly master', () => {
-    expect(motion).toContain("slice(0, 3)");
+    expect(motion).toContain("slice(0, options.sections ?? 3)");
     expect(motion).toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
     expect(motion).toContain("master.to(content, {");
     expect(motion).toContain("master.fromTo(traces,");
@@ -60,7 +60,7 @@ describe('TENET shared widget appearance', () => {
   it('uses physical widget contacts without duplicating legacy stagger animations', () => {
     expect(calendar).toContain('return tenetWidgetReveal(node, {');
     expect(launcher).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: -1 }}");
-    expect(system).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}");
+    expect(system).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1, sections: 2 }}");
     expect(launcher).toContain('data-kira-contact');
     expect(system).toContain('data-kira-contact');
     expect(system).not.toContain('use:revealStagger');

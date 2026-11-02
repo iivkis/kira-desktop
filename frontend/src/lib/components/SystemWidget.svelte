@@ -80,7 +80,7 @@
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
-  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1, sections: 2 }}
   class="kira-monitor-scroll relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">

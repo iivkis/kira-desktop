@@ -13,13 +13,15 @@ const reducedMotion = () => typeof window !== 'undefined' &&
 export interface TenetEntrance {
   contact: string;
   direction?: 1 | -1;
+  sections?: number;
 }
 
 export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
   // Cap moving surfaces: the system monitor's many nested charts/rows
   // must not compete for compositor layers and trigger choppy frames.
-  const content = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]')).slice(0, 3);
+  const content = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'))
+    .slice(0, options.sections ?? 3);
   let master: gsap.core.Timeline | null = null;
   let traces: HTMLElement[] = [];
   let restore: number | null = null;
