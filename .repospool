@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4800
+index_bytes=4576
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,105 +15,101 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	56b503152e3c503dfb5b703b02964b46cc75f998
-F	.cargo/config.toml	98	126	3
-F	.github/workflows/ci.yml	4355	131	112
-F	.github/workflows/frontend-nix.yml	1398	245	43
-F	.github/workflows/nix.yml	1258	290	38
-F	.github/workflows/overlay-smoke.yml	1064	330	40
-F	.github/workflows/publish-repospool.yml	3048	372	83
-F	.gitignore	178	457	11
-F	.repospoolignore	1028	470	47
-F	AGENTS.md	4435	519	75
-F	Cargo.toml	494	596	22
-F	README.md	11956	620	248
-F	Taskfile.yml	5957	870	185
-F	config/kira.kdl.example	358	1057	8
-F	crates/kira-core/Cargo.toml	207	1067	10
-F	crates/kira-core/src/config.rs	15217	1079	399
-F	crates/kira-core/src/main.rs	32080	1480	839
-F	crates/kira-core/src/niri.rs	16767	2321	453
-F	crates/kira-ipc/Cargo.toml	170	2776	9
-F	crates/kira-ipc/src/client.rs	17794	2787	458
-F	crates/kira-ipc/src/lib.rs	10460	3247	336
-F	crates/kira-shell/Cargo.toml	297	3585	12
-F	crates/kira-shell/src/calendar.rs	38858	3599	1043
-F	crates/kira-shell/src/launcher.rs	14114	4644	392
-F	crates/kira-shell/src/main.rs	21089	5038	488
-F	crates/kira-shell/src/native_ui.rs	2857	5528	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5603	286
-F	crates/kira-shell/src/quick_launch.rs	7462	5891	233
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6126	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6244	559
-F	crates/kira-shell/src/system_panel.rs	11356	6805	318
-F	docs/CONFIG.md	5801	7125	125
-F	docs/DESIGN_SYSTEM.md	27518	7252	454
-F	docs/DEVELOPMENT.md	29347	7708	577
-F	docs/QA_VISUAL.md	12284	8287	149
-F	docs/SPECIFICATION.md	29239	8438	421
-F	docs/TENET_MOTION.md	22120	8861	142
-F	docs/UI_ARCHITECTURE.md	6737	9005	106
-F	docs/VISUAL_REVIEW.md	9754	9113	84
-F	flake.nix	3181	9199	91
-F	frontend/index.html	2737	9292	66
-F	frontend/package.json	720	9360	27
-F	frontend/scripts/inline-assets.mjs	4457	9389	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9494	106
-F	frontend/scripts/smoke-overlays.mjs	22223	9602	321
-F	frontend/src/App.svelte	8894	9925	205
-F	frontend/src/lib/bootstrap.test.ts	3408	10132	84
-F	frontend/src/lib/bootstrap.ts	2613	10218	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10290	65
-F	frontend/src/lib/calendar-model.ts	4648	10357	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10464	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10526	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10557	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10877	50
-F	frontend/src/lib/clock-flight.ts	1977	10929	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10981	239
-F	frontend/src/lib/components/LauncherWidget.svelte	10668	11222	230
-F	frontend/src/lib/components/QuickLaunch.svelte	3039	11454	84
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11540	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11768	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11813	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12135	61
-F	frontend/src/lib/launcher-model.test.ts	2266	12198	46
-F	frontend/src/lib/launcher-model.ts	1403	12246	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12277	89
-F	frontend/src/lib/lazy-widget.ts	1984	12368	63
-F	frontend/src/lib/motion.ts	1597	12433	50
-F	frontend/src/lib/overlay-size.ts	1090	12485	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12516	444
-F	frontend/src/lib/sdk/core.ts	20315	12962	530
-F	frontend/src/lib/sdk/quick-launch.test.ts	2374	13494	53
-F	frontend/src/lib/system-charts.test.ts	6312	13549	141
-F	frontend/src/lib/system-charts.ts	5514	13692	149
-F	frontend/src/lib/system-health.test.ts	2385	13843	42
-F	frontend/src/lib/system-health.ts	2831	13887	60
-F	frontend/src/lib/system-model.test.ts	4455	13949	84
-F	frontend/src/lib/system-model.ts	5457	14035	125
-F	frontend/src/lib/themes/kira-default.css	1687	14162	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	14216	101
-F	frontend/src/lib/themes/kira-default.ts	777	14319	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5038	14343	91
-F	frontend/src/lib/time.test.ts	263	14436	8
-F	frontend/src/lib/time.ts	320	14446	9
-F	frontend/src/main.ts	5907	14457	127
-F	frontend/src/style.css	3817	14586	121
-F	frontend/tsconfig.json	403	14709	16
-F	frontend/vite.config.ts	224	14727	8
-F	nix/package.nix	3132	14737	117
-F	scripts/dev_preview.py	18147	14856	403	x
-F	scripts/qa_visual.py	12052	15261	299
-F	tests/test_calendar_design.py	7384	15562	130
-F	tests/test_detailed_health.py	5429	15694	105
-F	tests/test_dev_preview.py	9339	15801	219
-F	tests/test_launcher_design.py	10400	16022	189
-F	tests/test_native_theme.py	1567	16213	36
-F	tests/test_popup_geometry.py	6956	16251	118
-F	tests/test_qa_visual.py	10549	16371	217
-F	tests/test_quick_launch.py	2223	16590	47
-F	tests/test_ui_bootstrap_contract.py	1103	16639	29
+C	710bd2d55f4cf937b2b4d62fd966463bc508e75a
+F	.cargo/config.toml	98	122	3
+F	.github/workflows/ci.yml	4355	127	112
+F	.github/workflows/frontend-nix.yml	1398	241	43
+F	.github/workflows/nix.yml	1258	286	38
+F	.github/workflows/overlay-smoke.yml	1064	326	40
+F	.github/workflows/publish-repospool.yml	3048	368	83
+F	.gitignore	178	453	11
+F	.repospoolignore	1028	466	47
+F	AGENTS.md	4435	515	75
+F	Cargo.toml	494	592	22
+F	README.md	11269	616	248
+F	Taskfile.yml	5957	866	185
+F	config/kira.kdl.example	358	1053	8
+F	crates/kira-core/Cargo.toml	207	1063	10
+F	crates/kira-core/src/config.rs	15217	1075	399
+F	crates/kira-core/src/main.rs	32080	1476	839
+F	crates/kira-core/src/niri.rs	16767	2317	453
+F	crates/kira-ipc/Cargo.toml	170	2772	9
+F	crates/kira-ipc/src/client.rs	17794	2783	458
+F	crates/kira-ipc/src/lib.rs	10460	3243	336
+F	crates/kira-shell/Cargo.toml	297	3581	12
+F	crates/kira-shell/src/calendar.rs	38858	3595	1043
+F	crates/kira-shell/src/launcher.rs	14114	4640	392
+F	crates/kira-shell/src/main.rs	19285	5034	447
+F	crates/kira-shell/src/native_ui.rs	2857	5483	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5558	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5846	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5964	559
+F	crates/kira-shell/src/system_panel.rs	11356	6525	318
+F	docs/CONFIG.md	5801	6845	125
+F	docs/DESIGN_SYSTEM.md	25774	6972	431
+F	docs/DEVELOPMENT.md	29347	7405	577
+F	docs/QA_VISUAL.md	12284	7984	149
+F	docs/SPECIFICATION.md	28960	8135	421
+F	docs/TENET_MOTION.md	22120	8558	142
+F	docs/UI_ARCHITECTURE.md	6737	8702	106
+F	docs/VISUAL_REVIEW.md	9754	8810	84
+F	flake.nix	3181	8896	91
+F	frontend/index.html	2737	8989	66
+F	frontend/package.json	720	9057	27
+F	frontend/scripts/inline-assets.mjs	4457	9086	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9191	106
+F	frontend/scripts/smoke-overlays.mjs	19061	9299	275
+F	frontend/src/App.svelte	8659	9576	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9778	84
+F	frontend/src/lib/bootstrap.ts	2613	9864	70
+F	frontend/src/lib/calendar-model.test.ts	3571	9936	65
+F	frontend/src/lib/calendar-model.ts	4648	10003	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10110	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10172	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10203	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10523	50
+F	frontend/src/lib/clock-flight.ts	1977	10575	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10627	239
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	10868	176
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11046	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11274	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11319	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11641	61
+F	frontend/src/lib/launcher-model.test.ts	1370	11704	29
+F	frontend/src/lib/launcher-model.ts	778	11735	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	11755	89
+F	frontend/src/lib/lazy-widget.ts	1984	11846	63
+F	frontend/src/lib/motion.ts	1597	11911	50
+F	frontend/src/lib/overlay-size.ts	1090	11963	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11994	444
+F	frontend/src/lib/sdk/core.ts	17793	12440	473
+F	frontend/src/lib/system-charts.test.ts	6312	12915	141
+F	frontend/src/lib/system-charts.ts	5514	13058	149
+F	frontend/src/lib/system-health.test.ts	2385	13209	42
+F	frontend/src/lib/system-health.ts	2831	13253	60
+F	frontend/src/lib/system-model.test.ts	4455	13315	84
+F	frontend/src/lib/system-model.ts	5457	13401	125
+F	frontend/src/lib/themes/kira-default.css	1687	13528	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13582	101
+F	frontend/src/lib/themes/kira-default.ts	777	13685	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13709	79
+F	frontend/src/lib/time.test.ts	263	13790	8
+F	frontend/src/lib/time.ts	320	13800	9
+F	frontend/src/main.ts	5907	13811	127
+F	frontend/src/style.css	3817	13940	121
+F	frontend/tsconfig.json	403	14063	16
+F	frontend/vite.config.ts	224	14081	8
+F	nix/package.nix	3132	14091	117
+F	scripts/dev_preview.py	18147	14210	403	x
+F	scripts/qa_visual.py	12052	14615	299
+F	tests/test_calendar_design.py	7384	14916	130
+F	tests/test_detailed_health.py	5429	15048	105
+F	tests/test_dev_preview.py	9339	15155	219
+F	tests/test_launcher_design.py	9956	15376	182
+F	tests/test_native_theme.py	1567	15560	36
+F	tests/test_popup_geometry.py	6956	15598	118
+F	tests/test_qa_visual.py	10549	15718	217
+F	tests/test_ui_bootstrap_contract.py	1103	15937	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -862,7 +858,7 @@ are not substitutes for a real visual review. See
 
 ## Current limitations
 
-The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. **There is no standalone Dock**: Niri is keyboard-first, so window/workspace navigation stays with the compositor and the Top Bar. The existing KIRA button opens the full application Launcher. For up to three *explicit* GIO application launch shortcuts inside the same 42px Top Bar, set `KIRA_QUICK_APPS="foot,Firefox,Files"` before starting `kira-shell` (names must match the system's GIO display names; missing apps are skipped). If unset, no shortcut row or native worker exists. The older `KIRA_DOCK_APPS` variable is accepted as a migration alias; `KIRA_DOCK_DISABLE` is obsolete. This is not a taskbar: it does not switch to running windows or indicate focus. Full KDL grammar, custom theme loading, KDL shortcut configuration and third-party widgets remain future milestones.
+The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
 
 This project is not ready to replace a working desktop environment.
 
@@ -5041,7 +5037,6 @@ mod calendar;
 mod launcher;
 mod native_ui;
 mod process_monitor;
-mod quick_launch;
 mod renderer_recovery;
 mod system_metrics;
 mod system_panel;
@@ -5285,46 +5280,6 @@ fn main() {
             }
         });
         assert!(manager.register_script_message_handler("kiraSystem", None));
-
-        // Quick Launch is optional and lives INSIDE this existing Top Bar.
-        // No bottom surface, no task-switching semantics and no worker at all
-        // unless the user explicitly configures application shortcuts.
-        let quick = Rc::new(RefCell::new(match quick_launch::QuickLaunch::discover() {
-            Ok(service) => service,
-            Err(error) => {
-                eprintln!("kira-shell: Quick Launch unavailable: {error}");
-                None
-            }
-        }));
-        let quick_messages = quick.clone();
-        let quick_view = view.downgrade();
-        manager.connect_script_message_received(Some("kiraQuickLaunch"), move |_, value| {
-            let raw = value.to_string();
-            if let Some(service) = quick_messages.borrow().as_ref()
-                && let Some(event) = service.handle(&raw)
-                && let Some(view) = quick_view.upgrade()
-            {
-                quick_launch::deliver(&view, event);
-            }
-        });
-        assert!(manager.register_script_message_handler("kiraQuickLaunch", None));
-
-        if quick.borrow().is_some() {
-            let quick_poll = quick.clone();
-            let quick_view = view.downgrade();
-            gtk::glib::timeout_add_local(Duration::from_millis(60), move || {
-                let Some(view) = quick_view.upgrade() else {
-                    return gtk::glib::ControlFlow::Break;
-                };
-                if let Some(service) = quick_poll.borrow_mut().as_mut() {
-                    for _ in 0..4 {
-                        let Some(event) = service.poll() else { break };
-                        quick_launch::deliver(&view, event);
-                    }
-                }
-                gtk::glib::ControlFlow::Continue
-            });
-        }
 
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
@@ -5884,241 +5839,6 @@ mod tests {
         assert_eq!(parse_stat(""), None);
         assert_eq!(parse_stat("42 () S x"), None);
         assert_eq!(parse_stat(&stat_line("test", u64::MAX, 1, 9)), None);
-    }
-}
-
-FILE	crates/kira-shell/src/quick_launch.rs
-//! Optional, keyboard-first application shortcuts embedded in the existing
-//! 42px Top Bar. Niri owns window navigation; this only launches explicitly
-//! configured desktop entries through trusted native GIO AppInfo objects.
-use gtk::prelude::*;
-use std::collections::HashSet;
-
-use crate::launcher;
-
-const MAX_SHORTCUTS: usize = 3;
-const MAX_COMMAND_BYTES: usize = 48;
-
-#[derive(Debug, PartialEq, Eq)]
-enum Command {
-    Catalog,
-    Icons(Vec<usize>),
-    Launch(usize),
-}
-
-fn index(text: &str) -> Option<usize> {
-    if text.is_empty() || !text.bytes().all(|c| c.is_ascii_digit()) {
-        return None;
-    }
-    let id = text.parse::<usize>().ok()?;
-    (id < 1024).then_some(id)
-}
-
-fn parse_command(message: &str) -> Option<Command> {
-    if message.len() > MAX_COMMAND_BYTES {
-        return None;
-    }
-    if message == "catalog" {
-        return Some(Command::Catalog);
-    }
-    if let Some(raw) = message.strip_prefix("launch:") {
-        return Some(Command::Launch(index(raw)?));
-    }
-    if let Some(raw) = message.strip_prefix("icons:") {
-        let mut ids = Vec::new();
-        for part in raw.split(',') {
-            let next = index(part)?;
-            if ids.len() == MAX_SHORTCUTS || ids.contains(&next) {
-                return None;
-            }
-            ids.push(next);
-        }
-        if !ids.is_empty() {
-            return Some(Command::Icons(ids));
-        }
-    }
-    None
-}
-
-fn configured_names(raw: &str) -> Vec<String> {
-    let mut seen = HashSet::new();
-    raw.split(',')
-        .map(str::trim)
-        .filter(|name| {
-            !name.is_empty()
-                && name.len() <= 120
-                && !name.chars().any(char::is_control)
-                && seen.insert(name.to_lowercase())
-        })
-        .take(MAX_SHORTCUTS)
-        .map(str::to_owned)
-        .collect()
-}
-
-fn selected_entries(full: &serde_json::Value, names: &[String]) -> (Vec<usize>, serde_json::Value) {
-    let apps = full["apps"].as_array();
-    let mut selected = Vec::new();
-    let mut allowed = Vec::new();
-    for name in names {
-        let entry = apps.and_then(|all| {
-            all.iter().find(|app| {
-                app["name"]
-                    .as_str()
-                    .is_some_and(|display| display.to_lowercase() == name.to_lowercase())
-            })
-        });
-        if let Some(app) = entry {
-            let Some(id) = app["id"].as_u64().and_then(|id| usize::try_from(id).ok()) else {
-                continue;
-            };
-            if id >= 1024 || allowed.contains(&id) {
-                continue;
-            }
-            allowed.push(id);
-            selected.push(app.clone());
-        }
-    }
-    (allowed, serde_json::json!({ "apps": selected }))
-}
-
-pub enum Event {
-    Apps(serde_json::Value),
-    Icons(serde_json::Value),
-    Error(String),
-}
-
-pub fn deliver(view: &webkit6::WebView, event: Event) {
-    use webkit6::prelude::*;
-    let (name, payload) = match event {
-        Event::Apps(value) => ("kira:quick:apps", value),
-        Event::Icons(value) => ("kira:quick:icons", value),
-        Event::Error(message) => (
-            "kira:quick:error",
-            serde_json::json!({ "message": message }),
-        ),
-    };
-    let Ok(json) = serde_json::to_string(&payload) else {
-        return;
-    };
-    let Ok(quoted) = serde_json::to_string(&json) else {
-        return;
-    };
-    let script = format!(
-        "window.dispatchEvent(new CustomEvent('{name}', {{ detail: JSON.parse({quoted}) }}));"
-    );
-    view.evaluate_javascript(
-        &script,
-        None,
-        None,
-        None::<&gtk::gio::Cancellable>,
-        |result| {
-            if let Err(error) = result {
-                eprintln!("kira-quick-launch: WebKit event delivery failed: {error}");
-            }
-        },
-    );
-}
-
-pub struct QuickLaunch {
-    catalog: launcher::Catalog,
-    names: Vec<String>,
-    allowed: Vec<usize>,
-    ready: Option<serde_json::Value>,
-}
-
-impl QuickLaunch {
-    /// No configured shortcuts means no catalog worker or UI controls.
-    /// The old KIRA_DOCK_APPS environment variable remains a migration alias.
-    pub fn discover() -> Result<Option<Self>, String> {
-        let configured = std::env::var("KIRA_QUICK_APPS")
-            .or_else(|_| std::env::var("KIRA_DOCK_APPS"))
-            .unwrap_or_default();
-        let names = configured_names(&configured);
-        if names.is_empty() {
-            return Ok(None);
-        }
-        Ok(Some(Self {
-            catalog: launcher::Catalog::discover()?,
-            names,
-            allowed: Vec::new(),
-            ready: None,
-        }))
-    }
-
-    pub fn handle(&self, message: &str) -> Option<Event> {
-        match parse_command(message)? {
-            Command::Catalog => self.ready.clone().map(Event::Apps),
-            Command::Launch(id) if self.allowed.contains(&id) => {
-                self.catalog.launch(id).err().map(Event::Error)
-            }
-            Command::Icons(ids) if ids.iter().all(|id| self.allowed.contains(id)) => {
-                self.catalog.request_icons(&ids).err().map(Event::Error)
-            }
-            _ => None,
-        }
-    }
-
-    pub fn poll(&mut self) -> Option<Event> {
-        match self.catalog.poll()? {
-            launcher::LauncherMessage::Apps(full) => {
-                let (allowed, payload) = selected_entries(&full, &self.names);
-                self.allowed = allowed;
-                self.ready = Some(payload.clone());
-                Some(Event::Apps(payload))
-            }
-            launcher::LauncherMessage::Icons(data) => Some(Event::Icons(data)),
-            launcher::LauncherMessage::Launched(Err(error))
-            | launcher::LauncherMessage::Error(error) => Some(Event::Error(error)),
-            launcher::LauncherMessage::Launched(Ok(())) => None,
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn accepts_only_a_bounded_explicit_launch_contract() {
-        assert_eq!(parse_command("catalog"), Some(Command::Catalog));
-        assert_eq!(parse_command("launch:7"), Some(Command::Launch(7)));
-        assert_eq!(parse_command("icons:2,9"), Some(Command::Icons(vec![2, 9])));
-        for invalid in [
-            "",
-            "open",
-            "run:ls",
-            "launch:-1",
-            "launch:1024",
-            "launch:1:2",
-            "icons:",
-            "icons:1,1",
-            "icons:1,2,3,4",
-        ] {
-            assert_eq!(parse_command(invalid), None, "{invalid}");
-        }
-        assert_eq!(parse_command(&"x".repeat(64)), None);
-    }
-
-    #[test]
-    fn configured_shortcuts_are_explicit_unique_and_limited() {
-        assert!(configured_names("").is_empty());
-        assert_eq!(
-            configured_names("Firefox,Terminal,firefox,Files,Other"),
-            vec!["Firefox", "Terminal", "Files"]
-        );
-        let input = serde_json::json!({
-            "apps": [
-                {"id": 7, "name": "Files", "description": ""},
-                {"id": 2, "name": "Firefox", "description": ""},
-                {"id": 8, "name": "Terminal", "description": ""}
-            ]
-        });
-        let names = configured_names("Terminal,Missing,Firefox");
-        let (allowed, payload) = selected_entries(&input, &names);
-        assert_eq!(allowed, vec![8, 2]);
-        assert_eq!(payload["apps"][0]["name"], "Terminal");
-        assert_eq!(payload["apps"][1]["name"], "Firefox");
-        assert_eq!(payload["apps"].as_array().unwrap().len(), 2);
     }
 }
 
@@ -7253,7 +6973,7 @@ FILE	docs/DESIGN_SYSTEM.md
 
 **Status:** implemented visual system for the Svelte Top Bar, native GTK
 Launcher and custom Calendar. Visual acceptance is still open. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
-Dedicated desktop docks are intentionally omitted in favor of Niri's workspace navigation. Notifications and other surfaces remain future milestones.
+Dock, notifications and other desktop surfaces remain future milestones.
 
 ## Kira official visual direction
 
@@ -7364,32 +7084,9 @@ official visual language of Kira Desktop.
   click's direction. Every digit returns to its exact original position;
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
-- **Quick Launch (Top Bar, opt-in):** Kira Desktop is keyboard-first:
-  Niri is responsible for focusing workspaces and switching windows; the
-  launcher handles discovery. A persistent macOS/Windows-style Dock would
-  duplicate window navigation and waste screen space, so **no bottom
-  layer-shell surface is created**. Instead, up to three explicitly pinned
-  GIO desktop applications may appear as quiet 32px controls inside the
-  existing 42px Top Bar. This is an **application-launch shortcut**, not a
-  taskbar. Buttons never represent running, focused or active windows.
-  Without user configuration, no shortcuts appear and no catalog worker
-  is started. `KIRA_QUICK_APPS="foot,Firefox,Files"` resolves exact,
-  case-insensitive GIO display names, preserving order and omitting missing
-  entries. `KIRA_DOCK_APPS` is supported as a migration alias.
-  At narrow widths (below 740px), shortcuts yield space to workspaces
-  and system status. The trusted Rust bridge accepts only allowlisted GIO
-  IDs, and icons are fetched in bounded batches. KDL integration is future
-  work. Keyboard focus and visible active workspace states remain separate.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
-  The prominent search field is a keyboard-focused combobox with an
-  `aria-activedescendant` link to the active app in the result list.
-  Search relevance prioritizes exact and prefix name matches ahead of
-  description-only matches, retaining native GIO identity and stable order
-  among ties. The active application uses a restrained orange rail and
-  title, not an orange-filled row; a single search-clear action and concise
-  keyboard legend prioritize function over decorative copy. A capped
-  80-result list, bounded icon batches, honest empty/error states and native
-  GIO launching preserve performance, accessibility and system boundaries.
+  Search, catalog, stable application icons, and an orange selection rail
+  communicate function without painting the entire row orange.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
   and visible keyboard focus remain distinct. Niri events are authoritative.
 - **System health:** the Top Bar is a compact **system** indicator, not just
@@ -8495,7 +8192,7 @@ Frontend собирается в статические ресурсы и заг
 
 - Создание Wayland layer-shell поверхностей.
 - Отображение Svelte-компонентов через WebKitGTK.
-- Управление Top Bar, рабочими пространствами и композиционной структурой рабочего стола; отдельный Dock не требуется.
+- Управление панелями, доком и рабочим столом.
 - Связь с Kira Core через Unix Domain Socket.
 
 **Схема взаимодействия:**
@@ -8697,7 +8394,7 @@ Frontend должен предоставлять npm scripts `check`, `test:ci`,
 3. KDL Config Engine с Hot Reload.
 4. Top Bar и Workspaces.
 5. Application Launcher.
-6. Quick Launch в Top Bar (только явные закрепления) и Clock; без отдельной Dock-поверхности.
+6. Dock и Clock.
 7. Премиальную дизайн-систему и темы с обязательной палитрой по умолчанию (раздел 15).
 8. Загрузку пользовательских Svelte-виджетов.
 9. Автоматизированные тесты основных компонентов.
@@ -8759,7 +8456,7 @@ Frontend должен предоставлять npm scripts `check`, `test:ci`,
   декоративного шума и злоупотребления blur/градиентами.
 - **Плавность.** Короткие, ненавязчивые переходы, ориентир 120–220 мс;
   обязательно учитывать `prefers-reduced-motion`.
-- **Согласованность.** Top Bar, Quick Launch, Launcher, уведомления, меню,
+- **Согласованность.** Top Bar, Dock, Launcher, уведомления, меню,
   настройки и виджеты образуют одну дизайн-систему со всеми состояниями:
   default, hover, focus, active, disabled, loading, error.
 - **KISS.** Минимум необходимой сложности: понятные функции, явные состояния,
@@ -8851,7 +8548,7 @@ GTK Launcher использует ту же палитру через имено
 Svelte 5 + Tailwind CSS v4, нативный GTK Launcher, отдельный WebKit-хост Calendar
 реализованы. Внедрена базовая клавиатурная навигация. Это **не означает
 завершённой визуальной приёмки**: проверка размеров, масштабов,
-локализации и всех интерактивных состояний остаётся открытой. Quick Launch через KDL,
+локализации и всех интерактивных состояний остаётся открытой. Dock,
 уведомления, настройки и пользовательские темы относятся к будущим этапам.
 Текущие замечания и приоритеты ревью: [VISUAL_REVIEW.md](VISUAL_REVIEW.md).
 
@@ -9690,9 +9387,6 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-icon-width", firstIcon ? Math.round(firstIcon.getBoundingClientRect().width) : 0);' +
       'const firstRow = document.querySelector("[role=listbox] [role=option]");' +
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
-      'const combo = document.querySelector("input[role=combobox][aria-controls=kira-launcher-results]");' +
-      'const selectedOption = document.querySelector("[role=listbox] [role=option][aria-selected=true]");' +
-      'document.documentElement.setAttribute("data-smoke-launcher-a11y", !!combo && !!selectedOption && combo.getAttribute("aria-activedescendant") === selectedOption.id && selectedOption.tabIndex === -1);' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
       'const clock = document.querySelector("[data-calendar-clock]");' +
@@ -9803,7 +9497,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
-  if (heightMode === 'icons' && (!output.includes('data-smoke-launcher-a11y="true"') || !output.includes('data-smoke-square="true"') ||
+  if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
       !output.includes('data-smoke-real-icon-transparent="true"') ||
       !output.includes('data-smoke-placeholder-background="true"') ||
       !output.includes('data-smoke-icon-width="32"') ||
@@ -9816,50 +9510,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
-
-/** Quick Launch is a tiny optional section of the existing Top Bar. */
-async function smokeQuickLaunch() {
-  const script = '<script>' +
-    'window.webkit={messageHandlers:{kiraQuickLaunch:{postMessage(message){' +
-    'if(message==="catalog"){setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:quick:apps",{detail:{' +
-    'apps:[{id:8,name:"Terminal",description:"Shell"},{id:2,name:"Firefox",description:"Browser"}]' +
-    '}})),25);}' +
-    'if(String(message).startsWith("icons:")){' +
-    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:quick:icons",{detail:{icons:[' +
-    '{id:8,data_url:' + JSON.stringify(testIcon) + '},{id:2,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
-    'if(String(message).startsWith("launch:")){document.documentElement.dataset.quickLaunched=String(message);}' +
-    '}},kiraDiagnostics:{postMessage(){}}}};' +
-    'window.addEventListener("load",()=>{' +
-    'setTimeout(()=>document.querySelector("button[aria-label=\\\"Launch Terminal\\\"]")?.click(),280);' +
-    'setTimeout(()=>{' +
-    'const root=document.querySelector("main[aria-label=\\\"Kira Desktop top bar\\\"]");' +
-    'const nav=root?.querySelector("nav[aria-label=\\\"Quick launch\\\"]");' +
-    'const buttons=Array.from(nav?.querySelectorAll("button")||[]);' +
-    'const names=buttons.map(button=>button.getAttribute("aria-label"));' +
-    'document.documentElement.dataset.quickTest=!!root && root.getBoundingClientRect().height===42 &&' +
-    '!document.querySelector("main[aria-label=\\\"Kira Dock\\\"]") &&' +
-    'names.join("|")==="Launch Terminal|Launch Firefox" &&' +
-    'buttons.every(button=>Math.round(button.getBoundingClientRect().width)===32) &&' +
-    'nav.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
-    'document.documentElement.dataset.quickLaunched==="launch:8";' +
-    '},700);});</script>';
-  const document = html.replace('</head>', script + '</head>');
-  const path = join(dir, 'quick-launch.html');
-  await writeFile(path, document);
-  const output = execFileSync(chrome, [
-    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
-    '--disable-background-networking', '--virtual-time-budget=1500',
-    '--dump-dom', 'file://' + path,
-  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
-  if (!output.includes('data-quick-test="true"')) {
-    const flags = output.match(/data-quick-(?:test|launched)="[^"]*"/g) || [];
-    throw new Error('quick launch: top bar sizing, icons or GIO bridge failed: ' + flags.join(', '));
-  }
-  console.log('OK: quick launch mounted in 42px Top Bar and launched pinned GIO ID');
-}
-
 try {
-  await smokeQuickLaunch();
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
@@ -9926,7 +9577,6 @@ FILE	frontend/src/App.svelte
   import { onMount } from 'svelte';
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
-  import QuickLaunch from './lib/components/QuickLaunch.svelte';
   import { formatClock } from './lib/time';
   import { openLauncher, toggleCalendar, toggleSystemPanel, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
@@ -10087,10 +9737,6 @@ FILE	frontend/src/App.svelte
       <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
-
-  <!-- Shortcuts launch configured apps; workspaces above remain Niri's
-       authoritative navigation and keep their existing keyboard behavior. -->
-  <QuickLaunch />
 
   <section
     class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}
@@ -11285,13 +10931,6 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
     }
   });
 
-  function clearSearch() {
-    query = '';
-    selected = 0;
-    error = '';
-    void tick().then(() => search?.focus());
-  }
-
   function choose(index: number) {
     const app = displayed[index];
     if (!app) return;
@@ -11318,9 +10957,6 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       return;
     }
     if (event.key === 'Enter' && !event.isComposing) {
-      // A pointer-focused option receives the native Enter click.
-      if (event.target instanceof HTMLElement &&
-          event.target.closest('#kira-launcher-results')) return;
       event.preventDefault();
       choose(activeIndex);
     }
@@ -11331,59 +10967,37 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 
 <main data-kira-ui-root aria-label="Kira Launcher"
   class="flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
-  <header class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
-    <div class="flex items-start justify-between gap-3">
-      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
-        <h1 class="mt-2 text-[30px] font-extrabold leading-none tracking-tight">Launch</h1>
+  <header class="shrink-0 px-5 pb-4 pt-5">
+    <div class="flex items-start justify-between gap-2">
+      <div class="min-w-0">
+        <span class="text-[10px] font-extrabold tracking-[0.16em] text-kira-accent">KIRA / APPLICATION INDEX</span>
+        <h1 class="mt-1 text-[30px] font-extrabold leading-tight">Applications</h1>
+        <p class="mt-1 text-xs text-kira-muted">Search your installed tools.</p>
       </div>
       <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
-        class="rounded-sm px-2 py-1 text-xl leading-none text-kira-muted hover:text-kira-accent
-          focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
     </div>
   </header>
 
-  <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
-    <label for="kira-launcher-query" class="mb-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">FIND / OPEN</label>
-    <div class="relative shrink-0 border border-kira-muted/30 bg-kira-bg
-      focus-within:border-kira-accent focus-within:ring-1 focus-within:ring-kira-accent">
-      <svg class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-kira-muted"
-        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="10.5" cy="10.5" r="6.5" />
-        <path d="m16 16 5 5" />
-      </svg>
-      <input id="kira-launcher-query" type="search" bind:this={search} bind:value={query}
-        oninput={() => { selected = 0; error = ''; }}
-        autocomplete="off" spellcheck="false"
-        role="combobox" aria-autocomplete="list" aria-expanded={displayed.length > 0}
-        aria-activedescendant={displayed[activeIndex] ? 'kira-launcher-option-' + displayed[activeIndex].id : undefined}
-        aria-label="Search applications" aria-controls="kira-launcher-results"
-        placeholder="Search applications…"
-        class="h-11 w-full bg-transparent py-2 pl-10 pr-10 text-sm font-semibold text-kira-text
-          outline-none placeholder:font-normal placeholder:text-kira-muted/70"/>
-      {#if query.length > 0}
-        <button type="button" onclick={clearSearch} title="Clear search" aria-label="Clear search"
-          class="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center
-            text-base text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
-      {/if}
-    </div>
-
-    <div class="mb-2 mt-4 flex items-center justify-between gap-3 border-b border-kira-muted/20 pb-2">
-      <h2 class="text-[10px] font-extrabold tracking-[0.12em] text-kira-accent">APPLICATION CATALOG</h2>
-      <span class="shrink-0 text-[10px] font-bold tabular-nums text-kira-muted">
-        {loaded ? matches.length + ' / ' + apps.length : '— / —'}
-      </span>
+  <section class="flex min-h-0 flex-1 flex-col gap-3 bg-kira-surface px-4 py-4">
+    <label for="kira-launcher-query" class="text-[10px] font-bold tracking-[0.1em] text-kira-muted">FIND / OPEN</label>
+    <input id="kira-launcher-query" type="search" bind:this={search} bind:value={query}
+      oninput={() => { selected = 0; error = ''; }}
+      autocomplete="off" spellcheck="false"
+      aria-label="Search applications" aria-controls="kira-launcher-results"
+      placeholder="Search applications…"
+      class="h-11 w-full shrink-0 rounded-md border border-kira-muted/40 bg-kira-bg px-3 text-sm text-kira-text outline-none placeholder:text-kira-muted focus-visible:border-kira-accent"/>
+    <div class="flex items-center justify-between gap-2">
+      <span class="text-[10px] font-bold tracking-wider text-kira-muted">APPLICATION CATALOG</span>
+      <span class="text-[10px] font-bold tabular-nums text-kira-muted">{matches.length} / {apps.length} APPS</span>
     </div>
     <div id="kira-launcher-results" bind:this={results}
-      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1"
-      role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
+      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1" role="listbox" aria-label="Matching applications">
       {#each displayed as app, index (app.id)}
-        <button type="button" id={'kira-launcher-option-' + app.id}
-          role="option" aria-selected={index === activeIndex} tabindex={-1}
+        <button type="button" role="option" aria-selected={index === activeIndex}
           onclick={() => choose(index)}
           title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'group my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
+          class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
           <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
           <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
@@ -11404,137 +11018,29 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
             {/if}
           </span>
           <span class="min-w-0 flex-1">
-            <span class={'block truncate text-sm font-semibold ' +
-              (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
-            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">
-              {app.description.trim() || 'Installed application'}
-            </span>
+            <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
+            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim() || 'Installed application'}</span>
           </span>
-          {#if index === activeIndex}
-            <span class="shrink-0 text-sm font-bold text-kira-accent" aria-hidden="true">↵</span>
-          {/if}
         </button>
       {:else}
-        <div class="px-3 py-8 text-center" role="status">
-          <p class="text-xs font-semibold text-kira-text">
-            {#if error}{error}{:else if !loaded}LOADING APPLICATIONS…{:else}No matching applications{/if}
-          </p>
-          {#if loaded && !error && query.trim()}
-            <button type="button" onclick={clearSearch}
-              class="mt-3 text-[11px] font-bold text-kira-accent
-                focus-visible:outline-2 focus-visible:outline-kira-accent">CLEAR SEARCH</button>
-          {/if}
-        </div>
+        <p class="py-8 text-center text-xs text-kira-muted" role="status">
+          {#if error}{error}{:else if !loaded}LOADING APPLICATIONS…{:else}No matching applications{/if}
+        </p>
       {/each}
     </div>
     {#if error && displayed.length}
-      <p class="shrink-0 py-2 text-xs font-medium text-kira-accent" role="alert">{error}</p>
+      <p class="shrink-0 text-xs font-medium text-kira-accent" role="alert">{error}</p>
     {/if}
     {#if matches.length > displayed.length}
-      <p class="shrink-0 pt-2 text-[10px] text-kira-muted">
-        Showing first {displayed.length} matches. Refine search for more.
-      </p>
+      <p class="shrink-0 text-[10px] text-kira-muted">Showing first {displayed.length} matches. Refine search for more.</p>
     {/if}
   </section>
-  <footer class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
-    px-5 py-2.5 text-[10px] text-kira-muted">
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">↑ ↓</kbd> MOVE
-    </span>
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ENTER</kbd> OPEN
-    </span>
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ESC</kbd> CLOSE
-    </span>
+  <footer class="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 px-5 py-3 text-[10px] text-kira-muted">
+    <kbd class="rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">↑ ↓</kbd><span>Navigate</span>
+    <kbd class="ml-2 rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">ENTER</kbd><span>Open</span>
+    <kbd class="ml-2 rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">ESC</kbd><span>Close</span>
   </footer>
 </main>
-
-FILE	frontend/src/lib/components/QuickLaunch.svelte
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import {
-    launchQuickApp, onQuickLaunchApps, onQuickLaunchError,
-    onQuickLaunchIcons, requestQuickLaunchCatalog, requestQuickLaunchIcons,
-    type LauncherApp,
-  } from '../sdk/core';
-
-  let apps = $state<LauncherApp[]>([]);
-  let icons = $state<Record<number, string>>({});
-  let error = $state('');
-  const requested = new Set<number>();
-
-  onMount(() => {
-    // The native worker can finish before the bar mounts. The catalog
-    // request replays the last validated snapshot, with no frontend polling.
-    const stopApps = onQuickLaunchApps(entries => {
-      apps = entries;
-      icons = {};
-      requested.clear();
-      error = '';
-    });
-    const stopIcons = onQuickLaunchIcons(batch => {
-      for (const icon of batch.icons) {
-        if (icon.data_url !== null) icons[icon.id] = icon.data_url;
-      }
-    });
-    const stopError = onQuickLaunchError(message => { error = message; });
-    requestQuickLaunchCatalog();
-    return () => {
-      stopApps();
-      stopIcons();
-      stopError();
-      requested.clear();
-    };
-  });
-
-  $effect(() => {
-    const missing = apps.map(app => app.id).filter(id => !requested.has(id));
-    if (missing.length && requestQuickLaunchIcons(missing)) {
-      for (const id of missing) requested.add(id);
-    }
-  });
-
-  function launch(id: number) {
-    error = '';
-    if (!launchQuickApp(id)) error = 'Application service unavailable';
-  }
-</script>
-
-{#if apps.length > 0}
-  <nav aria-label="Quick launch" class="hidden shrink-0 items-center gap-0.5
-    border-l border-kira-muted/15 px-2 pb-[2px] min-[740px]:flex"
-    data-quick-launch>
-    {#each apps as app (app.id)}
-      <button type="button" onclick={() => launch(app.id)}
-        aria-label={'Launch ' + app.name} title={'Launch ' + app.name}
-        class="flex size-8 shrink-0 items-center justify-center rounded-sm
-          text-kira-muted transition-colors duration-150
-          hover:bg-kira-surface hover:text-kira-text
-          focus-visible:bg-kira-surface focus-visible:outline-2
-          focus-visible:outline-kira-accent motion-reduce:transition-none">
-        {#if icons[app.id]}
-          <img class="size-[22px] object-contain" src={icons[app.id]}
-            alt="" aria-hidden="true" loading="lazy"
-            onerror={() => { delete icons[app.id]; }} />
-        {:else}
-          <svg class="size-5" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="1.5"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-        {/if}
-      </button>
-    {/each}
-    {#if error}
-      <span role="status" class="max-w-20 truncate text-[9px] font-bold text-kira-accent"
-        title={error}>LAUNCH !</span>
-    {/if}
-  </nav>
-{/if}
 
 FILE	frontend/src/lib/components/SystemCharts.svelte
 <script lang="ts">
@@ -12216,23 +11722,6 @@ describe('launcher model', () => {
     expect(apps[0].id).toBe(7);
   });
 
-  it('ranks exact and prefix app names ahead of description-only hits', () => {
-    const entries: LauncherApp[] = [
-      { id: 10, name: 'Browser tools', description: 'Utilities' },
-      { id: 11, name: 'WebKit diagnostics', description: 'Browser testing' },
-      { id: 12, name: 'Browser', description: 'The browser' },
-      { id: 13, name: 'My browser', description: 'Utility browser' },
-      { id: 14, name: 'Browser editor', description: 'Window browser' },
-      { id: 15, name: 'Cool Browser', description: 'Browser tool' },
-    ];
-    expect(filterLauncherApps(entries, 'browser').map(app => app.id))
-      .toEqual([12, 10, 14, 13, 15, 11]);
-    expect(filterLauncherApps(entries, 'browser editor').map(app => app.id)).toEqual([14]);
-    expect(filterLauncherApps(entries, '').map(app => app.id))
-      .toEqual([10, 11, 12, 13, 14, 15]);
-    expect(entries[0].id).toBe(10);
-  });
-
   it('bounds keyboard selection to visible results and handles empty lists', () => {
     expect(nextLauncherSelection(0, 4, -1)).toBe(0);
     expect(nextLauncherSelection(3, 4, 1)).toBe(3);
@@ -12251,21 +11740,10 @@ import type { LauncherApp } from './sdk/core';
 export function filterLauncherApps(apps: readonly LauncherApp[], query: string): LauncherApp[] {
   const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) return [...apps];
-  const joined = terms.join(' ');
-  // Preserve native GIO IDs and source order among equal-relevance hits.
-  return apps.map((app, index) => {
-    const name = app.name.toLocaleLowerCase();
-    const haystack = (name + ' ' + app.description).toLocaleLowerCase();
-    if (!terms.every(term => haystack.includes(term))) return null;
-    const rank = name === joined ? 0
-      : name.startsWith(joined) ? 1
-        : name.split(/\s+/).some(word => word.startsWith(joined)) ? 2
-          : name.includes(joined) ? 3
-            : terms.every(term => name.includes(term)) ? 4 : 5;
-    return { app, index, rank };
-  }).filter((entry): entry is { app: LauncherApp; index: number; rank: number } => entry !== null)
-    .sort((a, b) => a.rank - b.rank || a.index - b.index)
-    .map(({ app }) => app);
+  return apps.filter(app => {
+    const haystack = (app.name + ' ' + app.description).toLocaleLowerCase();
+    return terms.every(term => haystack.includes(term));
+  });
 }
 
 export function nextLauncherSelection(current: number, count: number, direction: -1 | 1): number {
@@ -13190,7 +12668,7 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraQuickLaunch?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge } };
   }
 }
 
@@ -13359,63 +12837,6 @@ export function closeLauncherOverlay(): void {
   sendCalendarUi('close');
 }
 
-/** Only explicit, trusted native GIO app indices. No shell commands,
- * window-switching, arbitrary executable paths, or implicit app catalog.
- */
-function sendQuickCommand(message: string): boolean {
-  const handler = typeof window === 'undefined'
-    ? undefined : window.webkit?.messageHandlers?.kiraQuickLaunch;
-  if (!handler) return false;
-  try { handler.postMessage(message); return true; }
-  catch { return false; }
-}
-
-export interface QuickLaunchApps {
-  apps: LauncherApp[];
-}
-
-export function onQuickLaunchApps(callback: (apps: LauncherApp[]) => void): () => void {
-  return onNativeEvent('kira:quick:apps', (value): value is QuickLaunchApps =>
-    isRecord(value) && Array.isArray(value.apps) && value.apps.length <= 3 &&
-    value.apps.every((app: unknown) => isRecord(app) &&
-      Number.isSafeInteger(app.id) && (app.id as number) >= 0 && (app.id as number) < 1024 &&
-      typeof app.name === 'string' && app.name.length <= 120 &&
-      typeof app.description === 'string' && app.description.length <= 240),
-  data => callback(data.apps));
-}
-
-export function onQuickLaunchIcons(callback: (icons: LauncherIcons) => void): () => void {
-  return onNativeEvent('kira:quick:icons', (value): value is LauncherIcons =>
-    isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 3 &&
-    value.icons.every((icon: unknown) => isRecord(icon) &&
-      Number.isSafeInteger(icon.id) && (icon.id as number) >= 0 && (icon.id as number) < 1024 &&
-      (icon.data_url === null ||
-        (typeof icon.data_url === 'string' && icon.data_url.length <= 180_000 &&
-          iconDataUri.test(icon.data_url)))),
-  callback);
-}
-
-export function onQuickLaunchError(callback: (message: string) => void): () => void {
-  return onNativeEvent('kira:quick:error', (value): value is { message: string } =>
-    isRecord(value) && typeof value.message === 'string' && value.message.length <= 180,
-    value => callback(value.message));
-}
-
-export function requestQuickLaunchCatalog(): boolean {
-  return sendQuickCommand('catalog');
-}
-
-export function requestQuickLaunchIcons(ids: number[]): boolean {
-  if (!ids.length || ids.length > 3 || new Set(ids).size !== ids.length ||
-      !ids.every(id => Number.isSafeInteger(id) && id >= 0 && id < 1024)) return false;
-  return sendQuickCommand('icons:' + ids.join(','));
-}
-
-export function launchQuickApp(id: number): boolean {
-  if (!Number.isSafeInteger(id) || id < 0 || id >= 1024) return false;
-  return sendQuickCommand('launch:' + id);
-}
-
 /** Open or close the shared Svelte read-only system monitor. */
 export function toggleSystemPanel(): boolean {
   return postNativeCommand('kiraSystem', 'toggle');
@@ -13489,61 +12910,6 @@ function send(method: string, params?: { id: string }): Promise<unknown> {
     }
   });
 }
-
-FILE	frontend/src/lib/sdk/quick-launch.test.ts
-import { describe, expect, it, vi } from 'vitest';
-import {
-  launchQuickApp, onQuickLaunchApps, onQuickLaunchIcons,
-  requestQuickLaunchCatalog, requestQuickLaunchIcons,
-} from './core';
-
-describe('Quick Launch narrow trusted bridge', () => {
-  it('sends only bounded native indices, never command strings', () => {
-    const postMessage = vi.fn();
-    globalThis.window = {
-      webkit: { messageHandlers: { kiraQuickLaunch: { postMessage } } },
-    } as unknown as Window & typeof globalThis;
-    expect(requestQuickLaunchCatalog()).toBe(true);
-    expect(requestQuickLaunchIcons([8, 2])).toBe(true);
-    expect(launchQuickApp(8)).toBe(true);
-    expect(postMessage.mock.calls.map(([message]) => message))
-      .toEqual(['catalog', 'icons:8,2', 'launch:8']);
-    for (const id of [-1, 1.5, 1024, Number.NaN]) {
-      expect(launchQuickApp(id)).toBe(false);
-    }
-    expect(requestQuickLaunchIcons([])).toBe(false);
-    expect(requestQuickLaunchIcons([1, 1])).toBe(false);
-    expect(requestQuickLaunchIcons([1, 2, 3, 4])).toBe(false);
-    expect(postMessage).toHaveBeenCalledTimes(3);
-  });
-
-  it('validates tiny catalog and image-only event payloads', () => {
-    const handlers = new Map<string, EventListener>();
-    const removeEventListener = vi.fn();
-    globalThis.window = {
-      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
-      removeEventListener,
-    } as unknown as Window & typeof globalThis;
-    const onApps = vi.fn();
-    const onIcons = vi.fn();
-    const stopApps = onQuickLaunchApps(onApps);
-    const stopIcons = onQuickLaunchIcons(onIcons);
-    const notify = (name: string, detail: unknown) =>
-      handlers.get(name)!({ detail } as unknown as Event);
-    const app = { id: 8, name: 'Terminal', description: '' };
-    notify('kira:quick:apps', { apps: [app] });
-    expect(onApps).toHaveBeenCalledExactlyOnceWith([app]);
-    notify('kira:quick:apps', { apps: [app, app, app, app] });
-    notify('kira:quick:apps', { apps: [{ ...app, id: -1 }] });
-    expect(onApps).toHaveBeenCalledTimes(1);
-    notify('kira:quick:icons', { icons: [{ id: 8, data_url: null }] });
-    notify('kira:quick:icons', { icons: [{ id: 8, data_url: 'file:///tmp/bad' }] });
-    expect(onIcons).toHaveBeenCalledTimes(1);
-    stopApps();
-    stopIcons();
-    expect(removeEventListener).toHaveBeenCalledTimes(2);
-  });
-});
 
 FILE	frontend/src/lib/system-charts.test.ts
 import { describe, expect, it } from 'vitest';
@@ -14347,7 +13713,6 @@ const css = readFileSync(new URL('../../style.css', import.meta.url), 'utf8');
 const markup = readFileSync(new URL('../../App.svelte', import.meta.url), 'utf8');
 const workspaces = readFileSync(new URL('../components/WorkspacePreview.svelte', import.meta.url), 'utf8');
 const core = readFileSync(new URL('../components/SystemHealth.svelte', import.meta.url), 'utf8');
-const quick = readFileSync(new URL('../components/QuickLaunch.svelte', import.meta.url), 'utf8');
 const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), 'utf8');
 const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
@@ -14398,17 +13763,6 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('aria-haspopup="dialog"');
     expect(markup).toContain('<time class=');
     expect(markup).toContain('CALENDAR OFFLINE');
-  });
-
-  it('puts optional launch-only shortcuts in the existing bar, not a Dock', () => {
-    expect(markup).toContain('<QuickLaunch />');
-    expect(quick).toContain('aria-label="Quick launch"');
-    expect(quick).toContain("aria-label={'Launch ' + app.name}");
-    expect(quick).toContain('min-[740px]:flex');
-    expect(quick).toContain('onQuickLaunchApps(');
-    expect(quick).toContain('stopApps();');
-    expect(markup).not.toContain('DockWidget');
-    expect(css).not.toContain('data-kira-surface="dock"');
   });
 
   it('preserves accessible live workspace and Core states without component CSS', () => {
@@ -16050,13 +15404,6 @@ class LauncherDesignTests(unittest.TestCase):
                 continue
             self.assertIn(value, WIDGET)
         self.assertIn('filterLauncherApps(apps, query)', WIDGET)
-        self.assertIn('role="combobox"', WIDGET)
-        self.assertIn('aria-autocomplete="list"', WIDGET)
-        self.assertIn('aria-activedescendant=', WIDGET)
-        self.assertIn('aria-label="Clear search"', WIDGET)
-        self.assertIn("function clearSearch()", WIDGET)
-        self.assertIn("event.target.closest('#kira-launcher-results')", WIDGET)
-        self.assertIn(".sort((a, b) => a.rank - b.rank || a.index - b.index)", MODEL)
         self.assertIn('nextLauncherSelection(', WIDGET)
         self.assertIn('matches.slice(0, 80)', WIDGET)
         self.assertIn('app.id', WIDGET)
@@ -16581,55 +15928,6 @@ class VisualQATests(unittest.TestCase):
                 self.assertEqual(json.loads(manifests[0].read_text())["status"], "failed")
             finally:
                 server.close()
-
-
-if __name__ == "__main__":
-    unittest.main()
-
-FILE	tests/test_quick_launch.py
-"""Niri-first Quick Launch replaces the separate Dock surface."""
-import unittest
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
-QUICK = (ROOT / "crates/kira-shell/src/quick_launch.rs").read_text()
-BAR = (ROOT / "frontend/src/App.svelte").read_text()
-WIDGET = (ROOT / "frontend/src/lib/components/QuickLaunch.svelte").read_text()
-SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
-ENTRY = (ROOT / "frontend/src/main.ts").read_text()
-
-
-class QuickLaunchContracts(unittest.TestCase):
-    def test_no_bottom_layer_or_shadow_dock(self):
-        self.assertIn('window.set_exclusive_zone(BAR_HEIGHT)', SHELL)
-        self.assertIn('mod quick_launch;', SHELL)
-        self.assertIn('QuickLaunch::discover()', SHELL)
-        self.assertIn('register_script_message_handler("kiraQuickLaunch", None)', SHELL)
-        self.assertNotIn('mod dock;', SHELL)
-        self.assertNotIn('dock::start(', SHELL)
-        self.assertNotIn('dataset.kiraSurface === "dock"', ENTRY)
-        self.assertNotIn("dataset.kiraSurface === 'dock'", ENTRY)
-        self.assertFalse((ROOT / "crates/kira-shell/src/dock.rs").exists())
-        self.assertFalse((ROOT / "frontend/src/lib/components/DockWidget.svelte").exists())
-
-    def test_worker_only_for_configured_pins_and_no_taskbar_semantics(self):
-        for expected in (
-            'KIRA_QUICK_APPS', 'KIRA_DOCK_APPS', 'names.is_empty()',
-            'return Ok(None);', 'MAX_SHORTCUTS: usize = 3',
-            'launcher::Catalog::discover()', 'self.allowed.contains(&id)',
-            'ids.iter().all(|id| self.allowed.contains(id))',
-            'selected_entries(&full, &self.names)',
-        ):
-            self.assertIn(expected, QUICK)
-        self.assertNotIn('std::process::Command', QUICK)
-        self.assertIn('<QuickLaunch />', BAR)
-        self.assertIn('aria-label="Quick launch"', WIDGET)
-        self.assertIn('min-[740px]:flex', WIDGET)
-        self.assertIn("stopApps();", WIDGET)
-        self.assertIn("onQuickLaunchApps(", WIDGET)
-        self.assertIn("sendQuickCommand('launch:' + id)", SDK)
-        self.assertIn("ids.length > 3", SDK)
 
 
 if __name__ == "__main__":

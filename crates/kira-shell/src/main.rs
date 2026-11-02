@@ -4,7 +4,6 @@ mod calendar;
 mod launcher;
 mod native_ui;
 mod process_monitor;
-mod quick_launch;
 mod renderer_recovery;
 mod system_metrics;
 mod system_panel;
@@ -248,46 +247,6 @@ fn main() {
             }
         });
         assert!(manager.register_script_message_handler("kiraSystem", None));
-
-        // Quick Launch is optional and lives INSIDE this existing Top Bar.
-        // No bottom surface, no task-switching semantics and no worker at all
-        // unless the user explicitly configures application shortcuts.
-        let quick = Rc::new(RefCell::new(match quick_launch::QuickLaunch::discover() {
-            Ok(service) => service,
-            Err(error) => {
-                eprintln!("kira-shell: Quick Launch unavailable: {error}");
-                None
-            }
-        }));
-        let quick_messages = quick.clone();
-        let quick_view = view.downgrade();
-        manager.connect_script_message_received(Some("kiraQuickLaunch"), move |_, value| {
-            let raw = value.to_string();
-            if let Some(service) = quick_messages.borrow().as_ref()
-                && let Some(event) = service.handle(&raw)
-                && let Some(view) = quick_view.upgrade()
-            {
-                quick_launch::deliver(&view, event);
-            }
-        });
-        assert!(manager.register_script_message_handler("kiraQuickLaunch", None));
-
-        if quick.borrow().is_some() {
-            let quick_poll = quick.clone();
-            let quick_view = view.downgrade();
-            gtk::glib::timeout_add_local(Duration::from_millis(60), move || {
-                let Some(view) = quick_view.upgrade() else {
-                    return gtk::glib::ControlFlow::Break;
-                };
-                if let Some(service) = quick_poll.borrow_mut().as_mut() {
-                    for _ in 0..4 {
-                        let Some(event) = service.poll() else { break };
-                        quick_launch::deliver(&view, event);
-                    }
-                }
-                gtk::glib::ControlFlow::Continue
-            });
-        }
 
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");

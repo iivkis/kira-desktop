@@ -229,7 +229,7 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraQuickLaunch?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge } };
   }
 }
 
@@ -396,63 +396,6 @@ export function launchDesktopApp(generation: number, id: number): boolean {
 
 export function closeLauncherOverlay(): void {
   sendCalendarUi('close');
-}
-
-/** Only explicit, trusted native GIO app indices. No shell commands,
- * window-switching, arbitrary executable paths, or implicit app catalog.
- */
-function sendQuickCommand(message: string): boolean {
-  const handler = typeof window === 'undefined'
-    ? undefined : window.webkit?.messageHandlers?.kiraQuickLaunch;
-  if (!handler) return false;
-  try { handler.postMessage(message); return true; }
-  catch { return false; }
-}
-
-export interface QuickLaunchApps {
-  apps: LauncherApp[];
-}
-
-export function onQuickLaunchApps(callback: (apps: LauncherApp[]) => void): () => void {
-  return onNativeEvent('kira:quick:apps', (value): value is QuickLaunchApps =>
-    isRecord(value) && Array.isArray(value.apps) && value.apps.length <= 3 &&
-    value.apps.every((app: unknown) => isRecord(app) &&
-      Number.isSafeInteger(app.id) && (app.id as number) >= 0 && (app.id as number) < 1024 &&
-      typeof app.name === 'string' && app.name.length <= 120 &&
-      typeof app.description === 'string' && app.description.length <= 240),
-  data => callback(data.apps));
-}
-
-export function onQuickLaunchIcons(callback: (icons: LauncherIcons) => void): () => void {
-  return onNativeEvent('kira:quick:icons', (value): value is LauncherIcons =>
-    isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 3 &&
-    value.icons.every((icon: unknown) => isRecord(icon) &&
-      Number.isSafeInteger(icon.id) && (icon.id as number) >= 0 && (icon.id as number) < 1024 &&
-      (icon.data_url === null ||
-        (typeof icon.data_url === 'string' && icon.data_url.length <= 180_000 &&
-          iconDataUri.test(icon.data_url)))),
-  callback);
-}
-
-export function onQuickLaunchError(callback: (message: string) => void): () => void {
-  return onNativeEvent('kira:quick:error', (value): value is { message: string } =>
-    isRecord(value) && typeof value.message === 'string' && value.message.length <= 180,
-    value => callback(value.message));
-}
-
-export function requestQuickLaunchCatalog(): boolean {
-  return sendQuickCommand('catalog');
-}
-
-export function requestQuickLaunchIcons(ids: number[]): boolean {
-  if (!ids.length || ids.length > 3 || new Set(ids).size !== ids.length ||
-      !ids.every(id => Number.isSafeInteger(id) && id >= 0 && id < 1024)) return false;
-  return sendQuickCommand('icons:' + ids.join(','));
-}
-
-export function launchQuickApp(id: number): boolean {
-  if (!Number.isSafeInteger(id) || id < 0 || id >= 1024) return false;
-  return sendQuickCommand('launch:' + id);
 }
 
 /** Open or close the shared Svelte read-only system monitor. */
