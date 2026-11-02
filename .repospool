@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5057
+index_bytes=5058
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	c944cd5398ca697633b59eb1f004c4ae16080354
+C	3720fcc0a585ab40f35a4b71e0c5167739705ebd
 F	.cargo/config.toml	98	131	3
 F	.github/workflows/ci.yml	4355	136	112
 F	.github/workflows/frontend-nix.yml	1398	250	43
@@ -37,88 +37,88 @@ F	crates/kira-ipc/Cargo.toml	170	2795	9
 F	crates/kira-ipc/src/client.rs	17794	2806	458
 F	crates/kira-ipc/src/lib.rs	10460	3266	336
 F	crates/kira-shell/Cargo.toml	297	3604	12
-F	crates/kira-shell/src/calendar.rs	60693	3618	1602
-F	crates/kira-shell/src/launcher.rs	14114	5222	392
-F	crates/kira-shell/src/main.rs	19321	5616	449
-F	crates/kira-shell/src/native_ui.rs	4536	6067	104
-F	crates/kira-shell/src/popup_layout.rs	1619	6173	46
-F	crates/kira-shell/src/process_monitor.rs	9336	6221	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6509	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6627	559
-F	crates/kira-shell/src/system_panel.rs	11356	7188	318
-F	crates/kira-shell/src/webview_pool.rs	7991	7508	237
-F	docs/CONFIG.md	5801	7747	125
-F	docs/DESIGN_SYSTEM.md	32126	7874	519
-F	docs/DEVELOPMENT.md	29347	8395	577
-F	docs/QA_VISUAL.md	12284	8974	149
-F	docs/SPECIFICATION.md	28960	9125	421
-F	docs/TENET_MOTION.md	40649	9548	204
-F	docs/UI_ARCHITECTURE.md	6737	9754	106
-F	docs/VISUAL_REVIEW.md	9754	9862	84
-F	docs/WEBVIEW_POOL.md	4163	9948	26
-F	flake.nix	3181	9976	91
-F	frontend/index.html	2737	10069	66
-F	frontend/package.json	720	10137	27
-F	frontend/scripts/inline-assets.mjs	4457	10166	103
-F	frontend/scripts/inline-assets.test.mjs	4645	10271	106
-F	frontend/scripts/smoke-overlays.mjs	36829	10379	515
-F	frontend/src/App.svelte	8589	10896	207
-F	frontend/src/lib/bootstrap.test.ts	3408	11105	84
-F	frontend/src/lib/bootstrap.ts	2613	11191	70
-F	frontend/src/lib/calendar-model.test.ts	3571	11263	65
-F	frontend/src/lib/calendar-model.ts	4648	11330	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11437	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11499	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11530	287
-F	frontend/src/lib/clock-flight.test.ts	2404	11819	50
-F	frontend/src/lib/clock-flight.ts	1977	11871	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	11923	246
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	12171	256
-F	frontend/src/lib/components/SystemCharts.svelte	10517	12429	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	12657	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	12705	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	13046	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13086	119
-F	frontend/src/lib/launcher-model.test.ts	2266	13207	46
-F	frontend/src/lib/launcher-model.ts	1403	13255	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	13286	89
-F	frontend/src/lib/lazy-widget.ts	1984	13377	63
-F	frontend/src/lib/motion-contract.test.ts	11242	13442	198
-F	frontend/src/lib/motion.ts	24039	13642	657
-F	frontend/src/lib/overlay-size.ts	1090	14301	29
-F	frontend/src/lib/sdk/core.test.ts	23538	14332	471
-F	frontend/src/lib/sdk/core.ts	19390	14805	498
-F	frontend/src/lib/system-charts.test.ts	6312	15305	141
-F	frontend/src/lib/system-charts.ts	5514	15448	149
-F	frontend/src/lib/system-health.test.ts	2385	15599	42
-F	frontend/src/lib/system-health.ts	2831	15643	60
-F	frontend/src/lib/system-model.test.ts	4455	15705	84
-F	frontend/src/lib/system-model.ts	5457	15791	125
-F	frontend/src/lib/themes/kira-default.css	1687	15918	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	15972	101
-F	frontend/src/lib/themes/kira-default.ts	777	16075	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	16099	101
-F	frontend/src/lib/time.test.ts	263	16202	8
-F	frontend/src/lib/time.ts	320	16212	9
-F	frontend/src/lib/workspace-window.test.ts	2298	16223	52
-F	frontend/src/lib/workspace-window.ts	1063	16277	32
-F	frontend/src/main.ts	7329	16311	154
-F	frontend/src/style.css	5976	16467	180
-F	frontend/tsconfig.json	403	16649	16
-F	frontend/vite.config.ts	224	16667	8
-F	nix/package.nix	3132	16677	117
-F	scripts/dev_preview.py	18147	16796	403	x
-F	scripts/qa_visual.py	12052	17201	299
-F	tests/test_calendar_design.py	7810	17502	136
-F	tests/test_detailed_health.py	5481	17640	105
-F	tests/test_dev_preview.py	9339	17747	219
-F	tests/test_launcher_design.py	10481	17968	190
-F	tests/test_native_theme.py	2098	18160	44
-F	tests/test_popup_geometry.py	3189	18206	58
-F	tests/test_qa_visual.py	10549	18266	217
-F	tests/test_tenet_close.py	6297	18485	115
-F	tests/test_ui_bootstrap_contract.py	1103	18602	29
-F	tests/test_webview_pool.py	4688	18633	82
+F	crates/kira-shell/src/calendar.rs	61392	3618	1647
+F	crates/kira-shell/src/launcher.rs	14114	5267	392
+F	crates/kira-shell/src/main.rs	19321	5661	449
+F	crates/kira-shell/src/native_ui.rs	4536	6112	104
+F	crates/kira-shell/src/popup_layout.rs	1639	6218	49
+F	crates/kira-shell/src/process_monitor.rs	9336	6269	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6557	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6675	559
+F	crates/kira-shell/src/system_panel.rs	11356	7236	318
+F	crates/kira-shell/src/webview_pool.rs	7991	7556	237
+F	docs/CONFIG.md	5801	7795	125
+F	docs/DESIGN_SYSTEM.md	32126	7922	519
+F	docs/DEVELOPMENT.md	29347	8443	577
+F	docs/QA_VISUAL.md	12284	9022	149
+F	docs/SPECIFICATION.md	28960	9173	421
+F	docs/TENET_MOTION.md	40649	9596	204
+F	docs/UI_ARCHITECTURE.md	6737	9802	106
+F	docs/VISUAL_REVIEW.md	9754	9910	84
+F	docs/WEBVIEW_POOL.md	4163	9996	26
+F	flake.nix	3181	10024	91
+F	frontend/index.html	2737	10117	66
+F	frontend/package.json	720	10185	27
+F	frontend/scripts/inline-assets.mjs	4457	10214	103
+F	frontend/scripts/inline-assets.test.mjs	4645	10319	106
+F	frontend/scripts/smoke-overlays.mjs	37453	10427	523
+F	frontend/src/App.svelte	8589	10952	207
+F	frontend/src/lib/bootstrap.test.ts	3408	11161	84
+F	frontend/src/lib/bootstrap.ts	2613	11247	70
+F	frontend/src/lib/calendar-model.test.ts	3571	11319	65
+F	frontend/src/lib/calendar-model.ts	4648	11386	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11493	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11555	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11586	287
+F	frontend/src/lib/clock-flight.test.ts	2404	11875	50
+F	frontend/src/lib/clock-flight.ts	1977	11927	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	11979	246
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	12227	256
+F	frontend/src/lib/components/SystemCharts.svelte	10517	12485	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	12713	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	12761	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	13102	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13142	119
+F	frontend/src/lib/launcher-model.test.ts	2266	13263	46
+F	frontend/src/lib/launcher-model.ts	1403	13311	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	13342	89
+F	frontend/src/lib/lazy-widget.ts	1984	13433	63
+F	frontend/src/lib/motion-contract.test.ts	11242	13498	198
+F	frontend/src/lib/motion.ts	24039	13698	657
+F	frontend/src/lib/overlay-size.ts	1090	14357	29
+F	frontend/src/lib/sdk/core.test.ts	23538	14388	471
+F	frontend/src/lib/sdk/core.ts	19390	14861	498
+F	frontend/src/lib/system-charts.test.ts	6312	15361	141
+F	frontend/src/lib/system-charts.ts	5514	15504	149
+F	frontend/src/lib/system-health.test.ts	2385	15655	42
+F	frontend/src/lib/system-health.ts	2831	15699	60
+F	frontend/src/lib/system-model.test.ts	4455	15761	84
+F	frontend/src/lib/system-model.ts	5457	15847	125
+F	frontend/src/lib/themes/kira-default.css	1687	15974	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	16028	101
+F	frontend/src/lib/themes/kira-default.ts	777	16131	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	16155	101
+F	frontend/src/lib/time.test.ts	263	16258	8
+F	frontend/src/lib/time.ts	320	16268	9
+F	frontend/src/lib/workspace-window.test.ts	2298	16279	52
+F	frontend/src/lib/workspace-window.ts	1063	16333	32
+F	frontend/src/main.ts	7329	16367	154
+F	frontend/src/style.css	5976	16523	180
+F	frontend/tsconfig.json	403	16705	16
+F	frontend/vite.config.ts	224	16723	8
+F	nix/package.nix	3132	16733	117
+F	scripts/dev_preview.py	18147	16852	403	x
+F	scripts/qa_visual.py	12052	17257	299
+F	tests/test_calendar_design.py	7810	17558	136
+F	tests/test_detailed_health.py	5481	17696	105
+F	tests/test_dev_preview.py	9339	17803	219
+F	tests/test_launcher_design.py	10481	18024	190
+F	tests/test_native_theme.py	2098	18216	44
+F	tests/test_popup_geometry.py	3189	18262	58
+F	tests/test_qa_visual.py	10549	18322	217
+F	tests/test_tenet_close.py	6297	18541	115
+F	tests/test_ui_bootstrap_contract.py	1103	18658	29
+F	tests/test_webview_pool.py	4688	18689	82
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3766,7 +3766,9 @@ impl OverlayPool {
 
     // A detached widget is a normal Niri application window, not a popup.
     fn popup(&self) -> Option<Rc<CalendarOverlay>> {
-        self.windows.borrow().values()
+        self.windows
+            .borrow()
+            .values()
             .find(|view| view.requested.get() && !view.detached.get())
             .cloned()
     }
@@ -3811,16 +3813,16 @@ impl OverlayPool {
     }
 
     fn width_for(&self, view: &CalendarOverlay) -> i32 {
-        popup_layout::popup_width(
-            crate::native_ui::popup_output_width(&view.window), 1, false,
-        )
+        popup_layout::popup_width(crate::native_ui::popup_output_width(&view.window), 1, false)
     }
 
     // Only the single transient window gets layer-shell geometry.
     fn sync_geometry(&self) {
         if let Some(view) = self.popup() {
             crate::native_ui::resize_webview_popup(
-                &view.window, self.width_for(&view), view.content_height.get().max(1),
+                &view.window,
+                self.width_for(&view),
+                view.content_height.get().max(1),
             );
         }
     }
@@ -3836,7 +3838,10 @@ impl OverlayPool {
         // Exclusive is useful for an isolated type-to-search Launcher but
         // blocks interaction with other simultaneously visible windows.
         // Keep its solo behavior; use OnDemand with multiple popup leases.
-        if let Some(launcher) = self.active(Surface::Launcher).filter(|view| !view.detached.get()) {
+        if let Some(launcher) = self
+            .active(Surface::Launcher)
+            .filter(|view| !view.detached.get())
+        {
             launcher.window.set_keyboard_mode(if self.concurrent() {
                 KeyboardMode::OnDemand
             } else {
@@ -3919,7 +3924,8 @@ impl CalendarOverlay {
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
             if dock == PopupDock::Right {
-                self.window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
+                self.window
+                    .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
             }
         }
     }
@@ -3927,12 +3933,16 @@ impl CalendarOverlay {
     /// Keep the SAME WebView and Svelte state while moving it from the
     /// layer-shell popup to a decorated xdg-toplevel managed by Niri.
     fn detach(self: &Rc<Self>) {
-        if !self.requested.get() || self.closing.get() || !self.revealed.get()
+        if !self.requested.get()
+            || self.closing.get()
+            || !self.revealed.get()
             || self.detached.get()
         {
             return;
         }
-        let Some(pool) = self.pool.upgrade() else { return; };
+        let Some(pool) = self.pool.upgrade() else {
+            return;
+        };
         let kind = self.active.get().expect("requested view has a surface");
         self.detached.set(true);
         let normal = gtk::ApplicationWindow::new(&pool.application);
@@ -3969,7 +3979,10 @@ impl CalendarOverlay {
             "document.documentElement.dataset.kiraDetached = 'true';              window.dispatchEvent(new CustomEvent('kira:overlay:detached',              {{ detail: {{ generation: {generation} }} }}));"
         );
         self.view.evaluate_javascript(
-            &script, None, None, None::<&gtk::gio::Cancellable>,
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
             |result| {
                 if let Err(error) = result {
                     eprintln!("kira-shell: widget detach notification failed: {error}");
@@ -4371,7 +4384,9 @@ impl CalendarOverlay {
                 // Layout-driven dimensions come only from the bounded,
                 // trusted overlay channel. Ignore stale generations and
                 // no-op resizes to avoid feedback from ResizeObserver.
-                if self.detached.get() { return; }
+                if self.detached.get() {
+                    return;
+                }
                 let clamped =
                     height.min(crate::native_ui::webview_popup_height_limit(&self.window));
                 if clamped != self.content_height.get() {
@@ -5014,34 +5029,53 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
 }
 
 pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else { return; };
-    pool.request(Surface::Calendar, true, Box::new(|pool| {
-        let Some((view, existing)) = pool.acquire(Surface::Calendar) else { return; };
-        if existing {
-            if !view.focus_detached() {
-                if view.closing.get() { view.cancel_close(); }
-                else { view.request_close(); }
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::Calendar,
+        true,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Calendar) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+            } else {
+                view.show(Surface::Calendar);
             }
-        } else {
-            view.show(Surface::Calendar);
-        }
-    }));
+        }),
+    );
 }
 
 pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else { return; };
-    pool.request(Surface::Launcher, false, Box::new(|pool| {
-        let Some((view, existing)) = pool.acquire(Surface::Launcher) else { return; };
-        if existing {
-            if !view.focus_detached() {
-                view.cancel_close();
-                view.window.present();
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::Launcher,
+        false,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Launcher) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    view.cancel_close();
+                    view.window.present();
+                }
+            } else {
+                view.launcher.borrow_mut().take();
+                view.show(Surface::Launcher);
             }
-        } else {
-            view.launcher.borrow_mut().take();
-            view.show(Surface::Launcher);
-        }
-    }));
+        }),
+    );
 }
 
 pub fn toggle_system(
@@ -5051,23 +5085,34 @@ pub fn toggle_system(
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(pool) = ensure(application, html) else { return; };
-    pool.request(Surface::System, true, Box::new(move |pool| {
-        let Some((view, existing)) = pool.acquire(Surface::System) else { return; };
-        if existing {
-            if !view.focus_detached() {
-                if view.closing.get() { view.cancel_close(); }
-                else { view.request_close(); }
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::System,
+        true,
+        Box::new(move |pool| {
+            let Some((view, existing)) = pool.acquire(Surface::System) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+                return;
             }
-            return;
-        }
-        *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
-        if let Some(model) = view.system.borrow().as_ref() {
-            model.set_pulse_active(true);
-        }
-        view.last_metrics.set(None);
-        view.show(Surface::System);
-    }));
+            *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
+            if let Some(model) = view.system.borrow().as_ref() {
+                model.set_pulse_active(true);
+            }
+            view.last_metrics.set(None);
+            view.show(Surface::System);
+        }),
+    );
 }
 
 #[cfg(test)]
@@ -6186,8 +6231,11 @@ const OUTER_MARGIN: i32 = 12;
 /// Launcher is centered; Calendar and System share one original right dock.
 /// Other surfaces can coexist only after promotion to an xdg-toplevel.
 pub fn choose_dock(kind: Surface, _right_occupied: bool) -> PopupDock {
-    if kind == Surface::Launcher { PopupDock::Center }
-    else { PopupDock::Right }
+    if kind == Surface::Launcher {
+        PopupDock::Center
+    } else {
+        PopupDock::Right
+    }
 }
 
 /// No active-window columns: normal Niri windows manage their own layout.
@@ -10489,6 +10537,14 @@ function scriptFor(steps, observationMs = 1150) {
                   'const first=root?.querySelector("[data-kira-enter]");' +
                   'const staged=first ? Number(getComputedStyle(first).opacity) : 0;' +
                   'window.__kiraTenetStagedOpacity=staged;' +
+                  // At 1.44x the content opacity tween can complete between
+                  // coarse virtual-time samples. Observe actual GSAP writes.
+                  'if(first){new MutationObserver(()=>{' +
+                    'const opacity=Number(getComputedStyle(first).opacity);' +
+                    'const transform=getComputedStyle(first).transform;' +
+                    'if(transform!=="none" && opacity>staged && opacity<1)' +
+                      'document.documentElement.dataset.smokeTenetContentMoving="true";' +
+                  '}).observe(first,{attributes:true,attributeFilter:["style"]});}' +
                   'document.documentElement.dataset.smokeSurfaceStaged=!!root && ' +
                     '(matchMedia("(prefers-reduced-motion: reduce)").matches ? root.style.clipPath==="" : ' +
                     '(root.dataset.tenetSurface==="staged" && root.style.clipPath.includes("100%") && ' +
@@ -10700,7 +10756,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   }
   if (heightMode === 'tenet' &&
       (!output.includes('data-smoke-surface-staged="true"') ||
-       // The 1.2x surface transition can finish between virtual Chromium
+       // The 1.44x surface transition can finish between virtual Chromium
        // frames. Verify its real staged and fully revealed geometries here;
        // GSAP's exact intermediate clip tween is asserted by motion tests.
        !output.includes('data-smoke-surface-settled="true"') ||
