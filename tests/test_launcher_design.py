@@ -162,7 +162,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('fn resolve_icon_path(', RUST)
         self.assertIn('fn file_data_url(path: &Path)', RUST)
         self.assertIn('File::open(path)', RUST)
-        self.assertIn('fn poll_launcher(&self)', OVERLAY)
+        self.assertIn('fn poll_launcher(self: &Rc<Self>)', OVERLAY)
         self.assertIn('view.poll_launcher();', OVERLAY)
         self.assertIn('crate::launcher::LauncherMessage::Launched(Ok(()))', OVERLAY)
         self.assertNotIn('Catalog::discover());', OVERLAY)
