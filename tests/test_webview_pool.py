@@ -78,6 +78,14 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn('shell_descendants(&parents, root_pid)', monitor)
         self.assertIn('MAX_SHELL_TREE_MEMBERS: usize = 64', monitor)
 
+    def test_cold_mode_is_opt_in_and_retires_the_hot_spare(self):
+        self.assertIn('KIRA_WEBVIEW_WARM', HOST)
+        self.assertIn("WebviewScheduler::cold()", HOST)
+        self.assertIn("hot_idle_target: 0,", POOL)
+        self.assertIn(".skip(self.hot_idle_target)", POOL)
+        self.assertIn("if self.hot_idle_target == 0 || !self.slots.is_empty()", POOL)
+        self.assertIn("fn cold_mode_does_not_prewarm_and_retires_last_idle_view()", POOL)
+
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
         self.assertIn("pub const HOT_IDLE_TARGET: usize = 1", POOL)

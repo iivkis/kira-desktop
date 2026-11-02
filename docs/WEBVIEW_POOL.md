@@ -52,6 +52,23 @@ is reported as `unknown` rather than silently presented as complete.
 The scanner caps /proc enumeration at 4096 processes and PSS reads at
 64 tree members; the default idle shell does not run the probe.
 
+## Warm versus cold A/B test
+
+The default remains **warm**: pre-create one inert WebView after startup,
+and keep one hot idle spare between widget activations. To compare memory
+and latency without changing code, launch the shell with
+`KIRA_WEBVIEW_WARM=0 KIRA_MEMORY_PROBE=1`. This disables startup prewarm,
+and closes **all** idle popup WebViews after the existing 45-second grace
+period, while preserving all active and promoted windows. With the default
+`KIRA_WEBVIEW_WARM=1 KIRA_MEMORY_PROBE=1`, one idle WebView remains.
+
+Measure both modes after five seconds idle, after opening/closing a widget,
+and after at least 50 seconds idle. Record PSS, process count, first-open
+latency, and reopen latency under the same Niri session and machine.
+No hardware measurements are available in CI, so neither mode is declared
+faster or better in production until both numbers and interaction latency
+have been observed.
+
 ## Pool lifecycle
 
 - **Startup:** exactly one inert warm host and one permanent Top Bar host. No idle Svelte widget DOM, telemetry graph, app catalog or per-window poll loop.

@@ -51,11 +51,20 @@ impl OverlayPool {
         // Install once per popup pool, before any warm GtkApplicationWindow
         // is constructed. The selector never touches the permanent Top Bar.
         crate::native_ui::install_transparent_popup_style();
+        // KIRA_WEBVIEW_WARM=0 disables startup prewarm AND the retained
+        // hot spare after closing a widget (45s grace still applies).
+        // Keep the default unchanged until before/after PSS is measured.
+        let cold = std::env::var("KIRA_WEBVIEW_WARM").is_ok_and(|value| value == "0");
+        let scheduler = if cold {
+            WebviewScheduler::cold()
+        } else {
+            WebviewScheduler::default()
+        };
         let pool = Rc::new(Self {
             application: application.clone(),
             context: context.clone(),
             document,
-            scheduler: RefCell::new(WebviewScheduler::default()),
+            scheduler: RefCell::new(scheduler),
             windows: RefCell::new(HashMap::new()),
             pending: RefCell::new(None),
             poll_source: RefCell::new(None),

@@ -47,13 +47,32 @@ struct Slot {
 /// No active slot may be stolen. One slot is warmed at startup; additional
 /// slots exist only after real demand. A short idle grace protects quick
 /// reopen/animation chains without keeping an unbounded WebKit farm alive.
-#[derive(Default)]
 pub struct WebviewScheduler {
     slots: Vec<Slot>,
     next_id: u32,
+    hot_idle_target: usize,
+}
+
+impl Default for WebviewScheduler {
+    fn default() -> Self {
+        Self {
+            slots: Vec::new(),
+            next_id: 0,
+            hot_idle_target: HOT_IDLE_TARGET,
+        }
+    }
 }
 
 impl WebviewScheduler {
+    /// Test cold startup and reclaim idle renderers without changing the
+    /// ordinary session's default one-spare policy.
+    pub fn cold() -> Self {
+        Self {
+            hot_idle_target: 0,
+            ..Self::default()
+        }
+    }
+
     pub fn reserve(&mut self, surface: Surface, now: Instant) -> Reservation {
         if let Some(slot) = self.slots.iter().find(|s| s.owner == Some(surface)) {
             return Reservation::Existing(slot.id);
@@ -87,7 +106,7 @@ impl WebviewScheduler {
 
     /// This only runs once at Shell activation, not for every possible widget.
     pub fn prewarm_one(&mut self, now: Instant) -> Option<u32> {
-        if !self.slots.is_empty() {
+        if self.hot_idle_target == 0 || !self.slots.is_empty() {
             return None;
         }
         let Reservation::Created(id) = self.reserve(Surface::Calendar, now) else {
@@ -137,7 +156,7 @@ impl WebviewScheduler {
         idle.sort_unstable_by_key(|(_, instant)| std::cmp::Reverse(*instant));
         let expired: Vec<_> = idle
             .into_iter()
-            .skip(HOT_IDLE_TARGET)
+            .skip(self.hot_idle_target)
             .filter(|(_, since)| now.saturating_duration_since(*since) >= IDLE_GRACE)
             .map(|(id, _)| id)
             .collect();
@@ -154,6 +173,19 @@ impl WebviewScheduler {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cold_mode_does_not_prewarm_and_retires_last_idle_view() {
+        let mut s = WebviewScheduler::cold();
+        let now = Instant::now();
+        assert_eq!(s.prewarm_one(now), None);
+        assert_eq!(s.resident_count(), 0);
+        assert_eq!(s.reserve(Surface::Calendar, now), Reservation::Created(1));
+        assert!(s.release(1, now));
+        assert!(s.expired_idle(now + Duration::from_secs(44)).is_empty());
+        assert_eq!(s.expired_idle(now + Duration::from_secs(46)), vec![1]);
+        assert_eq!(s.resident_count(), 0);
+    }
 
     #[test]
     fn one_initial_hot_webview_not_ten_speculative_instances() {
