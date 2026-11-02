@@ -91,6 +91,11 @@ pub fn popup_output_width(window: &gtk::ApplicationWindow) -> i32 {
     output_size(window).0
 }
 
+/// Read the same logical output used for popup sizing and its height limit.
+pub fn popup_output_height(window: &gtk::ApplicationWindow) -> i32 {
+    output_size(window).1
+}
+
 pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, height: i32) {
     resize_webview_popup(window, width, height);
 }

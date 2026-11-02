@@ -333,7 +333,7 @@ struct CalendarOverlay {
 }
 
 impl CalendarOverlay {
-    /// Exactly one transient dock exists; detached windows are placed by Niri.
+    /// The current widget chooses its dock; detached windows are placed by Niri.
     fn position_for(&self, kind: Surface) {
         let dock = self
             .pool
@@ -350,18 +350,23 @@ impl CalendarOverlay {
         self.window.set_margin(Edge::Right, 0);
         self.window.set_margin(Edge::Bottom, 0);
         self.window.set_margin(Edge::Left, 0);
-        self.window.set_anchor(Edge::Top, dock != PopupDock::Center);
+        // With neither horizontal edge anchored, layer-shell centers the
+        // launcher. The top edge remains pinned, never vertically centered.
+        self.window.set_anchor(Edge::Top, true);
         self.window
             .set_anchor(Edge::Right, dock == PopupDock::Right);
         self.window.set_anchor(Edge::Bottom, false);
         self.window.set_anchor(Edge::Left, false);
-        if dock == PopupDock::Center {
-            self.window.set_exclusive_zone(-1);
-        } else {
-            self.window.set_exclusive_zone(0);
-            self.window
-                .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            if dock == PopupDock::Right {
+        self.window.set_exclusive_zone(0);
+        match dock {
+            PopupDock::Center => {
+                let output_height = crate::native_ui::popup_output_height(&self.window);
+                self.window
+                    .set_margin(Edge::Top, popup_layout::launcher_top_margin(output_height));
+            }
+            PopupDock::Right => {
+                self.window
+                    .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
                 self.window
                     .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
             }

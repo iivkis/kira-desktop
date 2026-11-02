@@ -13,7 +13,9 @@ SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
 
 class PopupGeometryTests(unittest.TestCase):
     def test_transient_widget_never_claims_detached_window_columns(self):
-        self.assertIn("pub fn choose_dock(_kind: Surface", LAYOUT)
+        self.assertIn("pub fn choose_dock(kind: Surface", LAYOUT)
+        self.assertIn("Surface::Launcher => PopupDock::Center", LAYOUT)
+        self.assertIn("pub fn launcher_top_margin(output_height: i32)", LAYOUT)
         self.assertIn("    PopupDock::Right", LAYOUT)
         self.assertIn("PopupDock::Right", LAYOUT)
         self.assertNotIn("PopupDock::Left", LAYOUT)
@@ -29,7 +31,10 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertNotIn("fn move_to_right", HOST)
         self.assertIn("set_anchor(Edge::Right, dock == PopupDock::Right)", HOST)
         self.assertIn("self.window.set_anchor(Edge::Left, false)", HOST)
-        self.assertIn("self.window.set_exclusive_zone(-1)", HOST)
+        self.assertIn("self.window.set_anchor(Edge::Top, true)", HOST)
+        self.assertIn("crate::native_ui::popup_output_height(&self.window)", HOST)
+        self.assertIn("popup_layout::launcher_top_margin(output_height)", HOST)
+        self.assertNotIn("self.window.set_exclusive_zone(-1)", HOST)
         self.assertIn("self.window.set_exclusive_zone(0)", HOST)
 
     def test_regular_window_keeps_existing_webview_without_new_load(self):
@@ -52,6 +57,8 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("sendCalendarUi('size:' + generation + ':' + height)", SDK)
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", NATIVE)
         self.assertIn("pub const POPUP_RIGHT_MARGIN: i32 = 12;", NATIVE)
+        self.assertIn("pub fn popup_output_height(", NATIVE)
+        self.assertIn("output_height.max(0) / 5", LAYOUT)
         self.assertIn("i64::from(output_height.max(1)) * 7 / 10", NATIVE)
 
 

@@ -16,16 +16,15 @@ bridge, not a second UI component framework.
 
 The top bar's 42 px exclusive zone **cannot contain popovers**. The Calendar, System Monitor and Launcher share **one** non-exclusive GTK
 layer-shell window and prewarmed WebKit view. At most one Svelte widget is
-mounted at a time; the rest own no live timers or DOM. The Launcher
-clears all Wayland layer-shell anchors and uses exclusive zone -1 so the
-compositor centers it on the full output. Calendar and System Monitor
-restore the top/right anchors, 25px top margin, 12px right margin and
-exclusive zone 0 when selected. The same GTK window and WebKit view
-survive these repositionings. **When switching between the centered
-Launcher and corner popups, the GTK surface is first unmapped**, its
-anchors are changed while hidden, and remapping is deferred one compositor
-turn; the previous WebKit framebuffer must never travel visibly across
-the output. Calendar ↔ System remain immediate, in-place switches. The
+mounted at a time; the rest own no live timers or DOM. The Launcher anchors to the top, leaves both horizontal edges unanchored
+for compositor centering, and sets its top margin to 20% of the logical
+output height. All popups use exclusive zone 0. Calendar, System Monitor
+and Settings restore top/right anchors, a 25px top margin and a 12px
+right margin when selected. The same GTK window and WebKit view survive
+these repositionings. The previous widget closes and hides before the
+next widget is positioned and mapped, preventing its old framebuffer
+from visibly travelling across the output. Calendar ↔ System remain
+in-place switches. The
 browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 

@@ -135,7 +135,7 @@ describe('TENET shared widget appearance', () => {
 
   it('uses physical widget contacts without duplicating legacy stagger animations', () => {
     expect(calendar).toContain('return tenetWidgetReveal(node, {');
-    expect(launcher).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: -1 }}");
+    expect(launcher).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}");
     expect(system).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1, sections: 2 }}");
     expect(launcher).toContain('data-kira-contact');
     expect(system).toContain('data-kira-contact');

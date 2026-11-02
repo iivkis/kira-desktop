@@ -37,6 +37,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("event.target.closest('#kira-launcher-results')", WIDGET)
         self.assertIn(".sort((a, b) => a.rank - b.rank || a.index - b.index)", MODEL)
         self.assertIn('nextLauncherSelection(', WIDGET)
+        self.assertNotIn("↵", WIDGET)
         self.assertIn('matches.slice(0, 80)', WIDGET)
         self.assertIn('app.id', WIDGET)
         self.assertIn('toLocaleLowerCase()', MODEL)
