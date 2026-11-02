@@ -229,7 +229,7 @@ async function smokeDock() {
     'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:icons",{detail:{icons:[' +
     '{id:2,data_url:' + JSON.stringify(testIcon) + '},{id:8,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
     'if(String(message).startsWith("launch:")){document.documentElement.dataset.dockLaunched=String(message);}' +
-    '}}},kiraDiagnostics:{postMessage(){}}}};' +
+    '}},kiraDiagnostics:{postMessage(){}}}};' +
     'window.addEventListener("load",()=>{' +
     'setTimeout(()=>document.querySelector("button[aria-label=\\\"Launch Terminal\\\"]")?.click(),280);' +
     'setTimeout(()=>{' +
