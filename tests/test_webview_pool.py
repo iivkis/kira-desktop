@@ -56,6 +56,17 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertNotIn("set_cache_model(", HOST)
         self.assertIn("context: context.clone(),", HOST)
 
+    def test_popup_recovery_reuses_bounded_backoff_and_quarantines_failures(self):
+        self.assertIn("recovery: RefCell<crate::renderer_recovery::RendererRecovery>", HOST)
+        self.assertIn("state.recovery.borrow_mut().on_terminated(Instant::now())", HOST)
+        self.assertIn("gtk::glib::timeout_add_local_once(delay, move ||", HOST)
+        self.assertIn("state.recovery.borrow_mut().retry_started()", HOST)
+        self.assertIn("if decision == RetryDecision::Exhausted", HOST)
+        self.assertIn("state.disposed.set(true);", HOST)
+        self.assertIn("if view.disposed.get()", HOST)
+        handler = HOST.split("view.connect_web_process_terminated(move |_, reason|", 1)[1]
+        self.assertNotIn("state.view.load_html(&state.document, None);\n        }\n    });", handler)
+
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
         self.assertIn("pub const HOT_IDLE_TARGET: usize = 1", POOL)

@@ -104,6 +104,13 @@ impl OverlayPool {
             }
         };
         let view = self.windows.borrow().get(&id).cloned()?;
+        // An exhausted renderer must not be re-leased on the next click.
+        // Keep its slot quarantined until the Shell is restarted.
+        if view.disposed.get() {
+            self.scheduler.borrow_mut().release(id, Instant::now());
+            eprintln!("kira-shell: popup renderer unavailable after repeated crashes; restart Shell");
+            return None;
+        }
         self.ensure_polling();
         self.update_launcher_keyboard_mode();
         Some((view, existing))
@@ -269,6 +276,7 @@ struct CalendarOverlay {
     id: u32,
     pool: std::rc::Weak<OverlayPool>,
     disposed: Cell<bool>,
+    recovery: RefCell<crate::renderer_recovery::RendererRecovery>,
     window: gtk::ApplicationWindow,
     regular_window: RefCell<Option<gtk::ApplicationWindow>>,
     detached: Cell<bool>,
@@ -1494,6 +1502,7 @@ fn build(
         id,
         pool,
         disposed: Cell::new(false),
+        recovery: RefCell::new(crate::renderer_recovery::RendererRecovery::default()),
         window: window.clone(),
         regular_window: RefCell::new(None),
         detached: Cell::new(false),
@@ -1543,13 +1552,34 @@ fn build(
     });
     let weak = Rc::downgrade(&overlay);
     view.connect_web_process_terminated(move |_, reason| {
-        eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
-        if let Some(state) = weak.upgrade()
-            && !state.disposed.get()
-        {
-            state.host_ready.set(false);
-            state.hide();
-            state.view.load_html(&state.document, None);
+        use crate::renderer_recovery::RetryDecision;
+        let Some(state) = weak.upgrade() else {
+            return;
+        };
+        if state.disposed.get() {
+            return;
+        }
+        let decision = state.recovery.borrow_mut().on_terminated(Instant::now());
+        eprintln!("kira-shell: Popup WebKit renderer terminated ({reason:?}): {decision:?}");
+        state.host_ready.set(false);
+        // Quarantine before hide(), because hiding releases the lease and can
+        // immediately dispatch a queued popup request on this same slot.
+        if decision == RetryDecision::Exhausted {
+            state.disposed.set(true);
+        }
+        state.hide();
+        if let RetryDecision::After(delay) = decision {
+            // Reload outside the WebKit termination callback. Using the shared
+            // exponential backoff prevents a busy crash/restart loop.
+            let weak = Rc::downgrade(&state);
+            gtk::glib::timeout_add_local_once(delay, move || {
+                if let Some(state) = weak.upgrade()
+                    && !state.disposed.get()
+                {
+                    state.recovery.borrow_mut().retry_started();
+                    state.view.load_html(&state.document, None);
+                }
+            });
         }
     });
 
