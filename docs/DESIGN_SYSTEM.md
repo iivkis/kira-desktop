@@ -270,8 +270,10 @@ Calendar, Launcher or System Monitor owns a separate GTK window, isolated
 generation-scoped IPC channel and Svelte/GSAP scene. A bounded four-host cap,
 one persistent hot spare and 45-second surplus-idle grace prevent runaway
 renderer growth. Active surfaces and their animations are never evicted to
-open another widget. Wide displays can show Calendar and System side by side;
-smaller displays permit overlap rather than unsafe live anchor changes.
+open another widget. Calendar and System Monitor keep their original top-right
+anchor regardless of other pooled hosts, including prewarmed or closed ones.
+Concurrent popup windows may overlap; the scheduler never silently reserves
+space or moves a mapped Wayland window.
 
 ### Shared TENET widget entrance · 2026-11
 
@@ -343,8 +345,10 @@ continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 ### Popup geometry
 
-Calendar and System Monitor share a **25 logical pixel** top margin,
-half the previous 50px. A single GTK helper caps each popup's
+Calendar and System Monitor share the original **12 logical pixel** right
+margin and a **25 logical pixel** top margin, half the previous 50px.
+These anchors never change based on another popup's presence in the pool.
+A single GTK helper caps each popup's
 scrollable viewport at **70% of the logical height of its monitor**,
 recalculating after the Wayland surface maps. Both remain non-exclusive
 overlays; Top Bar still reserves 42px.
