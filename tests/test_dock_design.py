@@ -20,6 +20,25 @@ class DockTests(unittest.TestCase):
                        "catalog.request_icons(&ids)"]:
             self.assertIn(needle, DOCK)
         self.assertNotIn("std::process::Command", DOCK)
+    def test_floating_platform_does_not_paint_an_opaque_rectangle(self):
+        for needle in (
+            "set_default_size(704, 104)",
+            "set_margin(Edge::Bottom, 18)",
+            'window.add_css_class("kira-dock-window")',
+            "dock_css.load_from_data",
+            "gtk::STYLE_PROVIDER_PRIORITY_APPLICATION",
+            "RGBA::new(0.0, 0.0, 0.0, 0.0)",
+        ):
+            self.assertIn(needle, DOCK)
+        self.assertIn("data-dock-platform", UI)
+        self.assertIn("bg-transparent text-kira-text", UI)
+        self.assertIn("size-14 shrink-0", UI)
+        self.assertIn("data-dock-icon-placeholder", UI)
+        self.assertNotIn("border-t-2 border-kira-accent", UI)
+        style = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn(".kira-dock-platform {", style)
+        self.assertIn('html[data-kira-surface="dock"] #app', style)
+
     def test_dom_bridge_and_lifecycle(self):
         self.assertIn("dataset.kiraSurface === 'dock'", ENTRY)
         self.assertIn("mount(DockWidget", ENTRY)

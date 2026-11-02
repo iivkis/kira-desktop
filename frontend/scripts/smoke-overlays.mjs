@@ -236,7 +236,13 @@ async function smokeDock() {
     'const root=document.querySelector("main[aria-label=\\\"Kira Dock\\\"]");' +
     'const buttons=Array.from(root?.querySelectorAll("nav button")||[]);' +
     'const names=buttons.map(button=>button.getAttribute("aria-label"));' +
-    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===72 &&' +
+    'const platform=root?.querySelector("[data-dock-platform]");' +
+    'const canvasClear=getComputedStyle(document.documentElement).backgroundColor==="rgba(0, 0, 0, 0)";' +
+    'const buttonSize=Math.round(root?.querySelector("[data-dock-app]")?.getBoundingClientRect().width||0);' +
+    'const platformRect=platform?.getBoundingClientRect();' +
+    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===104 &&' +
+    'canvasClear && !!platformRect && platformRect.height===80 && platformRect.width<root.getBoundingClientRect().width &&' +
+    'parseInt(getComputedStyle(platform).borderTopLeftRadius,10)>=12 && buttonSize===56 &&' +
     'names.join("|")==="Open application launcher|Launch Terminal|Launch Firefox" &&' +
     'root.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
     'document.documentElement.dataset.dockLaunched==="launch:8";' +

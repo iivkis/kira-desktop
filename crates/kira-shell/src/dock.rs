@@ -89,13 +89,27 @@ pub fn start(app: &gtk::Application, html: &str) {
     let window = gtk::ApplicationWindow::new(app);
     window.set_title(Some("Kira Dock"));
     window.set_decorated(false);
-    window.set_default_size(520, 72);
+    // A transparent canvas surrounds the smaller compositional platform.
+    // Keep enough room for 8 icons at normal Wayland scale.
+    window.set_default_size(704, 104);
     window.init_layer_shell();
     window.set_namespace(Some("kira-dock"));
     window.set_layer(Layer::Top);
     window.set_anchor(Edge::Bottom, true);
-    window.set_margin(Edge::Bottom, 12);
+    window.set_margin(Edge::Bottom, 18);
     window.set_exclusive_zone(0);
+
+    // GTK's toplevel theme background must be transparent as well: making
+    // HTML transparent alone still leaves a solid rectangular Wayland buffer.
+    // Scope the CSS to this window; the Top Bar and overlays stay opaque.
+    window.add_css_class("kira-dock-window");
+    let dock_css = gtk::CssProvider::new();
+    dock_css.load_from_data("window.kira-dock-window { background: transparent; }");
+    gtk::style_context_add_provider_for_display(
+        &gtk::prelude::WidgetExt::display(&window),
+        &dock_css,
+        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+    );
     window.set_keyboard_mode(KeyboardMode::OnDemand);
 
     let context = webkit6::WebContext::new();
@@ -104,7 +118,9 @@ pub fn start(app: &gtk::Application, html: &str) {
         .web_context(&context)
         .user_content_manager(&manager)
         .build();
-    view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
+    // WebKit's default opaque background was the second source of the
+    // black slab surrounding the actual Dock buttons.
+    view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
 
     let pins = Rc::new(favorites());
     let service = Rc::new(RefCell::new(match launcher::Catalog::discover() {

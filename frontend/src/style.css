@@ -62,13 +62,33 @@
      * keep their own list scrollers inside a constrained flex column. */
   }
 
-  /* Dock is a separate 72px bottom Wayland surface, not a viewport-sized bar. */
+  /* The bottom Wayland surface contains a floating platform, not a black
+   * rectangle. GTK and WebKit must both clear to alpha zero as well. */
   html[data-kira-surface="dock"],
   html[data-kira-surface="dock"] body,
   html[data-kira-surface="dock"] #app {
     height: auto;
     min-height: 0;
     overflow: hidden;
+    background: transparent;
+  }
+  html[data-kira-surface="dock"] #kira-loading {
+    background: transparent !important;
+  }
+
+  /* A single low-contrast, self-contained platform. The transparent canvas
+   * and native layer-shell position supply the separation from other windows. */
+  .kira-dock-platform {
+    border: 1px solid color-mix(in srgb, var(--alabaster-grey) 17%, transparent);
+    border-radius: 14px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--prussian-blue) 88%, var(--black)),
+      color-mix(in srgb, var(--prussian-blue) 72%, var(--black))
+    );
+    box-shadow:
+      0 14px 34px color-mix(in srgb, var(--black) 56%, transparent),
+      inset 0 1px color-mix(in srgb, var(--white) 10%, transparent);
   }
 
   /* Calendar preserves all six ISO weeks within a height-capped native
