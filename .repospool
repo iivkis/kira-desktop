@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	d652cce5b8a6961445111fb88d4e9375cff1a540
+C	8c1143fb0d90f2eb6795c40f9cedc52c685ee6c5
 F	.cargo/config.toml	98	141	3
 F	.github/workflows/ci.yml	4355	146	112
 F	.github/workflows/frontend-nix.yml	1398	260	43
@@ -41,94 +41,94 @@ F	crates/kira-shell/src/calendar.rs	70785	3646	1884
 F	crates/kira-shell/src/config_layers.rs	19239	5532	496
 F	crates/kira-shell/src/display_manager.rs	20641	6030	546
 F	crates/kira-shell/src/launcher.rs	14114	6578	392
-F	crates/kira-shell/src/main.rs	20447	6972	471
-F	crates/kira-shell/src/native_ui.rs	4536	7445	104
-F	crates/kira-shell/src/popup_layout.rs	2055	7551	58
-F	crates/kira-shell/src/process_monitor.rs	9336	7611	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	7899	116
-F	crates/kira-shell/src/system_info.rs	3951	8017	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8132	559
-F	crates/kira-shell/src/system_panel.rs	11356	8693	318
-F	crates/kira-shell/src/webview_pool.rs	8477	9013	249
-F	docs/CONFIG.md	5801	9264	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9391	135
-F	docs/DESIGN_SYSTEM.md	32126	9528	519
-F	docs/DEVELOPMENT.md	29347	10049	577
-F	docs/QA_VISUAL.md	12284	10628	149
-F	docs/SPECIFICATION.md	28960	10779	421
-F	docs/TENET_MOTION.md	40649	11202	204
-F	docs/UI_ARCHITECTURE.md	6737	11408	106
-F	docs/VISUAL_REVIEW.md	9754	11516	84
-F	docs/WEBVIEW_POOL.md	7942	11602	54
-F	flake.nix	3181	11658	91
-F	frontend/index.html	2737	11751	66
-F	frontend/package.json	720	11819	27
-F	frontend/scripts/inline-assets.mjs	4457	11848	103
-F	frontend/scripts/inline-assets.test.mjs	4645	11953	106
-F	frontend/scripts/smoke-overlays.mjs	42286	12061	582
-F	frontend/src/App.svelte	9665	12645	224
-F	frontend/src/lib/bootstrap.test.ts	3408	12871	84
-F	frontend/src/lib/bootstrap.ts	2613	12957	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13029	65
-F	frontend/src/lib/calendar-model.ts	4648	13096	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13203	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	13265	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	13296	287
-F	frontend/src/lib/clock-flight.test.ts	2404	13585	50
-F	frontend/src/lib/clock-flight.ts	1977	13637	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	13689	246
-F	frontend/src/lib/components/DisplaySettings.svelte	21886	13937	423
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	14362	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	14620	168
-F	frontend/src/lib/components/SystemCharts.svelte	10517	14790	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	15018	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	15066	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	15407	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15447	119
-F	frontend/src/lib/launcher-model.test.ts	2266	15568	46
-F	frontend/src/lib/launcher-model.ts	1403	15616	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	15647	89
-F	frontend/src/lib/lazy-widget.ts	1984	15738	63
-F	frontend/src/lib/motion-contract.test.ts	11242	15803	198
-F	frontend/src/lib/motion.ts	24039	16003	657
-F	frontend/src/lib/overlay-size.ts	1090	16662	29
-F	frontend/src/lib/sdk/core.test.ts	27884	16693	564
-F	frontend/src/lib/sdk/core.ts	25417	17259	645
-F	frontend/src/lib/settings-model.test.ts	1064	17906	21
-F	frontend/src/lib/settings-model.ts	1262	17929	26
-F	frontend/src/lib/system-charts.test.ts	6312	17957	141
-F	frontend/src/lib/system-charts.ts	5514	18100	149
-F	frontend/src/lib/system-health.test.ts	2385	18251	42
-F	frontend/src/lib/system-health.ts	2831	18295	60
-F	frontend/src/lib/system-model.test.ts	4455	18357	84
-F	frontend/src/lib/system-model.ts	5457	18443	125
-F	frontend/src/lib/themes/kira-default.css	1687	18570	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	18624	101
-F	frontend/src/lib/themes/kira-default.ts	777	18727	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	18751	101
-F	frontend/src/lib/time.test.ts	263	18854	8
-F	frontend/src/lib/time.ts	320	18864	9
-F	frontend/src/lib/workspace-window.test.ts	2298	18875	52
-F	frontend/src/lib/workspace-window.ts	1063	18929	32
-F	frontend/src/main.ts	7783	18963	161
-F	frontend/src/style.css	6399	19126	194
-F	frontend/tsconfig.json	403	19322	16
-F	frontend/vite.config.ts	224	19340	8
-F	nix/package.nix	3132	19350	117
-F	scripts/dev_preview.py	18147	19469	403	x
-F	scripts/qa_visual.py	12052	19874	299
-F	tests/test_calendar_design.py	7782	20175	136
-F	tests/test_detailed_health.py	5481	20313	105
-F	tests/test_dev_preview.py	9339	20420	219
-F	tests/test_displays.py	4101	20641	72
-F	tests/test_launcher_design.py	10481	20715	190
-F	tests/test_native_theme.py	2098	20907	44
-F	tests/test_popup_geometry.py	3227	20953	58
-F	tests/test_qa_visual.py	10549	21013	217
-F	tests/test_settings.py	3212	21232	62
-F	tests/test_tenet_close.py	6297	21296	115
-F	tests/test_ui_bootstrap_contract.py	1103	21413	29
-F	tests/test_webview_pool.py	6481	21444	117
+F	crates/kira-shell/src/main.rs	20787	6972	476
+F	crates/kira-shell/src/native_ui.rs	4536	7450	104
+F	crates/kira-shell/src/popup_layout.rs	2055	7556	58
+F	crates/kira-shell/src/process_monitor.rs	9336	7616	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	7904	116
+F	crates/kira-shell/src/system_info.rs	3951	8022	113
+F	crates/kira-shell/src/system_metrics.rs	19842	8137	559
+F	crates/kira-shell/src/system_panel.rs	11356	8698	318
+F	crates/kira-shell/src/webview_pool.rs	8477	9018	249
+F	docs/CONFIG.md	5801	9269	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9396	135
+F	docs/DESIGN_SYSTEM.md	32126	9533	519
+F	docs/DEVELOPMENT.md	29347	10054	577
+F	docs/QA_VISUAL.md	12284	10633	149
+F	docs/SPECIFICATION.md	28960	10784	421
+F	docs/TENET_MOTION.md	40649	11207	204
+F	docs/UI_ARCHITECTURE.md	6737	11413	106
+F	docs/VISUAL_REVIEW.md	9754	11521	84
+F	docs/WEBVIEW_POOL.md	8591	11607	64
+F	flake.nix	3181	11673	91
+F	frontend/index.html	2737	11766	66
+F	frontend/package.json	720	11834	27
+F	frontend/scripts/inline-assets.mjs	4457	11863	103
+F	frontend/scripts/inline-assets.test.mjs	4645	11968	106
+F	frontend/scripts/smoke-overlays.mjs	42286	12076	582
+F	frontend/src/App.svelte	9665	12660	224
+F	frontend/src/lib/bootstrap.test.ts	3408	12886	84
+F	frontend/src/lib/bootstrap.ts	2613	12972	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13044	65
+F	frontend/src/lib/calendar-model.ts	4648	13111	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13218	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13280	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	13311	287
+F	frontend/src/lib/clock-flight.test.ts	2404	13600	50
+F	frontend/src/lib/clock-flight.ts	1977	13652	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	13704	246
+F	frontend/src/lib/components/DisplaySettings.svelte	21886	13952	423
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	14377	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	14635	168
+F	frontend/src/lib/components/SystemCharts.svelte	10517	14805	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	15033	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	15081	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	15422	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15462	119
+F	frontend/src/lib/launcher-model.test.ts	2266	15583	46
+F	frontend/src/lib/launcher-model.ts	1403	15631	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	15662	89
+F	frontend/src/lib/lazy-widget.ts	1984	15753	63
+F	frontend/src/lib/motion-contract.test.ts	11242	15818	198
+F	frontend/src/lib/motion.ts	24039	16018	657
+F	frontend/src/lib/overlay-size.ts	1090	16677	29
+F	frontend/src/lib/sdk/core.test.ts	27884	16708	564
+F	frontend/src/lib/sdk/core.ts	25417	17274	645
+F	frontend/src/lib/settings-model.test.ts	1064	17921	21
+F	frontend/src/lib/settings-model.ts	1262	17944	26
+F	frontend/src/lib/system-charts.test.ts	6312	17972	141
+F	frontend/src/lib/system-charts.ts	5514	18115	149
+F	frontend/src/lib/system-health.test.ts	2385	18266	42
+F	frontend/src/lib/system-health.ts	2831	18310	60
+F	frontend/src/lib/system-model.test.ts	4455	18372	84
+F	frontend/src/lib/system-model.ts	5457	18458	125
+F	frontend/src/lib/themes/kira-default.css	1687	18585	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	18639	101
+F	frontend/src/lib/themes/kira-default.ts	777	18742	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	18766	101
+F	frontend/src/lib/time.test.ts	263	18869	8
+F	frontend/src/lib/time.ts	320	18879	9
+F	frontend/src/lib/workspace-window.test.ts	2298	18890	52
+F	frontend/src/lib/workspace-window.ts	1063	18944	32
+F	frontend/src/main.ts	7783	18978	161
+F	frontend/src/style.css	6399	19141	194
+F	frontend/tsconfig.json	403	19337	16
+F	frontend/vite.config.ts	224	19355	8
+F	nix/package.nix	3132	19365	117
+F	scripts/dev_preview.py	18147	19484	403	x
+F	scripts/qa_visual.py	12052	19889	299
+F	tests/test_calendar_design.py	7782	20190	136
+F	tests/test_detailed_health.py	5481	20328	105
+F	tests/test_dev_preview.py	9339	20435	219
+F	tests/test_displays.py	4101	20656	72
+F	tests/test_launcher_design.py	10481	20730	190
+F	tests/test_native_theme.py	2098	20922	44
+F	tests/test_popup_geometry.py	3227	20968	58
+F	tests/test_qa_visual.py	10549	21028	217
+F	tests/test_settings.py	3212	21247	62
+F	tests/test_tenet_close.py	6297	21311	115
+F	tests/test_ui_bootstrap_contract.py	1103	21428	29
+F	tests/test_webview_pool.py	7126	21459	130
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7096,6 +7096,11 @@ fn main() {
         // Each WebView still has its own UserContentManager and fixed IPC handlers.
         // Sharing a context does not force WebKit to share renderer processes.
         let context = webkit6::WebContext::new();
+        // The bundled UI is a single, navigation-locked HTML document whose
+        // JS and CSS are inlined. Keep WebKit's document caches minimal.
+        // Configure BEFORE creating the Top Bar or prewarming overlay views:
+        // both use this shared context.
+        context.set_cache_model(webkit6::CacheModel::DocumentViewer);
         let manager = webkit6::UserContentManager::new();
         let view = webkit6::WebView::builder()
             .web_context(&context)
@@ -11620,6 +11625,16 @@ The pool retains a strong GObject reference for later lazy allocations.
 Each WebView still creates its **own** `UserContentManager` with the original,
 fixed-purpose script message handlers and locked-down navigation. No generic
 bridge, shared JS global, new web origin, or new privilege is introduced.
+
+The shared context uses `CacheModel::DocumentViewer`, explicitly configured
+**before any WebView is built**. Kira loads one self-contained, navigation-locked
+HTML document with inlined JavaScript/CSS, so caching browser navigation
+history and remote resources provides no benefit. The setting applies to
+the permanent Top Bar and every warm/leased/detached overlay without a
+second configuration path. This changes WebKit's *resource caching policy*;
+it does not clear live Svelte DOM, ECharts graphs or JS heaps and does not
+impose artificial memory limits. If future UI surfaces start navigating
+through external documents, reassess this policy.
 
 The context is shared to avoid duplicate context-level state, not to demand
 one WebKit renderer process for every WebView. WebKitGTK 6 still chooses
@@ -21477,6 +21492,19 @@ class WebviewPoolContracts(unittest.TestCase):
         ):
             self.assertIn(call, SHELL)
 
+
+    def test_document_viewer_cache_model_is_set_before_first_webview(self):
+        # One shared context means one cache policy, configured before any
+        # WebView exists; lazy popup construction inherits the same policy.
+        self.assertEqual(
+            SHELL.count("context.set_cache_model(webkit6::CacheModel::DocumentViewer);"), 1
+        )
+        self.assertLess(
+            SHELL.index("context.set_cache_model(webkit6::CacheModel::DocumentViewer);"),
+            SHELL.index("webkit6::WebView::builder()"),
+        )
+        self.assertNotIn("set_cache_model(", HOST)
+        self.assertIn("context: context.clone(),", HOST)
 
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
