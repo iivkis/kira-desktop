@@ -276,6 +276,18 @@ adapt to two/three columns to avoid overlaps; the one warm idle WebView does
 not reserve physical screen space. Repositioning a remaining left popup after
 its right peer closes briefly unmaps its GTK surface, not its Svelte DOM.
 
+### Shared TENET widget reverse dismissal · 2026-11
+
+Every Calendar, Launcher and System Monitor retains its recorded entrance
+timeline while visible. Explicit close, Escape, Top Bar toggle and successful
+GIO application launch request `kira:overlay:close`; WebKit reverses the
+**same** section stagger, geometric easing and INVERTED decorative flights,
+then sends `closed:<generation>`. Rust unmaps GTK and releases the lease
+**only after** that acknowledgement. Reopening during reverse restores the
+same timeline from its current frame. Reduced motion or an unpainted window
+closes instantly; a bounded 1100ms timeout protects against lost WebKit
+frames. No sensor values or application actions are played backwards.
+
 ### Shared TENET widget entrance · 2026-11
 
 Calendar, Launcher and System Monitor now open with one bounded GSAP

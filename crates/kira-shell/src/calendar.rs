@@ -256,6 +256,7 @@ struct CalendarOverlay {
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
+    closing: Cell<bool>,
     revealed: Cell<bool>,
     native_reduced_motion: Cell<bool>,
     paint_pending: Cell<bool>,
@@ -326,10 +327,13 @@ impl CalendarOverlay {
         });
     }
 
+    /// Emergency/reduced-motion path and completion of the reversible
+    /// exit. Never release this pool lease while the Svelte scene is playing.
     fn hide(&self) {
         if !self.requested.replace(false) {
             return;
         }
+        self.closing.set(false);
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
             model.set_pulse_active(false);
@@ -369,6 +373,80 @@ impl CalendarOverlay {
         }
     }
 
+    /// Request a TENET exit without tearing down its renderer or layout.
+    /// WebKit reverses its recorded entrance and confirms 'closed:<gen>'.
+    /// A bounded timeout protects against throttled/crashed WebKit frames.
+    fn request_close(self: &Rc<Self>) {
+        if !self.requested.get() || self.closing.replace(true) {
+            return;
+        }
+        if let Some(model) = self.system.borrow().as_ref() {
+            model.set_processes_active(false);
+            model.set_pulse_active(false);
+        }
+        if self.native_reduced_motion.get()
+            || !self.host_ready.get()
+            || !self.widget_ready.get()
+            || !self.revealed.get()
+        {
+            self.hide();
+            return;
+        }
+        // The reverse takes place on a fully visible native compositor
+        // buffer. Hiding GTK now would erase the recorded intermediate steps.
+        self.window.set_opacity(1.0);
+        let generation = self.generation.get();
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:overlay:close', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: TENET reverse request failed: {error}");
+                }
+            },
+        );
+        let weak = Rc::downgrade(self);
+        gtk::glib::timeout_add_local_once(Duration::from_millis(1100), move || {
+            if let Some(view) = weak.upgrade()
+                && view.requested.get()
+                && view.closing.get()
+                && view.generation.get() == generation
+            {
+                eprintln!("kira-shell: TENET close timed out; reclaiming popup safely");
+                view.hide();
+            }
+        });
+    }
+
+    /// Reopening mid-reverse retargets the SAME recorded timeline rather
+    /// than replacing a live view or starting another mount generation.
+    fn cancel_close(&self) {
+        if !self.closing.replace(false) {
+            return;
+        }
+        let generation = self.generation.get();
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:overlay:reopen', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: TENET reopen delivery failed: {error}");
+                }
+            },
+        );
+        self.window.present();
+    }
+
     fn show(self: &Rc<Self>, kind: Surface) {
         // Dedicated leased WebView: no preceding Svelte widget is unmounted
         // and no other Wayland popup is ever unmapped to start this scene.
@@ -387,6 +465,7 @@ impl CalendarOverlay {
             },
         );
         self.requested.set(true);
+        self.closing.set(false);
         self.revealed.set(false);
         self.native_reduced_motion.set(false);
         self.widget_ready.set(false);
@@ -535,6 +614,12 @@ impl CalendarOverlay {
                 {
                     return gtk::glib::ControlFlow::Break;
                 }
+                if state.closing.get() {
+                    // The outgoing TENET scene needs an opaque native buffer;
+                    // stop the opening fade rather than fighting JS reverse.
+                    state.window.set_opacity(1.0);
+                    return gtk::glib::ControlFlow::Break;
+                }
                 if state.native_reduced_motion.get() {
                     state.window.set_opacity(1.0);
                     return gtk::glib::ControlFlow::Break;
@@ -602,7 +687,9 @@ impl CalendarOverlay {
                 if self.requested.get() && self.generation.get() == generation =>
             {
                 self.native_reduced_motion.set(reduced);
-                if reduced && self.revealed.get() {
+                if reduced && self.closing.get() {
+                    self.hide();
+                } else if reduced && self.revealed.get() {
                     self.window.set_opacity(1.0);
                 }
             }
@@ -639,7 +726,14 @@ impl CalendarOverlay {
             Some(UiCommand::Close(generation))
                 if self.requested.get() && self.generation.get() == generation =>
             {
-                self.hide()
+                self.request_close();
+            }
+            Some(UiCommand::Closed(generation))
+                if self.requested.get()
+                    && self.closing.get()
+                    && self.generation.get() == generation =>
+            {
+                self.hide();
             }
             Some(UiCommand::CopyDate(generation, date))
                 if self.requested.get()
@@ -746,7 +840,7 @@ impl CalendarOverlay {
     /// Drain a small number of completed worker operations per GTK frame.
     /// Closing/reopening Launcher drops its worker receiver, so stale results
     /// cannot update a newer overlay generation.
-    fn poll_launcher(&self) {
+    fn poll_launcher(self: &Rc<Self>) {
         if !self.requested.get() || self.active.get() != Some(Surface::Launcher) {
             return;
         }
@@ -766,7 +860,7 @@ impl CalendarOverlay {
                 crate::launcher::LauncherMessage::Icons(payload) => {
                     self.dispatch_launcher("kira:launcher:icons", payload);
                 }
-                crate::launcher::LauncherMessage::Launched(Ok(())) => self.hide(),
+                crate::launcher::LauncherMessage::Launched(Ok(())) => self.request_close(),
                 crate::launcher::LauncherMessage::Launched(Err(error))
                 | crate::launcher::LauncherMessage::Error(error) => {
                     self.dispatch_launcher(
@@ -883,6 +977,7 @@ impl CalendarOverlay {
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
     Close(u32),
+    Closed(u32),
     HostReady,
     Mounted(u32, bool),
     MotionPreference(u32, bool),
@@ -941,6 +1036,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     }
     if let Some(value) = message.strip_prefix("close:") {
         return parse_ui_generation(value).map(UiCommand::Close);
+    }
+    if let Some(value) = message.strip_prefix("closed:") {
+        return parse_ui_generation(value).map(UiCommand::Closed);
     }
     if let Some(value) = message.strip_prefix("copy-report:") {
         return parse_ui_generation(value).map(UiCommand::CopyReport);
@@ -1118,6 +1216,7 @@ fn build(
         launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
+        closing: Cell::new(false),
         revealed: Cell::new(false),
         native_reduced_motion: Cell::new(false),
         paint_pending: Cell::new(false),
@@ -1201,7 +1300,7 @@ pub fn dismiss(_application: &gtk::Application) -> bool {
             return false;
         };
         if let Some(view) = pool.active(Surface::Calendar) {
-            view.hide();
+            view.request_close();
             return true;
         }
         false
@@ -1214,7 +1313,7 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
             return false;
         };
         if let Some(view) = pool.active(Surface::System) {
-            view.hide();
+            view.request_close();
             return true;
         }
         false
@@ -1229,7 +1328,11 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         return;
     };
     if existing {
-        view.hide();
+        if view.closing.get() {
+            view.cancel_close();
+        } else {
+            view.request_close();
+        }
     } else {
         view.show(Surface::Calendar);
     }
@@ -1243,6 +1346,7 @@ pub fn open_launcher(application: &gtk::Application, html: &str) {
         return;
     };
     if existing {
+        view.cancel_close();
         view.window.present();
     } else {
         view.launcher.borrow_mut().take();
@@ -1264,7 +1368,11 @@ pub fn toggle_system(
         return;
     };
     if existing {
-        view.hide();
+        if view.closing.get() {
+            view.cancel_close();
+        } else {
+            view.request_close();
+        }
         return;
     }
     *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
@@ -1289,6 +1397,11 @@ mod tests {
             "close:0",
             "close:-2",
             "close:4294967296",
+            "closed:",
+            "closed:0",
+            "closed:-1",
+            "closed:4294967296",
+            "closed:12:13",
             "tab:overview",
             "tab:0:processes",
             "copy-report",
@@ -1344,6 +1457,7 @@ mod tests {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
         assert_eq!(calendar_command("close:12"), Some(UiCommand::Close(12)));
+        assert_eq!(calendar_command("closed:12"), Some(UiCommand::Closed(12)));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
         assert_eq!(
             calendar_command("tab:12:processes"),

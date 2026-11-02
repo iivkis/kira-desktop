@@ -7,6 +7,7 @@
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { tick } from 'svelte';
+import { notifyOverlayClosed } from './sdk/core';
 
 gsap.registerPlugin(Flip);
 import { tenetFragmentsFor } from './calendar-tenet-model';
@@ -31,6 +32,19 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   let restore: number | null = null;
   let awaitVisible: number | null = null;
   let started = false;
+  let closing = false;
+  let closedAcknowledged = false;
+
+  // Closing is not unmount: keep the SAME physical history, including
+  // stagger, bounce and inverted traces, until Rust acknowledges the exit.
+  function acknowledgeClose() {
+    if (!closing || closedAcknowledged) return;
+    closedAcknowledged = true;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
+    node.dataset.tenetReveal = 'reversed';
+    notifyOverlayClosed(Number(node.dataset.kiraGeneration));
+  }
 
   function settle() {
     if (restore !== null) window.clearTimeout(restore);
@@ -39,6 +53,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     awaitVisible = null;
     master?.kill();
     master = null;
+    closing = false;
+    closedAcknowledged = false;
     for (const trace of traces) trace.remove();
     traces = [];
     gsap.killTweensOf(content);
@@ -86,7 +102,11 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       return trace;
     });
 
-    master = gsap.timeline({ paused: true, onComplete: settle });
+    master = gsap.timeline({
+      paused: true,
+      onComplete: () => { node.dataset.tenetReveal = 'settled'; },
+      onReverseComplete: acknowledgeClose,
+    });
     master.to(content, {
       y: 0,
       scale: 1,
@@ -115,9 +135,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       }, 0);
     node.dataset.tenetReveal = 'started';
     master.play(0);
-    // WebKitGTK may throttle compositor frames while Niri maps a window.
-    // Never leave foreground controls transformed after a stalled timer.
-    restore = window.setTimeout(settle, 1200);
+    // WebKitGTK can throttle frames. Settle the exact ending geometry but
+    // preserve the timeline and fragments as temporal memory for closing.
+    restore = window.setTimeout(() => {
+      restore = null;
+      if (!closing && master) {
+        master.progress(1).pause();
+        node.dataset.tenetReveal = 'settled';
+      }
+    }, 1200);
   }
 
   function isCurrentGeneration(event: Event): boolean {
@@ -127,6 +153,56 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   function onVisible(event: Event) {
     if (isCurrentGeneration(event)) begin();
   }
+  function onClose(event: Event) {
+    if (!isCurrentGeneration(event) || closing) return;
+    closing = true;
+    closedAcknowledged = false;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
+    if (awaitVisible !== null) window.clearTimeout(awaitVisible);
+    awaitVisible = null;
+    // Closing before the first painted frame, without motion, or after a
+    // failed mount must not wait for a timeline that never ran.
+    if (preference.matches || !master || master.progress() <= 0) {
+      acknowledgeClose();
+      return;
+    }
+    node.dataset.tenetReveal = 'reversing';
+    // A GSAP reverse walks EVERY recorded intermediate state and the
+    // saved INVERTED fragment tracks in precisely inverse temporal order.
+    // No new random seed, mirrored ease or replacement exit tween.
+    master.reverse();
+    // Under a throttled WebKitGTK frame clock, rAF may stop before the
+    // reverse-complete callback. Reconcile at the exact first keyframe
+    // before native's longer watchdog can forcibly reclaim the window.
+    restore = window.setTimeout(() => {
+      restore = null;
+      if (closing && master) {
+        master.progress(0).pause();
+        acknowledgeClose();
+      }
+    }, 850);
+  }
+  function onReopen(event: Event) {
+    if (!isCurrentGeneration(event) || !closing) return;
+    closing = false;
+    closedAcknowledged = false;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
+    if (master) {
+      node.dataset.tenetReveal = 'started';
+      master.play(); // Retarget from the live position, without a snap.
+      // A resumed view can be throttled too. Restore exact visible geometry
+      // if WebKit stops producing GSAP frames after an interrupted reverse.
+      restore = window.setTimeout(() => {
+        restore = null;
+        if (!closing && master) {
+          master.progress(1).pause();
+          node.dataset.tenetReveal = 'settled';
+        }
+      }, 750);
+    }
+  }
   function onHide(event: Event) {
     if (isCurrentGeneration(event)) {
       started = true;
@@ -135,6 +211,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   }
   function onPreference() {
     if (preference.matches) {
+      if (closing) acknowledgeClose();
       started = true;
       settle();
     }
@@ -164,11 +241,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   }
 
   window.addEventListener('kira:overlay:visible', onVisible);
+  window.addEventListener('kira:overlay:close', onClose);
+  window.addEventListener('kira:overlay:reopen', onReopen);
   window.addEventListener('kira:overlay:hide', onHide);
   preference.addEventListener('change', onPreference);
   return {
     destroy() {
       window.removeEventListener('kira:overlay:visible', onVisible);
+      window.removeEventListener('kira:overlay:close', onClose);
+      window.removeEventListener('kira:overlay:reopen', onReopen);
       window.removeEventListener('kira:overlay:hide', onHide);
       preference.removeEventListener('change', onPreference);
       settle();

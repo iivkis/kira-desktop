@@ -31,6 +31,12 @@ function scriptFor(steps, observationMs = 1150) {
   });
   return '<script>' +
     'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
+      'if (String(message).startsWith("closed:")) {' +
+        'document.documentElement.dataset.smokeClosed=String(message);' +
+        'const root=document.querySelector("main[data-kira-ui-root]");' +
+        'document.documentElement.dataset.smokeReverseCompleted=!!root && root.dataset.tenetReveal==="reversed" && ' +
+          'root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
+      '}' +
       'if (String(message).startsWith("size:")) {' +
         'document.documentElement.setAttribute("data-smoke-size", String(message));' +
         'const count = Number(document.documentElement.getAttribute("data-smoke-resizes") || 0) + 1;' +
@@ -45,7 +51,19 @@ function scriptFor(steps, observationMs = 1150) {
     'window.addEventListener("load", () => {' +
     steps.map(({ delay, kind, generation }) =>
       'setTimeout(() => {' +
-        (kind === 'hide'
+        (kind === 'tenet-close-reopen'
+          ? 'window.dispatchEvent(new CustomEvent("kira:overlay:close", {detail:{generation:' + generation + '}}));' +
+            'const root=document.querySelector("main[data-kira-ui-root]");' +
+            'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing";' +
+            'window.dispatchEvent(new CustomEvent("kira:overlay:reopen", {detail:{generation:' + generation + '}}));'
+          : kind === 'tenet-close'
+          ? 'window.dispatchEvent(new CustomEvent("kira:overlay:close", {detail:{generation:' + generation + '}}));' +
+            'const root=document.querySelector("main[data-kira-ui-root]");' +
+            'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing" && ' +
+              'root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;'
+          : kind === 'tenet-reopen'
+            ? 'window.dispatchEvent(new CustomEvent("kira:overlay:reopen", {detail:{generation:' + generation + '}}));'
+          : kind === 'hide'
           ? 'window.dispatchEvent(new CustomEvent("kira:overlay:hide", {detail: {generation: ' +
             generation + '}}));'
           : kind === 'catalog'
@@ -113,7 +131,9 @@ function scriptFor(steps, observationMs = 1150) {
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
-      'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === 0);' +
+      'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && ' +
+        'roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === (matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 4) && ' +
+        'Array.from(roots[0].querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
@@ -149,7 +169,10 @@ function scriptFor(steps, observationMs = 1150) {
       'const calGrid = document.querySelector("[aria-label=\\\"Calendar dates\\\"]");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-events", calGrid?.dataset.tenetScenes || "0");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-contact", !!calGrid?.dataset.tenetContact);' +
-      'document.documentElement.setAttribute("data-smoke-tenet-no-fragments", document.querySelectorAll("[data-tenet-fragment]").length === 0);' +
+      // Four recorded fragments remain DOM-owned but invisible until exit.
+      // Other calendar/clock interaction fragments must still be cleaned up.
+      'document.documentElement.setAttribute("data-smoke-tenet-no-fragments", ' +
+        'Array.from(document.querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
       'document.documentElement.setAttribute("data-smoke-tenet-reveal", document.querySelector("main[data-kira-ui-root]")?.dataset.tenetReveal || "missing");' +
       'document.documentElement.setAttribute("data-smoke-tenet-clock-events", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetEvents || "0");' +
       'document.documentElement.setAttribute("data-smoke-tenet-clock-settled", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetPlayback === "settled");' +
@@ -178,7 +201,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : heightMode.startsWith('reverse') ? 1750 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -188,7 +211,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
     ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2800 : heightMode === 'tenet' ? 2800 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2800 : heightMode === 'tenet' || heightMode.startsWith('reverse') ? 2800 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -268,6 +291,21 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
+  }
+  if (heightMode === 'reverse' &&
+      (!(output.includes('data-smoke-reverse-in-flight="true"') ||
+          output.includes('data-smoke-reverse-completed="true"')) ||
+       !output.includes('data-smoke-closed="closed:1"') ||
+       !output.includes('data-smoke-reverse-completed="true"'))) {
+    const stages = output.match(/data-smoke-(?:reverse|closed|tenet-reveal|tenet-settled)[a-z-]*="[^"]*"/g) ?? [];
+    throw new Error(name + ': reverse must finish on the same retained timeline before host ACK: ' + stages.join(', '));
+  }
+  if (heightMode === 'reverse-reopen' &&
+      (!output.includes('data-smoke-reverse-in-flight="true"') ||
+       output.includes('data-smoke-closed="closed:1"') ||
+       !output.includes('data-smoke-tenet-settled="true"'))) {
+    const stages = output.match(/data-smoke-(?:reverse|closed|tenet-reveal|tenet-settled)[a-z-]*="[^"]*"/g) ?? [];
+    throw new Error(name + ': rapid reopen must reverse the in-flight exit without releasing the lease: ' + stages.join(', '));
   }
   if (heightMode === 'reduced' &&
       (!output.includes('data-smoke-tenet-started="false"') ||
@@ -357,6 +395,23 @@ try {
     { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
+  // Native close signal triggers the original GSAP master in reverse,
+  // then emits a generation-bound ACK; the host keeps the DOM alive until
+  // that ACK. Exercise all three real bundled Svelte widget roots.
+  for (const kind of ['calendar', 'system', 'launcher']) {
+    const title = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
+    await smoke(kind + '-tenet-reverse-dismissal', [
+      { delay: 25, kind, generation: 1 },
+      { delay: 800, kind: 'tenet-close', generation: 1 },
+    ], title, 'reverse');
+  }
+  await smoke('calendar-tenet-reopen-in-same-frame', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    // Virtual Chrome can advance >500ms of GSAP in one 30ms timer step.
+    // A same-frame cancellation guarantees we probe the actual race rather
+    // than a close that has already legitimately completed.
+    { delay: 800, kind: 'tenet-close-reopen', generation: 1 },
+  ], 'Kira Calendar', 'reverse-reopen');
   await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
   await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
   await smoke('launcher-selection-flow', [
