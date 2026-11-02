@@ -113,6 +113,8 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
+      'document.documentElement.setAttribute("data-smoke-option-count", list?.querySelectorAll("[role=option]").length ?? 0);' +
+      'document.documentElement.setAttribute("data-smoke-query-value", document.querySelector("input[aria-label=\\\"Search applications\\\"]")?.value ?? "absent");' +
       'document.documentElement.setAttribute("data-smoke-scrollbar-hidden", !!list && getComputedStyle(list).scrollbarWidth === "none");' +
       'if (list && list.scrollHeight > list.clientHeight) list.scrollTop = 80;' +
       'document.documentElement.setAttribute("data-smoke-scrolled", !!list && list.scrollTop > 0);' +
@@ -232,7 +234,10 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       throw new Error(name + ': long launcher list should fill the cap and scroll internally');
     }
   } else if (heightMode === 'shrink' && size >= 420) {
-    throw new Error(name + ': filtered launcher should shrink below the cap');
+    const n = output.match(/data-smoke-option-count="([^"]*)"/)?.[1];
+    const q = output.match(/data-smoke-query-value="([^"]*)"/)?.[1];
+    throw new Error(name + ': filtered launcher should shrink below the cap (height=' + size +
+      ', rows=' + n + ', query=' + q + ', native=' + nativeMessage?.[2] + ', resizes=' + resizeCount + ')');
   }
   if (heightMode === 'tenet' &&
       (!output.includes('data-smoke-tenet-previsible="true"') ||
