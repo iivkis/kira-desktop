@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4831
+index_bytes=4800
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,106 +15,105 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	6724189a4d4dcbffe96a1f53597b16b30126b8bd
-F	.cargo/config.toml	98	127	3
-F	.github/workflows/ci.yml	4355	132	112
-F	.github/workflows/frontend-nix.yml	1398	246	43
-F	.github/workflows/nix.yml	1258	291	38
-F	.github/workflows/overlay-smoke.yml	1064	331	40
-F	.github/workflows/publish-repospool.yml	3048	373	83
-F	.gitignore	178	458	11
-F	.repospoolignore	1028	471	47
-F	AGENTS.md	4435	520	75
-F	Cargo.toml	494	597	22
-F	README.md	11566	621	248
-F	Taskfile.yml	5957	871	185
-F	config/kira.kdl.example	358	1058	8
-F	crates/kira-core/Cargo.toml	207	1068	10
-F	crates/kira-core/src/config.rs	15217	1080	399
-F	crates/kira-core/src/main.rs	32080	1481	839
-F	crates/kira-core/src/niri.rs	16767	2322	453
-F	crates/kira-ipc/Cargo.toml	170	2777	9
-F	crates/kira-ipc/src/client.rs	17794	2788	458
-F	crates/kira-ipc/src/lib.rs	10460	3248	336
-F	crates/kira-shell/Cargo.toml	297	3586	12
-F	crates/kira-shell/src/calendar.rs	38858	3600	1043
-F	crates/kira-shell/src/dock.rs	10322	4645	274
-F	crates/kira-shell/src/launcher.rs	14114	4921	392
-F	crates/kira-shell/src/main.rs	19494	5315	453
-F	crates/kira-shell/src/native_ui.rs	2857	5770	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5845	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6133	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6251	559
-F	crates/kira-shell/src/system_panel.rs	11356	6812	318
-F	docs/CONFIG.md	5801	7132	125
-F	docs/DESIGN_SYSTEM.md	27344	7259	453
-F	docs/DEVELOPMENT.md	29347	7714	577
-F	docs/QA_VISUAL.md	12284	8293	149
-F	docs/SPECIFICATION.md	28960	8444	421
-F	docs/TENET_MOTION.md	22120	8867	142
-F	docs/UI_ARCHITECTURE.md	6737	9011	106
-F	docs/VISUAL_REVIEW.md	9754	9119	84
-F	flake.nix	3181	9205	91
-F	frontend/index.html	2737	9298	66
-F	frontend/package.json	720	9366	27
-F	frontend/scripts/inline-assets.mjs	4457	9395	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9500	106
-F	frontend/scripts/smoke-overlays.mjs	22737	9608	328
-F	frontend/src/App.svelte	8659	9938	200
-F	frontend/src/lib/bootstrap.test.ts	3408	10140	84
-F	frontend/src/lib/bootstrap.ts	2613	10226	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10298	65
-F	frontend/src/lib/calendar-model.ts	4648	10365	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10472	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10534	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10565	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10885	50
-F	frontend/src/lib/clock-flight.ts	1977	10937	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10989	239
-F	frontend/src/lib/components/DockWidget.svelte	4919	11230	120
-F	frontend/src/lib/components/LauncherWidget.svelte	10668	11352	230
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11584	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11812	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11857	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12179	61
-F	frontend/src/lib/dock-model.test.ts	973	12242	22
-F	frontend/src/lib/dock-model.ts	890	12266	24
-F	frontend/src/lib/launcher-model.test.ts	2266	12292	46
-F	frontend/src/lib/launcher-model.ts	1403	12340	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12371	89
-F	frontend/src/lib/lazy-widget.ts	1984	12462	63
-F	frontend/src/lib/motion.ts	1597	12527	50
-F	frontend/src/lib/overlay-size.ts	1090	12579	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12610	444
-F	frontend/src/lib/sdk/core.ts	20447	13056	536
-F	frontend/src/lib/system-charts.test.ts	6312	13594	141
-F	frontend/src/lib/system-charts.ts	5514	13737	149
-F	frontend/src/lib/system-health.test.ts	2385	13888	42
-F	frontend/src/lib/system-health.ts	2831	13932	60
-F	frontend/src/lib/system-model.test.ts	4455	13994	84
-F	frontend/src/lib/system-model.ts	5457	14080	125
-F	frontend/src/lib/themes/kira-default.css	1687	14207	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	14261	101
-F	frontend/src/lib/themes/kira-default.ts	777	14364	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	14388	79
-F	frontend/src/lib/time.test.ts	263	14469	8
-F	frontend/src/lib/time.ts	320	14479	9
-F	frontend/src/main.ts	6243	14490	137
-F	frontend/src/style.css	4896	14629	150
-F	frontend/tsconfig.json	403	14781	16
-F	frontend/vite.config.ts	224	14799	8
-F	nix/package.nix	3132	14809	117
-F	scripts/dev_preview.py	18147	14928	403	x
-F	scripts/qa_visual.py	12052	15333	299
-F	tests/test_calendar_design.py	7384	15634	130
-F	tests/test_detailed_health.py	5429	15766	105
-F	tests/test_dev_preview.py	9339	15873	219
-F	tests/test_dock_design.py	2550	16094	53
-F	tests/test_launcher_design.py	10400	16149	189
-F	tests/test_native_theme.py	1567	16340	36
-F	tests/test_popup_geometry.py	6956	16378	118
-F	tests/test_qa_visual.py	10549	16498	217
-F	tests/test_ui_bootstrap_contract.py	1103	16717	29
+C	56b503152e3c503dfb5b703b02964b46cc75f998
+F	.cargo/config.toml	98	126	3
+F	.github/workflows/ci.yml	4355	131	112
+F	.github/workflows/frontend-nix.yml	1398	245	43
+F	.github/workflows/nix.yml	1258	290	38
+F	.github/workflows/overlay-smoke.yml	1064	330	40
+F	.github/workflows/publish-repospool.yml	3048	372	83
+F	.gitignore	178	457	11
+F	.repospoolignore	1028	470	47
+F	AGENTS.md	4435	519	75
+F	Cargo.toml	494	596	22
+F	README.md	11956	620	248
+F	Taskfile.yml	5957	870	185
+F	config/kira.kdl.example	358	1057	8
+F	crates/kira-core/Cargo.toml	207	1067	10
+F	crates/kira-core/src/config.rs	15217	1079	399
+F	crates/kira-core/src/main.rs	32080	1480	839
+F	crates/kira-core/src/niri.rs	16767	2321	453
+F	crates/kira-ipc/Cargo.toml	170	2776	9
+F	crates/kira-ipc/src/client.rs	17794	2787	458
+F	crates/kira-ipc/src/lib.rs	10460	3247	336
+F	crates/kira-shell/Cargo.toml	297	3585	12
+F	crates/kira-shell/src/calendar.rs	38858	3599	1043
+F	crates/kira-shell/src/launcher.rs	14114	4644	392
+F	crates/kira-shell/src/main.rs	21089	5038	488
+F	crates/kira-shell/src/native_ui.rs	2857	5528	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5603	286
+F	crates/kira-shell/src/quick_launch.rs	7462	5891	233
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6126	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6244	559
+F	crates/kira-shell/src/system_panel.rs	11356	6805	318
+F	docs/CONFIG.md	5801	7125	125
+F	docs/DESIGN_SYSTEM.md	27518	7252	454
+F	docs/DEVELOPMENT.md	29347	7708	577
+F	docs/QA_VISUAL.md	12284	8287	149
+F	docs/SPECIFICATION.md	29239	8438	421
+F	docs/TENET_MOTION.md	22120	8861	142
+F	docs/UI_ARCHITECTURE.md	6737	9005	106
+F	docs/VISUAL_REVIEW.md	9754	9113	84
+F	flake.nix	3181	9199	91
+F	frontend/index.html	2737	9292	66
+F	frontend/package.json	720	9360	27
+F	frontend/scripts/inline-assets.mjs	4457	9389	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9494	106
+F	frontend/scripts/smoke-overlays.mjs	22223	9602	321
+F	frontend/src/App.svelte	8894	9925	205
+F	frontend/src/lib/bootstrap.test.ts	3408	10132	84
+F	frontend/src/lib/bootstrap.ts	2613	10218	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10290	65
+F	frontend/src/lib/calendar-model.ts	4648	10357	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10464	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10526	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10557	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10877	50
+F	frontend/src/lib/clock-flight.ts	1977	10929	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10981	239
+F	frontend/src/lib/components/LauncherWidget.svelte	10668	11222	230
+F	frontend/src/lib/components/QuickLaunch.svelte	3039	11454	84
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11540	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11768	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11813	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12135	61
+F	frontend/src/lib/launcher-model.test.ts	2266	12198	46
+F	frontend/src/lib/launcher-model.ts	1403	12246	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12277	89
+F	frontend/src/lib/lazy-widget.ts	1984	12368	63
+F	frontend/src/lib/motion.ts	1597	12433	50
+F	frontend/src/lib/overlay-size.ts	1090	12485	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12516	444
+F	frontend/src/lib/sdk/core.ts	20315	12962	530
+F	frontend/src/lib/sdk/quick-launch.test.ts	2374	13494	53
+F	frontend/src/lib/system-charts.test.ts	6312	13549	141
+F	frontend/src/lib/system-charts.ts	5514	13692	149
+F	frontend/src/lib/system-health.test.ts	2385	13843	42
+F	frontend/src/lib/system-health.ts	2831	13887	60
+F	frontend/src/lib/system-model.test.ts	4455	13949	84
+F	frontend/src/lib/system-model.ts	5457	14035	125
+F	frontend/src/lib/themes/kira-default.css	1687	14162	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	14216	101
+F	frontend/src/lib/themes/kira-default.ts	777	14319	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5038	14343	91
+F	frontend/src/lib/time.test.ts	263	14436	8
+F	frontend/src/lib/time.ts	320	14446	9
+F	frontend/src/main.ts	5907	14457	127
+F	frontend/src/style.css	3817	14586	121
+F	frontend/tsconfig.json	403	14709	16
+F	frontend/vite.config.ts	224	14727	8
+F	nix/package.nix	3132	14737	117
+F	scripts/dev_preview.py	18147	14856	403	x
+F	scripts/qa_visual.py	12052	15261	299
+F	tests/test_calendar_design.py	7384	15562	130
+F	tests/test_detailed_health.py	5429	15694	105
+F	tests/test_dev_preview.py	9339	15801	219
+F	tests/test_launcher_design.py	10400	16022	189
+F	tests/test_native_theme.py	1567	16213	36
+F	tests/test_popup_geometry.py	6956	16251	118
+F	tests/test_qa_visual.py	10549	16371	217
+F	tests/test_quick_launch.py	2223	16590	47
+F	tests/test_ui_bootstrap_contract.py	1103	16639	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -863,7 +862,7 @@ are not substitutes for a real visual review. See
 
 ## Current limitations
 
-The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, advanced Dock behavior and third-party widgets remain future milestones. A first bottom Dock now launches real GIO apps and opens Launcher. Set `KIRA_DOCK_APPS="Firefox,Terminal,Files"` for up to eight pinned display-name matches, or `KIRA_DOCK_DISABLE=1` to hide it. KDL pins, auto-hide and real Niri running-window indicators are not implemented yet.
+The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. **There is no standalone Dock**: Niri is keyboard-first, so window/workspace navigation stays with the compositor and the Top Bar. The existing KIRA button opens the full application Launcher. For up to three *explicit* GIO application launch shortcuts inside the same 42px Top Bar, set `KIRA_QUICK_APPS="foot,Firefox,Files"` before starting `kira-shell` (names must match the system's GIO display names; missing apps are skipped). If unset, no shortcut row or native worker exists. The older `KIRA_DOCK_APPS` variable is accepted as a migration alias; `KIRA_DOCK_DISABLE` is obsolete. This is not a taskbar: it does not switch to running windows or indicate focus. Full KDL grammar, custom theme loading, KDL shortcut configuration and third-party widgets remain future milestones.
 
 This project is not ready to replace a working desktop environment.
 
@@ -4641,282 +4640,6 @@ mod tests {
     }
 }
 
-FILE	crates/kira-shell/src/dock.rs
-//! Permanent bottom Wayland Dock with allowlisted, GIO-backed app actions.
-use std::cell::RefCell;
-use std::rc::Rc;
-use std::time::{Duration, Instant};
-
-use crate::{calendar, launcher, native_ui, renderer_recovery};
-use gtk::prelude::*;
-use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
-use webkit6::prelude::*;
-
-#[derive(Debug, PartialEq, Eq)]
-enum Command {
-    Catalog,
-    Open,
-    Launch(usize),
-    Icons(Vec<usize>),
-}
-
-fn id(raw: &str) -> Option<usize> {
-    if raw.is_empty() || !raw.bytes().all(|c| c.is_ascii_digit()) {
-        return None;
-    }
-    let value = raw.parse::<usize>().ok()?;
-    (value < 1024).then_some(value)
-}
-fn parse(raw: &str) -> Option<Command> {
-    if raw.len() > 160 {
-        return None;
-    }
-    match raw {
-        "catalog" => return Some(Command::Catalog),
-        "open" => return Some(Command::Open),
-        _ => {}
-    }
-    if let Some(value) = raw.strip_prefix("launch:") {
-        return Some(Command::Launch(id(value)?));
-    }
-    if let Some(value) = raw.strip_prefix("icons:") {
-        let mut ids = Vec::new();
-        for word in value.split(',') {
-            let next = id(word)?;
-            if ids.len() >= 8 || ids.contains(&next) {
-                return None;
-            }
-            ids.push(next);
-        }
-        if !ids.is_empty() {
-            return Some(Command::Icons(ids));
-        }
-    }
-    None
-}
-fn favorites() -> Vec<String> {
-    std::env::var("KIRA_DOCK_APPS")
-        .unwrap_or_default()
-        .split(',')
-        .map(str::trim)
-        .filter(|s| !s.is_empty() && s.len() <= 120 && !s.chars().any(char::is_control))
-        .take(8)
-        .map(str::to_owned)
-        .collect()
-}
-fn dispatch(view: &webkit6::WebView, event: &str, data: serde_json::Value) {
-    let Ok(encoded) = serde_json::to_string(&data) else {
-        return;
-    };
-    let Ok(quoted) = serde_json::to_string(&encoded) else {
-        return;
-    };
-    let js = format!(
-        "window.dispatchEvent(new CustomEvent('{event}', {{detail: JSON.parse({quoted})}}));"
-    );
-    view.evaluate_javascript(&js, None, None, None::<&gtk::gio::Cancellable>, |result| {
-        if let Err(error) = result {
-            eprintln!("kira-dock: WebKit event failed: {error}");
-        }
-    });
-}
-fn catalog_data(data: serde_json::Value, pins: &[String]) -> serde_json::Value {
-    serde_json::json!({"apps":data["apps"].clone(),"favorites":pins})
-}
-pub fn start(app: &gtk::Application, html: &str) {
-    let marker = "<html lang=\"en\">";
-    if !html.contains(marker) {
-        eprintln!("kira-dock: no document marker");
-        return;
-    }
-    let document = html.replacen(marker, "<html lang=\"en\" data-kira-surface=\"dock\">", 1);
-    let window = gtk::ApplicationWindow::new(app);
-    window.set_title(Some("Kira Dock"));
-    window.set_decorated(false);
-    // A transparent canvas surrounds the smaller compositional platform.
-    // Keep enough room for 8 icons at normal Wayland scale.
-    window.set_default_size(704, 104);
-    window.init_layer_shell();
-    window.set_namespace(Some("kira-dock"));
-    window.set_layer(Layer::Top);
-    window.set_anchor(Edge::Bottom, true);
-    window.set_margin(Edge::Bottom, 18);
-    window.set_exclusive_zone(0);
-
-    // GTK's toplevel theme background must be transparent as well: making
-    // HTML transparent alone still leaves a solid rectangular Wayland buffer.
-    // Scope the CSS to this window; the Top Bar and overlays stay opaque.
-    window.add_css_class("kira-dock-window");
-    let dock_css = gtk::CssProvider::new();
-    dock_css.load_from_data("window.kira-dock-window { background: transparent; }");
-    gtk::style_context_add_provider_for_display(
-        &gtk::prelude::WidgetExt::display(&window),
-        &dock_css,
-        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-    );
-    window.set_keyboard_mode(KeyboardMode::OnDemand);
-
-    let context = webkit6::WebContext::new();
-    let manager = webkit6::UserContentManager::new();
-    let view = webkit6::WebView::builder()
-        .web_context(&context)
-        .user_content_manager(&manager)
-        .build();
-    // WebKit's default opaque background was the second source of the
-    // black slab surrounding the actual Dock buttons.
-    view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
-
-    let pins = Rc::new(favorites());
-    let service = Rc::new(RefCell::new(match launcher::Catalog::discover() {
-        Ok(catalog) => Some(catalog),
-        Err(error) => {
-            eprintln!("kira-dock: {error}");
-            None
-        }
-    }));
-    let weak_view = view.downgrade();
-    let commands = service.clone();
-    let command_pins = pins.clone();
-    let launcher_app = app.clone();
-    let launcher_html = html.to_owned();
-    manager.connect_script_message_received(Some("kiraDock"), move |_, incoming| {
-        let raw = incoming.to_string();
-        let Some(command) = parse(&raw) else { return };
-        match command {
-            Command::Open => calendar::open_launcher(&launcher_app, &launcher_html),
-            Command::Catalog => {
-                if let Some(view) = weak_view.upgrade() {
-                    let borrowed = commands.borrow();
-                    if let Some(data) = borrowed.as_ref().and_then(launcher::Catalog::ready_json) {
-                        dispatch(
-                            &view,
-                            "kira:dock:apps",
-                            catalog_data(data, command_pins.as_slice()),
-                        );
-                    } else if borrowed.is_none() {
-                        dispatch(
-                            &view,
-                            "kira:dock:error",
-                            serde_json::json!({"message":"Application service unavailable"}),
-                        );
-                    }
-                }
-            }
-            Command::Launch(id) => {
-                if let Some(catalog) = commands.borrow().as_ref() {
-                    if let Err(error) = catalog.launch(id) {
-                        if let Some(view) = weak_view.upgrade() {
-                            dispatch(
-                                &view,
-                                "kira:dock:error",
-                                serde_json::json!({"message":error}),
-                            );
-                        }
-                    }
-                }
-            }
-            Command::Icons(ids) => {
-                if let Some(catalog) = commands.borrow().as_ref() {
-                    if let Err(error) = catalog.request_icons(&ids) {
-                        if let Some(view) = weak_view.upgrade() {
-                            dispatch(
-                                &view,
-                                "kira:dock:error",
-                                serde_json::json!({"message":error}),
-                            );
-                        }
-                    }
-                }
-            }
-        }
-    });
-    assert!(manager.register_script_message_handler("kiraDock", None));
-    native_ui::restrict_webview_navigation(&view);
-
-    let weak_view = view.downgrade();
-    let poll = service.clone();
-    let poll_pins = pins.clone();
-    gtk::glib::timeout_add_local(Duration::from_millis(60), move || {
-        let Some(view) = weak_view.upgrade() else {
-            return gtk::glib::ControlFlow::Break;
-        };
-        if let Some(catalog) = poll.borrow_mut().as_mut() {
-            for _ in 0..4 {
-                let Some(event) = catalog.poll() else { break };
-                match event {
-                    launcher::LauncherMessage::Apps(data) => dispatch(
-                        &view,
-                        "kira:dock:apps",
-                        catalog_data(data, poll_pins.as_slice()),
-                    ),
-                    launcher::LauncherMessage::Icons(data) => {
-                        dispatch(&view, "kira:dock:icons", data)
-                    }
-                    launcher::LauncherMessage::Launched(Err(error))
-                    | launcher::LauncherMessage::Error(error) => dispatch(
-                        &view,
-                        "kira:dock:error",
-                        serde_json::json!({"message":error}),
-                    ),
-                    launcher::LauncherMessage::Launched(Ok(())) => {}
-                }
-            }
-        }
-        gtk::glib::ControlFlow::Continue
-    });
-    // Bounded recovery, never a renderer crash/reload storm.
-    let recovery = Rc::new(RefCell::new(renderer_recovery::RendererRecovery::default()));
-    let retry_document = document.clone();
-    view.connect_web_process_terminated(move |webview, reason| {
-        use renderer_recovery::RetryDecision;
-        match recovery.borrow_mut().on_terminated(Instant::now()) {
-            RetryDecision::After(delay) => {
-                eprintln!("kira-dock: renderer terminated ({reason:?}), retrying");
-                let weak = webview.downgrade();
-                let html = retry_document.clone();
-                let recovery = recovery.clone();
-                gtk::glib::timeout_add_local_once(delay, move || {
-                    recovery.borrow_mut().retry_started();
-                    if let Some(view) = weak.upgrade()
-                        && view.root().is_some()
-                    {
-                        view.load_html(&html, None);
-                    }
-                });
-            }
-            RetryDecision::AlreadyPending => {}
-            RetryDecision::Exhausted => eprintln!("kira-dock: renderer recovery exhausted"),
-        }
-    });
-    view.load_html(&document, None);
-    window.set_child(Some(&view));
-    window.present();
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn only_bounded_native_app_indices_are_allowed() {
-        assert_eq!(parse("catalog"), Some(Command::Catalog));
-        assert_eq!(parse("open"), Some(Command::Open));
-        assert_eq!(parse("launch:7"), Some(Command::Launch(7)));
-        assert_eq!(parse("icons:0,9"), Some(Command::Icons(vec![0, 9])));
-        for bad in [
-            "",
-            "run:sh",
-            "launch:-1",
-            "launch:1024",
-            "launch:1:2",
-            "icons:",
-            "icons:1,1",
-            "icons:0,1,2,3,4,5,6,7,8",
-        ] {
-            assert_eq!(parse(bad), None);
-        }
-    }
-}
-
 FILE	crates/kira-shell/src/launcher.rs
 //! Trusted GIO desktop-app adapter for the Svelte Launcher. No GTK widgets,
 //! command strings, executable paths, terminal spawning or Core RPC.
@@ -5315,10 +5038,10 @@ FILE	crates/kira-shell/src/main.rs
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
-mod dock;
 mod launcher;
 mod native_ui;
 mod process_monitor;
+mod quick_launch;
 mod renderer_recovery;
 mod system_metrics;
 mod system_panel;
@@ -5563,6 +5286,46 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraSystem", None));
 
+        // Quick Launch is optional and lives INSIDE this existing Top Bar.
+        // No bottom surface, no task-switching semantics and no worker at all
+        // unless the user explicitly configures application shortcuts.
+        let quick = Rc::new(RefCell::new(match quick_launch::QuickLaunch::discover() {
+            Ok(service) => service,
+            Err(error) => {
+                eprintln!("kira-shell: Quick Launch unavailable: {error}");
+                None
+            }
+        }));
+        let quick_messages = quick.clone();
+        let quick_view = view.downgrade();
+        manager.connect_script_message_received(Some("kiraQuickLaunch"), move |_, value| {
+            let raw = value.to_string();
+            if let Some(service) = quick_messages.borrow().as_ref()
+                && let Some(event) = service.handle(&raw)
+                && let Some(view) = quick_view.upgrade()
+            {
+                quick_launch::deliver(&view, event);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraQuickLaunch", None));
+
+        if quick.borrow().is_some() {
+            let quick_poll = quick.clone();
+            let quick_view = view.downgrade();
+            gtk::glib::timeout_add_local(Duration::from_millis(60), move || {
+                let Some(view) = quick_view.upgrade() else {
+                    return gtk::glib::ControlFlow::Break;
+                };
+                if let Some(service) = quick_poll.borrow_mut().as_mut() {
+                    for _ in 0..4 {
+                        let Some(event) = service.poll() else { break };
+                        quick_launch::deliver(&view, event);
+                    }
+                }
+                gtk::glib::ControlFlow::Continue
+            });
+        }
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -5682,11 +5445,6 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
-
-        // Dock owns a distinct bottom Wayland surface and trusted GIO bridge.
-        if env::var("KIRA_DOCK_DISABLE").ok().as_deref() != Some("1") {
-            dock::start(app, &html);
-        }
 
         // Warm the isolated Calendar WebKit process after the Top Bar starts.
         // The popup stays unmapped until requested; initial startup is not
@@ -6126,6 +5884,241 @@ mod tests {
         assert_eq!(parse_stat(""), None);
         assert_eq!(parse_stat("42 () S x"), None);
         assert_eq!(parse_stat(&stat_line("test", u64::MAX, 1, 9)), None);
+    }
+}
+
+FILE	crates/kira-shell/src/quick_launch.rs
+//! Optional, keyboard-first application shortcuts embedded in the existing
+//! 42px Top Bar. Niri owns window navigation; this only launches explicitly
+//! configured desktop entries through trusted native GIO AppInfo objects.
+use gtk::prelude::*;
+use std::collections::HashSet;
+
+use crate::launcher;
+
+const MAX_SHORTCUTS: usize = 3;
+const MAX_COMMAND_BYTES: usize = 48;
+
+#[derive(Debug, PartialEq, Eq)]
+enum Command {
+    Catalog,
+    Icons(Vec<usize>),
+    Launch(usize),
+}
+
+fn index(text: &str) -> Option<usize> {
+    if text.is_empty() || !text.bytes().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    let id = text.parse::<usize>().ok()?;
+    (id < 1024).then_some(id)
+}
+
+fn parse_command(message: &str) -> Option<Command> {
+    if message.len() > MAX_COMMAND_BYTES {
+        return None;
+    }
+    if message == "catalog" {
+        return Some(Command::Catalog);
+    }
+    if let Some(raw) = message.strip_prefix("launch:") {
+        return Some(Command::Launch(index(raw)?));
+    }
+    if let Some(raw) = message.strip_prefix("icons:") {
+        let mut ids = Vec::new();
+        for part in raw.split(',') {
+            let next = index(part)?;
+            if ids.len() == MAX_SHORTCUTS || ids.contains(&next) {
+                return None;
+            }
+            ids.push(next);
+        }
+        if !ids.is_empty() {
+            return Some(Command::Icons(ids));
+        }
+    }
+    None
+}
+
+fn configured_names(raw: &str) -> Vec<String> {
+    let mut seen = HashSet::new();
+    raw.split(',')
+        .map(str::trim)
+        .filter(|name| {
+            !name.is_empty()
+                && name.len() <= 120
+                && !name.chars().any(char::is_control)
+                && seen.insert(name.to_lowercase())
+        })
+        .take(MAX_SHORTCUTS)
+        .map(str::to_owned)
+        .collect()
+}
+
+fn selected_entries(full: &serde_json::Value, names: &[String]) -> (Vec<usize>, serde_json::Value) {
+    let apps = full["apps"].as_array();
+    let mut selected = Vec::new();
+    let mut allowed = Vec::new();
+    for name in names {
+        let entry = apps.and_then(|all| {
+            all.iter().find(|app| {
+                app["name"]
+                    .as_str()
+                    .is_some_and(|display| display.to_lowercase() == name.to_lowercase())
+            })
+        });
+        if let Some(app) = entry {
+            let Some(id) = app["id"].as_u64().and_then(|id| usize::try_from(id).ok()) else {
+                continue;
+            };
+            if id >= 1024 || allowed.contains(&id) {
+                continue;
+            }
+            allowed.push(id);
+            selected.push(app.clone());
+        }
+    }
+    (allowed, serde_json::json!({ "apps": selected }))
+}
+
+pub enum Event {
+    Apps(serde_json::Value),
+    Icons(serde_json::Value),
+    Error(String),
+}
+
+pub fn deliver(view: &webkit6::WebView, event: Event) {
+    use webkit6::prelude::*;
+    let (name, payload) = match event {
+        Event::Apps(value) => ("kira:quick:apps", value),
+        Event::Icons(value) => ("kira:quick:icons", value),
+        Event::Error(message) => (
+            "kira:quick:error",
+            serde_json::json!({ "message": message }),
+        ),
+    };
+    let Ok(json) = serde_json::to_string(&payload) else {
+        return;
+    };
+    let Ok(quoted) = serde_json::to_string(&json) else {
+        return;
+    };
+    let script = format!(
+        "window.dispatchEvent(new CustomEvent('{name}', {{ detail: JSON.parse({quoted}) }}));"
+    );
+    view.evaluate_javascript(
+        &script,
+        None,
+        None,
+        None::<&gtk::gio::Cancellable>,
+        |result| {
+            if let Err(error) = result {
+                eprintln!("kira-quick-launch: WebKit event delivery failed: {error}");
+            }
+        },
+    );
+}
+
+pub struct QuickLaunch {
+    catalog: launcher::Catalog,
+    names: Vec<String>,
+    allowed: Vec<usize>,
+    ready: Option<serde_json::Value>,
+}
+
+impl QuickLaunch {
+    /// No configured shortcuts means no catalog worker or UI controls.
+    /// The old KIRA_DOCK_APPS environment variable remains a migration alias.
+    pub fn discover() -> Result<Option<Self>, String> {
+        let configured = std::env::var("KIRA_QUICK_APPS")
+            .or_else(|_| std::env::var("KIRA_DOCK_APPS"))
+            .unwrap_or_default();
+        let names = configured_names(&configured);
+        if names.is_empty() {
+            return Ok(None);
+        }
+        Ok(Some(Self {
+            catalog: launcher::Catalog::discover()?,
+            names,
+            allowed: Vec::new(),
+            ready: None,
+        }))
+    }
+
+    pub fn handle(&self, message: &str) -> Option<Event> {
+        match parse_command(message)? {
+            Command::Catalog => self.ready.clone().map(Event::Apps),
+            Command::Launch(id) if self.allowed.contains(&id) => {
+                self.catalog.launch(id).err().map(Event::Error)
+            }
+            Command::Icons(ids) if ids.iter().all(|id| self.allowed.contains(id)) => {
+                self.catalog.request_icons(&ids).err().map(Event::Error)
+            }
+            _ => None,
+        }
+    }
+
+    pub fn poll(&mut self) -> Option<Event> {
+        match self.catalog.poll()? {
+            launcher::LauncherMessage::Apps(full) => {
+                let (allowed, payload) = selected_entries(&full, &self.names);
+                self.allowed = allowed;
+                self.ready = Some(payload.clone());
+                Some(Event::Apps(payload))
+            }
+            launcher::LauncherMessage::Icons(data) => Some(Event::Icons(data)),
+            launcher::LauncherMessage::Launched(Err(error))
+            | launcher::LauncherMessage::Error(error) => Some(Event::Error(error)),
+            launcher::LauncherMessage::Launched(Ok(())) => None,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepts_only_a_bounded_explicit_launch_contract() {
+        assert_eq!(parse_command("catalog"), Some(Command::Catalog));
+        assert_eq!(parse_command("launch:7"), Some(Command::Launch(7)));
+        assert_eq!(parse_command("icons:2,9"), Some(Command::Icons(vec![2, 9])));
+        for invalid in [
+            "",
+            "open",
+            "run:ls",
+            "launch:-1",
+            "launch:1024",
+            "launch:1:2",
+            "icons:",
+            "icons:1,1",
+            "icons:1,2,3,4",
+        ] {
+            assert_eq!(parse_command(invalid), None, "{invalid}");
+        }
+        assert_eq!(parse_command(&"x".repeat(64)), None);
+    }
+
+    #[test]
+    fn configured_shortcuts_are_explicit_unique_and_limited() {
+        assert!(configured_names("").is_empty());
+        assert_eq!(
+            configured_names("Firefox,Terminal,firefox,Files,Other"),
+            vec!["Firefox", "Terminal", "Files"]
+        );
+        let input = serde_json::json!({
+            "apps": [
+                {"id": 7, "name": "Files", "description": ""},
+                {"id": 2, "name": "Firefox", "description": ""},
+                {"id": 8, "name": "Terminal", "description": ""}
+            ]
+        });
+        let names = configured_names("Terminal,Missing,Firefox");
+        let (allowed, payload) = selected_entries(&input, &names);
+        assert_eq!(allowed, vec![8, 2]);
+        assert_eq!(payload["apps"][0]["name"], "Terminal");
+        assert_eq!(payload["apps"][1]["name"], "Firefox");
+        assert_eq!(payload["apps"].as_array().unwrap().len(), 2);
     }
 }
 
@@ -7260,7 +7253,7 @@ FILE	docs/DESIGN_SYSTEM.md
 
 **Status:** implemented visual system for the Svelte Top Bar, native GTK
 Launcher and custom Calendar. Visual acceptance is still open. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
-Dock, notifications and other desktop surfaces remain future milestones.
+Dedicated desktop docks are intentionally omitted in favor of Niri's workspace navigation. Notifications and other surfaces remain future milestones.
 
 ## Kira official visual direction
 
@@ -7371,21 +7364,22 @@ official visual language of Kira Desktop.
   click's direction. Every digit returns to its exact original position;
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
-- **Dock (floating platform):** A centered, permanent bottom layer-shell
-  surface (704×104 transparent GTK/WebKit canvas, 18px bottom margin, zero
-  exclusive zone). Unlike the initial prototype it never paints an opaque
-  black rectangle across the whole window. A single 80px-high, rounded
-  Prussian Blue platform has a restrained derived-tone border and soft
-  shadow; no permanent orange top stripe. Its KIRA launcher button is a
-  76px editorial anchor with one narrow orange mark. Eight 56px application
-  controls use centered 32px native GIO icons, one consistent neutral SVG
-  placeholder, and transient hover/focus feedback. No visual marks pretend
-  to indicate running windows.
-  Up to eight actual GIO AppInfo entries launch via trusted native IDs;
-  without configured pins, the first eight alphabetical entries are shown.
-  `KIRA_DOCK_APPS="Firefox,Terminal,Files"` selects case-insensitive exact
-  names in that order. `KIRA_DOCK_DISABLE=1` disables the surface. Niri
-  running-state indicators, KDL pins and autohide remain future work.
+- **Quick Launch (Top Bar, opt-in):** Kira Desktop is keyboard-first:
+  Niri is responsible for focusing workspaces and switching windows; the
+  launcher handles discovery. A persistent macOS/Windows-style Dock would
+  duplicate window navigation and waste screen space, so **no bottom
+  layer-shell surface is created**. Instead, up to three explicitly pinned
+  GIO desktop applications may appear as quiet 32px controls inside the
+  existing 42px Top Bar. This is an **application-launch shortcut**, not a
+  taskbar. Buttons never represent running, focused or active windows.
+  Without user configuration, no shortcuts appear and no catalog worker
+  is started. `KIRA_QUICK_APPS="foot,Firefox,Files"` resolves exact,
+  case-insensitive GIO display names, preserving order and omitting missing
+  entries. `KIRA_DOCK_APPS` is supported as a migration alias.
+  At narrow widths (below 740px), shortcuts yield space to workspaces
+  and system status. The trusted Rust bridge accepts only allowlisted GIO
+  IDs, and icons are fetched in bounded batches. KDL integration is future
+  work. Keyboard focus and visible active workspace states remain separate.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   The prominent search field is a keyboard-focused combobox with an
   `aria-activedescendant` link to the active app in the result list.
@@ -8501,7 +8495,7 @@ Frontend собирается в статические ресурсы и заг
 
 - Создание Wayland layer-shell поверхностей.
 - Отображение Svelte-компонентов через WebKitGTK.
-- Управление панелями, доком и рабочим столом.
+- Управление Top Bar, рабочими пространствами и композиционной структурой рабочего стола; отдельный Dock не требуется.
 - Связь с Kira Core через Unix Domain Socket.
 
 **Схема взаимодействия:**
@@ -8703,7 +8697,7 @@ Frontend должен предоставлять npm scripts `check`, `test:ci`,
 3. KDL Config Engine с Hot Reload.
 4. Top Bar и Workspaces.
 5. Application Launcher.
-6. Dock и Clock.
+6. Quick Launch в Top Bar (только явные закрепления) и Clock; без отдельной Dock-поверхности.
 7. Премиальную дизайн-систему и темы с обязательной палитрой по умолчанию (раздел 15).
 8. Загрузку пользовательских Svelte-виджетов.
 9. Автоматизированные тесты основных компонентов.
@@ -8765,7 +8759,7 @@ Frontend должен предоставлять npm scripts `check`, `test:ci`,
   декоративного шума и злоупотребления blur/градиентами.
 - **Плавность.** Короткие, ненавязчивые переходы, ориентир 120–220 мс;
   обязательно учитывать `prefers-reduced-motion`.
-- **Согласованность.** Top Bar, Dock, Launcher, уведомления, меню,
+- **Согласованность.** Top Bar, Quick Launch, Launcher, уведомления, меню,
   настройки и виджеты образуют одну дизайн-систему со всеми состояниями:
   default, hover, focus, active, disabled, loading, error.
 - **KISS.** Минимум необходимой сложности: понятные функции, явные состояния,
@@ -8857,7 +8851,7 @@ GTK Launcher использует ту же палитру через имено
 Svelte 5 + Tailwind CSS v4, нативный GTK Launcher, отдельный WebKit-хост Calendar
 реализованы. Внедрена базовая клавиатурная навигация. Это **не означает
 завершённой визуальной приёмки**: проверка размеров, масштабов,
-локализации и всех интерактивных состояний остаётся открытой. Dock,
+локализации и всех интерактивных состояний остаётся открытой. Quick Launch через KDL,
 уведомления, настройки и пользовательские темы относятся к будущим этапам.
 Текущие замечания и приоритеты ревью: [VISUAL_REVIEW.md](VISUAL_REVIEW.md).
 
@@ -9823,56 +9817,49 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 }
 
 
-/** Dock's permanent WebKit page has a distinct marker and bridge; it must
- * mount real GIO IDs without involving the Calendar/Launcher popup lifecycle.
- */
-async function smokeDock() {
+/** Quick Launch is a tiny optional section of the existing Top Bar. */
+async function smokeQuickLaunch() {
   const script = '<script>' +
-    'window.webkit={messageHandlers:{kiraDock:{postMessage(message){' +
-    'if(message==="catalog"){setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:apps",{detail:{' +
-    'apps:[{id:2,name:"Firefox",description:"Browser"},{id:8,name:"Terminal",description:"Shell"}],' +
-    'favorites:["Terminal","Firefox"]}})),25);}' +
+    'window.webkit={messageHandlers:{kiraQuickLaunch:{postMessage(message){' +
+    'if(message==="catalog"){setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:quick:apps",{detail:{' +
+    'apps:[{id:8,name:"Terminal",description:"Shell"},{id:2,name:"Firefox",description:"Browser"}]' +
+    '}})),25);}' +
     'if(String(message).startsWith("icons:")){' +
-    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:icons",{detail:{icons:[' +
-    '{id:2,data_url:' + JSON.stringify(testIcon) + '},{id:8,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
-    'if(String(message).startsWith("launch:")){document.documentElement.dataset.dockLaunched=String(message);}' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:quick:icons",{detail:{icons:[' +
+    '{id:8,data_url:' + JSON.stringify(testIcon) + '},{id:2,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
+    'if(String(message).startsWith("launch:")){document.documentElement.dataset.quickLaunched=String(message);}' +
     '}},kiraDiagnostics:{postMessage(){}}}};' +
     'window.addEventListener("load",()=>{' +
     'setTimeout(()=>document.querySelector("button[aria-label=\\\"Launch Terminal\\\"]")?.click(),280);' +
     'setTimeout(()=>{' +
-    'const root=document.querySelector("main[aria-label=\\\"Kira Dock\\\"]");' +
-    'const buttons=Array.from(root?.querySelectorAll("nav button")||[]);' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Desktop top bar\\\"]");' +
+    'const nav=root?.querySelector("nav[aria-label=\\\"Quick launch\\\"]");' +
+    'const buttons=Array.from(nav?.querySelectorAll("button")||[]);' +
     'const names=buttons.map(button=>button.getAttribute("aria-label"));' +
-    'const platform=root?.querySelector("[data-dock-platform]");' +
-    'const canvasClear=getComputedStyle(document.documentElement).backgroundColor==="rgba(0, 0, 0, 0)";' +
-    'const buttonSize=Math.round(root?.querySelector("[data-dock-app]")?.getBoundingClientRect().width||0);' +
-    'const platformRect=platform?.getBoundingClientRect();' +
-    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===104 &&' +
-    'canvasClear && !!platformRect && platformRect.height===80 && platformRect.width<root.getBoundingClientRect().width &&' +
-    'parseInt(getComputedStyle(platform).borderTopLeftRadius,10)>=12 && buttonSize===56 &&' +
-    'names.join("|")==="Open application launcher|Launch Terminal|Launch Firefox" &&' +
-    'root.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
-    'document.documentElement.dataset.dockLaunched==="launch:8";' +
+    'document.documentElement.dataset.quickTest=!!root && root.getBoundingClientRect().height===42 &&' +
+    '!document.querySelector("main[aria-label=\\\"Kira Dock\\\"]") &&' +
+    'names.join("|")==="Launch Terminal|Launch Firefox" &&' +
+    'buttons.every(button=>Math.round(button.getBoundingClientRect().width)===32) &&' +
+    'nav.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
+    'document.documentElement.dataset.quickLaunched==="launch:8";' +
     '},700);});</script>';
-  const document = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="dock">')
-    .replace('</head>', script + '</head>');
-  const path = join(dir, 'dock.html');
+  const document = html.replace('</head>', script + '</head>');
+  const path = join(dir, 'quick-launch.html');
   await writeFile(path, document);
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
     '--disable-background-networking', '--virtual-time-budget=1500',
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
-  if (!output.includes('data-dock-test="true"')) {
-    const flags = output.match(/data-dock-(?:test|launched)="[^"]*"/g) || [];
-    throw new Error('dock: GIO catalog, icons, launch or accessibility failed: ' + flags.join(', '));
+  if (!output.includes('data-quick-test="true"')) {
+    const flags = output.match(/data-quick-(?:test|launched)="[^"]*"/g) || [];
+    throw new Error('quick launch: top bar sizing, icons or GIO bridge failed: ' + flags.join(', '));
   }
-  console.log('OK: dock mounted, pinned true native IDs, icons and launch bridge');
+  console.log('OK: quick launch mounted in 42px Top Bar and launched pinned GIO ID');
 }
 
 try {
-  await smokeDock();
+  await smokeQuickLaunch();
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
@@ -9939,6 +9926,7 @@ FILE	frontend/src/App.svelte
   import { onMount } from 'svelte';
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
+  import QuickLaunch from './lib/components/QuickLaunch.svelte';
   import { formatClock } from './lib/time';
   import { openLauncher, toggleCalendar, toggleSystemPanel, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
@@ -10099,6 +10087,10 @@ FILE	frontend/src/App.svelte
       <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
+
+  <!-- Shortcuts launch configured apps; workspaces above remain Niri's
+       authoritative navigation and keep their existing keyboard behavior. -->
+  <QuickLaunch />
 
   <section
     class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}
@@ -11226,128 +11218,6 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   </footer>
 </main>
 
-FILE	frontend/src/lib/components/DockWidget.svelte
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import {
-    launchDockApp, onDockCatalog, onDockError, onDockIcons,
-    openLauncherFromDock, requestDockCatalog, requestDockIcons,
-    type LauncherApp,
-  } from '../sdk/core';
-  import { dockApplications } from '../dock-model';
-
-  let apps = $state<LauncherApp[]>([]);
-  let favorites = $state<string[]>([]);
-  let icons = $state<Record<number, string>>({});
-  let loaded = $state(false);
-  let error = $state('');
-  const requested = new Set<number>();
-  const visible = $derived(dockApplications(apps, favorites));
-
-  onMount(() => {
-    const stopCatalog = onDockCatalog(data => {
-      apps = data.apps;
-      favorites = data.favorites;
-      icons = {};
-      requested.clear();
-      loaded = true;
-      error = '';
-    });
-    const stopIcons = onDockIcons(batch => {
-      for (const icon of batch.icons) {
-        if (icon.data_url) icons[icon.id] = icon.data_url;
-      }
-    });
-    const stopError = onDockError(message => { error = message; });
-    if (!requestDockCatalog()) error = 'Dock service unavailable';
-    return () => {
-      stopCatalog();
-      stopIcons();
-      stopError();
-      requested.clear();
-    };
-  });
-
-  $effect(() => {
-    if (!loaded) return;
-    const needed = visible.map(app => app.id).filter(id => !requested.has(id));
-    if (needed.length && requestDockIcons(needed)) {
-      for (const id of needed) requested.add(id);
-    }
-  });
-
-  function launch(id: number) {
-    error = '';
-    if (!launchDockApp(id)) error = 'Dock service unavailable';
-  }
-</script>
-
-<main data-kira-ui-root aria-label="Kira Dock"
-  class="flex h-[104px] min-h-[104px] w-full items-center justify-center overflow-hidden bg-transparent text-kira-text">
-  <!-- One floating platform rather than a full-width toolbar. No permanent
-       orange "active" bar: running-window state is not implemented yet. -->
-  <nav data-dock-platform aria-label="Dock applications"
-    class="kira-dock-platform flex h-[80px] max-w-[calc(100%-16px)] items-center justify-center
-      gap-2 px-3.5">
-    <button type="button" onclick={openLauncherFromDock}
-      data-dock-launcher
-      aria-label="Open application launcher" title="Open application launcher"
-      class="group relative flex h-14 w-[76px] shrink-0 items-center justify-center gap-2
-        rounded-md bg-kira-bg/65 text-kira-text
-        transition-[background-color,transform] duration-150
-        hover:bg-kira-bg focus-visible:outline-2 focus-visible:outline-kira-accent
-        active:translate-y-px">
-      <span aria-hidden="true" class="h-6 w-[3px] shrink-0 bg-kira-accent"></span>
-      <span class="text-[12px] font-extrabold tracking-[0.15em]">KIRA</span>
-    </button>
-
-    {#if visible.length > 0}
-      <span aria-hidden="true" class="mx-0.5 h-8 w-px shrink-0 bg-kira-muted/20"></span>
-    {/if}
-
-    {#each visible as app (app.id)}
-      <button type="button" data-dock-app
-        onclick={() => launch(app.id)}
-        title={app.name} aria-label={'Launch ' + app.name}
-        class="group relative flex size-14 shrink-0 items-center justify-center rounded-md
-          bg-transparent transition-[background-color,transform] duration-150
-          hover:bg-kira-bg/55 focus-visible:bg-kira-bg/55
-          focus-visible:outline-2 focus-visible:outline-kira-accent
-          active:translate-y-px">
-        <span class="flex size-11 items-center justify-center" aria-hidden="true">
-          {#if icons[app.id]}
-            <img class="size-8 object-contain" src={icons[app.id]} alt=""
-              loading="lazy" onerror={() => { delete icons[app.id]; }} />
-          {:else}
-            <!-- A single neutral placeholder; don't invent an app's identity
-                 from its first character while the trusted icon is loading. -->
-            <svg data-dock-icon-placeholder class="size-7 text-kira-muted/75"
-              viewBox="0 0 32 32" fill="none" stroke="currentColor"
-              stroke-width="1.6" stroke-linejoin="round">
-              <rect x="5" y="5" width="9" height="9" rx="1.5" />
-              <rect x="18" y="5" width="9" height="9" rx="1.5" />
-              <rect x="5" y="18" width="9" height="9" rx="1.5" />
-              <rect x="18" y="18" width="9" height="9" rx="1.5" />
-            </svg>
-          {/if}
-        </span>
-        <!-- A transient interaction cue, never a fabricated running indicator. -->
-        <span aria-hidden="true"
-          class="absolute bottom-1 h-[2px] w-3 bg-transparent
-            group-hover:bg-kira-accent group-focus-visible:bg-kira-accent"></span>
-      </button>
-    {/each}
-
-    {#if !loaded && !error}
-      <span class="px-2 text-[10px] font-semibold tracking-wider text-kira-muted"
-        role="status">INDEXING</span>
-    {:else if error}
-      <span class="max-w-36 truncate px-2 text-[10px] text-kira-muted"
-        role="status" title={error}>UNAVAILABLE</span>
-    {/if}
-  </nav>
-</main>
-
 FILE	frontend/src/lib/components/LauncherWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
@@ -11579,6 +11449,92 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
     </span>
   </footer>
 </main>
+
+FILE	frontend/src/lib/components/QuickLaunch.svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import {
+    launchQuickApp, onQuickLaunchApps, onQuickLaunchError,
+    onQuickLaunchIcons, requestQuickLaunchCatalog, requestQuickLaunchIcons,
+    type LauncherApp,
+  } from '../sdk/core';
+
+  let apps = $state<LauncherApp[]>([]);
+  let icons = $state<Record<number, string>>({});
+  let error = $state('');
+  const requested = new Set<number>();
+
+  onMount(() => {
+    // The native worker can finish before the bar mounts. The catalog
+    // request replays the last validated snapshot, with no frontend polling.
+    const stopApps = onQuickLaunchApps(entries => {
+      apps = entries;
+      icons = {};
+      requested.clear();
+      error = '';
+    });
+    const stopIcons = onQuickLaunchIcons(batch => {
+      for (const icon of batch.icons) {
+        if (icon.data_url !== null) icons[icon.id] = icon.data_url;
+      }
+    });
+    const stopError = onQuickLaunchError(message => { error = message; });
+    requestQuickLaunchCatalog();
+    return () => {
+      stopApps();
+      stopIcons();
+      stopError();
+      requested.clear();
+    };
+  });
+
+  $effect(() => {
+    const missing = apps.map(app => app.id).filter(id => !requested.has(id));
+    if (missing.length && requestQuickLaunchIcons(missing)) {
+      for (const id of missing) requested.add(id);
+    }
+  });
+
+  function launch(id: number) {
+    error = '';
+    if (!launchQuickApp(id)) error = 'Application service unavailable';
+  }
+</script>
+
+{#if apps.length > 0}
+  <nav aria-label="Quick launch" class="hidden shrink-0 items-center gap-0.5
+    border-l border-kira-muted/15 px-2 pb-[2px] min-[740px]:flex"
+    data-quick-launch>
+    {#each apps as app (app.id)}
+      <button type="button" onclick={() => launch(app.id)}
+        aria-label={'Launch ' + app.name} title={'Launch ' + app.name}
+        class="flex size-8 shrink-0 items-center justify-center rounded-sm
+          text-kira-muted transition-colors duration-150
+          hover:bg-kira-surface hover:text-kira-text
+          focus-visible:bg-kira-surface focus-visible:outline-2
+          focus-visible:outline-kira-accent motion-reduce:transition-none">
+        {#if icons[app.id]}
+          <img class="size-[22px] object-contain" src={icons[app.id]}
+            alt="" aria-hidden="true" loading="lazy"
+            onerror={() => { delete icons[app.id]; }} />
+        {:else}
+          <svg class="size-5" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+        {/if}
+      </button>
+    {/each}
+    {#if error}
+      <span role="status" class="max-w-20 truncate text-[9px] font-bold text-kira-accent"
+        title={error}>LAUNCH !</span>
+    {/if}
+  </nav>
+{/if}
 
 FILE	frontend/src/lib/components/SystemCharts.svelte
 <script lang="ts">
@@ -12237,56 +12193,6 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
     {/each}
   </ol>
 {/if}
-
-FILE	frontend/src/lib/dock-model.test.ts
-import { describe, expect, it } from 'vitest';
-import { dockApplications } from './dock-model';
-import type { LauncherApp } from './sdk/core';
-
-const apps: LauncherApp[] = [
-  { id: 4, name: 'Files', description: '' },
-  { id: 3, name: 'Firefox', description: '' },
-  { id: 8, name: 'Terminal', description: '' },
-];
-describe('Dock catalog projection', () => {
-  it('retains sorted native order for unconfigured preview', () => {
-    expect(dockApplications(apps, [], 2).map(app => app.id)).toEqual([4, 3]);
-    expect(dockApplications(apps, [], 80)).toHaveLength(3);
-    expect(dockApplications(apps, [], 0)).toEqual([]);
-  });
-  it('honors explicit case-insensitive favorites without fabricating apps', () => {
-    expect(dockApplications(apps, ['terminal', 'missing', 'Files', 'Terminal'])
-      .map(app => app.id)).toEqual([8, 4]);
-    expect(dockApplications(apps, ['missing'])).toEqual([]);
-    expect(dockApplications(apps, ['terminal'], 0)).toEqual([]);
-  });
-});
-
-FILE	frontend/src/lib/dock-model.ts
-import type { LauncherApp } from './sdk/core';
-
-/** Real GIO apps only. Without explicit pins, show the bounded catalog
- * head, not invented favorites or pretend running-window status.
- */
-export function dockApplications(
-  apps: readonly LauncherApp[], favorites: readonly string[], limit = 8,
-): LauncherApp[] {
-  const count = Number.isFinite(limit) ? Math.max(0, Math.min(8, Math.trunc(limit))) : 0;
-  if (!favorites.length) return apps.slice(0, count);
-  const seen = new Set<number>();
-  const result: LauncherApp[] = [];
-  for (const favorite of favorites) {
-    const name = favorite.trim().toLocaleLowerCase();
-    if (!name) continue;
-    const app = apps.find(row => row.name.toLocaleLowerCase() === name);
-    if (app && !seen.has(app.id)) {
-      seen.add(app.id);
-      result.push(app);
-      if (result.length >= count) break;
-    }
-  }
-  return result.slice(0, count);
-}
 
 FILE	frontend/src/lib/launcher-model.test.ts
 import { describe, expect, it } from 'vitest';
@@ -13284,7 +13190,7 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraDock?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraQuickLaunch?: Bridge } };
   }
 }
 
@@ -13453,36 +13359,34 @@ export function closeLauncherOverlay(): void {
   sendCalendarUi('close');
 }
 
-/** Dedicated, navigation-locked Dock bridge. No executable paths or shell. */
-function sendDockCommand(message: string): boolean {
+/** Only explicit, trusted native GIO app indices. No shell commands,
+ * window-switching, arbitrary executable paths, or implicit app catalog.
+ */
+function sendQuickCommand(message: string): boolean {
   const handler = typeof window === 'undefined'
-    ? undefined : window.webkit?.messageHandlers?.kiraDock;
+    ? undefined : window.webkit?.messageHandlers?.kiraQuickLaunch;
   if (!handler) return false;
   try { handler.postMessage(message); return true; }
   catch { return false; }
 }
 
-export interface DockCatalog {
+export interface QuickLaunchApps {
   apps: LauncherApp[];
-  favorites: string[];
 }
 
-export function onDockCatalog(callback: (data: DockCatalog) => void): () => void {
-  return onNativeEvent('kira:dock:apps', (value): value is DockCatalog =>
-    isRecord(value) && Array.isArray(value.apps) && value.apps.length <= 1024 &&
+export function onQuickLaunchApps(callback: (apps: LauncherApp[]) => void): () => void {
+  return onNativeEvent('kira:quick:apps', (value): value is QuickLaunchApps =>
+    isRecord(value) && Array.isArray(value.apps) && value.apps.length <= 3 &&
     value.apps.every((app: unknown) => isRecord(app) &&
       Number.isSafeInteger(app.id) && (app.id as number) >= 0 && (app.id as number) < 1024 &&
       typeof app.name === 'string' && app.name.length <= 120 &&
-      typeof app.description === 'string' && app.description.length <= 240) &&
-    Array.isArray(value.favorites) && value.favorites.length <= 8 &&
-    value.favorites.every((name: unknown) =>
-      typeof name === 'string' && name.length <= 120),
-  callback);
+      typeof app.description === 'string' && app.description.length <= 240),
+  data => callback(data.apps));
 }
 
-export function onDockIcons(callback: (icons: LauncherIcons) => void): () => void {
-  return onNativeEvent('kira:dock:icons', (value): value is LauncherIcons =>
-    isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 8 &&
+export function onQuickLaunchIcons(callback: (icons: LauncherIcons) => void): () => void {
+  return onNativeEvent('kira:quick:icons', (value): value is LauncherIcons =>
+    isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 3 &&
     value.icons.every((icon: unknown) => isRecord(icon) &&
       Number.isSafeInteger(icon.id) && (icon.id as number) >= 0 && (icon.id as number) < 1024 &&
       (icon.data_url === null ||
@@ -13491,29 +13395,25 @@ export function onDockIcons(callback: (icons: LauncherIcons) => void): () => voi
   callback);
 }
 
-export function onDockError(callback: (message: string) => void): () => void {
-  return onNativeEvent('kira:dock:error', (value): value is { message: string } =>
+export function onQuickLaunchError(callback: (message: string) => void): () => void {
+  return onNativeEvent('kira:quick:error', (value): value is { message: string } =>
     isRecord(value) && typeof value.message === 'string' && value.message.length <= 180,
     value => callback(value.message));
 }
 
-export function requestDockCatalog(): boolean {
-  return sendDockCommand('catalog');
+export function requestQuickLaunchCatalog(): boolean {
+  return sendQuickCommand('catalog');
 }
 
-export function requestDockIcons(ids: number[]): boolean {
-  if (!ids.length || ids.length > 8 || new Set(ids).size !== ids.length ||
+export function requestQuickLaunchIcons(ids: number[]): boolean {
+  if (!ids.length || ids.length > 3 || new Set(ids).size !== ids.length ||
       !ids.every(id => Number.isSafeInteger(id) && id >= 0 && id < 1024)) return false;
-  return sendDockCommand('icons:' + ids.join(','));
+  return sendQuickCommand('icons:' + ids.join(','));
 }
 
-export function launchDockApp(id: number): boolean {
+export function launchQuickApp(id: number): boolean {
   if (!Number.isSafeInteger(id) || id < 0 || id >= 1024) return false;
-  return sendDockCommand('launch:' + id);
-}
-
-export function openLauncherFromDock(): boolean {
-  return sendDockCommand('open');
+  return sendQuickCommand('launch:' + id);
 }
 
 /** Open or close the shared Svelte read-only system monitor. */
@@ -13589,6 +13489,61 @@ function send(method: string, params?: { id: string }): Promise<unknown> {
     }
   });
 }
+
+FILE	frontend/src/lib/sdk/quick-launch.test.ts
+import { describe, expect, it, vi } from 'vitest';
+import {
+  launchQuickApp, onQuickLaunchApps, onQuickLaunchIcons,
+  requestQuickLaunchCatalog, requestQuickLaunchIcons,
+} from './core';
+
+describe('Quick Launch narrow trusted bridge', () => {
+  it('sends only bounded native indices, never command strings', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraQuickLaunch: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(requestQuickLaunchCatalog()).toBe(true);
+    expect(requestQuickLaunchIcons([8, 2])).toBe(true);
+    expect(launchQuickApp(8)).toBe(true);
+    expect(postMessage.mock.calls.map(([message]) => message))
+      .toEqual(['catalog', 'icons:8,2', 'launch:8']);
+    for (const id of [-1, 1.5, 1024, Number.NaN]) {
+      expect(launchQuickApp(id)).toBe(false);
+    }
+    expect(requestQuickLaunchIcons([])).toBe(false);
+    expect(requestQuickLaunchIcons([1, 1])).toBe(false);
+    expect(requestQuickLaunchIcons([1, 2, 3, 4])).toBe(false);
+    expect(postMessage).toHaveBeenCalledTimes(3);
+  });
+
+  it('validates tiny catalog and image-only event payloads', () => {
+    const handlers = new Map<string, EventListener>();
+    const removeEventListener = vi.fn();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
+      removeEventListener,
+    } as unknown as Window & typeof globalThis;
+    const onApps = vi.fn();
+    const onIcons = vi.fn();
+    const stopApps = onQuickLaunchApps(onApps);
+    const stopIcons = onQuickLaunchIcons(onIcons);
+    const notify = (name: string, detail: unknown) =>
+      handlers.get(name)!({ detail } as unknown as Event);
+    const app = { id: 8, name: 'Terminal', description: '' };
+    notify('kira:quick:apps', { apps: [app] });
+    expect(onApps).toHaveBeenCalledExactlyOnceWith([app]);
+    notify('kira:quick:apps', { apps: [app, app, app, app] });
+    notify('kira:quick:apps', { apps: [{ ...app, id: -1 }] });
+    expect(onApps).toHaveBeenCalledTimes(1);
+    notify('kira:quick:icons', { icons: [{ id: 8, data_url: null }] });
+    notify('kira:quick:icons', { icons: [{ id: 8, data_url: 'file:///tmp/bad' }] });
+    expect(onIcons).toHaveBeenCalledTimes(1);
+    stopApps();
+    stopIcons();
+    expect(removeEventListener).toHaveBeenCalledTimes(2);
+  });
+});
 
 FILE	frontend/src/lib/system-charts.test.ts
 import { describe, expect, it } from 'vitest';
@@ -14392,6 +14347,7 @@ const css = readFileSync(new URL('../../style.css', import.meta.url), 'utf8');
 const markup = readFileSync(new URL('../../App.svelte', import.meta.url), 'utf8');
 const workspaces = readFileSync(new URL('../components/WorkspacePreview.svelte', import.meta.url), 'utf8');
 const core = readFileSync(new URL('../components/SystemHealth.svelte', import.meta.url), 'utf8');
+const quick = readFileSync(new URL('../components/QuickLaunch.svelte', import.meta.url), 'utf8');
 const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), 'utf8');
 const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
@@ -14444,6 +14400,17 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('CALENDAR OFFLINE');
   });
 
+  it('puts optional launch-only shortcuts in the existing bar, not a Dock', () => {
+    expect(markup).toContain('<QuickLaunch />');
+    expect(quick).toContain('aria-label="Quick launch"');
+    expect(quick).toContain("aria-label={'Launch ' + app.name}");
+    expect(quick).toContain('min-[740px]:flex');
+    expect(quick).toContain('onQuickLaunchApps(');
+    expect(quick).toContain('stopApps();');
+    expect(markup).not.toContain('DockWidget');
+    expect(css).not.toContain('data-kira-surface="dock"');
+  });
+
   it('preserves accessible live workspace and Core states without component CSS', () => {
     expect(workspaces).toContain('aria-pressed={workspace.is_focused}');
     expect(workspaces).toContain('data-urgent={workspace.is_urgent}');
@@ -14492,7 +14459,6 @@ import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
-import DockWidget from './lib/components/DockWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
@@ -14515,15 +14481,6 @@ report('Svelte entrypoint evaluating; document.readyState=' + document.readyStat
 whenDocumentReady(document, () => {
   report('Svelte bootstrap after DOMContentLoaded; readyState=' + document.readyState);
   const target = document.getElementById('app');
-  if (document.documentElement.dataset.kiraSurface === 'dock') {
-    const mounted = startUi(target, (container) => {
-      mount(DockWidget, { target: container });
-      flushSync();
-    }, report);
-    Reflect.set(window, '__kiraMountReturned', mounted);
-    return;
-  }
-
   if (document.documentElement.dataset.kiraSurface === 'calendar') {
     if (!target) {
       report('Calendar bootstrap failure: #app missing');
@@ -14688,35 +14645,6 @@ FILE	frontend/src/style.css
     max-height: var(--kira-overlay-max-height, 560px);
     /* Calendar/Overview use page scrolling; Launcher and Processes
      * keep their own list scrollers inside a constrained flex column. */
-  }
-
-  /* The bottom Wayland surface contains a floating platform, not a black
-   * rectangle. GTK and WebKit must both clear to alpha zero as well. */
-  html[data-kira-surface="dock"],
-  html[data-kira-surface="dock"] body,
-  html[data-kira-surface="dock"] #app {
-    height: auto;
-    min-height: 0;
-    overflow: hidden;
-    background: transparent;
-  }
-  html[data-kira-surface="dock"] #kira-loading {
-    background: transparent !important;
-  }
-
-  /* A single low-contrast, self-contained platform. The transparent canvas
-   * and native layer-shell position supply the separation from other windows. */
-  .kira-dock-platform {
-    border: 1px solid color-mix(in srgb, var(--alabaster-grey) 17%, transparent);
-    border-radius: 14px;
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--prussian-blue) 88%, var(--black)),
-      color-mix(in srgb, var(--prussian-blue) 72%, var(--black))
-    );
-    box-shadow:
-      0 14px 34px color-mix(in srgb, var(--black) 56%, transparent),
-      inset 0 1px color-mix(in srgb, var(--white) 10%, transparent);
   }
 
   /* Calendar preserves all six ISO weeks within a height-capped native
@@ -16090,61 +16018,6 @@ while True: time.sleep(.1)
 if __name__ == "__main__":
     unittest.main()
 
-FILE	tests/test_dock_design.py
-"""Read-only Dock startup and trusted GIO contract."""
-import unittest
-from pathlib import Path
-ROOT = Path(__file__).resolve().parents[1]
-DOCK = (ROOT / "crates/kira-shell/src/dock.rs").read_text()
-SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
-UI = (ROOT / "frontend/src/lib/components/DockWidget.svelte").read_text()
-SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
-ENTRY = (ROOT / "frontend/src/main.ts").read_text()
-
-class DockTests(unittest.TestCase):
-    def test_native_shell_isolated_and_safe(self):
-        for needle in ["dock::start(app, &html)", "KIRA_DOCK_DISABLE"]:
-            self.assertIn(needle, SHELL)
-        for needle in ['set_namespace(Some("kira-dock"))',
-                       "set_anchor(Edge::Bottom, true)", "set_exclusive_zone(0)",
-                       "restrict_webview_navigation(&view)",
-                       "RendererRecovery::default()", "KIRA_DOCK_APPS",
-                       "launcher::Catalog::discover()", "catalog.launch(id)",
-                       "catalog.request_icons(&ids)"]:
-            self.assertIn(needle, DOCK)
-        self.assertNotIn("std::process::Command", DOCK)
-    def test_floating_platform_does_not_paint_an_opaque_rectangle(self):
-        for needle in (
-            "set_default_size(704, 104)",
-            "set_margin(Edge::Bottom, 18)",
-            'window.add_css_class("kira-dock-window")',
-            "dock_css.load_from_data",
-            "gtk::STYLE_PROVIDER_PRIORITY_APPLICATION",
-            "RGBA::new(0.0, 0.0, 0.0, 0.0)",
-        ):
-            self.assertIn(needle, DOCK)
-        self.assertIn("data-dock-platform", UI)
-        self.assertIn("bg-transparent text-kira-text", UI)
-        self.assertIn("size-14 shrink-0", UI)
-        self.assertIn("data-dock-icon-placeholder", UI)
-        self.assertNotIn("border-t-2 border-kira-accent", UI)
-        style = (ROOT / "frontend/src/style.css").read_text()
-        self.assertIn(".kira-dock-platform {", style)
-        self.assertIn('html[data-kira-surface="dock"] #app', style)
-
-    def test_dom_bridge_and_lifecycle(self):
-        self.assertIn("dataset.kiraSurface === 'dock'", ENTRY)
-        self.assertIn("mount(DockWidget", ENTRY)
-        self.assertIn('aria-label="Kira Dock"', UI)
-        self.assertIn('aria-label="Dock applications"', UI)
-        self.assertIn("requested.clear();", UI)
-        self.assertIn("onDockCatalog(", UI)
-        self.assertIn("sendDockCommand('launch:' + id)", SDK)
-        self.assertIn("ids.length > 8", SDK)
-
-if __name__ == "__main__":
-    unittest.main()
-
 FILE	tests/test_launcher_design.py
 """Svelte Launcher: trusted GIO lookup, shared WebKit, no native GTK view."""
 import unittest
@@ -16708,6 +16581,55 @@ class VisualQATests(unittest.TestCase):
                 self.assertEqual(json.loads(manifests[0].read_text())["status"], "failed")
             finally:
                 server.close()
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_quick_launch.py
+"""Niri-first Quick Launch replaces the separate Dock surface."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+QUICK = (ROOT / "crates/kira-shell/src/quick_launch.rs").read_text()
+BAR = (ROOT / "frontend/src/App.svelte").read_text()
+WIDGET = (ROOT / "frontend/src/lib/components/QuickLaunch.svelte").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+ENTRY = (ROOT / "frontend/src/main.ts").read_text()
+
+
+class QuickLaunchContracts(unittest.TestCase):
+    def test_no_bottom_layer_or_shadow_dock(self):
+        self.assertIn('window.set_exclusive_zone(BAR_HEIGHT)', SHELL)
+        self.assertIn('mod quick_launch;', SHELL)
+        self.assertIn('QuickLaunch::discover()', SHELL)
+        self.assertIn('register_script_message_handler("kiraQuickLaunch", None)', SHELL)
+        self.assertNotIn('mod dock;', SHELL)
+        self.assertNotIn('dock::start(', SHELL)
+        self.assertNotIn('dataset.kiraSurface === "dock"', ENTRY)
+        self.assertNotIn("dataset.kiraSurface === 'dock'", ENTRY)
+        self.assertFalse((ROOT / "crates/kira-shell/src/dock.rs").exists())
+        self.assertFalse((ROOT / "frontend/src/lib/components/DockWidget.svelte").exists())
+
+    def test_worker_only_for_configured_pins_and_no_taskbar_semantics(self):
+        for expected in (
+            'KIRA_QUICK_APPS', 'KIRA_DOCK_APPS', 'names.is_empty()',
+            'return Ok(None);', 'MAX_SHORTCUTS: usize = 3',
+            'launcher::Catalog::discover()', 'self.allowed.contains(&id)',
+            'ids.iter().all(|id| self.allowed.contains(id))',
+            'selected_entries(&full, &self.names)',
+        ):
+            self.assertIn(expected, QUICK)
+        self.assertNotIn('std::process::Command', QUICK)
+        self.assertIn('<QuickLaunch />', BAR)
+        self.assertIn('aria-label="Quick launch"', WIDGET)
+        self.assertIn('min-[740px]:flex', WIDGET)
+        self.assertIn("stopApps();", WIDGET)
+        self.assertIn("onQuickLaunchApps(", WIDGET)
+        self.assertIn("sendQuickCommand('launch:' + id)", SDK)
+        self.assertIn("ids.length > 3", SDK)
 
 
 if __name__ == "__main__":
