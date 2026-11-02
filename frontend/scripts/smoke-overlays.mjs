@@ -146,7 +146,8 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.dataset.smokeSurfaceState=roots[0]?.dataset.tenetSurface || "missing";' +
       'document.documentElement.dataset.smokeSurfaceSettled=roots.length===1 && ' +
         '(matchMedia("(prefers-reduced-motion: reduce)").matches ? roots[0].style.clipPath==="" : ' +
-        '(roots[0].dataset.tenetSurface==="settled" && roots[0].style.clipPath.includes("0% 0% 0% 0%")));' +
+        '(roots[0].dataset.tenetSurface==="settled" && ' +
+         'roots[0].style.clipPath.startsWith("inset(0%") && !roots[0].style.clipPath.includes("100%")));' +
       'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && ' +
         'roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === (matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 4) && ' +
         'Array.from(roots[0].querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
