@@ -174,16 +174,6 @@ impl OverlayPool {
         self.windows.borrow().get(&id).cloned()
     }
 
-    // A promoted Niri window remains an active widget. The user expects
-    // *one* active widget, regardless of whether it is a popup or detached.
-    fn active_window(&self) -> Option<Rc<CalendarOverlay>> {
-        self.windows
-            .borrow()
-            .values()
-            .find(|view| view.requested.get())
-            .cloned()
-    }
-
     fn popup(&self) -> Option<Rc<CalendarOverlay>> {
         self.windows
             .borrow()
@@ -192,41 +182,43 @@ impl OverlayPool {
             .cloned()
     }
 
-    /// One widget across popup and detached Niri windows. Last request wins
-    /// until the current generation has reversed and released its lease.
+    /// Detached Niri windows keep their own leases and remain alive across
+    /// widget changes. Only the single transient popup is ever replaced.
     fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest) {
-        if let Some(current) = self.active_window() {
-            if current.active.get() == Some(kind) {
-                self.pending.borrow_mut().take();
-                if current.detached.get() {
-                    // Repeated Top Bar access to a popped-out window raises
-                    // that *same* Niri window without cloning its WebView.
-                    current.cancel_close();
-                    current.focus_detached();
-                } else if toggle && !current.closing.get() {
-                    current.request_close();
-                } else {
-                    current.cancel_close();
-                    if !toggle {
-                        current.window.present();
-                    }
+        if let Some(current) = self.active(kind).filter(|view| view.requested.get()) {
+            // Reopening an existing kind never creates a duplicate instance.
+            self.pending.borrow_mut().take();
+            if current.detached.get() {
+                // A promoted window keeps its WebView, state and generation.
+                // A Top Bar click raises it without touching another popup.
+                current.cancel_close();
+                current.focus_detached();
+            } else if toggle && !current.closing.get() {
+                current.request_close();
+            } else {
+                current.cancel_close();
+                if !toggle {
+                    current.window.present();
                 }
-                return;
             }
+            return;
+        }
+        if let Some(current) = self.popup() {
+            // Last request wins, but only an actual transient popup is
+            // dismissed. Promoted windows are never part of this queue.
             self.pending.replace(Some(open));
             current.request_close();
         } else {
+            self.pending.borrow_mut().take();
             open(self);
         }
     }
 
     fn run_pending(self: &Rc<Self>) {
-        // Also close previously promoted windows before opening a requested
-        // different widget. This accounts for legacy sessions which may still
-        // have multiple active windows when the new policy is introduced.
-        if let Some(current) = self.active_window() {
-            let waiting = self.pending.borrow().is_some();
-            if waiting {
+        // Wait for the transient popup's reversible close acknowledgement.
+        // Detached Niri windows do not block or get closed by the queue.
+        if let Some(current) = self.popup() {
+            if self.pending.borrow().is_some() {
                 current.request_close();
             }
             return;
@@ -624,8 +616,8 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // The previous widget, popup or promoted Niri window, has finished
-        // its reverse and released its active lease.
+        // Only a previous transient popup needs to finish its reverse.
+        // Promoted Niri windows keep their separate active leases.
         debug_assert!(!self.requested.get());
         self.position_for(kind);
         self.active.set(Some(kind));

@@ -14,17 +14,17 @@ bridge, not a second UI component framework.
 | Svelte 5 / Tailwind | Top Bar, launcher, calendar, system monitor, processes, future user widgets | Raw shell commands, unvalidated Niri/OS privileges |
 | Typed WebKit bridge | Minimal allowlisted native calls; read-only events | Generic command execution or navigation to outside content |
 
-The top bar's 42 px exclusive zone **cannot contain popovers**. The Calendar, System Monitor and Launcher share **one** non-exclusive GTK
-layer-shell window and prewarmed WebKit view. At most one Svelte widget is
-mounted at a time; the rest own no live timers or DOM. The Launcher anchors to the top, leaves both horizontal edges unanchored
+The top bar's 42 px exclusive zone **cannot contain popovers**. Calendar, System Monitor, Launcher and Settings use non-exclusive GTK
+layer-shell windows backed by a bounded WebView pool. Only one transient
+popup is shown at a time. Promoted Niri windows remain mounted and may
+coexist with other widgets, each retaining its own leased WebView and state.
+The Launcher anchors to the top, leaves both horizontal edges unanchored
 for compositor centering, and sets its top margin to 20% of the logical
 output height. All popups use exclusive zone 0. Calendar, System Monitor
 and Settings restore top/right anchors, a 25px top margin and a 12px
-right margin when selected. The same GTK window and WebKit view survive
-these repositionings. The previous widget closes and hides before the
-next widget is positioned and mapped, preventing its old framebuffer
-from visibly travelling across the output. Calendar ↔ System remain
-in-place switches. The
+right margin when selected. A transient popup reverses and hides before
+a different transient popup opens. Detached Niri windows are not closed by
+these switches and keep their state and WebView leases. The
 browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 

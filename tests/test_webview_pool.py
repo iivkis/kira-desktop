@@ -107,19 +107,22 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("view.tick()", HOST)
         self.assertIn("self.system.borrow_mut().take()", HOST)
 
-    def test_switch_releases_detached_windows_and_uses_widget_docks(self):
+    def test_promoted_windows_survive_switches_and_reopen_without_duplicates(self):
         layout = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
-        self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
-        self.assertIn(".find(|view| view.requested.get())", HOST)
-        request = HOST.split("fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", 1)[1].split("fn choose_dock(", 1)[0]
-        self.assertIn("if let Some(current) = self.active_window()", request)
+        request = HOST.split(
+            "fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", 1
+        )[1].split("fn run_pending(", 1)[0]
+        self.assertIn("if let Some(current) = self.active(kind)", request)
         self.assertIn("if current.detached.get()", request)
+        self.assertIn("current.cancel_close()", request)
         self.assertIn("current.focus_detached()", request)
+        self.assertLess(request.index("self.active(kind)"), request.index("self.popup()"))
+        self.assertLess(request.index("current.focus_detached()"), request.index("current.request_close()"))
+        # Another kind closes only the single popup, never the detached host.
+        self.assertIn("if let Some(current) = self.popup()", request)
         self.assertIn("self.pending.replace(Some(open))", request)
-        self.assertIn("current.request_close()", request)
-        self.assertIn("let waiting = self.pending.borrow().is_some()", request)
-        self.assertIn("if waiting {", request)
-        self.assertIn("fn run_pending(self: &Rc<Self>)", request)
+        self.assertNotIn("self.active_window()", request)
+        self.assertNotIn("current.active.get() == Some(kind)", request)
         self.assertIn("pub fn choose_dock(kind: Surface", layout)
         self.assertIn("Surface::Launcher => PopupDock::Center", layout)
         self.assertIn("_ => PopupDock::Right", layout)
@@ -129,13 +132,16 @@ class WebviewPoolContracts(unittest.TestCase):
 
     def test_popup_switch_is_serialized_after_reverse_close_ack(self):
         self.assertIn("pending: RefCell<Option<OpenRequest>>", HOST)
-        self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
+        self.assertNotIn("fn active_window(", HOST)
         self.assertIn("view.requested.get() && !view.detached.get()", HOST)
         self.assertIn("fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", HOST)
         self.assertIn("self.pending.replace(Some(open))", HOST)
         self.assertIn("current.request_close()", HOST)
         self.assertIn("self.pending.borrow_mut().take()", HOST)
         self.assertIn("fn run_pending(self: &Rc<Self>)", HOST)
+        pending = HOST.split("fn run_pending(self: &Rc<Self>)", 1)[1].split("fn choose_dock(", 1)[0]
+        self.assertIn("if let Some(current) = self.popup()", pending)
+        self.assertNotIn("self.active_window()", pending)
         self.assertIn("self.run_pending()", HOST)
         self.assertIn("Some(UiCommand::Closed(generation))", HOST)
         self.assertIn("self.generation.get() == generation", HOST)
