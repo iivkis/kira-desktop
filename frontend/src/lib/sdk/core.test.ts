@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -163,11 +163,14 @@ describe('Core SDK JSON-RPC bridge', () => {
     } as unknown as Window & typeof globalThis;
     notifyCalendarHostReady();
     notifyCalendarMounted(42);
+    notifyCalendarMounted(43, true);
+    notifyOverlayMotion(43, false);
+    notifyOverlayMotion(0, true);
     notifyCalendarMounted(0);
     notifyCalendarMounted(-1);
     notifyCalendarMounted(Number.NaN);
     notifyCalendarMounted(4294967296);
-    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['host-ready', 'mounted:42']);
+    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['host-ready', 'mounted:42:0', 'mounted:43:1', 'motion:43:0']);
   });
 
   it('does not throw without a calendar host, or when its channel fails', () => {

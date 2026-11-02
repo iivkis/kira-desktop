@@ -65,13 +65,17 @@ function dualScene(
     onUpdate: () => { inverted.progress(dualTime(forward.progress()).inverted); },
     onComplete: cleanup,
   });
-  forward.fromTo(targets,
-    { autoAlpha: 0, x: 10 * direction, y: 5, scale: 0.985 },
-    {
-      autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.43, stagger: 0.005,
-      ease: 'power2.out',
-    },
-    0);
+  // Month content arrives as ONE compositor surface, not 35 individual
+  // day cells racing the real WebKit frame budget. For same-month selection,
+  // the persistent highlight owns the forward geometry and this master
+  // only provides the inverse contact chronology.
+  forward.to({}, { duration: 0.44 }, 0);
+  if (targets.length) {
+    forward.fromTo(targets,
+      { x: 8 * direction, y: 2, scale: 0.991, opacity: 0.94 },
+      { x: 0, y: 0, scale: 1, duration: 0.44, ease: 'back.out(1.18)' }, 0);
+    forward.to(targets, { opacity: 1, duration: 0.20, ease: 'power2.out' }, 0);
+  }
   forward.play(0);
   return { forward, inverted, fragments };
 }
@@ -130,9 +134,7 @@ export function tenetCalendarGrid(
       if (reduced(motion)) return;
       const selected = node.querySelector<HTMLElement>('[data-calendar-selected="true"]');
       if (!selected) return;
-      activeTargets = changedMonth
-        ? Array.from(node.querySelectorAll<HTMLElement>('[data-calendar-day]'))
-        : [selected];
+      activeTargets = changedMonth ? [node] : [];
       node.dataset.tenetScenes = String(Number(node.dataset.tenetScenes || '0') + 1);
       node.dataset.tenetContact = next.selected;
       scene = dualScene(node, selected, activeTargets, direction, stop);

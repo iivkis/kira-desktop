@@ -53,6 +53,12 @@ function scriptFor(steps, observationMs = 1150) {
             : kind === 'filter'
               ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : kind === 'launcher-down'
+                ? 'window.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowDown", bubbles:true}));'
+              : kind === 'system-processes'
+                ? 'document.querySelector("nav [data-kira-tab=processes]")?.click();'
+              : kind === 'system-overview'
+                ? 'document.querySelector("nav [data-kira-tab=overview]")?.click();'
               : kind === 'calendar-next'
                 ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent;' +
                   'document.querySelector("button[aria-label=\\\"Next month\\\"]")?.click();'
@@ -78,7 +84,7 @@ function scriptFor(steps, observationMs = 1150) {
                   'const staged=first ? Number(getComputedStyle(first).opacity) : 0;' +
                   'window.__kiraTenetStagedOpacity=staged;' +
                   'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
-                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.8 && staged<0.9;' +
+                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.92 && staged<0.97;' +
                 '},90);' +
                 'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:overlay:visible", {detail:{generation:' +
                   generation + '}})),140);') +
@@ -92,12 +98,16 @@ function scriptFor(steps, observationMs = 1150) {
     // The first WebKit frame can be delayed by ECharts SVG painting.
     // Verify *actual* opacity progression mid-flight, after the renderer
     // has had time to composite at least one frame.
-    'setTimeout(() => {' +
+    // Sample multiple compositor frames. WebKit/Chromium can delay a
+    // single frame under the launcher catalog and ECharts SVG load.
+    'for(const at of [210,250,290,330])setTimeout(() => {' +
       'const content=document.querySelector("main[data-kira-ui-root] [data-kira-enter]");' +
       'const transform=content ? getComputedStyle(content).transform : "none";' +
       'const opacity=content ? Number(getComputedStyle(content).opacity) : 0;' +
-      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && opacity>window.__kiraTenetStagedOpacity && opacity<1;' +
-      '},545);' +
+      'const moving=!!content && transform!=="none" && opacity>=window.__kiraTenetStagedOpacity && opacity<1;' +
+      'document.documentElement.dataset.smokeTenetContentMoving=' +
+      '(document.documentElement.dataset.smokeTenetContentMoving==="true" || moving);' +
+      '},at);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
@@ -109,6 +119,19 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
+      'document.documentElement.setAttribute("data-smoke-option-count", list?.querySelectorAll("[role=option]").length ?? 0);' +
+      'const shared=roots[0]?.querySelector("[aria-label=\\\"Calendar dates\\\"] [data-kira-flow-indicator]") ||' +
+        'roots[0]?.querySelector("[role=listbox] [data-kira-flow-indicator]") ||' +
+        'roots[0]?.querySelector("nav [data-kira-flow-indicator]");' +
+      'const area=shared?.parentElement;' +
+      'const chosen=area?.querySelector("[data-calendar-selected=true], [role=option][aria-selected=true], [aria-current=page]");' +
+      'const sr=shared?.getBoundingClientRect(), cr=chosen?.getBoundingClientRect();' +
+      'document.documentElement.dataset.smokeFlowAligned=!!sr && !!cr &&' +
+        'Math.abs(sr.left-cr.left)<2 && Math.abs(sr.width-cr.width)<2 &&' +
+        '(area?.tagName==="NAV"?Math.abs(sr.bottom-cr.bottom):Math.abs(sr.top-cr.top))<2;' +
+      'document.documentElement.dataset.smokeFlowGeometry=sr&&cr?' +
+        '[sr.left,sr.top,sr.width,sr.height,cr.left,cr.top,cr.width,cr.height].map(n=>Math.round(n)).join(","):"missing";' +
+      'document.documentElement.setAttribute("data-smoke-query-value", document.querySelector("input[aria-label=\\\"Search applications\\\"]")?.value ?? "absent");' +
       'document.documentElement.setAttribute("data-smoke-scrollbar-hidden", !!list && getComputedStyle(list).scrollbarWidth === "none");' +
       'if (list && list.scrollHeight > list.clientHeight) list.scrollTop = 80;' +
       'document.documentElement.setAttribute("data-smoke-scrolled", !!list && list.scrollTop > 0);' +
@@ -188,14 +211,19 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
   }
   if (heightMode === 'calendar' &&
-      (!output.includes('data-smoke-calendar-navigated="true"') ||
+      (!output.includes('data-smoke-flow-aligned="true"') ||
+        !output.includes('data-smoke-calendar-navigated="true"') ||
        !output.includes('data-smoke-calendar-picked="true"') ||
        !output.includes('data-smoke-calendar-odometer="true"') ||
        !output.includes('data-smoke-tenet-grid-events="2"') ||
        !output.includes('data-smoke-tenet-grid-contact="true"') ||
        !output.includes('data-smoke-tenet-no-fragments="true"'))) {
-    const flags = output.match(/data-smoke-(?:calendar|tenet)-[a-z-]+="[^"]*"/g) ?? [];
+    const flags = output.match(/data-smoke-(?:calendar|tenet|flow)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
+  }
+  if (heightMode === 'flow' && !output.includes('data-smoke-flow-aligned="true"')) {
+    throw new Error(name + ': shared highlight missed selected geometry (' +
+      (output.match(/data-smoke-flow-geometry="([^"]*)"/)?.[1] ?? 'missing') + ')');
   }
   if (heightMode === 'clock' &&
       (!output.includes('data-smoke-clock-chaos-flew="true"') ||
@@ -228,7 +256,10 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       throw new Error(name + ': long launcher list should fill the cap and scroll internally');
     }
   } else if (heightMode === 'shrink' && size >= 420) {
-    throw new Error(name + ': filtered launcher should shrink below the cap');
+    const n = output.match(/data-smoke-option-count="([^"]*)"/)?.[1];
+    const q = output.match(/data-smoke-query-value="([^"]*)"/)?.[1];
+    throw new Error(name + ': filtered launcher should shrink below the cap (height=' + size +
+      ', rows=' + n + ', query=' + q + ', native=' + nativeMessage?.[2] + ', resizes=' + resizeCount + ')');
   }
   if (heightMode === 'tenet' &&
       (!output.includes('data-smoke-tenet-previsible="true"') ||
@@ -278,12 +309,17 @@ async function smokeTopBar() {
     'const list=root?.querySelector("ol[aria-label=\\\"Niri workspaces\\\"]");' +
     'const focused=list?.querySelector("[data-focused=true]");' +
     'const listRect=list?.getBoundingClientRect();const focusRect=focused?.getBoundingClientRect();' +
+    'const shared=list?.querySelector("[data-kira-flow-indicator]");' +
+    'const selectedRect=shared?.getBoundingClientRect();' +
+    'const flowAligned=!!selectedRect && !!focusRect &&' +
+      'Math.abs(selectedRect.left-focusRect.left)<2 &&' +
+      'Math.abs(selectedRect.width-focusRect.width)<2;' +
     'const urgency=root?.querySelectorAll("[aria-label*=\\\"urgent workspace hidden\\\"]");' +
     'const visibleUrgent=root?.querySelector("[aria-label*=\\\", urgent\\\"]");' +
     'document.documentElement.dataset.smokeTopbar=!!root && root.getBoundingClientRect().height===42 &&' +
     '!!list && list.scrollWidth>list.clientWidth && list.scrollLeft>0 && !!focused &&' +
     'focused.dataset.workspaceId==="9" && focusRect.left>=listRect.left-2 &&' +
-    'focusRect.right<=listRect.right+2 && urgency.length===2 && !!visibleUrgent;' +
+    'focusRect.right<=listRect.right+2 && flowAligned && urgency.length===2 && !!visibleUrgent;' +
     '},600);});</script>';
   const page = html.replace('</head>', script + '</head>');
   const filename = join(dir, 'topbar.html');
@@ -323,6 +359,17 @@ try {
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
   await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
   await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
+  await smoke('launcher-selection-flow', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+    { delay: 220, kind: 'launcher-down' },
+    { delay: 310, kind: 'launcher-down' },
+  ], 'Kira Launcher', 'flow');
+  await smoke('system-tab-flow', [
+    { delay: 25, kind: 'system', generation: 1 },
+    { delay: 220, kind: 'system-processes' },
+    { delay: 320, kind: 'system-overview' },
+  ], 'Kira System Monitor', 'flow');
   await smoke('launcher-reduced-motion', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'reduced');
   await smoke('launcher-square-with-themed-icons', [
     { delay: 25, kind: 'launcher', generation: 1 },

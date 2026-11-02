@@ -290,9 +290,15 @@ export function notifyOverlayHeight(generation: number, height: number): boolean
 }
 
 /** A specific popup generation has finished its lazy Svelte mount. */
-export function notifyCalendarMounted(generation: number): void {
+export function notifyCalendarMounted(generation: number, reduced = false): void {
   if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;
-  sendCalendarUi('mounted:' + generation);
+  sendCalendarUi('mounted:' + generation + ':' + (reduced ? '1' : '0'));
+}
+
+/** Keep native fade and WebKit GSAP synchronized if accessibility changes. */
+export function notifyOverlayMotion(generation: number, reduced: boolean): void {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;
+  sendCalendarUi('motion:' + generation + ':' + (reduced ? '1' : '0'));
 }
 
 export function closeCalendarOverlay(): void {

@@ -2,6 +2,7 @@
   import { tick } from 'svelte';
   import type { WorkspaceState } from '../sdk/core';
   import { visibleWorkspaceWindow } from '../workspace-window';
+  import { tenetFlowIndicator, tenetScrollIntoView, tenetScrollScope } from '../motion';
 
   let { state, showNames, limit, onFocus, pending }: {
     state: WorkspaceState | null;
@@ -14,18 +15,21 @@
   const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
   const focusedId = $derived(windowed.items.find(item => item.is_focused)?.id ?? null);
   let list: HTMLOListElement;
+  let previousFocus: string | null = null;
 
   // The model guarantees inclusion; WebKit's fixed-width horizontal
   // viewport still needs explicit pixel visibility after Niri changes focus.
   $effect(() => {
     const id = focusedId;
     if (id === null) return;
+    const animate = previousFocus !== null && previousFocus !== id;
+    previousFocus = id;
     let cancelled = false;
     void tick().then(() => {
       if (cancelled || !list) return;
       const match = Array.from(list.querySelectorAll<HTMLElement>('[data-workspace-id]'))
         .find(item => item.dataset.workspaceId === id);
-      match?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+      if (match) tenetScrollIntoView(list, match, animate);
     });
     return () => { cancelled = true; };
   });
@@ -53,18 +57,23 @@
         −{windowed.before}
       </span>
     {/if}
-    <ol bind:this={list} class="flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    <ol bind:this={list} use:tenetFlowIndicator={{ active: focusedId ?? '', axis: 'both' }}
+      use:tenetScrollScope
+      class="relative flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Niri workspaces">
+      <li data-kira-flow-indicator aria-hidden="true"
+        class="pointer-events-none absolute left-0 top-0 z-0 list-none rounded-[2px] bg-kira-accent"></li>
       {#each windowed.items as workspace (workspace.id)}
         <li
-          class={['relative h-[29px] min-w-[31px] max-w-[108px] shrink-0 rounded-[2px] text-[11px] font-extrabold tabular-nums transition-colors duration-150 motion-reduce:transition-none',
+          class={['relative z-10 h-[29px] min-w-[31px] max-w-[108px] shrink-0 rounded-[2px] text-[11px] font-extrabold tabular-nums transition-colors duration-150 motion-reduce:transition-none',
             workspace.is_focused
-              ? 'bg-kira-accent text-kira-on-accent'
+              ? 'text-kira-on-accent'
               : workspace.is_active
                 ? 'bg-kira-surface-soft text-kira-text'
                 : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'].join(' ')}
           data-focused={workspace.is_focused}
           data-workspace-id={workspace.id}
+          data-kira-tab={workspace.id}
           data-urgent={workspace.is_urgent}
         >
           <button

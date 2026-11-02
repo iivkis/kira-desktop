@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
-  import { pulseReading, tenetWidgetReveal } from '../motion';
+  import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetReflowScope, tenetWidgetReveal } from '../motion';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -26,6 +26,7 @@
   let lastSampleAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
+  let processList: HTMLDivElement;
   const metrics = $derived(status?.metrics ?? null);
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
   const health = $derived(status === null ? 'AWAITING TELEMETRY' :
@@ -65,8 +66,18 @@
   }
 
   function changeSort(field: SortField) {
-    sort = nextSort(sort, field);
-    visibleCount = 36;
+    tenetReflow(processList, () => {
+      sort = nextSort(sort, field);
+      visibleCount = 36;
+    });
+  }
+
+  function filterProcesses(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
+    tenetReflow(processList, () => {
+      query = input.value;
+      visibleCount = 36;
+    });
   }
 
   function keydown(event: KeyboardEvent) {
@@ -108,21 +119,22 @@
     </div>
   </header>
 
-  <nav data-kira-enter class="grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
-    <button type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
-      class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
-        (active === 'overview' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
+  <nav data-kira-enter use:tenetFlowIndicator={{ active }} class="relative grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
+    <span data-kira-flow-indicator aria-hidden="true" class="pointer-events-none absolute bottom-0 left-0 z-10 h-0.5 bg-kira-accent"></span>
+    <button data-kira-tab="overview" type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
+      class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+        (active === 'overview' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
       01 / OVERVIEW
     </button>
-    <button type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
-      class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
-        (active === 'processes' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
+    <button data-kira-tab="processes" type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
+      class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+        (active === 'processes' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
       02 / PROCESSES
     </button>
   </nav>
 
   {#if active === 'overview'}
-    <div class="flex min-h-0 flex-1 flex-col">
+    <div use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col">
       <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
         <div class="mb-4 flex items-center justify-between gap-2 border-b border-kira-muted/15 pb-3">
           <div class="flex items-center gap-2">
@@ -221,7 +233,7 @@
         </div>
       </section>
 
-      <details data-kira-enter class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
+      <details data-kira-enter use:tenetDisclosure class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
         aria-label="Additional host diagnostics">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
           text-[10px] font-extrabold tracking-[0.12em] text-kira-accent
@@ -230,7 +242,7 @@
           <span class="text-[9px] font-semibold text-kira-muted group-open:hidden">EXPAND +</span>
           <span class="hidden text-[9px] font-semibold text-kira-muted group-open:inline">COLLAPSE −</span>
         </summary>
-        <div class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
+        <div data-kira-disclosure-content class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
           <div class="min-w-0">
             <div class="text-[9px] font-bold tracking-wider text-kira-muted">UPTIME</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
@@ -264,20 +276,24 @@
       </footer>
     </div>
   {:else}
-    <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
+    <section use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
       aria-label="Processes">
       <div data-kira-enter class="mb-3 flex items-center justify-between gap-2">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
         <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>
       </div>
       <input data-kira-enter type="search" aria-label="Filter by process name or PID"
-        placeholder="Filter by process name or PID" bind:value={query}
-        oninput={() => { visibleCount = 36; }}
+        placeholder="Filter by process name or PID" value={query}
+        oninput={filterProcesses}
         class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none
           placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
-      <div data-kira-enter class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+      <div data-kira-enter use:tenetFlowIndicator={{ active: sort.field }}
+        class="relative grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+        <span data-kira-flow-indicator aria-hidden="true"
+          class="pointer-events-none absolute bottom-0 left-0 z-0 h-0.5 bg-kira-accent"></span>
         {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
-          <button type="button" onclick={() => changeSort(column.field as SortField)}
+          <button data-kira-tab={column.field} type="button" onclick={() => changeSort(column.field as SortField)}
+            aria-pressed={sort.field === column.field}
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
@@ -286,9 +302,9 @@
           </button>
         {/each}
       </div>
-      <div data-kira-enter class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
+      <div bind:this={processList} data-kira-enter use:tenetReflowScope class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
         {#each visible as process (process.pid)}
-          <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
+          <div data-kira-reflow class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
             title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
               ' / RSS ' + processMemoryLabel(process.rss_kib) + ' / PSS ' + processMemoryLabel(process.pss_kib)}>
             <span class="truncate font-semibold">{process.name}</span>

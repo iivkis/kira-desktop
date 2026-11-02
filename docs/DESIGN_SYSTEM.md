@@ -190,6 +190,17 @@ System Monitor и будущих поверхностей подчиняются
 **GSAP** исполняет JS-motion; **Apache ECharts** остаётся для настоящих
 данных и графиков. Обычные функциональные микроанимации могут оставаться
 FORWARD и должны соблюдать физическую непрерывность, доступность и cleanup.
+**Перетекание и упругость обязательны:** активный индикатор, выделение и всякая
+двигающаяся сущность остаются одним физически узнаваемым объектом, который
+плавно меняет геометрию, а не исчезает в одном месте и возникает в другом.
+При новом взаимодействии tween перенаправляется из текущего положения;
+фокус, метрики и ARIA обновляются без задержки. Это касается не только
+вкладок, но и выбранной даты Calendar, строки Launcher, фокуса Niri
+в Top Bar, сортируемых строк процессов и раскрытия деталей.
+Общие физические маркеры используют GSAP; перестановка небольших keyed
+списков использует GSAP Flip. Измеренные графики ECharts сохраняют
+монотонную анимацию без пружинящего искажения показаний. Упругость сдержанная,
+без затяжных въездов и скачков opacity.
 Рекомендуемый баланс 70–80% обычных движений и немного выразительных
 инверсий — *ориентир*, а не обязательная доля в каждом виджете.
 Проверять reduced motion, прерывания и точку контакта; не вводить
@@ -327,8 +338,9 @@ overlays; Top Bar still reserves 42px.
 Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
 controls, and **one deliberate surface contrast per functional region**.
 An orange line can anchor a section, but offset shadows and nested borders
-are not a shortcut to depth. Use 120–180 ms transitions without positional
-jumps. Keep interaction functional without motion. Niri's reserved 42 px
+are not a shortcut to depth. Use short 120–180 ms micro-transitions without positional jumps;
+shared selection markers and widget entrances use the measured, interruptible
+TENET motion profiles (about 300–440 ms) with restrained spring settling. Keep interaction functional without motion. Niri's reserved 42 px
 height is unchanged, including the bottom accent rule.
 
 ## Kira Default · canonical palette

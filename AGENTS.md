@@ -9,7 +9,12 @@ This includes GSAP effects, ECharts transitions, GTK/native visual motion,
 hover/focus reactions, animated data readouts, and future widgets.
 
 The five required laws are **Reverse Causality, Dual Time Flow, Physical
-Continuity, Temporal Memory, and Causal Consistency**. For each animation:
+Continuity, Temporal Memory, and Causal Consistency**. In addition, **flow and
+elastic continuity are mandatory for every moving selection, highlight, widget
+entrance and component transition**: a shared visual element must travel from
+its current geometry to the next, never blink between separate instances.
+Keep GSAP transitions interruptible and spring settling restrained.
+For each animation:
 
 - Choose FORWARD (+1), INVERTED (-1), or a synchronized DUAL scene **by
   event sequence**, never by merely reversing the CSS direction or axis.

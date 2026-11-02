@@ -84,7 +84,7 @@ class LauncherDesignTests(unittest.TestCase):
 
     def test_scrollbar_does_not_cover_selected_row(self):
         style = (ROOT / "frontend/src/style.css").read_text()
-        self.assertIn('class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
+        self.assertIn('class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
         self.assertIn(".kira-launcher-scroll {", style)
         self.assertIn("scrollbar-width: none;", style)
         self.assertIn(".kira-launcher-scroll::-webkit-scrollbar", style)

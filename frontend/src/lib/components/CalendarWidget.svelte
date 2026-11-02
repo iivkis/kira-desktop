@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
+  import { tenetFlowIndicator } from '../motion';
   import {
     calendarDayState, clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -170,7 +171,10 @@
     </div>
 
     <div class="relative grid grid-cols-8 gap-y-0.5 text-center" role="group" aria-label="Calendar dates"
-      use:tenetCalendarGrid={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
+      use:tenetCalendarGrid={{ month: visible.year * 12 + visible.month, selected: selectedIso }}
+      use:tenetFlowIndicator={{ active: selectedIso, axis: 'both' }}>
+      <span data-kira-flow-indicator aria-hidden="true"
+        class="pointer-events-none absolute left-0 top-0 z-0 bg-kira-accent"></span>
       <span class="flex min-h-7 items-center justify-center border-b border-r border-kira-muted/15 bg-kira-bg/20
         text-[9px] font-bold tracking-wide text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
@@ -187,9 +191,9 @@
           {#if date}
             {@const marker = calendarDayState(date, selected, today, visible)}
             <button type="button"
-              class={'relative flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+              class={'relative z-10 flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
                 (marker.outside ? 'text-kira-muted/60 ' : 'text-kira-text ') +
-                (marker.selected ? 'bg-kira-accent font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
+                (marker.selected ? 'font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
                   'hover:bg-kira-bg/35 hover:text-kira-accent ') +
                 (marker.today && !marker.selected ? 'underline decoration-2 decoration-kira-accent underline-offset-4' : '')}
               aria-label={localDateLabel(date, locale)}
@@ -197,6 +201,7 @@
               aria-current={marker.today ? 'date' : undefined}
               tabindex={marker.selected ? 0 : -1}
               data-calendar-day
+              data-kira-tab={isoDate(date)}
               data-calendar-selected={marker.selected}
               onclick={() => choose(date)}
             >{date.day}</button>

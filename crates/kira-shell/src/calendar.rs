@@ -9,6 +9,14 @@ use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
 
 const TITLE: &str = "Kira Overlay";
+// Native fade stays intentionally shorter than the GSAP content landing.
+const OVERLAY_FADE_MS: u64 = 160;
+
+fn native_fade_progress(elapsed: Duration) -> f64 {
+    let t = (elapsed.as_secs_f64() / Duration::from_millis(OVERLAY_FADE_MS).as_secs_f64())
+        .clamp(0.0, 1.0);
+    1.0 - (1.0 - t).powi(3)
+}
 const CALENDAR_MARKER: &str = "<html lang=\"en\">";
 const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\">";
 
@@ -48,6 +56,7 @@ struct CalendarOverlay {
     requested: Cell<bool>,
     reposition_pending: Cell<bool>,
     revealed: Cell<bool>,
+    native_reduced_motion: Cell<bool>,
     paint_pending: Cell<bool>,
     generation: Cell<u32>,
     was_active: Cell<bool>,
@@ -159,6 +168,7 @@ impl CalendarOverlay {
         });
         self.requested.set(true);
         self.revealed.set(false);
+        self.native_reduced_motion.set(false);
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.paint_pending.set(false);
@@ -297,16 +307,46 @@ impl CalendarOverlay {
         });
     }
 
-    fn reveal(&self) {
+    fn reveal(self: &Rc<Self>) {
         if self.revealed.replace(true) {
             return;
         }
         self.paint_pending.set(false);
-        self.window.set_opacity(1.0);
-        // The WebKit widget was mounted while GTK opacity was zero.
-        // Starting GSAP at mount plays the entrance behind an invisible
-        // Wayland surface. Tell the current generation that the *native*
-        // window is now visible; the widget action starts only then.
+        if self.native_reduced_motion.get() {
+            self.window.set_opacity(1.0);
+        } else {
+            // Animate only the already-sized, already-painted native surface.
+            // Never animate geometry: Niri must not see a 1px or drifting popup.
+            let generation = self.generation.get();
+            let started = Instant::now();
+            let weak = Rc::downgrade(self);
+            gtk::glib::timeout_add_local(Duration::from_millis(16), move || {
+                let Some(state) = weak.upgrade() else {
+                    return gtk::glib::ControlFlow::Break;
+                };
+                // A previous opening cannot fade a newer generation.
+                if !state.requested.get()
+                    || !state.revealed.get()
+                    || state.generation.get() != generation
+                {
+                    return gtk::glib::ControlFlow::Break;
+                }
+                if state.native_reduced_motion.get() {
+                    state.window.set_opacity(1.0);
+                    return gtk::glib::ControlFlow::Break;
+                }
+                let elapsed = started.elapsed();
+                state.window.set_opacity(native_fade_progress(elapsed));
+                if elapsed >= Duration::from_millis(OVERLAY_FADE_MS) {
+                    state.window.set_opacity(1.0);
+                    gtk::glib::ControlFlow::Break
+                } else {
+                    gtk::glib::ControlFlow::Continue
+                }
+            });
+        }
+        // Trigger the matching GSAP scene at the START of native compositing.
+        // Both tracks now share one visible opening instead of two jumps.
         let generation = self.generation.get();
         let script = format!(
             "window.dispatchEvent(new CustomEvent('kira:overlay:visible', {{ detail: {{ generation: {generation} }} }}));"
@@ -337,9 +377,10 @@ impl CalendarOverlay {
                 self.host_ready.set(true);
                 self.request_mount();
             }
-            Some(UiCommand::Mounted(generation))
+            Some(UiCommand::Mounted(generation, reduced))
                 if self.requested.get() && self.generation.get() == generation =>
             {
+                self.native_reduced_motion.set(reduced);
                 eprintln!("kira-shell: Svelte overlay DOM verified");
                 if self.active.get() == Some(Surface::System) {
                     self.send_metrics();
@@ -348,6 +389,14 @@ impl CalendarOverlay {
                 if self.content_height.get() > 0 {
                     self.request_paint();
                     self.schedule_reveal_fallback(generation);
+                }
+            }
+            Some(UiCommand::MotionPreference(generation, reduced))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
+                self.native_reduced_motion.set(reduced);
+                if reduced && self.revealed.get() {
+                    self.window.set_opacity(1.0);
                 }
             }
             Some(UiCommand::ContentHeight(generation, height))
@@ -615,7 +664,8 @@ impl CalendarOverlay {
 enum UiCommand<'a> {
     Close,
     HostReady,
-    Mounted(u32),
+    Mounted(u32, bool),
+    MotionPreference(u32, bool),
     Painted(u32),
     ContentHeight(u32, i32),
     CopyDate(&'a str),
@@ -639,6 +689,23 @@ fn valid_date(year: i32, month: u8, day: u8) -> bool {
         _ => 31,
     };
     (1..=last).contains(&day)
+}
+
+fn parse_motion_message(value: &str) -> Option<(u32, bool)> {
+    let (generation, reduced) = value.split_once(':')?;
+    if generation.is_empty()
+        || generation.len() > 10
+        || !generation.bytes().all(|b| b.is_ascii_digit())
+    {
+        return None;
+    }
+    let generation = generation.parse::<u32>().ok().filter(|v| *v > 0)?;
+    let reduced = match reduced {
+        "0" => false,
+        "1" => true,
+        _ => return None,
+    };
+    Some((generation, reduced))
 }
 
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
@@ -703,11 +770,15 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
             id.parse::<usize>().ok().filter(|v| *v < 1024)?,
         ));
     }
+    // A bounded boolean accompanies each mount; native motion must honor
+    // the exact WebKit prefers-reduced-motion setting for this generation.
     if let Some(value) = message.strip_prefix("mounted:") {
-        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
-            return None;
-        }
-        return value.parse().ok().map(UiCommand::Mounted);
+        let (generation, reduced) = parse_motion_message(value)?;
+        return Some(UiCommand::Mounted(generation, reduced));
+    }
+    if let Some(value) = message.strip_prefix("motion:") {
+        let (generation, reduced) = parse_motion_message(value)?;
+        return Some(UiCommand::MotionPreference(generation, reduced));
     }
     if let Some(value) = message.strip_prefix("size:") {
         let (generation, height) = value.split_once(':')?;
@@ -799,6 +870,7 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         requested: Cell::new(false),
         reposition_pending: Cell::new(false),
         revealed: Cell::new(false),
+        native_reduced_motion: Cell::new(false),
         paint_pending: Cell::new(false),
         generation: Cell::new(0),
         was_active: Cell::new(false),
@@ -1003,6 +1075,13 @@ mod tests {
             "mounted:",
             "mounted:abc",
             "mounted:4294967296",
+            "mounted:2",
+            "mounted:2:2",
+            "mounted:2:1:0",
+            "mounted:0:1",
+            "motion:0:1",
+            "motion:2:false",
+            "motion:2:1;exit",
             "size:",
             "size:0:100",
             "size:1:0",
@@ -1041,7 +1120,22 @@ mod tests {
             calendar_command("launch:12:42"),
             Some(UiCommand::LaunchApp(12, 42))
         );
-        assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
+        assert_eq!(
+            calendar_command("mounted:42:0"),
+            Some(UiCommand::Mounted(42, false))
+        );
+        assert_eq!(
+            calendar_command("mounted:42:1"),
+            Some(UiCommand::Mounted(42, true))
+        );
+        assert_eq!(
+            calendar_command("motion:42:1"),
+            Some(UiCommand::MotionPreference(42, true))
+        );
+        assert_eq!(
+            calendar_command("motion:42:0"),
+            Some(UiCommand::MotionPreference(42, false))
+        );
         assert_eq!(
             calendar_command("size:42:512"),
             Some(UiCommand::ContentHeight(42, 512))
@@ -1051,6 +1145,15 @@ mod tests {
             calendar_command("copy:2024-02-29"),
             Some(UiCommand::CopyDate("2024-02-29"))
         );
+    }
+
+    #[test]
+    fn native_fade_is_monotone_and_settles_exactly() {
+        assert_eq!(native_fade_progress(Duration::ZERO), 0.0);
+        let half = native_fade_progress(Duration::from_millis(80));
+        assert!(half > 0.5 && half < 1.0);
+        assert_eq!(native_fade_progress(Duration::from_millis(160)), 1.0);
+        assert_eq!(native_fade_progress(Duration::from_millis(500)), 1.0);
     }
 
     #[test]

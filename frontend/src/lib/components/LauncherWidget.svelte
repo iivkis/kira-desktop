@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { tenetWidgetReveal } from '../motion';
+  import { tenetFlowIndicator, tenetReflow, tenetReflowScope, tenetScrollIntoView, tenetScrollScope, tenetWidgetReveal } from '../motion';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
@@ -66,9 +66,11 @@
   });
 
   function clearSearch() {
-    query = '';
-    selected = 0;
-    error = '';
+    tenetReflow(results, () => {
+      query = '';
+      selected = 0;
+      error = '';
+    });
     void tick().then(() => search?.focus());
   }
 
@@ -82,6 +84,20 @@
     }
   }
 
+  function filter(event: Event) {
+    const next = (event.currentTarget as HTMLInputElement).value;
+    const update = () => {
+      query = next;
+      selected = 0;
+      error = '';
+    };
+    // A broad catalog search is a new set, not a physical relocation of
+    // eighty items: keep typing responsive and the native popup resizable.
+    // Small filtered lists retain real FLIP continuity.
+    if (displayed.length > 20) update();
+    else tenetReflow(results, update);
+  }
+
   function keydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -93,7 +109,7 @@
       selected = nextLauncherSelection(selected, displayed.length, event.key === 'ArrowDown' ? 1 : -1);
       void tick().then(() => {
         const item = results?.querySelector<HTMLElement>('[aria-selected="true"]');
-        item?.scrollIntoView({ block: 'nearest' });
+        if (item && results) tenetScrollIntoView(results, item, true, 'y');
       });
       return;
     }
@@ -134,8 +150,8 @@
         <circle cx="10.5" cy="10.5" r="6.5" />
         <path d="m16 16 5 5" />
       </svg>
-      <input id="kira-launcher-query" type="search" bind:this={search} bind:value={query}
-        oninput={() => { selected = 0; error = ''; }}
+      <input id="kira-launcher-query" type="search" bind:this={search} value={query}
+        oninput={filter}
         autocomplete="off" spellcheck="false"
         role="combobox" aria-autocomplete="list" aria-expanded={displayed.length > 0}
         aria-activedescendant={displayed[activeIndex] ? 'kira-launcher-option-' + displayed[activeIndex].id : undefined}
@@ -157,16 +173,21 @@
       </span>
     </div>
     <div id="kira-launcher-results" bind:this={results}
-      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1"
+      use:tenetFlowIndicator={{ active: displayed[activeIndex] ? String(displayed[activeIndex].id) : '', axis: 'both' }}
+      use:tenetReflowScope use:tenetScrollScope
+      class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"
       role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
+      <span data-kira-flow-indicator aria-hidden="true"
+        class="pointer-events-none absolute left-0 top-0 z-0 border-l-[3px] border-kira-accent bg-kira-bg/80"></span>
       {#each displayed as app, index (app.id)}
         <button type="button" id={'kira-launcher-option-' + app.id}
+          data-kira-tab={String(app.id)} data-kira-reflow
           role="option" aria-selected={index === activeIndex} tabindex={-1}
           onclick={() => choose(index)}
           title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'group my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
-            (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
-          <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
+          class={'group relative z-10 my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
+            (index === activeIndex ? '' : 'hover:bg-kira-bg/30')}>
+          <span class="h-10 w-[3px] shrink-0" aria-hidden="true"></span>
           <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
               (icons[app.id] ? 'bg-transparent' : 'bg-kira-surface-soft')}
             aria-hidden="true" data-kira-icon-slot>

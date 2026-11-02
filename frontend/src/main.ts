@@ -3,7 +3,7 @@ import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
+import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
@@ -75,12 +75,16 @@ whenDocumentReady(document, () => {
             // could become visible before the first actual resize.
             stopSizing = observeOverlaySize(root, generation);
             report('Overlay Svelte ' + kind + ' mounted; generation=' + generation);
-            notifyCalendarMounted(generation);
+            notifyCalendarMounted(generation, window.matchMedia('(prefers-reduced-motion: reduce)').matches);
           },
         };
       },
       (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    motionPreference.addEventListener('change', () => {
+      if (visibleGeneration !== null) notifyOverlayMotion(visibleGeneration, motionPreference.matches);
+    });
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number; maxHeight: number }>).detail;
       if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||

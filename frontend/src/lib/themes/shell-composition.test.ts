@@ -47,7 +47,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
   });
 
   it('retains focus scrolling and hidden urgency in workspace navigation', () => {
-    expect(workspaces).toContain('scrollIntoView(');
+    expect(workspaces).toContain('tenetScrollIntoView(list, match, animate)');
+    expect(workspaces).toContain("use:tenetFlowIndicator={{ active: focusedId ?? '', axis: 'both' }}");
+    expect(workspaces).toContain('data-kira-flow-indicator');
     expect(workspaces).toContain('data-workspace-id={workspace.id}');
     expect(workspaces).toContain('windowed.beforeUrgent');
     expect(workspaces).toContain('windowed.afterUrgent');
@@ -74,7 +76,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('data-urgent={workspace.is_urgent}');
     expect(workspaces).toContain('disabled={pending}');
     expect(workspaces).toContain('focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2');
-    expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
+    expect(workspaces).toContain("? 'text-kira-on-accent'");
+    expect(workspaces).toContain('data-kira-tab={workspace.id}');
+    expect(workspaces).toContain('rounded-[2px] bg-kira-accent');
     expect(workspaces).toContain('visibleWorkspaceWindow(');
     expect(workspaces).toContain('data-workspace-strip');
     expect(workspaces).toContain('windowed.before > 0');

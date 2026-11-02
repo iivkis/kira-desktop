@@ -5,6 +5,10 @@
  * replay saved paths to the same physical editorial contact point.
  */
 import { gsap } from 'gsap';
+import { Flip } from 'gsap/Flip';
+import { tick } from 'svelte';
+
+gsap.registerPlugin(Flip);
 import { tenetFragmentsFor } from './calendar-tenet-model';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
@@ -85,13 +89,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     master = gsap.timeline({ paused: true, onComplete: settle });
     master.to(content, {
       y: 0,
-      opacity: 1,
-      duration: 0.72,
-      stagger: 0.045,
-      ease: 'sine.inOut',
+      scale: 1,
+      duration: 0.44,
+      stagger: 0.035,
+      ease: 'back.out(1.22)',
       force3D: true,
       overwrite: 'auto',
     }, 0);
+    // Fade is kept separate from the elastic transform: no opacity overshoot.
+    master.to(content, { opacity: 1, duration: 0.22, stagger: 0.035, ease: 'power2.out' }, 0);
     master.fromTo(traces,
       {
         x: (i: number) => flights[i].x,
@@ -101,8 +107,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       },
       {
         x: 0, y: 0, rotation: 0, opacity: 0,
-        duration: 0.72,
-        stagger: { each: 0.015, from: 'end' },
+        duration: 0.44,
+        stagger: { each: 0.012, from: 'end' },
         ease: 'power3.in',
         force3D: true,
         immediateRender: true,
@@ -137,13 +143,14 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   // Prepare the visible geometry while the native window is still
   // transparent. The GTK visible handshake starts the tween from these
   // exact values, eliminating the old full-opacity -> 0.18 snap.
-  // No layout properties change, and the compositor can cache 3 layers.
+  // Only two or three small sections move. The live chart layers remain still.
   if (preference.matches || !content.length) {
     node.dataset.tenetReveal = 'settled';
   } else {
     gsap.set(content, {
-      y: 14,
-      opacity: 0.82,
+      y: 9,
+      scale: 0.988,
+      opacity: 0.94,
       force3D: true,
       willChange: 'transform, opacity',
     });
@@ -163,6 +170,320 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     destroy() {
       window.removeEventListener('kira:overlay:visible', onVisible);
       window.removeEventListener('kira:overlay:hide', onHide);
+      preference.removeEventListener('change', onPreference);
+      settle();
+    },
+  };
+}
+
+/** A single marker owns the selected state across tabs, calendar days,
+ * launcher rows and workspace chips. It always retargets from the actual
+ * in-flight position instead of cross-fading between separate highlights.
+ */
+export interface TenetFlowTarget {
+  active: string;
+  axis?: 'x' | 'both';
+}
+
+export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const indicator = node.querySelector<HTMLElement>('[data-kira-flow-indicator]');
+  let active = initial.active;
+  const axis = initial.axis ?? 'x';
+  if (!indicator) return { update(_next: TenetFlowTarget) {}, destroy() {} };
+  let last: { x: number; y: number; width: number; height: number } | null = null;
+  let recovery: number | null = null;
+  function cancelRecovery() {
+    if (recovery !== null) window.clearTimeout(recovery);
+    recovery = null;
+  }
+  const endTravel = () => { delete node.dataset.kiraFlowMoving; };
+
+  function geometry(key: string) {
+    const target = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-tab]'))
+      .find(item => item.dataset.kiraTab === key);
+    if (!target || !target.isConnected || target.offsetWidth <= 0) return null;
+    return {
+      x: target.offsetLeft, y: target.offsetTop,
+      width: target.offsetWidth, height: target.offsetHeight,
+    };
+  }
+
+  function relocate(key: string, animate: boolean) {
+    const next = geometry(key);
+    if (!next) {
+      cancelRecovery();
+      endTravel();
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { autoAlpha: 0 });
+      last = null;
+      return;
+    }
+    const vars = axis === 'both'
+      ? { x: next.x, y: next.y, width: next.width, height: next.height }
+      : { x: next.x, width: next.width };
+    if (last && Object.keys(vars).every(prop => next[prop as keyof typeof next] === last![prop as keyof typeof last])) {
+      return;
+    }
+    const moving = animate && !preference.matches && last !== null;
+    cancelRecovery();
+    last = next;
+    if (!moving) {
+      endTravel();
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { ...vars, autoAlpha: 1 });
+      return;
+    }
+    // Selected black text must never be black-on-black before the orange
+    // background arrives. The selected text stays light only while moving.
+    node.dataset.kiraFlowMoving = 'true';
+    // Only geometry springs. Visibility stays monotonic and never overshoots.
+    gsap.to(indicator, {
+      ...vars, duration: 0.42, ease: 'back.out(1.18)',
+      overwrite: 'auto', force3D: true, onComplete: endTravel,
+    });
+    gsap.to(indicator, { autoAlpha: 1, duration: 0.12, ease: 'power2.out', overwrite: 'auto' });
+    // rAF can stall for a compact, obscured WebKitGTK surface. Correctness
+    // always wins: reconcile exact geometry after one bounded grace period.
+    recovery = window.setTimeout(() => {
+      recovery = null;
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { ...vars, autoAlpha: 1 });
+      endTravel();
+    }, 650);
+  }
+
+  relocate(active, false);
+  const onPreference = () => {
+    if (preference.matches) {
+      last = null;
+      relocate(active, false);
+    }
+  };
+  preference.addEventListener('change', onPreference);
+  const observer = typeof ResizeObserver === 'undefined' ? null :
+    new ResizeObserver(() => relocate(active, true));
+  observer?.observe(node);
+
+  return {
+    update(next: TenetFlowTarget) {
+      active = next.active;
+      // Same selection can still change physical coordinates after keyed
+      // reorder or filter; its marker must follow rather than teleport.
+      relocate(active, true);
+    },
+    destroy() {
+      cancelRecovery();
+      endTravel();
+      observer?.disconnect();
+      preference.removeEventListener('change', onPreference);
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { clearProps: 'transform,width,height,opacity,visibility,willChange' });
+    },
+  };
+}
+
+/** User-driven FLIP transitions are bounded and owned by the list's lifetime. */
+type RunningReflow = { tween: gsap.core.Timeline; release: () => void };
+const reflows = new WeakMap<HTMLElement, RunningReflow>();
+const reflowEpochs = new WeakMap<HTMLElement, number>();
+
+function stopReflow(container: HTMLElement, finish: boolean) {
+  const running = reflows.get(container);
+  if (!running) return;
+  reflows.delete(container);
+  if (finish) running.tween.progress(1);
+  running.tween.kill();
+  running.release();
+}
+
+export function tenetReflowScope(node: HTMLElement) {
+  return {
+    destroy() {
+      reflowEpochs.set(node, (reflowEpochs.get(node) ?? 0) + 1);
+      stopReflow(node, false);
+    },
+  };
+}
+
+/** Retain painted positions of stable rows during explicit user reorder/filter.
+ * Reacting to sensor samples this way would animate facts and is forbidden.
+ */
+export function tenetReflow(container: HTMLElement | undefined, mutate: () => void): void {
+  if (!container) {
+    mutate();
+    return;
+  }
+  const epoch = (reflowEpochs.get(container) ?? 0) + 1;
+  reflowEpochs.set(container, epoch);
+  stopReflow(container, false);
+  const rows = Array.from(container.querySelectorAll<HTMLElement>('[data-kira-reflow]')).slice(0, 24);
+  if (!rows.length || reducedMotion()) {
+    mutate();
+    return;
+  }
+  let state: ReturnType<typeof Flip.getState>;
+  try {
+    state = Flip.getState(rows);
+  } catch {
+    // Motion is always optional; malformed geometry must never block typing.
+    mutate();
+    return;
+  }
+  mutate();
+  void tick().then(() => {
+    if (!container.isConnected || reflowEpochs.get(container) !== epoch || reducedMotion()) return;
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let tween: gsap.core.Timeline | null = null;
+    const onPreference = () => {
+      if (preference.matches) stopReflow(container, true);
+    };
+    const release = () => {
+      preference.removeEventListener('change', onPreference);
+      if (reflows.get(container)?.tween === tween) reflows.delete(container);
+    };
+    try {
+      tween = Flip.from(state, {
+        duration: 0.34,
+        ease: 'back.out(1.14)',
+        absolute: false,
+        scale: false,
+        prune: true,
+        overwrite: true,
+        onComplete: release,
+      });
+      reflows.set(container, { tween, release });
+      preference.addEventListener('change', onPreference);
+      // An unchanged keyed list can produce a zero-length FLIP scene.
+      // Do not retain its listeners or entries after a synchronous settle.
+      if (tween.duration() === 0) release();
+    } catch {
+      release();
+      // Keep the already-committed user action, even if the FLIP plugin fails.
+    }
+  });
+}
+
+/** Reusable, interruptible GSAP scroll with a reliable reduced-motion reset.
+ * The nearest visible position, not scrollIntoView's implicit browser jump.
+ */
+export function tenetScrollIntoView(
+  list: HTMLElement, item: HTMLElement, animate: boolean, axis: 'x' | 'y' = 'x',
+): void {
+  const vertical = axis === 'y';
+  const start = vertical ? item.offsetTop : item.offsetLeft;
+  const end = start + (vertical ? item.offsetHeight : item.offsetWidth);
+  const current = vertical ? list.scrollTop : list.scrollLeft;
+  const size = vertical ? list.clientHeight : list.clientWidth;
+  const destination = Math.max(0, start < current ? start : end > current + size ? end - size : current);
+  if (Math.abs(destination - current) < 1) return;
+  const property = vertical ? 'scrollTop' : 'scrollLeft';
+  gsap.killTweensOf(list, property);
+  if (!animate || reducedMotion()) {
+    if (vertical) list.scrollTop = destination;
+    else list.scrollLeft = destination;
+    return;
+  }
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const release = () => preference.removeEventListener('change', onPreference);
+  const onPreference = () => {
+    if (!preference.matches) return;
+    gsap.killTweensOf(list, property);
+    if (vertical) list.scrollTop = destination;
+    else list.scrollLeft = destination;
+    release();
+  };
+  preference.addEventListener('change', onPreference);
+  gsap.to(list, {
+    [property]: destination,
+    duration: 0.34,
+    ease: 'power3.out',
+    overwrite: 'auto',
+    onComplete: release,
+    onInterrupt: release,
+  });
+}
+
+export function tenetScrollScope(node: HTMLElement) {
+  return {
+    destroy() {
+      gsap.killTweensOf(node, 'scrollLeft,scrollTop');
+    },
+  };
+}
+
+/** A controlled disclosure retains one content surface while height follows
+ * a short elastic trajectory, rather than popping its layout instantly.
+ */
+export function tenetDisclosure(node: HTMLDetailsElement) {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const summary = node.querySelector('summary');
+  const content = node.querySelector<HTMLElement>('[data-kira-disclosure-content]');
+  if (!summary || !content) return { destroy() {} };
+  let expanded = node.open;
+  let animation: gsap.core.Tween | null = null;
+  const finish = () => {
+    animation?.kill();
+    animation = null;
+    gsap.set(content, { clearProps: 'height,overflow,opacity,visibility' });
+    if (!expanded) node.open = false;
+  };
+  const onClick = (event: MouseEvent) => {
+    event.preventDefault();
+    const next = !expanded;
+    expanded = next;
+    animation?.kill();
+    animation = null;
+    summary.setAttribute('aria-expanded', String(next));
+    if (preference.matches) {
+      node.open = next;
+      gsap.set(content, { clearProps: 'height,overflow,opacity,visibility' });
+      return;
+    }
+    const previousHeight = node.open ? content.getBoundingClientRect().height : 0;
+    node.open = true;
+    const full = content.scrollHeight;
+    gsap.set(content, { overflow: 'hidden', height: previousHeight, opacity: next ? 0.88 : 1 });
+    animation = gsap.to(content, {
+      height: next ? full : 0,
+      opacity: next ? 1 : 0.88,
+      duration: 0.34,
+      ease: 'power3.out',
+      overwrite: 'auto',
+      onComplete: finish,
+    });
+  };
+  const onPreference = () => { if (preference.matches) finish(); };
+  summary.addEventListener('click', onClick);
+  preference.addEventListener('change', onPreference);
+  return {
+    destroy() {
+      summary.removeEventListener('click', onClick);
+      preference.removeEventListener('change', onPreference);
+      animation?.kill();
+      gsap.set(content, { clearProps: 'height,overflow,opacity,visibility' });
+    },
+  };
+}
+
+/** Soft panel arrival on tab changes; the initial native mount is excluded. */
+export function tenetPanelArrival(node: HTMLElement) {
+  const root = node.closest<HTMLElement>('[data-kira-ui-root]');
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!root?.dataset.kiraGeneration || preference.matches) return { destroy() {} };
+  let tween: gsap.core.Tween | null = null;
+  const settle = () => {
+    tween?.kill();
+    tween = null;
+    gsap.set(node, { clearProps: 'transform,opacity,visibility,willChange' });
+  };
+  gsap.set(node, { willChange: 'transform, opacity' });
+  tween = gsap.fromTo(node, { y: 6, autoAlpha: 0.94 },
+    { y: 0, autoAlpha: 1, duration: 0.30, ease: 'power3.out', onComplete: settle });
+  const onPreference = () => { if (preference.matches) settle(); };
+  preference.addEventListener('change', onPreference);
+  return {
+    destroy() {
       preference.removeEventListener('change', onPreference);
       settle();
     },

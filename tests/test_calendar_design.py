@@ -70,15 +70,15 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("pub fn prewarm(", RUST)
         self.assertIn("requestAnimationFrame", RUST)
         self.assertIn("sendCalendarUi('host-ready')", SDK)
-        self.assertIn("sendCalendarUi('mounted:' + generation)", SDK)
-        self.assertIn("notifyCalendarMounted(generation)", ENTRY)
+        self.assertIn("sendCalendarUi('mounted:' + generation + ':'", SDK)
+        self.assertIn("notifyCalendarMounted(generation, window.matchMedia", ENTRY)
 
     def test_lazy_svelte_mount_and_dispose_on_hide(self):
         self.assertIn("self.view.evaluate_javascript(", RUST)
         self.assertIn("kira:overlay:show", RUST)
         self.assertIn("kira:overlay:hide", RUST)
         self.assertIn("Some(UiCommand::HostReady)", RUST)
-        self.assertIn("Some(UiCommand::Mounted(generation))", RUST)
+        self.assertIn("Some(UiCommand::Mounted(generation, reduced))", RUST)
         self.assertIn("self.widget_ready.set(false)", RUST)
         self.assertIn("self.generation.get() == generation", RUST)
         self.assertIn("notifyCalendarHostReady();", ENTRY)

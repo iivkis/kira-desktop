@@ -70,9 +70,9 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn('detail.maxHeight + \'px\'', entry)
         self.assertIn('observeOverlaySize(root, generation)', entry)
         self.assertIn('stopSizing?.()', entry)
-        self.assertIn('notifyCalendarMounted(generation)', entry)
+        self.assertIn('notifyCalendarMounted(generation, window.matchMedia', entry)
         self.assertLess(entry.index('observeOverlaySize(root, generation)'),
-                        entry.index('notifyCalendarMounted(generation)'))
+                        entry.index('notifyCalendarMounted(generation, window.matchMedia'))
         self.assertIn('new ResizeObserver(measure)', measure)
         self.assertIn('root.getBoundingClientRect().height', measure)
         self.assertIn('observer?.disconnect()', measure)
