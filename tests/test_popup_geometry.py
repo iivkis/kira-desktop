@@ -46,7 +46,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("observeOverlaySize(root, generation)", ENTRY)
         self.assertIn("notifyCalendarMounted(generation, window.matchMedia", ENTRY)
         self.assertIn("Some(UiCommand::ContentHeight(generation, height))", HOST)
-        self.assertIn("if self.detached.get() { return; }", HOST)
+        self.assertIn("if self.detached.get() {\n                    return;\n                }", HOST)
         self.assertIn("height.min(crate::native_ui::webview_popup_height_limit", HOST)
         self.assertIn("sendCalendarUi('size:' + generation + ':' + height)", SDK)
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", NATIVE)

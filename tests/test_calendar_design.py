@@ -65,7 +65,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("self.window.set_opacity(0.0)", RUST)
         self.assertIn("self.window.set_opacity(1.0)", RUST)
         self.assertIn("self.schedule_reveal_fallback(generation)", RUST)
-        self.assertIn("Duration::from_millis(150)", RUST)
+        self.assertIn("Duration::from_millis(125)", RUST)
         self.assertIn("state.widget_ready.get()", RUST)
         self.assertIn("self.request_paint()", RUST)
         self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)

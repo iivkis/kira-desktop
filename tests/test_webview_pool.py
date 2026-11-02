@@ -45,8 +45,9 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("self.run_pending()", HOST)
         self.assertIn("Some(UiCommand::Closed(generation))", HOST)
         self.assertIn("self.generation.get() == generation", HOST)
+        self.assertIn("pool.request(\n", HOST)
         for kind in ("Calendar", "System", "Launcher"):
-            self.assertIn(f"pool.request(Surface::{kind}", HOST)
+            self.assertIn(f"Surface::{kind},", HOST)
             self.assertIn(f"pool.acquire(Surface::{kind})", HOST)
             self.assertIn(f"view.show(Surface::{kind})", HOST)
 

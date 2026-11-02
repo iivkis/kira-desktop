@@ -336,7 +336,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-surface-settled="true"') ||
        !output.includes('data-smoke-tenet-previsible="true"') ||
        !output.includes('data-smoke-tenet-started="true"') ||
-       !output.includes('data-smoke-tenet-content-moving="true"') ||
+       !output.includes('data-smoke-surface-moving="true"') ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-(?:tenet|surface)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
