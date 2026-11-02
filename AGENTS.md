@@ -58,6 +58,12 @@ acceptance, in addition to the TENET motion principles.
 - Respect `prefers-reduced-motion` everywhere, and retain accessible labels,
   meaningful numeric fallback text, keyboard focus and functional no-motion UI.
   Never animate fake data into a chart or replace missing sensor data with zero.
+- **WebView Pool:** Read [docs/WEBVIEW_POOL.md](docs/WEBVIEW_POOL.md) before
+  modifying native popup lifecycle, scheduling or rotation. Start exactly one
+  inert warm host; acquire additional popup hosts only on demand, up to the
+  fixed cap. Never recycle or reposition an active WebView to show another
+  widget. Reuse one hot idle view, retire surplus idle views after 45 seconds,
+  and reject stale generation-scoped UI commands.
 - **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
   ECharts and GSAP effects on mount, resize charts when geometry changes,
   dispose chart instances, kill GSAP tweens and detach observers on unmount.
