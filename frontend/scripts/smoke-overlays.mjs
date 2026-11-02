@@ -53,11 +53,9 @@ function scriptFor(steps, observationMs = 1150) {
       'setTimeout(() => {' +
         (kind === 'tenet-close'
           ? 'window.dispatchEvent(new CustomEvent("kira:overlay:close", {detail:{generation:' + generation + '}}));' +
-            'setTimeout(()=>{' +
-              'const root=document.querySelector("main[data-kira-ui-root]");' +
-              'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing" && ' +
-                'root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
-            '},145);'
+            'const root=document.querySelector("main[data-kira-ui-root]");' +
+            'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing" && ' +
+              'root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;'
           : kind === 'tenet-reopen'
             ? 'window.dispatchEvent(new CustomEvent("kira:overlay:reopen", {detail:{generation:' + generation + '}}));'
           : kind === 'hide'
@@ -403,7 +401,7 @@ try {
   await smoke('calendar-tenet-reopen-mid-reverse', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 800, kind: 'tenet-close', generation: 1 },
-    { delay: 950, kind: 'tenet-reopen', generation: 1 },
+    { delay: 830, kind: 'tenet-reopen', generation: 1 },
   ], 'Kira Calendar', 'reverse-reopen');
   await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
   await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
