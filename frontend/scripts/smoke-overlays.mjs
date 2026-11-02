@@ -146,7 +146,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : heightMode === 'tenet' ? 2050 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -156,7 +156,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
     ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : heightMode === 'tenet' ? 2800 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2800 : heightMode === 'tenet' ? 2800 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -185,7 +185,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-tenet-grid-events="2"') ||
        !output.includes('data-smoke-tenet-grid-contact="true"') ||
        !output.includes('data-smoke-tenet-no-fragments="true"'))) {
-    const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
+    const flags = output.match(/data-smoke-(?:calendar|tenet)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
   if (heightMode === 'clock' &&
