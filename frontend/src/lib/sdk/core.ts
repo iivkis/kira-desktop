@@ -305,6 +305,13 @@ function validOverlayGeneration(generation: number): boolean {
   return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff;
 }
 
+/** A TENET reverse exit has reached its recorded start. Only the owner
+ * generation may release the native popup lease after this acknowledgement.
+ */
+export function notifyOverlayClosed(generation: number): boolean {
+  return validOverlayGeneration(generation) && sendCalendarUi('closed:' + generation);
+}
+
 export function closeCalendarOverlay(generation: number): void {
   if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
 }
