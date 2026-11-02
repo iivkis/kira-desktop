@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	c2458e628e93a6657c93d0c0735ffa10a4474edf
+C	b5c5a190ab78b3891b72113808944cc79cec9992
 F	.cargo/config.toml	98	146	3
 F	.github/workflows/ci.yml	4355	151	112
 F	.github/workflows/frontend-nix.yml	1398	265	43
@@ -24,116 +24,116 @@ F	.github/workflows/overlay-smoke.yml	1064	350	40
 F	.github/workflows/publish-repospool.yml	3048	392	83
 F	.gitignore	178	477	11
 F	.repospoolignore	1028	490	47
-F	AGENTS.md	6106	539	101
-F	Cargo.toml	494	642	22
-F	README.md	12486	666	256
-F	Taskfile.yml	5957	924	185
-F	config/kira.kdl.example	358	1111	8
-F	crates/kira-core/Cargo.toml	207	1121	10
-F	crates/kira-core/src/config.rs	15217	1133	399
-F	crates/kira-core/src/main.rs	32080	1534	839
-F	crates/kira-core/src/niri.rs	16767	2375	453
-F	crates/kira-ipc/Cargo.toml	170	2830	9
-F	crates/kira-ipc/src/client.rs	17794	2841	458
-F	crates/kira-ipc/src/lib.rs	10460	3301	336
-F	crates/kira-shell/Cargo.toml	297	3639	12
-F	crates/kira-shell/src/calendar.rs	75640	3653	1989
-F	crates/kira-shell/src/config_layers.rs	19239	5644	496
-F	crates/kira-shell/src/display_manager.rs	20641	6142	546
-F	crates/kira-shell/src/launcher.rs	14114	6690	392
-F	crates/kira-shell/src/main.rs	22631	7084	517
-F	crates/kira-shell/src/native_ui.rs	4711	7603	109
-F	crates/kira-shell/src/popup_layout.rs	2659	7714	72
-F	crates/kira-shell/src/process_monitor.rs	13067	7788	394
-F	crates/kira-shell/src/renderer_recovery.rs	3634	8184	116
-F	crates/kira-shell/src/system_info.rs	3951	8302	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8417	559
-F	crates/kira-shell/src/system_panel.rs	11356	8978	318
-F	crates/kira-shell/src/webview_pool.rs	9530	9298	281
-F	docs/CONFIG.md	5801	9581	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9708	135
-F	docs/DESIGN_SYSTEM.md	35899	9845	580
-F	docs/DEVELOPMENT.md	30675	10427	605
-F	docs/QA_VISUAL.md	12652	11034	152
-F	docs/SKY_MAP.md	6776	11188	105
-F	docs/SPECIFICATION.md	28960	11295	421
-F	docs/TENET_MOTION.md	40785	11718	204
-F	docs/UI_ARCHITECTURE.md	6678	11924	105
-F	docs/VISUAL_REVIEW.md	9754	12031	84
-F	docs/WEBVIEW_POOL.md	11081	12117	97
-F	flake.nix	3181	12216	91
-F	frontend/index.html	2737	12309	66
-F	frontend/package.json	720	12377	27
-F	frontend/scripts/inline-assets.mjs	4457	12406	103
-F	frontend/scripts/inline-assets.test.mjs	4645	12511	106
-F	frontend/scripts/smoke-overlays.mjs	49835	12619	698
-F	frontend/src/App.svelte	10529	13319	237
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13558	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13576	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	13637	69
-F	frontend/src/lib/bootstrap.test.ts	3408	13708	84
-F	frontend/src/lib/bootstrap.ts	2613	13794	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13866	65
-F	frontend/src/lib/calendar-model.ts	4648	13933	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14040	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	14102	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	14133	287
-F	frontend/src/lib/clock-flight.test.ts	2404	14422	50
-F	frontend/src/lib/clock-flight.ts	1977	14474	50
-F	frontend/src/lib/components/CalendarWidget.svelte	12672	14526	267
-F	frontend/src/lib/components/DisplaySettings.svelte	23821	14795	451
-F	frontend/src/lib/components/LauncherWidget.svelte	11594	15248	253
-F	frontend/src/lib/components/SettingsWidget.svelte	9899	15503	172
-F	frontend/src/lib/components/SkyMap.svelte	13008	15677	274
-F	frontend/src/lib/components/SystemCharts.svelte	10517	15953	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	16181	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	16229	339
-F	frontend/src/lib/components/WindowControls.svelte	2826	16570	71
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16643	119
-F	frontend/src/lib/launcher-model.test.ts	2266	16764	46
-F	frontend/src/lib/launcher-model.ts	1403	16812	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	16843	89
-F	frontend/src/lib/lazy-widget.ts	1984	16934	63
-F	frontend/src/lib/motion-contract.test.ts	11241	16999	198
-F	frontend/src/lib/motion.ts	24039	17199	657
-F	frontend/src/lib/overlay-size.ts	1090	17858	29
-F	frontend/src/lib/sdk/core.test.ts	27884	17889	564
-F	frontend/src/lib/sdk/core.ts	25417	18455	645
-F	frontend/src/lib/settings-model.test.ts	1064	19102	21
-F	frontend/src/lib/settings-model.ts	1262	19125	26
-F	frontend/src/lib/system-charts.test.ts	6312	19153	141
-F	frontend/src/lib/system-charts.ts	5514	19296	149
-F	frontend/src/lib/system-health.test.ts	2385	19447	42
-F	frontend/src/lib/system-health.ts	2831	19491	60
-F	frontend/src/lib/system-model.test.ts	4455	19553	84
-F	frontend/src/lib/system-model.ts	5457	19639	125
-F	frontend/src/lib/themes/kira-default.css	1687	19766	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	19820	101
-F	frontend/src/lib/themes/kira-default.ts	777	19923	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	19947	101
-F	frontend/src/lib/time.test.ts	263	20050	8
-F	frontend/src/lib/time.ts	320	20060	9
-F	frontend/src/lib/workspace-window.test.ts	2298	20071	52
-F	frontend/src/lib/workspace-window.ts	1063	20125	32
-F	frontend/src/main.ts	7783	20159	161
-F	frontend/src/style.css	6399	20322	194
-F	frontend/tsconfig.json	403	20518	16
-F	frontend/vite.config.ts	224	20536	8
-F	nix/package.nix	3132	20546	117
-F	scripts/dev_preview.py	18147	20665	403	x
-F	scripts/qa_visual.py	12052	21070	299
-F	tests/test_calendar_design.py	9935	21371	171
-F	tests/test_detailed_health.py	5481	21544	105
-F	tests/test_dev_preview.py	9339	21651	219
-F	tests/test_displays.py	4741	21872	82
-F	tests/test_launcher_design.py	10521	21956	191
-F	tests/test_native_theme.py	2098	22149	44
-F	tests/test_popup_geometry.py	3805	22195	66
-F	tests/test_qa_visual.py	10549	22263	217
-F	tests/test_settings.py	4867	22482	87
-F	tests/test_tenet_close.py	6297	22571	115
-F	tests/test_ui_bootstrap_contract.py	1103	22688	29
-F	tests/test_webview_pool.py	11349	22719	194
+F	AGENTS.md	6275	539	103
+F	Cargo.toml	494	644	22
+F	README.md	12486	668	256
+F	Taskfile.yml	5957	926	185
+F	config/kira.kdl.example	358	1113	8
+F	crates/kira-core/Cargo.toml	207	1123	10
+F	crates/kira-core/src/config.rs	15217	1135	399
+F	crates/kira-core/src/main.rs	32080	1536	839
+F	crates/kira-core/src/niri.rs	16767	2377	453
+F	crates/kira-ipc/Cargo.toml	170	2832	9
+F	crates/kira-ipc/src/client.rs	17794	2843	458
+F	crates/kira-ipc/src/lib.rs	10460	3303	336
+F	crates/kira-shell/Cargo.toml	297	3641	12
+F	crates/kira-shell/src/calendar.rs	75415	3655	1981
+F	crates/kira-shell/src/config_layers.rs	19239	5638	496
+F	crates/kira-shell/src/display_manager.rs	20641	6136	546
+F	crates/kira-shell/src/launcher.rs	14114	6684	392
+F	crates/kira-shell/src/main.rs	22631	7078	517
+F	crates/kira-shell/src/native_ui.rs	4711	7597	109
+F	crates/kira-shell/src/popup_layout.rs	2659	7708	72
+F	crates/kira-shell/src/process_monitor.rs	13067	7782	394
+F	crates/kira-shell/src/renderer_recovery.rs	3634	8178	116
+F	crates/kira-shell/src/system_info.rs	3951	8296	113
+F	crates/kira-shell/src/system_metrics.rs	19842	8411	559
+F	crates/kira-shell/src/system_panel.rs	11356	8972	318
+F	crates/kira-shell/src/webview_pool.rs	9530	9292	281
+F	docs/CONFIG.md	5801	9575	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9702	135
+F	docs/DESIGN_SYSTEM.md	35899	9839	580
+F	docs/DEVELOPMENT.md	30675	10421	605
+F	docs/QA_VISUAL.md	12652	11028	152
+F	docs/SKY_MAP.md	6776	11182	105
+F	docs/SPECIFICATION.md	28960	11289	421
+F	docs/TENET_MOTION.md	40785	11712	204
+F	docs/UI_ARCHITECTURE.md	6668	11918	105
+F	docs/VISUAL_REVIEW.md	9754	12025	84
+F	docs/WEBVIEW_POOL.md	11431	12111	97
+F	flake.nix	3181	12210	91
+F	frontend/index.html	2737	12303	66
+F	frontend/package.json	720	12371	27
+F	frontend/scripts/inline-assets.mjs	4457	12400	103
+F	frontend/scripts/inline-assets.test.mjs	4645	12505	106
+F	frontend/scripts/smoke-overlays.mjs	49835	12613	698
+F	frontend/src/App.svelte	10529	13313	237
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13552	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13570	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	13631	69
+F	frontend/src/lib/bootstrap.test.ts	3408	13702	84
+F	frontend/src/lib/bootstrap.ts	2613	13788	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13860	65
+F	frontend/src/lib/calendar-model.ts	4648	13927	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14034	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	14096	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	14127	287
+F	frontend/src/lib/clock-flight.test.ts	2404	14416	50
+F	frontend/src/lib/clock-flight.ts	1977	14468	50
+F	frontend/src/lib/components/CalendarWidget.svelte	12672	14520	267
+F	frontend/src/lib/components/DisplaySettings.svelte	23821	14789	451
+F	frontend/src/lib/components/LauncherWidget.svelte	11594	15242	253
+F	frontend/src/lib/components/SettingsWidget.svelte	9899	15497	172
+F	frontend/src/lib/components/SkyMap.svelte	13008	15671	274
+F	frontend/src/lib/components/SystemCharts.svelte	10517	15947	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	16175	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	16223	339
+F	frontend/src/lib/components/WindowControls.svelte	2826	16564	71
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16637	119
+F	frontend/src/lib/launcher-model.test.ts	2266	16758	46
+F	frontend/src/lib/launcher-model.ts	1403	16806	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	16837	89
+F	frontend/src/lib/lazy-widget.ts	1984	16928	63
+F	frontend/src/lib/motion-contract.test.ts	11241	16993	198
+F	frontend/src/lib/motion.ts	24039	17193	657
+F	frontend/src/lib/overlay-size.ts	1090	17852	29
+F	frontend/src/lib/sdk/core.test.ts	27884	17883	564
+F	frontend/src/lib/sdk/core.ts	25417	18449	645
+F	frontend/src/lib/settings-model.test.ts	1064	19096	21
+F	frontend/src/lib/settings-model.ts	1262	19119	26
+F	frontend/src/lib/system-charts.test.ts	6312	19147	141
+F	frontend/src/lib/system-charts.ts	5514	19290	149
+F	frontend/src/lib/system-health.test.ts	2385	19441	42
+F	frontend/src/lib/system-health.ts	2831	19485	60
+F	frontend/src/lib/system-model.test.ts	4455	19547	84
+F	frontend/src/lib/system-model.ts	5457	19633	125
+F	frontend/src/lib/themes/kira-default.css	1687	19760	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	19814	101
+F	frontend/src/lib/themes/kira-default.ts	777	19917	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	19941	101
+F	frontend/src/lib/time.test.ts	263	20044	8
+F	frontend/src/lib/time.ts	320	20054	9
+F	frontend/src/lib/workspace-window.test.ts	2298	20065	52
+F	frontend/src/lib/workspace-window.ts	1063	20119	32
+F	frontend/src/main.ts	7783	20153	161
+F	frontend/src/style.css	6399	20316	194
+F	frontend/tsconfig.json	403	20512	16
+F	frontend/vite.config.ts	224	20530	8
+F	nix/package.nix	3132	20540	117
+F	scripts/dev_preview.py	18147	20659	403	x
+F	scripts/qa_visual.py	12052	21064	299
+F	tests/test_calendar_design.py	9935	21365	171
+F	tests/test_detailed_health.py	5481	21538	105
+F	tests/test_dev_preview.py	9339	21645	219
+F	tests/test_displays.py	4741	21866	82
+F	tests/test_launcher_design.py	10521	21950	191
+F	tests/test_native_theme.py	2098	22143	44
+F	tests/test_popup_geometry.py	3805	22189	66
+F	tests/test_qa_visual.py	10549	22257	217
+F	tests/test_settings.py	4867	22476	87
+F	tests/test_tenet_close.py	6297	22565	115
+F	tests/test_ui_bootstrap_contract.py	1103	22682	29
+F	tests/test_webview_pool.py	11704	22713	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -602,10 +602,12 @@ acceptance, in addition to the TENET motion principles.
   fixed cap. Never recycle an active lease for a different widget. A
   user-requested pop-out may reparent its SAME active WebView into a regular
   Niri window without remounting or losing Svelte state. Keep at most one
-  active widget across transient and detached modes; wait for its
-  reverse-close acknowledgement before showing another. Calendar/System/Settings
-  use the right dock; Launcher is top-centered at 20% of the logical output
-  height. Reuse one hot idle view, retire surplus idle views after 45 seconds,
+  transient popup, but allow independently detached Niri windows to coexist.
+  Opening another widget must never close or remount a detached one; repeated
+  requests for its kind focus the existing window. Wait for the transient
+  popup's reverse-close acknowledgement before replacing it. Calendar/System/
+  Settings use the right dock; Launcher is top-centered at 20% of the logical
+  output height. Reuse one hot idle view, retire surplus idle views after 45 seconds,
   and reject stale generation-scoped UI commands.
 - **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
   ECharts and GSAP effects on mount, resize charts when geometry changes,
@@ -3826,16 +3828,6 @@ impl OverlayPool {
         self.windows.borrow().get(&id).cloned()
     }
 
-    // A promoted Niri window remains an active widget. The user expects
-    // *one* active widget, regardless of whether it is a popup or detached.
-    fn active_window(&self) -> Option<Rc<CalendarOverlay>> {
-        self.windows
-            .borrow()
-            .values()
-            .find(|view| view.requested.get())
-            .cloned()
-    }
-
     fn popup(&self) -> Option<Rc<CalendarOverlay>> {
         self.windows
             .borrow()
@@ -3844,41 +3836,43 @@ impl OverlayPool {
             .cloned()
     }
 
-    /// One widget across popup and detached Niri windows. Last request wins
-    /// until the current generation has reversed and released its lease.
+    /// Detached Niri windows keep their own leases and remain alive across
+    /// widget changes. Only the single transient popup is ever replaced.
     fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest) {
-        if let Some(current) = self.active_window() {
-            if current.active.get() == Some(kind) {
-                self.pending.borrow_mut().take();
-                if current.detached.get() {
-                    // Repeated Top Bar access to a popped-out window raises
-                    // that *same* Niri window without cloning its WebView.
-                    current.cancel_close();
-                    current.focus_detached();
-                } else if toggle && !current.closing.get() {
-                    current.request_close();
-                } else {
-                    current.cancel_close();
-                    if !toggle {
-                        current.window.present();
-                    }
+        if let Some(current) = self.active(kind).filter(|view| view.requested.get()) {
+            // Reopening an existing kind never creates a duplicate instance.
+            self.pending.borrow_mut().take();
+            if current.detached.get() {
+                // A promoted window keeps its WebView, state and generation.
+                // A Top Bar click raises it without touching another popup.
+                current.cancel_close();
+                current.focus_detached();
+            } else if toggle && !current.closing.get() {
+                current.request_close();
+            } else {
+                current.cancel_close();
+                if !toggle {
+                    current.window.present();
                 }
-                return;
             }
+            return;
+        }
+        if let Some(current) = self.popup() {
+            // Last request wins, but only an actual transient popup is
+            // dismissed. Promoted windows are never part of this queue.
             self.pending.replace(Some(open));
             current.request_close();
         } else {
+            self.pending.borrow_mut().take();
             open(self);
         }
     }
 
     fn run_pending(self: &Rc<Self>) {
-        // Also close previously promoted windows before opening a requested
-        // different widget. This accounts for legacy sessions which may still
-        // have multiple active windows when the new policy is introduced.
-        if let Some(current) = self.active_window() {
-            let waiting = self.pending.borrow().is_some();
-            if waiting {
+        // Wait for the transient popup's reversible close acknowledgement.
+        // Detached Niri windows do not block or get closed by the queue.
+        if let Some(current) = self.popup() {
+            if self.pending.borrow().is_some() {
                 current.request_close();
             }
             return;
@@ -4276,8 +4270,8 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // The previous widget, popup or promoted Niri window, has finished
-        // its reverse and released its active lease.
+        // Only a previous transient popup needs to finish its reverse.
+        // Promoted Niri windows keep their separate active leases.
         debug_assert!(!self.requested.get());
         self.position_for(kind);
         self.active.set(Some(kind));
@@ -11937,17 +11931,17 @@ bridge, not a second UI component framework.
 | Svelte 5 / Tailwind | Top Bar, launcher, calendar, system monitor, processes, future user widgets | Raw shell commands, unvalidated Niri/OS privileges |
 | Typed WebKit bridge | Minimal allowlisted native calls; read-only events | Generic command execution or navigation to outside content |
 
-The top bar's 42 px exclusive zone **cannot contain popovers**. The Calendar, System Monitor and Launcher share **one** non-exclusive GTK
-layer-shell window and prewarmed WebKit view. At most one Svelte widget is
-mounted at a time; the rest own no live timers or DOM. The Launcher anchors to the top, leaves both horizontal edges unanchored
+The top bar's 42 px exclusive zone **cannot contain popovers**. Calendar, System Monitor, Launcher and Settings use non-exclusive GTK
+layer-shell windows backed by a bounded WebView pool. Only one transient
+popup is shown at a time. Promoted Niri windows remain mounted and may
+coexist with other widgets, each retaining its own leased WebView and state.
+The Launcher anchors to the top, leaves both horizontal edges unanchored
 for compositor centering, and sets its top margin to 20% of the logical
 output height. All popups use exclusive zone 0. Calendar, System Monitor
 and Settings restore top/right anchors, a 25px top margin and a 12px
-right margin when selected. The same GTK window and WebKit view survive
-these repositionings. The previous widget closes and hides before the
-next widget is positioned and mapped, preventing its old framebuffer
-from visibly travelling across the output. Calendar ↔ System remain
-in-place switches. The
+right margin when selected. A transient popup reverses and hides before
+a different transient popup opens. Detached Niri windows are not closed by
+these switches and keep their state and WebView leases. The
 browser cannot create an ordinary
 top-level window with the required layer-shell Wayland behavior by itself.
 
@@ -12120,11 +12114,11 @@ FILE	docs/WEBVIEW_POOL.md
 
 ## Two distinct window modes
 
-A **transient widget** is a trusted layer-shell overlay anchored **on the right**, immediately below the Top Bar, for Calendar/System/Settings. Launcher uses a **top-center** anchor with a top margin of 20% of the current output's logical height. Settings uses a fixed 600px preferred popup width instead of the usual 420px. **Only one Kira widget may be active at a time, whether popup or detached.** A Top Bar request for a different widget queues the target, asks the current widget to run its recorded TENET exit, and waits for the generation-matched `closed:<generation>` acknowledgement (or the native watchdog) before hiding, releasing its WebView lease, and opening the queued target. No side-by-side overlay columns or left-dock relocation are allowed. Requests during exit are last-wins; clicking the outgoing widget again cancels its reverse and clears the pending target.
+A **transient widget** is a trusted layer-shell overlay anchored **on the right**, immediately below the Top Bar, for Calendar/System/Settings. Launcher uses a **top-center** anchor with a top margin of 20% of the current output's logical height. Settings uses a fixed 600px preferred popup width instead of the usual 420px. **Only one transient popup may be visible at a time, while detached Niri windows remain independent.** A Top Bar request for a different transient popup queues the target, asks only the current popup to run its recorded TENET exit, and waits for the generation-matched `closed:<generation>` acknowledgement (or the native watchdog) before hiding, releasing that WebView lease, and opening the queued target. Detached windows keep their active leases, Svelte state and input focus behavior. No side-by-side transient overlay columns or left-dock relocation are allowed. Requests during popup exit are last-wins; clicking the outgoing popup again cancels its reverse and clears the pending target.
 
 An **ordinary window** is requested explicitly through the pop-out control in every widget header. The Shell creates a **decorated GtkApplicationWindow without layer-shell initialization**, making it an xdg-toplevel managed by Niri alongside other applications. The existing *live* WebView is reparented from the transient host into the regular window, without `load_html`, Svelte unmount, or a generation change. This preserves the selected date, active tab, search query, scroll position, animations and interactive state. The transient GTK surface disappears. The promoted WebView retains its lease and data subscriptions while the ordinary window is open. Closing the ordinary window performs the reversible TENET exit, unmounts Svelte, reparents WebView to its hidden popup host and releases the lease. Clicking its Top Bar icon raises the existing ordinary window instead of cloning the same widget.
 
-Opening a different widget from the Top Bar also closes the current **detached** window through its generation-matched TENET exit, waits for the native acknowledgement/watchdog, and only then opens the requested widget in its designated popup dock. A click on the icon of the currently detached widget simply raises the same Niri window. All requests during exit are last-wins. Detached xdg-toplevels do not consume popup dock geometry; switching never opens multiple Kira widget windows side by side.
+Opening a different widget from the Top Bar **does not close existing detached windows**. It opens the requested transient popup (replacing only another transient popup if present) and leaves every promoted xdg-toplevel mounted, visible and interactive. Clicking the icon of an already detached widget raises that same Niri window without a second WebView. Multiple detached windows may coexist alongside one transient popup, subject to the four-host pool cap; active leases are never evicted. Detached windows do not consume popup dock geometry. Closing any detached window explicitly reverses its own TENET timeline and releases only its lease.
 
 ## Shared WebKit context
 
@@ -12188,7 +12182,7 @@ have been observed.
 ## Pool lifecycle
 
 - **Startup:** exactly one inert warm host and one permanent Top Bar host. No idle Svelte widget DOM, telemetry graph, app catalog or per-window poll loop.
-- **Acquire:** the previous widget, including a promoted Niri window, finishes its reverse and releases its lease before the new kind mounts. Then reuse the hottest idle WebView or allocate on demand, up to four pooled hosts. No lease is stolen mid-animation.
+- **Acquire:** only a conflicting transient popup finishes its reverse and releases its lease before a different popup mounts. Promoted Niri windows remain active; reuse the hottest idle WebView or allocate on demand, up to four pooled hosts. Never steal an active lease or create a second instance of an already detached kind.
 - **Idle:** a single hot spare is retained. Surplus idle WebViews are retired after 45 seconds. Regular windows are never retired while live.
 - **Poll:** one 30ms shared GTK source services active Launcher/System leases; the slower metrics tick remains 250ms and stops entirely once all pooled leases are idle.
 - **Isolation:** per-host content manager, locked-down native IPC, generation counters, stateful Svelte mount and renderer recovery. The native `detach:<generation>` command is allowlisted and rejected for stale generations, hidden windows and closing popups.
@@ -12210,7 +12204,7 @@ Changes are staged client-side and validated *again* in Rust against the current
 
 ## Verification
 
-Exercise Calendar → System → Launcher → Settings switching, an interrupted reverse, quick toggles, rapid multi-click last-wins, promotion followed by a *different* widget (former xdg window must close first), full pool backpressure, closing a promoted window, stale `detach`/size/close generations, reduced-motion paths and 45-second idle pruning. Confirm the same WebView/DOM survives pop-out by changing Calendar date or System tab before promoting. On Niri, confirm the regular window can be tiled, resized and focused like an application, and the next popup returns to its original anchor.
+Exercise Calendar → System → Launcher → Settings switching, an interrupted reverse, quick toggles, rapid multi-click last-wins, promotion followed by a *different* widget (former xdg window must remain open), full pool backpressure, closing a promoted window, stale `detach`/size/close generations, reduced-motion paths and 45-second idle pruning. Confirm the same WebView/DOM survives pop-out by changing Calendar date or System tab before promoting. On Niri, confirm the regular window can be tiled, resized and focused like an application, and the next popup returns to its original anchor.
 
 FILE	flake.nix
 {
@@ -22825,19 +22819,22 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("view.tick()", HOST)
         self.assertIn("self.system.borrow_mut().take()", HOST)
 
-    def test_switch_releases_detached_windows_and_uses_widget_docks(self):
+    def test_promoted_windows_survive_switches_and_reopen_without_duplicates(self):
         layout = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
-        self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
-        self.assertIn(".find(|view| view.requested.get())", HOST)
-        request = HOST.split("fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", 1)[1].split("fn choose_dock(", 1)[0]
-        self.assertIn("if let Some(current) = self.active_window()", request)
+        request = HOST.split(
+            "fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", 1
+        )[1].split("fn run_pending(", 1)[0]
+        self.assertIn("if let Some(current) = self.active(kind)", request)
         self.assertIn("if current.detached.get()", request)
+        self.assertIn("current.cancel_close()", request)
         self.assertIn("current.focus_detached()", request)
+        self.assertLess(request.index("self.active(kind)"), request.index("self.popup()"))
+        self.assertLess(request.index("current.focus_detached()"), request.index("current.request_close()"))
+        # Another kind closes only the single popup, never the detached host.
+        self.assertIn("if let Some(current) = self.popup()", request)
         self.assertIn("self.pending.replace(Some(open))", request)
-        self.assertIn("current.request_close()", request)
-        self.assertIn("let waiting = self.pending.borrow().is_some()", request)
-        self.assertIn("if waiting {", request)
-        self.assertIn("fn run_pending(self: &Rc<Self>)", request)
+        self.assertNotIn("self.active_window()", request)
+        self.assertNotIn("current.active.get() == Some(kind)", request)
         self.assertIn("pub fn choose_dock(kind: Surface", layout)
         self.assertIn("Surface::Launcher => PopupDock::Center", layout)
         self.assertIn("_ => PopupDock::Right", layout)
@@ -22847,13 +22844,16 @@ class WebviewPoolContracts(unittest.TestCase):
 
     def test_popup_switch_is_serialized_after_reverse_close_ack(self):
         self.assertIn("pending: RefCell<Option<OpenRequest>>", HOST)
-        self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
+        self.assertNotIn("fn active_window(", HOST)
         self.assertIn("view.requested.get() && !view.detached.get()", HOST)
         self.assertIn("fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", HOST)
         self.assertIn("self.pending.replace(Some(open))", HOST)
         self.assertIn("current.request_close()", HOST)
         self.assertIn("self.pending.borrow_mut().take()", HOST)
         self.assertIn("fn run_pending(self: &Rc<Self>)", HOST)
+        pending = HOST.split("fn run_pending(self: &Rc<Self>)", 1)[1].split("fn choose_dock(", 1)[0]
+        self.assertIn("if let Some(current) = self.popup()", pending)
+        self.assertNotIn("self.active_window()", pending)
         self.assertIn("self.run_pending()", HOST)
         self.assertIn("Some(UiCommand::Closed(generation))", HOST)
         self.assertIn("self.generation.get() == generation", HOST)
