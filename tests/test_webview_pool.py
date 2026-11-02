@@ -49,7 +49,8 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("self.window.present()", HOST)
         self.assertIn("self.generation.get() == generation", HOST)
         self.assertIn("manager.register_script_message_handler", HOST)
-        self.assertIn("fn popup_right_margin", NATIVE)
+        self.assertIn("pub const POPUP_RIGHT_MARGIN: i32 = 12;", NATIVE)
+        self.assertNotIn("fn popup_right_margin", NATIVE)
         self.assertIn("set_exclusive_zone(-1)", HOST)
 
     def test_recycled_slot_cannot_accept_stale_close_or_tab_actions(self):
