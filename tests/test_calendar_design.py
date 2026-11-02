@@ -15,6 +15,23 @@ NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class CalendarDesignTests(unittest.TestCase):
+    def test_window_calendar_is_readable_and_responsive(self):
+        sky = (ROOT / "frontend/src/lib/components/SkyMap.svelte").read_text()
+        browser = (ROOT / "frontend/scripts/smoke-overlays.mjs").read_text()
+        self.assertIn("data-calendar-rail", CALENDAR)
+        self.assertIn("max-[760px]:flex-col", CALENDAR)
+        self.assertIn("max-[760px]:w-full", CALENDAR)
+        self.assertIn("max-[760px]:overflow-y-auto", CALENDAR)
+        self.assertIn("max-[760px]:flex-none", sky)
+        self.assertIn("bg-kira-surface", sky)
+        self.assertIn("bg-kira-bg", sky)
+        self.assertIn("exampleLocation ?", sky)
+        self.assertIn("prefers-reduced-motion", sky)
+        self.assertIn("motion.addEventListener('change', settleForReducedMotion)", sky)
+        self.assertIn("1536 / Math.max(width, height)", sky)
+        self.assertIn("await smokeCalendarSky('680,720', true)", browser)
+        self.assertIn("root.scrollWidth<=root.clientWidth+2", browser)
+
     def test_sky_atlas_only_mounts_in_calendar_niri_window(self):
         atlas = (ROOT / "frontend/src/lib/components/SkyMap.svelte").read_text()
         model = (ROOT / "frontend/src/lib/astronomy/sky-model.ts").read_text()

@@ -17,18 +17,22 @@
   let canvas = $state<HTMLCanvasElement | null>(null);
   let dimensions = $state({ width: 0, height: 0 });
   const observer = $derived(observerCoordinates(latitude, longitude));
+  const exampleLocation = $derived(observer?.latitude === 51.4779 && observer?.longitude === 0);
   const when = $derived(localObservationDate(date, time));
 
   const scene = { latitude: 51.4779, sidereal: 0 };
   let painted = false;
   let tween: gsap.core.Tween | null = null;
+  let latestTarget: { latitude: number; sidereal: number } | null = null;
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'локальный';
 
   function paint() {
     if (!canvas || !dimensions.width || !dimensions.height) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const { width, height } = dimensions;
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    // Keep the backing bitmap bounded on HiDPI and ultrawide monitors.
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2, 1536 / Math.max(width, height));
     const bufferWidth = Math.round(width * pixelRatio);
     const bufferHeight = Math.round(height * pixelRatio);
     if (canvas.width !== bufferWidth || canvas.height !== bufferHeight) {
@@ -157,8 +161,19 @@
       if (box) dimensions = { width: Math.round(box.width), height: Math.round(box.height) };
     });
     resize.observe(viewport);
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const settleForReducedMotion = () => {
+      if (!motion.matches || !latestTarget) return;
+      tween?.kill();
+      tween = null;
+      scene.latitude = latestTarget.latitude;
+      scene.sidereal = latestTarget.sidereal;
+      paint();
+    };
+    motion.addEventListener('change', settleForReducedMotion);
     return () => {
       resize.disconnect();
+      motion.removeEventListener('change', settleForReducedMotion);
       tween?.kill();
     };
   });
@@ -169,6 +184,7 @@
     const size = dimensions;
     if (!targetObserver || !dateTime || !size.width || !size.height || !canvas) return;
     const targetSidereal = siderealDegrees(dateTime, targetObserver.longitude);
+    latestTarget = { latitude: targetObserver.latitude, sidereal: targetSidereal };
     tween?.kill();
     // Same star field follows a continuous forward trajectory when time
     // changes. Interrupted transitions retarget from the actual last frame.
@@ -193,54 +209,66 @@
   });
 </script>
 
-<section class="flex min-h-0 min-w-0 flex-1 flex-col bg-kira-bg p-5" aria-label="Карта звёздного неба" data-kira-sky-map>
-  <header class="shrink-0 border-l-2 border-kira-accent pl-3">
-    <p class="text-[9px] font-extrabold tracking-[0.17em] text-kira-accent">04 / CELESTIAL ATLAS</p>
-    <h2 class="mt-1 text-[20px] font-extrabold tracking-tight">Звёздное небо</h2>
-    <p class="mt-1 text-[11px] text-kira-muted">Над горизонтом · {isoDate(date)} · время системы</p>
+<section class="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-kira-bg max-[760px]:min-h-[640px] max-[760px]:w-full max-[760px]:flex-none max-[760px]:overflow-visible"
+  aria-label="Карта звёздного неба" data-kira-sky-map>
+  <!-- Editorial Black hero, Prussian Blue workbench, Black factual footer. -->
+  <header class="shrink-0 bg-kira-bg px-6 pb-4 pt-5">
+    <div class="border-l-2 border-kira-accent pl-3">
+      <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">04 / CELESTIAL ATLAS</p>
+      <h2 class="mt-1 text-[24px] font-extrabold leading-tight tracking-tight">Звёздное небо</h2>
+      <p class="mt-1 text-[12px] text-kira-muted">{isoDate(date)} · карта над горизонтом</p>
+    </div>
   </header>
 
-  <div class="mt-4 flex flex-wrap items-end gap-3 border-y border-kira-muted/15 py-3">
-    <label class="flex flex-col gap-1 text-[10px] font-semibold text-kira-muted">
-      Широта, °
-      <input class="w-[95px] border border-kira-muted/25 bg-kira-surface px-2 py-2 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
-        aria-label="Широта наблюдателя" type="text" inputmode="decimal" bind:value={latitude} />
-    </label>
-    <label class="flex flex-col gap-1 text-[10px] font-semibold text-kira-muted">
-      Долгота, ° E
-      <input class="w-[95px] border border-kira-muted/25 bg-kira-surface px-2 py-2 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
-        aria-label="Долгота наблюдателя" type="text" inputmode="decimal" bind:value={longitude} />
-    </label>
-    <label class="flex flex-col gap-1 text-[10px] font-semibold text-kira-muted">
-      Время системы
-      <input class="w-[104px] border border-kira-muted/25 bg-kira-surface px-2 py-2 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
-        aria-label="Время наблюдения" type="time" bind:value={time} />
-    </label>
-    <button type="button" onclick={() => { latitude = '51.4779'; longitude = '0'; }}
-      class="border border-kira-muted/25 px-2 py-2 text-[10px] font-bold text-kira-accent hover:border-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">
-      ГРИНВИЧ
-    </button>
+  <div class="flex min-h-[395px] flex-1 flex-col bg-kira-surface px-5 pb-4 pt-4">
+    <div class="shrink-0 border-b border-kira-muted/20 pb-4">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <p class="text-[10px] font-bold tracking-[0.12em] text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
+        <p class="text-[10px] font-semibold text-kira-accent">{exampleLocation ? 'ДЕМО / ГРИНВИЧ' : 'КООРДИНАТЫ / ВВОД'}</p>
+      </div>
+      <div class="mt-3 flex flex-wrap items-end gap-x-3 gap-y-3">
+        <label class="flex min-w-[100px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
+          Широта, °
+          <input class="w-full min-w-0 border border-kira-muted/30 bg-kira-bg px-3 py-2 text-[13px] tabular-nums text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+            aria-label="Широта наблюдателя" type="text" inputmode="decimal" bind:value={latitude} />
+        </label>
+        <label class="flex min-w-[100px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
+          Долгота, ° E
+          <input class="w-full min-w-0 border border-kira-muted/30 bg-kira-bg px-3 py-2 text-[13px] tabular-nums text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+            aria-label="Долгота наблюдателя" type="text" inputmode="decimal" bind:value={longitude} />
+        </label>
+        <label class="flex min-w-[105px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
+          Время
+          <input class="w-full min-w-0 border border-kira-muted/30 bg-kira-bg px-3 py-2 text-[13px] tabular-nums text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+            aria-label="Время наблюдения" type="time" bind:value={time} />
+        </label>
+        <button type="button" onclick={() => { latitude = '51.4779'; longitude = '0'; }}
+          class="min-h-9 shrink-0 border border-kira-muted/30 px-3 py-2 text-[11px] font-bold tracking-wide text-kira-accent hover:border-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"
+          aria-label="Вернуть демонстрационные координаты Гринвича">
+          СБРОС
+        </button>
+      </div>
+      <p class="mt-3 text-[11px] leading-relaxed text-kira-muted">
+        {exampleLocation ? 'Координаты Гринвича для примера.' : 'Координаты заданы вручную.'} Время пояса компьютера: <span class="font-semibold text-kira-text">{timeZone}</span>. Восток и север: +.
+      </p>
+    </div>
+
+    <div bind:this={viewport} class="relative mt-4 min-h-[270px] flex-1 overflow-hidden bg-kira-bg">
+      {#if observer && when}
+        <div class="h-full w-full" role="img"
+          aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}>
+          <canvas bind:this={canvas} class="block h-full w-full" aria-hidden="true"></canvas>
+        </div>
+      {:else}
+        <div class="flex h-full items-center justify-center px-8 text-center text-[12px] text-kira-muted" role="status">
+          Проверьте координаты (широта ±90°, долгота ±180°), время и год (1900–2100).
+        </div>
+      {/if}
+    </div>
+    <p class="mt-3 text-[11px] font-medium text-kira-muted">N ↑ · E → · S ↓ · W ← <span class="ml-2">· Звёзды до 5,35 mag</span></p>
   </div>
 
-  <p class="mt-2 text-[10px] text-kira-muted">
-    Пример: Гринвич, не геолокация. Время соответствует часовому поясу компьютера. Широта: север +; долгота: восток +.
-  </p>
-
-  <div bind:this={viewport} class="relative mt-3 min-h-[270px] flex-1 overflow-hidden border border-kira-muted/15 bg-kira-bg">
-    {#if observer && when}
-      <div class="h-full w-full" role="img"
-        aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}>
-        <canvas bind:this={canvas} class="block h-full w-full" aria-hidden="true"></canvas>
-      </div>
-    {:else}
-      <div class="flex h-full items-center justify-center px-8 text-center text-[12px] text-kira-muted" role="status">
-        Проверьте координаты (широта ±90°, долгота ±180°), время и год (1900–2100).
-      </div>
-    {/if}
-  </div>
-
-  <footer class="mt-3 shrink-0 space-y-1 text-[10px] leading-relaxed text-kira-muted">
-    <p>Звёзды до 5,35 mag · созвездия · север вверху · восток справа.</p>
-    <p>Каталог XHIP/Hipparcos; линии d3-celestial. Проекция и вращение приближённые (J2000). Не для точной навигации.</p>
+  <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[10px] leading-relaxed text-kira-muted">
+    XHIP / Hipparcos · схемы созвездий d3-celestial · J2000. Приближённая карта, не для навигации.
   </footer>
 </section>

@@ -170,6 +170,39 @@ official visual language of Kira Desktop.
   another process's CPU history. No new Core JSON-RPC methods or
   user-data collection are introduced.
 
+### Detached Calendar · responsive editorial observatory (2026-11)
+
+Promoted Calendar is a real, resizable Niri window. The compact popup
+remains the original Chronology / Date Index / Selected Date widget with
+unchanged height, keyboard grid and TENET entrance. The detached window
+preserves the same live WebView and selected date, and adds an **offline
+celestial atlas** on the right. Calendar rail is 370px at comfortable
+desktop widths. Below a 760px viewport width the two columns **stack**
+in one vertically scrollable surface; the whole date grid and atlas remain
+available even when the user resizes the Niri window to narrow dimensions.
+
+The atlas follows the same three editorial materials as other Kira
+widgets: **Black heading** (selected date and observation context),
+**Prussian Blue workbench** (editable coordinates, OS time zone, sky
+visualization on Black), and **Black provenance footer**. Orange is used
+sparingly for the signature and truthful observation mode, not filled
+cards or an unrelated decorative gradient. Input focus remains visible
+and controls have readable dimensions. Explicit location fields default
+to a visibly marked **Greenwich sample**, never implied location access.
+When the numbers change, the sample marker changes to manual input;
+the computer's time zone is shown separately from observer longitude.
+
+The sky is an informational depiction, not an ECharts metric chart:
+one bounded 2D Canvas plots the locally bundled XHIP bright stars and
+illustrated constellation figures, with no network or periodic loop.
+HiDPI backing width is capped at 1536px. The same star field interpolates
+a single **FORWARD** sidereal trajectory toward the newly chosen date/time
+or observer latitude (the user's input is the contact event), cancelled
+and redirected on repeated edits. No invented retrospective fragment
+path is added to factual sky positions. Reduced-motion changes immediately
+settle on the target geometry and listeners/GSAP tweens are disposed
+on unmount. Real-world Niri resize and focus visual QA remains necessary.
+
 ### TENET Motion System · обязательный закон анимаций
 
 **Единая обязательная спецификация:** [TENET Motion System](TENET_MOTION.md).

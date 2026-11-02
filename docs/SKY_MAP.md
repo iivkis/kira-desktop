@@ -4,13 +4,20 @@
 
 The date picker remains a **small 420px popup**; the sky atlas is mounted
 **only after Calendar is promoted to an ordinary Niri window** (1040×720
-default, resizable). It is a 2D azimuthal equidistant chart of the sky above
+default, resizable). At wide sizes, the existing 370px date rail sits
+beside the atlas; at viewport widths <= 760px the rail and atlas stack
+vertically and the whole window scrolls without horizontal clipping.
+Black editorial header, Prussian Blue observation workbench and Black
+source footer reuse the canonical Kira palette. The atlas canvas is capped
+at 1536 physical pixels across its longest dimension to avoid large
+HiDPI allocations. It is a 2D azimuthal equidistant chart of the sky above
 the observer's horizon. The same selected calendar date is passed directly
 to the atlas, so date selection immediately changes the depicted sky.
 Changing date, time or latitude updates the same canvas; GSAP interpolates
 sidereal rotation (shortest circular path), cancellable by any new update.
-Reduced motion draws the new geometry immediately. There is no continuous
-animation loop, remote fetch, browser geolocation prompt or external CDN.
+Reduced motion draws the new geometry immediately, including if the
+preference changes mid-tween. There is no continuous animation loop,
+remote fetch, browser geolocation prompt or external CDN.
 
 Observer coordinates are **explicitly editable**. First opening uses a
 **clearly labeled Greenwich example** at latitude +51.4779°, longitude 0°,
@@ -67,8 +74,10 @@ bounds, coordinate validation, Greenwich sidereal angle at J2000,
 zenith/horizon cardinal projection, date/time and shortest-path wrap.
 The Python calendar contract checks that the atlas is gated on the
 generation-matched detached-window event and does not request geolocation
-or runtime network access. Existing overlay smoke tests still validate
-the lightweight calendar popup. For actual visual QA, start nested Niri,
+or runtime network access. Browser smoke additionally opens a real
+detached calendar at desktop (1100px) and narrow (680px) widths, verifies
+the responsive layout, selected-date change and Canvas paint. Existing
+overlay smoke tests still validate the lightweight calendar popup. For actual visual QA, start nested Niri,
 open Calendar, select a date, promote to an ordinary window and verify:
 the star field renders; changing date/time rotates it; changing
 latitude/longitude changes visible constellations; closing the window

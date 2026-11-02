@@ -121,12 +121,14 @@
   data-kira-ui-root
   use:tenetCalendarReveal
   class={'kira-calendar-scroll relative flex min-h-0 w-full bg-kira-bg text-kira-text ' +
-    (detached ? 'h-full flex-row overflow-hidden' : 'h-auto flex-col overflow-y-auto')}
+    (detached
+      ? 'h-full flex-row overflow-hidden max-[760px]:flex-col max-[760px]:overflow-y-auto max-[760px]:overflow-x-hidden'
+      : 'h-auto flex-col overflow-y-auto')}
   data-calendar-mode={detached ? 'window' : 'widget'}
   aria-label="Kira Calendar"
 >
-  <div class={detached
-    ? 'flex h-full w-[370px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20'
+  <div data-calendar-rail class={detached
+    ? 'flex h-full w-[370px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20 max-[760px]:h-auto max-[760px]:w-full max-[760px]:overflow-visible max-[760px]:border-r-0 max-[760px]:border-b'
     : 'flex w-full min-h-0 flex-col'}>
   <!-- Clock is the identity anchor; native host remains the only window owner. -->
   <header data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-3 pt-4">
