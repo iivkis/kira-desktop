@@ -18,7 +18,7 @@ NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class DetailedHealthContractTests(unittest.TestCase):
-    def test_same_warm_webview_hosts_calendar_and_system(self):
+    def test_warm_pool_hosts_calendar_and_system_independently(self):
         self.assertIn('register_script_message_handler("kiraSystem", None)', HOST)
         self.assertIn('if value.to_string() == "toggle"', HOST)
         self.assertIn("calendar::toggle_system(", HOST)
@@ -29,8 +29,8 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('set_namespace(Some("kira-overlay"))', OVERLAY)
         self.assertIn('configure_webview_popup(&window, 420, 1)', OVERLAY)
         self.assertIn("self.active.set(Some(kind))", OVERLAY)
-        self.assertIn("state.show(Surface::System)", OVERLAY)
-        self.assertIn("state.show(Surface::Calendar)", OVERLAY)
+        self.assertIn("view.show(Surface::System)", OVERLAY)
+        self.assertIn("view.show(Surface::Calendar)", OVERLAY)
         self.assertIn("kira:overlay:show", OVERLAY)
         self.assertIn("kira:overlay:hide", OVERLAY)
         self.assertIn("mount(SystemWidget", ENTRY)
