@@ -113,6 +113,17 @@ official visual language of Kira Desktop.
   click's direction. Every digit returns to its exact original position;
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
+- **Dock (first working increment):** A permanent, centered 72px bottom
+  layer-shell surface with no exclusive zone. Its KIRA button opens Launcher.
+  Up to eight real GIO desktop apps are shown with bounded native icon
+  resolution and launched through trusted AppInfo IDs. Without configured
+  pins the first eight alphabetical catalog entries appear (not fabricated
+  favorites). Set `KIRA_DOCK_APPS="Firefox,Terminal,Files"` to select exact
+  case-insensitive display names in the requested order; unmatched names are
+  omitted. `KIRA_DOCK_DISABLE=1` disables the surface. Black, Prussian Blue
+  and Orange communicate hierarchy, focus and hover without pretending
+  that an app is running. KDL pins, real Niri window state, per-output
+  behavior and autohide remain future milestones.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   The prominent search field is a keyboard-focused combobox with an
   `aria-activedescendant` link to the active app in the result list.

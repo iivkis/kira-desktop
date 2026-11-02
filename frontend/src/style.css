@@ -62,6 +62,15 @@
      * keep their own list scrollers inside a constrained flex column. */
   }
 
+  /* Dock is a separate 72px bottom Wayland surface, not a viewport-sized bar. */
+  html[data-kira-surface="dock"],
+  html[data-kira-surface="dock"] body,
+  html[data-kira-surface="dock"] #app {
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   /* Calendar preserves all six ISO weeks within a height-capped native
    * overlay. Hide only the scrollbar chrome, never the scroll behavior. */
   .kira-calendar-scroll {

@@ -243,6 +243,6 @@ are not substitutes for a real visual review. See
 
 ## Current limitations
 
-The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
+The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, advanced Dock behavior and third-party widgets remain future milestones. A first bottom Dock now launches real GIO apps and opens Launcher. Set `KIRA_DOCK_APPS="Firefox,Terminal,Files"` for up to eight pinned display-name matches, or `KIRA_DOCK_DISABLE=1` to hide it. KDL pins, auto-hide and real Niri running-window indicators are not implemented yet.
 
 This project is not ready to replace a working desktop environment.

@@ -1,6 +1,7 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
+mod dock;
 mod launcher;
 mod native_ui;
 mod process_monitor;
@@ -367,6 +368,11 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
+
+        // Dock owns a distinct bottom Wayland surface and trusted GIO bridge.
+        if env::var("KIRA_DOCK_DISABLE").ok().as_deref() != Some("1") {
+            dock::start(app, &html);
+        }
 
         // Warm the isolated Calendar WebKit process after the Top Bar starts.
         // The popup stays unmapped until requested; initial startup is not

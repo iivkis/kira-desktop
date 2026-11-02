@@ -229,7 +229,7 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraDock?: Bridge } };
   }
 }
 
@@ -396,6 +396,69 @@ export function launchDesktopApp(generation: number, id: number): boolean {
 
 export function closeLauncherOverlay(): void {
   sendCalendarUi('close');
+}
+
+/** Dedicated, navigation-locked Dock bridge. No executable paths or shell. */
+function sendDockCommand(message: string): boolean {
+  const handler = typeof window === 'undefined'
+    ? undefined : window.webkit?.messageHandlers?.kiraDock;
+  if (!handler) return false;
+  try { handler.postMessage(message); return true; }
+  catch { return false; }
+}
+
+export interface DockCatalog {
+  apps: LauncherApp[];
+  favorites: string[];
+}
+
+export function onDockCatalog(callback: (data: DockCatalog) => void): () => void {
+  return onNativeEvent('kira:dock:apps', (value): value is DockCatalog =>
+    isRecord(value) && Array.isArray(value.apps) && value.apps.length <= 1024 &&
+    value.apps.every((app: unknown) => isRecord(app) &&
+      Number.isSafeInteger(app.id) && (app.id as number) >= 0 && (app.id as number) < 1024 &&
+      typeof app.name === 'string' && app.name.length <= 120 &&
+      typeof app.description === 'string' && app.description.length <= 240) &&
+    Array.isArray(value.favorites) && value.favorites.length <= 8 &&
+    value.favorites.every((name: unknown) =>
+      typeof name === 'string' && name.length <= 120),
+  callback);
+}
+
+export function onDockIcons(callback: (icons: LauncherIcons) => void): () => void {
+  return onNativeEvent('kira:dock:icons', (value): value is LauncherIcons =>
+    isRecord(value) && Array.isArray(value.icons) && value.icons.length <= 8 &&
+    value.icons.every((icon: unknown) => isRecord(icon) &&
+      Number.isSafeInteger(icon.id) && (icon.id as number) >= 0 && (icon.id as number) < 1024 &&
+      (icon.data_url === null ||
+        (typeof icon.data_url === 'string' && icon.data_url.length <= 180_000 &&
+          iconDataUri.test(icon.data_url)))),
+  callback);
+}
+
+export function onDockError(callback: (message: string) => void): () => void {
+  return onNativeEvent('kira:dock:error', (value): value is { message: string } =>
+    isRecord(value) && typeof value.message === 'string' && value.message.length <= 180,
+    value => callback(value.message));
+}
+
+export function requestDockCatalog(): boolean {
+  return sendDockCommand('catalog');
+}
+
+export function requestDockIcons(ids: number[]): boolean {
+  if (!ids.length || ids.length > 8 || new Set(ids).size !== ids.length ||
+      !ids.every(id => Number.isSafeInteger(id) && id >= 0 && id < 1024)) return false;
+  return sendDockCommand('icons:' + ids.join(','));
+}
+
+export function launchDockApp(id: number): boolean {
+  if (!Number.isSafeInteger(id) || id < 0 || id >= 1024) return false;
+  return sendDockCommand('launch:' + id);
+}
+
+export function openLauncherFromDock(): boolean {
+  return sendDockCommand('open');
 }
 
 /** Open or close the shared Svelte read-only system monitor. */

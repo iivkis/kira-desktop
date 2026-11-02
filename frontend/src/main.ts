@@ -3,6 +3,7 @@ import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
+import DockWidget from './lib/components/DockWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
@@ -25,6 +26,15 @@ report('Svelte entrypoint evaluating; document.readyState=' + document.readyStat
 whenDocumentReady(document, () => {
   report('Svelte bootstrap after DOMContentLoaded; readyState=' + document.readyState);
   const target = document.getElementById('app');
+  if (document.documentElement.dataset.kiraSurface === 'dock') {
+    const mounted = startUi(target, (container) => {
+      mount(DockWidget, { target: container });
+      flushSync();
+    }, report);
+    Reflect.set(window, '__kiraMountReturned', mounted);
+    return;
+  }
+
   if (document.documentElement.dataset.kiraSurface === 'calendar') {
     if (!target) {
       report('Calendar bootstrap failure: #app missing');
