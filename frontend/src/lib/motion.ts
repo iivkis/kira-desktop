@@ -354,6 +354,9 @@ export function tenetReflow(container: HTMLElement | undefined, mutate: () => vo
       });
       reflows.set(container, { tween, release });
       preference.addEventListener('change', onPreference);
+      // An unchanged keyed list can produce a zero-length FLIP scene.
+      // Do not retain its listeners or entries after a synchronous settle.
+      if (tween.duration() === 0) release();
     } catch {
       release();
       // Keep the already-committed user action, even if the FLIP plugin fails.
