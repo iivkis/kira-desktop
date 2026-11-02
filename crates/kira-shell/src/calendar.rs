@@ -1,8 +1,8 @@
-//! One warm WebKit layer-shell host shared by the Svelte Calendar and System.
-//! GTK owns one window, trusted IPC and clipboard; Svelte renders both widgets.
+//! Bounded, reusable GTK/WebKit popup hosts for concurrent trusted widgets.
+//! Each active Calendar/System/Launcher has its own window and IPC manager.
+use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
-use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::rc::Rc;
 use std::time::{Duration, Instant};
 
@@ -44,7 +44,12 @@ impl OverlayPool {
             windows: RefCell::new(HashMap::new()),
         });
         if let Some(id) = pool.scheduler.borrow_mut().prewarm_one(Instant::now()) {
-            let view = build(&pool.application, pool.document.clone(), id, Rc::downgrade(&pool));
+            let view = build(
+                &pool.application,
+                pool.document.clone(),
+                id,
+                Rc::downgrade(&pool),
+            );
             pool.windows.borrow_mut().insert(id, view);
         }
         let weak = Rc::downgrade(&pool);
@@ -64,7 +69,12 @@ impl OverlayPool {
             Reservation::Existing(id) => (id, true),
             Reservation::Reused(id) => (id, false),
             Reservation::Created(id) => {
-                let view = build(&self.application, self.document.clone(), id, Rc::downgrade(self));
+                let view = build(
+                    &self.application,
+                    self.document.clone(),
+                    id,
+                    Rc::downgrade(self),
+                );
                 self.windows.borrow_mut().insert(id, view);
                 (id, false)
             }
@@ -73,7 +83,11 @@ impl OverlayPool {
                 return None;
             }
         };
-        self.windows.borrow().get(&id).cloned().map(|view| (view, existing))
+        self.windows
+            .borrow()
+            .get(&id)
+            .cloned()
+            .map(|view| (view, existing))
     }
 
     fn active(&self, kind: Surface) -> Option<Rc<CalendarOverlay>> {
@@ -153,13 +167,17 @@ impl CalendarOverlay {
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            self.window.set_margin(Edge::Right,
-                crate::native_ui::popup_right_margin(&self.window, kind == Surface::System));
+            self.window.set_margin(
+                Edge::Right,
+                crate::native_ui::popup_right_margin(&self.window, kind == Surface::System),
+            );
         }
     }
 
     fn hide(&self) {
-        if !self.requested.replace(false) { return; }
+        if !self.requested.replace(false) {
+            return;
+        }
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
             model.set_pulse_active(false);
@@ -230,7 +248,10 @@ impl CalendarOverlay {
         self.request_mount();
         eprintln!(
             "kira-shell: Pooled popup {} slot {} generation {} (host ready: {})",
-            kind.name(), self.id, generation, self.host_ready.get()
+            kind.name(),
+            self.id,
+            generation,
+            self.host_ready.get()
         );
         // A dead renderer should not leave an invisible focus-stealing popup.
         let generation = self.generation.get();
@@ -853,7 +874,12 @@ fn calendar_document(html: &str) -> Option<String> {
         .then(|| html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
 }
 
-fn build(application: &gtk::Application, document: String, id: u32, pool: std::rc::Weak<OverlayPool>) -> Rc<CalendarOverlay> {
+fn build(
+    application: &gtk::Application,
+    document: String,
+    id: u32,
+    pool: std::rc::Weak<OverlayPool>,
+) -> Rc<CalendarOverlay> {
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
     window.set_decorated(false);
@@ -916,7 +942,9 @@ fn build(application: &gtk::Application, document: String, id: u32, pool: std::r
     let weak = Rc::downgrade(&overlay);
     view.connect_load_failed(move |_, event, uri, error| {
         eprintln!("kira-shell: Calendar WebKit load failed ({event:?}) for {uri}: {error}");
-        if let Some(state) = weak.upgrade() && !state.disposed.get() {
+        if let Some(state) = weak.upgrade()
+            && !state.disposed.get()
+        {
             state.host_ready.set(false);
             state.hide();
         }
@@ -925,7 +953,9 @@ fn build(application: &gtk::Application, document: String, id: u32, pool: std::r
     let weak = Rc::downgrade(&overlay);
     view.connect_web_process_terminated(move |_, reason| {
         eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
-        if let Some(state) = weak.upgrade() && !state.disposed.get() {
+        if let Some(state) = weak.upgrade()
+            && !state.disposed.get()
+        {
             state.host_ready.set(false);
             state.hide();
             state.view.load_html(&state.document, None);
@@ -996,7 +1026,9 @@ pub fn prewarm(application: &gtk::Application, html: &str) {
 
 pub fn dismiss(_application: &gtk::Application) -> bool {
     POOL.with(|cache| {
-        let Some(pool) = cache.borrow().as_ref().cloned() else { return false };
+        let Some(pool) = cache.borrow().as_ref().cloned() else {
+            return false;
+        };
         if let Some(view) = pool.active(Surface::Calendar) {
             view.hide();
             return true;
@@ -1007,7 +1039,9 @@ pub fn dismiss(_application: &gtk::Application) -> bool {
 
 pub fn dismiss_system(_application: &gtk::Application) -> bool {
     POOL.with(|cache| {
-        let Some(pool) = cache.borrow().as_ref().cloned() else { return false };
+        let Some(pool) = cache.borrow().as_ref().cloned() else {
+            return false;
+        };
         if let Some(view) = pool.active(Surface::System) {
             view.hide();
             return true;
@@ -1017,8 +1051,12 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
 }
 
 pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else { return };
-    let Some((view, existing)) = pool.acquire(Surface::Calendar) else { return };
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    let Some((view, existing)) = pool.acquire(Surface::Calendar) else {
+        return;
+    };
     if existing {
         view.hide();
     } else {
@@ -1027,8 +1065,12 @@ pub fn toggle(application: &gtk::Application, html: &str) {
 }
 
 pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else { return };
-    let Some((view, existing)) = pool.acquire(Surface::Launcher) else { return };
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    let Some((view, existing)) = pool.acquire(Surface::Launcher) else {
+        return;
+    };
     if existing {
         view.window.present();
     } else {
@@ -1044,8 +1086,12 @@ pub fn toggle_system(
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(pool) = ensure(application, html) else { return };
-    let Some((view, existing)) = pool.acquire(Surface::System) else { return };
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    let Some((view, existing)) = pool.acquire(Surface::System) else {
+        return;
+    };
     if existing {
         view.hide();
         return;

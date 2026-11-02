@@ -66,7 +66,10 @@ impl WebviewScheduler {
         if self.slots.len() == MAX_POPUP_VIEWS {
             return Reservation::Full;
         }
-        self.next_id = self.next_id.checked_add(1).expect("bounded popup slot identifiers");
+        self.next_id = self
+            .next_id
+            .checked_add(1)
+            .expect("bounded popup slot identifiers");
         let id = self.next_id;
         self.slots.push(Slot {
             id,
@@ -105,9 +108,13 @@ impl WebviewScheduler {
     }
 
     pub fn active_slot(&self, surface: Surface) -> Option<u32> {
-        self.slots.iter().find(|s| s.owner == Some(surface)).map(|s| s.id)
+        self.slots
+            .iter()
+            .find(|s| s.owner == Some(surface))
+            .map(|s| s.id)
     }
 
+    #[cfg(test)]
     pub fn is_active(&self, id: u32) -> bool {
         self.slots.iter().any(|s| s.id == id && s.owner.is_some())
     }
@@ -176,7 +183,10 @@ mod tests {
         assert!(s.release(1, now + Duration::from_secs(1)));
         assert!(!s.release(1, now + Duration::from_secs(2)));
         assert_eq!(s.active_slot(Surface::System), Some(2));
-        assert_eq!(s.reserve(Surface::Launcher, now + Duration::from_secs(2)), Reservation::Reused(1));
+        assert_eq!(
+            s.reserve(Surface::Launcher, now + Duration::from_secs(2)),
+            Reservation::Reused(1)
+        );
         assert_eq!(s.active_count(), 2);
     }
 
@@ -194,7 +204,10 @@ mod tests {
         assert_eq!(s.expired_idle(now + Duration::from_secs(46)), vec![1]);
         assert!(s.is_active(3));
         assert_eq!(s.resident_count(), 2);
-        assert_eq!(s.reserve(Surface::System, now + Duration::from_secs(47)), Reservation::Reused(2));
+        assert_eq!(
+            s.reserve(Surface::System, now + Duration::from_secs(47)),
+            Reservation::Reused(2)
+        );
     }
 
     #[test]
