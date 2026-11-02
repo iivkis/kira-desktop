@@ -104,9 +104,9 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       onComplete: settle,
     });
     forward.fromTo(content,
-      { opacity: 0.18, x: 16 * direction, y: 28, scale: 0.975 },
+      { opacity: 0.18, x: 16 * direction, y: 28 },
       {
-        opacity: 1, x: 0, y: 0, scale: 1,
+        opacity: 1, x: 0, y: 0,
         duration: 0.84, stagger, ease: 'power3.out',
       }, 0);
 
