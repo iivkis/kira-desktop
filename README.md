@@ -246,3 +246,7 @@ are not substitutes for a real visual review. See
 The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
 
 This project is not ready to replace a working desktop environment.
+
+## System Settings
+
+The gear icon in the Top Bar opens **Kira Settings**. Settings starts as a fixed 600px-wide popup with a section selector; the header's pop-out button promotes the same live WebView to a normal Niri window, where navigation moves to a permanent sidebar. The first implemented page, **About System**, reads the host's OS, kernel, CPU, RAM, session and Shell version from native Linux sources. Other sections are clearly marked as upcoming. The panel is read-only and reports unavailable fields instead of inventing values.

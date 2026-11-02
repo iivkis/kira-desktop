@@ -9,6 +9,8 @@ pub enum PopupDock {
 }
 
 pub const PREFERRED_POPUP_WIDTH: i32 = 420;
+// Settings has more information density but remains a fixed-width popup.
+pub const SETTINGS_POPUP_WIDTH: i32 = 600;
 const OUTER_MARGIN: i32 = 12;
 
 /// Launcher is centered; Calendar and System share one original right dock.
@@ -24,6 +26,10 @@ pub fn choose_dock(kind: Surface, _right_occupied: bool) -> PopupDock {
 /// No active-window columns: normal Niri windows manage their own layout.
 pub fn popup_width(output_width: i32, _active_count: usize, _launcher_active: bool) -> i32 {
     PREFERRED_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
+}
+
+pub fn settings_popup_width(output_width: i32) -> i32 {
+    SETTINGS_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
 }
 
 #[cfg(test)]
@@ -45,5 +51,8 @@ mod tests {
         assert_eq!(popup_width(1264, 3, true), 420);
         assert_eq!(popup_width(800, 4, true), 420);
         assert_eq!(popup_width(400, 3, true), 376);
+        assert_eq!(settings_popup_width(1264), 600);
+        assert_eq!(settings_popup_width(800), 600);
+        assert_eq!(settings_popup_width(480), 456);
     }
 }

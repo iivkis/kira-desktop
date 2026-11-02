@@ -3,6 +3,7 @@ import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
+import SettingsWidget from './lib/components/SettingsWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, detachOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
@@ -30,7 +31,7 @@ whenDocumentReady(document, () => {
       report('Calendar bootstrap failure: #app missing');
       return;
     }
-    let requestedKind: 'calendar' | 'system' | 'launcher' = 'calendar';
+    let requestedKind: 'calendar' | 'system' | 'launcher' | 'settings' = 'calendar';
     let visibleGeneration: number | null = null;
     let lastGeneration = 0;
     const host = createLazyWidget(
@@ -66,13 +67,19 @@ whenDocumentReady(document, () => {
                     onTab: (tab: 'overview' | 'processes') => setSystemMonitorTab(lease, tab),
                   },
                 })
-                : mount(LauncherWidget, { target, props: {
-                    onClose: () => closeLauncherOverlay(lease),
-                    onPopout: () => detachOverlay(lease),
-                    generation: lease,
-                  } });
+                : kind === 'settings'
+                  ? mount(SettingsWidget, { target, props: {
+                      onClose: () => closeCalendarOverlay(lease),
+                      onPopout: () => detachOverlay(lease),
+                      generation: lease,
+                    } })
+                  : mount(LauncherWidget, { target, props: {
+                      onClose: () => closeLauncherOverlay(lease),
+                      onPopout: () => detachOverlay(lease),
+                      generation: lease,
+                    } });
             flushSync();
-            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
+            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : kind === 'settings' ? 'Kira Settings' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {
               throw new Error('Svelte ' + kind + ' root missing after mount');
             }
@@ -106,7 +113,7 @@ whenDocumentReady(document, () => {
     });
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number; maxHeight: number }>).detail;
-      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||
+      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher' && detail?.kind !== 'settings') ||
           !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
           detail.generation > 0xffffffff || detail.generation <= lastGeneration ||
           !Number.isSafeInteger(detail.maxHeight) || detail.maxHeight < 1 ||

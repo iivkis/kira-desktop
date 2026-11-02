@@ -229,14 +229,14 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge } };
   }
 }
 
 /** Only fixed commands are exposed to trusted Svelte components. Keep host
  * bridge failures non-throwing so an offline overlay does not crash the bar.
  */
-function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem', command: 'open' | 'toggle'): boolean {
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem' | 'kiraSettings', command: 'open' | 'toggle'): boolean {
   const channel = typeof window === 'undefined'
     ? undefined
     : window.webkit?.messageHandlers?.[channelName];
@@ -421,6 +421,47 @@ export function launchDesktopApp(generation: number, id: number): boolean {
 
 export function closeLauncherOverlay(generation: number): void {
   if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
+}
+
+/** Toggle the single Settings surface from the Top Bar. */
+export function toggleSettings(): boolean {
+  return postNativeCommand('kiraSettings', 'toggle');
+}
+
+/** About System is an immutable read-only native Linux snapshot. */
+export interface SettingsAbout {
+  os_name: string | null;
+  kernel: string | null;
+  architecture: string;
+  hostname: string | null;
+  cpu_model: string | null;
+  cpu_threads: number | null;
+  memory_total_kib: number | null;
+  session: string | null;
+  shell_version: string;
+}
+
+function isSettingsAbout(value: unknown): value is SettingsAbout {
+  if (!isRecord(value)) return false;
+  const optionalText = (v: unknown) => v === null || (typeof v === 'string' && v.length <= 180);
+  const positiveNumber = (v: unknown) => v === null || (Number.isSafeInteger(v) &&
+    typeof v === 'number' && v > 0);
+  return optionalText(value.os_name) && optionalText(value.kernel) &&
+    typeof value.architecture === 'string' && value.architecture.length <= 40 &&
+    optionalText(value.hostname) && optionalText(value.cpu_model) &&
+    positiveNumber(value.cpu_threads) && positiveNumber(value.memory_total_kib) &&
+    optionalText(value.session) &&
+    typeof value.shell_version === 'string' && value.shell_version.length <= 40;
+}
+
+export function onSettingsAbout(
+  generation: number,
+  callback: (data: SettingsAbout) => void,
+): () => void {
+  return onNativeEvent('kira:settings:about',
+    (value): value is { generation: number; about: SettingsAbout } =>
+      isRecord(value) && value.generation === generation && isSettingsAbout(value.about),
+    ({ about }) => callback(about));
 }
 
 /** Open or close the shared Svelte read-only system monitor. */

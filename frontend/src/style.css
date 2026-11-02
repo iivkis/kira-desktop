@@ -146,6 +146,20 @@
   }
 }
 
+/* Settings is intentionally wider than other widgets but has a stable
+ * size. After promotion to Niri it occupies the full resizable WebView. */
+.kira-settings {
+  height: min(560px, var(--kira-overlay-max-height, 560px));
+}
+html[data-kira-detached="true"] .kira-settings {
+  height: 100%;
+  max-height: 100vh;
+}
+.kira-settings-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--kira-color-muted) transparent;
+}
+
 /* A moving solid selection must not turn its new label into black-on-black.
  * Keep actual selection/ARIA immediate; switch foreground contrast only while
  * its ONE orange background is travelling between physical positions.

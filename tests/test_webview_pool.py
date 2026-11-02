@@ -69,6 +69,17 @@ class WebviewPoolContracts(unittest.TestCase):
         for name in ("CalendarWidget.svelte", "SystemWidget.svelte", "LauncherWidget.svelte"):
             self.assertIn("WindowControls", (ROOT / "frontend/src/lib/components" / name).read_text())
 
+    def test_settings_reuses_the_same_pool_and_native_window_lifecycle(self):
+        self.assertIn("Surface::Settings", HOST)
+        self.assertIn("pub fn toggle_settings(", HOST)
+        self.assertIn("view.show(Surface::Settings)", HOST)
+        self.assertIn("fn send_settings_about(&self)", HOST)
+        self.assertIn("kira:settings:about", HOST)
+        self.assertIn("self.settings_about.borrow_mut().take()", HOST)
+        self.assertIn('Surface::Settings => "Kira Settings"', HOST)
+        self.assertIn("normal.set_default_size(940, 700)", HOST)
+        self.assertIn("settings_popup_width(", HOST)
+
     def test_generation_isolation_and_safe_native_bridge(self):
         self.assertIn("let lastGeneration = 0", ENTRY)
         self.assertIn("const lease = visibleGeneration ?? 0", ENTRY)

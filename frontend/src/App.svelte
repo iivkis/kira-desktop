@@ -3,7 +3,7 @@
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { openLauncher, toggleCalendar, toggleSystemPanel, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -14,7 +14,12 @@
   let launcherUnavailable = $state(false);
   let calendarUnavailable = $state(false);
   let systemUnavailable = $state(false);
+  let settingsUnavailable = $state(false);
   let systemMetrics = $state<SystemMetrics | null>(null);
+
+  function activateSettings() {
+    settingsUnavailable = !toggleSettings();
+  }
 
   function activateSystemPanel() {
     systemUnavailable = !toggleSystemPanel();
@@ -184,6 +189,18 @@
     />
     {#if systemUnavailable}
       <span role="status" class="shrink-0 px-1 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+    {/if}
+    <button type="button" onclick={activateSettings}
+      aria-label="Open system settings" title="System settings" aria-haspopup="dialog"
+      class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none"
+        stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.5v2m0 13v2M3.5 12h2m13 0h2M6 6l1.5 1.5m9 9L18 18M18 6l-1.5 1.5m-9 9L6 18"/>
+        <circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/>
+      </svg>
+    </button>
+    {#if settingsUnavailable}
+      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent">SETTINGS OFFLINE</span>
     {/if}
     <span class="mx-1 h-4 w-px shrink-0 bg-kira-muted/20" aria-hidden="true"></span>
     {#if calendarUnavailable}

@@ -7,6 +7,7 @@ mod popup_layout;
 mod process_monitor;
 mod renderer_recovery;
 mod system_metrics;
+mod system_info;
 mod system_panel;
 mod webview_pool;
 use std::cell::{Cell, RefCell};
@@ -249,6 +250,17 @@ fn main() {
             }
         });
         assert!(manager.register_script_message_handler("kiraSystem", None));
+
+        // Settings is a trusted read-only surface. Only a fixed toggle command
+        // is accepted; the renderer cannot request arbitrary system queries.
+        let settings_app = app.clone();
+        let settings_html = html.clone();
+        manager.connect_script_message_received(Some("kiraSettings"), move |_, value| {
+            if value.to_string() == "toggle" {
+                calendar::toggle_settings(&settings_app, &settings_html);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraSettings", None));
 
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");

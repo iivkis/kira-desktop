@@ -196,7 +196,12 @@ impl OverlayPool {
     }
 
     fn width_for(&self, view: &CalendarOverlay) -> i32 {
-        popup_layout::popup_width(crate::native_ui::popup_output_width(&view.window), 1, false)
+        let output_width = crate::native_ui::popup_output_width(&view.window);
+        if view.active.get() == Some(Surface::Settings) {
+            popup_layout::settings_popup_width(output_width)
+        } else {
+            popup_layout::popup_width(output_width, 1, false)
+        }
     }
 
     // Only the single transient window gets layer-shell geometry.
@@ -266,6 +271,7 @@ struct CalendarOverlay {
     active: Cell<Option<Surface>>,
     system: RefCell<Option<crate::system_panel::Model>>,
     launcher: RefCell<Option<crate::launcher::Catalog>>,
+    settings_about: RefCell<Option<serde_json::Value>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
     closing: Cell<bool>,
@@ -333,12 +339,17 @@ impl CalendarOverlay {
             Surface::Calendar => "Kira Calendar",
             Surface::System => "Kira System Monitor",
             Surface::Launcher => "Kira Launcher",
+            Surface::Settings => "Kira Settings",
             #[cfg(test)]
             Surface::Synthetic(_) => "Kira Widget",
         };
         normal.set_title(Some(title));
         normal.set_decorated(true);
-        normal.set_default_size(500, (self.content_height.get() + 32).clamp(420, 760));
+        if kind == Surface::Settings {
+            normal.set_default_size(940, 700);
+        } else {
+            normal.set_default_size(500, (self.content_height.get() + 32).clamp(420, 760));
+        }
         // Different Wayland roles require two GTK toplevels. Reparenting
         // retains the live WebKit process, DOM and generation.
         self.window.set_child(None::<&gtk::Widget>);
@@ -402,6 +413,7 @@ impl CalendarOverlay {
         self.system.borrow_mut().take();
         self.active.set(None);
         self.launcher.borrow_mut().take();
+        self.settings_about.borrow_mut().take();
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.revealed.set(false);
@@ -547,7 +559,12 @@ impl CalendarOverlay {
         self.window.set_opacity(0.0);
         // The next widget will report its intrinsic height before reveal.
         // Reset the previous widget's geometry while still transparent.
-        crate::native_ui::resize_webview_popup(&self.window, 420, 1);
+        let preferred_width = if kind == Surface::Settings {
+            popup_layout::SETTINGS_POPUP_WIDTH
+        } else {
+            popup_layout::PREFERRED_POPUP_WIDTH
+        };
+        crate::native_ui::resize_webview_popup(&self.window, preferred_width, 1);
         let generation = self.generation.get();
         if let Some(pool) = self.pool.upgrade() {
             pool.sync_geometry();
@@ -744,6 +761,8 @@ impl CalendarOverlay {
                 eprintln!("kira-shell: Svelte overlay DOM verified");
                 if self.active.get() == Some(Surface::System) {
                     self.send_metrics();
+                } else if self.active.get() == Some(Surface::Settings) {
+                    self.send_settings_about();
                 }
                 self.widget_ready.set(true);
                 if self.content_height.get() > 0 {
@@ -998,6 +1017,37 @@ impl CalendarOverlay {
                 |result| {
                     if let Err(error) = result {
                         eprintln!("kira-shell: System data delivery failed: {error}");
+                    }
+                },
+            );
+        }
+    }
+
+    /// Deliver an immutable, read-only snapshot after the settings Svelte
+    /// component has subscribed. JSON is double-encoded, never JS source.
+    fn send_settings_about(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Settings) {
+            return;
+        }
+        let data = self.settings_about.borrow();
+        let Some(about) = data.as_ref() else {
+            return;
+        };
+        let payload = serde_json::json!({
+            "generation": self.generation.get(),
+            "about": about,
+        });
+        if let Ok(serialized) = serde_json::to_string(&payload)
+            && let Ok(encoded) = serde_json::to_string(&serialized)
+        {
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('kira:settings:about', {{ detail: JSON.parse({encoded}) }}));"
+            );
+            self.view.evaluate_javascript(
+                &script, None, None, None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Settings info delivery failed: {error}");
                     }
                 },
             );
@@ -1305,6 +1355,7 @@ fn build(
         active: Cell::new(None),
         system: RefCell::new(None),
         launcher: RefCell::new(None),
+        settings_about: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
         closing: Cell::new(false),
@@ -1457,6 +1508,35 @@ pub fn open_launcher(application: &gtk::Application, html: &str) {
                 view.launcher.borrow_mut().take();
                 view.show(Surface::Launcher);
             }
+        }),
+    );
+}
+
+/// Open the same Settings surface in popup mode; pop-out retains the exact
+/// WebView and its in-memory navigation state.
+pub fn toggle_settings(application: &gtk::Application, html: &str) {
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::Settings,
+        true,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Settings) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+                return;
+            }
+            *view.settings_about.borrow_mut() = Some(crate::system_info::about_snapshot());
+            view.show(Surface::Settings);
         }),
     );
 }

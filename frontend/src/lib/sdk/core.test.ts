@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -18,6 +18,43 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('opens Settings only via its fixed-purpose native bridge', () => {
+    expect(toggleSettings()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraSettings: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleSettings()).toBe(true);
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('toggle');
+    postMessage.mockImplementation(() => { throw new Error('unavailable'); });
+    expect(toggleSettings()).toBe(false);
+  });
+
+  it('rejects stale, malformed or untrusted About System payloads', () => {
+    const handlers = new Map<string, EventListener>();
+    const removeEventListener = vi.fn();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
+      removeEventListener,
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onSettingsAbout(7, callback);
+    const valid = {
+      os_name: 'Example Linux', kernel: '6.0', architecture: 'x86_64',
+      hostname: null, cpu_model: 'Example CPU', cpu_threads: 4,
+      memory_total_kib: 1024, session: 'wayland', shell_version: '0.1.0',
+    };
+    const dispatch = (detail: unknown) =>
+      handlers.get('kira:settings:about')!({ detail } as CustomEvent<unknown>);
+    dispatch({ generation: 6, about: valid });
+    dispatch({ generation: 7, about: { ...valid, cpu_threads: -1 } });
+    dispatch({ generation: 7, about: { ...valid, os_name: 'x'.repeat(500) } });
+    dispatch({ generation: 7, about: valid });
+    expect(callback).toHaveBeenCalledExactlyOnceWith(valid);
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:settings:about', expect.any(Function));
   });
 
   it('reports only bounded positive widget heights scoped to the current generation', () => {

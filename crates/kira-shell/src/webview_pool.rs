@@ -12,6 +12,7 @@ pub enum Surface {
     Calendar,
     System,
     Launcher,
+    Settings,
     #[cfg(test)]
     Synthetic(u8),
 }
@@ -21,6 +22,7 @@ impl Surface {
             Self::Calendar => "calendar",
             Self::System => "system",
             Self::Launcher => "launcher",
+            Self::Settings => "settings",
             #[cfg(test)]
             Self::Synthetic(_) => "synthetic",
         }
@@ -212,6 +214,16 @@ mod tests {
             s.reserve(Surface::System, now + Duration::from_secs(47)),
             Reservation::Reused(2)
         );
+    }
+
+    #[test]
+    fn settings_is_a_distinct_bounded_lease() {
+        let mut s = WebviewScheduler::default();
+        let now = Instant::now();
+        assert_eq!(s.reserve(Surface::Settings, now), Reservation::Created(1));
+        assert_eq!(s.reserve(Surface::Settings, now), Reservation::Existing(1));
+        assert_eq!(s.reserve(Surface::System, now), Reservation::Created(2));
+        assert_eq!(s.active_count(), 2);
     }
 
     #[test]
