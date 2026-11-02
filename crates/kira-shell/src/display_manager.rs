@@ -432,27 +432,44 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             }
             Request::Save => {
                 if pending.is_some() {
-                    report(&events, "error", pending.as_ref().map(|p| p.0),
-                        Some("Сначала подтвердите временные настройки".into()));
+                    report(
+                        &events,
+                        "error",
+                        pending.as_ref().map(|p| p.0),
+                        Some("Сначала подтвердите временные настройки".into()),
+                    );
                     continue;
                 }
                 let Some(target) = confirmed.as_ref() else {
-                    report(&events, "error", None,
-                        Some("Сначала примените и подтвердите изменения дисплеев".into()));
+                    report(
+                        &events,
+                        "error",
+                        None,
+                        Some("Сначала примените и подтвердите изменения дисплеев".into()),
+                    );
                     continue;
                 };
                 let saved = query().and_then(|source| {
                     let actual = baseline(&source)?;
                     // Never persist a stale preview after hotplug, another
                     // client change or an automatic Niri reposition.
-                    if actual.len() != target.len() || actual.iter().zip(target.iter()).any(
-                        |(a, b)| a.name != b.name || a.enabled != b.enabled ||
-                        (a.enabled && (a.mode != b.mode ||
-                            (a.scale - b.scale).abs() > 0.001 ||
-                            a.transform != b.transform ||
-                            a.x != b.x || a.y != b.y || a.vrr != b.vrr))
-                    ) {
-                        return Err("Параметры Niri изменились после подтверждения. Обновите список.".into());
+                    if actual.len() != target.len()
+                        || actual.iter().zip(target.iter()).any(|(a, b)| {
+                            a.name != b.name
+                                || a.enabled != b.enabled
+                                || (a.enabled
+                                    && (a.mode != b.mode
+                                        || (a.scale - b.scale).abs() > 0.001
+                                        || a.transform != b.transform
+                                        || a.x != b.x
+                                        || a.y != b.y
+                                        || a.vrr != b.vrr))
+                        })
+                    {
+                        return Err(
+                            "Параметры Niri изменились после подтверждения. Обновите список."
+                                .into(),
+                        );
                     }
                     crate::config_layers::save(target)
                 });
