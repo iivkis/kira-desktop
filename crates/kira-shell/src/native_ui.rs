@@ -65,6 +65,12 @@ pub fn resize_webview_popup(
     height
 }
 
+/// Return the output's logical width, so the popup layout can allocate
+/// columns using live window geometry rather than a guessed CSS viewport.
+pub fn popup_output_width(window: &gtk::ApplicationWindow) -> i32 {
+    output_size(window).0
+}
+
 pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, height: i32) {
     resize_webview_popup(window, width, height);
 }

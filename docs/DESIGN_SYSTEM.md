@@ -100,10 +100,9 @@ official visual language of Kira Desktop.
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
   to the clipboard only on click.
-  Clicking time again or pressing Escape closes; focus loss dismisses
-  when there is only one popup. With multiple concurrently leased popups,
-  switching focus between windows never closes another widget. Calendar,
-  Launcher and System Monitor may stay open independently.
+  Clicking time again or pressing Escape closes. Merely losing GTK focus,
+  including when the user clicks a different Top Bar button, NEVER closes
+  a widget. Calendar, Launcher and System Monitor may stay open independently.
   Calendar motion now uses **TENET dual-time GSAP scenes**:
   when sections appear or month/day selection changes, actual content moves
   FORWARD while four recorded decorative fragments replay their original
@@ -270,10 +269,12 @@ Calendar, Launcher or System Monitor owns a separate GTK window, isolated
 generation-scoped IPC channel and Svelte/GSAP scene. A bounded four-host cap,
 one persistent hot spare and 45-second surplus-idle grace prevent runaway
 renderer growth. Active surfaces and their animations are never evicted to
-open another widget. Calendar and System Monitor keep their original top-right
-anchor regardless of other pooled hosts, including prewarmed or closed ones.
-Concurrent popup windows may overlap; the scheduler never silently reserves
-space or moves a mapped Wayland window.
+open another widget. A lone Calendar or System Monitor keeps its original
+top-right position. With concurrent windows, Calendar/System use separate
+left/right docks and centered Launcher uses a third dock. Live window widths
+adapt to two/three columns to avoid overlaps; the one warm idle WebView does
+not reserve physical screen space. Repositioning a remaining left popup after
+its right peer closes briefly unmaps its GTK surface, not its Svelte DOM.
 
 ### Shared TENET widget entrance · 2026-11
 
@@ -347,7 +348,8 @@ continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 Calendar and System Monitor share the original **12 logical pixel** right
 margin and a **25 logical pixel** top margin, half the previous 50px.
-These anchors never change based on another popup's presence in the pool.
+These anchors apply when a popup is alone. Concurrent live windows take
+LEFT/RIGHT/CENTER docks based only on requested windows, not warm idle ones.
 A single GTK helper caps each popup's
 scrollable viewport at **70% of the logical height of its monitor**,
 recalculating after the Wayland surface maps. Both remain non-exclusive

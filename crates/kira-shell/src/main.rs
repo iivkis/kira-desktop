@@ -3,6 +3,7 @@
 mod calendar;
 mod launcher;
 mod native_ui;
+mod popup_layout;
 mod process_monitor;
 mod renderer_recovery;
 mod system_metrics;

@@ -11,12 +11,13 @@ MONITOR = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
 class PopupGeometryTests(unittest.TestCase):
     def test_launcher_is_centered_without_affecting_other_widgets(self):
         self.assertIn("fn position_for(&self, kind: Surface)", CALENDAR)
-        self.assertIn("let centered = kind == Surface::Launcher;", CALENDAR)
+        self.assertIn("fn apply_dock(&self, dock: PopupDock)", CALENDAR)
+        self.assertIn("popup_layout::choose_dock(kind, false)", CALENDAR)
         self.assertIn("self.position_for(kind);", CALENDAR)
-        self.assertIn("self.window.set_anchor(Edge::Top, !centered);", CALENDAR)
-        self.assertIn("self.window.set_anchor(Edge::Right, !centered);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Top, dock != PopupDock::Center);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Right, dock == PopupDock::Right);", CALENDAR)
         self.assertIn("self.window.set_anchor(Edge::Bottom, false);", CALENDAR)
-        self.assertIn("self.window.set_anchor(Edge::Left, false);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Left, dock == PopupDock::Left);", CALENDAR)
         self.assertIn("self.window.set_exclusive_zone(-1);", CALENDAR)
         self.assertIn("self.window.set_exclusive_zone(0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Top, 0);", CALENDAR)
@@ -32,21 +33,34 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("fn concurrent(&self) -> bool", CALENDAR)
         self.assertIn("self.pool.upgrade()", CALENDAR)
 
-    def test_closed_calendar_never_reserves_position_for_system_monitor(self):
-        # Regression: the previous pool shifted System 448px left on wide
-        # monitors, even with an inert/closed Calendar host. Geometry must
-        # depend only on whether the requested surface is Launcher.
-        position = CALENDAR.split("fn position_for(&self, kind: Surface)", 1)[1].split(
-            "fn hide(&self)", 1
-        )[0]
-        self.assertIn("let centered = kind == Surface::Launcher;", position)
-        self.assertIn("set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", position)
-        self.assertNotIn("Surface::System", position)
-        self.assertNotIn("Surface::Calendar", position)
-        self.assertNotIn("self.pool", position)
+    def test_only_requested_windows_consume_layout_docks(self):
+        # Dormant WebViews do not reserve the System Monitor's position.
+        self.assertIn("view.requested.get() && view.dock.get() == PopupDock::Right", CALENDAR)
+        self.assertIn("popup_layout::choose_dock(kind, right_occupied)", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Left, dock == PopupDock::Left)", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Right, dock == PopupDock::Right)", CALENDAR)
+        self.assertIn("PopupDock::Right => self.window.set_margin(", CALENDAR)
+        self.assertIn("PopupDock::Left => self.window.set_margin(", CALENDAR)
         self.assertNotIn("popup_right_margin(", HELPERS)
         self.assertNotIn("448", HELPERS)
-        self.assertIn("window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", CALENDAR)
+
+    def test_focus_changes_never_close_other_pooled_widgets(self):
+        self.assertNotIn("connect_is_active_notify", CALENDAR)
+        self.assertNotIn("was_active: Cell<bool>", CALENDAR)
+        self.assertIn("fn move_to_right(self: &Rc<Self>)", CALENDAR)
+        self.assertIn("self.window.set_visible(false);", CALENDAR)
+        self.assertIn("Duration::from_millis(32)", CALENDAR)
+        self.assertIn("pool.release(self.id)", CALENDAR)
+
+    def test_popup_widths_reflow_to_avoid_launcher_overlap(self):
+        layout = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
+        self.assertIn("pub fn popup_width(", layout)
+        self.assertIn("let columns = if active_count >= 3", layout)
+        self.assertIn("popup_layout::popup_width(", CALENDAR)
+        self.assertIn("fn sync_geometry(&self)", CALENDAR)
+        self.assertIn("pool.sync_geometry()", CALENDAR)
+        self.assertIn("crate::native_ui::popup_output_width(&view.window)", CALENDAR)
+        self.assertIn("assert_eq!(popup_width(1264, 3, true), 408)", layout)
 
     def test_switching_launcher_preserves_existing_buffers_and_generations(self):
         # A new surface reserves its own hot or newly created WebKit view.
@@ -111,7 +125,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("pub fn resize_webview_popup(", HELPERS)
         self.assertIn("pub fn webview_popup_height_limit(", HELPERS)
         self.assertIn("self.content_height.set(clamped)", CALENDAR)
-        self.assertIn("resize_webview_popup(&self.window, 420, clamped)", CALENDAR)
+        self.assertIn("crate::native_ui::resize_webview_popup(&self.window, width, clamped)", CALENDAR)
         self.assertIn("maxHeight: {max_height}", CALENDAR)
         self.assertIn('size:42:512', CALENDAR)
         for source in (CALENDAR,):
