@@ -56,6 +56,17 @@
     overflow: visible;
   }
 
+  /* A transparent popup backing surface is essential: otherwise the native
+   * WebKit full-window black fills pixels before the TENET reveal clip opens.
+   * The actual widget <main> remains opaque black, and the Top Bar is
+   * unaffected by this selector. The clip changes only painted pixels,
+   * never intrinsic dimensions, layer-shell anchors or pointer geometry. */
+  html[data-kira-surface="calendar"],
+  html[data-kira-surface="calendar"] body,
+  html[data-kira-surface="calendar"] #app {
+    background: transparent;
+  }
+
   html[data-kira-surface="calendar"] main[data-kira-ui-root] {
     max-height: var(--kira-overlay-max-height, 560px);
     /* Calendar/Overview use page scrolling; Launcher and Processes
@@ -131,4 +142,24 @@
 }
 [data-kira-flow-moving="true"] [data-focused="true"] span[aria-hidden="true"] {
   background-color: var(--kira-color-accent);
+}
+
+/* The moving light seam follows the materializing physical edge of an
+ * opaque popup. It is decorative only, owned by the same GSAP timeline as
+ * the surface clip and TENET sections. No animations or infinite repaint. */
+[data-kira-surface-seam] {
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--kira-color-accent) 23%,
+    var(--kira-color-text) 54%,
+    var(--kira-color-accent) 78%,
+    transparent 100%);
+  transform-origin: center center;
 }
