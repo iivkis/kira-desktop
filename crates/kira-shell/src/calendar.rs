@@ -106,7 +106,8 @@ impl OverlayPool {
     fn prune(&self) {
         let expired = self.scheduler.borrow_mut().expired_idle(Instant::now());
         for id in expired {
-            if let Some(view) = self.windows.borrow_mut().remove(&id) {
+            let retired = { self.windows.borrow_mut().remove(&id) };
+            if let Some(view) = retired {
                 view.disposed.set(true);
                 // Never close an active window. This reclaims surplus idle
                 // WebKit processes, keeping only the newest hot spare.
@@ -182,6 +183,9 @@ impl CalendarOverlay {
             model.set_processes_active(false);
             model.set_pulse_active(false);
         }
+        // Idle WebKit is warm, but it must retain no live sampler or
+        // expensive widget-specific model from a previous lease.
+        self.system.borrow_mut().take();
         self.active.set(None);
         self.launcher.borrow_mut().take();
         self.widget_ready.set(false);
@@ -414,6 +418,9 @@ impl CalendarOverlay {
     }
 
     fn on_message(self: &Rc<Self>, message: &str) {
+        if self.disposed.get() {
+            return;
+        }
         match calendar_command(message) {
             Some(UiCommand::HostReady) => {
                 eprintln!("kira-shell: Shared Svelte overlay host ready");
