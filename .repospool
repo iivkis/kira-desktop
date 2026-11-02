@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4573
+index_bytes=4576
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	7ad217641933afd38946403dd840c11aed134f54
+C	c9dece6833c11d804242dc64864e20963558f72d
 F	.cargo/config.toml	98	122	3
 F	.github/workflows/ci.yml	4355	127	112
 F	.github/workflows/frontend-nix.yml	1398	241	43
@@ -46,70 +46,70 @@ F	crates/kira-shell/src/renderer_recovery.rs	3634	5846	116
 F	crates/kira-shell/src/system_metrics.rs	19842	5964	559
 F	crates/kira-shell/src/system_panel.rs	11356	6525	318
 F	docs/CONFIG.md	5801	6845	125
-F	docs/DESIGN_SYSTEM.md	25163	6972	423
-F	docs/DEVELOPMENT.md	29347	7397	577
-F	docs/QA_VISUAL.md	12284	7976	149
-F	docs/SPECIFICATION.md	28960	8127	421
-F	docs/TENET_MOTION.md	22120	8550	142
-F	docs/UI_ARCHITECTURE.md	6737	8694	106
-F	docs/VISUAL_REVIEW.md	9754	8802	84
-F	flake.nix	3181	8888	91
-F	frontend/index.html	2737	8981	66
-F	frontend/package.json	720	9049	27
-F	frontend/scripts/inline-assets.mjs	4457	9078	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9183	106
-F	frontend/scripts/smoke-overlays.mjs	19061	9291	275
-F	frontend/src/App.svelte	8659	9568	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9770	84
-F	frontend/src/lib/bootstrap.ts	2613	9856	70
-F	frontend/src/lib/calendar-model.test.ts	2687	9928	49
-F	frontend/src/lib/calendar-model.ts	4009	9979	88
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10069	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10131	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10162	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10482	50
-F	frontend/src/lib/clock-flight.ts	1977	10534	50
-F	frontend/src/lib/components/CalendarWidget.svelte	9027	10586	198
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	10786	176
-F	frontend/src/lib/components/SystemCharts.svelte	10517	10964	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11192	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11237	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11559	61
-F	frontend/src/lib/launcher-model.test.ts	1370	11622	29
-F	frontend/src/lib/launcher-model.ts	778	11653	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	11673	89
-F	frontend/src/lib/lazy-widget.ts	1984	11764	63
-F	frontend/src/lib/motion.ts	1597	11829	50
-F	frontend/src/lib/overlay-size.ts	1090	11881	29
-F	frontend/src/lib/sdk/core.test.ts	22258	11912	444
-F	frontend/src/lib/sdk/core.ts	17793	12358	473
-F	frontend/src/lib/system-charts.test.ts	6312	12833	141
-F	frontend/src/lib/system-charts.ts	5514	12976	149
-F	frontend/src/lib/system-health.test.ts	2385	13127	42
-F	frontend/src/lib/system-health.ts	2831	13171	60
-F	frontend/src/lib/system-model.test.ts	4455	13233	84
-F	frontend/src/lib/system-model.ts	5457	13319	125
-F	frontend/src/lib/themes/kira-default.css	1687	13446	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13500	101
-F	frontend/src/lib/themes/kira-default.ts	777	13603	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	13627	79
-F	frontend/src/lib/time.test.ts	263	13708	8
-F	frontend/src/lib/time.ts	320	13718	9
-F	frontend/src/main.ts	5907	13729	127
-F	frontend/src/style.css	3447	13858	107
-F	frontend/tsconfig.json	403	13967	16
-F	frontend/vite.config.ts	224	13985	8
-F	nix/package.nix	3132	13995	117
-F	scripts/dev_preview.py	18147	14114	403	x
-F	scripts/qa_visual.py	12052	14519	299
-F	tests/test_calendar_design.py	6835	14820	121
-F	tests/test_detailed_health.py	5429	14943	105
-F	tests/test_dev_preview.py	9339	15050	219
-F	tests/test_launcher_design.py	9956	15271	182
-F	tests/test_native_theme.py	1567	15455	36
-F	tests/test_popup_geometry.py	6956	15493	118
-F	tests/test_qa_visual.py	10549	15613	217
-F	tests/test_ui_bootstrap_contract.py	1103	15832	29
+F	docs/DESIGN_SYSTEM.md	25774	6972	431
+F	docs/DEVELOPMENT.md	29347	7405	577
+F	docs/QA_VISUAL.md	12284	7984	149
+F	docs/SPECIFICATION.md	28960	8135	421
+F	docs/TENET_MOTION.md	22120	8558	142
+F	docs/UI_ARCHITECTURE.md	6737	8702	106
+F	docs/VISUAL_REVIEW.md	9754	8810	84
+F	flake.nix	3181	8896	91
+F	frontend/index.html	2737	8989	66
+F	frontend/package.json	720	9057	27
+F	frontend/scripts/inline-assets.mjs	4457	9086	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9191	106
+F	frontend/scripts/smoke-overlays.mjs	19061	9299	275
+F	frontend/src/App.svelte	8659	9576	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9778	84
+F	frontend/src/lib/bootstrap.ts	2613	9864	70
+F	frontend/src/lib/calendar-model.test.ts	3571	9936	65
+F	frontend/src/lib/calendar-model.ts	4648	10003	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10110	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10172	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10203	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10523	50
+F	frontend/src/lib/clock-flight.ts	1977	10575	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11726	10627	243
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	10872	176
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11050	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11278	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11323	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11645	61
+F	frontend/src/lib/launcher-model.test.ts	1370	11708	29
+F	frontend/src/lib/launcher-model.ts	778	11739	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	11759	89
+F	frontend/src/lib/lazy-widget.ts	1984	11850	63
+F	frontend/src/lib/motion.ts	1597	11915	50
+F	frontend/src/lib/overlay-size.ts	1090	11967	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11998	444
+F	frontend/src/lib/sdk/core.ts	17793	12444	473
+F	frontend/src/lib/system-charts.test.ts	6312	12919	141
+F	frontend/src/lib/system-charts.ts	5514	13062	149
+F	frontend/src/lib/system-health.test.ts	2385	13213	42
+F	frontend/src/lib/system-health.ts	2831	13257	60
+F	frontend/src/lib/system-model.test.ts	4455	13319	84
+F	frontend/src/lib/system-model.ts	5457	13405	125
+F	frontend/src/lib/themes/kira-default.css	1687	13532	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13586	101
+F	frontend/src/lib/themes/kira-default.ts	777	13689	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13713	79
+F	frontend/src/lib/time.test.ts	263	13794	8
+F	frontend/src/lib/time.ts	320	13804	9
+F	frontend/src/main.ts	5907	13815	127
+F	frontend/src/style.css	3817	13944	121
+F	frontend/tsconfig.json	403	14067	16
+F	frontend/vite.config.ts	224	14085	8
+F	nix/package.nix	3132	14095	117
+F	scripts/dev_preview.py	18147	14214	403	x
+F	scripts/qa_visual.py	12052	14619	299
+F	tests/test_calendar_design.py	7384	14920	130
+F	tests/test_detailed_health.py	5429	15052	105
+F	tests/test_dev_preview.py	9339	15159	219
+F	tests/test_launcher_design.py	9956	15380	182
+F	tests/test_native_theme.py	1567	15564	36
+F	tests/test_popup_geometry.py	6956	15602	118
+F	tests/test_qa_visual.py	10549	15722	217
+F	tests/test_ui_bootstrap_contract.py	1103	15941	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7041,11 +7041,19 @@ official visual language of Kira Desktop.
   The time is a semantic button that toggles a separate native calendar overlay;
   the Top Bar remains 42 px tall.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
-  zone. Black time hero, Prussian Blue month/day selector and Black detail
-  footer; the time updates live, a custom Monday-first 6×7 GTK Grid of
-  accessible buttons supports month/year navigation, adjacent-month dates,
-  ISO weeks and arrow/PageUp/PageDown/Home keyboard navigation. Selecting
-  a date exposes the correct ISO week-year and day of year.
+  zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
+  compact Black local-time hero, a Prussian Blue calendar workbench, and a
+  Black factual selection footer. The clock is actual local time; the date
+  grid is a custom Svelte Monday-first 6×7 composition of accessible buttons
+  with a distinct ISO week-number rail, month/year navigation and adjacent
+  month dates. Selected state, today's civil date and outside-month identity
+  are independent, pure Gregorian model states. Keyboard support includes
+  arrow/PageUp/PageDown/Home navigation with focus following selection; the
+  selected button is the sole tab stop in the grid, and today's date uses
+  `aria-current="date"`. The footer keeps the selected ISO date, week number
+  and day of year plainly visible without pretending to provide events.
+  The native overlay remains height-capped and scrollable, with hidden
+  WebKit scrollbar chrome but usable wheel/touch/keyboard navigation.
   Today and Copy Date are both flat orange typographic commands, without
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
@@ -9926,9 +9934,25 @@ export function whenDocumentReady(
 
 FILE	frontend/src/lib/calendar-model.test.ts
 import { describe, expect, it } from 'vitest';
-import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth, clockGlyphs, localClockText } from './calendar-model';
+import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth, clockGlyphs, localClockText, calendarDayState } from './calendar-model';
 
 describe('Svelte Calendar Gregorian model', () => {
+  it('keeps today, selection and adjacent-month identity independent', () => {
+    const today = { year: 2026, month: 11, day: 2 };
+    const selected = { year: 2026, month: 11, day: 4 };
+    const visible = { year: 2026, month: 11 };
+    expect(calendarDayState(today, selected, today, visible)).toEqual({
+      iso: '2026-11-02', selected: false, today: true, outside: false,
+    });
+    expect(calendarDayState(selected, selected, today, visible)).toEqual({
+      iso: '2026-11-04', selected: true, today: false, outside: false,
+    });
+    expect(calendarDayState({ year: 2026, month: 10, day: 31 }, selected, today, visible))
+      .toEqual({ iso: '2026-10-31', selected: false, today: false, outside: true });
+    expect(calendarDayState(today, today, today, visible))
+      .toEqual({ iso: '2026-11-02', selected: true, today: true, outside: false });
+  });
+
   it('respects leap years, including century rules', () => {
     expect(daysInMonth(2024, 2)).toBe(29);
     expect(daysInMonth(1900, 2)).toBe(28);
@@ -10002,6 +10026,23 @@ export function todayCivilDate(date = new Date()): CivilDate {
 }
 export function isoDate(date: CivilDate): string {
   return [String(date.year).padStart(4, '0'), String(date.month).padStart(2, '0'), String(date.day).padStart(2, '0')].join('-');
+}
+
+/** One semantic source for calendar-day states: selection, today's date
+ * and the displayed month are independent. Dates are compared as civil
+ * values, never by local timestamps (which shift across DST boundaries).
+ */
+export function calendarDayState(
+  date: CivilDate, selected: CivilDate, today: CivilDate,
+  visible: { year: number; month: number },
+): { iso: string; selected: boolean; today: boolean; outside: boolean } {
+  const iso = isoDate(date);
+  return {
+    iso,
+    selected: iso === isoDate(selected),
+    today: iso === isoDate(today),
+    outside: date.year !== visible.year || date.month !== visible.month,
+  };
 }
 export function daysInMonth(year: number, month: number): number {
   if (month < 1 || month > 12 || year < 1 || year > 9999) throw new RangeError('Invalid calendar month');
@@ -10587,7 +10628,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   import { onMount, tick } from 'svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import {
-    clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
+    calendarDayState, clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
   } from '../calendar-model';
 
@@ -10614,6 +10655,12 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   const todayIso = $derived(isoDate(today));
   const week = $derived(isoWeek(selected));
   const title = $derived(localDateLabel({ year: visible.year, month: visible.month, day: 1 }, locale, { month: 'long' }));
+  const selectedLabel = $derived(localDateLabel(selected, locale, {
+    weekday: 'long', day: 'numeric', month: 'long',
+  }));
+  const currentDateLabel = $derived(localDateLabel(today, locale, {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  }));
   const weekdayLabels = $derived(Array.from({ length: 7 }, (_, index) =>
     localDateLabel({ year: 2024, month: 1, day: index + 1 }, locale, { weekday: 'short' })));
 
@@ -10683,50 +10730,62 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 <main
   data-kira-ui-root
   use:tenetCalendarReveal
-  class="relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
+  class="kira-calendar-scroll relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
   aria-label="Kira Calendar"
 >
-  <section data-kira-enter class="flex items-start justify-between gap-4 bg-kira-bg px-5 pb-4 pt-5">
-    <div class="min-w-0">
-      <span class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / CALENDAR</span>
-      <button type="button" use:tenetClockJuggle data-calendar-clock-play
-        aria-label="Make the clock digits fly and return"
-        title="Click for a little clock chaos"
-        class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
-        <time class="flex items-center text-4xl font-extrabold tabular-nums tracking-tight"
-          datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
-        {#each clockParts as part, index (index)}
-          {#if part.digit}
-            <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
-              aria-hidden="true" data-clock-cell>
-              <span class="flex h-full w-full items-center justify-center"
-                data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
-            </span>
-          {:else}
-            <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
-          {/if}
-        {/each}
-        </time>
-      </button>
-      <p class="mt-1 text-xs text-kira-muted">
-        {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now)}
-      </p>
-    </div>
-    <button type="button" onclick={onClose}
-      class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"
-      title="Close calendar" aria-label="Close calendar">×</button>
-  </section>
-
-  <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 py-4" aria-label="Date picker">
-    <div class="mb-4 flex items-center justify-between gap-2">
-      <div class="min-w-0">
-        <div class="text-[10px] font-semibold tracking-wider text-kira-muted">SELECT DATE</div>
-        <h2 class="truncate text-base font-extrabold">{title} <span class="text-kira-muted">{visible.year}</span></h2>
+  <!-- Clock is the identity anchor; native host remains the only window owner. -->
+  <header data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-3 pt-4">
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
+        <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / CHRONOLOGY</p>
+        <p class="mt-1 text-[9px] font-semibold tracking-[0.12em] text-kira-muted">01 / LOCAL TIME</p>
       </div>
-      <div class="flex shrink-0 items-center gap-1">
+      <button type="button" onclick={onClose}
+        class="rounded-sm px-2 py-1 text-xl leading-none text-kira-muted transition-colors
+          hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"
+        title="Close calendar" aria-label="Close calendar">×</button>
+    </div>
+    <button type="button" use:tenetClockJuggle data-calendar-clock-play
+      aria-label="Make the clock digits fly and return"
+      title="Animate clock digits"
+      class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
+      <time class="flex items-center text-[36px] font-extrabold leading-none tabular-nums tracking-[-0.055em]"
+        datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
+      {#each clockParts as part, index (index)}
+        {#if part.digit}
+          <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
+            aria-hidden="true" data-clock-cell>
+            <span class="flex h-full w-full items-center justify-center"
+              data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
+          </span>
+        {:else}
+          <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
+        {/if}
+      {/each}
+      </time>
+    </button>
+    <div class="mt-2 flex items-center justify-between gap-2 border-t border-kira-muted/15 pt-2">
+      <p class="min-w-0 truncate text-[11px] font-semibold text-kira-text">{currentDateLabel}</p>
+      <span class="shrink-0 text-[9px] font-bold tracking-[0.12em] text-kira-muted">LIVE / LOCAL</span>
+    </div>
+  </header>
+
+  <!-- Each date has three independent semantics: current, selected, adjacent. -->
+  <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 pb-3 pt-3" aria-label="Date picker">
+    <div class="mb-3 flex items-center justify-between gap-2">
+      <div class="min-w-0">
+        <p class="text-[9px] font-bold tracking-[0.14em] text-kira-muted">02 / DATE INDEX</p>
+        <h2 class="mt-1 truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
+          {title}<span class="ml-2 text-sm font-semibold text-kira-muted">{visible.year}</span>
+        </h2>
+      </div>
+      <div class="flex shrink-0 items-center gap-1" role="group" aria-label="Navigate calendar">
         {#each [-12, -1, 1, 12] as step}
           <button type="button"
-            class="h-8 min-w-8 rounded text-kira-muted hover:bg-kira-bg/30 hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent disabled:opacity-30"
+            class="flex h-8 w-8 items-center justify-center border border-kira-muted/15 bg-kira-bg/20
+              text-[17px] font-semibold text-kira-text transition-colors
+              hover:border-kira-accent hover:text-kira-accent
+              focus-visible:outline-2 focus-visible:outline-kira-accent disabled:cursor-default disabled:opacity-30"
             disabled={!shiftMonth(selected, step)}
             onclick={() => navigate(step)}
             title={step === -12 ? 'Previous year' : step === -1 ? 'Previous month' : step === 1 ? 'Next month' : 'Next year'}
@@ -10736,27 +10795,35 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
       </div>
     </div>
 
-    <div class="relative grid grid-cols-8 gap-y-1 text-center" aria-label="Calendar dates"
+    <div class="relative grid grid-cols-8 gap-y-0.5 text-center" role="group" aria-label="Calendar dates"
       use:tenetCalendarGrid={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
-      <span class="py-2 text-[10px] font-bold text-kira-muted" aria-label="Week number">WK</span>
+      <span class="flex min-h-7 items-center justify-center border-b border-r border-kira-muted/15 bg-kira-bg/20
+        text-[9px] font-bold tracking-wide text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
-        <span class="py-2 text-[10px] font-bold text-kira-muted">{label}</span>
+        <span class="flex min-h-7 items-center justify-center border-b border-kira-muted/15
+          text-[10px] font-bold uppercase text-kira-muted">{label}</span>
       {/each}
       {#each weeks as days}
-        <span class="flex items-center justify-center text-[10px] text-kira-muted/70">
+        <span class="flex min-h-8 items-center justify-center border-r border-kira-muted/15
+          bg-kira-bg/15 text-[9px] font-semibold tabular-nums text-kira-muted"
+          aria-label={'ISO week ' + (days[0] ? isoWeek(days[0]).week : '')}>
           {days[0] ? String(isoWeek(days[0]).week).padStart(2, '0') : ''}
         </span>
         {#each days as date}
           {#if date}
+            {@const marker = calendarDayState(date, selected, today, visible)}
             <button type="button"
-              class={'min-h-9 rounded text-xs font-semibold focus-visible:outline-2 focus-visible:outline-kira-accent ' +
-                (date.year !== visible.year || date.month !== visible.month ? 'text-kira-muted/70 ' : 'text-kira-text ') +
-                (isoDate(date) === selectedIso ? 'bg-kira-accent text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' : 'hover:bg-kira-bg/40 hover:text-kira-accent ') +
-                (isoDate(date) === todayIso && isoDate(date) !== selectedIso ? 'underline decoration-kira-accent underline-offset-4' : '')}
+              class={'relative flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+                (marker.outside ? 'text-kira-muted/60 ' : 'text-kira-text ') +
+                (marker.selected ? 'bg-kira-accent font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
+                  'hover:bg-kira-bg/35 hover:text-kira-accent ') +
+                (marker.today && !marker.selected ? 'underline decoration-2 decoration-kira-accent underline-offset-4' : '')}
               aria-label={localDateLabel(date, locale)}
-              aria-pressed={isoDate(date) === selectedIso}
+              aria-pressed={marker.selected}
+              aria-current={marker.today ? 'date' : undefined}
+              tabindex={marker.selected ? 0 : -1}
               data-calendar-day
-              data-calendar-selected={isoDate(date) === selectedIso}
+              data-calendar-selected={marker.selected}
               onclick={() => choose(date)}
             >{date.day}</button>
           {:else}
@@ -10765,21 +10832,40 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
         {/each}
       {/each}
     </div>
-  </section>
-
-  <section data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-5 pt-4">
-    <p class="text-sm font-bold" aria-live="polite">{localDateLabel(selected, locale)}</p>
-    <p class="mt-1 text-[10px] font-semibold tracking-wider text-kira-muted">
-      ISO WEEK {String(week.week).padStart(2, '0')} / {week.year}
-      · DAY {String(dayOfYear(selected)).padStart(3, '0')} / {selected.year}
-    </p>
-    <div class="mt-3 flex items-center justify-between">
-      <button type="button" onclick={goToday}
-        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">TODAY</button>
-      <button type="button" onclick={() => onCopy(selectedIso)}
-        class="px-1 py-2 text-xs font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">COPY DATE</button>
+    <div class="mt-2 flex items-center justify-between text-[9px] font-semibold tracking-wide text-kira-muted">
+      <span>MON / SUN · ISO WEEKS</span>
+      <span><span class="text-kira-accent">_</span> TODAY</span>
     </div>
   </section>
+
+  <!-- Selected date is a factual summary, not a fictitious event agenda. -->
+  <footer data-kira-enter class="shrink-0 border-t border-kira-muted/15 bg-kira-bg px-5 pb-3 pt-3">
+    <div class="flex items-start justify-between gap-3" aria-live="polite">
+      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
+        <p class="text-[9px] font-bold tracking-[0.13em] text-kira-muted">
+          03 / {selectedIso === todayIso ? 'TODAY' : 'SELECTED DATE'}
+        </p>
+        <p class="mt-1 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale)}>
+          {selectedLabel}
+        </p>
+      </div>
+      <div class="shrink-0 text-right">
+        <p class="text-[10px] font-bold tabular-nums text-kira-accent">{selectedIso}</p>
+        <p class="mt-1 text-[9px] font-semibold tracking-wide text-kira-muted">
+          WK {String(week.week).padStart(2, '0')} · D{String(dayOfYear(selected)).padStart(3, '0')}
+        </p>
+      </div>
+    </div>
+    <div class="mt-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
+      <button type="button" onclick={goToday}
+        class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
+          hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">TODAY</button>
+      <button type="button" onclick={() => onCopy(selectedIso)}
+        aria-label={'Copy date ' + selectedIso}
+        class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
+          hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">COPY DATE</button>
+    </div>
+  </footer>
 </main>
 
 FILE	frontend/src/lib/components/LauncherWidget.svelte
@@ -13919,6 +14005,20 @@ FILE	frontend/src/style.css
      * keep their own list scrollers inside a constrained flex column. */
   }
 
+  /* Calendar preserves all six ISO weeks within a height-capped native
+   * overlay. Hide only the scrollbar chrome, never the scroll behavior. */
+  .kira-calendar-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-y: contain;
+  }
+
+  .kira-calendar-scroll::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   /* The launcher list still scrolls with mouse wheel, touchpad and
    * keyboard, but a WebKitGTK scrollbar must not overlap the right edge
    * of the highlighted row. Keep this scoped to Launcher only. */
@@ -14839,10 +14939,19 @@ class CalendarDesignTests(unittest.TestCase):
             'data-kira-ui-root', 'aria-label="Kira Calendar"',
             "monthGrid(", "onclick={() => choose(date)}",
             "onclick={goToday}", "onCopy(selectedIso)",
-            "aria-pressed={isoDate(date) === selectedIso}",
+            "aria-pressed={marker.selected}",
+            "aria-current={marker.today ? 'date' : undefined}",
+            "tabindex={marker.selected ? 0 : -1}",
             "focus-visible:outline-kira-on-accent",
         ):
             self.assertIn(token, CALENDAR)
+        for token in ("KIRA / CHRONOLOGY", "02 / DATE INDEX", "03 / ",
+                      "role=\"group\" aria-label=\"Calendar dates\"",
+                      "data-calendar-clock-play", "use:tenetCalendarGrid",
+                      "kira-calendar-scroll", "aria-label=\"Navigate calendar\""):
+            self.assertIn(token, CALENDAR)
+        self.assertIn("calendarDayState(", CALENDAR)
+        self.assertIn("calendarDayState(", TS_MODEL)
         for token in ("monthGrid(", "shiftMonth(", "isoWeek(", "dayOfYear("):
             self.assertIn(token, TS_MODEL)
         for native_ui in ("gtk::Grid", "gtk::Button", "gtk::Label",
