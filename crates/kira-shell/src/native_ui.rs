@@ -1,6 +1,26 @@
 //! Shared layer-shell/WebKit infrastructure for Svelte overlays.
 use gtk::prelude::*;
 
+/// GTK themes supply an opaque gray background for GtkApplicationWindow,
+/// even when the embedded WebKit WebView itself has an alpha-zero backing.
+/// Install one class-scoped override before creating the popup pool. This
+/// never affects the permanent Top Bar or the widget's black HTML <main>.
+pub fn install_transparent_popup_style() {
+    let provider = gtk::CssProvider::new();
+    // The shell targets GTK 4.10; load_from_string is available only in
+    // GTK >= 4.12, so keep the compatible API here.
+    provider.load_from_data(
+        "window.kira-popup-transparent, window.kira-popup-transparent.background {            background-color: transparent; background-image: none;            border: none; box-shadow: none; }          window.kira-popup-transparent > decoration {            background-color: transparent; background-image: none;            border: none; box-shadow: none; }",
+    );
+    let display =
+        gtk::gdk::Display::default().expect("GTK popup pool requires an active graphical display");
+    gtk::style_context_add_provider_for_display(
+        &display,
+        &provider,
+        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+    );
+}
+
 /// Every WebKit surface renders a self-contained trusted HTML document.
 /// Block arbitrary navigation and new windows, including from popup widgets.
 pub fn restrict_webview_navigation(view: &webkit6::WebView) {

@@ -20,7 +20,15 @@ class NativeThemeContractTests(unittest.TestCase):
             self.assertFalse((NATIVE / file).exists(), file)
             self.assertNotIn(file, NIX)
         self.assertNotIn("include_str!", HELPERS)
-        self.assertNotIn("gtk::CssProvider", HELPERS)
+        # One native CSS provider is needed solely to remove the GTK theme's
+        # gray window backing. It must not introduce a native color palette
+        # or affect the permanent Top Bar: visual styling stays in Svelte.
+        self.assertEqual(HELPERS.count("gtk::CssProvider::new()"), 1)
+        self.assertIn("window.kira-popup-transparent", HELPERS)
+        self.assertIn("background-color: transparent;", HELPERS)
+        self.assertIn("box-shadow: none;", HELPERS)
+        self.assertNotIn("gtk::CssProvider", SHELL)
+        self.assertNotIn("gtk::CssProvider", OVERLAY)
 
     def test_native_code_is_only_webkit_layer_shell_and_gio(self):
         self.assertIn("webkit6::WebView::builder()", OVERLAY)

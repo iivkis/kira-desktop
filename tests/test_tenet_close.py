@@ -55,6 +55,21 @@ class TenetReverseDismissalTests(unittest.TestCase):
         # A fully opaque WebKit backing makes clipping the inner main useless:
         # an unanimated black rectangle still appears in Niri.
         styles = (ROOT / "frontend/src/style.css").read_text()
+        native_ui = (ROOT / "crates/kira-shell/src/native_ui.rs").read_text()
+        shell_main = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+        # GTK's themed window node is a distinct paint layer behind WebKit:
+        # making just the embedded WebView transparent still shows gray.
+        self.assertIn('window.add_css_class("kira-popup-transparent")', RUST)
+        self.assertIn("native_ui::install_transparent_popup_style()", RUST)
+        self.assertIn('window.kira-popup-transparent.background', native_ui)
+        self.assertIn('background-color: transparent; background-image: none;', native_ui)
+        self.assertIn('box-shadow: none;', native_ui)
+        self.assertIn("gtk::STYLE_PROVIDER_PRIORITY_APPLICATION", native_ui)
+        self.assertNotIn("kira-popup-transparent", shell_main)
+        self.assertIn(
+            "view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0))",
+            shell_main,
+        )
         self.assertIn(
             "view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0))",
             RUST,
@@ -73,6 +88,15 @@ class TenetReverseDismissalTests(unittest.TestCase):
         )[0]
         self.assertNotIn("window.resizeTo(", scene)
         self.assertNotIn("set_margin(", scene)
+
+    def test_open_and_reverse_share_exactly_twenty_percent_faster_tempo(self):
+        # GSAP timeScale applies to every constituent track in both
+        # directions. Native opacity must follow the same rate.
+        self.assertIn("master.timeScale(1.2)", MOTION)
+        self.assertIn("const OVERLAY_FADE_MS: u64 = 133;", RUST)
+        self.assertIn("master.reverse()", MOTION)
+        self.assertIn("onReverseComplete: acknowledgeClose", MOTION)
+        self.assertAlmostEqual(540 / 1.2, 450)
 
     def test_reduced_motion_and_renderer_stall_have_finite_exit(self):
         self.assertIn("self.native_reduced_motion.get()", RUST)

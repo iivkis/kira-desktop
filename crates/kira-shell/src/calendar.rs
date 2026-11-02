@@ -12,8 +12,9 @@ use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
 
 const TITLE: &str = "Kira Overlay";
-// Native fade stays intentionally shorter than the GSAP content landing.
-const OVERLAY_FADE_MS: u64 = 160;
+// 20% higher motion speed: 160ms / 1.2 ~= 133ms. The native fade
+// remains shorter than the reversible GSAP surface materialization.
+const OVERLAY_FADE_MS: u64 = 133;
 
 fn native_fade_progress(elapsed: Duration) -> f64 {
     let t = (elapsed.as_secs_f64() / Duration::from_millis(OVERLAY_FADE_MS).as_secs_f64())
@@ -40,6 +41,9 @@ struct OverlayPool {
 
 impl OverlayPool {
     fn new(application: &gtk::Application, document: String) -> Rc<Self> {
+        // Install once per popup pool, before any warm GtkApplicationWindow
+        // is constructed. The selector never touches the permanent Top Bar.
+        crate::native_ui::install_transparent_popup_style();
         let pool = Rc::new(Self {
             application: application.clone(),
             document,
@@ -1178,6 +1182,10 @@ fn build(
     pool: std::rc::Weak<OverlayPool>,
 ) -> Rc<CalendarOverlay> {
     let window = gtk::ApplicationWindow::new(application);
+    // GTK themes normally paint a gray window background behind transparent
+    // WebKit pixels. The dedicated class removes that entire rectangle,
+    // leaving only Svelte's intentionally opaque widget main visible.
+    window.add_css_class("kira-popup-transparent");
     window.set_title(Some(TITLE));
     window.set_decorated(false);
     window.init_layer_shell();
@@ -1512,9 +1520,9 @@ mod tests {
     #[test]
     fn native_fade_is_monotone_and_settles_exactly() {
         assert_eq!(native_fade_progress(Duration::ZERO), 0.0);
-        let half = native_fade_progress(Duration::from_millis(80));
+        let half = native_fade_progress(Duration::from_millis(66));
         assert!(half > 0.5 && half < 1.0);
-        assert_eq!(native_fade_progress(Duration::from_millis(160)), 1.0);
+        assert_eq!(native_fade_progress(Duration::from_millis(133)), 1.0);
         assert_eq!(native_fade_progress(Duration::from_millis(500)), 1.0);
     }
 
