@@ -199,9 +199,10 @@ struct CalendarOverlay {
 }
 
 impl CalendarOverlay {
-    /// The single WebKit layer-shell window has different geometry depending
-    /// on the active widget. With no edge anchors, wlr-layer-shell centers
-    /// the launcher's fixed-size surface on its output.
+    /// Each leased WebView has its own layer-shell window. Calendar and
+    /// System Monitor ALWAYS share the original top-right anchor, regardless
+    /// of how many peer windows are currently in the pool. With no edge
+    /// anchors, wlr-layer-shell centers Launcher on its output.
     fn position_for(&self, kind: Surface) {
         let centered = kind == Surface::Launcher;
 
@@ -226,10 +227,8 @@ impl CalendarOverlay {
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            self.window.set_margin(
-                Edge::Right,
-                crate::native_ui::popup_right_margin(&self.window, kind == Surface::System),
-            );
+            self.window
+                .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
         }
     }
 
@@ -988,7 +987,7 @@ fn build(
     window.set_anchor(Edge::Top, true);
     window.set_anchor(Edge::Right, true);
     window.set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-    window.set_margin(Edge::Right, 12);
+    window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
     crate::native_ui::configure_webview_popup(&window, 420, 1);
