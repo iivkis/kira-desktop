@@ -37,7 +37,8 @@ describe('TENET shared widget appearance', () => {
 
   it('runs the recorded inverse and forward on one GPU-friendly master', () => {
     expect(motion).toContain("slice(0, options.sections ?? 3)");
-    expect(motion).toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
+    expect(motion).toContain("master = gsap.timeline({")
+    expect(motion).toContain('onReverseComplete: acknowledgeClose');
     expect(motion).toContain("master.to(content, {");
     expect(motion).toContain("master.fromTo(traces,");
     expect(motion).toContain("duration: 0.44");
@@ -61,6 +62,20 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("window.removeEventListener('kira:overlay:visible', onVisible)");
     expect(motion).toContain("preference.removeEventListener");
     expect(motion).toContain("generation === Number(node.dataset.kiraGeneration)");
+  });
+
+  it('reverses the SAME entrance history before GTK releases the popup', () => {
+    expect(motion).toContain("window.addEventListener('kira:overlay:close', onClose)");
+    expect(motion).toContain("window.addEventListener('kira:overlay:reopen', onReopen)");
+    expect(motion).toContain("window.removeEventListener('kira:overlay:close', onClose)");
+    expect(motion).toContain("master.reverse()");
+    expect(motion).toContain("master.play()");
+    expect(motion).toContain("master.progress(1).pause()");
+    expect(motion).toContain("notifyOverlayClosed(Number(node.dataset.kiraGeneration))");
+    expect(motion).toContain("onReverseComplete: acknowledgeClose");
+    expect(motion).toContain("node.dataset.tenetReveal = 'reversing'");
+    expect(motion).toContain("if (preference.matches || !master || master.progress() <= 0)");
+    expect(motion).not.toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
   });
 
   it('uses a single shared tab indicator with interruptible GSAP travel', () => {
