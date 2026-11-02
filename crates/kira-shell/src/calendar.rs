@@ -284,13 +284,15 @@ impl CalendarOverlay {
         self.active.set(Some(kind));
         // The launcher needs reliable keyboard focus for type-to-search;
         // other popups preserve their former on-demand keyboard behavior.
-        self.window.set_keyboard_mode(if kind == Surface::Launcher
-            && self.pool.upgrade().is_some_and(|pool| !pool.concurrent())
-        {
-            KeyboardMode::Exclusive
-        } else {
-            KeyboardMode::OnDemand
-        });
+        self.window.set_keyboard_mode(
+            if kind == Surface::Launcher
+                && self.pool.upgrade().is_some_and(|pool| !pool.concurrent())
+            {
+                KeyboardMode::Exclusive
+            } else {
+                KeyboardMode::OnDemand
+            },
+        );
         self.requested.set(true);
         self.revealed.set(false);
         self.native_reduced_motion.set(false);
