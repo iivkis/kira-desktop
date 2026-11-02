@@ -215,7 +215,51 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
+
+/** Dock's permanent WebKit page has a distinct marker and bridge; it must
+ * mount real GIO IDs without involving the Calendar/Launcher popup lifecycle.
+ */
+async function smokeDock() {
+  const script = '<script>' +
+    'window.webkit={messageHandlers:{kiraDock:{postMessage(message){' +
+    'if(message==="catalog"){setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:apps",{detail:{' +
+    'apps:[{id:2,name:"Firefox",description:"Browser"},{id:8,name:"Terminal",description:"Shell"}],' +
+    'favorites:["Terminal","Firefox"]}})),25);}' +
+    'if(String(message).startsWith("icons:")){' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:icons",{detail:{icons:[' +
+    '{id:2,data_url:' + JSON.stringify(testIcon) + '},{id:8,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
+    'if(String(message).startsWith("launch:")){document.documentElement.dataset.dockLaunched=String(message);}' +
+    '}}},kiraDiagnostics:{postMessage(){}}}};' +
+    'window.addEventListener("load",()=>{' +
+    'setTimeout(()=>document.querySelector("button[aria-label=\\\"Launch Terminal\\\"]")?.click(),280);' +
+    'setTimeout(()=>{' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Dock\\\"]");' +
+    'const buttons=Array.from(root?.querySelectorAll("nav button")||[]);' +
+    'const names=buttons.map(button=>button.getAttribute("aria-label"));' +
+    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===72 &&' +
+    'names.join("|")==="Open application launcher|Launch Terminal|Launch Firefox" &&' +
+    'root.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
+    'document.documentElement.dataset.dockLaunched==="launch:8";' +
+    '},700);});</script>';
+  const document = html
+    .replace('<html lang="en">', '<html lang="en" data-kira-surface="dock">')
+    .replace('</head>', script + '</head>');
+  const path = join(dir, 'dock.html');
+  await writeFile(path, document);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--disable-background-networking', '--virtual-time-budget=1500',
+    '--dump-dom', 'file://' + path,
+  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
+  if (!output.includes('data-dock-test="true"')) {
+    const flags = output.match(/data-dock-(?:test|launched)="[^"]*"/g) || [];
+    throw new Error('dock: GIO catalog, icons, launch or accessibility failed: ' + flags.join(', '));
+  }
+  console.log('OK: dock mounted, pinned true native IDs, icons and launch bridge');
+}
+
 try {
+  await smokeDock();
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
