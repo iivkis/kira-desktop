@@ -2,7 +2,7 @@
   import { tick } from 'svelte';
   import type { WorkspaceState } from '../sdk/core';
   import { visibleWorkspaceWindow } from '../workspace-window';
-  import { tenetFlowIndicator, tenetScrollIntoView } from '../motion';
+  import { tenetFlowIndicator, tenetScrollIntoView, tenetScrollScope } from '../motion';
 
   let { state, showNames, limit, onFocus, pending }: {
     state: WorkspaceState | null;
@@ -58,6 +58,7 @@
       </span>
     {/if}
     <ol bind:this={list} use:tenetFlowIndicator={{ active: focusedId ?? '', axis: 'both' }}
+      use:tenetScrollScope
       class="relative flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Niri workspaces">
       <li data-kira-flow-indicator aria-hidden="true"
