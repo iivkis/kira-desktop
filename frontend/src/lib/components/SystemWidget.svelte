@@ -287,9 +287,13 @@
         oninput={filterProcesses}
         class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none
           placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
-      <div data-kira-enter class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+      <div data-kira-enter use:tenetFlowIndicator={{ active: sort.field }}
+        class="relative grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+        <span data-kira-flow-indicator aria-hidden="true"
+          class="pointer-events-none absolute bottom-0 left-0 z-0 h-0.5 bg-kira-accent"></span>
         {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
-          <button type="button" onclick={() => changeSort(column.field as SortField)}
+          <button data-kira-tab={column.field} type="button" onclick={() => changeSort(column.field as SortField)}
+            aria-pressed={sort.field === column.field}
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
