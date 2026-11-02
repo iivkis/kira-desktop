@@ -27,7 +27,7 @@ class SettingsContracts(unittest.TestCase):
         self.assertIn('view.show(Surface::Settings)', NATIVE)
         self.assertIn('toggleSettings()', APP)
         self.assertIn('aria-label="Open system settings"', APP)
-        self.assertIn('data-kira-surface="calendar"', NATIVE)
+        self.assertIn('const CALENDAR_SURFACE:', NATIVE)
 
     def test_fixed_widget_and_full_xdg_window_are_one_live_webview(self):
         self.assertIn('pub const SETTINGS_POPUP_WIDTH: i32 = 600', GEOMETRY)
