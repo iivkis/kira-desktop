@@ -61,7 +61,7 @@ class TenetReverseDismissalTests(unittest.TestCase):
         )
         self.assertIn('html[data-kira-surface="calendar"]', styles)
         self.assertIn("background: transparent;", styles)
-        self.assertIn("data-kira-surface-seam", MOTION)
+        self.assertIn("seam.dataset.kiraSurfaceSeam = ''", MOTION)
         self.assertIn("clipPath: hiddenClip", MOTION)
         self.assertIn("clipPath: visibleClip", MOTION)
         self.assertIn("master.reverse()", MOTION)
