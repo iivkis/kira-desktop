@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4889
+index_bytes=4944
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,107 +15,108 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	2557d20c0c8924dea8bb25c3e39ffb350a59dfea
-F	.cargo/config.toml	98	128	3
-F	.github/workflows/ci.yml	4355	133	112
-F	.github/workflows/frontend-nix.yml	1398	247	43
-F	.github/workflows/nix.yml	1258	292	38
-F	.github/workflows/overlay-smoke.yml	1064	332	40
-F	.github/workflows/publish-repospool.yml	3048	374	83
-F	.gitignore	178	459	11
-F	.repospoolignore	1028	472	47
-F	AGENTS.md	5193	521	86
-F	Cargo.toml	494	609	22
-F	README.md	11269	633	248
-F	Taskfile.yml	5957	883	185
-F	config/kira.kdl.example	358	1070	8
-F	crates/kira-core/Cargo.toml	207	1080	10
-F	crates/kira-core/src/config.rs	15217	1092	399
-F	crates/kira-core/src/main.rs	32080	1493	839
-F	crates/kira-core/src/niri.rs	16767	2334	453
-F	crates/kira-ipc/Cargo.toml	170	2789	9
-F	crates/kira-ipc/src/client.rs	17794	2800	458
-F	crates/kira-ipc/src/lib.rs	10460	3260	336
-F	crates/kira-shell/Cargo.toml	297	3598	12
-F	crates/kira-shell/src/calendar.rs	48983	3612	1320
-F	crates/kira-shell/src/launcher.rs	14114	4934	392
-F	crates/kira-shell/src/main.rs	19303	5328	448
-F	crates/kira-shell/src/native_ui.rs	3118	5778	78
-F	crates/kira-shell/src/process_monitor.rs	9336	5858	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6146	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6264	559
-F	crates/kira-shell/src/system_panel.rs	11356	6825	318
-F	crates/kira-shell/src/webview_pool.rs	7991	7145	237
-F	docs/CONFIG.md	5801	7384	125
-F	docs/DESIGN_SYSTEM.md	31196	7511	505
-F	docs/DEVELOPMENT.md	29347	8018	577
-F	docs/QA_VISUAL.md	12284	8597	149
-F	docs/SPECIFICATION.md	28960	8748	421
-F	docs/TENET_MOTION.md	34134	9171	186
-F	docs/UI_ARCHITECTURE.md	6737	9359	106
-F	docs/VISUAL_REVIEW.md	9754	9467	84
-F	docs/WEBVIEW_POOL.md	4890	9553	31
-F	flake.nix	3181	9586	91
-F	frontend/index.html	2737	9679	66
-F	frontend/package.json	720	9747	27
-F	frontend/scripts/inline-assets.mjs	4457	9776	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9881	106
-F	frontend/scripts/smoke-overlays.mjs	29174	9989	414
-F	frontend/src/App.svelte	8589	10405	207
-F	frontend/src/lib/bootstrap.test.ts	3408	10614	84
-F	frontend/src/lib/bootstrap.ts	2613	10700	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10772	65
-F	frontend/src/lib/calendar-model.ts	4648	10839	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10946	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11008	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11039	287
-F	frontend/src/lib/clock-flight.test.ts	2404	11328	50
-F	frontend/src/lib/clock-flight.ts	1977	11380	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11790	11432	244
-F	frontend/src/lib/components/LauncherWidget.svelte	11841	11678	253
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11933	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	12161	46
-F	frontend/src/lib/components/SystemWidget.svelte	19143	12209	337
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	12548	119
-F	frontend/src/lib/launcher-model.test.ts	2266	12669	46
-F	frontend/src/lib/launcher-model.ts	1403	12717	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12748	89
-F	frontend/src/lib/lazy-widget.ts	1984	12839	63
-F	frontend/src/lib/motion-contract.test.ts	8191	12904	148
-F	frontend/src/lib/motion.ts	18295	13054	512
-F	frontend/src/lib/overlay-size.ts	1090	13568	29
-F	frontend/src/lib/sdk/core.test.ts	22478	13599	447
-F	frontend/src/lib/sdk/core.ts	18781	14048	485
-F	frontend/src/lib/system-charts.test.ts	6312	14535	141
-F	frontend/src/lib/system-charts.ts	5514	14678	149
-F	frontend/src/lib/system-health.test.ts	2385	14829	42
-F	frontend/src/lib/system-health.ts	2831	14873	60
-F	frontend/src/lib/system-model.test.ts	4455	14935	84
-F	frontend/src/lib/system-model.ts	5457	15021	125
-F	frontend/src/lib/themes/kira-default.css	1687	15148	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	15202	101
-F	frontend/src/lib/themes/kira-default.ts	777	15305	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	15329	101
-F	frontend/src/lib/time.test.ts	263	15432	8
-F	frontend/src/lib/time.ts	320	15442	9
-F	frontend/src/lib/workspace-window.test.ts	2298	15453	52
-F	frontend/src/lib/workspace-window.ts	1063	15507	32
-F	frontend/src/main.ts	7007	15541	146
-F	frontend/src/style.css	4406	15689	134
-F	frontend/tsconfig.json	403	15825	16
-F	frontend/vite.config.ts	224	15843	8
-F	nix/package.nix	3132	15853	117
-F	scripts/dev_preview.py	18147	15972	403	x
-F	scripts/qa_visual.py	12052	16377	299
-F	tests/test_calendar_design.py	7810	16678	136
-F	tests/test_detailed_health.py	5481	16816	105
-F	tests/test_dev_preview.py	9339	16923	219
-F	tests/test_launcher_design.py	10471	17144	190
-F	tests/test_native_theme.py	1567	17336	36
-F	tests/test_popup_geometry.py	7481	17374	126
-F	tests/test_qa_visual.py	10549	17502	217
-F	tests/test_ui_bootstrap_contract.py	1103	17721	29
-F	tests/test_webview_pool.py	3765	17752	70
+C	39c3d85ad957861979c06b1cea0722d7879046b2
+F	.cargo/config.toml	98	129	3
+F	.github/workflows/ci.yml	4355	134	112
+F	.github/workflows/frontend-nix.yml	1398	248	43
+F	.github/workflows/nix.yml	1258	293	38
+F	.github/workflows/overlay-smoke.yml	1064	333	40
+F	.github/workflows/publish-repospool.yml	3048	375	83
+F	.gitignore	178	460	11
+F	.repospoolignore	1028	473	47
+F	AGENTS.md	5193	522	86
+F	Cargo.toml	494	610	22
+F	README.md	11269	634	248
+F	Taskfile.yml	5957	884	185
+F	config/kira.kdl.example	358	1071	8
+F	crates/kira-core/Cargo.toml	207	1081	10
+F	crates/kira-core/src/config.rs	15217	1093	399
+F	crates/kira-core/src/main.rs	32080	1494	839
+F	crates/kira-core/src/niri.rs	16767	2335	453
+F	crates/kira-ipc/Cargo.toml	170	2790	9
+F	crates/kira-ipc/src/client.rs	17794	2801	458
+F	crates/kira-ipc/src/lib.rs	10460	3261	336
+F	crates/kira-shell/Cargo.toml	297	3599	12
+F	crates/kira-shell/src/calendar.rs	52405	3613	1412
+F	crates/kira-shell/src/launcher.rs	14114	5027	392
+F	crates/kira-shell/src/main.rs	19321	5421	449
+F	crates/kira-shell/src/native_ui.rs	3362	5872	84
+F	crates/kira-shell/src/popup_layout.rs	3182	5958	89
+F	crates/kira-shell/src/process_monitor.rs	9336	6049	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6337	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6455	559
+F	crates/kira-shell/src/system_panel.rs	11356	7016	318
+F	crates/kira-shell/src/webview_pool.rs	7991	7336	237
+F	docs/CONFIG.md	5801	7575	125
+F	docs/DESIGN_SYSTEM.md	31404	7702	507
+F	docs/DEVELOPMENT.md	29347	8211	577
+F	docs/QA_VISUAL.md	12284	8790	149
+F	docs/SPECIFICATION.md	28960	8941	421
+F	docs/TENET_MOTION.md	34134	9364	186
+F	docs/UI_ARCHITECTURE.md	6737	9552	106
+F	docs/VISUAL_REVIEW.md	9754	9660	84
+F	docs/WEBVIEW_POOL.md	5265	9746	31
+F	flake.nix	3181	9779	91
+F	frontend/index.html	2737	9872	66
+F	frontend/package.json	720	9940	27
+F	frontend/scripts/inline-assets.mjs	4457	9969	103
+F	frontend/scripts/inline-assets.test.mjs	4645	10074	106
+F	frontend/scripts/smoke-overlays.mjs	29174	10182	414
+F	frontend/src/App.svelte	8589	10598	207
+F	frontend/src/lib/bootstrap.test.ts	3408	10807	84
+F	frontend/src/lib/bootstrap.ts	2613	10893	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10965	65
+F	frontend/src/lib/calendar-model.ts	4648	11032	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11139	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11201	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11232	287
+F	frontend/src/lib/clock-flight.test.ts	2404	11521	50
+F	frontend/src/lib/clock-flight.ts	1977	11573	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11790	11625	244
+F	frontend/src/lib/components/LauncherWidget.svelte	11841	11871	253
+F	frontend/src/lib/components/SystemCharts.svelte	10517	12126	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	12354	46
+F	frontend/src/lib/components/SystemWidget.svelte	19143	12402	337
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	12741	119
+F	frontend/src/lib/launcher-model.test.ts	2266	12862	46
+F	frontend/src/lib/launcher-model.ts	1403	12910	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12941	89
+F	frontend/src/lib/lazy-widget.ts	1984	13032	63
+F	frontend/src/lib/motion-contract.test.ts	8191	13097	148
+F	frontend/src/lib/motion.ts	18295	13247	512
+F	frontend/src/lib/overlay-size.ts	1090	13761	29
+F	frontend/src/lib/sdk/core.test.ts	22478	13792	447
+F	frontend/src/lib/sdk/core.ts	18781	14241	485
+F	frontend/src/lib/system-charts.test.ts	6312	14728	141
+F	frontend/src/lib/system-charts.ts	5514	14871	149
+F	frontend/src/lib/system-health.test.ts	2385	15022	42
+F	frontend/src/lib/system-health.ts	2831	15066	60
+F	frontend/src/lib/system-model.test.ts	4455	15128	84
+F	frontend/src/lib/system-model.ts	5457	15214	125
+F	frontend/src/lib/themes/kira-default.css	1687	15341	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	15395	101
+F	frontend/src/lib/themes/kira-default.ts	777	15498	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	15522	101
+F	frontend/src/lib/time.test.ts	263	15625	8
+F	frontend/src/lib/time.ts	320	15635	9
+F	frontend/src/lib/workspace-window.test.ts	2298	15646	52
+F	frontend/src/lib/workspace-window.ts	1063	15700	32
+F	frontend/src/main.ts	7007	15734	146
+F	frontend/src/style.css	4406	15882	134
+F	frontend/tsconfig.json	403	16018	16
+F	frontend/vite.config.ts	224	16036	8
+F	nix/package.nix	3132	16046	117
+F	scripts/dev_preview.py	18147	16165	403	x
+F	scripts/qa_visual.py	12052	16570	299
+F	tests/test_calendar_design.py	7810	16871	136
+F	tests/test_detailed_health.py	5481	17009	105
+F	tests/test_dev_preview.py	9339	17116	219
+F	tests/test_launcher_design.py	10471	17337	190
+F	tests/test_native_theme.py	1567	17529	36
+F	tests/test_popup_geometry.py	8409	17567	140
+F	tests/test_qa_visual.py	10549	17709	217
+F	tests/test_ui_bootstrap_contract.py	1103	17928	29
+F	tests/test_webview_pool.py	3944	17959	73
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3611,6 +3612,7 @@ serde_json.workspace = true
 FILE	crates/kira-shell/src/calendar.rs
 //! Bounded, reusable GTK/WebKit popup hosts for concurrent trusted widgets.
 //! Each active Calendar/System/Launcher has its own window and IPC manager.
+use crate::popup_layout::{self, PopupDock};
 use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
@@ -3750,8 +3752,73 @@ impl OverlayPool {
         self.windows.borrow().get(&id).cloned()
     }
 
+    /// A newly requested surface may take the empty left/right dock, but
+    /// an *idle* host is invisible and must never reserve screen space.
+    fn choose_dock(&self, kind: Surface) -> PopupDock {
+        let right_occupied = self
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
+        popup_layout::choose_dock(kind, right_occupied)
+    }
+
+    fn width_for(&self, view: &CalendarOverlay) -> i32 {
+        let windows = self.windows.borrow();
+        let active_count = windows.values().filter(|view| view.requested.get()).count();
+        let launcher_active = windows
+            .values()
+            .any(|view| view.requested.get() && view.active.get() == Some(Surface::Launcher));
+        popup_layout::popup_width(
+            crate::native_ui::popup_output_width(&view.window),
+            active_count,
+            launcher_active,
+        )
+    }
+
+    /// Native window dimensions and anchors are independent of the WebKit
+    /// lease scheduler. Only requested windows count toward occupied columns.
+    fn sync_geometry(&self) {
+        let active: Vec<_> = self
+            .windows
+            .borrow()
+            .values()
+            .filter(|view| view.requested.get())
+            .cloned()
+            .collect();
+        for view in active {
+            let width = self.width_for(&view);
+            crate::native_ui::resize_webview_popup(
+                &view.window,
+                width,
+                view.content_height.get().max(1),
+            );
+        }
+    }
+
     fn release(&self, id: u32) {
         self.scheduler.borrow_mut().release(id, Instant::now());
+        // If a right-hand popup closes, the sole remaining left popup takes
+        // the original right-hand anchor again. Unmap before changing
+        // layer-shell anchors to avoid Niri replaying the last buffer at the
+        // new coordinates, while preserving the Svelte widget and its state.
+        let right_occupied = self
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
+        if !right_occupied {
+            let left = self
+                .windows
+                .borrow()
+                .values()
+                .find(|view| view.requested.get() && view.dock.get() == PopupDock::Left)
+                .cloned();
+            if let Some(left) = left {
+                left.move_to_right();
+            }
+        }
+        self.sync_geometry();
         self.update_launcher_keyboard_mode();
     }
 
@@ -3805,42 +3872,70 @@ struct CalendarOverlay {
     native_reduced_motion: Cell<bool>,
     paint_pending: Cell<bool>,
     generation: Cell<u32>,
-    was_active: Cell<bool>,
+    dock: Cell<PopupDock>,
     open_started: Cell<Option<Instant>>,
 }
 
 impl CalendarOverlay {
-    /// Each leased WebView has its own layer-shell window. Calendar and
-    /// System Monitor ALWAYS share the original top-right anchor, regardless
-    /// of how many peer windows are currently in the pool. With no edge
-    /// anchors, wlr-layer-shell centers Launcher on its output.
+    /// Select an available dock based on *requested windows*, never on an
+    /// idle Calendar WebView. Launcher always keeps the center slot.
     fn position_for(&self, kind: Surface) {
-        let centered = kind == Surface::Launcher;
+        let dock = self
+            .pool
+            .upgrade()
+            .map(|pool| pool.choose_dock(kind))
+            .unwrap_or(popup_layout::choose_dock(kind, false));
+        self.apply_dock(dock);
+    }
 
-        // Reset margins before removing anchors. Margins only belong to
-        // anchored edges, so stale top/right values cannot leak into the
-        // centered launcher (or trigger a compositor protocol error).
+    fn apply_dock(&self, dock: PopupDock) {
+        self.dock.set(dock);
+        // Reset every edge before retargeting the layer-shell surface.
         self.window.set_margin(Edge::Top, 0);
         self.window.set_margin(Edge::Right, 0);
         self.window.set_margin(Edge::Bottom, 0);
         self.window.set_margin(Edge::Left, 0);
-        self.window.set_anchor(Edge::Top, !centered);
-        self.window.set_anchor(Edge::Right, !centered);
+        self.window.set_anchor(Edge::Top, dock != PopupDock::Center);
+        self.window
+            .set_anchor(Edge::Right, dock == PopupDock::Right);
         self.window.set_anchor(Edge::Bottom, false);
-        self.window.set_anchor(Edge::Left, false);
-
-        if centered {
-            // Ignore the bar's reserved top zone to center in the entire
-            // output, rather than the usable area below the bar.
+        self.window.set_anchor(Edge::Left, dock == PopupDock::Left);
+        if dock == PopupDock::Center {
             self.window.set_exclusive_zone(-1);
         } else {
-            // Calendar and System keep their existing top-right placement.
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            self.window
-                .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
+            match dock {
+                PopupDock::Right => self
+                    .window
+                    .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN),
+                PopupDock::Left => self
+                    .window
+                    .set_margin(Edge::Left, crate::native_ui::POPUP_RIGHT_MARGIN),
+                PopupDock::Center => {}
+            }
         }
+    }
+
+    fn move_to_right(self: &Rc<Self>) {
+        if !self.requested.get() || self.dock.get() != PopupDock::Left {
+            return;
+        }
+        let generation = self.generation.get();
+        // Niri must see the UNMAP before a changed layer-shell anchor.
+        self.window.set_visible(false);
+        self.apply_dock(PopupDock::Right);
+        let weak = Rc::downgrade(self);
+        gtk::glib::timeout_add_local_once(Duration::from_millis(32), move || {
+            if let Some(view) = weak.upgrade()
+                && view.requested.get()
+                && view.generation.get() == generation
+                && view.dock.get() == PopupDock::Right
+            {
+                view.window.present();
+            }
+        });
     }
 
     fn hide(&self) {
@@ -3909,7 +4004,6 @@ impl CalendarOverlay {
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.paint_pending.set(false);
-        self.was_active.set(false);
         self.open_started.set(Some(Instant::now()));
         self.generation
             .set(self.generation.get().wrapping_add(1).max(1));
@@ -3920,6 +4014,9 @@ impl CalendarOverlay {
         // Reset the previous widget's geometry while still transparent.
         crate::native_ui::resize_webview_popup(&self.window, 420, 1);
         let generation = self.generation.get();
+        if let Some(pool) = self.pool.upgrade() {
+            pool.sync_geometry();
+        }
         self.window.present();
         self.request_mount();
         eprintln!(
@@ -4131,7 +4228,12 @@ impl CalendarOverlay {
                     height.min(crate::native_ui::webview_popup_height_limit(&self.window));
                 if clamped != self.content_height.get() {
                     self.content_height.set(clamped);
-                    crate::native_ui::resize_webview_popup(&self.window, 420, clamped);
+                    let width = self
+                        .pool
+                        .upgrade()
+                        .map(|pool| pool.width_for(self))
+                        .unwrap_or(popup_layout::PREFERRED_POPUP_WIDTH);
+                    crate::native_ui::resize_webview_popup(&self.window, width, clamped);
                 }
                 if self.widget_ready.get() && !self.paint_pending.get() && !self.revealed.get() {
                     self.request_paint();
@@ -4632,7 +4734,7 @@ fn build(
         native_reduced_motion: Cell::new(false),
         paint_pending: Cell::new(false),
         generation: Cell::new(0),
-        was_active: Cell::new(false),
+        dock: Cell::new(PopupDock::Right),
         open_started: Cell::new(None),
     });
     let weak = Rc::downgrade(&overlay);
@@ -4671,20 +4773,11 @@ fn build(
         }
     });
 
-    let weak = Rc::downgrade(&overlay);
-    window.connect_is_active_notify(move |window| {
-        if let Some(state) = weak.upgrade() {
-            if window.is_active() {
-                state.was_active.set(true);
-            } else if state.requested.get() && state.was_active.get() {
-                // Focus shifts BETWEEN our concurrent popup windows must
-                // never cancel another visible widget's GSAP timeline.
-                if !state.pool.upgrade().is_some_and(|pool| pool.concurrent()) {
-                    state.hide();
-                }
-            }
-        }
-    });
+    // Focus is not a close request. Clicking a Top Bar button first
+    // deactivates the previous popup, and only then runs its new WebKit
+    // command. Hiding on is-active-notify would destroy that first widget
+    // before the scheduler has a chance to lease another WebView. Explicit
+    // close/Escape and the per-window generation guard remain available.
 
     // Load WebKit once; only the lightweight JS host survives between
     // shows. The Calendar component, timer and DOM are unmounted on hide.
@@ -5330,6 +5423,7 @@ FILE	crates/kira-shell/src/main.rs
 mod calendar;
 mod launcher;
 mod native_ui;
+mod popup_layout;
 mod process_monitor;
 mod renderer_recovery;
 mod system_metrics;
@@ -5842,6 +5936,12 @@ pub fn resize_webview_popup(
     height
 }
 
+/// Return the output's logical width, so the popup layout can allocate
+/// columns using live window geometry rather than a guessed CSS viewport.
+pub fn popup_output_width(window: &gtk::ApplicationWindow) -> i32 {
+    output_size(window).0
+}
+
 pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, height: i32) {
     resize_webview_popup(window, width, height);
 }
@@ -5853,6 +5953,97 @@ pub const POPUP_TOP_MARGIN: i32 = 25;
 /// A prewarmed, active or closed peer must NEVER reserve layout space for
 /// another popup. The WebView pool owns resource leases, not geometry.
 pub const POPUP_RIGHT_MARGIN: i32 = 12;
+
+FILE	crates/kira-shell/src/popup_layout.rs
+//! Pure popup geometry policy, independent from WebKit leases and GTK
+//! events. Only *requested/visible* windows consume a position.
+use crate::webview_pool::Surface;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PopupDock {
+    Left,
+    Right,
+    Center,
+}
+
+pub const PREFERRED_POPUP_WIDTH: i32 = 420;
+const OUTER_MARGIN: i32 = 12;
+const INNER_GAP: i32 = 8;
+
+/// Existing windows keep their dock while another surface opens; the next
+/// floating popup gets a vacant side. Launcher is always centered.
+pub fn choose_dock(kind: Surface, right_occupied: bool) -> PopupDock {
+    if kind == Surface::Launcher {
+        PopupDock::Center
+    } else if right_occupied {
+        PopupDock::Left
+    } else {
+        PopupDock::Right
+    }
+}
+
+/// Keep windows disjoint, including when centered Launcher is present.
+/// Side-by-side Calendar/System uses two columns; Launcher requires a
+/// reserved center column even when only two popups are visible.
+/// On narrow outputs the widgets get narrower rather than overlap.
+/// Width is measured in logical monitor pixels, not WebKit CSS pixels.
+pub fn popup_width(output_width: i32, active_count: usize, launcher_active: bool) -> i32 {
+    let columns = if active_count >= 3 || (active_count >= 2 && launcher_active) {
+        3
+    } else if active_count >= 2 {
+        2
+    } else {
+        1
+    };
+    let available = output_width
+        .saturating_sub(OUTER_MARGIN * 2)
+        .saturating_sub(INNER_GAP * (columns - 1));
+    PREFERRED_POPUP_WIDTH.min((available / columns).max(1))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dormant_calendar_never_reserves_position_for_system() {
+        assert_eq!(choose_dock(Surface::System, false), PopupDock::Right);
+        assert_eq!(choose_dock(Surface::System, true), PopupDock::Left);
+        assert_eq!(choose_dock(Surface::Calendar, false), PopupDock::Right);
+        assert_eq!(choose_dock(Surface::Calendar, true), PopupDock::Left);
+        assert_eq!(choose_dock(Surface::Launcher, true), PopupDock::Center);
+    }
+
+    #[test]
+    fn three_popups_fit_side_by_side_on_screenshot_sized_output() {
+        assert_eq!(popup_width(1264, 1, false), 420);
+        assert_eq!(popup_width(1264, 2, false), 420);
+        assert_eq!(popup_width(1264, 2, true), 408);
+        assert_eq!(popup_width(1264, 3, true), 408);
+        let w = popup_width(1264, 3, true);
+        let left_end = 12 + w;
+        let center_start = (1264 - w) / 2;
+        let center_end = center_start + w;
+        let right_start = 1264 - 12 - w;
+        assert!(left_end + 8 <= center_start);
+        assert!(center_end + 8 <= right_start);
+    }
+
+    #[test]
+    fn narrow_output_constrains_width_before_overlap() {
+        assert_eq!(popup_width(800, 1, false), 420);
+        assert_eq!(popup_width(800, 2, false), 384);
+        assert_eq!(popup_width(800, 2, true), 253);
+        assert_eq!(popup_width(800, 3, true), 253);
+        assert!(popup_width(480, 3, true) > 0);
+    }
+
+    #[test]
+    fn last_open_widget_returns_to_original_width() {
+        assert_eq!(popup_width(1264, 3, true), 408);
+        assert_eq!(popup_width(1264, 1, false), PREFERRED_POPUP_WIDTH);
+    }
+}
 
 FILE	crates/kira-shell/src/process_monitor.rs
 //! Read-only Linux process accounting for the System Monitor.
@@ -7610,10 +7801,9 @@ official visual language of Kira Desktop.
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
   to the clipboard only on click.
-  Clicking time again or pressing Escape closes; focus loss dismisses
-  when there is only one popup. With multiple concurrently leased popups,
-  switching focus between windows never closes another widget. Calendar,
-  Launcher and System Monitor may stay open independently.
+  Clicking time again or pressing Escape closes. Merely losing GTK focus,
+  including when the user clicks a different Top Bar button, NEVER closes
+  a widget. Calendar, Launcher and System Monitor may stay open independently.
   Calendar motion now uses **TENET dual-time GSAP scenes**:
   when sections appear or month/day selection changes, actual content moves
   FORWARD while four recorded decorative fragments replay their original
@@ -7780,10 +7970,12 @@ Calendar, Launcher or System Monitor owns a separate GTK window, isolated
 generation-scoped IPC channel and Svelte/GSAP scene. A bounded four-host cap,
 one persistent hot spare and 45-second surplus-idle grace prevent runaway
 renderer growth. Active surfaces and their animations are never evicted to
-open another widget. Calendar and System Monitor keep their original top-right
-anchor regardless of other pooled hosts, including prewarmed or closed ones.
-Concurrent popup windows may overlap; the scheduler never silently reserves
-space or moves a mapped Wayland window.
+open another widget. A lone Calendar or System Monitor keeps its original
+top-right position. With concurrent windows, Calendar/System use separate
+left/right docks and centered Launcher uses a third dock. Live window widths
+adapt to two/three columns to avoid overlaps; the one warm idle WebView does
+not reserve physical screen space. Repositioning a remaining left popup after
+its right peer closes briefly unmaps its GTK surface, not its Svelte DOM.
 
 ### Shared TENET widget entrance · 2026-11
 
@@ -7857,7 +8049,8 @@ continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 Calendar and System Monitor share the original **12 logical pixel** right
 margin and a **25 logical pixel** top margin, half the previous 50px.
-These anchors never change based on another popup's presence in the pool.
+These anchors apply when a popup is alone. Concurrent live windows take
+LEFT/RIGHT/CENTER docks based only on requested windows, not warm idle ones.
 A single GTK helper caps each popup's
 scrollable viewport at **70% of the logical height of its monitor**,
 recalculating after the Wayland surface maps. Both remain non-exclusive
@@ -9567,8 +9760,8 @@ A single active popup host forced Svelte to tear down one widget before the next
 - **Polling:** a single GTK timer processes Launcher results and live System pulses for *all* currently leased hosts. It starts on the first lease and stops when no hosts remain active; a warm idle WebView has no per-window 30/250ms polling timers.
 - **Rotation:** a single hot spare is retained. Surplus idle hosts have a **45-second grace** for quick reopen/animation chains; a 5-second GTK timer destroys only expired *idle* surplus. Actual WebKit windows are closed only on retirement, never on ordinary widget hide.
 - **Per-window isolation:** each WebView has an independent `UserContentManager`, trusted IPC allowlist, Svelte lifecycle, generation counter, size-before-paint handshake, and native/GSAP visibility timeline. No stale per-host callback is allowed to affect a newer generation.
-- **Placement:** Launcher remains centered. **Calendar and System Monitor both preserve their original top-right anchors (12px right, 25px top), regardless of the number, state or type of other pooled WebViews.** A prewarmed or closed Calendar must not push System Monitor sideways. When both are open, they may overlap and the focused popup comes to the foreground; the resource pool deliberately does not allocate screen space or reposition a mapped Wayland surface. Any future multi-popup tiling belongs in an explicit compositor-aware layout feature, not the WebView scheduler.
-- **Focus:** losing focus to another concurrently active popup must not auto-close the previous popup. With only one popup the established outside-click dismissal remains; the explicit close controls and Escape remain available. Launcher retains its exclusive keyboard focus only when it is the sole popup, switching to OnDemand while multiple windows coexist so it cannot starve Calendar/System of keyboard input.
+- **Placement:** Layout considers **only actively requested windows**, not warm/closed WebView leases. A lone Calendar or System Monitor uses the original top-right anchor (12px right, 25px top). A second non-Launcher popup uses the top-left anchor, leaving the centered Launcher lane clear; after a right popup closes, the remaining left popup safely unmaps and remaps at its original right anchor without unmounting Svelte. Side panels and centered Launcher resize to 2 or 3 non-overlapping columns as needed (for example, at 1264px, 408px each for three views). The layout is recomputed from current demand, never a 448px permanent system-only offset. On narrow outputs, columns shrink to avoid hiding one widget behind another; content remains scrollable.
+- **Focus:** GTK focus notifications must **never** automatically close a popup. The Top Bar click that requests the next widget deactivates the existing window *before* a new lease is acquired; the old one must stay open. Only explicit close/Escape/widget actions release the lease. Launcher retains exclusive keyboard focus only when alone, switching to OnDemand while multiple windows coexist so it cannot starve Calendar/System of keyboard input.
 
 ## Deterministic scheduler
 
@@ -9578,7 +9771,7 @@ Avoid proactively creating more than one idle WebView. Avoid arbitrary backgroun
 
 ## QA / evolution
 
-Cover: cold startup, two and three concurrent surfaces, switching focus without unmount, repeated toggles, generation-scoped stale commands, size + mount + paint acknowledgements, native reduced motion, synthetic capacity exhaustion, closed-vs-idle renderer cleanup, and 45s idle expiry. Keep native compile/Rust unit tests, Python source contracts and browser smoke green. Verify System Monitor's stable 12px anchor with Calendar absent, prewarmed, visible and closed, on wide and small Niri outputs. Check that overlapping concurrent windows retain independent focus and animations.
+Cover: cold startup, two and three concurrent surfaces, switching focus without unmount, repeated toggles, generation-scoped stale commands, size + mount + paint acknowledgements, native reduced motion, synthetic capacity exhaustion, closed-vs-idle renderer cleanup, and 45s idle expiry. Keep native compile/Rust unit tests, Python source contracts and browser smoke green. Verify a lone System Monitor's 12px right anchor with Calendar absent, prewarmed or closed; verify the LEFT/RIGHT/CENTER triple-column layout with all three open, including a 1264px output, and that closing the right popup returns the remaining left one to the right without an interrupted Svelte scene. Check 800px narrow layout and focus switching on real Niri/Wayland.
 
 Future widget types should register through the same fixed-purpose allowlist and scheduler lease contract, not create ten per-widget pools. The cap is a policy constant, not an aspiration to keep four renderers alive at idle.
 
@@ -17384,12 +17577,13 @@ MONITOR = (ROOT / "crates/kira-shell/src/system_panel.rs").read_text()
 class PopupGeometryTests(unittest.TestCase):
     def test_launcher_is_centered_without_affecting_other_widgets(self):
         self.assertIn("fn position_for(&self, kind: Surface)", CALENDAR)
-        self.assertIn("let centered = kind == Surface::Launcher;", CALENDAR)
+        self.assertIn("fn apply_dock(&self, dock: PopupDock)", CALENDAR)
+        self.assertIn("popup_layout::choose_dock(kind, false)", CALENDAR)
         self.assertIn("self.position_for(kind);", CALENDAR)
-        self.assertIn("self.window.set_anchor(Edge::Top, !centered);", CALENDAR)
-        self.assertIn("self.window.set_anchor(Edge::Right, !centered);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Top, dock != PopupDock::Center);", CALENDAR)
+        self.assertIn("set_anchor(Edge::Right, dock == PopupDock::Right);", CALENDAR)
         self.assertIn("self.window.set_anchor(Edge::Bottom, false);", CALENDAR)
-        self.assertIn("self.window.set_anchor(Edge::Left, false);", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Left, dock == PopupDock::Left);", CALENDAR)
         self.assertIn("self.window.set_exclusive_zone(-1);", CALENDAR)
         self.assertIn("self.window.set_exclusive_zone(0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Top, 0);", CALENDAR)
@@ -17405,21 +17599,34 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("fn concurrent(&self) -> bool", CALENDAR)
         self.assertIn("self.pool.upgrade()", CALENDAR)
 
-    def test_closed_calendar_never_reserves_position_for_system_monitor(self):
-        # Regression: the previous pool shifted System 448px left on wide
-        # monitors, even with an inert/closed Calendar host. Geometry must
-        # depend only on whether the requested surface is Launcher.
-        position = CALENDAR.split("fn position_for(&self, kind: Surface)", 1)[1].split(
-            "fn hide(&self)", 1
-        )[0]
-        self.assertIn("let centered = kind == Surface::Launcher;", position)
-        self.assertIn("set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", position)
-        self.assertNotIn("Surface::System", position)
-        self.assertNotIn("Surface::Calendar", position)
-        self.assertNotIn("self.pool", position)
+    def test_only_requested_windows_consume_layout_docks(self):
+        # Dormant WebViews do not reserve the System Monitor's position.
+        self.assertIn("view.requested.get() && view.dock.get() == PopupDock::Right", CALENDAR)
+        self.assertIn("popup_layout::choose_dock(kind, right_occupied)", CALENDAR)
+        self.assertIn("self.window.set_anchor(Edge::Left, dock == PopupDock::Left)", CALENDAR)
+        self.assertIn("set_anchor(Edge::Right, dock == PopupDock::Right)", CALENDAR)
+        self.assertIn("PopupDock::Right => self", CALENDAR)
+        self.assertIn("PopupDock::Left => self", CALENDAR)
         self.assertNotIn("popup_right_margin(", HELPERS)
         self.assertNotIn("448", HELPERS)
-        self.assertIn("window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", CALENDAR)
+
+    def test_focus_changes_never_close_other_pooled_widgets(self):
+        self.assertNotIn("connect_is_active_notify", CALENDAR)
+        self.assertNotIn("was_active: Cell<bool>", CALENDAR)
+        self.assertIn("fn move_to_right(self: &Rc<Self>)", CALENDAR)
+        self.assertIn("self.window.set_visible(false);", CALENDAR)
+        self.assertIn("Duration::from_millis(32)", CALENDAR)
+        self.assertIn("pool.release(self.id)", CALENDAR)
+
+    def test_popup_widths_reflow_to_avoid_launcher_overlap(self):
+        layout = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
+        self.assertIn("pub fn popup_width(", layout)
+        self.assertIn("let columns = if active_count >= 3", layout)
+        self.assertIn("popup_layout::popup_width(", CALENDAR)
+        self.assertIn("fn sync_geometry(&self)", CALENDAR)
+        self.assertIn("pool.sync_geometry()", CALENDAR)
+        self.assertIn("crate::native_ui::popup_output_width(&view.window)", CALENDAR)
+        self.assertIn("assert_eq!(popup_width(1264, 3, true), 408)", layout)
 
     def test_switching_launcher_preserves_existing_buffers_and_generations(self):
         # A new surface reserves its own hot or newly created WebKit view.
@@ -17484,7 +17691,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("pub fn resize_webview_popup(", HELPERS)
         self.assertIn("pub fn webview_popup_height_limit(", HELPERS)
         self.assertIn("self.content_height.set(clamped)", CALENDAR)
-        self.assertIn("resize_webview_popup(&self.window, 420, clamped)", CALENDAR)
+        self.assertIn("crate::native_ui::resize_webview_popup(&self.window, width, clamped)", CALENDAR)
         self.assertIn("maxHeight: {max_height}", CALENDAR)
         self.assertIn('size:42:512', CALENDAR)
         for source in (CALENDAR,):
@@ -17798,6 +18005,9 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("KeyboardMode::Exclusive", HOST)
         self.assertIn("KeyboardMode::OnDemand", HOST)
         self.assertIn("self.window.present()", HOST)
+        self.assertNotIn("connect_is_active_notify", HOST)
+        self.assertIn("fn sync_geometry(&self)", HOST)
+        self.assertIn("fn move_to_right(self: &Rc<Self>)", HOST)
         self.assertIn("self.generation.get() == generation", HOST)
         self.assertIn("manager.register_script_message_handler", HOST)
         self.assertIn("pub const POPUP_RIGHT_MARGIN: i32 = 12;", NATIVE)
