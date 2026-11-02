@@ -192,6 +192,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     if (master) {
       node.dataset.tenetReveal = 'started';
       master.play(); // Retarget from the live position, without a snap.
+      // A resumed view can be throttled too. Restore exact visible geometry
+      // if WebKit stops producing GSAP frames after an interrupted reverse.
+      restore = window.setTimeout(() => {
+        restore = null;
+        if (!closing && master) {
+          master.progress(1).pause();
+          node.dataset.tenetReveal = 'settled';
+        }
+      }, 750);
     }
   }
   function onHide(event: Event) {
