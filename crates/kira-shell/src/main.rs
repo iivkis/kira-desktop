@@ -107,8 +107,18 @@ fn main() {
         .application_id("dev.kira.Desktop")
         .flags(flags)
         .build();
+    // GApplication may deliver repeated activate signals to the primary
+    // process (including a second kira-shell invocation). Reuse the existing
+    // layer-shell bar instead of duplicating contexts, IPC workers and timers.
+    let primary_bar: Rc<RefCell<Option<gtk::ApplicationWindow>>> =
+        Rc::new(RefCell::new(None));
     app.connect_activate(move |app| {
+        if let Some(window) = primary_bar.borrow().as_ref() {
+            window.present();
+            return;
+        }
         let window = gtk::ApplicationWindow::new(app);
+        primary_bar.replace(Some(window.clone()));
         window.set_title(Some("Kira Desktop"));
         window.set_decorated(false);
         window.set_default_size(800, BAR_HEIGHT);

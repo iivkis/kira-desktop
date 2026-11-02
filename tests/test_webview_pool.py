@@ -15,6 +15,14 @@ SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
 
 
 class WebviewPoolContracts(unittest.TestCase):
+    def test_repeated_activation_reuses_existing_bar_and_workers(self):
+        self.assertIn("let primary_bar: Rc<RefCell<Option<gtk::ApplicationWindow>>>", SHELL)
+        activation = SHELL.split("app.connect_activate(move |app| {", 1)[1]
+        self.assertLess(activation.index("if let Some(window) = primary_bar.borrow().as_ref()"),
+                        activation.index("let context = webkit6::WebContext::new()"))
+        self.assertIn("primary_bar.replace(Some(window.clone()));", activation)
+        self.assertIn("window.present();\n            return;", activation)
+
     def test_one_shared_context_for_bar_and_all_popup_leases(self):
         self.assertEqual(SHELL.count("webkit6::WebContext::new()"), 1)
         self.assertNotIn("webkit6::WebContext::new()", HOST)
