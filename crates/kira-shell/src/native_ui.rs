@@ -10,8 +10,8 @@ pub fn install_transparent_popup_style() {
     provider.load_from_string(
         "window.kira-popup-transparent, window.kira-popup-transparent.background {            background-color: transparent; background-image: none;            border: none; box-shadow: none; }          window.kira-popup-transparent > decoration {            background-color: transparent; background-image: none;            border: none; box-shadow: none; }",
     );
-    let display = gtk::gdk::Display::default()
-        .expect("GTK popup pool requires an active graphical display");
+    let display =
+        gtk::gdk::Display::default().expect("GTK popup pool requires an active graphical display");
     gtk::style_context_add_provider_for_display(
         &display,
         &provider,
