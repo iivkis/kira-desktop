@@ -16,6 +16,12 @@ CSS = (ROOT / "frontend/src/style.css").read_text()
 
 
 class SettingsContracts(unittest.TestCase):
+    def test_outdated_native_host_is_not_misreported_as_settings_service_failure(self):
+        self.assertIn("settingsShellOutdated", APP)
+        self.assertIn("RESTART KIRA SHELL", APP)
+        self.assertIn("!window.webkit?.messageHandlers?.kiraSettings", APP)
+        self.assertIn('manager.register_script_message_handler("kiraSettings", None)', MAIN)
+
     def test_settings_is_a_normal_pool_surface_and_topbar_command(self):
         self.assertIn('Settings,', POOL)
         self.assertIn('Self::Settings => "settings"', POOL)

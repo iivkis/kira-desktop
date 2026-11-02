@@ -64,8 +64,9 @@ acceptance, in addition to the TENET motion principles.
   fixed cap. Never recycle an active lease for a different widget. A
   user-requested pop-out may reparent its SAME active WebView into a regular
   Niri window without remounting or losing Svelte state. Keep at most one
-  transient popup; wait for its reverse-close acknowledgement before showing
-  another. Reuse one hot idle view, retire surplus idle views after 45 seconds,
+  active widget across transient and detached modes; wait for its
+  reverse-close acknowledgement before showing another. All transient
+  popups use the same right dock. Reuse one hot idle view, retire surplus idle views after 45 seconds,
   and reject stale generation-scoped UI commands.
 - **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
   ECharts and GSAP effects on mount, resize charts when geometry changes,

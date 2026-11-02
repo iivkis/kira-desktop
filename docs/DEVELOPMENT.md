@@ -1,5 +1,33 @@
 # Developing Kira Desktop
 
+## If Settings says RESTART KIRA SHELL, or pop-out does not work
+
+The UI and the running Rust GTK Shell must come from the **same build**.
+`SETTINGS OFFLINE` with a functional Calendar/System button commonly means
+the current Top Bar WebView lacks the newer `kiraSettings` handler. Updating
+frontend assets or pulling `main` cannot add native message handlers to an
+already-running process. Importantly, Kira uses GApplication's unique ID:
+**starting a second `kira-shell` only activates the old primary process**.
+
+Check the actual running binary and UI directory:
+
+```sh
+pgrep -a -x kira-shell
+# Replace PID with the PID reported above:
+readlink -f /proc/PID/exe
+tr '\0' '\n' < /proc/PID/environ | grep '^KIRA_UI_DIR='
+```
+
+Build the complete updated application (`task build` in `nix develop`,
+or your normal NixOS/Home Manager rebuild), then **stop and restart the
+existing primary Kira Shell through the process supervisor that launched
+it**. Do not rely on a second invocation to replace the old process,
+and do not globally kill all `kira-shell` processes: nested previews use
+separate instances. Check the Nix store path of the running PID after
+restart. UI logs for rejected pop-out commands now include the reason
+and generation; a missing `kiraCalendarUi` bridge needs an updated Shell,
+not a frontend-only rebuild.
+
 ## Requirements
 
 Kira Desktop targets NixOS, Niri and Wayland. Flakes must be enabled. The repository commits the generated `Cargo.lock`, `flake.lock` and `frontend/package-lock.json`, as well as the verified frontend `npmDepsHash`.

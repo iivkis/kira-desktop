@@ -327,17 +327,15 @@ diagnostic bars. The visual hierarchy is intentional:
 
 **Normative lifecycle:** [WebView Pool & Scheduler](WEBVIEW_POOL.md). The Top
 Bar keeps its separate permanent WebView; the popup pool starts one inert warm
-WebKit host and creates more only when simultaneously requested. Every active
-Calendar, Launcher or System Monitor owns a separate GTK window, isolated
-generation-scoped IPC channel and Svelte/GSAP scene. A bounded four-host cap,
-one persistent hot spare and 45-second surplus-idle grace prevent runaway
-renderer growth. Active surfaces and their animations are never evicted to
-open another widget. A lone Calendar or System Monitor keeps its original
-top-right position. With concurrent windows, Calendar/System use separate
-left/right docks and centered Launcher uses a third dock. Live window widths
-adapt to two/three columns to avoid overlaps; the one warm idle WebView does
-not reserve physical screen space. Repositioning a remaining left popup after
-its right peer closes briefly unmaps its GTK surface, not its Svelte DOM.
+WebKit host and allocates others only as needed. A bounded four-host cap,
+one hot spare and 45-second surplus-idle grace prevent runaway renderer
+growth. **One active widget exists across popup and promoted Niri windows.**
+New Top Bar requests run the current widget's generation-scoped TENET reverse,
+wait for unmount/release (or watchdog), then open the latest requested kind.
+The same-kind icon raises an already detached window. All transient widgets
+share the original top-right anchor; no left/center dock columns or transient
+side-by-side windows are used. Ordinary Niri windows remain resizable and
+retain their live WebView while shown, but a different widget closes them.
 
 ### Shared TENET widget reverse dismissal · 2026-11
 
@@ -421,10 +419,10 @@ continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 ### Popup geometry
 
-Calendar and System Monitor share the original **12 logical pixel** right
-margin and a **25 logical pixel** top margin, half the previous 50px.
-These anchors apply when a popup is alone. Concurrent live windows take
-LEFT/RIGHT/CENTER docks based only on requested windows, not warm idle ones.
+Calendar, System Monitor, Launcher and Settings share the original
+**12 logical pixel** right margin and a **25 logical pixel** top margin.
+There is only one active widget: switching waits for its reversible exit,
+including when it was promoted to an ordinary Niri window.
 A single GTK helper caps each popup's
 scrollable viewport at **70% of the logical height of its monitor**,
 recalculating after the Wayland surface maps. Both remain non-exclusive

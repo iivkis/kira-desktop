@@ -9,19 +9,46 @@
   } = $props();
 
   let detached = $state(false);
+  let popoutFailed = $state(false);
+  let responseTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function requestPopout() {
+    popoutFailed = false;
+    // A current Svelte bundle running inside an outdated native Shell can
+    // expose the button without implementing the private pop-out protocol.
+    if (!window.webkit?.messageHandlers?.kiraCalendarUi) {
+      popoutFailed = true;
+      return;
+    }
+    onPopout();
+    if (responseTimer !== null) window.clearTimeout(responseTimer);
+    responseTimer = window.setTimeout(() => {
+      responseTimer = null;
+      if (!detached) popoutFailed = true;
+    }, 1800);
+  }
+
   onMount(() => {
     const onDetached = (event: Event) => {
       const current = (event as CustomEvent<{ generation: number }>).detail?.generation;
-      if (current === generation) detached = true;
+      if (current === generation) {
+        detached = true;
+        popoutFailed = false;
+        if (responseTimer !== null) window.clearTimeout(responseTimer);
+        responseTimer = null;
+      }
     };
     window.addEventListener('kira:overlay:detached', onDetached);
-    return () => window.removeEventListener('kira:overlay:detached', onDetached);
+    return () => {
+      window.removeEventListener('kira:overlay:detached', onDetached);
+      if (responseTimer !== null) window.clearTimeout(responseTimer);
+    };
   });
 </script>
 
 <div class="flex shrink-0 items-center gap-1" role="group" aria-label={label + ' window actions'}>
   {#if !detached}
-    <button type="button" onclick={onPopout}
+    <button type="button" onclick={requestPopout}
       title={'Open ' + label + ' as a Niri window'}
       aria-label={'Open ' + label + ' as a separate window'}
       class="rounded-sm p-2 text-kira-muted transition-colors hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">
@@ -31,6 +58,12 @@
         <path d="M12 3h9v9M21 3l-11 11"></path>
       </svg>
     </button>
+  {/if}
+  {#if popoutFailed}
+    <span role="status" class="max-w-28 text-[10px] font-bold leading-tight text-kira-accent"
+      title="Нативный Shell не подтвердил вынос окна. Обновите и полностью перезапустите kira-shell.">
+      RESTART SHELL
+    </span>
   {/if}
   <button type="button" onclick={onClose} aria-label={'Close ' + label} title="Close (Esc)"
     class="rounded-sm px-2 py-1 text-xl leading-none text-kira-muted transition-colors

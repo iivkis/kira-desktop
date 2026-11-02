@@ -15,10 +15,18 @@
   let calendarUnavailable = $state(false);
   let systemUnavailable = $state(false);
   let settingsUnavailable = $state(false);
+  let settingsShellOutdated = $state(false);
   let systemMetrics = $state<SystemMetrics | null>(null);
 
   function activateSettings() {
     settingsUnavailable = !toggleSettings();
+    // A packaged frontend can be newer than the already-running GTK
+    // application. Older shells know Calendar but have no Settings handler.
+    // A second kira-shell invocation only activates that old primary process;
+    // the user must restart the actual Shell, not merely relaunch its binary.
+    settingsShellOutdated = settingsUnavailable &&
+      Boolean(window.webkit?.messageHandlers?.kiraCalendar) &&
+      !window.webkit?.messageHandlers?.kiraSettings;
   }
 
   function activateSystemPanel() {
@@ -200,7 +208,12 @@
       </svg>
     </button>
     {#if settingsUnavailable}
-      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent">SETTINGS OFFLINE</span>
+      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent"
+        title={settingsShellOutdated
+          ? 'Frontend новее запущенного Kira Shell. Обновите и полностью перезапустите процесс kira-shell.'
+          : 'Нативный канал настроек недоступен.'}>
+        {settingsShellOutdated ? 'RESTART KIRA SHELL' : 'SETTINGS OFFLINE'}
+      </span>
     {/if}
     <span class="mx-1 h-4 w-px shrink-0 bg-kira-muted/20" aria-hidden="true"></span>
     {#if calendarUnavailable}

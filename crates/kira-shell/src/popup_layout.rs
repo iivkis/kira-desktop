@@ -13,14 +13,10 @@ pub const PREFERRED_POPUP_WIDTH: i32 = 420;
 pub const SETTINGS_POPUP_WIDTH: i32 = 600;
 const OUTER_MARGIN: i32 = 12;
 
-/// Launcher is centered; Calendar and System share one original right dock.
-/// Other surfaces can coexist only after promotion to an xdg-toplevel.
-pub fn choose_dock(kind: Surface, _right_occupied: bool) -> PopupDock {
-    if kind == Surface::Launcher {
-        PopupDock::Center
-    } else {
-        PopupDock::Right
-    }
+/// Every transient widget uses the same right anchor. A Niri xdg-toplevel
+/// is positioned by the compositor, not by the transient popup algorithm.
+pub fn choose_dock(_kind: Surface, _right_occupied: bool) -> PopupDock {
+    PopupDock::Right
 }
 
 /// No active-window columns: normal Niri windows manage their own layout.
@@ -41,7 +37,8 @@ mod tests {
         for occupied in [false, true] {
             assert_eq!(choose_dock(Surface::Calendar, occupied), PopupDock::Right);
             assert_eq!(choose_dock(Surface::System, occupied), PopupDock::Right);
-            assert_eq!(choose_dock(Surface::Launcher, occupied), PopupDock::Center);
+            assert_eq!(choose_dock(Surface::Launcher, occupied), PopupDock::Right);
+            assert_eq!(choose_dock(Surface::Settings, occupied), PopupDock::Right);
         }
     }
 

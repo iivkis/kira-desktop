@@ -1,5 +1,5 @@
-//! One transient GTK layer-shell widget at a time; promoted widgets become
-//! ordinary Niri windows without recreating their live WebKit/Svelte state.
+//! One active widget across transient and promoted Niri windows.
+//! Promotion retains the live WebKit/Svelte state until another widget opens.
 use crate::popup_layout::{self, PopupDock};
 use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::cell::{Cell, RefCell};
@@ -174,7 +174,16 @@ impl OverlayPool {
         self.windows.borrow().get(&id).cloned()
     }
 
-    // A detached widget is a normal Niri application window, not a popup.
+    // A promoted Niri window remains an active widget. The user expects
+    // *one* active widget, regardless of whether it is a popup or detached.
+    fn active_window(&self) -> Option<Rc<CalendarOverlay>> {
+        self.windows
+            .borrow()
+            .values()
+            .find(|view| view.requested.get())
+            .cloned()
+    }
+
     fn popup(&self) -> Option<Rc<CalendarOverlay>> {
         self.windows
             .borrow()
@@ -183,13 +192,18 @@ impl OverlayPool {
             .cloned()
     }
 
-    /// Last request wins while a popup reverses its recorded scene. Nothing
-    /// new is mounted until closed:<generation> releases the old slot.
+    /// One widget across popup and detached Niri windows. Last request wins
+    /// until the current generation has reversed and released its lease.
     fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest) {
-        if let Some(current) = self.popup() {
+        if let Some(current) = self.active_window() {
             if current.active.get() == Some(kind) {
                 self.pending.borrow_mut().take();
-                if toggle && !current.closing.get() {
+                if current.detached.get() {
+                    // Repeated Top Bar access to a popped-out window raises
+                    // that *same* Niri window without cloning its WebView.
+                    current.cancel_close();
+                    current.focus_detached();
+                } else if toggle && !current.closing.get() {
                     current.request_close();
                 } else {
                     current.cancel_close();
@@ -207,11 +221,16 @@ impl OverlayPool {
     }
 
     fn run_pending(self: &Rc<Self>) {
-        if self.popup().is_some() {
+        // Also close previously promoted windows before opening a requested
+        // different widget. This accounts for legacy sessions which may still
+        // have multiple active windows when the new policy is introduced.
+        if let Some(current) = self.active_window() {
+            if self.pending.borrow().is_some() {
+                current.request_close();
+            }
             return;
         }
-        // A pending callback can acquire and enqueue another window: release
-        // the RefCell borrow BEFORE calling it.
+        // Release the RefCell before the callback can itself open a window.
         let next = self.pending.borrow_mut().take();
         if let Some(open) = next {
             open(self);
@@ -351,12 +370,25 @@ impl CalendarOverlay {
     /// Keep the SAME WebView and Svelte state while moving it from the
     /// layer-shell popup to a decorated xdg-toplevel managed by Niri.
     fn detach(self: &Rc<Self>) {
-        if !self.requested.get()
-            || self.closing.get()
-            || !self.revealed.get()
-            || self.detached.get()
-        {
+        if !self.requested.get() || self.closing.get() || self.detached.get() {
+            eprintln!(
+                "kira-shell: pop-out rejected: requested={} closing={} detached={}",
+                self.requested.get(),
+                self.closing.get(),
+                self.detached.get()
+            );
             return;
+        }
+        if !self.revealed.get() {
+            // A fast click while the first native fade is in flight should
+            // still promote the ready Svelte widget, not silently do nothing.
+            // A view not yet mounted cannot receive a user click.
+            if self.widget_ready.get() {
+                self.reveal();
+            } else {
+                eprintln!("kira-shell: pop-out rejected: Svelte widget not mounted");
+                return;
+            }
         }
         let Some(pool) = self.pool.upgrade() else {
             return;
@@ -401,21 +433,37 @@ impl CalendarOverlay {
         });
         self.regular_window.replace(Some(normal.clone()));
         normal.present();
+        // Deliver state after GTK queues the new toplevel mapping. An event
+        // evaluated against the temporarily unparented WebView can be lost.
         let generation = self.generation.get();
-        let script = format!(
-            "document.documentElement.dataset.kiraDetached = 'true';              window.dispatchEvent(new CustomEvent('kira:overlay:detached',              {{ detail: {{ generation: {generation} }} }}));"
-        );
-        self.view.evaluate_javascript(
-            &script,
-            None,
-            None,
-            None::<&gtk::gio::Cancellable>,
-            |result| {
-                if let Err(error) = result {
-                    eprintln!("kira-shell: widget detach notification failed: {error}");
-                }
-            },
-        );
+        let weak = Rc::downgrade(self);
+        gtk::glib::idle_add_local_once(move || {
+            let Some(state) = weak.upgrade() else {
+                return;
+            };
+            if !state.requested.get()
+                || !state.detached.get()
+                || state.generation.get() != generation
+            {
+                return;
+            }
+            let script = format!(
+                "document.documentElement.dataset.kiraDetached = 'true'; \
+                 window.dispatchEvent(new CustomEvent('kira:overlay:detached', \
+                 {{ detail: {{ generation: {generation} }} }}));"
+            );
+            state.view.evaluate_javascript(
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: widget detach notification failed: {error}");
+                    }
+                },
+            );
+        });
         pool.update_launcher_keyboard_mode();
         pool.run_pending();
     }
@@ -510,7 +558,11 @@ impl CalendarOverlay {
         }
         // The reverse takes place on a fully visible native compositor
         // buffer. Hiding GTK now would erase the recorded intermediate steps.
-        self.window.set_opacity(1.0);
+        if let Some(normal) = self.regular_window.borrow().as_ref() {
+            normal.set_opacity(1.0);
+        } else {
+            self.window.set_opacity(1.0);
+        }
         let generation = self.generation.get();
         let script = format!(
             "window.dispatchEvent(new CustomEvent('kira:overlay:close', {{ detail: {{ generation: {generation} }} }}));"
@@ -560,12 +612,14 @@ impl CalendarOverlay {
                 }
             },
         );
-        self.window.present();
+        if !self.focus_detached() {
+            self.window.present();
+        }
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // The previous transient scene has finished its reverse, or was
-        // promoted to an independent ordinary Niri window.
+        // The previous widget, popup or promoted Niri window, has finished
+        // its reverse and released its active lease.
         debug_assert!(!self.requested.get());
         self.position_for(kind);
         self.active.set(Some(kind));

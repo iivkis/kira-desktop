@@ -107,9 +107,27 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("view.tick()", HOST)
         self.assertIn("self.system.borrow_mut().take()", HOST)
 
+    def test_switch_releases_detached_windows_and_uses_one_right_dock(self):
+        layout = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
+        self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
+        self.assertIn(".find(|view| view.requested.get())", HOST)
+        request = HOST.split("fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", 1)[1].split("fn choose_dock(", 1)[0]
+        self.assertIn("if let Some(current) = self.active_window()", request)
+        self.assertIn("if current.detached.get()", request)
+        self.assertIn("current.focus_detached()", request)
+        self.assertIn("self.pending.replace(Some(open))", request)
+        self.assertIn("current.request_close()", request)
+        self.assertIn("if self.pending.borrow().is_some()", request)
+        self.assertIn("fn run_pending(self: &Rc<Self>)", request)
+        self.assertIn("pub fn choose_dock(_kind: Surface", layout)
+        self.assertIn("    PopupDock::Right", layout)
+        self.assertIn("popup renderer", HOST)
+        self.assertIn("normal.set_opacity(1.0)", HOST)
+        self.assertIn("if !self.focus_detached()", HOST)
+
     def test_popup_switch_is_serialized_after_reverse_close_ack(self):
         self.assertIn("pending: RefCell<Option<OpenRequest>>", HOST)
-        self.assertIn("fn popup(&self) -> Option<Rc<CalendarOverlay>>", HOST)
+        self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
         self.assertIn("view.requested.get() && !view.detached.get()", HOST)
         self.assertIn("fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest)", HOST)
         self.assertIn("self.pending.replace(Some(open))", HOST)
@@ -139,6 +157,12 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("onPopout: () => detachOverlay(lease)", ENTRY)
         self.assertIn("sendCalendarUi('detach:' + generation)", SDK)
         self.assertIn("onPopout", CONTROLS)
+        self.assertIn("function requestPopout()", CONTROLS)
+        self.assertIn("if (!window.webkit?.messageHandlers?.kiraCalendarUi)", CONTROLS)
+        self.assertIn("if (!detached) popoutFailed = true;", CONTROLS)
+        self.assertIn("RESTART SHELL", CONTROLS)
+        self.assertIn("gtk::glib::idle_add_local_once(move ||", HOST)
+        self.assertIn("kira:overlay:detached", HOST)
         self.assertIn("if (!detached)", CONTROLS.replace("{#if !detached}", "if (!detached)"))
         for name in ("CalendarWidget.svelte", "SystemWidget.svelte", "LauncherWidget.svelte"):
             self.assertIn("WindowControls", (ROOT / "frontend/src/lib/components" / name).read_text())
