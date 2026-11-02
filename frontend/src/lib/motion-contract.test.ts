@@ -91,6 +91,14 @@ describe('TENET shared widget appearance', () => {
     expect(styles).toContain('background: transparent;');
   });
 
+  it('runs both surface assembly and disappearance at 1.2x, preserving one shared history', () => {
+    expect(motion).toContain('master.timeScale(1.2)');
+    expect(motion).toContain('master.play(0)');
+    expect(motion).toContain('master.reverse()');
+    expect(motion).toContain('master.play(); // Retarget from the live position');
+    expect(0.54 / 1.2).toBeCloseTo(0.45);
+  });
+
   it('reverses the SAME entrance history before GTK releases the popup', () => {
     expect(motion).toContain("window.addEventListener('kira:overlay:close', onClose)");
     expect(motion).toContain("window.addEventListener('kira:overlay:reopen', onReopen)");
