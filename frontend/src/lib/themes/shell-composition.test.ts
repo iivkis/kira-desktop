@@ -9,6 +9,16 @@ const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), '
 const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
 describe('Tailwind v4 frontend and Top Bar architecture', () => {
+  it('adds a clipped-safe hard popup shadow but not one inside detached windows', () => {
+    expect(css).toContain('html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) #app');
+    expect(css).toContain('filter: drop-shadow(var(--kira-widget-shadow));');
+    expect(css).toContain('padding: 0 var(--kira-widget-shadow-offset) var(--kira-widget-shadow-offset) 0;');
+    expect(css).toContain('max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset));');
+    expect(css).toContain('html[data-kira-detached="true"] #app {');
+    expect(css).toContain('filter: none;');
+    expect(markup).not.toContain('kira-widget-shadow');
+  });
+
   it('uses the Vite plugin, CSS-first tokens and canonical palette', () => {
     expect(vite).toContain("import tailwindcss from '@tailwindcss/vite'");
     expect(vite).toContain('tailwindcss()');

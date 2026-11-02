@@ -38,6 +38,9 @@
   --kira-border-strong: 2px;
   --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
   --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
+  /* Popup silhouette only: small, hard black offset with no blur/glow. */
+  --kira-widget-shadow-offset: 4px;
+  --kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--black) 42%, transparent);
 
   --kira-motion-fast: 120ms;
   --kira-motion-standard: 180ms;

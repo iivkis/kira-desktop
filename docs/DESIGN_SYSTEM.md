@@ -433,7 +433,11 @@ overlays; Top Bar still reserves 42px.
 Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
 controls, and **one deliberate surface contrast per functional region**.
 An orange line can anchor a section, but offset shadows and nested borders
-are not a shortcut to depth. Use short 120–180 ms micro-transitions without positional jumps;
+are not a shortcut to depth. Transient popup silhouettes alone use a 4px
+hard black shadow (42% alpha, no blur), rendered from the transparent WebKit
+wrapper rather than the TENET-clipped widget root. The native popup includes
+the 4px right/bottom shadow gutter, while detached windows leave shadows to
+Niri and keep their full client viewport. Use short 120–180 ms micro-transitions without positional jumps;
 shared selection markers and widget entrances use the measured, interruptible
 TENET motion profiles (about 300–440 ms) with restrained spring settling. Keep interaction functional without motion. Niri's reserved 42 px
 height is unchanged, including the bottom accent rule.

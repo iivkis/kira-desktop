@@ -67,8 +67,18 @@
     background: transparent;
   }
 
+  /* A hard neo-brutalist silhouette shadow must live OUTSIDE <main>:
+   * TENET clips <main> during its reversible reveal. Leave exactly enough
+   * transparent WebKit pixels for the right/bottom offset; otherwise the
+   * native window clips the shadow. The GTK size handshake includes this
+   * bottom inset. No extra margin or shadow is applied to the Top Bar. */
+  html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) #app {
+    padding: 0 var(--kira-widget-shadow-offset) var(--kira-widget-shadow-offset) 0;
+    filter: drop-shadow(var(--kira-widget-shadow));
+  }
+
   html[data-kira-surface="calendar"] main[data-kira-ui-root] {
-    max-height: var(--kira-overlay-max-height, 560px);
+    max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset));
     /* Calendar/Overview use page scrolling; Launcher and Processes
      * keep their own list scrollers inside a constrained flex column. */
   }
@@ -81,6 +91,13 @@
     height: 100%;
     overflow: hidden;
     background: var(--kira-color-background);
+  }
+
+  /* Niri owns decorated/tiling-window shadows. Never put an artificial
+   * inset shadow or a 4px dead strip inside a detached window. */
+  html[data-kira-detached="true"] #app {
+    padding: 0;
+    filter: none;
   }
 
   html[data-kira-detached="true"] main[data-kira-ui-root] {
@@ -149,7 +166,7 @@
 /* Settings is intentionally wider than other widgets but has a stable
  * size. After promotion to Niri it occupies the full resizable WebView. */
 .kira-settings {
-  height: min(560px, var(--kira-overlay-max-height, 560px));
+  height: min(560px, calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset)));
 }
 html[data-kira-detached="true"] .kira-settings {
   height: 100%;

@@ -10,7 +10,13 @@ export function observeOverlaySize(root: HTMLElement, generation: number): () =>
   let stopped = false;
   const measure = () => {
     if (stopped || !root.isConnected) return;
-    const height = Math.ceil(root.getBoundingClientRect().height);
+    // <main> excludes the transparent bottom strip used by the hard popup
+    // shadow. Report the whole painted WebKit surface so GTK does not clip
+    // its last pixels during the TENET entrance or final settled frame.
+    const bottomInset = root.parentElement
+      ? Number.parseFloat(getComputedStyle(root.parentElement).paddingBottom) || 0
+      : 0;
+    const height = Math.ceil(root.getBoundingClientRect().height + Math.max(0, bottomInset));
     if (!Number.isSafeInteger(height) || height <= 0 || height > 20000 || height === lastHeight) return;
     lastHeight = height;
     notifyOverlayHeight(generation, height);
