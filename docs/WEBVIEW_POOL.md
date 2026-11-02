@@ -16,7 +16,7 @@ A single active popup host forced Svelte to tear down one widget before the next
 - **Rotation:** a single hot spare is retained. Surplus idle hosts have a **45-second grace** for quick reopen/animation chains; a 5-second GTK timer destroys only expired *idle* surplus. Actual WebKit windows are closed only on retirement, never on ordinary widget hide.
 - **Per-window isolation:** each WebView has an independent `UserContentManager`, trusted IPC allowlist, Svelte lifecycle, generation counter, size-before-paint handshake, and native/GSAP visibility timeline. No stale per-host callback is allowed to affect a newer generation.
 - **Placement:** Launcher remains centered. Calendar stays right-aligned. System Monitor uses a stable second anchor to the left on wide outputs; smaller outputs constrain the windows on-screen, permitting overlap rather than breaking layout. Crucially, a mapped Wayland surface is not moved solely to open another widget.
-- **Focus:** losing focus to another concurrently active popup must not auto-close the previous popup. With only one popup the established outside-click dismissal remains; the explicit close controls and Escape remain available.
+- **Focus:** losing focus to another concurrently active popup must not auto-close the previous popup. With only one popup the established outside-click dismissal remains; the explicit close controls and Escape remain available. Launcher retains its exclusive keyboard focus only when it is the sole popup, switching to OnDemand while multiple windows coexist so it cannot starve Calendar/System of keyboard input.
 
 ## Deterministic scheduler
 
