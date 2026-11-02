@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
-  import { pulseReading, tenetFlowIndicator, tenetPanelArrival, tenetWidgetReveal } from '../motion';
+  import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetWidgetReveal } from '../motion';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -26,6 +26,7 @@
   let lastSampleAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
+  let processList: HTMLDivElement;
   const metrics = $derived(status?.metrics ?? null);
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
   const health = $derived(status === null ? 'AWAITING TELEMETRY' :
@@ -65,8 +66,18 @@
   }
 
   function changeSort(field: SortField) {
-    sort = nextSort(sort, field);
-    visibleCount = 36;
+    tenetReflow(processList, () => {
+      sort = nextSort(sort, field);
+      visibleCount = 36;
+    });
+  }
+
+  function filterProcesses(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
+    tenetReflow(processList, () => {
+      query = input.value;
+      visibleCount = 36;
+    });
   }
 
   function keydown(event: KeyboardEvent) {
@@ -222,7 +233,7 @@
         </div>
       </section>
 
-      <details data-kira-enter class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
+      <details data-kira-enter use:tenetDisclosure class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
         aria-label="Additional host diagnostics">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
           text-[10px] font-extrabold tracking-[0.12em] text-kira-accent
@@ -231,7 +242,7 @@
           <span class="text-[9px] font-semibold text-kira-muted group-open:hidden">EXPAND +</span>
           <span class="hidden text-[9px] font-semibold text-kira-muted group-open:inline">COLLAPSE −</span>
         </summary>
-        <div class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
+        <div data-kira-disclosure-content class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
           <div class="min-w-0">
             <div class="text-[9px] font-bold tracking-wider text-kira-muted">UPTIME</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
@@ -272,8 +283,8 @@
         <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>
       </div>
       <input data-kira-enter type="search" aria-label="Filter by process name or PID"
-        placeholder="Filter by process name or PID" bind:value={query}
-        oninput={() => { visibleCount = 36; }}
+        placeholder="Filter by process name or PID" value={query}
+        oninput={filterProcesses}
         class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none
           placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
       <div data-kira-enter class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
@@ -287,9 +298,9 @@
           </button>
         {/each}
       </div>
-      <div data-kira-enter class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
+      <div bind:this={processList} data-kira-enter class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
         {#each visible as process (process.pid)}
-          <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
+          <div data-kira-reflow class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
             title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
               ' / RSS ' + processMemoryLabel(process.rss_kib) + ' / PSS ' + processMemoryLabel(process.pss_kib)}>
             <span class="truncate font-semibold">{process.name}</span>
