@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -33,6 +33,18 @@ describe('Core SDK JSON-RPC bridge', () => {
       expect(notifyOverlayHeight(3, height)).toBe(false);
     }
     expect(postMessage.mock.calls.map(call => call[0])).toEqual(['size:3:420']);
+  });
+
+  it('acknowledges reverse completion only for a bounded widget generation', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(notifyOverlayClosed(11)).toBe(true);
+    for (const invalid of [0, -1, 1.5, Number.NaN, 4294967296]) {
+      expect(notifyOverlayClosed(invalid)).toBe(false);
+    }
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual(['closed:11']);
   });
 
   it('allows only generation-scoped indexed Gio launches, no path or shell command', () => {
