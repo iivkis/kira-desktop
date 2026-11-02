@@ -290,19 +290,24 @@ export function tenetReflow(container: HTMLElement | undefined, mutate: () => vo
 /** Scroll the actual workspace viewport to its focused chip smoothly,
  * preserving its keyboard/IPC semantics and cancelling superseded scrolls.
  */
-export function tenetScrollIntoView(list: HTMLElement, item: HTMLElement, animate: boolean): void {
-  const left = item.offsetLeft;
-  const right = left + item.offsetWidth;
-  const current = list.scrollLeft;
-  const destination = left < current ? left :
-    right > current + list.clientWidth ? right - list.clientWidth : current;
+export function tenetScrollIntoView(
+  list: HTMLElement, item: HTMLElement, animate: boolean, axis: 'x' | 'y' = 'x',
+): void {
+  const vertical = axis === 'y';
+  const start = vertical ? item.offsetTop : item.offsetLeft;
+  const end = start + (vertical ? item.offsetHeight : item.offsetWidth);
+  const current = vertical ? list.scrollTop : list.scrollLeft;
+  const size = vertical ? list.clientHeight : list.clientWidth;
+  const destination = Math.max(0, start < current ? start : end > current + size ? end - size : current);
   if (Math.abs(destination - current) < 1) return;
-  gsap.killTweensOf(list, 'scrollLeft');
+  const property = vertical ? 'scrollTop' : 'scrollLeft';
+  gsap.killTweensOf(list, property);
   if (!animate || reducedMotion()) {
-    list.scrollLeft = destination;
+    if (vertical) list.scrollTop = destination;
+    else list.scrollLeft = destination;
   } else {
     gsap.to(list, {
-      scrollLeft: destination, duration: 0.34, ease: 'power3.out', overwrite: 'auto',
+      [property]: destination, duration: 0.34, ease: 'power3.out', overwrite: 'auto',
     });
   }
 }
