@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	718de8c58d37a1f889d568a73f6a735fd697b819
+C	7ad217641933afd38946403dd840c11aed134f54
 F	.cargo/config.toml	98	122	3
 F	.github/workflows/ci.yml	4355	127	112
 F	.github/workflows/frontend-nix.yml	1398	241	43
@@ -103,13 +103,13 @@ F	nix/package.nix	3132	13995	117
 F	scripts/dev_preview.py	18147	14114	403	x
 F	scripts/qa_visual.py	12052	14519	299
 F	tests/test_calendar_design.py	6835	14820	121
-F	tests/test_detailed_health.py	5195	14943	101
-F	tests/test_dev_preview.py	9339	15046	219
-F	tests/test_launcher_design.py	9956	15267	182
-F	tests/test_native_theme.py	1567	15451	36
-F	tests/test_popup_geometry.py	6956	15489	118
-F	tests/test_qa_visual.py	10549	15609	217
-F	tests/test_ui_bootstrap_contract.py	1103	15828	29
+F	tests/test_detailed_health.py	5429	14943	105
+F	tests/test_dev_preview.py	9339	15050	219
+F	tests/test_launcher_design.py	9956	15271	182
+F	tests/test_native_theme.py	1567	15455	36
+F	tests/test_popup_geometry.py	6956	15493	118
+F	tests/test_qa_visual.py	10549	15613	217
+F	tests/test_ui_bootstrap_contract.py	1103	15832	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -15018,7 +15018,11 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("02 / PROCESSES", WIDGET)
         self.assertIn("Filter by process name or PID", WIDGET)
         self.assertIn("sortedProcesses(", WIDGET)
-        self.assertIn("matching.slice(0, 36)", WIDGET)
+        self.assertIn("matching.slice(0, visibleCount)", WIDGET)
+        self.assertIn("visibleCount = 36", WIDGET)
+        self.assertIn("Math.min(180, visibleCount + 36)", WIDGET)
+        self.assertIn("REFINE FILTER FOR MORE", WIDGET)
+        self.assertIn("aria-live=\"off\"", WIDGET)
         self.assertIn("function nextSort(", MODEL)
         self.assertIn("function sortedProcesses(", MODEL)
         self.assertIn("String(row.pid)", MODEL)
