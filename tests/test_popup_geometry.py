@@ -16,7 +16,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("pub fn choose_dock(kind: Surface", LAYOUT)
         self.assertIn("Surface::Launcher => PopupDock::Center", LAYOUT)
         self.assertIn("pub fn launcher_top_margin(output_height: i32)", LAYOUT)
-        self.assertIn("    PopupDock::Right", LAYOUT)
+        self.assertIn("_ => PopupDock::Right", LAYOUT)
         self.assertIn("PopupDock::Right", LAYOUT)
         self.assertNotIn("PopupDock::Left", LAYOUT)
         self.assertIn("popup_layout::choose_dock(kind, false)", HOST)

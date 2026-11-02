@@ -107,7 +107,7 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("view.tick()", HOST)
         self.assertIn("self.system.borrow_mut().take()", HOST)
 
-    def test_switch_releases_detached_windows_and_uses_one_right_dock(self):
+    def test_switch_releases_detached_windows_and_uses_widget_docks(self):
         layout = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
         self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
         self.assertIn(".find(|view| view.requested.get())", HOST)
@@ -120,8 +120,9 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("let waiting = self.pending.borrow().is_some()", request)
         self.assertIn("if waiting {", request)
         self.assertIn("fn run_pending(self: &Rc<Self>)", request)
-        self.assertIn("pub fn choose_dock(_kind: Surface", layout)
-        self.assertIn("    PopupDock::Right", layout)
+        self.assertIn("pub fn choose_dock(kind: Surface", layout)
+        self.assertIn("Surface::Launcher => PopupDock::Center", layout)
+        self.assertIn("_ => PopupDock::Right", layout)
         self.assertIn("popup renderer", HOST)
         self.assertIn("normal.set_opacity(1.0)", HOST)
         self.assertIn("if !self.focus_detached()", HOST)
