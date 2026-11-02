@@ -51,7 +51,12 @@ function scriptFor(steps, observationMs = 1150) {
     'window.addEventListener("load", () => {' +
     steps.map(({ delay, kind, generation }) =>
       'setTimeout(() => {' +
-        (kind === 'tenet-close'
+        (kind === 'tenet-close-reopen'
+          ? 'window.dispatchEvent(new CustomEvent("kira:overlay:close", {detail:{generation:' + generation + '}}));' +
+            'const root=document.querySelector("main[data-kira-ui-root]");' +
+            'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing";' +
+            'window.dispatchEvent(new CustomEvent("kira:overlay:reopen", {detail:{generation:' + generation + '}}));'
+          : kind === 'tenet-close'
           ? 'window.dispatchEvent(new CustomEvent("kira:overlay:close", {detail:{generation:' + generation + '}}));' +
             'const root=document.querySelector("main[data-kira-ui-root]");' +
             'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing" && ' +
@@ -399,10 +404,12 @@ try {
       { delay: 800, kind: 'tenet-close', generation: 1 },
     ], title, 'reverse');
   }
-  await smoke('calendar-tenet-reopen-mid-reverse', [
+  await smoke('calendar-tenet-reopen-in-same-frame', [
     { delay: 25, kind: 'calendar', generation: 1 },
-    { delay: 800, kind: 'tenet-close', generation: 1 },
-    { delay: 830, kind: 'tenet-reopen', generation: 1 },
+    // Virtual Chrome can advance >500ms of GSAP in one 30ms timer step.
+    // A same-frame cancellation guarantees we probe the actual race rather
+    // than a close that has already legitimately completed.
+    { delay: 800, kind: 'tenet-close-reopen', generation: 1 },
   ], 'Kira Calendar', 'reverse-reopen');
   await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
   await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
