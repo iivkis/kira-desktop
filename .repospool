@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4750
+index_bytes=4751
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	bbd71f61645502eda2cd62c3059e3205abda21c7
+C	22464b2f411561585230e37b5af6ed047c2c624a
 F	.cargo/config.toml	98	125	3
 F	.github/workflows/ci.yml	4355	130	112
 F	.github/workflows/frontend-nix.yml	1398	244	43
@@ -37,82 +37,82 @@ F	crates/kira-ipc/Cargo.toml	170	2775	9
 F	crates/kira-ipc/src/client.rs	17794	2786	458
 F	crates/kira-ipc/src/lib.rs	10460	3246	336
 F	crates/kira-shell/Cargo.toml	297	3584	12
-F	crates/kira-shell/src/calendar.rs	38858	3598	1043
-F	crates/kira-shell/src/launcher.rs	14114	4643	392
-F	crates/kira-shell/src/main.rs	19285	5037	447
-F	crates/kira-shell/src/native_ui.rs	2857	5486	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5561	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5849	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5967	559
-F	crates/kira-shell/src/system_panel.rs	11356	6528	318
-F	docs/CONFIG.md	5801	6848	125
-F	docs/DESIGN_SYSTEM.md	27870	6975	464
-F	docs/DEVELOPMENT.md	29347	7441	577
-F	docs/QA_VISUAL.md	12284	8020	149
-F	docs/SPECIFICATION.md	28960	8171	421
-F	docs/TENET_MOTION.md	23327	8594	156
-F	docs/UI_ARCHITECTURE.md	6737	8752	106
-F	docs/VISUAL_REVIEW.md	9754	8860	84
-F	flake.nix	3181	8946	91
-F	frontend/index.html	2737	9039	66
-F	frontend/package.json	720	9107	27
-F	frontend/scripts/inline-assets.mjs	4457	9136	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9241	106
-F	frontend/scripts/smoke-overlays.mjs	24036	9349	344
-F	frontend/src/App.svelte	8589	9695	207
-F	frontend/src/lib/bootstrap.test.ts	3408	9904	84
-F	frontend/src/lib/bootstrap.ts	2613	9990	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10062	65
-F	frontend/src/lib/calendar-model.ts	4648	10129	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10236	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10298	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10490	10329	285
-F	frontend/src/lib/clock-flight.test.ts	2404	10616	50
-F	frontend/src/lib/clock-flight.ts	1977	10668	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10720	239
-F	frontend/src/lib/components/LauncherWidget.svelte	10868	10961	232
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11195	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	11423	46
-F	frontend/src/lib/components/SystemWidget.svelte	18116	11471	321
-F	frontend/src/lib/components/WorkspacePreview.svelte	5560	11794	110
-F	frontend/src/lib/launcher-model.test.ts	2266	11906	46
-F	frontend/src/lib/launcher-model.ts	1403	11954	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	11985	89
-F	frontend/src/lib/lazy-widget.ts	1984	12076	63
-F	frontend/src/lib/motion-contract.test.ts	2346	12141	44
-F	frontend/src/lib/motion.ts	4570	12187	128
-F	frontend/src/lib/overlay-size.ts	1090	12317	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12348	444
-F	frontend/src/lib/sdk/core.ts	17793	12794	473
-F	frontend/src/lib/system-charts.test.ts	6312	13269	141
-F	frontend/src/lib/system-charts.ts	5514	13412	149
-F	frontend/src/lib/system-health.test.ts	2385	13563	42
-F	frontend/src/lib/system-health.ts	2831	13607	60
-F	frontend/src/lib/system-model.test.ts	4455	13669	84
-F	frontend/src/lib/system-model.ts	5457	13755	125
-F	frontend/src/lib/themes/kira-default.css	1687	13882	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13936	101
-F	frontend/src/lib/themes/kira-default.ts	777	14039	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5400	14063	97
-F	frontend/src/lib/time.test.ts	263	14162	8
-F	frontend/src/lib/time.ts	320	14172	9
-F	frontend/src/lib/workspace-window.test.ts	2298	14183	52
-F	frontend/src/lib/workspace-window.ts	1063	14237	32
-F	frontend/src/main.ts	5907	14271	127
-F	frontend/src/style.css	3817	14400	121
-F	frontend/tsconfig.json	403	14523	16
-F	frontend/vite.config.ts	224	14541	8
-F	nix/package.nix	3132	14551	117
-F	scripts/dev_preview.py	18147	14670	403	x
-F	scripts/qa_visual.py	12052	15075	299
-F	tests/test_calendar_design.py	7384	15376	130
-F	tests/test_detailed_health.py	5429	15508	105
-F	tests/test_dev_preview.py	9339	15615	219
-F	tests/test_launcher_design.py	10400	15836	189
-F	tests/test_native_theme.py	1567	16027	36
-F	tests/test_popup_geometry.py	6956	16065	118
-F	tests/test_qa_visual.py	10549	16185	217
-F	tests/test_ui_bootstrap_contract.py	1103	16404	29
+F	crates/kira-shell/src/calendar.rs	39739	3598	1064
+F	crates/kira-shell/src/launcher.rs	14114	4664	392
+F	crates/kira-shell/src/main.rs	19285	5058	447
+F	crates/kira-shell/src/native_ui.rs	2857	5507	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5582	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5870	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5988	559
+F	crates/kira-shell/src/system_panel.rs	11356	6549	318
+F	docs/CONFIG.md	5801	6869	125
+F	docs/DESIGN_SYSTEM.md	28353	6996	471
+F	docs/DEVELOPMENT.md	29347	7469	577
+F	docs/QA_VISUAL.md	12284	8048	149
+F	docs/SPECIFICATION.md	28960	8199	421
+F	docs/TENET_MOTION.md	24546	8622	177
+F	docs/UI_ARCHITECTURE.md	6737	8801	106
+F	docs/VISUAL_REVIEW.md	9754	8909	84
+F	flake.nix	3181	8995	91
+F	frontend/index.html	2737	9088	66
+F	frontend/package.json	720	9156	27
+F	frontend/scripts/inline-assets.mjs	4457	9185	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9290	106
+F	frontend/scripts/smoke-overlays.mjs	25228	9398	358
+F	frontend/src/App.svelte	8589	9758	207
+F	frontend/src/lib/bootstrap.test.ts	3408	9967	84
+F	frontend/src/lib/bootstrap.ts	2613	10053	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10125	65
+F	frontend/src/lib/calendar-model.ts	4648	10192	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10299	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10361	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10490	10392	285
+F	frontend/src/lib/clock-flight.test.ts	2404	10679	50
+F	frontend/src/lib/clock-flight.ts	1977	10731	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10783	239
+F	frontend/src/lib/components/LauncherWidget.svelte	10868	11024	232
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11258	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	11486	46
+F	frontend/src/lib/components/SystemWidget.svelte	18116	11534	321
+F	frontend/src/lib/components/WorkspacePreview.svelte	5560	11857	110
+F	frontend/src/lib/launcher-model.test.ts	2266	11969	46
+F	frontend/src/lib/launcher-model.ts	1403	12017	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12048	89
+F	frontend/src/lib/lazy-widget.ts	1984	12139	63
+F	frontend/src/lib/motion-contract.test.ts	2855	12204	50
+F	frontend/src/lib/motion.ts	5937	12256	172
+F	frontend/src/lib/overlay-size.ts	1090	12430	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12461	444
+F	frontend/src/lib/sdk/core.ts	17793	12907	473
+F	frontend/src/lib/system-charts.test.ts	6312	13382	141
+F	frontend/src/lib/system-charts.ts	5514	13525	149
+F	frontend/src/lib/system-health.test.ts	2385	13676	42
+F	frontend/src/lib/system-health.ts	2831	13720	60
+F	frontend/src/lib/system-model.test.ts	4455	13782	84
+F	frontend/src/lib/system-model.ts	5457	13868	125
+F	frontend/src/lib/themes/kira-default.css	1687	13995	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	14049	101
+F	frontend/src/lib/themes/kira-default.ts	777	14152	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5400	14176	97
+F	frontend/src/lib/time.test.ts	263	14275	8
+F	frontend/src/lib/time.ts	320	14285	9
+F	frontend/src/lib/workspace-window.test.ts	2298	14296	52
+F	frontend/src/lib/workspace-window.ts	1063	14350	32
+F	frontend/src/main.ts	6171	14384	131
+F	frontend/src/style.css	3817	14517	121
+F	frontend/tsconfig.json	403	14640	16
+F	frontend/vite.config.ts	224	14658	8
+F	nix/package.nix	3132	14668	117
+F	scripts/dev_preview.py	18147	14787	403	x
+F	scripts/qa_visual.py	12052	15192	299
+F	tests/test_calendar_design.py	7384	15493	130
+F	tests/test_detailed_health.py	5429	15625	105
+F	tests/test_dev_preview.py	9339	15732	219
+F	tests/test_launcher_design.py	10400	15953	189
+F	tests/test_native_theme.py	1567	16144	36
+F	tests/test_popup_geometry.py	6956	16182	118
+F	tests/test_qa_visual.py	10549	16302	217
+F	tests/test_ui_bootstrap_contract.py	1103	16521	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3895,9 +3895,30 @@ impl CalendarOverlay {
     }
 
     fn reveal(&self) {
-        self.revealed.set(true);
+        if self.revealed.replace(true) {
+            return;
+        }
         self.paint_pending.set(false);
         self.window.set_opacity(1.0);
+        // The WebKit widget was mounted while GTK opacity was zero.
+        // Starting GSAP at mount plays the entrance behind an invisible
+        // Wayland surface. Tell the current generation that the *native*
+        // window is now visible; the widget action starts only then.
+        let generation = self.generation.get();
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:overlay:visible', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: Overlay visible event delivery failed: {error}");
+                }
+            },
+        );
         if let Some(start) = self.open_started.take() {
             eprintln!(
                 "kira-shell: Overlay visible after {} ms",
@@ -7230,9 +7251,16 @@ master progress synchronizes both chronologies. Launcher records a
 different outward direction; inversion is historical, not CSS reflection.
 
 No real date, telemetry, search, keyboard interaction or focus is delayed.
-One mount owns both timelines, fragments and an 1100ms WebKit-throttle
-recovery. Unmount or changed reduced-motion preference removes every
-fragment and restores exact transforms. Calendar's clock and day
+The native host now acknowledges actual popup visibility after GTK
+opacity becomes 1, then the generation-matched GSAP scene begins. This
+fixes the old mount-time animation that was played behind an invisible
+Wayland window. Real content now assembles visibly over approximately
+0.84–1.09 seconds with 28px displacement and bounded section staggering.
+Four low-opacity 12×1px traces are secondary, replacing distracting
+orange/white squares. The 1550ms WebKit-throttle fallback, hide,
+unmount or reduced-motion change removes all decorative fragments
+and restores exact transforms. Before native visibility arrives the
+content remains readable and functional. Calendar's clock and day
 interactions retain their separate recorded motion histories.
 
 ### System Monitor · observability before decoration
@@ -8748,6 +8776,27 @@ Launcher меняет исходную траекторию, но не подм�
 opacity и visibility возвращаются к подлинным значениям. Дополнительные
 виджеты, поверхность Dock, hover lens и ложные показания не вводятся.
 
+### Native visibility handshake · 2026-11
+
+The native GTK/Wayland overlay mounts the trusted Svelte DOM while its
+toplevel opacity is **zero**. Starting GSAP in the Svelte action at mount
+played the actual content entrance before the window appeared, leaving
+only residual orange/white fragments visible to users. The native host
+now sends the generation-scoped `kira:overlay:visible` event **after**
+setting the mapped window's opacity to one. A widget starts motion only
+for its own mounted generation. Before that event, all content remains
+fully visible and accessible, with no hidden text or interactive delay.
+
+The new FORWARD phase assembles real header/content/footer sections
+through a clearly perceptible ~0.84s displacement/scale/opacity
+trajectory (max 0.25s stagger). The INVERTED phase retains the saved
+path and easing at the same contact but uses subtle 12×1px traces rather
+than conspicuous 3×3px orange/white squares. The shared cursor still
+synchronizes the two chronologies. Native hide, unmount, preference
+changes and a 1550ms WebKit throttle fallback restore all styles and
+remove all traces. A host lacking the event shows the widget normally
+without motion, instead of animating invisibly.
+
 FILE	docs/UI_ARCHITECTURE.md
 # UI architecture: Rust host, Svelte 5 widgets
 
@@ -9417,14 +9466,26 @@ function scriptFor(steps, observationMs = 1150) {
               : kind === 'pulse'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:pulse", {detail: {cpu_percent: 42, memory_total_kib: 1000, memory_available_kib: 500}}));'
               : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
-                kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
+                kind + '", generation: ' + generation + ', maxHeight: 420}}));' +
+                // Real GTK mounts content behind opacity zero and sends
+                // the generation-scoped visible event only AFTER reveal.
+                'setTimeout(()=>{' +
+                  'const root=document.querySelector("main[data-kira-ui-root]");' +
+                  'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
+                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0;' +
+                '},90);' +
+                'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:overlay:visible", {detail:{generation:' +
+                  generation + '}})),140);') +
         '}, ' + delay + ');'
     ).join('') +
     // Sample the in-flight DUAL chronology before observing settled DOM.
     'setTimeout(() => {' +
       'const root=document.querySelector("main[data-kira-ui-root]");' +
+      'const content=root?.querySelector("[data-kira-enter]");' +
+      'const transform=content ? getComputedStyle(content).transform : "none";' +
       'document.documentElement.dataset.smokeTenetStarted=!!root && root.dataset.tenetReveal==="started" && root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
-      '},170);' +
+      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && getComputedStyle(content).opacity!=="1";' +
+      '},245);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
@@ -9482,7 +9543,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -9492,7 +9553,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
     ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2800 : heightMode === 'tenet' ? 2800 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -9521,7 +9582,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-tenet-grid-events="2"') ||
        !output.includes('data-smoke-tenet-grid-contact="true"') ||
        !output.includes('data-smoke-tenet-no-fragments="true"'))) {
-    const flags = output.match(/data-smoke-calendar-[a-z-]+="[^"]*"/g) ?? [];
+    const flags = output.match(/data-smoke-(?:calendar|tenet)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
   if (heightMode === 'clock' &&
@@ -9558,10 +9619,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
   if (heightMode === 'tenet' &&
-      (!output.includes('data-smoke-tenet-started="true"') ||
+      (!output.includes('data-smoke-tenet-previsible="true"') ||
+       !output.includes('data-smoke-tenet-started="true"') ||
+       !output.includes('data-smoke-tenet-content-moving="true"') ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
-    throw new Error(name + ': TENET entry/restore failed: ' + stage.join(', '));
+    throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
   }
   if (heightMode === 'reduced' &&
       (!output.includes('data-smoke-tenet-started="false"') ||
@@ -12169,7 +12232,13 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain('forward?.kill()');
     expect(motion).toContain('inverted?.kill()');
     expect(motion).toContain('trace.remove()');
-    expect(motion).toContain('window.setTimeout(settle, 1100)');
+    expect(motion).toContain('window.setTimeout(settle, 1550)');
+    expect(motion).toContain("window.addEventListener('kira:overlay:visible', onVisible)");
+    expect(motion).toContain("window.removeEventListener('kira:overlay:visible', onVisible)");
+    expect(motion).toContain('generation === Number(node.dataset.kiraGeneration)');
+    expect(motion).toContain("node.dataset.tenetReveal = preference.matches ? 'settled' : 'ready'");
+    expect(motion).toContain("duration: 0.84, stagger, ease: 'power3.out'");
+    expect(motion).toContain("'width:12px', 'height:1px'");
     expect(motion).toContain("node.dataset.tenetReveal = 'settled'");
   });
 
@@ -12184,9 +12253,11 @@ describe('TENET shared widget appearance', () => {
 });
 
 FILE	frontend/src/lib/motion.ts
-/** GSAP is the project's sole JavaScript motion engine.
- * Actions are scoped to the short-lived Svelte widget DOM. They never animate
- * GTK/Wayland windows, and reduced-motion is a functional no-animation path.
+/** GSAP is Kira Desktop's only JavaScript motion engine.
+ * Shared entrances are triggered when the native GTK surface becomes
+ * VISIBLE, never when Svelte mounts into an opacity-zero WebKit window.
+ * A real FORWARD content assembly is primary; subtle INVERTED traces
+ * replay saved paths to the same physical editorial contact point.
  */
 import { gsap } from 'gsap';
 import { dualTime, tenetFragmentsFor } from './calendar-tenet-model';
@@ -12194,10 +12265,6 @@ import { dualTime, tenetFragmentsFor } from './calendar-tenet-model';
 const reducedMotion = () => typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/** A widget mount is one recorded TENET event. FORWARD sections arrive
- * while INVERTED traces replay the same outbound physical path backward
- * to the real header/clock contact, from one synchronized master cursor.
- */
 export interface TenetEntrance {
   contact: string;
   direction?: 1 | -1;
@@ -12205,13 +12272,13 @@ export interface TenetEntrance {
 
 export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const targets = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
-  const contact = node.querySelector<HTMLElement>(options.contact);
-  const direction = options.direction ?? 1;
   let forward: gsap.core.Timeline | null = null;
   let inverted: gsap.core.Timeline | null = null;
   let traces: HTMLElement[] = [];
   let restore: number | null = null;
+  let started = false;
+
+  const targets = () => Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
 
   function settle() {
     if (restore !== null) {
@@ -12224,28 +12291,43 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     inverted = null;
     for (const trace of traces) trace.remove();
     traces = [];
-    gsap.killTweensOf(targets);
-    if (targets.length) gsap.set(targets, { clearProps: 'transform,opacity,visibility' });
+    const content = targets();
+    gsap.killTweensOf(content);
+    if (content.length) gsap.set(content, { clearProps: 'transform,opacity,visibility' });
     node.dataset.tenetReveal = 'settled';
   }
 
-  const onPreference = () => { if (preference.matches) settle(); };
-  preference.addEventListener('change', onPreference);
-  if (!preference.matches && contact && targets.length) {
+  function begin() {
+    if (started || preference.matches) {
+      node.dataset.tenetReveal = 'settled';
+      return;
+    }
+    started = true;
+    const contact = node.querySelector<HTMLElement>(options.contact);
+    const content = targets();
+    if (!contact || !content.length) {
+      settle();
+      return;
+    }
+
+    const direction = options.direction ?? 1;
     const rootRect = node.getBoundingClientRect();
     const contactRect = contact.getBoundingClientRect();
     const origin = {
       x: contactRect.left - rootRect.left + contactRect.width / 2,
       y: contactRect.top - rootRect.top + contactRect.height / 2,
     };
+    // One immutable trajectory memory for the entire entrance event.
     const flights = tenetFragmentsFor(direction);
     traces = flights.map((_, index) => {
       const trace = node.ownerDocument.createElement('span');
       trace.dataset.tenetFragment = 'inverted';
       trace.setAttribute('aria-hidden', 'true');
+      // Hairline fragments support the composition; they are no longer
+      // four conspicuous orange/white squares dominating the animation.
       trace.style.cssText = [
         'position:absolute', 'pointer-events:none', 'z-index:2',
-        'width:3px', 'height:3px', 'opacity:0',
+        'width:12px', 'height:1px', 'opacity:0',
         'transform-origin:center center',
         'left:' + origin.x + 'px', 'top:' + origin.y + 'px',
         'background:' + (index % 2 ? '#e5e5e5' : '#fca311'),
@@ -12253,38 +12335,70 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       node.appendChild(trace);
       return trace;
     });
+
     inverted = gsap.timeline({ paused: true });
     inverted.to(traces, {
       x: (i: number) => flights[i].x,
       y: (i: number) => flights[i].y,
       rotation: (i: number) => flights[i].rotation,
-      opacity: 0.76, scale: 1, duration: 0.68,
-      stagger: 0.024, ease: 'power3.out',
+      opacity: 0.32,
+      duration: 0.88,
+      stagger: 0.025,
+      ease: 'power3.out',
     }, 0);
-    inverted.progress(1); // Consequence is visible before contact.
+    inverted.progress(1);
+
+    const stagger = Math.min(0.11, 0.25 / Math.max(1, content.length - 1));
     forward = gsap.timeline({
       paused: true,
       onUpdate: () => {
-        // Reverse recorded chronology, not the coordinates or CSS direction.
+        // The inverse replays the ORIGINAL easing and rotations,
+        // synchronized with the progression of the visible content.
         inverted?.progress(dualTime(forward?.progress() ?? 1).inverted);
       },
       onComplete: settle,
     });
-    forward.fromTo(targets,
-      { autoAlpha: 0, x: 8 * direction, y: 7 },
+    forward.fromTo(content,
+      { opacity: 0.18, x: 16 * direction, y: 28 },
       {
-        autoAlpha: 1, x: 0, y: 0, duration: 0.54,
-        stagger: 0.045, ease: 'power3.out',
+        opacity: 1, x: 0, y: 0,
+        duration: 0.84, stagger, ease: 'power3.out',
       }, 0);
+
     node.dataset.tenetReveal = 'started';
     forward.play(0);
-    // GTK may map WebKit while animation frames are throttled.
-    restore = window.setTimeout(settle, 1100);
-  } else {
-    node.dataset.tenetReveal = 'settled';
+    // Recovery for throttled WebKit frames; never leave content faded out.
+    restore = window.setTimeout(settle, 1550);
   }
+
+  function isCurrentGeneration(event: Event): boolean {
+    const generation = (event as CustomEvent<{ generation?: unknown }>).detail?.generation;
+    return Number.isSafeInteger(generation) && generation === Number(node.dataset.kiraGeneration);
+  }
+
+  function onVisible(event: Event) {
+    if (!isCurrentGeneration(event) || started || preference.matches) return;
+    begin();
+  }
+
+  function onHide(event: Event) {
+    if (isCurrentGeneration(event)) settle();
+  }
+
+  function onPreference() {
+    if (preference.matches) settle();
+  }
+
+  // Never hide controls before the window is mapped. On legacy hosts
+  // without the visibility event, content remains fully usable and static.
+  node.dataset.tenetReveal = preference.matches ? 'settled' : 'ready';
+  window.addEventListener('kira:overlay:visible', onVisible);
+  window.addEventListener('kira:overlay:hide', onHide);
+  preference.addEventListener('change', onPreference);
   return {
     destroy() {
+      window.removeEventListener('kira:overlay:visible', onVisible);
+      window.removeEventListener('kira:overlay:hide', onHide);
       preference.removeEventListener('change', onPreference);
       settle();
     },
@@ -12311,7 +12425,6 @@ export function pulseReading(node: HTMLElement, initial: string) {
     },
   };
 }
-
 
 FILE	frontend/src/lib/overlay-size.ts
 import { notifyOverlayHeight } from './sdk/core';
@@ -14337,6 +14450,10 @@ whenDocumentReady(document, () => {
           onMounted(generation: number) {
             const root = target.querySelector<HTMLElement>('main[data-kira-ui-root]');
             if (!root) throw new Error('Overlay root missing when measuring size');
+            // Bind the native visibility acknowledgement to this exact
+            // Svelte generation; stale GTK callbacks cannot animate
+            // whichever overlay happens to be mounted next.
+            root.dataset.kiraGeneration = String(generation);
             // Size must reach GTK before mounted, otherwise a 1px popup
             // could become visible before the first actual resize.
             stopSizing = observeOverlaySize(root, generation);
