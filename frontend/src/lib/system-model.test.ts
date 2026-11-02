@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel } from './system-model';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel, isSampleFresh } from './system-model';
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
 const processes: ProcessRow[] = [
@@ -10,6 +10,17 @@ const processes: ProcessRow[] = [
 ];
 
 describe('Svelte System Monitor model', () => {
+  it('never confuses a missing or stopped native stream with live telemetry', () => {
+    expect(isSampleFresh(null, 10_000)).toBe(false);
+    expect(isSampleFresh(5_000, 10_000)).toBe(true);
+    expect(isSampleFresh(4_000, 10_000)).toBe(true);
+    expect(isSampleFresh(3_999, 10_000)).toBe(false);
+    expect(isSampleFresh(10_001, 10_000)).toBe(false);
+    expect(isSampleFresh(9_000, Number.NaN)).toBe(false);
+    expect(isSampleFresh(7_500, 10_000, 2_500)).toBe(true);
+    expect(isSampleFresh(7_499, 10_000, 2_500)).toBe(false);
+  });
+
   it('sorts each column in both directions and keeps missing metrics last', () => {
     for (const [field, ascending, descending] of [
       ['name', [1, 2, 4, 3], [3, 4, 2, 1]],

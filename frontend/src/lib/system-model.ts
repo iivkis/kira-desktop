@@ -5,6 +5,18 @@ export type SortState = { field: SortField; descending: boolean };
 
 export const defaultSort: SortState = { field: 'cpu', descending: true };
 
+/** No browser polling of sensors: only classify the age of the last native event.
+ * A missing, future, or expired timestamp never counts as a live sample.
+ */
+export function isSampleFresh(
+  lastSampleAt: number | null, now: number, maxAgeMs = 6_000,
+): boolean {
+  return lastSampleAt !== null &&
+    Number.isFinite(lastSampleAt) && Number.isFinite(now) &&
+    Number.isFinite(maxAgeMs) && maxAgeMs >= 0 &&
+    now >= lastSampleAt && now - lastSampleAt <= maxAgeMs;
+}
+
 export function nextSort(current: SortState, field: SortField): SortState {
   return current.field === field
     ? { field, descending: !current.descending }

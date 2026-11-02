@@ -6,7 +6,7 @@
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
-  import { percentUsedPrecise } from '../system-model';
+  import { isSampleFresh, percentUsedPrecise } from '../system-model';
   import {
     activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak,
     type TelemetryPoint,
@@ -14,7 +14,7 @@
 
   echarts.use([GaugeChart, LineChart, GridComponent, SVGRenderer]);
 
-  let { metrics }: { metrics: SystemMetrics | null } = $props();
+  let { metrics, now }: { metrics: SystemMetrics | null; now: number } = $props();
 
   let gaugeNode: HTMLDivElement;
   let trendNode: HTMLDivElement;
@@ -23,6 +23,7 @@
   let reduced = false;
   let history: TelemetryPoint[] = [];
   let pulse = $state<SystemPulse | null>(null);
+  let lastPulseAt = $state<number | null>(null);
   let lastPulse: SystemPulse | null = null;
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
@@ -37,6 +38,8 @@
     ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
     : metrics ? percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib) : null);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
+  const pulseFresh = $derived(lastPulseAt !== null &&
+    (now < lastPulseAt || isSampleFresh(lastPulseAt, now, 2_500)));
   const trendHeight = $derived(gpuAvailable ? 296 : 202);
   const dialLabel = (value: number | null, precise = false) =>
     value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
@@ -138,7 +141,7 @@
   onMount(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced = motion.matches;
-    const stopPulse = onSystemPulse(sample => { pulse = sample; });
+    const stopPulse = onSystemPulse(sample => { pulse = sample; lastPulseAt = Date.now(); });
     gauges = echarts.init(gaugeNode, undefined, { renderer: 'svg' });
     trend = echarts.init(trendNode, undefined, { renderer: 'svg' });
     const resize = () => { gauges?.resize(); trend?.resize(); };
@@ -158,48 +161,58 @@
       trend = null;
       history = [];
       lastPulse = null;
+      lastPulseAt = null;
       lastMetrics = null;
       pendingGpu = undefined;
     };
   });
 </script>
 
-<div class="space-y-4">
+<div class="space-y-5">
   <section aria-label="CPU and memory utilization">
-    <div class="flex items-center justify-between">
-      <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">SYSTEM / PULSE</h2>
-      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 500MS</span>
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">01 / PRIMARY LOAD</h2>
+      <span class="text-right text-[9px] font-semibold tracking-wider"
+        class:text-kira-text={pulseFresh} class:text-kira-muted={!pulseFresh}
+        aria-live="off">
+        {pulse === null ? 'AWAITING FAST FEED' : pulseFresh ? 'LIVE · 500MS' : 'PULSE STALE / LAST READING'}
+      </span>
     </div>
-    <div class="relative mt-1 h-[164px]">
+    <div class="relative mt-3 h-[182px] border-y border-kira-muted/20 bg-kira-bg">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
-      <div class="pointer-events-none absolute inset-0 grid grid-cols-2">
-        <div class="flex flex-col items-center justify-center">
-          <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums text-kira-accent"
+      <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
+        <div class="relative flex min-w-0 flex-col items-center justify-center">
+          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">01 / CPU</span>
+          <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-accent"
             aria-label={'CPU utilization ' + (cpu === null ? 'unavailable' : cpu + ' percent')}>
             {dialLabel(cpu)}
           </div>
-          <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
+          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
         </div>
-        <div class="flex flex-col items-center justify-center">
-          <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums"
+        <div class="relative flex min-w-0 flex-col items-center justify-center">
+          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">02 / RAM</span>
+          <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-text"
             aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
             {dialLabel(ram, true)}
           </div>
-          <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
+          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
         </div>
       </div>
     </div>
+    <p class="mt-2 text-[9px] font-medium tracking-wide text-kira-muted">HOST UTILIZATION / LAST MEASURED VALUES</p>
   </section>
+
   <section aria-label="Live resource activity">
-    <div class="flex items-center justify-between">
-      <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">ACTIVITY / LIVE</h2>
-      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · 500MS PULSE</span>
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">02 / ACTIVITY HISTORY</h2>
+      <span class="text-right text-[9px] font-semibold tracking-wide text-kira-muted">UP TO 60S / REAL SAMPLES</span>
     </div>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
-        role="img" aria-label={'Measured history with individually labelled adaptive percentage scales. ' +
+        role="img" aria-label={'Measured history with independently labelled adaptive percentage scales. ' +
           'CPU ' + (cpu === null ? 'unavailable' : cpu + '%') +
-          ', RAM ' + (ram === null ? 'unavailable' : ram + '%')}></div>
+          ', RAM ' + (ram === null ? 'unavailable' : ram + '%') +
+          (pulse !== null && !pulseFresh ? '. Last pulse is stale.' : '')}></div>
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
         <div class="absolute left-9 top-[96px] text-[10px] font-bold tracking-wide text-kira-text">RAM</div>
@@ -208,5 +221,6 @@
         {/if}
       </div>
     </div>
+    <p class="mt-1 text-[9px] font-medium tracking-wide text-kira-muted">ADAPTIVE SCALES / NO SYNTHETIC MEASUREMENTS</p>
   </section>
 </div>

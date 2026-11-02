@@ -220,6 +220,30 @@ diagnostic bars. The visual hierarchy is intentional:
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
 
+### System Monitor · observability before decoration
+
+The monitor is a read-only instrument panel, not a visual benchmark. The
+information hierarchy is **system health → primary load → measured history →
+capacity → hardware → optional host diagnostics**. Keep Svelte responsible for
+presentation, while native Rust owns sampling and system privileges.
+
+- The status banner distinguishes no data, fresh native samples, and expired
+  telemetry (6 seconds without a system sample). The fast CPU/RAM indicator
+  separately expires after 2.5 seconds. Last readings remain visible but must
+  be identified as stale rather than represented as live.
+- The overview uses only the five-color Kira palette, strong editorial
+  typographic hierarchy, meaningful orange highlights, and real ECharts SVG
+  values. Missing measurements are never drawn as zero. Storage/swap bars exist
+  only for validated readings. Zero configured swap is **NOT CONFIGURED**.
+- Host details use native HTML disclosure to keep the primary view focused.
+  Keyboard focus, reduced motion and contrast remain functional.
+- Process browsing remains read-only, searchable, and sortable, revealing at
+  most 36 more entries per user action and at most 180 DOM rows; filtering
+  exposes the remaining host processes without rendering thousands at once.
+- Sampling remains event-driven in the Rust host. The Svelte monitor has only a
+  2-second local freshness clock while mounted and cleans up all listeners,
+  timers, GSAP timelines and ECharts instances when closed.
+
 ### 500ms CPU/RAM pulse
 
 The **SYSTEM / PULSE** dials and activity lanes receive genuine Linux
