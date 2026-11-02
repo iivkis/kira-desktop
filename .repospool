@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	8b666b6a4d804edd761a49918287068bf1020697
+C	2557d20c0c8924dea8bb25c3e39ffb350a59dfea
 F	.cargo/config.toml	98	128	3
 F	.github/workflows/ci.yml	4355	133	112
 F	.github/workflows/frontend-nix.yml	1398	247	43
@@ -37,85 +37,85 @@ F	crates/kira-ipc/Cargo.toml	170	2789	9
 F	crates/kira-ipc/src/client.rs	17794	2800	458
 F	crates/kira-ipc/src/lib.rs	10460	3260	336
 F	crates/kira-shell/Cargo.toml	297	3598	12
-F	crates/kira-shell/src/calendar.rs	48940	3612	1321
-F	crates/kira-shell/src/launcher.rs	14114	4935	392
-F	crates/kira-shell/src/main.rs	19303	5329	448
-F	crates/kira-shell/src/native_ui.rs	3558	5779	91
-F	crates/kira-shell/src/process_monitor.rs	9336	5872	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6160	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6278	559
-F	crates/kira-shell/src/system_panel.rs	11356	6839	318
-F	crates/kira-shell/src/webview_pool.rs	7991	7159	237
-F	docs/CONFIG.md	5801	7398	125
-F	docs/DESIGN_SYSTEM.md	30949	7525	501
-F	docs/DEVELOPMENT.md	29347	8028	577
-F	docs/QA_VISUAL.md	12284	8607	149
-F	docs/SPECIFICATION.md	28960	8758	421
-F	docs/TENET_MOTION.md	34134	9181	186
-F	docs/UI_ARCHITECTURE.md	6737	9369	106
-F	docs/VISUAL_REVIEW.md	9754	9477	84
-F	docs/WEBVIEW_POOL.md	4518	9563	31
-F	flake.nix	3181	9596	91
-F	frontend/index.html	2737	9689	66
-F	frontend/package.json	720	9757	27
-F	frontend/scripts/inline-assets.mjs	4457	9786	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9891	106
-F	frontend/scripts/smoke-overlays.mjs	29174	9999	414
-F	frontend/src/App.svelte	8589	10415	207
-F	frontend/src/lib/bootstrap.test.ts	3408	10624	84
-F	frontend/src/lib/bootstrap.ts	2613	10710	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10782	65
-F	frontend/src/lib/calendar-model.ts	4648	10849	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10956	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11018	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11049	287
-F	frontend/src/lib/clock-flight.test.ts	2404	11338	50
-F	frontend/src/lib/clock-flight.ts	1977	11390	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11790	11442	244
-F	frontend/src/lib/components/LauncherWidget.svelte	11841	11688	253
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11943	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	12171	46
-F	frontend/src/lib/components/SystemWidget.svelte	19143	12219	337
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	12558	119
-F	frontend/src/lib/launcher-model.test.ts	2266	12679	46
-F	frontend/src/lib/launcher-model.ts	1403	12727	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12758	89
-F	frontend/src/lib/lazy-widget.ts	1984	12849	63
-F	frontend/src/lib/motion-contract.test.ts	8191	12914	148
-F	frontend/src/lib/motion.ts	18295	13064	512
-F	frontend/src/lib/overlay-size.ts	1090	13578	29
-F	frontend/src/lib/sdk/core.test.ts	22478	13609	447
-F	frontend/src/lib/sdk/core.ts	18781	14058	485
-F	frontend/src/lib/system-charts.test.ts	6312	14545	141
-F	frontend/src/lib/system-charts.ts	5514	14688	149
-F	frontend/src/lib/system-health.test.ts	2385	14839	42
-F	frontend/src/lib/system-health.ts	2831	14883	60
-F	frontend/src/lib/system-model.test.ts	4455	14945	84
-F	frontend/src/lib/system-model.ts	5457	15031	125
-F	frontend/src/lib/themes/kira-default.css	1687	15158	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	15212	101
-F	frontend/src/lib/themes/kira-default.ts	777	15315	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	15339	101
-F	frontend/src/lib/time.test.ts	263	15442	8
-F	frontend/src/lib/time.ts	320	15452	9
-F	frontend/src/lib/workspace-window.test.ts	2298	15463	52
-F	frontend/src/lib/workspace-window.ts	1063	15517	32
-F	frontend/src/main.ts	7007	15551	146
-F	frontend/src/style.css	4406	15699	134
-F	frontend/tsconfig.json	403	15835	16
-F	frontend/vite.config.ts	224	15853	8
-F	nix/package.nix	3132	15863	117
-F	scripts/dev_preview.py	18147	15982	403	x
-F	scripts/qa_visual.py	12052	16387	299
-F	tests/test_calendar_design.py	7810	16688	136
-F	tests/test_detailed_health.py	5481	16826	105
-F	tests/test_dev_preview.py	9339	16933	219
-F	tests/test_launcher_design.py	10471	17154	190
-F	tests/test_native_theme.py	1567	17346	36
-F	tests/test_popup_geometry.py	6542	17384	110
-F	tests/test_qa_visual.py	10549	17496	217
-F	tests/test_ui_bootstrap_contract.py	1103	17715	29
-F	tests/test_webview_pool.py	3689	17746	69
+F	crates/kira-shell/src/calendar.rs	48983	3612	1320
+F	crates/kira-shell/src/launcher.rs	14114	4934	392
+F	crates/kira-shell/src/main.rs	19303	5328	448
+F	crates/kira-shell/src/native_ui.rs	3118	5778	78
+F	crates/kira-shell/src/process_monitor.rs	9336	5858	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6146	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6264	559
+F	crates/kira-shell/src/system_panel.rs	11356	6825	318
+F	crates/kira-shell/src/webview_pool.rs	7991	7145	237
+F	docs/CONFIG.md	5801	7384	125
+F	docs/DESIGN_SYSTEM.md	31196	7511	505
+F	docs/DEVELOPMENT.md	29347	8018	577
+F	docs/QA_VISUAL.md	12284	8597	149
+F	docs/SPECIFICATION.md	28960	8748	421
+F	docs/TENET_MOTION.md	34134	9171	186
+F	docs/UI_ARCHITECTURE.md	6737	9359	106
+F	docs/VISUAL_REVIEW.md	9754	9467	84
+F	docs/WEBVIEW_POOL.md	4890	9553	31
+F	flake.nix	3181	9586	91
+F	frontend/index.html	2737	9679	66
+F	frontend/package.json	720	9747	27
+F	frontend/scripts/inline-assets.mjs	4457	9776	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9881	106
+F	frontend/scripts/smoke-overlays.mjs	29174	9989	414
+F	frontend/src/App.svelte	8589	10405	207
+F	frontend/src/lib/bootstrap.test.ts	3408	10614	84
+F	frontend/src/lib/bootstrap.ts	2613	10700	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10772	65
+F	frontend/src/lib/calendar-model.ts	4648	10839	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10946	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11008	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11039	287
+F	frontend/src/lib/clock-flight.test.ts	2404	11328	50
+F	frontend/src/lib/clock-flight.ts	1977	11380	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11790	11432	244
+F	frontend/src/lib/components/LauncherWidget.svelte	11841	11678	253
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11933	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	12161	46
+F	frontend/src/lib/components/SystemWidget.svelte	19143	12209	337
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	12548	119
+F	frontend/src/lib/launcher-model.test.ts	2266	12669	46
+F	frontend/src/lib/launcher-model.ts	1403	12717	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12748	89
+F	frontend/src/lib/lazy-widget.ts	1984	12839	63
+F	frontend/src/lib/motion-contract.test.ts	8191	12904	148
+F	frontend/src/lib/motion.ts	18295	13054	512
+F	frontend/src/lib/overlay-size.ts	1090	13568	29
+F	frontend/src/lib/sdk/core.test.ts	22478	13599	447
+F	frontend/src/lib/sdk/core.ts	18781	14048	485
+F	frontend/src/lib/system-charts.test.ts	6312	14535	141
+F	frontend/src/lib/system-charts.ts	5514	14678	149
+F	frontend/src/lib/system-health.test.ts	2385	14829	42
+F	frontend/src/lib/system-health.ts	2831	14873	60
+F	frontend/src/lib/system-model.test.ts	4455	14935	84
+F	frontend/src/lib/system-model.ts	5457	15021	125
+F	frontend/src/lib/themes/kira-default.css	1687	15148	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	15202	101
+F	frontend/src/lib/themes/kira-default.ts	777	15305	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	15329	101
+F	frontend/src/lib/time.test.ts	263	15432	8
+F	frontend/src/lib/time.ts	320	15442	9
+F	frontend/src/lib/workspace-window.test.ts	2298	15453	52
+F	frontend/src/lib/workspace-window.ts	1063	15507	32
+F	frontend/src/main.ts	7007	15541	146
+F	frontend/src/style.css	4406	15689	134
+F	frontend/tsconfig.json	403	15825	16
+F	frontend/vite.config.ts	224	15843	8
+F	nix/package.nix	3132	15853	117
+F	scripts/dev_preview.py	18147	15972	403	x
+F	scripts/qa_visual.py	12052	16377	299
+F	tests/test_calendar_design.py	7810	16678	136
+F	tests/test_detailed_health.py	5481	16816	105
+F	tests/test_dev_preview.py	9339	16923	219
+F	tests/test_launcher_design.py	10471	17144	190
+F	tests/test_native_theme.py	1567	17336	36
+F	tests/test_popup_geometry.py	7481	17374	126
+F	tests/test_qa_visual.py	10549	17502	217
+F	tests/test_ui_bootstrap_contract.py	1103	17721	29
+F	tests/test_webview_pool.py	3765	17752	70
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3810,9 +3810,10 @@ struct CalendarOverlay {
 }
 
 impl CalendarOverlay {
-    /// The single WebKit layer-shell window has different geometry depending
-    /// on the active widget. With no edge anchors, wlr-layer-shell centers
-    /// the launcher's fixed-size surface on its output.
+    /// Each leased WebView has its own layer-shell window. Calendar and
+    /// System Monitor ALWAYS share the original top-right anchor, regardless
+    /// of how many peer windows are currently in the pool. With no edge
+    /// anchors, wlr-layer-shell centers Launcher on its output.
     fn position_for(&self, kind: Surface) {
         let centered = kind == Surface::Launcher;
 
@@ -3837,10 +3838,8 @@ impl CalendarOverlay {
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            self.window.set_margin(
-                Edge::Right,
-                crate::native_ui::popup_right_margin(&self.window, kind == Surface::System),
-            );
+            self.window
+                .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
         }
     }
 
@@ -4599,7 +4598,7 @@ fn build(
     window.set_anchor(Edge::Top, true);
     window.set_anchor(Edge::Right, true);
     window.set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-    window.set_margin(Edge::Right, 12);
+    window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
     window.set_exclusive_zone(0);
     window.set_keyboard_mode(KeyboardMode::OnDemand);
     crate::native_ui::configure_webview_popup(&window, 420, 1);
@@ -5850,23 +5849,10 @@ pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, heig
 /// The offset below the 42px Top Bar.
 pub const POPUP_TOP_MARGIN: i32 = 25;
 
-/// Fixed per-surface anchor, never repositions an already-mapped window.
-/// On wide outputs Calendar sits at the right and System to its left.
-/// On narrow outputs, constrained Wayland geometry may overlap, but both
-/// windows remain alive, independently focusable and explicitly dismissible.
-pub fn popup_right_margin(window: &gtk::ApplicationWindow, system: bool) -> i32 {
-    if !system {
-        return 12;
-    }
-    let (width, _) = output_size(window);
-    if width >= 880 {
-        448
-    } else {
-        // Fit the full popup on-screen even if side-by-side is impossible.
-        let popup_width = 420.min(width.saturating_sub(24)).max(1);
-        (width - popup_width).max(12)
-    }
-}
+/// Calendar and System Monitor use the same original right-edge anchor.
+/// A prewarmed, active or closed peer must NEVER reserve layout space for
+/// another popup. The WebView pool owns resource leases, not geometry.
+pub const POPUP_RIGHT_MARGIN: i32 = 12;
 
 FILE	crates/kira-shell/src/process_monitor.rs
 //! Read-only Linux process accounting for the System Monitor.
@@ -7794,8 +7780,10 @@ Calendar, Launcher or System Monitor owns a separate GTK window, isolated
 generation-scoped IPC channel and Svelte/GSAP scene. A bounded four-host cap,
 one persistent hot spare and 45-second surplus-idle grace prevent runaway
 renderer growth. Active surfaces and their animations are never evicted to
-open another widget. Wide displays can show Calendar and System side by side;
-smaller displays permit overlap rather than unsafe live anchor changes.
+open another widget. Calendar and System Monitor keep their original top-right
+anchor regardless of other pooled hosts, including prewarmed or closed ones.
+Concurrent popup windows may overlap; the scheduler never silently reserves
+space or moves a mapped Wayland window.
 
 ### Shared TENET widget entrance · 2026-11
 
@@ -7867,8 +7855,10 @@ continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 ### Popup geometry
 
-Calendar and System Monitor share a **25 logical pixel** top margin,
-half the previous 50px. A single GTK helper caps each popup's
+Calendar and System Monitor share the original **12 logical pixel** right
+margin and a **25 logical pixel** top margin, half the previous 50px.
+These anchors never change based on another popup's presence in the pool.
+A single GTK helper caps each popup's
 scrollable viewport at **70% of the logical height of its monitor**,
 recalculating after the Wayland surface maps. Both remain non-exclusive
 overlays; Top Bar still reserves 42px.
@@ -9577,7 +9567,7 @@ A single active popup host forced Svelte to tear down one widget before the next
 - **Polling:** a single GTK timer processes Launcher results and live System pulses for *all* currently leased hosts. It starts on the first lease and stops when no hosts remain active; a warm idle WebView has no per-window 30/250ms polling timers.
 - **Rotation:** a single hot spare is retained. Surplus idle hosts have a **45-second grace** for quick reopen/animation chains; a 5-second GTK timer destroys only expired *idle* surplus. Actual WebKit windows are closed only on retirement, never on ordinary widget hide.
 - **Per-window isolation:** each WebView has an independent `UserContentManager`, trusted IPC allowlist, Svelte lifecycle, generation counter, size-before-paint handshake, and native/GSAP visibility timeline. No stale per-host callback is allowed to affect a newer generation.
-- **Placement:** Launcher remains centered. Calendar stays right-aligned. System Monitor uses a stable second anchor to the left on wide outputs; smaller outputs constrain the windows on-screen, permitting overlap rather than breaking layout. Crucially, a mapped Wayland surface is not moved solely to open another widget.
+- **Placement:** Launcher remains centered. **Calendar and System Monitor both preserve their original top-right anchors (12px right, 25px top), regardless of the number, state or type of other pooled WebViews.** A prewarmed or closed Calendar must not push System Monitor sideways. When both are open, they may overlap and the focused popup comes to the foreground; the resource pool deliberately does not allocate screen space or reposition a mapped Wayland surface. Any future multi-popup tiling belongs in an explicit compositor-aware layout feature, not the WebView scheduler.
 - **Focus:** losing focus to another concurrently active popup must not auto-close the previous popup. With only one popup the established outside-click dismissal remains; the explicit close controls and Escape remain available. Launcher retains its exclusive keyboard focus only when it is the sole popup, switching to OnDemand while multiple windows coexist so it cannot starve Calendar/System of keyboard input.
 
 ## Deterministic scheduler
@@ -9588,7 +9578,7 @@ Avoid proactively creating more than one idle WebView. Avoid arbitrary backgroun
 
 ## QA / evolution
 
-Cover: cold startup, two and three concurrent surfaces, switching focus without unmount, repeated toggles, generation-scoped stale commands, size + mount + paint acknowledgements, native reduced motion, synthetic capacity exhaustion, closed-vs-idle renderer cleanup, and 45s idle expiry. Keep native compile/Rust unit tests, Python source contracts and browser smoke green. Verify side-by-side anchoring on wide and small Niri outputs when a real compositor is available.
+Cover: cold startup, two and three concurrent surfaces, switching focus without unmount, repeated toggles, generation-scoped stale commands, size + mount + paint acknowledgements, native reduced motion, synthetic capacity exhaustion, closed-vs-idle renderer cleanup, and 45s idle expiry. Keep native compile/Rust unit tests, Python source contracts and browser smoke green. Verify System Monitor's stable 12px anchor with Calendar absent, prewarmed, visible and closed, on wide and small Niri outputs. Check that overlapping concurrent windows retain independent focus and animations.
 
 Future widget types should register through the same fixed-purpose allowlist and scheduler lease contract, not create ten per-widget pools. The cap is a policy constant, not an aspiration to keep four renderers alive at idle.
 
@@ -17404,8 +17394,8 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("self.window.set_exclusive_zone(0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Top, 0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Right, 0);", CALENDAR)
-        self.assertIn("native_ui::popup_right_margin(&self.window, kind == Surface::System)", CALENDAR)
-        self.assertIn("pub fn popup_right_margin", HELPERS)
+        self.assertIn("native_ui::POPUP_RIGHT_MARGIN", CALENDAR)
+        self.assertIn("pub const POPUP_RIGHT_MARGIN: i32 = 12;", HELPERS)
         self.assertIn(
             "set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN)",
             CALENDAR,
@@ -17414,6 +17404,22 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", CALENDAR)
         self.assertIn("fn concurrent(&self) -> bool", CALENDAR)
         self.assertIn("self.pool.upgrade()", CALENDAR)
+
+    def test_closed_calendar_never_reserves_position_for_system_monitor(self):
+        # Regression: the previous pool shifted System 448px left on wide
+        # monitors, even with an inert/closed Calendar host. Geometry must
+        # depend only on whether the requested surface is Launcher.
+        position = CALENDAR.split("fn position_for(&self, kind: Surface)", 1)[1].split(
+            "fn hide(&self)", 1
+        )[0]
+        self.assertIn("let centered = kind == Surface::Launcher;", position)
+        self.assertIn("set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", position)
+        self.assertNotIn("Surface::System", position)
+        self.assertNotIn("Surface::Calendar", position)
+        self.assertNotIn("self.pool", position)
+        self.assertNotIn("popup_right_margin(", HELPERS)
+        self.assertNotIn("448", HELPERS)
+        self.assertIn("window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", CALENDAR)
 
     def test_switching_launcher_preserves_existing_buffers_and_generations(self):
         # A new surface reserves its own hot or newly created WebKit view.
@@ -17794,7 +17800,8 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("self.window.present()", HOST)
         self.assertIn("self.generation.get() == generation", HOST)
         self.assertIn("manager.register_script_message_handler", HOST)
-        self.assertIn("fn popup_right_margin", NATIVE)
+        self.assertIn("pub const POPUP_RIGHT_MARGIN: i32 = 12;", NATIVE)
+        self.assertNotIn("fn popup_right_margin", NATIVE)
         self.assertIn("set_exclusive_zone(-1)", HOST)
 
     def test_recycled_slot_cannot_accept_stale_close_or_tab_actions(self):
