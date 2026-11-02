@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5327
+index_bytes=5494
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,115 +15,118 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	7683cbb25b42df1043f44dcf50146779a5f55dd2
-F	.cargo/config.toml	98	136	3
-F	.github/workflows/ci.yml	4355	141	112
-F	.github/workflows/frontend-nix.yml	1398	255	43
-F	.github/workflows/nix.yml	1258	300	38
-F	.github/workflows/overlay-smoke.yml	1064	340	40
-F	.github/workflows/publish-repospool.yml	3048	382	83
-F	.gitignore	178	467	11
-F	.repospoolignore	1028	480	47
-F	AGENTS.md	5416	529	89
-F	Cargo.toml	494	620	22
-F	README.md	11812	644	252
-F	Taskfile.yml	5957	898	185
-F	config/kira.kdl.example	358	1085	8
-F	crates/kira-core/Cargo.toml	207	1095	10
-F	crates/kira-core/src/config.rs	15217	1107	399
-F	crates/kira-core/src/main.rs	32080	1508	839
-F	crates/kira-core/src/niri.rs	16767	2349	453
-F	crates/kira-ipc/Cargo.toml	170	2804	9
-F	crates/kira-ipc/src/client.rs	17794	2815	458
-F	crates/kira-ipc/src/lib.rs	10460	3275	336
-F	crates/kira-shell/Cargo.toml	297	3613	12
-F	crates/kira-shell/src/calendar.rs	64421	3627	1730
-F	crates/kira-shell/src/launcher.rs	14114	5359	392
-F	crates/kira-shell/src/main.rs	19894	5753	461
-F	crates/kira-shell/src/native_ui.rs	4536	6216	104
-F	crates/kira-shell/src/popup_layout.rs	2055	6322	58
-F	crates/kira-shell/src/process_monitor.rs	9336	6382	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6670	116
-F	crates/kira-shell/src/system_info.rs	3951	6788	113
-F	crates/kira-shell/src/system_metrics.rs	19842	6903	559
-F	crates/kira-shell/src/system_panel.rs	11356	7464	318
-F	crates/kira-shell/src/webview_pool.rs	8477	7784	249
-F	docs/CONFIG.md	5801	8035	125
-F	docs/DESIGN_SYSTEM.md	32126	8162	519
-F	docs/DEVELOPMENT.md	29347	8683	577
-F	docs/QA_VISUAL.md	12284	9262	149
-F	docs/SPECIFICATION.md	28960	9413	421
-F	docs/TENET_MOTION.md	40649	9836	204
-F	docs/UI_ARCHITECTURE.md	6737	10042	106
-F	docs/VISUAL_REVIEW.md	9754	10150	84
-F	docs/WEBVIEW_POOL.md	5046	10236	30
-F	flake.nix	3181	10268	91
-F	frontend/index.html	2737	10361	66
-F	frontend/package.json	720	10429	27
-F	frontend/scripts/inline-assets.mjs	4457	10458	103
-F	frontend/scripts/inline-assets.test.mjs	4645	10563	106
-F	frontend/scripts/smoke-overlays.mjs	39992	10671	555
-F	frontend/src/App.svelte	9665	11228	224
-F	frontend/src/lib/bootstrap.test.ts	3408	11454	84
-F	frontend/src/lib/bootstrap.ts	2613	11540	70
-F	frontend/src/lib/calendar-model.test.ts	3571	11612	65
-F	frontend/src/lib/calendar-model.ts	4648	11679	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11786	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11848	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11879	287
-F	frontend/src/lib/clock-flight.test.ts	2404	12168	50
-F	frontend/src/lib/clock-flight.ts	1977	12220	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	12272	246
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	12520	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9217	12778	165
-F	frontend/src/lib/components/SystemCharts.svelte	10517	12945	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	13173	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	13221	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	13562	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13602	119
-F	frontend/src/lib/launcher-model.test.ts	2266	13723	46
-F	frontend/src/lib/launcher-model.ts	1403	13771	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	13802	89
-F	frontend/src/lib/lazy-widget.ts	1984	13893	63
-F	frontend/src/lib/motion-contract.test.ts	11242	13958	198
-F	frontend/src/lib/motion.ts	24039	14158	657
-F	frontend/src/lib/overlay-size.ts	1090	14817	29
-F	frontend/src/lib/sdk/core.test.ts	25327	14848	508
-F	frontend/src/lib/sdk/core.ts	21046	15358	539
-F	frontend/src/lib/settings-model.test.ts	1011	15899	20
-F	frontend/src/lib/settings-model.ts	1263	15921	26
-F	frontend/src/lib/system-charts.test.ts	6312	15949	141
-F	frontend/src/lib/system-charts.ts	5514	16092	149
-F	frontend/src/lib/system-health.test.ts	2385	16243	42
-F	frontend/src/lib/system-health.ts	2831	16287	60
-F	frontend/src/lib/system-model.test.ts	4455	16349	84
-F	frontend/src/lib/system-model.ts	5457	16435	125
-F	frontend/src/lib/themes/kira-default.css	1687	16562	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	16616	101
-F	frontend/src/lib/themes/kira-default.ts	777	16719	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	16743	101
-F	frontend/src/lib/time.test.ts	263	16846	8
-F	frontend/src/lib/time.ts	320	16856	9
-F	frontend/src/lib/workspace-window.test.ts	2298	16867	52
-F	frontend/src/lib/workspace-window.ts	1063	16921	32
-F	frontend/src/main.ts	7783	16955	161
-F	frontend/src/style.css	6399	17118	194
-F	frontend/tsconfig.json	403	17314	16
-F	frontend/vite.config.ts	224	17332	8
-F	nix/package.nix	3132	17342	117
-F	scripts/dev_preview.py	18147	17461	403	x
-F	scripts/qa_visual.py	12052	17866	299
-F	tests/test_calendar_design.py	7810	18167	136
-F	tests/test_detailed_health.py	5481	18305	105
-F	tests/test_dev_preview.py	9339	18412	219
-F	tests/test_launcher_design.py	10481	18633	190
-F	tests/test_native_theme.py	2098	18825	44
-F	tests/test_popup_geometry.py	3227	18871	58
-F	tests/test_qa_visual.py	10549	18931	217
-F	tests/test_settings.py	3212	19150	62
-F	tests/test_tenet_close.py	6297	19214	115
-F	tests/test_ui_bootstrap_contract.py	1103	19331	29
-F	tests/test_webview_pool.py	5335	19362	94
+C	66c79e36411435ef69cc1c6df1d8ab0e68d32fdc
+F	.cargo/config.toml	98	139	3
+F	.github/workflows/ci.yml	4355	144	112
+F	.github/workflows/frontend-nix.yml	1398	258	43
+F	.github/workflows/nix.yml	1258	303	38
+F	.github/workflows/overlay-smoke.yml	1064	343	40
+F	.github/workflows/publish-repospool.yml	3048	385	83
+F	.gitignore	178	470	11
+F	.repospoolignore	1028	483	47
+F	AGENTS.md	5416	532	89
+F	Cargo.toml	494	623	22
+F	README.md	12273	647	256
+F	Taskfile.yml	5957	905	185
+F	config/kira.kdl.example	358	1092	8
+F	crates/kira-core/Cargo.toml	207	1102	10
+F	crates/kira-core/src/config.rs	15217	1114	399
+F	crates/kira-core/src/main.rs	32080	1515	839
+F	crates/kira-core/src/niri.rs	16767	2356	453
+F	crates/kira-ipc/Cargo.toml	170	2811	9
+F	crates/kira-ipc/src/client.rs	17794	2822	458
+F	crates/kira-ipc/src/lib.rs	10460	3282	336
+F	crates/kira-shell/Cargo.toml	297	3620	12
+F	crates/kira-shell/src/calendar.rs	69410	3634	1840
+F	crates/kira-shell/src/display_manager.rs	16588	5476	412
+F	crates/kira-shell/src/launcher.rs	14114	5890	392
+F	crates/kira-shell/src/main.rs	19915	6284	462
+F	crates/kira-shell/src/native_ui.rs	4536	6748	104
+F	crates/kira-shell/src/popup_layout.rs	2055	6854	58
+F	crates/kira-shell/src/process_monitor.rs	9336	6914	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	7202	116
+F	crates/kira-shell/src/system_info.rs	3951	7320	113
+F	crates/kira-shell/src/system_metrics.rs	19842	7435	559
+F	crates/kira-shell/src/system_panel.rs	11356	7996	318
+F	crates/kira-shell/src/webview_pool.rs	8477	8316	249
+F	docs/CONFIG.md	5801	8567	125
+F	docs/DESIGN_SYSTEM.md	32126	8694	519
+F	docs/DEVELOPMENT.md	29347	9215	577
+F	docs/QA_VISUAL.md	12284	9794	149
+F	docs/SPECIFICATION.md	28960	9945	421
+F	docs/TENET_MOTION.md	40649	10368	204
+F	docs/UI_ARCHITECTURE.md	6737	10574	106
+F	docs/VISUAL_REVIEW.md	9754	10682	84
+F	docs/WEBVIEW_POOL.md	6732	10768	38
+F	flake.nix	3181	10808	91
+F	frontend/index.html	2737	10901	66
+F	frontend/package.json	720	10969	27
+F	frontend/scripts/inline-assets.mjs	4457	10998	103
+F	frontend/scripts/inline-assets.test.mjs	4645	11103	106
+F	frontend/scripts/smoke-overlays.mjs	42265	11211	582
+F	frontend/src/App.svelte	9665	11795	224
+F	frontend/src/lib/bootstrap.test.ts	3408	12021	84
+F	frontend/src/lib/bootstrap.ts	2613	12107	70
+F	frontend/src/lib/calendar-model.test.ts	3571	12179	65
+F	frontend/src/lib/calendar-model.ts	4648	12246	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	12353	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	12415	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	12446	287
+F	frontend/src/lib/clock-flight.test.ts	2404	12735	50
+F	frontend/src/lib/clock-flight.ts	1977	12787	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	12839	246
+F	frontend/src/lib/components/DisplaySettings.svelte	19817	13087	392
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	13481	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	13739	168
+F	frontend/src/lib/components/SystemCharts.svelte	10517	13909	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	14137	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	14185	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	14526	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	14566	119
+F	frontend/src/lib/launcher-model.test.ts	2266	14687	46
+F	frontend/src/lib/launcher-model.ts	1403	14735	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	14766	89
+F	frontend/src/lib/lazy-widget.ts	1984	14857	63
+F	frontend/src/lib/motion-contract.test.ts	11242	14922	198
+F	frontend/src/lib/motion.ts	24039	15122	657
+F	frontend/src/lib/overlay-size.ts	1090	15781	29
+F	frontend/src/lib/sdk/core.test.ts	27691	15812	560
+F	frontend/src/lib/sdk/core.ts	25075	16374	639
+F	frontend/src/lib/settings-model.test.ts	1064	17015	21
+F	frontend/src/lib/settings-model.ts	1262	17038	26
+F	frontend/src/lib/system-charts.test.ts	6312	17066	141
+F	frontend/src/lib/system-charts.ts	5514	17209	149
+F	frontend/src/lib/system-health.test.ts	2385	17360	42
+F	frontend/src/lib/system-health.ts	2831	17404	60
+F	frontend/src/lib/system-model.test.ts	4455	17466	84
+F	frontend/src/lib/system-model.ts	5457	17552	125
+F	frontend/src/lib/themes/kira-default.css	1687	17679	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	17733	101
+F	frontend/src/lib/themes/kira-default.ts	777	17836	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	17860	101
+F	frontend/src/lib/time.test.ts	263	17963	8
+F	frontend/src/lib/time.ts	320	17973	9
+F	frontend/src/lib/workspace-window.test.ts	2298	17984	52
+F	frontend/src/lib/workspace-window.ts	1063	18038	32
+F	frontend/src/main.ts	7783	18072	161
+F	frontend/src/style.css	6399	18235	194
+F	frontend/tsconfig.json	403	18431	16
+F	frontend/vite.config.ts	224	18449	8
+F	nix/package.nix	3132	18459	117
+F	scripts/dev_preview.py	18147	18578	403	x
+F	scripts/qa_visual.py	12052	18983	299
+F	tests/test_calendar_design.py	7810	19284	136
+F	tests/test_detailed_health.py	5481	19422	105
+F	tests/test_dev_preview.py	9339	19529	219
+F	tests/test_displays.py	2905	19750	52
+F	tests/test_launcher_design.py	10481	19804	190
+F	tests/test_native_theme.py	2098	19996	44
+F	tests/test_popup_geometry.py	3227	20042	58
+F	tests/test_qa_visual.py	10549	20102	217
+F	tests/test_settings.py	3212	20321	62
+F	tests/test_tenet_close.py	6297	20385	115
+F	tests/test_ui_bootstrap_contract.py	1103	20502	29
+F	tests/test_webview_pool.py	5335	20533	94
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -893,6 +896,10 @@ This project is not ready to replace a working desktop environment.
 ## System Settings
 
 The gear icon in the Top Bar opens **Kira Settings**. Settings starts as a fixed 600px-wide popup with a section selector; the header's pop-out button promotes the same live WebView to a normal Niri window, where navigation moves to a permanent sidebar. The first implemented page, **About System**, reads the host's OS, kernel, CPU, RAM, session and Shell version from native Linux sources. Other sections are clearly marked as upcoming. The panel is read-only and reports unavailable fields instead of inventing values.
+
+## Multiple displays
+
+**Settings → Displays** configures the current Niri session using the compositor's real connected-output list. Select screens, arrange them on the map, change resolution/refresh rate, scale, orientation, VRR and on/off state. Apply uses a 15-second safety confirmation with automatic rollback. This does not rewrite `config.kdl` (important for declarative NixOS setups), and Niri's native output API does not provide desktop mirroring.
 
 FILE	Taskfile.yml
 version: '3'
@@ -3756,6 +3763,7 @@ impl OverlayPool {
             for view in &active {
                 view.poll_launcher();
                 view.poll_pulse();
+                view.poll_displays();
             }
             if pool.last_tick.get().elapsed() >= Duration::from_millis(250) {
                 pool.last_tick.set(Instant::now());
@@ -3898,6 +3906,7 @@ struct CalendarOverlay {
     system: RefCell<Option<crate::system_panel::Model>>,
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     settings_about: RefCell<Option<serde_json::Value>>,
+    settings_displays: RefCell<Option<crate::display_manager::Model>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
     closing: Cell<bool>,
@@ -4040,6 +4049,9 @@ impl CalendarOverlay {
         self.active.set(None);
         self.launcher.borrow_mut().take();
         self.settings_about.borrow_mut().take();
+        // Dropping the sender while confirmation is pending forces the
+        // display worker to roll back even if the WebView was closed.
+        self.settings_displays.borrow_mut().take();
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.revealed.set(false);
@@ -4389,6 +4401,9 @@ impl CalendarOverlay {
                     self.send_metrics();
                 } else if self.active.get() == Some(Surface::Settings) {
                     self.send_settings_about();
+                    if let Some(displays) = self.settings_displays.borrow().as_ref() {
+                        displays.refresh();
+                    }
                 }
                 self.widget_ready.set(true);
                 if self.content_height.get() > 0 {
@@ -4445,6 +4460,47 @@ impl CalendarOverlay {
                     && !self.closing.get() =>
             {
                 self.detach();
+            }
+            Some(UiCommand::DisplayRefresh(generation))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.refresh();
+                }
+            }
+            Some(UiCommand::DisplayApply(generation, payload))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    if let Ok(value) = serde_json::from_str(payload) {
+                        model.apply(value);
+                    }
+                }
+            }
+            Some(UiCommand::DisplayConfirm(generation, id))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.confirm(id);
+                }
+            }
+            Some(UiCommand::DisplayRevert(generation, id))
+                if self.requested.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.revert(id);
+                }
             }
             Some(UiCommand::Close(generation))
                 if self.requested.get() && self.generation.get() == generation =>
@@ -4683,6 +4739,38 @@ impl CalendarOverlay {
         }
     }
 
+    fn poll_displays(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Settings) {
+            return;
+        }
+        let events = self.settings_displays.borrow().as_ref()
+            .map(crate::display_manager::Model::poll).unwrap_or_default();
+        for event in events {
+            let payload = serde_json::json!({
+                "generation": self.generation.get(),
+                "state": event.state,
+                "outputs": event.outputs,
+                "pending_id": event.pending_id,
+                "error": event.error,
+            });
+            if let Ok(serialized) = serde_json::to_string(&payload)
+                && let Ok(encoded) = serde_json::to_string(&serialized)
+            {
+                let script = format!(
+                    "window.dispatchEvent(new CustomEvent('kira:settings:displays', {{ detail: JSON.parse({encoded}) }}));"
+                );
+                self.view.evaluate_javascript(
+                    &script, None, None, None::<&gtk::gio::Cancellable>,
+                    |result| {
+                        if let Err(error) = result {
+                            eprintln!("kira-shell: display status dispatch failed: {error}");
+                        }
+                    },
+                );
+            }
+        }
+    }
+
     fn poll_pulse(&self) {
         if !self.requested.get() || self.active.get() != Some(Surface::System) {
             return;
@@ -4747,6 +4835,10 @@ enum UiCommand<'a> {
     LauncherCatalog(u32),
     LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
+    DisplayRefresh(u32),
+    DisplayApply(u32, &'a str),
+    DisplayConfirm(u32, u64),
+    DisplayRevert(u32, u64),
 }
 
 /// Revalidate date-copy requests without duplicating the Svelte date grid.
@@ -4791,6 +4883,29 @@ fn parse_ui_generation(value: &str) -> Option<u32> {
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if message == "host-ready" {
         return Some(UiCommand::HostReady);
+    }
+    if let Some(value) = message.strip_prefix("display-refresh:") {
+        return parse_ui_generation(value).map(UiCommand::DisplayRefresh);
+    }
+    if let Some(value) = message.strip_prefix("display-apply:") {
+        let (generation, payload) = value.split_once(':')?;
+        if payload.len() > 8192 || payload.len() < 2 {
+            return None;
+        }
+        return Some(UiCommand::DisplayApply(parse_ui_generation(generation)?, payload));
+    }
+    for (prefix, confirm) in [("display-confirm:", true), ("display-revert:", false)] {
+        if let Some(value) = message.strip_prefix(prefix) {
+            let (generation, token) = value.split_once(':')?;
+            if token.is_empty() || token.len() > 20 ||
+                !token.bytes().all(|byte| byte.is_ascii_digit()) {
+                return None;
+            }
+            let generation = parse_ui_generation(generation)?;
+            let token = token.parse::<u64>().ok().filter(|id| *id > 0)?;
+            return Some(if confirm { UiCommand::DisplayConfirm(generation, token) }
+                        else { UiCommand::DisplayRevert(generation, token) });
+        }
     }
     if let Some(value) = message.strip_prefix("close:") {
         return parse_ui_generation(value).map(UiCommand::Close);
@@ -4985,6 +5100,7 @@ fn build(
         system: RefCell::new(None),
         launcher: RefCell::new(None),
         settings_about: RefCell::new(None),
+        settings_displays: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
         closing: Cell::new(false),
@@ -5165,6 +5281,7 @@ pub fn toggle_settings(application: &gtk::Application, html: &str) {
                 return;
             }
             *view.settings_about.borrow_mut() = Some(crate::system_info::about_snapshot());
+            *view.settings_displays.borrow_mut() = Some(crate::display_manager::Model::new());
             view.show(Surface::Settings);
         }),
     );
@@ -5352,6 +5469,420 @@ mod tests {
             Some("<html lang=\"en\" data-kira-surface=\"calendar\"><body></body></html>")
         );
         assert!(calendar_document("<html><body></body></html>").is_none());
+    }
+}
+
+FILE	crates/kira-shell/src/display_manager.rs
+//! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
+//! Operations are session-scoped; persistent Niri KDL remains user-owned.
+use std::process::Command;
+use std::sync::mpsc::{self, Receiver, Sender, RecvTimeoutError};
+use std::thread;
+use std::time::{Duration, Instant};
+
+const CONFIRM_SECS: u64 = 15;
+const MAX_OUTPUTS: usize = 8;
+const MAX_MODES: usize = 80;
+
+#[derive(Debug, Clone)]
+struct Desired {
+    name: String,
+    enabled: bool,
+    mode: String,
+    scale: f64,
+    transform: String,
+    x: i32,
+    y: i32,
+    vrr: bool,
+}
+
+#[derive(Debug)]
+enum Request {
+    Refresh,
+    Apply(serde_json::Value),
+    Confirm(u64),
+    Revert(u64),
+}
+
+#[derive(Debug)]
+pub struct Event {
+    pub state: &'static str,
+    pub outputs: Option<serde_json::Value>,
+    pub pending_id: Option<u64>,
+    pub error: Option<String>,
+}
+
+pub struct Model {
+    sender: Sender<Request>,
+    receiver: Receiver<Event>,
+}
+
+impl Model {
+    pub fn new() -> Self {
+        let (sender, requests) = mpsc::channel();
+        let (events, receiver) = mpsc::channel();
+        thread::spawn(move || run(requests, events));
+        Self { sender, receiver }
+    }
+
+    pub fn refresh(&self) {
+        let _ = self.sender.send(Request::Refresh);
+    }
+
+    pub fn apply(&self, value: serde_json::Value) {
+        let _ = self.sender.send(Request::Apply(value));
+    }
+
+    pub fn confirm(&self, id: u64) {
+        let _ = self.sender.send(Request::Confirm(id));
+    }
+
+    pub fn revert(&self, id: u64) {
+        let _ = self.sender.send(Request::Revert(id));
+    }
+
+    pub fn poll(&self) -> Vec<Event> {
+        // Never block GTK. Limit messages consumed per frame.
+        (0..6).filter_map(|_| self.receiver.try_recv().ok()).collect()
+    }
+}
+
+fn report(
+    events: &Sender<Event>,
+    state: &'static str,
+    pending_id: Option<u64>,
+    error: Option<String>,
+) {
+    let snapshot = query().ok();
+    let _ = events.send(Event {
+        state,
+        outputs: snapshot,
+        pending_id,
+        error: error.map(|value| value.chars().take(240).collect()),
+    });
+}
+
+/// The only executable is the fixed Niri CLI; all arguments are bounded and
+/// validated against Niri's own snapshot, without an interpolated shell.
+fn niri(args: &[&str]) -> Result<String, String> {
+    let output = Command::new("niri")
+        .arg("msg")
+        .args(args)
+        .output()
+        .map_err(|error| format!("Niri IPC недоступен: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "Niri отклонил команду: {}",
+            String::from_utf8_lossy(&output.stderr).chars().take(180).collect::<String>()
+        ));
+    }
+    if output.stdout.len() > 256 * 1024 {
+        return Err("Ответ Niri слишком большой".into());
+    }
+    String::from_utf8(output.stdout).map_err(|_| "Некорректный ответ Niri".into())
+}
+
+fn query() -> Result<serde_json::Value, String> {
+    let text = niri(&["--json", "outputs"])?;
+    let source: serde_json::Value =
+        serde_json::from_str(&text).map_err(|_| "Niri вернул некорректный JSON".to_string())?;
+    let map = source.as_object().ok_or("Niri не вернул список дисплеев")?;
+    if map.len() > MAX_OUTPUTS {
+        return Err("Обнаружено слишком много дисплеев для безопасного редактирования".into());
+    }
+    let mut outputs = Vec::new();
+    for (connector, value) in map {
+        if connector.len() > 128 || !value.is_object() {
+            return Err("Некорректное описание дисплея".into());
+        }
+        let modes = value.get("modes").and_then(serde_json::Value::as_array)
+            .ok_or("Niri не сообщает доступные режимы")?;
+        if modes.len() > MAX_MODES {
+            return Err("Слишком много режимов дисплея".into());
+        }
+        let mut out = value.clone();
+        out["connector"] = serde_json::Value::String(connector.clone());
+        outputs.push(out);
+    }
+    outputs.sort_by(|a, b| a["connector"].as_str().cmp(&b["connector"].as_str()));
+    Ok(serde_json::Value::Array(outputs))
+}
+
+fn mode_id(mode: &serde_json::Value) -> Option<String> {
+    let width = mode["width"].as_u64()?;
+    let height = mode["height"].as_u64()?;
+    let refresh = mode["refresh_rate"].as_u64()?;
+    if !(320..=16384).contains(&width) || !(200..=16384).contains(&height)
+        || !(1000..=1_000_000).contains(&refresh) {
+        return None;
+    }
+    Some(format!("{width}x{height}@{}.{:03}", refresh / 1000, refresh % 1000))
+}
+
+fn valid_transform(value: &str) -> bool {
+    matches!(value, "normal" | "90" | "180" | "270" | "flipped"
+        | "flipped-90" | "flipped-180" | "flipped-270")
+}
+
+fn normalized_transform(value: &str) -> Option<&'static str> {
+    match value {
+        "Normal" | "normal" => Some("normal"),
+        "90" => Some("90"),
+        "180" => Some("180"),
+        "270" => Some("270"),
+        "Flipped" | "flipped" => Some("flipped"),
+        "Flipped90" | "flipped-90" => Some("flipped-90"),
+        "Flipped180" | "flipped-180" => Some("flipped-180"),
+        "Flipped270" | "flipped-270" => Some("flipped-270"),
+        _ => None,
+    }
+}
+
+fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
+    let mut result = Vec::new();
+    for output in outputs.as_array().ok_or("Неверные данные дисплеев")? {
+        let name = output["connector"].as_str().ok_or("Нет идентификатора дисплея")?;
+        let logical = &output["logical"];
+        let current = output["current_mode"].as_u64().and_then(|i| {
+            output["modes"].as_array()?.get(usize::try_from(i).ok()?)
+        });
+        let fallback = output["modes"].as_array()
+            .and_then(|modes| modes.iter().find(|m| m["is_preferred"] == true).or(modes.first()));
+        let mode = current.or(fallback).and_then(mode_id)
+            .ok_or("Невозможно определить режим дисплея")?;
+        let enabled = !logical.is_null();
+        let scale = logical["scale"].as_f64().unwrap_or(1.0);
+        let transform = logical["transform"].as_str()
+            .and_then(normalized_transform).unwrap_or("normal").to_string();
+        result.push(Desired {
+            name: name.to_string(), enabled, mode, scale, transform,
+            x: logical["x"].as_i64().unwrap_or(0) as i32,
+            y: logical["y"].as_i64().unwrap_or(0) as i32,
+            vrr: output["vrr_enabled"] == true,
+        });
+    }
+    Ok(result)
+}
+
+fn validate(value: &serde_json::Value, current: &serde_json::Value)
+    -> Result<Vec<Desired>, String>
+{
+    let requested = value.as_array().ok_or("Ожидался массив дисплеев")?;
+    let existing = current.as_array().ok_or("Не удалось прочитать дисплеи")?;
+    if requested.is_empty() || requested.len() != existing.len() || requested.len() > MAX_OUTPUTS {
+        return Err("Список подключённых дисплеев изменился. Обновите его.".into());
+    }
+    let mut result = Vec::new();
+    for input in requested {
+        let name = input["connector"].as_str().ok_or("Нет идентификатора дисплея")?;
+        let host = existing.iter().find(|out| out["connector"] == name)
+            .ok_or("Дисплей был отключён. Обновите список.")?;
+        if result.iter().any(|out: &Desired| out.name == name) {
+            return Err("Повтор дисплея".into());
+        }
+        let enabled = input["enabled"].as_bool().ok_or("Некорректное состояние дисплея")?;
+        let mode = input["mode"].as_str().ok_or("Не указан режим")?;
+        if !host["modes"].as_array().is_some_and(|modes|
+            modes.iter().any(|item| mode_id(item).as_deref() == Some(mode))) {
+            return Err("Режим не поддерживается дисплеем".into());
+        }
+        let scale = input["scale"].as_f64().ok_or("Некорректный масштаб")?;
+        if !scale.is_finite() || !(0.5..=4.0).contains(&scale) {
+            return Err("Масштаб должен быть от 50% до 400%".into());
+        }
+        let transform = input["transform"].as_str().ok_or("Некорректный поворот")?;
+        if !valid_transform(transform) {
+            return Err("Неподдерживаемый поворот".into());
+        }
+        let x = input["x"].as_i64().ok_or("Неверная координата X")?;
+        let y = input["y"].as_i64().ok_or("Неверная координата Y")?;
+        if !(-32000..=32000).contains(&x) || !(-32000..=32000).contains(&y) {
+            return Err("Координаты за пределами рабочего стола".into());
+        }
+        let vrr = input["vrr"].as_bool().ok_or("Некорректный VRR")?;
+        if vrr && host["vrr_supported"] != true {
+            return Err("Монитор не поддерживает VRR".into());
+        }
+        result.push(Desired {
+            name: name.to_string(), enabled, mode: mode.to_string(), scale,
+            transform: transform.to_string(), x: x as i32, y: y as i32, vrr,
+        });
+    }
+    if !result.iter().any(|out| out.enabled) {
+        return Err("Нельзя отключить все дисплеи".into());
+    }
+    Ok(result)
+}
+
+fn command(name: &str, suffix: &[&str]) -> Result<(), String> {
+    let mut args = vec!["output", name];
+    args.extend_from_slice(suffix);
+    niri(&args).map(|_| ())
+}
+
+/// Enable first, adjust while active, disable last. On a partial failure the
+/// caller replays the original snapshot. Only advertised modes are allowed.
+fn execute(desired: &[Desired]) -> Result<(), String> {
+    for out in desired.iter().filter(|out| out.enabled) {
+        command(&out.name, &["on"])?;
+    }
+    for out in desired.iter().filter(|out| out.enabled) {
+        command(&out.name, &["mode", &out.mode])?;
+        command(&out.name, &["scale", &out.scale.to_string()])?;
+        command(&out.name, &["transform", &out.transform])?;
+        command(&out.name, &["position", "set", &out.x.to_string(), &out.y.to_string()])?;
+        command(&out.name, &["vrr", if out.vrr { "on" } else { "off" }])?;
+    }
+    for out in desired.iter().filter(|out| !out.enabled) {
+        command(&out.name, &["off"])?;
+    }
+    Ok(())
+}
+
+fn revert(before: &[Desired], events: &Sender<Event>) {
+    let result = execute(before);
+    report(events, "reverted", None, result.err()
+        .map(|error| format!("Не удалось полностью восстановить конфигурацию: {error}")));
+}
+
+fn run(requests: Receiver<Request>, events: Sender<Event>) {
+    let mut next_id = 0_u64;
+    let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
+    loop {
+        let received = match pending.as_ref() {
+            Some((_, _, deadline)) => requests.recv_timeout(
+                deadline.saturating_duration_since(Instant::now())
+            ),
+            None => requests.recv().map_err(|_| RecvTimeoutError::Disconnected),
+        };
+        let message = match received {
+            Ok(message) => message,
+            Err(RecvTimeoutError::Timeout) => {
+                if let Some((_, before, _)) = pending.take() {
+                    revert(&before, &events);
+                }
+                continue;
+            }
+            Err(RecvTimeoutError::Disconnected) => {
+                if let Some((_, before, _)) = pending.take() {
+                    revert(&before, &events);
+                }
+                break;
+            }
+        };
+        match message {
+            Request::Refresh => {
+                if pending.is_none() {
+                    match query() {
+                        Ok(outputs) => {
+                            let _ = events.send(Event { state: "ready",
+                                outputs: Some(outputs), pending_id: None, error: None });
+                        }
+                        Err(error) => report(&events, "error", None, Some(error)),
+                    }
+                }
+            }
+            Request::Apply(value) => {
+                if pending.is_some() {
+                    report(&events, "error", pending.as_ref().map(|p| p.0),
+                        Some("Сначала подтвердите или отмените текущую конфигурацию".into()));
+                    continue;
+                }
+                let result = query().and_then(|outputs| {
+                    let target = validate(&value, &outputs)?;
+                    let before = baseline(&outputs)?;
+                    Ok((target, before))
+                });
+                match result {
+                    Err(error) => report(&events, "error", None, Some(error)),
+                    Ok((target, before)) => {
+                        if let Err(error) = execute(&target) {
+                            revert(&before, &events);
+                            report(&events, "error", None, Some(error));
+                        } else {
+                            next_id = next_id.wrapping_add(1).max(1);
+                            let id = next_id;
+                            pending = Some((id, before, Instant::now() + Duration::from_secs(CONFIRM_SECS)));
+                            report(&events, "pending", Some(id), None);
+                        }
+                    }
+                }
+            }
+            Request::Confirm(id) => {
+                if pending.as_ref().is_some_and(|p| p.0 == id) {
+                    pending.take();
+                    report(&events, "confirmed", None, None);
+                }
+            }
+            Request::Revert(id) => {
+                if pending.as_ref().is_some_and(|p| p.0 == id) {
+                    if let Some((_, before, _)) = pending.take() {
+                        revert(&before, &events);
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    fn outputs() -> serde_json::Value {
+        json!([
+            {"connector":"eDP-1", "logical":{"x":0,"y":0,"scale":1.0,"transform":"Normal"},
+             "current_mode":0, "modes":[{"width":1920,"height":1080,"refresh_rate":60000,"is_preferred":true}],
+             "vrr_supported":false,"vrr_enabled":false},
+            {"connector":"HDMI-A-1", "logical":{"x":1920,"y":0,"scale":1.0,"transform":"Normal"},
+             "current_mode":0,"modes":[{"width":2560,"height":1440,"refresh_rate":144000,"is_preferred":true}],
+             "vrr_supported":true,"vrr_enabled":false}
+        ])
+    }
+
+    fn plan() -> serde_json::Value {
+        json!([
+            {"connector":"eDP-1","enabled":true,"mode":"1920x1080@60.000",
+             "scale":1.0,"transform":"normal","x":0,"y":0,"vrr":false},
+            {"connector":"HDMI-A-1","enabled":true,"mode":"2560x1440@144.000",
+             "scale":1.25,"transform":"90","x":1920,"y":0,"vrr":true}
+        ])
+    }
+
+    #[test]
+    fn mode_refresh_uses_exact_millihertz() {
+        assert_eq!(mode_id(&json!({"width":2560,"height":1440,"refresh_rate":143912})),
+                   Some("2560x1440@143.912".into()));
+    }
+
+    #[test]
+    fn validates_only_connected_advertised_modes_and_keeps_a_lit_screen() {
+        assert!(validate(&plan(), &outputs()).is_ok());
+        let mut off = plan();
+        off[0]["enabled"] = json!(false);
+        off[1]["enabled"] = json!(false);
+        assert!(validate(&off, &outputs()).is_err());
+        let mut unknown = plan();
+        unknown[0]["mode"] = json!("8000x8000@500.000");
+        assert!(validate(&unknown, &outputs()).is_err());
+        let mut duplicate = plan();
+        duplicate[1]["connector"] = json!("eDP-1");
+        assert!(validate(&duplicate, &outputs()).is_err());
+        let mut vrr = plan();
+        vrr[0]["vrr"] = json!(true);
+        assert!(validate(&vrr, &outputs()).is_err());
+        let mut injection = plan();
+        injection[1]["transform"] = json!("normal; rm -rf /");
+        assert!(validate(&injection, &outputs()).is_err());
+    }
+
+    #[test]
+    fn restores_actual_logical_coordinates_and_transform() {
+        let saved = baseline(&outputs()).unwrap();
+        assert_eq!(saved[1].x, 1920);
+        assert_eq!(saved[0].transform, "normal");
+        assert!(saved.iter().all(|item| item.enabled));
     }
 }
 
@@ -5753,6 +6284,7 @@ FILE	crates/kira-shell/src/main.rs
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
+mod display_manager;
 mod launcher;
 mod native_ui;
 mod popup_layout;
@@ -10260,6 +10792,14 @@ The pool makes **multiple ordinary windows** possible without pretending layer-s
 
 The Top Bar gear opens a Settings surface through the dedicated `kiraSettings:toggle` native channel. Settings starts in widget mode with a fixed 600px width, 560px capped height and a section selector. Popping it out reuses the same live WebView and shows a 220px sidebar in a decorated, resizable Niri xdg-toplevel (initially 940×700). Section definitions are shared, with **About System** implemented; future categories are explicitly disabled instead of opening empty/fake pages. Native Shell delivers a generation-matched, validated `kira:settings:about` snapshot on mount. The data come from bounded local OS files, read-only and with null for unavailable information. No generic shell command, network call or expanded Core RPC is involved.
 
+## Displays / multi-output management
+
+Settings → Displays queries Niri's stable `niri msg --json outputs` API from a worker thread, without blocking the GTK loop. It shows connected outputs, real mode/refresh choices, current resolution, scale, rotation, VRR support, on/off and logical coordinates. A draggable output arrangement changes logical positions; overlapping layouts may be auto-corrected by Niri. The same component works in both Settings modes. There is no simulated monitor data.
+
+Changes are staged client-side and validated *again* in Rust against the current connected outputs (names, supported modes, VRR capabilities, coordinate and scale bounds, uniqueness, at least one enabled screen). The worker invokes only fixed-argument Niri CLI commands; it never runs a shell or accepts arbitrary arguments from the WebView. Enabling is done before disabling and the previous configuration is captured for recovery. After Apply, a native **15-second confirmation watchdog** either commits the session-scoped changes or replays the original output state on timeout, explicit cancel, connection loss, or Settings close. Partial command failures also trigger rollback. All callbacks are generation-scoped, and worker messages are delivered through the shared 30ms poll source. A disconnected or incompatible Niri results in an error, never fake output topology.
+
+**Scope:** These changes affect the current Niri session only. Kira does not overwrite user or Nix-generated `config.kdl`. Niri does not offer native duplicated/mirrored desktops through this output layout API. Verify modes and rollback in an isolated nested Niri before relying on live multi-monitor changes.
+
 ## Verification
 
 Exercise Calendar → System → Launcher switching, an interrupted reverse, quick toggles, rapid multi-click last-wins, three promoted windows plus one transient popup, full pool backpressure, closing a promoted window, stale `detach`/size/close generations, reduced-motion paths and 45-second idle pruning. Confirm the same WebView/DOM survives pop-out by changing Calendar date or System tab before promoting. On Niri, confirm the regular window can be tiled, resized and focused like an application, and the next popup returns to its original anchor.
@@ -10773,6 +11313,20 @@ function scriptFor(steps, observationMs = 1150) {
                   'os_name:"Example Linux", kernel:"6.1.0", architecture:"x86_64", hostname:"example-host", ' +
                   'cpu_model:"Example CPU", cpu_threads:8, memory_total_kib:8388608, ' +
                   'session:"wayland", shell_version:"0.1.0"}}}));'
+              : kind === 'settings-displays'
+                ? 'const select=document.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+                  'if(select){select.value="displays";select.dispatchEvent(new Event("change",{bubbles:true}));}' +
+                  'else {document.querySelector("aside button:nth-child(3)")?.click();}'
+              : kind === 'settings-displays-data'
+                ? 'window.dispatchEvent(new CustomEvent("kira:settings:displays",{detail:{' +
+                  'generation:1,state:"ready",error:null,pending_id:null,outputs:[' +
+                  '{connector:"eDP-1",name:"eDP-1",make:"Example",model:"Laptop",current_mode:0,' +
+                  'modes:[{width:1920,height:1080,refresh_rate:60000,is_preferred:true}],vrr_supported:false,vrr_enabled:false,' +
+                  'logical:{x:0,y:0,width:1920,height:1080,scale:1,transform:"Normal"}},' +
+                  '{connector:"HDMI-A-1",name:"HDMI-A-1",make:"Example",model:"External",current_mode:0,' +
+                  'modes:[{width:2560,height:1440,refresh_rate:144000,is_preferred:true}],vrr_supported:true,vrr_enabled:false,' +
+                  'logical:{x:1920,y:0,width:2560,height:1440,scale:1,transform:"Normal"}}' +
+                  ']}}));'
               : kind === 'settings-detach'
                 ? 'document.documentElement.dataset.kiraDetached="true";' +
                   'window.dispatchEvent(new CustomEvent("kira:overlay:detached", {detail:{generation:1}}));'
@@ -10913,6 +11467,8 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.dataset.smokeSettingsData=!!settings && settings.textContent.includes("Example Linux") && settings.textContent.includes("Example CPU");' +
       'document.documentElement.dataset.smokeSettingsSelector=!!settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
       'document.documentElement.dataset.smokeSettingsSidebar=!!settings?.querySelector("aside[aria-label=\\\"Разделы настроек\\\"]");' +
+      'document.documentElement.dataset.smokeDisplays=!!settings?.querySelector("section[aria-label=\\\"Настройки дисплеев\\\"]") && settings.textContent.includes("HDMI-A-1") && settings.textContent.includes("Example External");' +
+      'document.documentElement.dataset.smokeDisplayBoxes=settings?.querySelectorAll("button[aria-label^=\\\"Переместить или выбрать\\\"]").length || 0;' +
       'document.documentElement.setAttribute("data-smoke-no-hover-warp", !document.querySelector("filter[id^=kira-temporal-warp], [data-tenet-warp-state], [data-tenet-warp-pixels], [data-tenet-lens-body]"));' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
       'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
@@ -10961,6 +11517,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-settings-sidebar="' + (heightMode === 'settings-window' ? 'true' : 'false') + '"'))) {
     throw new Error(name + ': Settings mode, navigation or native data failed: ' +
       (output.match(/data-smoke-settings-[a-z-]+="[^"]*"/g) ?? []).join(', '));
+  }
+  if (heightMode === 'settings-displays' &&
+      (!output.includes('data-smoke-displays="true"') ||
+       !output.includes('data-smoke-display-boxes="2"'))) {
+    throw new Error(name + ': Niri display topology and controls did not mount (' +
+      (output.match(/data-smoke-display[a-z-]*="[^"]*"/g) ?? []).join(', ') + ')');
   }
   if (!output.includes('data-smoke-no-hover-warp="true"')) {
     throw new Error(name + ': removed pixel-distortion must not mount in any widget');
@@ -11150,6 +11712,11 @@ try {
     { delay: 180, kind: 'settings-about' },
     { delay: 520, kind: 'settings-detach' },
   ], 'Kira Settings', 'settings-window');
+  await smoke('settings-displays', [
+    { delay: 25, kind: 'settings', generation: 1 },
+    { delay: 180, kind: 'settings-displays' },
+    { delay: 350, kind: 'settings-displays-data' },
+  ], 'Kira Settings', 'settings-displays');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
   // Native close signal triggers the original GSAP master in reverse,
   // then emits a generation-bound ACK; the host keeps the DOM alive until
@@ -12516,6 +13083,400 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   </footer>
 </main>
 
+FILE	frontend/src/lib/components/DisplaySettings.svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import {
+    onDisplayStatus, requestDisplays, applyDisplays, confirmDisplays, revertDisplays,
+    displayModeId, type DisplayOutput, type DisplayDraft, type DisplayStatus,
+  } from '../sdk/core';
+
+  let { generation }: { generation: number } = $props();
+
+  let outputs = $state<DisplayOutput[]>([]);
+  let draft = $state<DisplayDraft[]>([]);
+  let selected = $state('');
+  let busy = $state(false);
+  let loading = $state(true);
+  let error = $state<string | null>(null);
+  let statusText = $state('');
+  let pendingId = $state<number | null>(null);
+  let remaining = $state(15);
+  let drag = $state<{ connector: string; px: number; py: number; x: number; y: number; zoom: number } | null>(null);
+
+  const selectedOutput = $derived(outputs.find(output => output.connector === selected));
+  const selectedDraft = $derived(draft.find(output => output.connector === selected));
+  const activeCount = $derived(draft.filter(out => out.enabled).length);
+  const isPending = $derived(pendingId !== null);
+
+  function logicalSize(output: DisplayDraft): { width: number; height: number } {
+    const source = outputs.find(item => item.connector === output.connector);
+    const mode = source?.modes.find(mode => displayModeId(mode) === output.mode);
+    if (!mode) return { width: 800, height: 450 };
+    const swapped = output.transform.includes('90') || output.transform.includes('270');
+    return {
+      width: Math.round((swapped ? mode.height : mode.width) / output.scale),
+      height: Math.round((swapped ? mode.width : mode.height) / output.scale),
+    };
+  }
+
+  const rectangles = $derived(draft.filter(out => out.enabled).map(out => ({
+    ...out, ...logicalSize(out),
+  })));
+  const minX = $derived(rectangles.length ? Math.min(...rectangles.map(r => r.x)) : 0);
+  const minY = $derived(rectangles.length ? Math.min(...rectangles.map(r => r.y)) : 0);
+  const spanX = $derived(rectangles.length
+    ? Math.max(...rectangles.map(r => r.x + r.width)) - minX : 1920);
+  const spanY = $derived(rectangles.length
+    ? Math.max(...rectangles.map(r => r.y + r.height)) - minY : 1080);
+  const zoom = $derived(Math.min(0.22, 500 / Math.max(spanX, 1), 184 / Math.max(spanY, 1)));
+
+  function draftFromOutputs(data: DisplayOutput[]): DisplayDraft[] {
+    let nextX = 0;
+    return data.map(output => {
+      const current = output.current_mode === null ? null : output.modes[output.current_mode];
+      const mode = current ?? output.modes.find(m => m.is_preferred) ?? output.modes[0];
+      const logical = output.logical;
+      const result: DisplayDraft = {
+        connector: output.connector,
+        enabled: logical !== null,
+        mode: mode ? displayModeId(mode) : '',
+        scale: logical?.scale ?? 1,
+        transform: logical?.transform === 'Normal' ? 'normal'
+          : logical?.transform?.replace('Flipped', 'flipped-').replace('-90', '90') ?? 'normal',
+        x: logical?.x ?? nextX,
+        y: logical?.y ?? 0,
+        vrr: output.vrr_enabled,
+      };
+      const size = mode ? Math.round(mode.width / result.scale) : 800;
+      nextX = Math.max(nextX, result.x + size);
+      return result;
+    });
+  }
+
+  function receive(message: DisplayStatus) {
+    loading = false;
+    busy = false;
+    if (message.state === 'pending' && message.pending_id !== null) {
+      pendingId = message.pending_id;
+      remaining = 15;
+      error = null;
+      statusText = 'Новая конфигурация активна. Подтвердите изменения.';
+      return;
+    }
+    if (message.state === 'error') {
+      error = message.error ?? 'Niri не смог применить изменения';
+      statusText = '';
+      return;
+    }
+    pendingId = null;
+    if (message.outputs !== null) {
+      outputs = message.outputs;
+      draft = draftFromOutputs(outputs);
+      if (!outputs.some(out => out.connector === selected)) selected = outputs[0]?.connector ?? '';
+    }
+    if (message.error) error = message.error;
+    else error = null;
+    statusText = message.state === 'reverted' ? 'Предыдущая конфигурация восстановлена.'
+      : message.state === 'confirmed' ? 'Изменения применены на время текущего сеанса Niri.'
+        : '';
+  }
+
+  function change(patch: Partial<DisplayDraft>) {
+    if (busy || isPending) return;
+    draft = draft.map(out => out.connector === selected ? { ...out, ...patch } : out);
+  }
+
+  function reset() {
+    if (busy || isPending) return;
+    draft = draftFromOutputs(outputs);
+    error = null;
+    statusText = '';
+  }
+
+  function refresh() {
+    if (busy || isPending) return;
+    loading = true;
+    error = null;
+    if (!requestDisplays(generation)) {
+      loading = false;
+      error = 'Нет соединения с нативным Shell';
+    }
+  }
+
+  function apply() {
+    if (busy || isPending) return;
+    busy = true;
+    error = null;
+    statusText = '';
+    if (!applyDisplays(generation, draft)) {
+      busy = false;
+      error = 'Не удалось отправить конфигурацию в Shell';
+    }
+  }
+
+  function confirm() {
+    if (pendingId !== null) {
+      busy = confirmDisplays(generation, pendingId);
+      if (!busy) error = 'Нет соединения с Shell';
+    }
+  }
+  function revert() {
+    if (pendingId !== null) {
+      busy = revertDisplays(generation, pendingId);
+      if (!busy) error = 'Нет соединения с Shell';
+    }
+  }
+
+  function snapPosition(connector: string, rawX: number, rawY: number) {
+    const moving = draft.find(out => out.connector === connector);
+    if (!moving) return { x: rawX, y: rawY };
+    const self = logicalSize(moving);
+    let x = rawX;
+    let y = rawY;
+    for (const item of draft.filter(d => d.enabled && d.connector !== connector)) {
+      const size = logicalSize(item);
+      for (const edge of [item.x + size.width, item.x - self.width]) {
+        if (Math.abs(rawX - edge) < 60) x = edge;
+      }
+      for (const edge of [item.y + size.height, item.y - self.height]) {
+        if (Math.abs(rawY - edge) < 60) y = edge;
+      }
+      if (Math.abs(rawY - item.y) < 60) y = item.y;
+      if (Math.abs(rawX - item.x) < 60) x = item.x;
+    }
+    return { x: Math.max(-32000, Math.min(32000, x)), y: Math.max(-32000, Math.min(32000, y)) };
+  }
+
+  function onPointerDown(event: PointerEvent, connector: string) {
+    if (busy || isPending) return;
+    const found = draft.find(out => out.connector === connector);
+    if (!found) return;
+    selected = connector;
+    drag = { connector, px: event.clientX, py: event.clientY, x: found.x, y: found.y, zoom };
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+  }
+  function onPointerMove(event: PointerEvent) {
+    if (!drag) return;
+    const { connector, px, py, x, y, zoom: factor } = drag;
+    const next = snapPosition(connector, Math.round(x + (event.clientX - px) / factor),
+      Math.round(y + (event.clientY - py) / factor));
+    draft = draft.map(out => out.connector === connector ? { ...out, ...next } : out);
+  }
+  function onPointerUp() { drag = null; }
+
+  onMount(() => {
+    const stop = onDisplayStatus(generation, receive);
+    refresh();
+    const clock = window.setInterval(() => {
+      if (pendingId !== null && remaining > 0) remaining -= 1;
+    }, 1000);
+    return () => {
+      stop();
+      window.clearInterval(clock);
+    };
+  });
+</script>
+
+<section class="space-y-5" aria-label="Настройки дисплеев">
+  <div class="border-b border-kira-muted/20 pb-5">
+    <div class="mb-3 flex items-center justify-between gap-2">
+      <span class="text-[10px] font-extrabold tracking-[0.16em] text-kira-accent">02 / DISPLAY TOPOLOGY</span>
+      <span class="border border-kira-muted/30 px-2 py-1 text-[9px] font-semibold tracking-wide text-kira-muted">NIRI / WAYLAND</span>
+    </div>
+    <h2 class="text-[30px] font-black tracking-tight">Дисплеи</h2>
+    <p class="mt-2 text-[12px] leading-relaxed text-kira-muted">
+      Настройка расположения, разрешения и параметров нескольких экранов.
+    </p>
+  </div>
+
+  {#if pendingId !== null}
+    <div role="alertdialog" aria-label="Подтвердите параметры дисплеев"
+      class="border-l-[3px] border-kira-accent bg-kira-surface p-4">
+      <div class="flex justify-between gap-3">
+        <div>
+          <p class="text-[13px] font-extrabold">Сохранить конфигурацию?</p>
+          <p class="mt-1 text-[11px] leading-relaxed text-kira-muted">
+            Если изображение пропало, подождите. Автоматический откат через {remaining} с.
+          </p>
+        </div>
+        <strong class="text-[23px] font-black tabular-nums text-kira-accent">{remaining}</strong>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button type="button" onclick={confirm} disabled={busy}
+          class="bg-kira-accent px-4 py-2 text-[11px] font-extrabold text-black disabled:opacity-50">
+          Оставить изменения
+        </button>
+        <button type="button" onclick={revert} disabled={busy}
+          class="border border-kira-muted/40 px-4 py-2 text-[11px] font-bold text-kira-text disabled:opacity-50">
+          Вернуть как было
+        </button>
+      </div>
+    </div>
+  {/if}
+
+  {#if error}
+    <p role="alert" class="border-l-2 border-kira-accent bg-kira-surface px-3 py-3 text-[11px] leading-relaxed">{error}</p>
+  {/if}
+  {#if statusText}
+    <p role="status" class="border-l-2 border-kira-accent px-3 py-2 text-[11px] text-kira-muted">{statusText}</p>
+  {/if}
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="text-[11px] font-semibold text-kira-muted">
+      {#if loading}Поиск дисплеев…{:else}{outputs.length} подключено · {activeCount} включено{/if}
+    </div>
+    <button type="button" onclick={refresh} disabled={loading || busy || isPending}
+      class="border border-kira-muted/40 px-3 py-2 text-[11px] font-bold text-kira-text hover:border-kira-accent disabled:opacity-40">
+      Обновить список
+    </button>
+  </div>
+
+  {#if !loading && outputs.length === 0}
+    <div class="border border-kira-muted/20 bg-kira-surface-soft p-5 text-[12px] leading-relaxed text-kira-muted">
+      Niri не сообщил о подключённых дисплеях. Запустите Kira Desktop внутри работающей сессии Niri.
+    </div>
+  {:else if outputs.length > 0}
+    <div class="border border-kira-muted/20 bg-kira-surface-soft p-4">
+      <p class="mb-3 text-[10px] font-extrabold tracking-widest text-kira-muted">РАСПОЛОЖЕНИЕ ЭКРАНОВ / ПЕРЕТАЩИТЕ</p>
+      <div class="kira-displays-map relative h-[230px] overflow-hidden border border-kira-muted/15 bg-kira-bg"
+        aria-label="Схема расположения мониторов">
+        {#each rectangles as rect (rect.connector)}
+          <button type="button"
+            aria-label={'Переместить или выбрать ' + rect.connector}
+            aria-pressed={selected === rect.connector}
+            onpointerdown={event => onPointerDown(event, rect.connector)}
+            onpointermove={onPointerMove}
+            onpointerup={onPointerUp}
+            onpointercancel={onPointerUp}
+            class={['absolute flex flex-col items-center justify-center gap-1 overflow-hidden border-2 text-center touch-none select-none',
+              selected === rect.connector ? 'border-kira-accent bg-kira-surface text-kira-text' : 'border-kira-muted/60 bg-kira-surface-soft text-kira-muted'].join(' ')}
+            style:left={14 + (rect.x - minX) * zoom + 'px'}
+            style:top={18 + (rect.y - minY) * zoom + 'px'}
+            style:width={Math.max(38, rect.width * zoom) + 'px'}
+            style:height={Math.max(32, rect.height * zoom) + 'px'}>
+            <strong class="text-[12px] font-black">{outputs.findIndex(o => o.connector === rect.connector) + 1}</strong>
+            <span class="max-w-full truncate px-1 text-[9px] font-semibold">{rect.connector}</span>
+          </button>
+        {/each}
+        {#if rectangles.length === 0}
+          <div class="p-4 text-[11px] text-kira-muted">Все дисплеи отключены</div>
+        {/if}
+      </div>
+      <p class="mt-3 text-[10px] leading-relaxed text-kira-muted">
+        Перемещение меняет логические координаты дисплеев. Niri может скорректировать пересекающиеся экраны автоматически.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      {#each outputs as output, i (output.connector)}
+        <button type="button" onclick={() => selected = output.connector}
+          aria-pressed={selected === output.connector}
+          class={['flex min-w-0 items-start gap-3 border p-3 text-left',
+            selected === output.connector ? 'border-kira-accent bg-kira-surface' : 'border-kira-muted/25 bg-kira-bg'].join(' ')}>
+          <span class="grid size-7 shrink-0 place-items-center border border-kira-muted/40 text-[12px] font-black">{i + 1}</span>
+          <span class="min-w-0">
+            <strong class="block truncate text-[11px]">{output.make} {output.model}</strong>
+            <span class="mt-1 block truncate text-[10px] text-kira-muted">{output.connector} ·
+              {draft.find(d => d.connector === output.connector)?.enabled ? 'Включён' : 'Выключен'}
+            </span>
+          </span>
+        </button>
+      {/each}
+    </div>
+
+    {#if selectedOutput && selectedDraft}
+      <div class="space-y-4 border-t border-kira-muted/20 pt-5">
+        <div class="flex items-center justify-between gap-2">
+          <h3 class="text-[14px] font-extrabold">Экран {outputs.indexOf(selectedOutput) + 1} · {selectedOutput.connector}</h3>
+          <label class="flex shrink-0 items-center gap-2 text-[11px] font-bold">
+            <input type="checkbox" checked={selectedDraft.enabled}
+              disabled={busy || isPending || (selectedDraft.enabled && activeCount === 1)}
+              onchange={event => change({ enabled: event.currentTarget.checked })}
+              class="accent-kira-accent" />
+            Включён
+          </label>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="block min-w-0 text-[11px] font-semibold text-kira-muted">Разрешение и частота
+            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text"
+              value={selectedDraft.mode} disabled={busy || isPending}
+              onchange={event => change({ mode: event.currentTarget.value })}>
+              {#each selectedOutput.modes as mode (displayModeId(mode))}
+                <option value={displayModeId(mode)}>{mode.width} × {mode.height} · {(mode.refresh_rate / 1000).toFixed(2)} Гц{mode.is_preferred ? ' · рекоменд.' : ''}</option>
+              {/each}
+            </select>
+          </label>
+          <label class="block min-w-0 text-[11px] font-semibold text-kira-muted">Масштаб
+            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text"
+              value={String(selectedDraft.scale)} disabled={busy || isPending}
+              onchange={event => change({ scale: Number(event.currentTarget.value) })}>
+              {#each [...new Set([0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, selectedDraft.scale])].sort((a, b) => a - b) as value}
+                <option value={String(value)}>{Math.round(value * 100)}%</option>
+              {/each}
+            </select>
+          </label>
+          <label class="block min-w-0 text-[11px] font-semibold text-kira-muted">Ориентация
+            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text"
+              value={selectedDraft.transform} disabled={busy || isPending}
+              onchange={event => change({ transform: event.currentTarget.value })}>
+              <option value="normal">Альбомная · 0°</option>
+              <option value="90">Портретная · 90°</option>
+              <option value="180">Альбомная · 180°</option>
+              <option value="270">Портретная · 270°</option>
+              <option value="flipped">Отражение</option>
+              <option value="flipped-90">Отражение · 90°</option>
+              <option value="flipped-180">Отражение · 180°</option>
+              <option value="flipped-270">Отражение · 270°</option>
+            </select>
+          </label>
+          <div class="text-[11px] font-semibold text-kira-muted">
+            Положение · логические пиксели
+            <div class="mt-2 grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-1 border border-kira-muted/35 bg-kira-surface px-2">
+                X <input type="number" min="-32000" max="32000" step="1" value={selectedDraft.x}
+                  disabled={busy || isPending}
+                  onchange={event => change({ x: Math.round(Number(event.currentTarget.value)) })}
+                  class="min-w-0 w-full bg-transparent px-1 py-3 text-[12px] text-kira-text" />
+              </label>
+              <label class="flex items-center gap-1 border border-kira-muted/35 bg-kira-surface px-2">
+                Y <input type="number" min="-32000" max="32000" step="1" value={selectedDraft.y}
+                  disabled={busy || isPending}
+                  onchange={event => change({ y: Math.round(Number(event.currentTarget.value)) })}
+                  class="min-w-0 w-full bg-transparent px-1 py-3 text-[12px] text-kira-text" />
+              </label>
+            </div>
+          </div>
+        </div>
+        {#if selectedOutput.vrr_supported}
+          <label class="flex items-center justify-between gap-3 border-t border-kira-muted/15 py-3 text-[11px]">
+            <span><strong class="block">Адаптивная частота (VRR)</strong>
+              <span class="mt-1 block text-kira-muted">FreeSync / Adaptive-Sync, если поддерживается</span></span>
+            <input type="checkbox" checked={selectedDraft.vrr} disabled={busy || isPending}
+              onchange={event => change({ vrr: event.currentTarget.checked })} class="size-4 accent-kira-accent" />
+          </label>
+        {/if}
+      </div>
+    {/if}
+
+    <div class="flex flex-wrap gap-2 border-t border-kira-muted/20 pt-4">
+      <button type="button" onclick={apply} disabled={loading || busy || isPending || activeCount < 1}
+        class="bg-kira-accent px-5 py-3 text-[11px] font-extrabold text-black disabled:opacity-40">
+        {busy ? 'Применение…' : 'Применить'}
+      </button>
+      <button type="button" onclick={reset} disabled={loading || busy || isPending}
+        class="border border-kira-muted/40 px-5 py-3 text-[11px] font-bold text-kira-text disabled:opacity-40">
+        Сбросить изменения
+      </button>
+    </div>
+  {/if}
+  <p class="border-t border-kira-muted/15 pt-4 text-[10px] leading-relaxed text-kira-muted">
+    Изменения действуют в текущем сеансе Niri. Для постоянной конфигурации
+    требуется отдельно сохранить параметры в config.kdl.
+    Зеркалирование экранов compositor Niri не поддерживает.
+  </p>
+</section>
+
 FILE	frontend/src/lib/components/LauncherWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
@@ -12781,6 +13742,7 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
   import { onSettingsAbout, type SettingsAbout } from '../sdk/core';
   import { SETTINGS_SECTIONS, sectionIsAvailable, formatInstalledMemory, systemValue, type SettingsSectionId } from '../settings-model';
   import WindowControls from './WindowControls.svelte';
+  import DisplaySettings from './DisplaySettings.svelte';
 
   let { onClose, onPopout, generation }: {
     onClose: () => void;
@@ -12936,6 +13898,8 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
         <p class="mt-4 text-[10px] leading-relaxed text-kira-muted">
           Данные получены из локального ядра и системных файлов. Недоступные значения не подменяются приблизительными.
         </p>
+      {:else if section === 'displays'}
+        <DisplaySettings {generation} />
       {/if}
     </section>
   </div>
@@ -14846,7 +15810,7 @@ export function observeOverlaySize(root: HTMLElement, generation: number): () =>
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -14902,6 +15866,58 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(callback).toHaveBeenCalledExactlyOnceWith(valid);
     stop();
     expect(removeEventListener).toHaveBeenCalledWith('kira:settings:about', expect.any(Function));
+  });
+
+  it('uses generation-scoped display controls and exact mHz output modes', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(displayModeId({ width: 2560, height: 1440, refresh_rate: 143912, is_preferred: true }))
+      .toBe('2560x1440@143.912');
+    expect(requestDisplays(7)).toBe(true);
+    expect(requestDisplays(0)).toBe(false);
+    const draft = [{
+      connector: 'DP-1', enabled: true, mode: '2560x1440@143.912',
+      scale: 1.5, transform: 'normal', x: 0, y: 0, vrr: false,
+    }];
+    expect(applyDisplays(7, draft)).toBe(true);
+    expect(confirmDisplays(7, 14)).toBe(true);
+    expect(revertDisplays(7, 14)).toBe(true);
+    expect(confirmDisplays(7, -1)).toBe(false);
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual([
+      'display-refresh:7',
+      'display-apply:7:' + JSON.stringify(draft),
+      'display-confirm:7:14',
+      'display-revert:7:14',
+    ]);
+  });
+
+  it('validates native display response and rejects stale generations', () => {
+    const handlers = new Map<string, EventListener>();
+    globalThis.window = {
+      addEventListener(name: string, handler: EventListener) { handlers.set(name, handler); },
+      removeEventListener() {},
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onDisplayStatus(42, callback);
+    const good = {
+      generation: 42, state: 'ready', pending_id: null, error: null,
+      outputs: [{
+        connector: 'DP-1', name: 'DP-1', make: 'Example', model: 'Panel',
+        modes: [{ width: 1920, height: 1080, refresh_rate: 60000, is_preferred: true }],
+        current_mode: 0, vrr_supported: false, vrr_enabled: false,
+        logical: { x: 0, y: 0, width: 1920, height: 1080, scale: 1, transform: 'Normal' },
+      }],
+    };
+    const dispatch = (detail: unknown) => handlers.get('kira:settings:displays')!({
+      detail,
+    } as CustomEvent<unknown>);
+    dispatch({ ...good, generation: 41 });
+    dispatch({ ...good, outputs: [{ ...good.outputs[0], modes: [{ width: 'oops' }] }] });
+    dispatch(good);
+    expect(callback).toHaveBeenCalledExactlyOnceWith(good);
+    stop();
   });
 
   it('reports only bounded positive widget heights scoped to the current generation', () => {
@@ -15821,6 +16837,106 @@ export function onSettingsAbout(
     ({ about }) => callback(about));
 }
 
+/** Niri outputs are queried from the compositor. No inferred resolutions. */
+export interface DisplayMode {
+  width: number;
+  height: number;
+  refresh_rate: number;
+  is_preferred: boolean;
+}
+export interface DisplayOutput {
+  connector: string;
+  name: string;
+  make: string;
+  model: string;
+  modes: DisplayMode[];
+  current_mode: number | null;
+  vrr_supported: boolean;
+  vrr_enabled: boolean;
+  logical: {
+    x: number; y: number; width: number; height: number;
+    scale: number; transform: string;
+  } | null;
+}
+export interface DisplayDraft {
+  connector: string;
+  enabled: boolean;
+  mode: string;
+  scale: number;
+  transform: string;
+  x: number;
+  y: number;
+  vrr: boolean;
+}
+export interface DisplayStatus {
+  state: 'ready' | 'pending' | 'confirmed' | 'reverted' | 'error';
+  outputs: DisplayOutput[] | null;
+  pending_id: number | null;
+  error: string | null;
+}
+
+function isDisplayOutput(value: unknown): value is DisplayOutput {
+  if (!isRecord(value)) return false;
+  const s = (v: unknown) => typeof v === 'string' && v.length <= 150;
+  const i = (v: unknown) => Number.isSafeInteger(v);
+  const logical = value.logical;
+  return s(value.connector) && s(value.name) && s(value.make) && s(value.model) &&
+    Array.isArray(value.modes) && value.modes.length <= 80 &&
+    value.modes.every((mode: unknown) => isRecord(mode) &&
+      i(mode.width) && i(mode.height) && i(mode.refresh_rate) &&
+      typeof mode.is_preferred === 'boolean') &&
+    (value.current_mode === null ||
+      (i(value.current_mode) && (value.current_mode as number) >= 0 &&
+       (value.current_mode as number) < value.modes.length)) &&
+    typeof value.vrr_supported === 'boolean' &&
+    typeof value.vrr_enabled === 'boolean' &&
+    (logical === null || (isRecord(logical) &&
+      i(logical.x) && i(logical.y) && i(logical.width) && i(logical.height) &&
+      typeof logical.scale === 'number' && Number.isFinite(logical.scale) &&
+      s(logical.transform)));
+}
+
+export function onDisplayStatus(
+  generation: number,
+  callback: (data: DisplayStatus) => void,
+): () => void {
+  return onNativeEvent('kira:settings:displays',
+    (value): value is { generation: number } & DisplayStatus =>
+      isRecord(value) && value.generation === generation &&
+      ['ready', 'pending', 'confirmed', 'reverted', 'error'].includes(String(value.state)) &&
+      (value.pending_id === null || (Number.isSafeInteger(value.pending_id) &&
+        typeof value.pending_id === 'number' && value.pending_id > 0)) &&
+      (value.error === null || (typeof value.error === 'string' && value.error.length <= 240)) &&
+      (value.outputs === null || (Array.isArray(value.outputs) &&
+        value.outputs.length <= 8 && value.outputs.every(isDisplayOutput))),
+    (value) => callback(value));
+}
+
+export function displayModeId(mode: DisplayMode): string {
+  return mode.width + 'x' + mode.height + '@' +
+    Math.floor(mode.refresh_rate / 1000) + '.' +
+    String(mode.refresh_rate % 1000).padStart(3, '0');
+}
+
+/** Every command is generation-scoped and independently validated by Rust. */
+export function requestDisplays(generation: number): boolean {
+  return validOverlayGeneration(generation) &&
+    sendCalendarUi('display-refresh:' + generation);
+}
+export function applyDisplays(generation: number, changes: DisplayDraft[]): boolean {
+  if (!validOverlayGeneration(generation) || changes.length < 1 || changes.length > 8) return false;
+  const raw = JSON.stringify(changes);
+  return raw.length <= 8192 && sendCalendarUi('display-apply:' + generation + ':' + raw);
+}
+export function confirmDisplays(generation: number, token: number): boolean {
+  return validOverlayGeneration(generation) && Number.isSafeInteger(token) && token > 0 &&
+    sendCalendarUi('display-confirm:' + generation + ':' + token);
+}
+export function revertDisplays(generation: number, token: number): boolean {
+  return validOverlayGeneration(generation) && Number.isSafeInteger(token) && token > 0 &&
+    sendCalendarUi('display-revert:' + generation + ':' + token);
+}
+
 /** Open or close the shared Svelte read-only system monitor. */
 export function toggleSystemPanel(): boolean {
   return postNativeCommand('kiraSystem', 'toggle');
@@ -15900,10 +17016,11 @@ import { describe, expect, it } from 'vitest';
 import { SETTINGS_SECTIONS, sectionIsAvailable, formatInstalledMemory, systemValue } from './settings-model';
 
 describe('Settings navigation and truthful host details', () => {
-  it('exposes one implemented page in both navigation modes', () => {
+  it('exposes About and Displays in both navigation modes', () => {
     expect(SETTINGS_SECTIONS.find(s => s.id === 'about')?.available).toBe(true);
-    expect(SETTINGS_SECTIONS.filter(s => s.available)).toHaveLength(1);
+    expect(SETTINGS_SECTIONS.filter(s => s.available)).toHaveLength(2);
     expect(sectionIsAvailable('about')).toBe(true);
+    expect(sectionIsAvailable('displays')).toBe(true);
     expect(sectionIsAvailable('network')).toBe(false);
     expect(sectionIsAvailable('arbitrary-script')).toBe(false);
   });
@@ -15923,7 +17040,7 @@ FILE	frontend/src/lib/settings-model.ts
 export const SETTINGS_SECTIONS = [
   { id: 'about', label: 'О системе', available: true },
   { id: 'appearance', label: 'Внешний вид', available: false },
-  { id: 'displays', label: 'Дисплеи', available: false },
+  { id: 'displays', label: 'Дисплеи', available: true },
   { id: 'network', label: 'Сеть', available: false },
   { id: 'devices', label: 'Устройства', available: false },
 ] as const;
@@ -18624,6 +19741,60 @@ while True: time.sleep(.1)
             self.assertIn("cleaned up", stdout)
             if debug:
                 self.assertIn("[preview:shell] kira-shell: diagnostic probe", stderr)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_displays.py
+"""Display settings implementation contract: no fake data or blind configuration."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+MANAGER = (ROOT / "crates/kira-shell/src/display_manager.rs").read_text()
+SHELL = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+SETTINGS = (ROOT / "frontend/src/lib/components/SettingsWidget.svelte").read_text()
+DISPLAY = (ROOT / "frontend/src/lib/components/DisplaySettings.svelte").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+
+
+class DisplayContract(unittest.TestCase):
+    def test_multi_screen_options_are_real_niri_requests(self):
+        self.assertIn('Command::new("niri")', MANAGER)
+        self.assertIn('["--json", "outputs"]', MANAGER)
+        for command in ['"mode"', '"scale"', '"transform"', '"position"', '"vrr"', '"on"', '"off"']:
+            self.assertIn(command, MANAGER)
+        self.assertNotIn('Command::new("sh")', MANAGER)
+        self.assertIn('output["modes"]', MANAGER)
+        self.assertIn('settings_displays: RefCell<Option<crate::display_manager::Model>>', SHELL)
+
+    def test_rollback_is_native_and_survives_window_close(self):
+        self.assertIn('const CONFIRM_SECS: u64 = 15', MANAGER)
+        self.assertIn('RecvTimeoutError::Timeout', MANAGER)
+        self.assertIn('RecvTimeoutError::Disconnected', MANAGER)
+        self.assertIn('revert(&before, &events)', MANAGER)
+        self.assertIn('self.settings_displays.borrow_mut().take()', SHELL)
+        self.assertIn('!result.iter().any(|out| out.enabled)', MANAGER)
+        self.assertIn('mode_id(item).as_deref() == Some(mode)', MANAGER)
+        self.assertIn('host["vrr_supported"] != true', MANAGER)
+        self.assertIn('Some(UiCommand::DisplayConfirm(generation, id))', SHELL)
+        self.assertIn('Some(UiCommand::DisplayRevert(generation, id))', SHELL)
+
+    def test_both_settings_modes_render_the_real_display_editor(self):
+        self.assertIn("section === 'displays'", SETTINGS)
+        self.assertIn('<DisplaySettings {generation} />', SETTINGS)
+        self.assertIn('onDisplayStatus(generation, receive)', DISPLAY)
+        self.assertIn('aria-label="Схема расположения мониторов"', DISPLAY)
+        self.assertIn('onpointerdown', DISPLAY)
+        self.assertIn('disabled={busy || isPending || (selectedDraft.enabled && activeCount === 1)}', DISPLAY)
+        self.assertIn('onchange={event => change({ mode:', DISPLAY)
+        self.assertIn('onchange={event => change({ scale:', DISPLAY)
+        self.assertIn('onchange={event => change({ transform:', DISPLAY)
+        self.assertIn('applyDisplays(generation, draft)', DISPLAY)
+        self.assertIn('confirmDisplays(generation, pendingId)', DISPLAY)
+        self.assertIn('revertDisplays(generation, pendingId)', DISPLAY)
+        self.assertIn("display-apply:", SDK)
 
 
 if __name__ == "__main__":
