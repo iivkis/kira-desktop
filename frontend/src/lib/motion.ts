@@ -197,6 +197,7 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
     if (recovery !== null) window.clearTimeout(recovery);
     recovery = null;
   }
+  const endTravel = () => { delete node.dataset.kiraFlowMoving; };
 
   function geometry(key: string) {
     const target = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-tab]'))
@@ -212,6 +213,7 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
     const next = geometry(key);
     if (!next) {
       cancelRecovery();
+      endTravel();
       gsap.killTweensOf(indicator);
       gsap.set(indicator, { autoAlpha: 0 });
       last = null;
@@ -227,14 +229,18 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
     cancelRecovery();
     last = next;
     if (!moving) {
+      endTravel();
       gsap.killTweensOf(indicator);
       gsap.set(indicator, { ...vars, autoAlpha: 1 });
       return;
     }
+    // Selected black text must never be black-on-black before the orange
+    // background arrives. The selected text stays light only while moving.
+    node.dataset.kiraFlowMoving = 'true';
     // Only geometry springs. Visibility stays monotonic and never overshoots.
     gsap.to(indicator, {
       ...vars, duration: 0.42, ease: 'back.out(1.18)',
-      overwrite: 'auto', force3D: true,
+      overwrite: 'auto', force3D: true, onComplete: endTravel,
     });
     gsap.to(indicator, { autoAlpha: 1, duration: 0.12, ease: 'power2.out', overwrite: 'auto' });
     // rAF can stall for a compact, obscured WebKitGTK surface. Correctness
@@ -243,6 +249,7 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
       recovery = null;
       gsap.killTweensOf(indicator);
       gsap.set(indicator, { ...vars, autoAlpha: 1 });
+      endTravel();
     }, 650);
   }
 
@@ -266,6 +273,7 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
     },
     destroy() {
       cancelRecovery();
+      endTravel();
       observer?.disconnect();
       preference.removeEventListener('change', onPreference);
       gsap.killTweensOf(indicator);
