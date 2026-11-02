@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	a3fb1cbd7b490855cd9be7109b52355eeebf8872
+C	c393fdcdf8c23ec78b2d29fb81de80bd9c9f36b4
 F	.cargo/config.toml	98	146	3
 F	.github/workflows/ci.yml	4355	151	112
 F	.github/workflows/frontend-nix.yml	1398	265	43
@@ -66,74 +66,74 @@ F	frontend/index.html	2737	12128	66
 F	frontend/package.json	720	12196	27
 F	frontend/scripts/inline-assets.mjs	4457	12225	103
 F	frontend/scripts/inline-assets.test.mjs	4645	12330	106
-F	frontend/scripts/smoke-overlays.mjs	42286	12438	582
-F	frontend/src/App.svelte	9665	13022	224
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13248	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13266	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	13327	69
-F	frontend/src/lib/bootstrap.test.ts	3408	13398	84
-F	frontend/src/lib/bootstrap.ts	2613	13484	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13556	65
-F	frontend/src/lib/calendar-model.ts	4648	13623	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13730	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	13792	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	13823	287
-F	frontend/src/lib/clock-flight.test.ts	2404	14112	50
-F	frontend/src/lib/clock-flight.ts	1977	14164	50
-F	frontend/src/lib/components/CalendarWidget.svelte	12451	14216	265
-F	frontend/src/lib/components/DisplaySettings.svelte	21886	14483	423
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	14908	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	15166	168
-F	frontend/src/lib/components/SkyMap.svelte	10853	15336	244
-F	frontend/src/lib/components/SystemCharts.svelte	10517	15582	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	15810	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	15858	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	16199	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16239	119
-F	frontend/src/lib/launcher-model.test.ts	2266	16360	46
-F	frontend/src/lib/launcher-model.ts	1403	16408	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	16439	89
-F	frontend/src/lib/lazy-widget.ts	1984	16530	63
-F	frontend/src/lib/motion-contract.test.ts	11242	16595	198
-F	frontend/src/lib/motion.ts	24039	16795	657
-F	frontend/src/lib/overlay-size.ts	1090	17454	29
-F	frontend/src/lib/sdk/core.test.ts	27884	17485	564
-F	frontend/src/lib/sdk/core.ts	25417	18051	645
-F	frontend/src/lib/settings-model.test.ts	1064	18698	21
-F	frontend/src/lib/settings-model.ts	1262	18721	26
-F	frontend/src/lib/system-charts.test.ts	6312	18749	141
-F	frontend/src/lib/system-charts.ts	5514	18892	149
-F	frontend/src/lib/system-health.test.ts	2385	19043	42
-F	frontend/src/lib/system-health.ts	2831	19087	60
-F	frontend/src/lib/system-model.test.ts	4455	19149	84
-F	frontend/src/lib/system-model.ts	5457	19235	125
-F	frontend/src/lib/themes/kira-default.css	1687	19362	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	19416	101
-F	frontend/src/lib/themes/kira-default.ts	777	19519	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	19543	101
-F	frontend/src/lib/time.test.ts	263	19646	8
-F	frontend/src/lib/time.ts	320	19656	9
-F	frontend/src/lib/workspace-window.test.ts	2298	19667	52
-F	frontend/src/lib/workspace-window.ts	1063	19721	32
-F	frontend/src/main.ts	7783	19755	161
-F	frontend/src/style.css	6399	19918	194
-F	frontend/tsconfig.json	403	20114	16
-F	frontend/vite.config.ts	224	20132	8
-F	nix/package.nix	3132	20142	117
-F	scripts/dev_preview.py	18147	20261	403	x
-F	scripts/qa_visual.py	12052	20666	299
-F	tests/test_calendar_design.py	8954	20967	154
-F	tests/test_detailed_health.py	5481	21123	105
-F	tests/test_dev_preview.py	9339	21230	219
-F	tests/test_displays.py	4101	21451	72
-F	tests/test_launcher_design.py	10481	21525	190
-F	tests/test_native_theme.py	2098	21717	44
-F	tests/test_popup_geometry.py	3227	21763	58
-F	tests/test_qa_visual.py	10549	21823	217
-F	tests/test_settings.py	3212	22042	62
-F	tests/test_tenet_close.py	6297	22106	115
-F	tests/test_ui_bootstrap_contract.py	1103	22223	29
-F	tests/test_webview_pool.py	9633	22254	168
+F	frontend/scripts/smoke-overlays.mjs	45074	12438	627
+F	frontend/src/App.svelte	9665	13067	224
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13293	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13311	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	13372	69
+F	frontend/src/lib/bootstrap.test.ts	3408	13443	84
+F	frontend/src/lib/bootstrap.ts	2613	13529	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13601	65
+F	frontend/src/lib/calendar-model.ts	4648	13668	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13775	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13837	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	13868	287
+F	frontend/src/lib/clock-flight.test.ts	2404	14157	50
+F	frontend/src/lib/clock-flight.ts	1977	14209	50
+F	frontend/src/lib/components/CalendarWidget.svelte	12451	14261	265
+F	frontend/src/lib/components/DisplaySettings.svelte	21886	14528	423
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	14953	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	15211	168
+F	frontend/src/lib/components/SkyMap.svelte	10943	15381	246
+F	frontend/src/lib/components/SystemCharts.svelte	10517	15629	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	15857	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	15905	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	16246	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16286	119
+F	frontend/src/lib/launcher-model.test.ts	2266	16407	46
+F	frontend/src/lib/launcher-model.ts	1403	16455	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	16486	89
+F	frontend/src/lib/lazy-widget.ts	1984	16577	63
+F	frontend/src/lib/motion-contract.test.ts	11242	16642	198
+F	frontend/src/lib/motion.ts	24039	16842	657
+F	frontend/src/lib/overlay-size.ts	1090	17501	29
+F	frontend/src/lib/sdk/core.test.ts	27884	17532	564
+F	frontend/src/lib/sdk/core.ts	25417	18098	645
+F	frontend/src/lib/settings-model.test.ts	1064	18745	21
+F	frontend/src/lib/settings-model.ts	1262	18768	26
+F	frontend/src/lib/system-charts.test.ts	6312	18796	141
+F	frontend/src/lib/system-charts.ts	5514	18939	149
+F	frontend/src/lib/system-health.test.ts	2385	19090	42
+F	frontend/src/lib/system-health.ts	2831	19134	60
+F	frontend/src/lib/system-model.test.ts	4455	19196	84
+F	frontend/src/lib/system-model.ts	5457	19282	125
+F	frontend/src/lib/themes/kira-default.css	1687	19409	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	19463	101
+F	frontend/src/lib/themes/kira-default.ts	777	19566	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	19590	101
+F	frontend/src/lib/time.test.ts	263	19693	8
+F	frontend/src/lib/time.ts	320	19703	9
+F	frontend/src/lib/workspace-window.test.ts	2298	19714	52
+F	frontend/src/lib/workspace-window.ts	1063	19768	32
+F	frontend/src/main.ts	7783	19802	161
+F	frontend/src/style.css	6399	19965	194
+F	frontend/tsconfig.json	403	20161	16
+F	frontend/vite.config.ts	224	20179	8
+F	nix/package.nix	3132	20189	117
+F	scripts/dev_preview.py	18147	20308	403	x
+F	scripts/qa_visual.py	12052	20713	299
+F	tests/test_calendar_design.py	8954	21014	154
+F	tests/test_detailed_health.py	5481	21170	105
+F	tests/test_dev_preview.py	9339	21277	219
+F	tests/test_displays.py	4101	21498	72
+F	tests/test_launcher_design.py	10481	21572	190
+F	tests/test_native_theme.py	2098	21764	44
+F	tests/test_popup_geometry.py	3227	21810	58
+F	tests/test_qa_visual.py	10549	21870	217
+F	tests/test_settings.py	3212	22089	62
+F	tests/test_tenet_close.py	6297	22153	115
+F	tests/test_ui_bootstrap_contract.py	1103	22270	29
+F	tests/test_webview_pool.py	9633	22301	168
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -12910,8 +12910,53 @@ async function smokeTopBar() {
   console.log('OK: Top Bar focus auto-scroll and urgency on both hidden sides');
 }
 
+/** Native detachment event must build and paint the genuine Svelte canvas;
+ * no mock sky pixels or remote data is used in this browser smoke. */
+async function smokeCalendarSky() {
+  const steps = [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 600, kind: 'settings-detach', generation: 1 },
+    { delay: 820, kind: 'calendar-next', generation: 1 },
+  ];
+  const check = '<script>window.addEventListener("load",()=>setTimeout(()=>{' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Calendar\\\"]");' +
+    'const atlas=root?.querySelector("[data-kira-sky-map]");' +
+    'const canvas=atlas?.querySelector("canvas");' +
+    'const context=canvas?.getContext("2d");' +
+    'const pixel=context?.getImageData(Math.floor(canvas.width/2),Math.floor(canvas.height/2),1,1).data;' +
+    'const selected=root?.querySelector("[aria-label=\\\"Copy date\\\"]")?.textContent;' +
+    'const current=root?.querySelector("footer p.text-kira-accent")?.textContent?.trim();' +
+    'document.documentElement.dataset.smokeSkyPainted=!!pixel && pixel[3]===255;' +
+    'document.documentElement.dataset.smokeSkyMode=root?.dataset.calendarMode||"none";' +
+    'document.documentElement.dataset.smokeSkySize=(canvas?.width||0)+"x"+(canvas?.height||0);' +
+    'document.documentElement.dataset.smokeSkyDate=!!window.__kiraCalendarBefore && ' +
+      'window.__kiraCalendarBefore!==root?.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent && ' +
+      '!!atlas?.textContent?.includes("Звёздное небо");' +
+  '},2150));</script>';
+  const document = html
+    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + check + '</head>');
+  const path = join(dir, 'calendar-sky.html');
+  await writeFile(path, document);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--disable-background-networking', '--window-size=1100,820',
+    '--virtual-time-budget=2800', '--dump-dom', 'file://' + path,
+  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
+  const size = output.match(/data-smoke-sky-size="(\d+)x(\d+)"/);
+  if (!output.includes('data-smoke-sky-mode="window"') ||
+      !output.includes('data-smoke-sky-painted="true"') ||
+      !output.includes('data-smoke-sky-date="true"') ||
+      !size || Number(size[1]) < 250 || Number(size[2]) < 250) {
+    throw new Error('Calendar detached atlas failed to paint date-aware sky: ' +
+      (output.match(/data-smoke-sky-[a-z-]+="[^"]*"/g) ?? []).join(', '));
+  }
+  console.log('OK: detached Calendar sky canvas painted for selected date');
+}
+
 try {
   await smokeTopBar();
+  await smokeCalendarSky();
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'tenet');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
@@ -15349,7 +15394,7 @@ FILE	frontend/src/lib/components/SkyMap.svelte
   let longitude = $state('0');
   let time = $state('22:00');
   let viewport: HTMLDivElement;
-  let canvas: HTMLCanvasElement;
+  let canvas = $state<HTMLCanvasElement | null>(null);
   let dimensions = $state({ width: 0, height: 0 });
   const observer = $derived(observerCoordinates(latitude, longitude));
   const when = $derived(localObservationDate(date, time));
@@ -15563,8 +15608,10 @@ FILE	frontend/src/lib/components/SkyMap.svelte
 
   <div bind:this={viewport} class="relative mt-3 min-h-[270px] flex-1 overflow-hidden border border-kira-muted/15 bg-kira-bg">
     {#if observer && when}
-      <canvas bind:this={canvas} class="block h-full w-full" role="img"
-        aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}></canvas>
+      <div class="h-full w-full" role="img"
+        aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}>
+        <canvas bind:this={canvas} class="block h-full w-full" aria-hidden="true"></canvas>
+      </div>
     {:else}
       <div class="flex h-full items-center justify-center px-8 text-center text-[12px] text-kira-muted" role="status">
         Проверьте координаты (широта ±90°, долгота ±180°), время и год (1900–2100).
