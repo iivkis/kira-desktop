@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	2672901cf42d2e5ccb0c374eea60d4acea09aa63
+C	c2458e628e93a6657c93d0c0735ffa10a4474edf
 F	.cargo/config.toml	98	146	3
 F	.github/workflows/ci.yml	4355	151	112
 F	.github/workflows/frontend-nix.yml	1398	265	43
@@ -128,12 +128,12 @@ F	tests/test_dev_preview.py	9339	21651	219
 F	tests/test_displays.py	4741	21872	82
 F	tests/test_launcher_design.py	10521	21956	191
 F	tests/test_native_theme.py	2098	22149	44
-F	tests/test_popup_geometry.py	3804	22195	66
+F	tests/test_popup_geometry.py	3805	22195	66
 F	tests/test_qa_visual.py	10549	22263	217
 F	tests/test_settings.py	4867	22482	87
 F	tests/test_tenet_close.py	6297	22571	115
 F	tests/test_ui_bootstrap_contract.py	1103	22688	29
-F	tests/test_webview_pool.py	11279	22719	193
+F	tests/test_webview_pool.py	11349	22719	194
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -22210,7 +22210,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("pub fn choose_dock(kind: Surface", LAYOUT)
         self.assertIn("Surface::Launcher => PopupDock::Center", LAYOUT)
         self.assertIn("pub fn launcher_top_margin(output_height: i32)", LAYOUT)
-        self.assertIn("    PopupDock::Right", LAYOUT)
+        self.assertIn("_ => PopupDock::Right", LAYOUT)
         self.assertIn("PopupDock::Right", LAYOUT)
         self.assertNotIn("PopupDock::Left", LAYOUT)
         self.assertIn("popup_layout::choose_dock(kind, false)", HOST)
@@ -22825,7 +22825,7 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("view.tick()", HOST)
         self.assertIn("self.system.borrow_mut().take()", HOST)
 
-    def test_switch_releases_detached_windows_and_uses_one_right_dock(self):
+    def test_switch_releases_detached_windows_and_uses_widget_docks(self):
         layout = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
         self.assertIn("fn active_window(&self) -> Option<Rc<CalendarOverlay>>", HOST)
         self.assertIn(".find(|view| view.requested.get())", HOST)
@@ -22838,8 +22838,9 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("let waiting = self.pending.borrow().is_some()", request)
         self.assertIn("if waiting {", request)
         self.assertIn("fn run_pending(self: &Rc<Self>)", request)
-        self.assertIn("pub fn choose_dock(_kind: Surface", layout)
-        self.assertIn("    PopupDock::Right", layout)
+        self.assertIn("pub fn choose_dock(kind: Surface", layout)
+        self.assertIn("Surface::Launcher => PopupDock::Center", layout)
+        self.assertIn("_ => PopupDock::Right", layout)
         self.assertIn("popup renderer", HOST)
         self.assertIn("normal.set_opacity(1.0)", HOST)
         self.assertIn("if !self.focus_detached()", HOST)
