@@ -38,8 +38,10 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   // Closing is not unmount: keep the SAME physical history, including
   // stagger, bounce and inverted traces, until Rust acknowledges the exit.
   function acknowledgeClose() {
-    if (closedAcknowledged) return;
+    if (!closing || closedAcknowledged) return;
     closedAcknowledged = true;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
     node.dataset.tenetReveal = 'reversed';
     notifyOverlayClosed(Number(node.dataset.kiraGeneration));
   }
@@ -170,11 +172,23 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     // saved INVERTED fragment tracks in precisely inverse temporal order.
     // No new random seed, mirrored ease or replacement exit tween.
     master.reverse();
+    // Under a throttled WebKitGTK frame clock, rAF may stop before the
+    // reverse-complete callback. Reconcile at the exact first keyframe
+    // before native's longer watchdog can forcibly reclaim the window.
+    restore = window.setTimeout(() => {
+      restore = null;
+      if (closing && master) {
+        master.progress(0).pause();
+        acknowledgeClose();
+      }
+    }, 850);
   }
   function onReopen(event: Event) {
     if (!isCurrentGeneration(event) || !closing) return;
     closing = false;
     closedAcknowledged = false;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
     if (master) {
       node.dataset.tenetReveal = 'started';
       master.play(); // Retarget from the live position, without a snap.
