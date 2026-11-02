@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5865
+index_bytes=5866
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	c393fdcdf8c23ec78b2d29fb81de80bd9c9f36b4
+C	477df567eb1b71f8a6c181774f65a1e32c37899f
 F	.cargo/config.toml	98	146	3
 F	.github/workflows/ci.yml	4355	151	112
 F	.github/workflows/frontend-nix.yml	1398	265	43
@@ -52,88 +52,88 @@ F	crates/kira-shell/src/system_panel.rs	11356	8897	318
 F	crates/kira-shell/src/webview_pool.rs	9530	9217	281
 F	docs/CONFIG.md	5801	9500	125
 F	docs/CONFIG_OWNERSHIP.md	7257	9627	135
-F	docs/DESIGN_SYSTEM.md	32126	9764	519
-F	docs/DEVELOPMENT.md	29347	10285	577
-F	docs/QA_VISUAL.md	12284	10864	149
-F	docs/SKY_MAP.md	6132	11015	96
-F	docs/SPECIFICATION.md	28960	11113	421
-F	docs/TENET_MOTION.md	40649	11536	204
-F	docs/UI_ARCHITECTURE.md	6737	11742	106
-F	docs/VISUAL_REVIEW.md	9754	11850	84
-F	docs/WEBVIEW_POOL.md	10481	11936	97
-F	flake.nix	3181	12035	91
-F	frontend/index.html	2737	12128	66
-F	frontend/package.json	720	12196	27
-F	frontend/scripts/inline-assets.mjs	4457	12225	103
-F	frontend/scripts/inline-assets.test.mjs	4645	12330	106
-F	frontend/scripts/smoke-overlays.mjs	45074	12438	627
-F	frontend/src/App.svelte	9665	13067	224
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13293	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13311	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	13372	69
-F	frontend/src/lib/bootstrap.test.ts	3408	13443	84
-F	frontend/src/lib/bootstrap.ts	2613	13529	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13601	65
-F	frontend/src/lib/calendar-model.ts	4648	13668	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13775	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	13837	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	13868	287
-F	frontend/src/lib/clock-flight.test.ts	2404	14157	50
-F	frontend/src/lib/clock-flight.ts	1977	14209	50
-F	frontend/src/lib/components/CalendarWidget.svelte	12451	14261	265
-F	frontend/src/lib/components/DisplaySettings.svelte	21886	14528	423
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	14953	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	15211	168
-F	frontend/src/lib/components/SkyMap.svelte	10943	15381	246
-F	frontend/src/lib/components/SystemCharts.svelte	10517	15629	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	15857	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	15905	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	16246	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16286	119
-F	frontend/src/lib/launcher-model.test.ts	2266	16407	46
-F	frontend/src/lib/launcher-model.ts	1403	16455	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	16486	89
-F	frontend/src/lib/lazy-widget.ts	1984	16577	63
-F	frontend/src/lib/motion-contract.test.ts	11242	16642	198
-F	frontend/src/lib/motion.ts	24039	16842	657
-F	frontend/src/lib/overlay-size.ts	1090	17501	29
-F	frontend/src/lib/sdk/core.test.ts	27884	17532	564
-F	frontend/src/lib/sdk/core.ts	25417	18098	645
-F	frontend/src/lib/settings-model.test.ts	1064	18745	21
-F	frontend/src/lib/settings-model.ts	1262	18768	26
-F	frontend/src/lib/system-charts.test.ts	6312	18796	141
-F	frontend/src/lib/system-charts.ts	5514	18939	149
-F	frontend/src/lib/system-health.test.ts	2385	19090	42
-F	frontend/src/lib/system-health.ts	2831	19134	60
-F	frontend/src/lib/system-model.test.ts	4455	19196	84
-F	frontend/src/lib/system-model.ts	5457	19282	125
-F	frontend/src/lib/themes/kira-default.css	1687	19409	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	19463	101
-F	frontend/src/lib/themes/kira-default.ts	777	19566	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	19590	101
-F	frontend/src/lib/time.test.ts	263	19693	8
-F	frontend/src/lib/time.ts	320	19703	9
-F	frontend/src/lib/workspace-window.test.ts	2298	19714	52
-F	frontend/src/lib/workspace-window.ts	1063	19768	32
-F	frontend/src/main.ts	7783	19802	161
-F	frontend/src/style.css	6399	19965	194
-F	frontend/tsconfig.json	403	20161	16
-F	frontend/vite.config.ts	224	20179	8
-F	nix/package.nix	3132	20189	117
-F	scripts/dev_preview.py	18147	20308	403	x
-F	scripts/qa_visual.py	12052	20713	299
-F	tests/test_calendar_design.py	8954	21014	154
-F	tests/test_detailed_health.py	5481	21170	105
-F	tests/test_dev_preview.py	9339	21277	219
-F	tests/test_displays.py	4101	21498	72
-F	tests/test_launcher_design.py	10481	21572	190
-F	tests/test_native_theme.py	2098	21764	44
-F	tests/test_popup_geometry.py	3227	21810	58
-F	tests/test_qa_visual.py	10549	21870	217
-F	tests/test_settings.py	3212	22089	62
-F	tests/test_tenet_close.py	6297	22153	115
-F	tests/test_ui_bootstrap_contract.py	1103	22270	29
-F	tests/test_webview_pool.py	9633	22301	168
+F	docs/DESIGN_SYSTEM.md	34193	9764	552
+F	docs/DEVELOPMENT.md	29347	10318	577
+F	docs/QA_VISUAL.md	12284	10897	149
+F	docs/SKY_MAP.md	6776	11048	105
+F	docs/SPECIFICATION.md	28960	11155	421
+F	docs/TENET_MOTION.md	40649	11578	204
+F	docs/UI_ARCHITECTURE.md	6737	11784	106
+F	docs/VISUAL_REVIEW.md	9754	11892	84
+F	docs/WEBVIEW_POOL.md	10481	11978	97
+F	flake.nix	3181	12077	91
+F	frontend/index.html	2737	12170	66
+F	frontend/package.json	720	12238	27
+F	frontend/scripts/inline-assets.mjs	4457	12267	103
+F	frontend/scripts/inline-assets.test.mjs	4645	12372	106
+F	frontend/scripts/smoke-overlays.mjs	45693	12480	636
+F	frontend/src/App.svelte	9665	13118	224
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13344	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13362	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	13423	69
+F	frontend/src/lib/bootstrap.test.ts	3408	13494	84
+F	frontend/src/lib/bootstrap.ts	2613	13580	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13652	65
+F	frontend/src/lib/calendar-model.ts	4648	13719	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13826	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13888	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	13919	287
+F	frontend/src/lib/clock-flight.test.ts	2404	14208	50
+F	frontend/src/lib/clock-flight.ts	1977	14260	50
+F	frontend/src/lib/components/CalendarWidget.svelte	12672	14312	267
+F	frontend/src/lib/components/DisplaySettings.svelte	21886	14581	423
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	15006	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	15264	168
+F	frontend/src/lib/components/SkyMap.svelte	13008	15434	274
+F	frontend/src/lib/components/SystemCharts.svelte	10517	15710	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	15938	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	15986	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	16327	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16367	119
+F	frontend/src/lib/launcher-model.test.ts	2266	16488	46
+F	frontend/src/lib/launcher-model.ts	1403	16536	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	16567	89
+F	frontend/src/lib/lazy-widget.ts	1984	16658	63
+F	frontend/src/lib/motion-contract.test.ts	11242	16723	198
+F	frontend/src/lib/motion.ts	24039	16923	657
+F	frontend/src/lib/overlay-size.ts	1090	17582	29
+F	frontend/src/lib/sdk/core.test.ts	27884	17613	564
+F	frontend/src/lib/sdk/core.ts	25417	18179	645
+F	frontend/src/lib/settings-model.test.ts	1064	18826	21
+F	frontend/src/lib/settings-model.ts	1262	18849	26
+F	frontend/src/lib/system-charts.test.ts	6312	18877	141
+F	frontend/src/lib/system-charts.ts	5514	19020	149
+F	frontend/src/lib/system-health.test.ts	2385	19171	42
+F	frontend/src/lib/system-health.ts	2831	19215	60
+F	frontend/src/lib/system-model.test.ts	4455	19277	84
+F	frontend/src/lib/system-model.ts	5457	19363	125
+F	frontend/src/lib/themes/kira-default.css	1687	19490	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	19544	101
+F	frontend/src/lib/themes/kira-default.ts	777	19647	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	19671	101
+F	frontend/src/lib/time.test.ts	263	19774	8
+F	frontend/src/lib/time.ts	320	19784	9
+F	frontend/src/lib/workspace-window.test.ts	2298	19795	52
+F	frontend/src/lib/workspace-window.ts	1063	19849	32
+F	frontend/src/main.ts	7783	19883	161
+F	frontend/src/style.css	6399	20046	194
+F	frontend/tsconfig.json	403	20242	16
+F	frontend/vite.config.ts	224	20260	8
+F	nix/package.nix	3132	20270	117
+F	scripts/dev_preview.py	18147	20389	403	x
+F	scripts/qa_visual.py	12052	20794	299
+F	tests/test_calendar_design.py	9935	21095	171
+F	tests/test_detailed_health.py	5481	21268	105
+F	tests/test_dev_preview.py	9339	21375	219
+F	tests/test_displays.py	4101	21596	72
+F	tests/test_launcher_design.py	10481	21670	190
+F	tests/test_native_theme.py	2098	21862	44
+F	tests/test_popup_geometry.py	3227	21908	58
+F	tests/test_qa_visual.py	10549	21968	217
+F	tests/test_settings.py	3212	22187	62
+F	tests/test_tenet_close.py	6297	22251	115
+F	tests/test_ui_bootstrap_contract.py	1103	22368	29
+F	tests/test_webview_pool.py	9633	22399	168
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -9933,6 +9933,39 @@ official visual language of Kira Desktop.
   another process's CPU history. No new Core JSON-RPC methods or
   user-data collection are introduced.
 
+### Detached Calendar · responsive editorial observatory (2026-11)
+
+Promoted Calendar is a real, resizable Niri window. The compact popup
+remains the original Chronology / Date Index / Selected Date widget with
+unchanged height, keyboard grid and TENET entrance. The detached window
+preserves the same live WebView and selected date, and adds an **offline
+celestial atlas** on the right. Calendar rail is 370px at comfortable
+desktop widths. Below a 760px viewport width the two columns **stack**
+in one vertically scrollable surface; the whole date grid and atlas remain
+available even when the user resizes the Niri window to narrow dimensions.
+
+The atlas follows the same three editorial materials as other Kira
+widgets: **Black heading** (selected date and observation context),
+**Prussian Blue workbench** (editable coordinates, OS time zone, sky
+visualization on Black), and **Black provenance footer**. Orange is used
+sparingly for the signature and truthful observation mode, not filled
+cards or an unrelated decorative gradient. Input focus remains visible
+and controls have readable dimensions. Explicit location fields default
+to a visibly marked **Greenwich sample**, never implied location access.
+When the numbers change, the sample marker changes to manual input;
+the computer's time zone is shown separately from observer longitude.
+
+The sky is an informational depiction, not an ECharts metric chart:
+one bounded 2D Canvas plots the locally bundled XHIP bright stars and
+illustrated constellation figures, with no network or periodic loop.
+HiDPI backing width is capped at 1536px. The same star field interpolates
+a single **FORWARD** sidereal trajectory toward the newly chosen date/time
+or observer latitude (the user's input is the contact event), cancelled
+and redirected on repeated edits. No invented retrospective fragment
+path is added to factual sky positions. Reduced-motion changes immediately
+settle on the target geometry and listeners/GSAP tweens are disposed
+on unmount. Real-world Niri resize and focus visual QA remains necessary.
+
 ### TENET Motion System · обязательный закон анимаций
 
 **Единая обязательная спецификация:** [TENET Motion System](TENET_MOTION.md).
@@ -11018,13 +11051,20 @@ FILE	docs/SKY_MAP.md
 
 The date picker remains a **small 420px popup**; the sky atlas is mounted
 **only after Calendar is promoted to an ordinary Niri window** (1040×720
-default, resizable). It is a 2D azimuthal equidistant chart of the sky above
+default, resizable). At wide sizes, the existing 370px date rail sits
+beside the atlas; at viewport widths <= 760px the rail and atlas stack
+vertically and the whole window scrolls without horizontal clipping.
+Black editorial header, Prussian Blue observation workbench and Black
+source footer reuse the canonical Kira palette. The atlas canvas is capped
+at 1536 physical pixels across its longest dimension to avoid large
+HiDPI allocations. It is a 2D azimuthal equidistant chart of the sky above
 the observer's horizon. The same selected calendar date is passed directly
 to the atlas, so date selection immediately changes the depicted sky.
 Changing date, time or latitude updates the same canvas; GSAP interpolates
 sidereal rotation (shortest circular path), cancellable by any new update.
-Reduced motion draws the new geometry immediately. There is no continuous
-animation loop, remote fetch, browser geolocation prompt or external CDN.
+Reduced motion draws the new geometry immediately, including if the
+preference changes mid-tween. There is no continuous animation loop,
+remote fetch, browser geolocation prompt or external CDN.
 
 Observer coordinates are **explicitly editable**. First opening uses a
 **clearly labeled Greenwich example** at latitude +51.4779°, longitude 0°,
@@ -11081,8 +11121,10 @@ bounds, coordinate validation, Greenwich sidereal angle at J2000,
 zenith/horizon cardinal projection, date/time and shortest-path wrap.
 The Python calendar contract checks that the atlas is gated on the
 generation-matched detached-window event and does not request geolocation
-or runtime network access. Existing overlay smoke tests still validate
-the lightweight calendar popup. For actual visual QA, start nested Niri,
+or runtime network access. Browser smoke additionally opens a real
+detached calendar at desktop (1100px) and narrow (680px) widths, verifies
+the responsive layout, selected-date change and Canvas paint. Existing
+overlay smoke tests still validate the lightweight calendar popup. For actual visual QA, start nested Niri,
 open Calendar, select a date, promote to an ordinary window and verify:
 the star field renders; changing date/time rotates it; changing
 latitude/longitude changes visible constellations; closing the window
@@ -12912,7 +12954,7 @@ async function smokeTopBar() {
 
 /** Native detachment event must build and paint the genuine Svelte canvas;
  * no mock sky pixels or remote data is used in this browser smoke. */
-async function smokeCalendarSky() {
+async function smokeCalendarSky(windowSize, expectStacked) {
   const steps = [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 600, kind: 'settings-detach', generation: 1 },
@@ -12925,7 +12967,14 @@ async function smokeCalendarSky() {
     'const context=canvas?.getContext("2d");' +
     'const pixel=context?.getImageData(Math.floor(canvas.width/2),Math.floor(canvas.height/2),1,1).data;' +
     'const selected=root?.querySelector("[aria-label=\\\"Copy date\\\"]")?.textContent;' +
-    'const current=root?.querySelector("footer p.text-kira-accent")?.textContent?.trim();' +
+    'const rail=root?.querySelector("[data-calendar-rail]");' +
+    'const railBox=rail?.getBoundingClientRect();' +
+    'const skyBox=atlas?.getBoundingClientRect();' +
+    'document.documentElement.dataset.smokeSkyResponsive=!!root && !!railBox && !!skyBox && ' +
+      'root.scrollWidth<=root.clientWidth+2 && ' +
+      (expectStacked
+        ? 'skyBox.top>=railBox.bottom-2 && root.scrollHeight>root.clientHeight;'
+        : 'skyBox.left>=railBox.right-2 && skyBox.width>300;') +
     'document.documentElement.dataset.smokeSkyPainted=!!pixel && pixel[3]===255;' +
     'document.documentElement.dataset.smokeSkyMode=root?.dataset.calendarMode||"none";' +
     'document.documentElement.dataset.smokeSkySize=(canvas?.width||0)+"x"+(canvas?.height||0);' +
@@ -12936,27 +12985,29 @@ async function smokeCalendarSky() {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + check + '</head>');
-  const path = join(dir, 'calendar-sky.html');
+  const path = join(dir, 'calendar-sky-' + windowSize.split(',')[0] + '.html');
   await writeFile(path, document);
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
-    '--disable-background-networking', '--window-size=1100,820',
+    '--disable-background-networking', '--window-size=' + windowSize,
     '--virtual-time-budget=2800', '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   const size = output.match(/data-smoke-sky-size="(\d+)x(\d+)"/);
   if (!output.includes('data-smoke-sky-mode="window"') ||
       !output.includes('data-smoke-sky-painted="true"') ||
       !output.includes('data-smoke-sky-date="true"') ||
+      !output.includes('data-smoke-sky-responsive="true"') ||
       !size || Number(size[1]) < 250 || Number(size[2]) < 250) {
     throw new Error('Calendar detached atlas failed to paint date-aware sky: ' +
       (output.match(/data-smoke-sky-[a-z-]+="[^"]*"/g) ?? []).join(', '));
   }
-  console.log('OK: detached Calendar sky canvas painted for selected date');
+  console.log('OK: detached Calendar sky painted at ' + windowSize + (expectStacked ? ' (stacked)' : ' (two-column)'));
 }
 
 try {
   await smokeTopBar();
-  await smokeCalendarSky();
+  await smokeCalendarSky('1100,820', false);
+  await smokeCalendarSky('680,720', true);
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'tenet');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
@@ -14381,12 +14432,14 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   data-kira-ui-root
   use:tenetCalendarReveal
   class={'kira-calendar-scroll relative flex min-h-0 w-full bg-kira-bg text-kira-text ' +
-    (detached ? 'h-full flex-row overflow-hidden' : 'h-auto flex-col overflow-y-auto')}
+    (detached
+      ? 'h-full flex-row overflow-hidden max-[760px]:flex-col max-[760px]:overflow-y-auto max-[760px]:overflow-x-hidden'
+      : 'h-auto flex-col overflow-y-auto')}
   data-calendar-mode={detached ? 'window' : 'widget'}
   aria-label="Kira Calendar"
 >
-  <div class={detached
-    ? 'flex h-full w-[370px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20'
+  <div data-calendar-rail class={detached
+    ? 'flex h-full w-[370px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20 max-[760px]:h-auto max-[760px]:w-full max-[760px]:overflow-visible max-[760px]:border-r-0 max-[760px]:border-b'
     : 'flex w-full min-h-0 flex-col'}>
   <!-- Clock is the identity anchor; native host remains the only window owner. -->
   <header data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-3 pt-4">
@@ -15397,18 +15450,22 @@ FILE	frontend/src/lib/components/SkyMap.svelte
   let canvas = $state<HTMLCanvasElement | null>(null);
   let dimensions = $state({ width: 0, height: 0 });
   const observer = $derived(observerCoordinates(latitude, longitude));
+  const exampleLocation = $derived(observer?.latitude === 51.4779 && observer?.longitude === 0);
   const when = $derived(localObservationDate(date, time));
 
   const scene = { latitude: 51.4779, sidereal: 0 };
   let painted = false;
   let tween: gsap.core.Tween | null = null;
+  let latestTarget: { latitude: number; sidereal: number } | null = null;
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'локальный';
 
   function paint() {
     if (!canvas || !dimensions.width || !dimensions.height) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const { width, height } = dimensions;
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    // Keep the backing bitmap bounded on HiDPI and ultrawide monitors.
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2, 1536 / Math.max(width, height));
     const bufferWidth = Math.round(width * pixelRatio);
     const bufferHeight = Math.round(height * pixelRatio);
     if (canvas.width !== bufferWidth || canvas.height !== bufferHeight) {
@@ -15537,8 +15594,19 @@ FILE	frontend/src/lib/components/SkyMap.svelte
       if (box) dimensions = { width: Math.round(box.width), height: Math.round(box.height) };
     });
     resize.observe(viewport);
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const settleForReducedMotion = () => {
+      if (!motion.matches || !latestTarget) return;
+      tween?.kill();
+      tween = null;
+      scene.latitude = latestTarget.latitude;
+      scene.sidereal = latestTarget.sidereal;
+      paint();
+    };
+    motion.addEventListener('change', settleForReducedMotion);
     return () => {
       resize.disconnect();
+      motion.removeEventListener('change', settleForReducedMotion);
       tween?.kill();
     };
   });
@@ -15549,6 +15617,7 @@ FILE	frontend/src/lib/components/SkyMap.svelte
     const size = dimensions;
     if (!targetObserver || !dateTime || !size.width || !size.height || !canvas) return;
     const targetSidereal = siderealDegrees(dateTime, targetObserver.longitude);
+    latestTarget = { latitude: targetObserver.latitude, sidereal: targetSidereal };
     tween?.kill();
     // Same star field follows a continuous forward trajectory when time
     // changes. Interrupted transitions retarget from the actual last frame.
@@ -15573,55 +15642,67 @@ FILE	frontend/src/lib/components/SkyMap.svelte
   });
 </script>
 
-<section class="flex min-h-0 min-w-0 flex-1 flex-col bg-kira-bg p-5" aria-label="Карта звёздного неба" data-kira-sky-map>
-  <header class="shrink-0 border-l-2 border-kira-accent pl-3">
-    <p class="text-[9px] font-extrabold tracking-[0.17em] text-kira-accent">04 / CELESTIAL ATLAS</p>
-    <h2 class="mt-1 text-[20px] font-extrabold tracking-tight">Звёздное небо</h2>
-    <p class="mt-1 text-[11px] text-kira-muted">Над горизонтом · {isoDate(date)} · время системы</p>
+<section class="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-kira-bg max-[760px]:min-h-[640px] max-[760px]:w-full max-[760px]:flex-none max-[760px]:overflow-visible"
+  aria-label="Карта звёздного неба" data-kira-sky-map>
+  <!-- Editorial Black hero, Prussian Blue workbench, Black factual footer. -->
+  <header class="shrink-0 bg-kira-bg px-6 pb-4 pt-5">
+    <div class="border-l-2 border-kira-accent pl-3">
+      <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">04 / CELESTIAL ATLAS</p>
+      <h2 class="mt-1 text-[24px] font-extrabold leading-tight tracking-tight">Звёздное небо</h2>
+      <p class="mt-1 text-[12px] text-kira-muted">{isoDate(date)} · карта над горизонтом</p>
+    </div>
   </header>
 
-  <div class="mt-4 flex flex-wrap items-end gap-3 border-y border-kira-muted/15 py-3">
-    <label class="flex flex-col gap-1 text-[10px] font-semibold text-kira-muted">
-      Широта, °
-      <input class="w-[95px] border border-kira-muted/25 bg-kira-surface px-2 py-2 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
-        aria-label="Широта наблюдателя" type="text" inputmode="decimal" bind:value={latitude} />
-    </label>
-    <label class="flex flex-col gap-1 text-[10px] font-semibold text-kira-muted">
-      Долгота, ° E
-      <input class="w-[95px] border border-kira-muted/25 bg-kira-surface px-2 py-2 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
-        aria-label="Долгота наблюдателя" type="text" inputmode="decimal" bind:value={longitude} />
-    </label>
-    <label class="flex flex-col gap-1 text-[10px] font-semibold text-kira-muted">
-      Время системы
-      <input class="w-[104px] border border-kira-muted/25 bg-kira-surface px-2 py-2 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
-        aria-label="Время наблюдения" type="time" bind:value={time} />
-    </label>
-    <button type="button" onclick={() => { latitude = '51.4779'; longitude = '0'; }}
-      class="border border-kira-muted/25 px-2 py-2 text-[10px] font-bold text-kira-accent hover:border-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">
-      ГРИНВИЧ
-    </button>
+  <div class="flex min-h-[395px] flex-1 flex-col bg-kira-surface px-5 pb-4 pt-4">
+    <div class="shrink-0 border-b border-kira-muted/20 pb-4">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <p class="text-[10px] font-bold tracking-[0.12em] text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
+        <p class="text-[10px] font-semibold text-kira-accent">{exampleLocation ? 'ДЕМО / ГРИНВИЧ' : 'КООРДИНАТЫ / ВВОД'}</p>
+      </div>
+      <div class="mt-3 flex flex-wrap items-end gap-x-3 gap-y-3">
+        <label class="flex min-w-[100px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
+          Широта, °
+          <input class="w-full min-w-0 border border-kira-muted/30 bg-kira-bg px-3 py-2 text-[13px] tabular-nums text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+            aria-label="Широта наблюдателя" type="text" inputmode="decimal" bind:value={latitude} />
+        </label>
+        <label class="flex min-w-[100px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
+          Долгота, ° E
+          <input class="w-full min-w-0 border border-kira-muted/30 bg-kira-bg px-3 py-2 text-[13px] tabular-nums text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+            aria-label="Долгота наблюдателя" type="text" inputmode="decimal" bind:value={longitude} />
+        </label>
+        <label class="flex min-w-[105px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
+          Время
+          <input class="w-full min-w-0 border border-kira-muted/30 bg-kira-bg px-3 py-2 text-[13px] tabular-nums text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+            aria-label="Время наблюдения" type="time" bind:value={time} />
+        </label>
+        <button type="button" onclick={() => { latitude = '51.4779'; longitude = '0'; }}
+          class="min-h-9 shrink-0 border border-kira-muted/30 px-3 py-2 text-[11px] font-bold tracking-wide text-kira-accent hover:border-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"
+          aria-label="Вернуть демонстрационные координаты Гринвича">
+          СБРОС
+        </button>
+      </div>
+      <p class="mt-3 text-[11px] leading-relaxed text-kira-muted">
+        {exampleLocation ? 'Координаты Гринвича для примера.' : 'Координаты заданы вручную.'} Время пояса компьютера: <span class="font-semibold text-kira-text">{timeZone}</span>. Восток и север: +.
+      </p>
+    </div>
+
+    <div bind:this={viewport} class="relative mt-4 min-h-[270px] flex-1 overflow-hidden bg-kira-bg">
+      {#if observer && when}
+        <div class="h-full w-full" role="img"
+          aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}>
+          <canvas bind:this={canvas} class="block h-full w-full" aria-hidden="true"></canvas>
+        </div>
+      {:else}
+        <div class="flex h-full items-center justify-center px-8 text-center text-[12px] text-kira-muted" role="status">
+          Проверьте координаты (широта ±90°, долгота ±180°), время и год (1900–2100).
+        </div>
+      {/if}
+    </div>
+    <p class="mt-3 text-[11px] font-medium text-kira-muted">N ↑ · E → · S ↓ · W ← <span class="ml-2">· Звёзды до 5,35 mag</span></p>
   </div>
 
-  <p class="mt-2 text-[10px] text-kira-muted">
-    Пример: Гринвич, не геолокация. Время соответствует часовому поясу компьютера. Широта: север +; долгота: восток +.
-  </p>
-
-  <div bind:this={viewport} class="relative mt-3 min-h-[270px] flex-1 overflow-hidden border border-kira-muted/15 bg-kira-bg">
-    {#if observer && when}
-      <div class="h-full w-full" role="img"
-        aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}>
-        <canvas bind:this={canvas} class="block h-full w-full" aria-hidden="true"></canvas>
-      </div>
-    {:else}
-      <div class="flex h-full items-center justify-center px-8 text-center text-[12px] text-kira-muted" role="status">
-        Проверьте координаты (широта ±90°, долгота ±180°), время и год (1900–2100).
-      </div>
-    {/if}
-  </div>
-
-  <footer class="mt-3 shrink-0 space-y-1 text-[10px] leading-relaxed text-kira-muted">
-    <p>Звёзды до 5,35 mag · созвездия · север вверху · восток справа.</p>
-    <p>Каталог XHIP/Hipparcos; линии d3-celestial. Проекция и вращение приближённые (J2000). Не для точной навигации.</p>
+  <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[10px] leading-relaxed text-kira-muted">
+    XHIP / Hipparcos · схемы созвездий d3-celestial · J2000. Приближённая карта, не для навигации.
   </footer>
 </section>
 
@@ -21028,6 +21109,23 @@ NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class CalendarDesignTests(unittest.TestCase):
+    def test_window_calendar_is_readable_and_responsive(self):
+        sky = (ROOT / "frontend/src/lib/components/SkyMap.svelte").read_text()
+        browser = (ROOT / "frontend/scripts/smoke-overlays.mjs").read_text()
+        self.assertIn("data-calendar-rail", CALENDAR)
+        self.assertIn("max-[760px]:flex-col", CALENDAR)
+        self.assertIn("max-[760px]:w-full", CALENDAR)
+        self.assertIn("max-[760px]:overflow-y-auto", CALENDAR)
+        self.assertIn("max-[760px]:flex-none", sky)
+        self.assertIn("bg-kira-surface", sky)
+        self.assertIn("bg-kira-bg", sky)
+        self.assertIn("exampleLocation ?", sky)
+        self.assertIn("prefers-reduced-motion", sky)
+        self.assertIn("motion.addEventListener('change', settleForReducedMotion)", sky)
+        self.assertIn("1536 / Math.max(width, height)", sky)
+        self.assertIn("await smokeCalendarSky('680,720', true)", browser)
+        self.assertIn("root.scrollWidth<=root.clientWidth+2", browser)
+
     def test_sky_atlas_only_mounts_in_calendar_niri_window(self):
         atlas = (ROOT / "frontend/src/lib/components/SkyMap.svelte").read_text()
         model = (ROOT / "frontend/src/lib/astronomy/sky-model.ts").read_text()
