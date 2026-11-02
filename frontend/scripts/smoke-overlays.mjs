@@ -85,7 +85,16 @@ function scriptFor(steps, observationMs = 1150) {
                 ? 'const candidate = document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[data-calendar-day].text-kira-text:not([aria-pressed=\\\"true\\\"])");' +
                   'window.__kiraCalendarChosen = candidate?.getAttribute("aria-label");candidate?.click();'
               : kind === 'clock-chaos'
-                ? 'document.querySelector("[data-calendar-clock-play]")?.click();' +
+                ? // Clock flights can finish between Chromium virtual-time
+                  // samples. Observe the real animated style rather than
+                  // requiring a particular 180ms frame to be scheduled.
+                  'const clock=document.querySelector("[data-calendar-clock-play]");' +
+                  'for(const cell of clock?.querySelectorAll("[data-clock-cell]")||[]){' +
+                    'new MutationObserver(()=>{' +
+                      'if(cell.style.transform && cell.style.transform!=="none")window.__kiraClockFlew=true;' +
+                    '}).observe(cell,{attributes:true,attributeFilter:["style"]});' +
+                  '}' +
+                  'clock?.click();' +
                   'setTimeout(() => {' +
                     'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
