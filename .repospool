@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4689
+index_bytes=4750
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,103 +15,104 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	1cabe23e7c2c34cdb5b797891b280347d69adb68
-F	.cargo/config.toml	98	124	3
-F	.github/workflows/ci.yml	4355	129	112
-F	.github/workflows/frontend-nix.yml	1398	243	43
-F	.github/workflows/nix.yml	1258	288	38
-F	.github/workflows/overlay-smoke.yml	1064	328	40
-F	.github/workflows/publish-repospool.yml	3048	370	83
-F	.gitignore	178	455	11
-F	.repospoolignore	1028	468	47
-F	AGENTS.md	4435	517	75
-F	Cargo.toml	494	594	22
-F	README.md	11269	618	248
-F	Taskfile.yml	5957	868	185
-F	config/kira.kdl.example	358	1055	8
-F	crates/kira-core/Cargo.toml	207	1065	10
-F	crates/kira-core/src/config.rs	15217	1077	399
-F	crates/kira-core/src/main.rs	32080	1478	839
-F	crates/kira-core/src/niri.rs	16767	2319	453
-F	crates/kira-ipc/Cargo.toml	170	2774	9
-F	crates/kira-ipc/src/client.rs	17794	2785	458
-F	crates/kira-ipc/src/lib.rs	10460	3245	336
-F	crates/kira-shell/Cargo.toml	297	3583	12
-F	crates/kira-shell/src/calendar.rs	38858	3597	1043
-F	crates/kira-shell/src/launcher.rs	14114	4642	392
-F	crates/kira-shell/src/main.rs	19285	5036	447
-F	crates/kira-shell/src/native_ui.rs	2857	5485	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5560	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5848	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5966	559
-F	crates/kira-shell/src/system_panel.rs	11356	6527	318
-F	docs/CONFIG.md	5801	6847	125
-F	docs/DESIGN_SYSTEM.md	27066	6974	449
-F	docs/DEVELOPMENT.md	29347	7425	577
-F	docs/QA_VISUAL.md	12284	8004	149
-F	docs/SPECIFICATION.md	28960	8155	421
-F	docs/TENET_MOTION.md	22120	8578	142
-F	docs/UI_ARCHITECTURE.md	6737	8722	106
-F	docs/VISUAL_REVIEW.md	9754	8830	84
-F	flake.nix	3181	8916	91
-F	frontend/index.html	2737	9009	66
-F	frontend/package.json	720	9077	27
-F	frontend/scripts/inline-assets.mjs	4457	9106	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9211	106
-F	frontend/scripts/smoke-overlays.mjs	19543	9319	278
-F	frontend/src/App.svelte	8589	9599	207
-F	frontend/src/lib/bootstrap.test.ts	3408	9808	84
-F	frontend/src/lib/bootstrap.ts	2613	9894	70
-F	frontend/src/lib/calendar-model.test.ts	3571	9966	65
-F	frontend/src/lib/calendar-model.ts	4648	10033	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10140	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10202	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10233	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10553	50
-F	frontend/src/lib/clock-flight.ts	1977	10605	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10657	239
-F	frontend/src/lib/components/LauncherWidget.svelte	10668	10898	230
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11130	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	11358	46
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11406	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	4161	11728	84
-F	frontend/src/lib/launcher-model.test.ts	2266	11814	46
-F	frontend/src/lib/launcher-model.ts	1403	11862	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	11893	89
-F	frontend/src/lib/lazy-widget.ts	1984	11984	63
-F	frontend/src/lib/motion.ts	1597	12049	50
-F	frontend/src/lib/overlay-size.ts	1090	12101	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12132	444
-F	frontend/src/lib/sdk/core.ts	17793	12578	473
-F	frontend/src/lib/system-charts.test.ts	6312	13053	141
-F	frontend/src/lib/system-charts.ts	5514	13196	149
-F	frontend/src/lib/system-health.test.ts	2385	13347	42
-F	frontend/src/lib/system-health.ts	2831	13391	60
-F	frontend/src/lib/system-model.test.ts	4455	13453	84
-F	frontend/src/lib/system-model.ts	5457	13539	125
-F	frontend/src/lib/themes/kira-default.css	1687	13666	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13720	101
-F	frontend/src/lib/themes/kira-default.ts	777	13823	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4993	13847	89
-F	frontend/src/lib/time.test.ts	263	13938	8
-F	frontend/src/lib/time.ts	320	13948	9
-F	frontend/src/lib/workspace-window.test.ts	1491	13959	35
-F	frontend/src/lib/workspace-window.ts	853	13996	28
-F	frontend/src/main.ts	5907	14026	127
-F	frontend/src/style.css	3817	14155	121
-F	frontend/tsconfig.json	403	14278	16
-F	frontend/vite.config.ts	224	14296	8
-F	nix/package.nix	3132	14306	117
-F	scripts/dev_preview.py	18147	14425	403	x
-F	scripts/qa_visual.py	12052	14830	299
-F	tests/test_calendar_design.py	7384	15131	130
-F	tests/test_detailed_health.py	5429	15263	105
-F	tests/test_dev_preview.py	9339	15370	219
-F	tests/test_launcher_design.py	10400	15591	189
-F	tests/test_native_theme.py	1567	15782	36
-F	tests/test_popup_geometry.py	6956	15820	118
-F	tests/test_qa_visual.py	10549	15940	217
-F	tests/test_ui_bootstrap_contract.py	1103	16159	29
+C	bbd71f61645502eda2cd62c3059e3205abda21c7
+F	.cargo/config.toml	98	125	3
+F	.github/workflows/ci.yml	4355	130	112
+F	.github/workflows/frontend-nix.yml	1398	244	43
+F	.github/workflows/nix.yml	1258	289	38
+F	.github/workflows/overlay-smoke.yml	1064	329	40
+F	.github/workflows/publish-repospool.yml	3048	371	83
+F	.gitignore	178	456	11
+F	.repospoolignore	1028	469	47
+F	AGENTS.md	4435	518	75
+F	Cargo.toml	494	595	22
+F	README.md	11269	619	248
+F	Taskfile.yml	5957	869	185
+F	config/kira.kdl.example	358	1056	8
+F	crates/kira-core/Cargo.toml	207	1066	10
+F	crates/kira-core/src/config.rs	15217	1078	399
+F	crates/kira-core/src/main.rs	32080	1479	839
+F	crates/kira-core/src/niri.rs	16767	2320	453
+F	crates/kira-ipc/Cargo.toml	170	2775	9
+F	crates/kira-ipc/src/client.rs	17794	2786	458
+F	crates/kira-ipc/src/lib.rs	10460	3246	336
+F	crates/kira-shell/Cargo.toml	297	3584	12
+F	crates/kira-shell/src/calendar.rs	38858	3598	1043
+F	crates/kira-shell/src/launcher.rs	14114	4643	392
+F	crates/kira-shell/src/main.rs	19285	5037	447
+F	crates/kira-shell/src/native_ui.rs	2857	5486	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5561	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5849	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5967	559
+F	crates/kira-shell/src/system_panel.rs	11356	6528	318
+F	docs/CONFIG.md	5801	6848	125
+F	docs/DESIGN_SYSTEM.md	27870	6975	464
+F	docs/DEVELOPMENT.md	29347	7441	577
+F	docs/QA_VISUAL.md	12284	8020	149
+F	docs/SPECIFICATION.md	28960	8171	421
+F	docs/TENET_MOTION.md	23327	8594	156
+F	docs/UI_ARCHITECTURE.md	6737	8752	106
+F	docs/VISUAL_REVIEW.md	9754	8860	84
+F	flake.nix	3181	8946	91
+F	frontend/index.html	2737	9039	66
+F	frontend/package.json	720	9107	27
+F	frontend/scripts/inline-assets.mjs	4457	9136	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9241	106
+F	frontend/scripts/smoke-overlays.mjs	24036	9349	344
+F	frontend/src/App.svelte	8589	9695	207
+F	frontend/src/lib/bootstrap.test.ts	3408	9904	84
+F	frontend/src/lib/bootstrap.ts	2613	9990	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10062	65
+F	frontend/src/lib/calendar-model.ts	4648	10129	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10236	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10298	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10490	10329	285
+F	frontend/src/lib/clock-flight.test.ts	2404	10616	50
+F	frontend/src/lib/clock-flight.ts	1977	10668	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10720	239
+F	frontend/src/lib/components/LauncherWidget.svelte	10868	10961	232
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11195	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	11423	46
+F	frontend/src/lib/components/SystemWidget.svelte	18116	11471	321
+F	frontend/src/lib/components/WorkspacePreview.svelte	5560	11794	110
+F	frontend/src/lib/launcher-model.test.ts	2266	11906	46
+F	frontend/src/lib/launcher-model.ts	1403	11954	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	11985	89
+F	frontend/src/lib/lazy-widget.ts	1984	12076	63
+F	frontend/src/lib/motion-contract.test.ts	2346	12141	44
+F	frontend/src/lib/motion.ts	4570	12187	128
+F	frontend/src/lib/overlay-size.ts	1090	12317	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12348	444
+F	frontend/src/lib/sdk/core.ts	17793	12794	473
+F	frontend/src/lib/system-charts.test.ts	6312	13269	141
+F	frontend/src/lib/system-charts.ts	5514	13412	149
+F	frontend/src/lib/system-health.test.ts	2385	13563	42
+F	frontend/src/lib/system-health.ts	2831	13607	60
+F	frontend/src/lib/system-model.test.ts	4455	13669	84
+F	frontend/src/lib/system-model.ts	5457	13755	125
+F	frontend/src/lib/themes/kira-default.css	1687	13882	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13936	101
+F	frontend/src/lib/themes/kira-default.ts	777	14039	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5400	14063	97
+F	frontend/src/lib/time.test.ts	263	14162	8
+F	frontend/src/lib/time.ts	320	14172	9
+F	frontend/src/lib/workspace-window.test.ts	2298	14183	52
+F	frontend/src/lib/workspace-window.ts	1063	14237	32
+F	frontend/src/main.ts	5907	14271	127
+F	frontend/src/style.css	3817	14400	121
+F	frontend/tsconfig.json	403	14523	16
+F	frontend/vite.config.ts	224	14541	8
+F	nix/package.nix	3132	14551	117
+F	scripts/dev_preview.py	18147	14670	403	x
+F	scripts/qa_visual.py	12052	15075	299
+F	tests/test_calendar_design.py	7384	15376	130
+F	tests/test_detailed_health.py	5429	15508	105
+F	tests/test_dev_preview.py	9339	15615	219
+F	tests/test_launcher_design.py	10400	15836	189
+F	tests/test_native_theme.py	1567	16027	36
+F	tests/test_popup_geometry.py	6956	16065	118
+F	tests/test_qa_visual.py	10549	16185	217
+F	tests/test_ui_bootstrap_contract.py	1103	16404	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7219,6 +7220,21 @@ diagnostic bars. The visual hierarchy is intentional:
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
 
+### Shared TENET widget entrance · 2026-11
+
+Calendar, Launcher and System Monitor now open with one bounded GSAP
+DUAL-time scene. Sections move FORWARD into position while four
+noninteractive fragments replay their previously recorded outbound paths
+and easing INVERTED into the real header or clock contact. A single
+master progress synchronizes both chronologies. Launcher records a
+different outward direction; inversion is historical, not CSS reflection.
+
+No real date, telemetry, search, keyboard interaction or focus is delayed.
+One mount owns both timelines, fragments and an 1100ms WebKit-throttle
+recovery. Unmount or changed reduced-motion preference removes every
+fragment and restores exact transforms. Calendar's clock and day
+interactions retain their separate recorded motion histories.
+
 ### System Monitor · observability before decoration
 
 The monitor is a read-only instrument panel, not a visual benchmark. The
@@ -8718,6 +8734,20 @@ IDLE -> PREPARED -> FORWARD / INVERTED / DUAL -> CONTACT -> SETTLED
 
 **Нормативный приоритет:** этот документ определяет причинность, время и качество *всех новых/изменяемых анимаций*, [`AGENTS.md`](../AGENTS.md) делает его обязательным для участников и AI-агентов, а [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) сохраняет палитру и общую визуальную иерархию. При конфликте декоративной идеи с доступностью, безопасностью, точностью данных или функциональностью всегда побеждает функциональность.
 
+### Общая анимация появления · DUAL
+
+Calendar, Launcher и System Monitor используют одну сцену на открытие:
+секции приходят FORWARD, четыре декоративных следа возвращаются INVERTED
+по сохранённым траекториям к фактической точке контакта часов/заголовка.
+Общий курсор синхронизирует два GSAP timeline через `dualTime(u)`.
+Launcher меняет исходную траекторию, но не подменяет инверсию CSS-зеркалом.
+
+Данные, время, ввод и фокус не задерживаются. На закрытии, повторном
+открытии, смене reduced-motion или после 1100 мс в throttled WebKit
+обе timelines останавливаются, все фрагменты удаляются, а transform,
+opacity и visibility возвращаются к подлинным значениям. Дополнительные
+виджеты, поверхность Dock, hover lens и ложные показания не вводятся.
+
 FILE	docs/UI_ARCHITECTURE.md
 # UI architecture: Rust host, Svelte 5 widgets
 
@@ -9390,11 +9420,17 @@ function scriptFor(steps, observationMs = 1150) {
                 kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
     ).join('') +
+    // Sample the in-flight DUAL chronology before observing settled DOM.
+    'setTimeout(() => {' +
+      'const root=document.querySelector("main[data-kira-ui-root]");' +
+      'document.documentElement.dataset.smokeTenetStarted=!!root && root.dataset.tenetReveal==="started" && root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
+      '},170);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === 0);' +
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
@@ -9455,6 +9491,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
+    ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
     '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
@@ -9520,6 +9557,18 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
+  if (heightMode === 'tenet' &&
+      (!output.includes('data-smoke-tenet-started="true"') ||
+       !output.includes('data-smoke-tenet-settled="true"'))) {
+    const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': TENET entry/restore failed: ' + stage.join(', '));
+  }
+  if (heightMode === 'reduced' &&
+      (!output.includes('data-smoke-tenet-started="false"') ||
+       !output.includes('data-smoke-tenet-settled="true"'))) {
+    const stages = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': reduced motion must skip animation and fragments: ' + stages.join(', '));
+  }
   if (heightMode === 'icons' && (!output.includes('data-smoke-launcher-a11y="true"') || !output.includes('data-smoke-square="true"') ||
       !output.includes('data-smoke-real-icon-transparent="true"') ||
       !output.includes('data-smoke-placeholder-background="true"') ||
@@ -9533,8 +9582,52 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
+
+/** Exercise real browser pixels, not just pure array projections or CSS strings.
+ * 11 Niri entries, a limit of 8, two hidden urgent entries, and a long-name
+ * strip that overflows the 680px viewport. Focus must be in visible pixels.
+ */
+async function smokeTopBar() {
+  const script = '<script>' +
+    'window.webkit={messageHandlers:{kiraDiagnostics:{postMessage(){}},kiraCore:{postMessage(){}}}};' +
+    'window.addEventListener("load",()=>{' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:config",{detail:{config:{' +
+    'compact:false,title:"KIRA DESKTOP",show_seconds:false,show_names:true,max_workspaces:8' +
+    '},error:null}})),45);' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:workspaces",{detail:{connected:true,' +
+    'workspaces:Array.from({length:11},(_,i)=>({id:String(i+1),idx:i+1,' +
+    'name:"Workspace long name "+(i+1),output:"DP-1",is_active:i===8,is_focused:i===8,' +
+    'is_urgent:i===0||i===5||i===10}))}})),85);' +
+    'setTimeout(()=>{' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Desktop top bar\\\"]");' +
+    'const list=root?.querySelector("ol[aria-label=\\\"Niri workspaces\\\"]");' +
+    'const focused=list?.querySelector("[data-focused=true]");' +
+    'const listRect=list?.getBoundingClientRect();const focusRect=focused?.getBoundingClientRect();' +
+    'const urgency=root?.querySelectorAll("[aria-label*=\\\"urgent workspace hidden\\\"]");' +
+    'const visibleUrgent=root?.querySelector("[aria-label*=\\\", urgent\\\"]");' +
+    'document.documentElement.dataset.smokeTopbar=!!root && root.getBoundingClientRect().height===42 &&' +
+    '!!list && list.scrollWidth>list.clientWidth && list.scrollLeft>0 && !!focused &&' +
+    'focused.dataset.workspaceId==="9" && focusRect.left>=listRect.left-2 &&' +
+    'focusRect.right<=listRect.right+2 && urgency.length===2 && !!visibleUrgent;' +
+    '},600);});</script>';
+  const page = html.replace('</head>', script + '</head>');
+  const filename = join(dir, 'topbar.html');
+  await writeFile(filename, page);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--disable-background-networking', '--window-size=680,440',
+    '--virtual-time-budget=1200', '--dump-dom', 'file://' + filename,
+  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
+  if (!output.includes('data-smoke-topbar="true"')) {
+    const list = output.match(/<ol[^>]*aria-label="Niri workspaces"[\s\S]{0,800}/)?.[0] ?? 'not mounted';
+    throw new Error('Top Bar focused pixel visibility or urgency regression: ' + list.slice(0, 600));
+  }
+  console.log('OK: Top Bar focus auto-scroll and urgency on both hidden sides');
+}
+
 try {
-  await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
+  await smokeTopBar();
+  await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'tenet');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
@@ -9546,13 +9639,16 @@ try {
     { delay: 180, kind: 'calendar-next' },
     { delay: 420, kind: 'calendar-pick' },
   ], 'Kira Calendar', 'calendar');
-  await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
+  await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'tenet');
   await smoke('system-live-telemetry', [
     { delay: 25, kind: 'system', generation: 1 },
     { delay: 170, kind: 'metrics' },
     { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
-  await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
+  await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
+  await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
+  await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
+  await smoke('launcher-reduced-motion', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'reduced');
   await smoke('launcher-square-with-themed-icons', [
     { delay: 25, kind: 'launcher', generation: 1 },
     { delay: 90, kind: 'catalog' },
@@ -10238,6 +10334,7 @@ FILE	frontend/src/lib/calendar-tenet-motion.ts
  * leave no transforms, fragments, timers or RAF loops behind.
  */
 import { gsap } from 'gsap';
+import { tenetWidgetReveal } from './motion';
 import { nextClockFlights, type ClockFlight } from './clock-flight';
 import { dualTime, tenetFragmentsFor, type FragmentFlight } from './calendar-tenet-model';
 
@@ -10307,47 +10404,13 @@ function dualScene(
   return { forward, inverted, fragments };
 }
 
+/** Shared entry scene anchored at the clock. Independent digit and day
+ * interactions retain their recorded trajectories and timeline direction.
+ */
 export function tenetCalendarReveal(node: HTMLElement) {
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const targets = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
-  const clock = node.querySelector<HTMLElement>('[data-calendar-clock-play]');
-  let scene: Scene | null = null;
-  let restoreTimer: number | null = null;
-
-  function stop() {
-    if (restoreTimer !== null) {
-      window.clearTimeout(restoreTimer);
-      restoreTimer = null;
-    }
-    const old = scene;
-    scene = null;
-    old?.forward.kill();
-    old?.inverted.kill();
-    old?.fragments.forEach(fragment => fragment.remove());
-    gsap.killTweensOf(targets);
-    gsap.set(targets, { clearProps: 'opacity,visibility,transform' });
-  }
-  const onMotionChange = () => { if (reduced(motion)) stop(); };
-  motion.addEventListener('change', onMotionChange);
-  if (!reduced(motion) && clock) {
-    node.dataset.tenetReveal = 'started';
-    scene = dualScene(node, clock, targets, 1, () => {
-      stop();
-      node.dataset.tenetReveal = 'settled';
-    });
-    // Hidden/throttled WebKit views may suspend RAF. Never strand fragments.
-    restoreTimer = window.setTimeout(() => {
-      stop();
-      node.dataset.tenetReveal = 'settled';
-    }, 950);
-  }
-
-  return {
-    destroy() {
-      motion.removeEventListener('change', onMotionChange);
-      stop();
-    },
-  };
+  return tenetWidgetReveal(node, {
+    contact: '[data-calendar-clock-play]', direction: 1,
+  });
 }
 
 /** Calendar navigation: day/date text moves FORWARD; four fragments move
@@ -10897,6 +10960,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 FILE	frontend/src/lib/components/LauncherWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import { tenetWidgetReveal } from '../motion';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
@@ -11006,11 +11070,12 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira Launcher"
-  class="flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
-  <header class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: -1 }}
+  class="relative flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
+  <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
+        <p data-kira-contact class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
         <h1 class="mt-2 text-[30px] font-extrabold leading-none tracking-tight">Launch</h1>
       </div>
       <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
@@ -11019,7 +11084,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
     </div>
   </header>
 
-  <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
+  <section data-kira-enter class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
     <label for="kira-launcher-query" class="mb-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">FIND / OPEN</label>
     <div class="relative shrink-0 border border-kira-muted/30 bg-kira-bg
       focus-within:border-kira-accent focus-within:ring-1 focus-within:ring-kira-accent">
@@ -11112,7 +11177,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       </p>
     {/if}
   </section>
-  <footer class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
+  <footer data-kira-enter class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
     px-5 py-2.5 text-[10px] text-kira-muted">
     <span class="flex items-center gap-1.5">
       <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">↑ ↓</kbd> MOVE
@@ -11406,7 +11471,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
-  import { pulseReading, revealStagger } from '../motion';
+  import { pulseReading, tenetWidgetReveal } from '../motion';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -11485,11 +11550,12 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
-  class="kira-monitor-scroll flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
-  <header class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
+  class="kira-monitor-scroll relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
+  <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div class="border-l-2 border-kira-accent pl-3">
-        <div class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">KIRA / HOST INSTRUMENTS</div>
+        <div data-kira-contact class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">KIRA / HOST INSTRUMENTS</div>
         <h1 class="mt-2 text-[25px] font-extrabold leading-none tracking-tight">System monitor</h1>
         <p class="mt-2 text-[10px] font-medium tracking-wide text-kira-muted">LOCAL TELEMETRY / READ ONLY</p>
       </div>
@@ -11512,7 +11578,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
     </div>
   </header>
 
-  <nav class="grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
+  <nav data-kira-enter class="grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
     <button type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'overview' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
@@ -11526,7 +11592,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   </nav>
 
   {#if active === 'overview'}
-    <div class="flex min-h-0 flex-1 flex-col" use:revealStagger>
+    <div class="flex min-h-0 flex-1 flex-col">
       <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
         <div class="mb-4 flex items-center justify-between gap-2 border-b border-kira-muted/15 pb-3">
           <div class="flex items-center gap-2">
@@ -11669,7 +11735,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
     </div>
   {:else}
     <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
-      aria-label="Processes" use:revealStagger>
+      aria-label="Processes">
       <div data-kira-enter class="mb-3 flex items-center justify-between gap-2">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
         <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>
@@ -11726,6 +11792,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 
 FILE	frontend/src/lib/components/WorkspacePreview.svelte
 <script lang="ts">
+  import { tick } from 'svelte';
   import type { WorkspaceState } from '../sdk/core';
   import { visibleWorkspaceWindow } from '../workspace-window';
 
@@ -11738,6 +11805,23 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
   } = $props();
 
   const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
+  const focusedId = $derived(windowed.items.find(item => item.is_focused)?.id ?? null);
+  let list: HTMLOListElement;
+
+  // The model guarantees inclusion; WebKit's fixed-width horizontal
+  // viewport still needs explicit pixel visibility after Niri changes focus.
+  $effect(() => {
+    const id = focusedId;
+    if (id === null) return;
+    let cancelled = false;
+    void tick().then(() => {
+      if (cancelled || !list) return;
+      const match = Array.from(list.querySelectorAll<HTMLElement>('[data-workspace-id]'))
+        .find(item => item.dataset.workspaceId === id);
+      match?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+    });
+    return () => { cancelled = true; };
+  });
 
 </script>
 
@@ -11753,13 +11837,16 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 {:else}
   <div class="flex min-w-0 shrink items-center gap-1" data-workspace-strip>
     {#if windowed.before > 0}
-      <span class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted/80"
-        title={windowed.before + ' preceding Niri workspaces hidden'}
-        aria-label={windowed.before + ' preceding workspaces not shown'}>
+      <span class="shrink-0 text-[10px] font-semibold tabular-nums"
+        class:text-kira-accent={windowed.beforeUrgent}
+        class:text-kira-muted={!windowed.beforeUrgent}
+        role={windowed.beforeUrgent ? 'status' : undefined}
+        title={windowed.before + ' preceding Niri workspaces hidden' + (windowed.beforeUrgent ? ' / urgent workspace' : '')}
+        aria-label={windowed.before + ' preceding workspaces not shown' + (windowed.beforeUrgent ? ', urgent workspace hidden' : '')}>
         −{windowed.before}
       </span>
     {/if}
-    <ol class="flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    <ol bind:this={list} class="flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Niri workspaces">
       {#each windowed.items as workspace (workspace.id)}
         <li
@@ -11770,6 +11857,7 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
                 ? 'bg-kira-surface-soft text-kira-text'
                 : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'].join(' ')}
           data-focused={workspace.is_focused}
+          data-workspace-id={workspace.id}
           data-urgent={workspace.is_urgent}
         >
           <button
@@ -11779,7 +11867,8 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
                 ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2'
                 : 'focus-visible:outline-kira-accent focus-visible:outline-offset-1'].join(' ')}
             aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
-              + (workspace.output ? ' on ' + workspace.output : '')}
+              + (workspace.output ? ' on ' + workspace.output : '')
+              + (workspace.is_urgent ? ', urgent' : '')}
             aria-pressed={workspace.is_focused}
             title={'Workspace ' + (workspace.name || workspace.idx)
               + (workspace.output ? ' on ' + workspace.output : '')
@@ -11801,9 +11890,12 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
       {/each}
     </ol>
     {#if windowed.after > 0}
-      <span class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted/80"
-        title={windowed.after + ' following Niri workspaces hidden'}
-        aria-label={windowed.after + ' following workspaces not shown'}>
+      <span class="shrink-0 text-[10px] font-semibold tabular-nums"
+        class:text-kira-accent={windowed.afterUrgent}
+        class:text-kira-muted={!windowed.afterUrgent}
+        role={windowed.afterUrgent ? 'status' : undefined}
+        title={windowed.after + ' following Niri workspaces hidden' + (windowed.afterUrgent ? ' / urgent workspace' : '')}
+        aria-label={windowed.after + ' following workspaces not shown' + (windowed.afterUrgent ? ', urgent workspace hidden' : '')}>
         +{windowed.after}
       </span>
     {/if}
@@ -12045,32 +12137,156 @@ export function createLazyWidget<Instance>(
   return { show, hide };
 }
 
+FILE	frontend/src/lib/motion-contract.test.ts
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import { dualTime, tenetFragmentsFor } from './calendar-tenet-model';
+
+const motion = readFileSync(new URL('./motion.ts', import.meta.url), 'utf8');
+const calendar = readFileSync(new URL('./calendar-tenet-motion.ts', import.meta.url), 'utf8');
+const launcher = readFileSync(new URL('./components/LauncherWidget.svelte', import.meta.url), 'utf8');
+const system = readFileSync(new URL('./components/SystemWidget.svelte', import.meta.url), 'utf8');
+
+describe('TENET shared widget appearance', () => {
+  it('preserves one recorded trajectory in reverse chronological order', () => {
+    for (const direction of [-1, 1] as const) {
+      const saved = tenetFragmentsFor(direction);
+      expect(saved).toHaveLength(4);
+      for (const t of [0, 0.2, 0.5, 0.8, 1]) {
+        const inverse = dualTime(t).inverted;
+        expect(inverse).toBeCloseTo(dualTime(1 - t).forward);
+        expect(saved.map(f => [f.x * inverse, f.y * inverse, f.rotation * inverse]))
+          .toEqual(saved.map(f => [f.x * (1 - t), f.y * (1 - t), f.rotation * (1 - t)]));
+      }
+    }
+  });
+
+  it('requires a shared master, cancellable streams, reduced motion and DOM cleanup', () => {
+    expect(motion).toContain('gsap.timeline({ paused: true })');
+    expect(motion).toContain('dualTime(forward?.progress() ?? 1).inverted');
+    expect(motion).toContain('preference.addEventListener');
+    expect(motion).toContain("preference.removeEventListener");
+    expect(motion).toContain('forward?.kill()');
+    expect(motion).toContain('inverted?.kill()');
+    expect(motion).toContain('trace.remove()');
+    expect(motion).toContain('window.setTimeout(settle, 1100)');
+    expect(motion).toContain("node.dataset.tenetReveal = 'settled'");
+  });
+
+  it('uses physical widget contacts without duplicating legacy stagger animations', () => {
+    expect(calendar).toContain('return tenetWidgetReveal(node, {');
+    expect(launcher).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: -1 }}");
+    expect(system).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}");
+    expect(launcher).toContain('data-kira-contact');
+    expect(system).toContain('data-kira-contact');
+    expect(system).not.toContain('use:revealStagger');
+  });
+});
+
 FILE	frontend/src/lib/motion.ts
 /** GSAP is the project's sole JavaScript motion engine.
  * Actions are scoped to the short-lived Svelte widget DOM. They never animate
  * GTK/Wayland windows, and reduced-motion is a functional no-animation path.
  */
 import { gsap } from 'gsap';
+import { dualTime, tenetFragmentsFor } from './calendar-tenet-model';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/** Deliberately short, staggered entry animation for a newly mounted tab. */
-export function revealStagger(node: HTMLElement) {
-  if (reducedMotion()) return;
-  const targets = node.querySelectorAll<HTMLElement>('[data-kira-enter]');
-  const animation = gsap.fromTo(targets,
-    { autoAlpha: 0, y: 14, scale: 0.985 },
-    {
-      autoAlpha: 1, y: 0, scale: 1, duration: 0.55,
-      stagger: 0.065, ease: 'power3.out',
-      clearProps: 'opacity,visibility,transform',
-    },
-  );
+/** A widget mount is one recorded TENET event. FORWARD sections arrive
+ * while INVERTED traces replay the same outbound physical path backward
+ * to the real header/clock contact, from one synchronized master cursor.
+ */
+export interface TenetEntrance {
+  contact: string;
+  direction?: 1 | -1;
+}
+
+export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const targets = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
+  const contact = node.querySelector<HTMLElement>(options.contact);
+  const direction = options.direction ?? 1;
+  let forward: gsap.core.Timeline | null = null;
+  let inverted: gsap.core.Timeline | null = null;
+  let traces: HTMLElement[] = [];
+  let restore: number | null = null;
+
+  function settle() {
+    if (restore !== null) {
+      window.clearTimeout(restore);
+      restore = null;
+    }
+    forward?.kill();
+    inverted?.kill();
+    forward = null;
+    inverted = null;
+    for (const trace of traces) trace.remove();
+    traces = [];
+    gsap.killTweensOf(targets);
+    if (targets.length) gsap.set(targets, { clearProps: 'transform,opacity,visibility' });
+    node.dataset.tenetReveal = 'settled';
+  }
+
+  const onPreference = () => { if (preference.matches) settle(); };
+  preference.addEventListener('change', onPreference);
+  if (!preference.matches && contact && targets.length) {
+    const rootRect = node.getBoundingClientRect();
+    const contactRect = contact.getBoundingClientRect();
+    const origin = {
+      x: contactRect.left - rootRect.left + contactRect.width / 2,
+      y: contactRect.top - rootRect.top + contactRect.height / 2,
+    };
+    const flights = tenetFragmentsFor(direction);
+    traces = flights.map((_, index) => {
+      const trace = node.ownerDocument.createElement('span');
+      trace.dataset.tenetFragment = 'inverted';
+      trace.setAttribute('aria-hidden', 'true');
+      trace.style.cssText = [
+        'position:absolute', 'pointer-events:none', 'z-index:2',
+        'width:3px', 'height:3px', 'opacity:0',
+        'transform-origin:center center',
+        'left:' + origin.x + 'px', 'top:' + origin.y + 'px',
+        'background:' + (index % 2 ? '#e5e5e5' : '#fca311'),
+      ].join(';');
+      node.appendChild(trace);
+      return trace;
+    });
+    inverted = gsap.timeline({ paused: true });
+    inverted.to(traces, {
+      x: (i: number) => flights[i].x,
+      y: (i: number) => flights[i].y,
+      rotation: (i: number) => flights[i].rotation,
+      opacity: 0.76, scale: 1, duration: 0.68,
+      stagger: 0.024, ease: 'power3.out',
+    }, 0);
+    inverted.progress(1); // Consequence is visible before contact.
+    forward = gsap.timeline({
+      paused: true,
+      onUpdate: () => {
+        // Reverse recorded chronology, not the coordinates or CSS direction.
+        inverted?.progress(dualTime(forward?.progress() ?? 1).inverted);
+      },
+      onComplete: settle,
+    });
+    forward.fromTo(targets,
+      { autoAlpha: 0, x: 8 * direction, y: 7 },
+      {
+        autoAlpha: 1, x: 0, y: 0, duration: 0.54,
+        stagger: 0.045, ease: 'power3.out',
+      }, 0);
+    node.dataset.tenetReveal = 'started';
+    forward.play(0);
+    // GTK may map WebKit while animation frames are throttled.
+    restore = window.setTimeout(settle, 1100);
+  } else {
+    node.dataset.tenetReveal = 'settled';
+  }
   return {
     destroy() {
-      animation.kill();
-      gsap.set(targets, { clearProps: 'opacity,visibility,transform' });
+      preference.removeEventListener('change', onPreference);
+      settle();
     },
   };
 }
@@ -13892,7 +14108,15 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).not.toContain('box-shadow');
   });
 
-  it('keeps launcher, KDL settings and live clock functional', () => {
+  it('retains focus scrolling and hidden urgency in workspace navigation', () => {
+    expect(workspaces).toContain('scrollIntoView(');
+    expect(workspaces).toContain('data-workspace-id={workspace.id}');
+    expect(workspaces).toContain('windowed.beforeUrgent');
+    expect(workspaces).toContain('windowed.afterUrgent');
+    expect(workspaces).toContain("workspace.is_urgent ? ', urgent' : ''");
+  });
+
+    it('keeps launcher, KDL settings and live clock functional', () => {
     expect(markup).toContain('onclick={activateLauncher}');
     expect(markup).toContain('configState.config.title');
     expect(markup).toContain('configState.config.show_seconds');
@@ -13971,7 +14195,7 @@ describe('Niri workspace display window', () => {
   it('preserves the full Niri list when no workspaces are hidden', () => {
     const apps = [ws(1), ws(2, true)];
     expect(visibleWorkspaceWindow(apps, 8))
-      .toEqual({ items: apps, before: 0, after: 0 });
+      .toEqual({ items: apps, before: 0, after: 0, beforeUrgent: false, afterUrgent: false });
   });
   it('always keeps real focus visible with honest hidden counts', () => {
     const entries = [1, 2, 3, 4, 5, 6].map(i => ws(i, i === 5));
@@ -13979,11 +14203,28 @@ describe('Niri workspace display window', () => {
     expect(visible.items.map(item => item.id)).toEqual(['3', '4', '5']);
     expect(visible.before).toBe(2);
     expect(visible.after).toBe(1);
+    expect(visible.beforeUrgent).toBe(false);
+    expect(visible.afterUrgent).toBe(false);
   });
+  it('surfaces urgent Niri workspaces hidden to either side without inventing windows', () => {
+    const entries = [1, 2, 3, 4, 5, 6].map(i => ws(i, i === 4));
+    entries[0].is_urgent = true;
+    entries[5].is_urgent = true;
+    const windowed = visibleWorkspaceWindow(entries, 2);
+    expect(windowed.items.map(item => item.idx)).toEqual([3, 4]);
+    expect(windowed.before).toBe(2);
+    expect(windowed.after).toBe(2);
+    expect(windowed.beforeUrgent).toBe(true);
+    expect(windowed.afterUrgent).toBe(true);
+    entries[0].is_urgent = false;
+    expect(visibleWorkspaceWindow(entries, 2).beforeUrgent).toBe(false);
+  });
+
   it('handles no focused workspace and bounds the configured limit', () => {
     const entries = [1, 2, 3, 4].map(i => ws(i));
     expect(visibleWorkspaceWindow(entries, 2)).toEqual({
       items: entries.slice(0, 2), before: 0, after: 2,
+      beforeUrgent: false, afterUrgent: false,
     });
     expect(visibleWorkspaceWindow(entries, Number.NaN).items).toHaveLength(1);
     expect(visibleWorkspaceWindow(entries, 0).items).toHaveLength(1);
@@ -14002,6 +14243,8 @@ export interface WorkspaceWindow {
   items: Workspace[];
   before: number;
   after: number;
+  beforeUrgent: boolean;
+  afterUrgent: boolean;
 }
 
 export function visibleWorkspaceWindow(
@@ -14019,6 +14262,8 @@ export function visibleWorkspaceWindow(
     items,
     before: start,
     after: Math.max(0, workspaces.length - start - items.length),
+    beforeUrgent: workspaces.slice(0, start).some(item => item.is_urgent),
+    afterUrgent: workspaces.slice(start + items.length).some(item => item.is_urgent),
   };
 }
 
