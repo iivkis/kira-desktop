@@ -6,6 +6,8 @@ const motion = readFileSync(new URL('./motion.ts', import.meta.url), 'utf8');
 const calendar = readFileSync(new URL('./calendar-tenet-motion.ts', import.meta.url), 'utf8');
 const launcher = readFileSync(new URL('./components/LauncherWidget.svelte', import.meta.url), 'utf8');
 const system = readFileSync(new URL('./components/SystemWidget.svelte', import.meta.url), 'utf8');
+const workspace = readFileSync(new URL('./components/WorkspacePreview.svelte', import.meta.url), 'utf8');
+const calendarWidget = readFileSync(new URL('./components/CalendarWidget.svelte', import.meta.url), 'utf8');
 
 describe('TENET shared widget appearance', () => {
   it('preserves one recorded trajectory in reverse chronological order', () => {
@@ -81,5 +83,53 @@ describe('TENET shared widget appearance', () => {
     expect(launcher).toContain('data-kira-contact');
     expect(system).toContain('data-kira-contact');
     expect(system).not.toContain('use:revealStagger');
+  });
+});
+
+describe('TENET continuous interaction contract', () => {
+  it('shares one physical 2D marker across every selection surface', () => {
+    for (const source of [calendarWidget, launcher, workspace]) {
+      expect(source).toContain('data-kira-flow-indicator');
+      expect(source).toContain('use:tenetFlowIndicator={{ active:');
+      expect(source).toContain("axis: 'both'");
+      expect(source).toContain('data-kira-tab=');
+    }
+    expect(system).toContain("use:tenetFlowIndicator={{ active }}");
+    expect(motion).toContain("ease: 'back.out(1.18)'");
+    expect(motion).toContain("overwrite: 'auto', force3D: true");
+    expect(motion).toContain("const preference = window.matchMedia('(prefers-reduced-motion: reduce)')");
+    expect(motion).toContain('observer?.disconnect()');
+    expect(motion).toContain('gsap.killTweensOf(indicator)');
+  });
+
+  it('uses keyed GSAP FLIP for purposeful row reordering, not live sensor values', () => {
+    expect(motion).toContain("import { Flip } from 'gsap/Flip'");
+    expect(motion).toContain('Flip.getState(rows)');
+    expect(motion).toContain('Flip.from(state, {');
+    expect(motion).toContain('rows.length || reducedMotion()');
+    expect(motion).toContain('slice(0, 24)');
+    for (const source of [launcher, system]) {
+      expect(source).toContain('tenetReflow(');
+      expect(source).toContain('data-kira-reflow');
+    }
+  });
+
+  it('moves workspace scroll along the correct axis and keeps calendar contact history', () => {
+    expect(workspace).toContain('tenetScrollIntoView(list, match, animate)');
+    expect(launcher).toContain("tenetScrollIntoView(results, item, true, 'y')");
+    expect(motion).toContain("gsap.killTweensOf(list, property)");
+    expect(motion).toContain('gsap.to(list, {');
+    expect(calendar).toContain('activeTargets = changedMonth ? [node] : []');
+    expect(calendar).toContain("ease: 'back.out(1.18)'");
+    expect(calendar).toContain('inverted.progress(dualTime(forward.progress()).inverted)');
+  });
+
+  it('expands a single accessible diagnostics surface and cleans up all tweens', () => {
+    expect(system).toContain('use:tenetDisclosure');
+    expect(system).toContain('data-kira-disclosure-content');
+    expect(motion).toContain("summary.addEventListener('click', onClick)");
+    expect(motion).toContain("summary.setAttribute('aria-expanded', String(next))");
+    expect(motion).toContain("summary.removeEventListener('click', onClick)");
+    expect(motion).toContain("preference.removeEventListener('change', onPreference)");
   });
 });
