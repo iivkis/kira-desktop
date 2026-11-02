@@ -13,7 +13,8 @@ SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
 
 class PopupGeometryTests(unittest.TestCase):
     def test_transient_widget_never_claims_detached_window_columns(self):
-        self.assertIn("PopupDock::Center", LAYOUT)
+        self.assertIn("pub fn choose_dock(_kind: Surface", LAYOUT)
+        self.assertIn("    PopupDock::Right", LAYOUT)
         self.assertIn("PopupDock::Right", LAYOUT)
         self.assertNotIn("PopupDock::Left", LAYOUT)
         self.assertIn("popup_layout::choose_dock(kind, false)", HOST)
