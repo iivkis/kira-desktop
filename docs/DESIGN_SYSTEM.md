@@ -77,8 +77,10 @@ official visual language of Kira Desktop.
   Only explicitly customized KDL titles appear, and they yield space on
   narrow screens. System status reflects real Core/Niri/host measurements
   and becomes quieter when READY; its button still opens System Monitor.
-  The local clock opens the existing Calendar. No extra WebKit processes,
-  native services, polling loops, shortcuts, fake app activity or Dock.
+  The local clock opens the existing Calendar. Additional trusted popup
+  WebKit hosts are leased **on demand** from a bounded pool, never spawned
+  speculatively per hypothetical widget. No extra native services, polling
+  loops, shortcuts, fake app activity or Dock.
   Keyboard focus and reduced-motion semantics are preserved.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
   zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
@@ -98,8 +100,10 @@ official visual language of Kira Desktop.
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
   to the clipboard only on click.
-  Clicking time again or pressing Escape closes; focus loss also dismisses
-  after activation. The calendar and Launcher close each other when opened.
+  Clicking time again or pressing Escape closes; focus loss dismisses
+  when there is only one popup. With multiple concurrently leased popups,
+  switching focus between windows never closes another widget. Calendar,
+  Launcher and System Monitor may stay open independently.
   Calendar motion now uses **TENET dual-time GSAP scenes**:
   when sections appear or month/day selection changes, actual content moves
   FORWARD while four recorded decorative fragments replay their original
@@ -256,6 +260,18 @@ diagnostic bars. The visual hierarchy is intentional:
    entrances and readout updates, with reduced-motion support and lifecycle
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
+
+### Demand-driven pooled WebViews · 2026-11
+
+**Normative lifecycle:** [WebView Pool & Scheduler](WEBVIEW_POOL.md). The Top
+Bar keeps its separate permanent WebView; the popup pool starts one inert warm
+WebKit host and creates more only when simultaneously requested. Every active
+Calendar, Launcher or System Monitor owns a separate GTK window, isolated
+generation-scoped IPC channel and Svelte/GSAP scene. A bounded four-host cap,
+one persistent hot spare and 45-second surplus-idle grace prevent runaway
+renderer growth. Active surfaces and their animations are never evicted to
+open another widget. Wide displays can show Calendar and System side by side;
+smaller displays permit overlap rather than unsafe live anchor changes.
 
 ### Shared TENET widget entrance · 2026-11
 

@@ -18,7 +18,7 @@ NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class DetailedHealthContractTests(unittest.TestCase):
-    def test_same_warm_webview_hosts_calendar_and_system(self):
+    def test_warm_pool_hosts_calendar_and_system_independently(self):
         self.assertIn('register_script_message_handler("kiraSystem", None)', HOST)
         self.assertIn('if value.to_string() == "toggle"', HOST)
         self.assertIn("calendar::toggle_system(", HOST)
@@ -29,8 +29,8 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('set_namespace(Some("kira-overlay"))', OVERLAY)
         self.assertIn('configure_webview_popup(&window, 420, 1)', OVERLAY)
         self.assertIn("self.active.set(Some(kind))", OVERLAY)
-        self.assertIn("state.show(Surface::System)", OVERLAY)
-        self.assertIn("state.show(Surface::Calendar)", OVERLAY)
+        self.assertIn("view.show(Surface::System)", OVERLAY)
+        self.assertIn("view.show(Surface::Calendar)", OVERLAY)
         self.assertIn("kira:overlay:show", OVERLAY)
         self.assertIn("kira:overlay:hide", OVERLAY)
         self.assertIn("mount(SystemWidget", ENTRY)
@@ -55,7 +55,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("LOW BATTERY", MODEL)
         self.assertIn("NOT DETECTED", WIDGET)
         self.assertIn("COPY REPORT", WIDGET)
-        self.assertIn("sendCalendarUi('copy-report')", SDK)
+        self.assertIn("sendCalendarUi('copy-report:' + generation)", SDK)
         self.assertIn("display.clipboard().set_text(&model.report())", OVERLAY)
         for source in (RUST, OVERLAY, MONITOR):
             self.assertNotIn("std::process::Command", source)
@@ -68,9 +68,9 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("std::thread::spawn", RUST)
         self.assertIn("mpsc::sync_channel(1)", RUST)
         self.assertIn("set_processes_active(false)", OVERLAY)
-        self.assertIn("Some(UiCommand::ProcessesTab(active))", OVERLAY)
-        self.assertIn("tab:processes", OVERLAY)
-        self.assertIn("tab:overview", OVERLAY)
+        self.assertIn("Some(UiCommand::ProcessesTab(generation, active))", OVERLAY)
+        self.assertIn('message.strip_prefix("tab:")', OVERLAY)
+        self.assertIn('"overview" => false', OVERLAY)
         self.assertIn("setSystemMonitorTab", ENTRY)
         self.assertIn("01 / OVERVIEW", WIDGET)
         self.assertIn("02 / PROCESSES", WIDGET)

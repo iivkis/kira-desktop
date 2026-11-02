@@ -1,6 +1,8 @@
-//! One warm WebKit layer-shell host shared by the Svelte Calendar and System.
-//! GTK owns one window, trusted IPC and clipboard; Svelte renders both widgets.
+//! Bounded, reusable GTK/WebKit popup hosts for concurrent trusted widgets.
+//! Each active Calendar/System/Launcher has its own window and IPC manager.
+use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::cell::{Cell, RefCell};
+use std::collections::HashMap;
 use std::rc::Rc;
 use std::time::{Duration, Instant};
 
@@ -20,29 +22,163 @@ fn native_fade_progress(elapsed: Duration) -> f64 {
 const CALENDAR_MARKER: &str = "<html lang=\"en\">";
 const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\">";
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum Surface {
-    Calendar,
-    System,
-    Launcher,
+thread_local! {
+    static POOL: RefCell<Option<Rc<OverlayPool>>> = const { RefCell::new(None) };
 }
 
-impl Surface {
-    fn name(self) -> &'static str {
-        match self {
-            Self::Calendar => "calendar",
-            Self::System => "system",
-            Self::Launcher => "launcher",
+/// Top Bar is permanently separate. Only one of these hosts is prewarmed;
+/// extra popup WebViews are created on actual concurrent requests.
+struct OverlayPool {
+    application: gtk::Application,
+    document: String,
+    scheduler: RefCell<WebviewScheduler>,
+    windows: RefCell<HashMap<u32, Rc<CalendarOverlay>>>,
+    poll_source: RefCell<Option<gtk::glib::SourceId>>,
+    last_tick: Cell<Instant>,
+}
+
+impl OverlayPool {
+    fn new(application: &gtk::Application, document: String) -> Rc<Self> {
+        let pool = Rc::new(Self {
+            application: application.clone(),
+            document,
+            scheduler: RefCell::new(WebviewScheduler::default()),
+            windows: RefCell::new(HashMap::new()),
+            poll_source: RefCell::new(None),
+            last_tick: Cell::new(Instant::now()),
+        });
+        if let Some(id) = pool.scheduler.borrow_mut().prewarm_one(Instant::now()) {
+            let view = build(
+                &pool.application,
+                pool.document.clone(),
+                id,
+                Rc::downgrade(&pool),
+            );
+            pool.windows.borrow_mut().insert(id, view);
+        }
+        let weak = Rc::downgrade(&pool);
+        gtk::glib::timeout_add_local(Duration::from_secs(5), move || {
+            let Some(pool) = weak.upgrade() else {
+                return gtk::glib::ControlFlow::Break;
+            };
+            pool.prune();
+            gtk::glib::ControlFlow::Continue
+        });
+        pool
+    }
+
+    fn acquire(self: &Rc<Self>, kind: Surface) -> Option<(Rc<CalendarOverlay>, bool)> {
+        let choice = self.scheduler.borrow_mut().reserve(kind, Instant::now());
+        let (id, existing) = match choice {
+            Reservation::Existing(id) => (id, true),
+            Reservation::Reused(id) => (id, false),
+            Reservation::Created(id) => {
+                let view = build(
+                    &self.application,
+                    self.document.clone(),
+                    id,
+                    Rc::downgrade(self),
+                );
+                self.windows.borrow_mut().insert(id, view);
+                (id, false)
+            }
+            Reservation::Full => {
+                eprintln!("kira-shell: popup pool full; active widgets never evicted");
+                return None;
+            }
+        };
+        let view = self.windows.borrow().get(&id).cloned()?;
+        self.ensure_polling();
+        self.update_launcher_keyboard_mode();
+        Some((view, existing))
+    }
+
+    /// Exactly one GTK source serves all concurrently leased hosts. A warm
+    /// idle WebView has ZERO 30/250ms pollers, unlike the legacy per-window
+    /// timers. The source tears itself down once the last lease is released.
+    fn ensure_polling(self: &Rc<Self>) {
+        if self.poll_source.borrow().is_some() {
+            return;
+        }
+        self.last_tick.set(Instant::now());
+        let weak = Rc::downgrade(self);
+        let source = gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
+            let Some(pool) = weak.upgrade() else {
+                return gtk::glib::ControlFlow::Break;
+            };
+            if pool.scheduler.borrow().active_count() == 0 {
+                pool.poll_source.borrow_mut().take();
+                return gtk::glib::ControlFlow::Break;
+            }
+            // Snapshot owned handles before calling poll_launcher(): a
+            // successful GIO launch may close its own slot mid-iteration.
+            let active: Vec<_> = pool
+                .windows
+                .borrow()
+                .values()
+                .filter(|view| view.requested.get())
+                .cloned()
+                .collect();
+            for view in &active {
+                view.poll_launcher();
+                view.poll_pulse();
+            }
+            if pool.last_tick.get().elapsed() >= Duration::from_millis(250) {
+                pool.last_tick.set(Instant::now());
+                for view in &active {
+                    view.tick();
+                }
+            }
+            gtk::glib::ControlFlow::Continue
+        });
+        self.poll_source.replace(Some(source));
+    }
+
+    fn active(&self, kind: Surface) -> Option<Rc<CalendarOverlay>> {
+        let id = self.scheduler.borrow().active_slot(kind)?;
+        self.windows.borrow().get(&id).cloned()
+    }
+
+    fn release(&self, id: u32) {
+        self.scheduler.borrow_mut().release(id, Instant::now());
+        self.update_launcher_keyboard_mode();
+    }
+
+    fn update_launcher_keyboard_mode(&self) {
+        // Exclusive is useful for an isolated type-to-search Launcher but
+        // blocks interaction with other simultaneously visible windows.
+        // Keep its solo behavior; use OnDemand with multiple popup leases.
+        if let Some(launcher) = self.active(Surface::Launcher) {
+            launcher.window.set_keyboard_mode(if self.concurrent() {
+                KeyboardMode::OnDemand
+            } else {
+                KeyboardMode::Exclusive
+            });
+        }
+    }
+
+    fn concurrent(&self) -> bool {
+        self.scheduler.borrow().active_count() > 1
+    }
+
+    fn prune(&self) {
+        let expired = self.scheduler.borrow_mut().expired_idle(Instant::now());
+        for id in expired {
+            let retired = { self.windows.borrow_mut().remove(&id) };
+            if let Some(view) = retired {
+                view.disposed.set(true);
+                // Never close an active window. This reclaims surplus idle
+                // WebKit processes, keeping only the newest hot spare.
+                view.window.close();
+            }
         }
     }
 }
 
-thread_local! {
-    // One GTK/WebKit host, shared by every built-in overlay type.
-    static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>> = const { RefCell::new(None) };
-}
-
 struct CalendarOverlay {
+    id: u32,
+    pool: std::rc::Weak<OverlayPool>,
+    disposed: Cell<bool>,
     window: gtk::ApplicationWindow,
     view: webkit6::WebView,
     document: String,
@@ -54,7 +190,6 @@ struct CalendarOverlay {
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
-    reposition_pending: Cell<bool>,
     revealed: Cell<bool>,
     native_reduced_motion: Cell<bool>,
     paint_pending: Cell<bool>,
@@ -91,17 +226,24 @@ impl CalendarOverlay {
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            self.window.set_margin(Edge::Right, 12);
+            self.window.set_margin(
+                Edge::Right,
+                crate::native_ui::popup_right_margin(&self.window, kind == Surface::System),
+            );
         }
     }
 
     fn hide(&self) {
-        self.requested.set(false);
-        self.reposition_pending.set(false);
+        if !self.requested.replace(false) {
+            return;
+        }
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
             model.set_pulse_active(false);
         }
+        // Idle WebKit is warm, but it must retain no live sampler or
+        // expensive widget-specific model from a previous lease.
+        self.system.borrow_mut().take();
         self.active.set(None);
         self.launcher.borrow_mut().take();
         self.widget_ready.set(false);
@@ -129,43 +271,28 @@ impl CalendarOverlay {
             );
         }
         self.window.set_visible(false);
+        if let Some(pool) = self.pool.upgrade() {
+            pool.release(self.id);
+        }
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // Moving an already mapped layer-shell surface causes Niri to display
-        // its previous WebKit buffer for a frame at the NEW coordinates.
-        // Unmap first and allow the compositor to process that unmap in a
-        // different main-loop iteration before remapping at the new anchors.
-        // Switching Calendar <-> System keeps its instant in-place path.
-        let relocating = self.window.is_visible()
-            && self
-                .active
-                .get()
-                .is_some_and(|old| (old == Surface::Launcher) != (kind == Surface::Launcher));
-        let defer_present = relocating || self.reposition_pending.get();
-        if relocating {
-            // Unmapping can trigger is_active_notify: it must not count as
-            // an outside click that closes the *new* popup.
-            self.was_active.set(false);
-            self.window.set_visible(false);
-        }
-        self.reposition_pending.set(defer_present);
-
-        if self.active.get() == Some(Surface::System) && kind != Surface::System {
-            if let Some(model) = self.system.borrow().as_ref() {
-                model.set_processes_active(false);
-                model.set_pulse_active(false);
-            }
-        }
+        // Dedicated leased WebView: no preceding Svelte widget is unmounted
+        // and no other Wayland popup is ever unmapped to start this scene.
+        debug_assert!(!self.requested.get());
         self.position_for(kind);
         self.active.set(Some(kind));
         // The launcher needs reliable keyboard focus for type-to-search;
         // other popups preserve their former on-demand keyboard behavior.
-        self.window.set_keyboard_mode(if kind == Surface::Launcher {
-            KeyboardMode::Exclusive
-        } else {
-            KeyboardMode::OnDemand
-        });
+        self.window.set_keyboard_mode(
+            if kind == Surface::Launcher
+                && self.pool.upgrade().is_some_and(|pool| !pool.concurrent())
+            {
+                KeyboardMode::Exclusive
+            } else {
+                KeyboardMode::OnDemand
+            },
+        );
         self.requested.set(true);
         self.revealed.set(false);
         self.native_reduced_motion.set(false);
@@ -183,33 +310,15 @@ impl CalendarOverlay {
         // Reset the previous widget's geometry while still transparent.
         crate::native_ui::resize_webview_popup(&self.window, 420, 1);
         let generation = self.generation.get();
-        if defer_present {
-            // Start replacing the Svelte DOM while the old buffer is NOT
-            // mapped. The window is revealed only after the new generation
-            // has mounted and painted (or the verified-DOM fallback runs).
-            self.request_mount();
-            let weak = Rc::downgrade(self);
-            gtk::glib::timeout_add_local_once(Duration::from_millis(32), move || {
-                if let Some(state) = weak.upgrade()
-                    && state.requested.get()
-                    && state.generation.get() == generation
-                {
-                    state.reposition_pending.set(false);
-                    state.window.present();
-                }
-            });
-        } else {
-            self.window.present();
-            self.request_mount();
-        }
+        self.window.present();
+        self.request_mount();
         eprintln!(
-            "kira-shell: Overlay requested: {} generation {} (host ready: {}, reposition: {})",
+            "kira-shell: Pooled popup {} slot {} generation {} (host ready: {})",
             kind.name(),
+            self.id,
             generation,
-            self.host_ready.get(),
-            defer_present
+            self.host_ready.get()
         );
-
         // A dead renderer should not leave an invisible focus-stealing popup.
         let generation = self.generation.get();
         let weak = Rc::downgrade(self);
@@ -231,7 +340,7 @@ impl CalendarOverlay {
     }
 
     fn request_mount(&self) {
-        if !self.requested.get() || !self.host_ready.get() {
+        if self.disposed.get() || !self.requested.get() || !self.host_ready.get() {
             return;
         }
         let generation = self.generation.get();
@@ -371,6 +480,9 @@ impl CalendarOverlay {
     }
 
     fn on_message(self: &Rc<Self>, message: &str) {
+        if self.disposed.get() {
+            return;
+        }
         match calendar_command(message) {
             Some(UiCommand::HostReady) => {
                 eprintln!("kira-shell: Shared Svelte overlay host ready");
@@ -424,9 +536,14 @@ impl CalendarOverlay {
             {
                 self.reveal();
             }
-            Some(UiCommand::Close) if self.requested.get() => self.hide(),
-            Some(UiCommand::CopyDate(date))
+            Some(UiCommand::Close(generation))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
+                self.hide()
+            }
+            Some(UiCommand::CopyDate(generation, date))
                 if self.requested.get()
+                    && self.generation.get() == generation
                     && self.revealed.get()
                     && self.active.get() == Some(Surface::Calendar) =>
             {
@@ -434,16 +551,19 @@ impl CalendarOverlay {
                     display.clipboard().set_text(date);
                 }
             }
-            Some(UiCommand::ProcessesTab(active))
-                if self.requested.get() && self.active.get() == Some(Surface::System) =>
+            Some(UiCommand::ProcessesTab(generation, active))
+                if self.requested.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::System) =>
             {
                 if let Some(model) = self.system.borrow().as_ref() {
                     model.set_processes_active(active);
                     model.set_pulse_active(!active);
                 }
             }
-            Some(UiCommand::CopyReport)
+            Some(UiCommand::CopyReport(generation))
                 if self.requested.get()
+                    && self.generation.get() == generation
                     && self.revealed.get()
                     && self.active.get() == Some(Surface::System) =>
             {
@@ -662,15 +782,15 @@ impl CalendarOverlay {
 
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
-    Close,
+    Close(u32),
     HostReady,
     Mounted(u32, bool),
     MotionPreference(u32, bool),
     Painted(u32),
     ContentHeight(u32, i32),
-    CopyDate(&'a str),
-    ProcessesTab(bool),
-    CopyReport,
+    CopyDate(u32, &'a str),
+    ProcessesTab(u32, bool),
+    CopyReport(u32),
     LauncherCatalog(u32),
     LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
@@ -708,14 +828,34 @@ fn parse_motion_message(value: &str) -> Option<(u32, bool)> {
     Some((generation, reduced))
 }
 
+fn parse_ui_generation(value: &str) -> Option<u32> {
+    if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    value.parse::<u32>().ok().filter(|v| *v > 0)
+}
+
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
-    match message {
-        "close" => return Some(UiCommand::Close),
-        "host-ready" => return Some(UiCommand::HostReady),
-        "tab:processes" => return Some(UiCommand::ProcessesTab(true)),
-        "tab:overview" => return Some(UiCommand::ProcessesTab(false)),
-        "copy-report" => return Some(UiCommand::CopyReport),
-        _ => {}
+    if message == "host-ready" {
+        return Some(UiCommand::HostReady);
+    }
+    if let Some(value) = message.strip_prefix("close:") {
+        return parse_ui_generation(value).map(UiCommand::Close);
+    }
+    if let Some(value) = message.strip_prefix("copy-report:") {
+        return parse_ui_generation(value).map(UiCommand::CopyReport);
+    }
+    if let Some(value) = message.strip_prefix("tab:") {
+        let (generation, tab) = value.split_once(':')?;
+        let active = match tab {
+            "overview" => false,
+            "processes" => true,
+            _ => return None,
+        };
+        return Some(UiCommand::ProcessesTab(
+            parse_ui_generation(generation)?,
+            active,
+        ));
     }
     if let Some(value) = message.strip_prefix("apps-request:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
@@ -805,7 +945,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         }
         return value.parse().ok().map(UiCommand::Painted);
     }
-    let date = message.strip_prefix("copy:")?;
+    let value = message.strip_prefix("copy:")?;
+    let (generation, date) = value.split_once(':')?;
+    let generation = parse_ui_generation(generation)?;
     let bytes = date.as_bytes();
     if bytes.len() != 10
         || bytes[4] != b'-'
@@ -823,7 +965,7 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if !valid_date(year, month, day) {
         return None;
     }
-    Some(UiCommand::CopyDate(date))
+    Some(UiCommand::CopyDate(generation, date))
 }
 
 fn calendar_document(html: &str) -> Option<String> {
@@ -831,7 +973,12 @@ fn calendar_document(html: &str) -> Option<String> {
         .then(|| html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
 }
 
-fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay> {
+fn build(
+    application: &gtk::Application,
+    document: String,
+    id: u32,
+    pool: std::rc::Weak<OverlayPool>,
+) -> Rc<CalendarOverlay> {
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
     window.set_decorated(false);
@@ -857,6 +1004,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     crate::native_ui::restrict_webview_navigation(&view);
 
     let overlay = Rc::new(CalendarOverlay {
+        id,
+        pool,
+        disposed: Cell::new(false),
         window: window.clone(),
         view: view.clone(),
         document,
@@ -868,7 +1018,6 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
-        reposition_pending: Cell::new(false),
         revealed: Cell::new(false),
         native_reduced_motion: Cell::new(false),
         paint_pending: Cell::new(false),
@@ -892,7 +1041,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     let weak = Rc::downgrade(&overlay);
     view.connect_load_failed(move |_, event, uri, error| {
         eprintln!("kira-shell: Calendar WebKit load failed ({event:?}) for {uri}: {error}");
-        if let Some(state) = weak.upgrade() {
+        if let Some(state) = weak.upgrade()
+            && !state.disposed.get()
+        {
             state.host_ready.set(false);
             state.hide();
         }
@@ -901,7 +1052,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     let weak = Rc::downgrade(&overlay);
     view.connect_web_process_terminated(move |_, reason| {
         eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
-        if let Some(state) = weak.upgrade() {
+        if let Some(state) = weak.upgrade()
+            && !state.disposed.get()
+        {
             state.host_ready.set(false);
             state.hide();
             state.view.load_html(&state.document, None);
@@ -914,7 +1067,11 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
             if window.is_active() {
                 state.was_active.set(true);
             } else if state.requested.get() && state.was_active.get() {
-                state.hide();
+                // Focus shifts BETWEEN our concurrent popup windows must
+                // never cancel another visible widget's GSAP timeline.
+                if !state.pool.upgrade().is_some_and(|pool| pool.concurrent()) {
+                    state.hide();
+                }
             }
         }
     });
@@ -923,69 +1080,50 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     // shows. The Calendar component, timer and DOM are unmounted on hide.
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
-    let weak = Rc::downgrade(&overlay);
-    gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
-        if let Some(state) = weak.upgrade() {
-            state.poll_launcher();
-            // Reuse the existing 30ms GTK source for the 500ms CPU/RAM
-            // stream. Never schedule WebKit scripts on a worker thread.
-            state.poll_pulse();
-            gtk::glib::ControlFlow::Continue
-        } else {
-            gtk::glib::ControlFlow::Break
-        }
-    });
-    let weak = Rc::downgrade(&overlay);
-    gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
-        if let Some(state) = weak.upgrade() {
-            state.tick();
-            gtk::glib::ControlFlow::Continue
-        } else {
-            gtk::glib::ControlFlow::Break
-        }
-    });
+    // Timed native work runs only from the pool's single active lease
+    // scheduler. This window owns no permanent polling sources.
     overlay
 }
 
-fn ensure(application: &gtk::Application, html: &str) -> Option<Rc<CalendarOverlay>> {
-    CALENDAR.with(|cache| {
-        let existing = cache.borrow().clone();
-        if existing.is_some() {
-            return existing;
+fn ensure(application: &gtk::Application, html: &str) -> Option<Rc<OverlayPool>> {
+    POOL.with(|cache| {
+        if let Some(pool) = cache.borrow().as_ref() {
+            return Some(pool.clone());
         }
         let document = calendar_document(html)?;
-        let overlay = build(application, document);
-        *cache.borrow_mut() = Some(overlay.clone());
-        Some(overlay)
+        let pool = OverlayPool::new(application, document);
+        *cache.borrow_mut() = Some(pool.clone());
+        Some(pool)
     })
 }
 
-/// Start WebKit loading shortly after the bar is activated, not on first click.
+/// One inert, bounded warm popup WebView, no speculative widget DOM or ECharts.
 pub fn prewarm(application: &gtk::Application, html: &str) {
     if ensure(application, html).is_none() {
-        eprintln!("kira-shell: Calendar HTML root not found");
+        eprintln!("kira-shell: Overlay HTML root not found");
     }
 }
 
 pub fn dismiss(_application: &gtk::Application) -> bool {
-    CALENDAR.with(|cache| {
-        if let Some(state) = cache.borrow().as_ref() {
-            if state.requested.get() {
-                state.hide();
-                return true;
-            }
+    POOL.with(|cache| {
+        let Some(pool) = cache.borrow().as_ref().cloned() else {
+            return false;
+        };
+        if let Some(view) = pool.active(Surface::Calendar) {
+            view.hide();
+            return true;
         }
         false
     })
 }
 
 pub fn dismiss_system(_application: &gtk::Application) -> bool {
-    CALENDAR.with(|cache| {
-        if let Some(state) = cache.borrow().as_ref()
-            && state.requested.get()
-            && state.active.get() == Some(Surface::System)
-        {
-            state.hide();
+    POOL.with(|cache| {
+        let Some(pool) = cache.borrow().as_ref().cloned() else {
+            return false;
+        };
+        if let Some(view) = pool.active(Surface::System) {
+            view.hide();
             return true;
         }
         false
@@ -993,29 +1131,32 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
 }
 
 pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(state) = ensure(application, html) else {
-        eprintln!("kira-shell: Overlay HTML root not found");
+    let Some(pool) = ensure(application, html) else {
         return;
     };
-    if state.requested.get() && state.active.get() == Some(Surface::Calendar) {
-        state.hide();
+    let Some((view, existing)) = pool.acquire(Surface::Calendar) else {
         return;
+    };
+    if existing {
+        view.hide();
+    } else {
+        view.show(Surface::Calendar);
     }
-    state.show(Surface::Calendar);
 }
 
 pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(state) = ensure(application, html) else {
-        eprintln!("kira-shell: Overlay HTML root not found");
+    let Some(pool) = ensure(application, html) else {
         return;
     };
-    // Opening the launcher again should focus its existing search field.
-    if state.requested.get() && state.active.get() == Some(Surface::Launcher) {
-        state.window.present();
+    let Some((view, existing)) = pool.acquire(Surface::Launcher) else {
         return;
+    };
+    if existing {
+        view.window.present();
+    } else {
+        view.launcher.borrow_mut().take();
+        view.show(Surface::Launcher);
     }
-    state.launcher.borrow_mut().take();
-    state.show(Surface::Launcher);
 }
 
 pub fn toggle_system(
@@ -1025,20 +1166,22 @@ pub fn toggle_system(
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(state) = ensure(application, html) else {
-        eprintln!("kira-shell: Overlay HTML root not found");
+    let Some(pool) = ensure(application, html) else {
         return;
     };
-    if state.requested.get() && state.active.get() == Some(Surface::System) {
-        state.hide();
+    let Some((view, existing)) = pool.acquire(Surface::System) else {
+        return;
+    };
+    if existing {
+        view.hide();
         return;
     }
-    *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
-    if let Some(model) = state.system.borrow().as_ref() {
+    *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
+    if let Some(model) = view.system.borrow().as_ref() {
         model.set_pulse_active(true);
     }
-    state.last_metrics.set(None);
-    state.show(Surface::System);
+    view.last_metrics.set(None);
+    view.show(Surface::System);
 }
 
 #[cfg(test)]
@@ -1051,6 +1194,14 @@ mod tests {
             "",
             "COPY",
             "toggle",
+            "close",
+            "close:0",
+            "close:-2",
+            "close:4294967296",
+            "tab:overview",
+            "tab:0:processes",
+            "copy-report",
+            "copy-report:zero",
             "painted:",
             "painted:2;exit",
             "painted:-1",
@@ -1101,17 +1252,20 @@ mod tests {
         ] {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
-        assert_eq!(calendar_command("close"), Some(UiCommand::Close));
+        assert_eq!(calendar_command("close:12"), Some(UiCommand::Close(12)));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
         assert_eq!(
-            calendar_command("tab:processes"),
-            Some(UiCommand::ProcessesTab(true))
+            calendar_command("tab:12:processes"),
+            Some(UiCommand::ProcessesTab(12, true))
         );
         assert_eq!(
-            calendar_command("tab:overview"),
-            Some(UiCommand::ProcessesTab(false))
+            calendar_command("tab:12:overview"),
+            Some(UiCommand::ProcessesTab(12, false))
         );
-        assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
+        assert_eq!(
+            calendar_command("copy-report:12"),
+            Some(UiCommand::CopyReport(12))
+        );
         assert_eq!(
             calendar_command("apps-request:12"),
             Some(UiCommand::LauncherCatalog(12))
@@ -1142,8 +1296,8 @@ mod tests {
         );
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
-            calendar_command("copy:2024-02-29"),
-            Some(UiCommand::CopyDate("2024-02-29"))
+            calendar_command("copy:12:2024-02-29"),
+            Some(UiCommand::CopyDate(12, "2024-02-29"))
         );
     }
 

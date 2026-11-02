@@ -71,3 +71,21 @@ pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, heig
 
 /// The offset below the 42px Top Bar.
 pub const POPUP_TOP_MARGIN: i32 = 25;
+
+/// Fixed per-surface anchor, never repositions an already-mapped window.
+/// On wide outputs Calendar sits at the right and System to its left.
+/// On narrow outputs, constrained Wayland geometry may overlap, but both
+/// windows remain alive, independently focusable and explicitly dismissible.
+pub fn popup_right_margin(window: &gtk::ApplicationWindow, system: bool) -> i32 {
+    if !system {
+        return 12;
+    }
+    let (width, _) = output_size(window);
+    if width >= 880 {
+        448
+    } else {
+        // Fit the full popup on-screen even if side-by-side is impossible.
+        let popup_width = 420.min(width.saturating_sub(24)).max(1);
+        (width - popup_width).max(12)
+    }
+}

@@ -55,7 +55,11 @@ class CalendarDesignTests(unittest.TestCase):
 
     def test_calendar_is_preloaded_and_reused_without_a_blank_surface(self):
         self.assertIn("calendar::prewarm(&calendar_app, &calendar_source)", SHELL)
-        self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", RUST)
+        self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", RUST)
+        self.assertIn("scheduler: RefCell<WebviewScheduler>", RUST)
+        self.assertIn("pool.scheduler.borrow_mut().prewarm_one(Instant::now())", RUST)
+        self.assertIn("Reservation::Reused(id)", RUST)
+        self.assertIn("Reservation::Created(id)", RUST)
         self.assertIn("fn ensure(application: &gtk::Application, html: &str)", RUST)
         self.assertIn("self.window.set_visible(false)", RUST)
         self.assertIn("self.window.set_opacity(0.0)", RUST)
@@ -66,7 +70,8 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("self.request_paint()", RUST)
         self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)
         self.assertIn("self.generation.get() == generation", RUST)
-        self.assertNotIn("window.close()", RUST)
+        self.assertIn("view.window.close()", RUST)
+        self.assertIn("view.disposed.set(true)", RUST)
         self.assertIn("pub fn prewarm(", RUST)
         self.assertIn("requestAnimationFrame", RUST)
         self.assertIn("sendCalendarUi('host-ready')", SDK)
@@ -93,8 +98,9 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("if ((active?.generation ?? null) !== desired) void drain()", lifecycle)
         # The offline classic script cannot issue a dynamic import request.
         self.assertNotIn("await import(", ENTRY)
-        # WebKit must remain alive to preserve instant reopening.
-        self.assertNotIn("window.close()", RUST)
+        # Live WebKit hosts remain warm; only excess idle hosts are reclaimed.
+        self.assertIn("pool.release(self.id)", RUST)
+        self.assertIn("fn prune(&self)", RUST)
 
     def test_surface_is_selected_by_trusted_html_marker(self):
         self.assertIn('data-kira-surface=\\"calendar\\"', RUST)
@@ -111,8 +117,8 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("valid_date(year, month, day)", RUST)
         self.assertIn("display.clipboard().set_text(date)", RUST)
         self.assertIn("fn rejects_untrusted_calendar_commands()", RUST)
-        self.assertIn('sendCalendarUi("close")'.replace('"', "'"), SDK)
-        self.assertIn("sendCalendarUi('copy:' + date)", SDK)
+        self.assertIn("sendCalendarUi('close:' + generation)", SDK)
+        self.assertIn("sendCalendarUi('copy:' + generation + ':' + date)", SDK)
         self.assertIn("kiraCalendarUi?: Bridge", SDK)
         self.assertIn('register_script_message_handler("kiraCalendar", None)', SHELL)
         self.assertIn('if value.to_string() == "toggle"', SHELL)
