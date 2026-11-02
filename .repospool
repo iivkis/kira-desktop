@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5495
+index_bytes=5593
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,118 +15,120 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	1075b8121775c97b43bb51116c21f1213da70dd4
-F	.cargo/config.toml	98	139	3
-F	.github/workflows/ci.yml	4355	144	112
-F	.github/workflows/frontend-nix.yml	1398	258	43
-F	.github/workflows/nix.yml	1258	303	38
-F	.github/workflows/overlay-smoke.yml	1064	343	40
-F	.github/workflows/publish-repospool.yml	3048	385	83
-F	.gitignore	178	470	11
-F	.repospoolignore	1028	483	47
-F	AGENTS.md	5416	532	89
-F	Cargo.toml	494	623	22
-F	README.md	12273	647	256
-F	Taskfile.yml	5957	905	185
-F	config/kira.kdl.example	358	1092	8
-F	crates/kira-core/Cargo.toml	207	1102	10
-F	crates/kira-core/src/config.rs	15217	1114	399
-F	crates/kira-core/src/main.rs	32080	1515	839
-F	crates/kira-core/src/niri.rs	16767	2356	453
-F	crates/kira-ipc/Cargo.toml	170	2811	9
-F	crates/kira-ipc/src/client.rs	17794	2822	458
-F	crates/kira-ipc/src/lib.rs	10460	3282	336
-F	crates/kira-shell/Cargo.toml	297	3620	12
-F	crates/kira-shell/src/calendar.rs	69617	3634	1855
-F	crates/kira-shell/src/display_manager.rs	17607	5491	481
-F	crates/kira-shell/src/launcher.rs	14114	5974	392
-F	crates/kira-shell/src/main.rs	19915	6368	462
-F	crates/kira-shell/src/native_ui.rs	4536	6832	104
-F	crates/kira-shell/src/popup_layout.rs	2055	6938	58
-F	crates/kira-shell/src/process_monitor.rs	9336	6998	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	7286	116
-F	crates/kira-shell/src/system_info.rs	3951	7404	113
-F	crates/kira-shell/src/system_metrics.rs	19842	7519	559
-F	crates/kira-shell/src/system_panel.rs	11356	8080	318
-F	crates/kira-shell/src/webview_pool.rs	8477	8400	249
-F	docs/CONFIG.md	5801	8651	125
-F	docs/DESIGN_SYSTEM.md	32126	8778	519
-F	docs/DEVELOPMENT.md	29347	9299	577
-F	docs/QA_VISUAL.md	12284	9878	149
-F	docs/SPECIFICATION.md	28960	10029	421
-F	docs/TENET_MOTION.md	40649	10452	204
-F	docs/UI_ARCHITECTURE.md	6737	10658	106
-F	docs/VISUAL_REVIEW.md	9754	10766	84
-F	docs/WEBVIEW_POOL.md	6732	10852	38
-F	flake.nix	3181	10892	91
-F	frontend/index.html	2737	10985	66
-F	frontend/package.json	720	11053	27
-F	frontend/scripts/inline-assets.mjs	4457	11082	103
-F	frontend/scripts/inline-assets.test.mjs	4645	11187	106
-F	frontend/scripts/smoke-overlays.mjs	42265	11295	582
-F	frontend/src/App.svelte	9665	11879	224
-F	frontend/src/lib/bootstrap.test.ts	3408	12105	84
-F	frontend/src/lib/bootstrap.ts	2613	12191	70
-F	frontend/src/lib/calendar-model.test.ts	3571	12263	65
-F	frontend/src/lib/calendar-model.ts	4648	12330	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	12437	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	12499	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	12530	287
-F	frontend/src/lib/clock-flight.test.ts	2404	12819	50
-F	frontend/src/lib/clock-flight.ts	1977	12871	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	12923	246
-F	frontend/src/lib/components/DisplaySettings.svelte	19817	13171	392
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	13565	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	13823	168
-F	frontend/src/lib/components/SystemCharts.svelte	10517	13993	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	14221	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	14269	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	14610	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	14650	119
-F	frontend/src/lib/launcher-model.test.ts	2266	14771	46
-F	frontend/src/lib/launcher-model.ts	1403	14819	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	14850	89
-F	frontend/src/lib/lazy-widget.ts	1984	14941	63
-F	frontend/src/lib/motion-contract.test.ts	11242	15006	198
-F	frontend/src/lib/motion.ts	24039	15206	657
-F	frontend/src/lib/overlay-size.ts	1090	15865	29
-F	frontend/src/lib/sdk/core.test.ts	27691	15896	560
-F	frontend/src/lib/sdk/core.ts	25075	16458	639
-F	frontend/src/lib/settings-model.test.ts	1064	17099	21
-F	frontend/src/lib/settings-model.ts	1262	17122	26
-F	frontend/src/lib/system-charts.test.ts	6312	17150	141
-F	frontend/src/lib/system-charts.ts	5514	17293	149
-F	frontend/src/lib/system-health.test.ts	2385	17444	42
-F	frontend/src/lib/system-health.ts	2831	17488	60
-F	frontend/src/lib/system-model.test.ts	4455	17550	84
-F	frontend/src/lib/system-model.ts	5457	17636	125
-F	frontend/src/lib/themes/kira-default.css	1687	17763	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	17817	101
-F	frontend/src/lib/themes/kira-default.ts	777	17920	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	17944	101
-F	frontend/src/lib/time.test.ts	263	18047	8
-F	frontend/src/lib/time.ts	320	18057	9
-F	frontend/src/lib/workspace-window.test.ts	2298	18068	52
-F	frontend/src/lib/workspace-window.ts	1063	18122	32
-F	frontend/src/main.ts	7783	18156	161
-F	frontend/src/style.css	6399	18319	194
-F	frontend/tsconfig.json	403	18515	16
-F	frontend/vite.config.ts	224	18533	8
-F	nix/package.nix	3132	18543	117
-F	scripts/dev_preview.py	18147	18662	403	x
-F	scripts/qa_visual.py	12052	19067	299
-F	tests/test_calendar_design.py	7810	19368	136
-F	tests/test_detailed_health.py	5481	19506	105
-F	tests/test_dev_preview.py	9339	19613	219
-F	tests/test_displays.py	2905	19834	52
-F	tests/test_launcher_design.py	10481	19888	190
-F	tests/test_native_theme.py	2098	20080	44
-F	tests/test_popup_geometry.py	3227	20126	58
-F	tests/test_qa_visual.py	10549	20186	217
-F	tests/test_settings.py	3212	20405	62
-F	tests/test_tenet_close.py	6297	20469	115
-F	tests/test_ui_bootstrap_contract.py	1103	20586	29
-F	tests/test_webview_pool.py	5335	20617	94
+C	daddaaf30fcd4e0fa4af0dbaf5e054d7c69e4230
+F	.cargo/config.toml	98	141	3
+F	.github/workflows/ci.yml	4355	146	112
+F	.github/workflows/frontend-nix.yml	1398	260	43
+F	.github/workflows/nix.yml	1258	305	38
+F	.github/workflows/overlay-smoke.yml	1064	345	40
+F	.github/workflows/publish-repospool.yml	3048	387	83
+F	.gitignore	178	472	11
+F	.repospoolignore	1028	485	47
+F	AGENTS.md	5961	534	99
+F	Cargo.toml	494	635	22
+F	README.md	12486	659	256
+F	Taskfile.yml	5957	917	185
+F	config/kira.kdl.example	358	1104	8
+F	crates/kira-core/Cargo.toml	207	1114	10
+F	crates/kira-core/src/config.rs	15217	1126	399
+F	crates/kira-core/src/main.rs	32080	1527	839
+F	crates/kira-core/src/niri.rs	16767	2368	453
+F	crates/kira-ipc/Cargo.toml	170	2823	9
+F	crates/kira-ipc/src/client.rs	17794	2834	458
+F	crates/kira-ipc/src/lib.rs	10460	3294	336
+F	crates/kira-shell/Cargo.toml	297	3632	12
+F	crates/kira-shell/src/calendar.rs	70257	3646	1870
+F	crates/kira-shell/src/config_layers.rs	17945	5518	388
+F	crates/kira-shell/src/display_manager.rs	20117	5908	529
+F	crates/kira-shell/src/launcher.rs	14114	6439	392
+F	crates/kira-shell/src/main.rs	19934	6833	463
+F	crates/kira-shell/src/native_ui.rs	4536	7298	104
+F	crates/kira-shell/src/popup_layout.rs	2055	7404	58
+F	crates/kira-shell/src/process_monitor.rs	9336	7464	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	7752	116
+F	crates/kira-shell/src/system_info.rs	3951	7870	113
+F	crates/kira-shell/src/system_metrics.rs	19842	7985	559
+F	crates/kira-shell/src/system_panel.rs	11356	8546	318
+F	crates/kira-shell/src/webview_pool.rs	8477	8866	249
+F	docs/CONFIG.md	5801	9117	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9244	135
+F	docs/DESIGN_SYSTEM.md	32126	9381	519
+F	docs/DEVELOPMENT.md	29347	9902	577
+F	docs/QA_VISUAL.md	12284	10481	149
+F	docs/SPECIFICATION.md	28960	10632	421
+F	docs/TENET_MOTION.md	40649	11055	204
+F	docs/UI_ARCHITECTURE.md	6737	11261	106
+F	docs/VISUAL_REVIEW.md	9754	11369	84
+F	docs/WEBVIEW_POOL.md	7022	11455	38
+F	flake.nix	3181	11495	91
+F	frontend/index.html	2737	11588	66
+F	frontend/package.json	720	11656	27
+F	frontend/scripts/inline-assets.mjs	4457	11685	103
+F	frontend/scripts/inline-assets.test.mjs	4645	11790	106
+F	frontend/scripts/smoke-overlays.mjs	42286	11898	582
+F	frontend/src/App.svelte	9665	12482	224
+F	frontend/src/lib/bootstrap.test.ts	3408	12708	84
+F	frontend/src/lib/bootstrap.ts	2613	12794	70
+F	frontend/src/lib/calendar-model.test.ts	3571	12866	65
+F	frontend/src/lib/calendar-model.ts	4648	12933	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13040	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13102	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	13133	287
+F	frontend/src/lib/clock-flight.test.ts	2404	13422	50
+F	frontend/src/lib/clock-flight.ts	1977	13474	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	13526	246
+F	frontend/src/lib/components/DisplaySettings.svelte	21886	13774	423
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	14199	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	14457	168
+F	frontend/src/lib/components/SystemCharts.svelte	10517	14627	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	14855	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	14903	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	15244	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15284	119
+F	frontend/src/lib/launcher-model.test.ts	2266	15405	46
+F	frontend/src/lib/launcher-model.ts	1403	15453	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	15484	89
+F	frontend/src/lib/lazy-widget.ts	1984	15575	63
+F	frontend/src/lib/motion-contract.test.ts	11242	15640	198
+F	frontend/src/lib/motion.ts	24039	15840	657
+F	frontend/src/lib/overlay-size.ts	1090	16499	29
+F	frontend/src/lib/sdk/core.test.ts	27884	16530	564
+F	frontend/src/lib/sdk/core.ts	25417	17096	645
+F	frontend/src/lib/settings-model.test.ts	1064	17743	21
+F	frontend/src/lib/settings-model.ts	1262	17766	26
+F	frontend/src/lib/system-charts.test.ts	6312	17794	141
+F	frontend/src/lib/system-charts.ts	5514	17937	149
+F	frontend/src/lib/system-health.test.ts	2385	18088	42
+F	frontend/src/lib/system-health.ts	2831	18132	60
+F	frontend/src/lib/system-model.test.ts	4455	18194	84
+F	frontend/src/lib/system-model.ts	5457	18280	125
+F	frontend/src/lib/themes/kira-default.css	1687	18407	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	18461	101
+F	frontend/src/lib/themes/kira-default.ts	777	18564	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	18588	101
+F	frontend/src/lib/time.test.ts	263	18691	8
+F	frontend/src/lib/time.ts	320	18701	9
+F	frontend/src/lib/workspace-window.test.ts	2298	18712	52
+F	frontend/src/lib/workspace-window.ts	1063	18766	32
+F	frontend/src/main.ts	7783	18800	161
+F	frontend/src/style.css	6399	18963	194
+F	frontend/tsconfig.json	403	19159	16
+F	frontend/vite.config.ts	224	19177	8
+F	nix/package.nix	3132	19187	117
+F	scripts/dev_preview.py	18147	19306	403	x
+F	scripts/qa_visual.py	12052	19711	299
+F	tests/test_calendar_design.py	7810	20012	136
+F	tests/test_detailed_health.py	5481	20150	105
+F	tests/test_dev_preview.py	9339	20257	219
+F	tests/test_displays.py	4101	20478	72
+F	tests/test_launcher_design.py	10481	20552	190
+F	tests/test_native_theme.py	2098	20744	44
+F	tests/test_popup_geometry.py	3227	20790	58
+F	tests/test_qa_visual.py	10549	20850	217
+F	tests/test_settings.py	3212	21069	62
+F	tests/test_tenet_close.py	6297	21133	115
+F	tests/test_ui_bootstrap_contract.py	1103	21250	29
+F	tests/test_webview_pool.py	5335	21281	94
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -610,6 +612,16 @@ acceptance, in addition to the TENET motion principles.
   `frontend/src/lib/themes/kira-default.css`, the 42px top bar, and the
   locked-down Rust/GIO ↔ WebKit bridge. Charts are read-only presentation.
 
+## Ownership rules for settings (mandatory)
+
+Read [docs/CONFIG_OWNERSHIP.md](docs/CONFIG_OWNERSHIP.md) before changing
+any configuration writer or adding editable Settings pages. Explicit source
+ownership, read-back of observed state, independent Apply/Confirm/Save,
+fail-closed KDL conflicts, generation-scoped native commands and atomic writes
+are required. Do not rewrite Nix-generated configs or merge Niri multipart
+`output` blocks as if they were fields. New settings adapters must not
+receive a general shell or filesystem write bridge.
+
 ## Build and review
 
 Changes to runtime JS dependencies require updates to both
@@ -899,7 +911,7 @@ The gear icon in the Top Bar opens **Kira Settings**. Settings starts as a fixed
 
 ## Multiple displays
 
-**Settings → Displays** configures the current Niri session using the compositor's real connected-output list. Select screens, arrange them on the map, change resolution/refresh rate, scale, orientation, VRR and on/off state. Apply uses a 15-second safety confirmation with automatic rollback. This does not rewrite `config.kdl` (important for declarative NixOS setups), and Niri's native output API does not provide desktop mirroring.
+**Settings → Displays** configures the current Niri session using the compositor's real connected-output list. Select screens, arrange them on the map, change resolution/refresh rate, scale, orientation, VRR and on/off state. Apply uses a 15-second safety confirmation with automatic rollback. After confirmation, **Save to config** can persist the settings in a separate owned KDL include. The system refuses to overwrite Nix-owned configs, existing `output` definitions or manually changed generated files. See [configuration ownership and transaction rules](docs/CONFIG_OWNERSHIP.md). Niri's native output API does not provide desktop mirroring.
 
 FILE	Taskfile.yml
 version: '3'
@@ -4461,6 +4473,16 @@ impl CalendarOverlay {
             {
                 self.detach();
             }
+            Some(UiCommand::DisplaySave(generation))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.save();
+                }
+            }
             Some(UiCommand::DisplayRefresh(generation))
                 if self.requested.get()
                     && !self.closing.get()
@@ -4756,6 +4778,7 @@ impl CalendarOverlay {
                 "outputs": event.outputs,
                 "pending_id": event.pending_id,
                 "error": event.error,
+                "persistence": event.persistence,
             });
             if let Ok(serialized) = serde_json::to_string(&payload)
                 && let Ok(encoded) = serde_json::to_string(&serialized)
@@ -4842,6 +4865,7 @@ enum UiCommand<'a> {
     LauncherCatalog(u32),
     LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
+    DisplaySave(u32),
     DisplayRefresh(u32),
     DisplayApply(u32, &'a str),
     DisplayConfirm(u32, u64),
@@ -4890,6 +4914,9 @@ fn parse_ui_generation(value: &str) -> Option<u32> {
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if message == "host-ready" {
         return Some(UiCommand::HostReady);
+    }
+    if let Some(value) = message.strip_prefix("display-save:") {
+        return parse_ui_generation(value).map(UiCommand::DisplaySave);
     }
     if let Some(value) = message.strip_prefix("display-refresh:") {
         return parse_ui_generation(value).map(UiCommand::DisplayRefresh);
@@ -5487,9 +5514,399 @@ mod tests {
     }
 }
 
+FILE	crates/kira-shell/src/config_layers.rs
+//! Ownership-safe persistence for Niri output configuration.
+//! Kira owns exactly one generated include. Other KDL, Nix files, and manual
+//! edits are never rewritten. Unknown source structure fails closed.
+use std::collections::HashSet;
+use std::env;
+use std::fs::{self, OpenOptions};
+use std::io::Write;
+use std::path::{Path, PathBuf};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+use crate::display_manager::Desired;
+
+const MANAGED_NAME: &str = "kira-managed-outputs.kdl";
+const RECEIPT_NAME: &str = "kira-managed-outputs.receipt";
+const INCLUDE_LINE: &str = "include \"kira-managed-outputs.kdl\"";
+const MAX_SOURCE: u64 = 1_048_576;
+
+/// Determine active user config path. A custom --config override not exported
+/// in NIRI_CONFIG cannot be detected, and must be handled manually.
+fn root() -> Result<PathBuf, String> {
+    if let Ok(value) = env::var("NIRI_CONFIG") {
+        if !value.is_empty() {
+            let path = PathBuf::from(value);
+            if !path.is_absolute() {
+                return Err("NIRI_CONFIG должен содержать абсолютный путь".into());
+            }
+            return Ok(path);
+        }
+    }
+    let config = env::var_os("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .filter(|p| p.is_absolute())
+        .or_else(|| env::var_os("HOME").map(|p| PathBuf::from(p).join(".config")))
+        .ok_or("Не найден каталог конфигурации пользователя")?;
+    Ok(config.join("niri/config.kdl"))
+}
+
+fn read_regular(path: &Path) -> Result<String, String> {
+    let metadata = fs::symlink_metadata(path)
+        .map_err(|e| format!("Невозможно прочитать {}: {e}", path.display()))?;
+    if metadata.file_type().is_symlink() || !metadata.is_file() || metadata.len() > MAX_SOURCE {
+        return Err(format!("{} не является обычным доступным файлом: Nix-managed и символьные ссылки не изменяются автоматически", path.display()));
+    }
+    fs::read_to_string(path).map_err(|e| format!("Невозможно прочитать {}: {e}", path.display()))
+}
+
+/// Read-only traversal can follow Nix-store symlinks. Write targets never do.
+fn read_source(path: &Path) -> Result<String, String> {
+    let metadata = fs::metadata(path)
+        .map_err(|e| format!("Невозможно прочитать {}: {e}", path.display()))?;
+    if !metadata.is_file() || metadata.len() > MAX_SOURCE {
+        return Err("Небезопасный размер или тип исходного KDL".into());
+    }
+    fs::read_to_string(path).map_err(|e| format!("Ошибка чтения: {e}"))
+}
+
+fn managed_dir() -> Result<PathBuf, String> {
+    let base = env::var_os("XDG_CONFIG_HOME").map(PathBuf::from)
+        .filter(|p| p.is_absolute())
+        .or_else(|| env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))
+        .ok_or("Не удалось определить XDG_CONFIG_HOME или HOME")?;
+    Ok(base.join("niri"))
+}
+
+fn resolve_include(parent: &Path, raw: &str) -> Result<PathBuf, String> {
+    if raw.starts_with("~/") {
+        let home = env::var_os("HOME").ok_or("HOME не определён")?;
+        return Ok(PathBuf::from(home).join(&raw[2..]));
+    }
+    let target = PathBuf::from(raw);
+    Ok(if target.is_absolute() { target } else { parent.join(target) })
+}
+
+/// Inspect only simple, explicit top-level include/output lines. This check is
+/// deliberately conservative: a complex or unknown output definition requires
+/// manual migration, never a blind rewrite.
+fn inspect(path: &Path, managed: &Path, visited: &mut HashSet<PathBuf>, depth: usize)
+    -> Result<usize, String>
+{
+    if depth > 8 {
+        return Err("Слишком глубокая цепочка include".into());
+    }
+    let canonical = fs::canonicalize(path)
+        .map_err(|e| format!("Не удалось прочитать include {}: {e}", path.display()))?;
+    if !visited.insert(canonical) {
+        return Err("Вложенные include образуют цикл или повтор".into());
+    }
+    let content = read_source(path)?;
+    let parent = path.parent().ok_or("Нет родительского каталога")?;
+    let mut managed_count = 0;
+    // Only simple top-level includes and output declarations are eligible for
+    // automatic ownership handover; ambiguous KDL must be migrated manually.
+    for line in content.lines() {
+        let trim = line.trim();
+        if trim.is_empty() || trim.starts_with("//") || trim.starts_with("/-") {
+            continue;
+        }
+        if trim.starts_with("output ") || trim.starts_with("output\t") || trim.starts_with("output\"") {
+            return Err(format!("В {} есть собственный блок output. Перенесите управление дисплеями в файл Kira или удалите конфликтующий блок вручную", path.display()));
+        }
+        if let Some(rest) = trim.strip_prefix("include ").or_else(|| trim.strip_prefix("include\t")) {
+            let (optional, tail) = if let Some(tail) = rest.strip_prefix("optional=true ") {
+                (true, tail)
+            } else if let Some(tail) = rest.strip_prefix("optional=true\t") {
+                (true, tail)
+            } else {
+                (false, rest)
+            };
+            let tail = tail.trim();
+            let quoted = tail.strip_prefix('"').ok_or("Сложный include требует ручной настройки")?;
+            let (name, extra) = quoted.split_once('"')
+                .ok_or("Некорректный путь include")?;
+            if name.is_empty() || name.contains('\\') || name.contains('\n') ||
+                !extra.trim().trim_end_matches(';').trim().is_empty() {
+                return Err("Сложный include требует ручной настройки".into());
+            }
+            let target = resolve_include(parent, name)?;
+            if target == managed {
+                managed_count += 1;
+                continue;
+            }
+            if !target.exists() && optional {
+                continue;
+            }
+            managed_count += inspect(&target, managed, visited, depth + 1)?;
+        }
+    }
+    Ok(managed_count)
+}
+
+fn generated(desired: &[Desired]) -> Result<String, String> {
+    if desired.is_empty() || desired.len() > 8 || !desired.iter().any(|d| d.enabled) {
+        return Err("Некорректная конфигурация дисплеев".into());
+    }
+    let mut text = String::from("// KIRA MANAGED: edit via Kira Settings; do not edit manually.\n// To take back control, remove this include from config.kdl.\n");
+    let mut names = HashSet::new();
+    for out in desired {
+        if !names.insert(&out.name) {
+            return Err("Повтор определения одного дисплея".into());
+        }
+        if out.name.is_empty() || out.name.len() > 128 ||
+            !out.name.bytes().all(|c| c.is_ascii_alphanumeric() || matches!(c, b'-' | b'_' | b'.')) ||
+            !out.mode.bytes().all(|c| c.is_ascii_digit() || matches!(c, b'x' | b'@' | b'.')) ||
+            !out.scale.is_finite() || !(0.5..=4.0).contains(&out.scale) ||
+            !matches!(out.transform.as_str(), "normal" | "90" | "180" | "270" | "flipped" |
+                "flipped-90" | "flipped-180" | "flipped-270") {
+            return Err("Отказано: неподдерживаемое значение для KDL".into());
+        }
+        text.push_str(&format!("output \"{}\" {{\n", out.name));
+        if !out.enabled {
+            text.push_str("    off\n");
+        } else {
+            text.push_str(&format!(
+                "    mode \"{}\"\n    scale {}\n    transform \"{}\"\n    position x={} y={}\n",
+                out.mode, out.scale, out.transform, out.x, out.y
+            ));
+            if out.vrr {
+                text.push_str("    variable-refresh-rate\n");
+            }
+        }
+        text.push_str("}\n\n");
+    }
+    Ok(text)
+}
+
+/// Atomic replace in the same directory. Not even a pre-existing symlink is
+/// overwritten. Preserve permissions of an existing user-owned KDL.
+fn atomic(path: &Path, contents: &str) -> Result<(), String> {
+    match fs::symlink_metadata(path) {
+        Ok(metadata) if !metadata.file_type().is_file() =>
+            return Err("Целевой файл не является обычным файлом".into()),
+        Err(error) if error.kind() != std::io::ErrorKind::NotFound =>
+            return Err(format!("Невозможно проверить файл: {error}")),
+        _ => {}
+    }
+    let parent = path.parent().ok_or("Нет каталога для сохранения")?;
+    let stamp = SystemTime::now().duration_since(UNIX_EPOCH)
+        .map_err(|e| e.to_string())?.as_nanos();
+    let temp = parent.join(format!(".kira-{}-{stamp}-{}.tmp",
+        std::process::id(), path.file_name().and_then(|n| n.to_str()).unwrap_or("config")));
+    let mut file = OpenOptions::new().write(true).create_new(true).open(&temp)
+        .map_err(|e| format!("Не удалось создать временный файл: {e}"))?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let permissions = if path.exists() {
+            fs::metadata(path).map_err(|e| e.to_string())?.permissions()
+        } else {
+            fs::Permissions::from_mode(0o600)
+        };
+        if let Err(e) = file.set_permissions(permissions) {
+            let _ = fs::remove_file(&temp);
+            return Err(format!("Не удалось назначить права: {e}"));
+        }
+    }
+    let result = file.write_all(contents.as_bytes()).and_then(|_| file.sync_all());
+    drop(file);
+    if let Err(e) = result {
+        let _ = fs::remove_file(&temp);
+        return Err(format!("Ошибка записи файла: {e}"));
+    }
+    if let Err(e) = fs::rename(&temp, path) {
+        let _ = fs::remove_file(&temp);
+        return Err(format!("Не удалось атомарно заменить файл: {e}"));
+    }
+    Ok(())
+}
+
+fn validate_config(path: &Path) -> Result<(), String> {
+    let result = std::process::Command::new("niri").arg("validate")
+        .arg("--config").arg(path).output()
+        .map_err(|e| format!("Niri validate недоступен: {e}"))?;
+    if result.status.success() {
+        Ok(())
+    } else {
+        Err(format!("Niri отверг конфигурацию: {}",
+            String::from_utf8_lossy(&result.stderr).chars().take(240).collect::<String>()))
+    }
+}
+
+fn rollback_file(path: &Path, previous: Option<&str>) {
+    if let Some(value) = previous {
+        let _ = atomic(path, value);
+    } else {
+        let _ = fs::remove_file(path);
+    }
+}
+
+/// The GUI writes only this opt-in file. The first successful save appends one
+/// explicit include *only* if config.kdl is a regular user-owned file and has
+/// no output blocks. Nix-generated roots are never changed.
+pub fn save(desired: &[Desired]) -> Result<(), String> {
+    let config = root()?;
+    let base = read_source(&config)?;
+    let dir = managed_dir()?;
+    let fragment = dir.join(MANAGED_NAME);
+    let receipt = dir.join(RECEIPT_NAME);
+    let mut seen = HashSet::new();
+    let count = inspect(&config, &fragment, &mut seen, 0)?;
+    if count > 1 {
+        return Err("Управляемый include Kira подключён несколько раз".into());
+    }
+    // An unmanaged fragment or a changed file since the last GUI save is a
+    // real conflict, not an invitation to overwrite someone's changes.
+    let existing = |path: &Path| -> Result<Option<String>, String> {
+        match fs::symlink_metadata(path) {
+            Ok(_) => read_regular(path).map(Some),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
+            Err(error) => Err(format!("Не удалось проверить файл: {error}")),
+        }
+    };
+    let previous_fragment = existing(&fragment)?;
+    let previous_receipt = existing(&receipt)?;
+    if previous_fragment.as_deref() != previous_receipt.as_deref() {
+        return Err("Конфликт версий: файл дисплеев изменён вручную или не принадлежит Kira. Сначала разрешите конфликт в KDL".into());
+    }
+    let new_fragment = generated(desired)?;
+    let new_root = if count == 0 {
+        // A Nix-owned config is commonly a symlink into /nix/store.
+        // It can opt in by adding an include in the Nix declaration.
+        let metadata = fs::symlink_metadata(&config)
+            .map_err(|e| format!("Невозможно проверить владельца config.kdl: {e}"))?;
+        if !metadata.file_type().is_file() {
+            return Err(format!("config.kdl управляется извне. Добавьте в Nix/Home Manager: include \"{}\"; затем повторите сохранение", fragment.display()));
+        }
+        let reference = if config.parent() == Some(dir.as_path()) {
+            INCLUDE_LINE.to_string()
+        } else {
+            format!("include \"{}\"", fragment.display())
+        };
+        if reference.contains('\\') || reference.matches('"').count() != 2 {
+            return Err("Путь к управляемому слою требует ручного подключения".into());
+        }
+        format!("{}\n// KIRA MANAGED OUTPUTS (explicit opt-in)\n{}\n",
+            base.trim_end_matches('\n'), reference)
+    } else {
+        base.clone()
+    };
+    if !dir.exists() {
+        fs::create_dir_all(&dir)
+            .map_err(|e| format!("Не удалось создать каталог Kira: {e}"))?;
+    }
+    if read_source(&config)? != base {
+        return Err("config.kdl изменён во время сохранения. Повторите действие.".into());
+    }
+    atomic(&fragment, &new_fragment)?;
+    if count == 0 {
+        if let Err(e) = atomic(&config, &new_root) {
+            rollback_file(&fragment, previous_fragment.as_deref());
+            return Err(e);
+        }
+    }
+    if let Err(error) = validate_config(&config) {
+        rollback_file(&fragment, previous_fragment.as_deref());
+        if count == 0 { rollback_file(&config, Some(&base)); }
+        return Err(error);
+    }
+    // Receipt is the previous exact managed content, not a mutable timestamp.
+    // On a partial disk write failure, the next attempt detects a conflict.
+    atomic(&receipt, &new_fragment)?;
+    Ok(())
+}
+
+pub fn status() -> &'static str {
+    let Ok(config) = root() else { return "manual"; };
+    let Ok(dir) = managed_dir() else { return "manual"; };
+    let fragment = dir.join(MANAGED_NAME);
+    let receipt = dir.join(RECEIPT_NAME);
+    let Ok(base) = read_source(&config) else { return "manual"; };
+    if !base.lines().any(|line| line.trim().starts_with("include ") &&
+        line.contains(MANAGED_NAME)) {
+        return "manual";
+    }
+    match (read_regular(&fragment), read_regular(&receipt)) {
+        (Ok(a), Ok(b)) if a == b => "managed",
+        (Err(_), Err(_)) => "uninitialized",
+        _ => "conflict",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn sample() -> Vec<Desired> {
+        vec![Desired { name: "DP-1".into(), enabled: true,
+            mode: "2560x1440@144.000".into(), scale: 1.25,
+            transform: "normal".into(), x: 0, y: 0, vrr: true }]
+    }
+
+    #[test]
+    fn generated_kdl_is_valid_shape_and_inert_injection_is_rejected() {
+        let text = generated(&sample()).unwrap();
+        assert!(text.contains("output \"DP-1\" {"));
+        assert!(text.contains("position x=0 y=0"));
+        assert!(text.contains("variable-refresh-rate"));
+        let mut hostile = sample();
+        hostile[0].name = "DP-1\"; spawn \"sh".into();
+        assert!(generated(&hostile).is_err());
+    }
+
+    #[test]
+    fn detects_conflicting_declarations_and_supports_optional_nix_include() {
+        let temp = std::env::temp_dir().join(format!(
+            "kira-kdl-test-{}-{}", std::process::id(),
+            SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos()
+        ));
+        fs::create_dir_all(&temp).unwrap();
+        let root = temp.join("config.kdl");
+        let managed = temp.join(MANAGED_NAME);
+        fs::write(&root, format!("include optional=true \"{}\"\n", managed.display())).unwrap();
+        let mut seen = HashSet::new();
+        assert_eq!(inspect(&root, &managed, &mut seen, 0).unwrap(), 1);
+        fs::write(&root, format!("output \"DP-1\" {{ off }}\ninclude optional=true \"{}\"\n", managed.display())).unwrap();
+        let mut seen = HashSet::new();
+        assert!(inspect(&root, &managed, &mut seen, 0).is_err());
+        let _ = fs::remove_dir_all(&temp);
+    }
+
+    #[test]
+    fn disallows_managed_file_overwrites_through_symlinks() {
+        let temp = std::env::temp_dir().join(format!(
+            "kira-atomic-test-{}-{}", std::process::id(),
+            SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos()
+        ));
+        fs::create_dir_all(&temp).unwrap();
+        let target = temp.join("source.kdl");
+        let link = temp.join(MANAGED_NAME);
+        fs::write(&target, "example").unwrap();
+        #[cfg(unix)] {
+            std::os::unix::fs::symlink(&target, &link).unwrap();
+            assert!(atomic(&link, "unsafe").is_err());
+            assert_eq!(fs::read_to_string(&target).unwrap(), "example");
+        }
+        let _ = fs::remove_dir_all(&temp);
+    }
+
+    #[test]
+    fn disabled_outputs_are_explicit() {
+        let mut desired = sample();
+        desired[0].enabled = false;
+        let mut second = sample()[0].clone();
+        second.name = "HDMI-A-1".into();
+        desired.push(second);
+        assert!(generated(&desired).is_ok());
+        assert!(generated(&desired).unwrap().contains("    off\n"));
+    }
+}
+
 FILE	crates/kira-shell/src/display_manager.rs
 //! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
-//! Operations are session-scoped; persistent Niri KDL remains user-owned.
+//! Persistent changes require explicit ownership and native confirmation.
 use std::process::Command;
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
@@ -5500,15 +5917,15 @@ const MAX_OUTPUTS: usize = 8;
 const MAX_MODES: usize = 80;
 
 #[derive(Debug, Clone)]
-struct Desired {
-    name: String,
-    enabled: bool,
-    mode: String,
-    scale: f64,
-    transform: String,
-    x: i32,
-    y: i32,
-    vrr: bool,
+pub(crate) struct Desired {
+    pub(crate) name: String,
+    pub(crate) enabled: bool,
+    pub(crate) mode: String,
+    pub(crate) scale: f64,
+    pub(crate) transform: String,
+    pub(crate) x: i32,
+    pub(crate) y: i32,
+    pub(crate) vrr: bool,
 }
 
 #[derive(Debug)]
@@ -5517,6 +5934,7 @@ enum Request {
     Apply(serde_json::Value),
     Confirm(u64),
     Revert(u64),
+    Save,
 }
 
 #[derive(Debug)]
@@ -5525,6 +5943,7 @@ pub struct Event {
     pub outputs: Option<serde_json::Value>,
     pub pending_id: Option<u64>,
     pub error: Option<String>,
+    pub persistence: &'static str,
 }
 
 pub struct Model {
@@ -5556,6 +5975,10 @@ impl Model {
         let _ = self.sender.send(Request::Revert(id));
     }
 
+    pub fn save(&self) {
+        let _ = self.sender.send(Request::Save);
+    }
+
     pub fn poll(&self) -> Vec<Event> {
         // Never block GTK. Limit messages consumed per frame.
         (0..6)
@@ -5576,6 +5999,7 @@ fn report(
         outputs: snapshot,
         pending_id,
         error: error.map(|value| value.chars().take(240).collect()),
+        persistence: crate::config_layers::status(),
     });
 }
 
@@ -5818,6 +6242,8 @@ fn revert(before: &[Desired], events: &Sender<Event>) {
 fn run(requests: Receiver<Request>, events: Sender<Event>) {
     let mut next_id = 0_u64;
     let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
+    let mut staged: Option<Vec<Desired>> = None;
+    let mut confirmed: Option<Vec<Desired>> = None;
     loop {
         let received = match pending.as_ref() {
             Some((_, _, deadline)) => {
@@ -5829,12 +6255,14 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             Ok(message) => message,
             Err(RecvTimeoutError::Timeout) => {
                 if let Some((_, before, _)) = pending.take() {
+                    staged = None;
                     revert(&before, &events);
                 }
                 continue;
             }
             Err(RecvTimeoutError::Disconnected) => {
                 if let Some((_, before, _)) = pending.take() {
+                    staged = None;
                     revert(&before, &events);
                 }
                 break;
@@ -5850,6 +6278,7 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                                 outputs: Some(outputs),
                                 pending_id: None,
                                 error: None,
+                                persistence: crate::config_layers::status(),
                             });
                         }
                         Err(error) => report(&events, "error", None, Some(error)),
@@ -5857,6 +6286,8 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 }
             }
             Request::Apply(value) => {
+                confirmed = None;
+                staged = None;
                 if pending.is_some() {
                     report(
                         &events,
@@ -5878,6 +6309,7 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                             revert(&before, &events);
                             report(&events, "error", None, Some(error));
                         } else {
+                            staged = Some(target);
                             next_id = next_id.wrapping_add(1).max(1);
                             let id = next_id;
                             pending = Some((
@@ -5893,14 +6325,47 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             Request::Confirm(id) => {
                 if pending.as_ref().is_some_and(|p| p.0 == id) {
                     pending.take();
+                    confirmed = staged.take();
                     report(&events, "confirmed", None, None);
                 }
             }
             Request::Revert(id) => {
                 if pending.as_ref().is_some_and(|p| p.0 == id) {
                     if let Some((_, before, _)) = pending.take() {
+                        staged = None;
                         revert(&before, &events);
                     }
+                }
+            }
+            Request::Save => {
+                if pending.is_some() {
+                    report(&events, "error", pending.as_ref().map(|p| p.0),
+                        Some("Сначала подтвердите временные настройки".into()));
+                    continue;
+                }
+                let Some(target) = confirmed.as_ref() else {
+                    report(&events, "error", None,
+                        Some("Сначала примените и подтвердите изменения дисплеев".into()));
+                    continue;
+                };
+                let saved = query().and_then(|source| {
+                    let actual = baseline(&source)?;
+                    // Never persist a stale preview after hotplug, another
+                    // client change or an automatic Niri reposition.
+                    if actual.len() != target.len() || actual.iter().zip(target.iter()).any(
+                        |(a, b)| a.name != b.name || a.enabled != b.enabled ||
+                        (a.enabled && (a.mode != b.mode ||
+                            (a.scale - b.scale).abs() > 0.001 ||
+                            a.transform != b.transform ||
+                            a.x != b.x || a.y != b.y || a.vrr != b.vrr))
+                    ) {
+                        return Err("Параметры Niri изменились после подтверждения. Обновите список.".into());
+                    }
+                    crate::config_layers::save(target)
+                });
+                match saved {
+                    Ok(()) => report(&events, "saved", None, None),
+                    Err(error) => report(&events, "error", None, Some(error)),
                 }
             }
         }
@@ -6368,6 +6833,7 @@ FILE	crates/kira-shell/src/main.rs
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
+mod config_layers;
 mod display_manager;
 mod launcher;
 mod native_ui;
@@ -8774,6 +9240,143 @@ widget ordering, per-output panels and secure user-provided modules are
 separate future milestones. Do not treat this profile as general KDL
 evaluation or an extension/command system.
 
+FILE	docs/CONFIG_OWNERSHIP.md
+# Kira configuration ownership and transactions
+
+**Status:** normative design contract. First working adapter: Settings → Displays / Niri.
+
+## Goal
+
+A declarative base and an interactive Settings GUI must not race to own the
+same settings. Read, change, confirm, and persist are **different operations**.
+A GUI must never silently edit Nix store paths, Home Manager symlinks,
+unrecognized KDL, or a user-maintained configuration block.
+
+## Layers and authority
+
+| Layer | Authority | Durability |
+| --- | --- | --- |
+| Base | NixOS, Home Manager, user KDL, system defaults | User-defined, typically declarative |
+| Managed | Explicitly opted-in, generated Kira KDL | Persisted and version-checked |
+| Session | Niri IPC action, after explicit Apply | Until Niri reload/restart |
+| Observed | Compositor-provided live output state | Truth for UI; not necessarily desired state |
+
+1. The **observed** layer is presented immediately. No stale GUI cache can
+   overwrite it. The editor builds a draft from live output data, never from
+   guessed hardware capabilities.
+2. **Apply** updates the session through typed native commands. Displays require
+   15-second confirmation; timeout, Settings close or interrupted renderer
+   forces a best-effort Niri rollback. It does *not* change persistent files.
+3. **Confirm** authorizes the session state, not persistence.
+4. **Save to config** is a separate user action, available only for the last
+   Niri-confirmed, still-current display configuration. Backend re-reads output
+   state before writing. This action is never run automatically.
+5. First save opts in a writable, regular user Niri config by adding exactly
+   one include of Kira's fragment, and then writing that fragment. It never
+   edits unrelated sections. Nix-managed or symlinked main configs require an
+   explicit include declaration from their owner.
+6. **A setting has one writable owner.** Niri's multipart \`output\` sections
+   are not mergeable field-by-field. If the source (including other includes)
+   declares any \`output\` blocks, automatic handover fails closed. The user
+   must move/remove those blocks manually or manage displays entirely in the
+   original source. Kira doesn't opportunistically create duplicate outputs.
+7. Kira's managed file is fully generated and owns only the selected output
+   sections. A sidecar receipt stores its exact last-written bytes. If somebody
+   edits the fragment or receipt outside Kira, future GUI saves reject it as a
+   version conflict. Manual edits to unrelated root sections are left alone.
+8. Only plain, bounded and parseable KDL inputs are accepted for automated
+   reconciliation. Recursive includes are scanned up to eight levels with
+   cycle detection; ambiguous syntax or conflicting output definitions stop
+   the operation instead of making a risky guess.
+9. Output modes, connectors, VRR capability, coordinates, transform, and
+   state are validated on the native side. The renderer cannot provide a
+   filesystem path or an executable command.
+10. Files are written with temporary-file + atomic rename, preserved
+    permissions, and a Niri configuration validation step; validation failure
+    restores previous bytes. No shell is involved. Crash between fragment and
+    receipt update is detected as a conflict next time.
+11. Externally authored or generated configuration takes precedence over
+    Kira if an ownership conflict is detected. The UI must show the conflict,
+    not claim settings were permanently saved.
+12. Preview mode uses exactly the same component as detached Niri window;
+    native state is generation-scoped to the active Settings WebView lease.
+
+## File contract
+
+Defaults when no NIRI_CONFIG override is present:
+
+- User entry point: \`$XDG_CONFIG_HOME/niri/config.kdl\`.
+- Owned content: \`$XDG_CONFIG_HOME/niri/kira-managed-outputs.kdl\`.
+- Conflict receipt: \`$XDG_CONFIG_HOME/niri/kira-managed-outputs.receipt\`.
+
+The managed file is **not** the user's main configuration. Its contents are
+ordinary, inspectable Niri KDL; no hidden database is required to run Niri.
+The receipt is a write-conflict guard, not part of Niri's parser.
+
+For an editable main config, the first successful GUI Save appends:
+
+\`\`\`kdl
+// KIRA MANAGED OUTPUTS (explicit opt-in)
+include "kira-managed-outputs.kdl"
+\`\`\`
+
+Niri watches included files and live-reloads changes. This requires Niri
+version supporting includes (25.11+).
+
+### Declarative Nix / Home Manager
+
+Do not turn a Nix-generated \`config.kdl\` into an imperative file. Instead,
+declare an include for the *user-writable* managed fragment in the Niri config
+**after** base settings, and move any \`output\` sections owned by the GUI out
+of the base definition. Example KDL fragment added through Nix configuration:
+
+\`\`\`kdl
+include "/home/USER/.config/niri/kira-managed-outputs.kdl"
+\`\`\`
+
+Replace USER with your actual home directory. Prefer a Nix expression
+interpolating \`config.home.homeDirectory\` rather than hardcoding it. Ensure
+the included file exists *before* Niri parses the include; with Niri 26.04+
+you may use \`include optional=true "/home/USER/..."\` and let Kira create
+the fragment on first save. No startup mutation of a store path is attempted.
+
+If NIRI_CONFIG points to an alternate absolute path, Kira respects that entry
+point but keeps the fragment under the user's XDG Niri config directory and
+uses an absolute include path. Niri launched with an unrelated \`--config\`
+which is not reflected in NIRI_CONFIG cannot be discovered reliably: use a
+declarative manual include and verify it targets the active file.
+
+## Conflict and recovery table
+
+| Situation | Required response |
+| --- | --- |
+| All monitors disabled by draft | Reject before touching Niri |
+| Unsupported mode/scale/rotation/VRR | Reject via native validation |
+| Confirm window expires | Replay saved runtime baseline |
+| Niri output changed after confirm | Refuse persistence, ask for refresh |
+| Existing output stanza in base or other includes | Refuse to create duplicate; manual ownership handover |
+| Main config is Nix symlink and include absent | Show explicit include instruction |
+| Generated fragment was manually edited | Reject overwrite; manual reconciliation |
+| KDL parse/validation fails | Restore previous KDL, report validation error |
+| File replaced concurrently | Recheck ownership/receipt before write; conflicts require resolution |
+| Niri IPC unavailable | No fake success, no config save without a confirmed plan |
+
+## Not yet automatic
+
+This first implementation covers Niri outputs only. Future adapters for
+appearance, keybinds and Kira's own KDL must implement the **same ownership
+interface and transaction contract**, not inherit write access to arbitrary
+KDL. A universal KDL AST-aware reconciler and GUI-assisted migration of
+existing output blocks remain separate features.
+
+### Verification
+
+Run \`task check\`, \`task frontend:build\`, the bundled browser smoke tests,
+and a nested Niri session to test: writable user KDL, symlinked Nix config with
+explicit include, external edits, missing fragment, invalid KDL,
+partial commit/rollback, a disconnected monitor, and a 15-second timeout.
+Do not claim that CI tests demonstrate real physical hotplug recovery.
+
 FILE	docs/DESIGN_SYSTEM.md
 # Kira Desktop · Design System
 
@@ -10882,7 +11485,7 @@ Settings → Displays queries Niri's stable `niri msg --json outputs` API from a
 
 Changes are staged client-side and validated *again* in Rust against the current connected outputs (names, supported modes, VRR capabilities, coordinate and scale bounds, uniqueness, at least one enabled screen). The worker invokes only fixed-argument Niri CLI commands; it never runs a shell or accepts arbitrary arguments from the WebView. Enabling is done before disabling and the previous configuration is captured for recovery. After Apply, a native **15-second confirmation watchdog** either commits the session-scoped changes or replays the original output state on timeout, explicit cancel, connection loss, or Settings close. Partial command failures also trigger rollback. All callbacks are generation-scoped, and worker messages are delivered through the shared 30ms poll source. A disconnected or incompatible Niri results in an error, never fake output topology.
 
-**Scope:** These changes affect the current Niri session only. Kira does not overwrite user or Nix-generated `config.kdl`. Niri does not offer native duplicated/mirrored desktops through this output layout API. Verify modes and rollback in an isolated nested Niri before relying on live multi-monitor changes.
+**Scope:** Apply/Confirm affect only the current Niri session; an additional explicit **Save to config** action can persist the confirmed state in an owned KDL include, following [configuration ownership rules](CONFIG_OWNERSHIP.md). A writable, conflict-free user config can opt in automatically; Nix-generated files require an explicit declarative include. Existing output blocks and manual edits are protected. Niri does not offer native duplicated/mirrored desktops through this output layout API. Verify modes and rollback in an isolated nested Niri before relying on live multi-monitor changes.
 
 ## Verification
 
@@ -11403,7 +12006,7 @@ function scriptFor(steps, observationMs = 1150) {
                   'else {document.querySelector("aside button:nth-child(3)")?.click();}'
               : kind === 'settings-displays-data'
                 ? 'window.dispatchEvent(new CustomEvent("kira:settings:displays",{detail:{' +
-                  'generation:1,state:"ready",error:null,pending_id:null,outputs:[' +
+                  'generation:1,state:"ready",persistence:"manual",error:null,pending_id:null,outputs:[' +
                   '{connector:"eDP-1",name:"eDP-1",make:"Example",model:"Laptop",current_mode:0,' +
                   'modes:[{width:1920,height:1080,refresh_rate:60000,is_preferred:true}],vrr_supported:false,vrr_enabled:false,' +
                   'logical:{x:0,y:0,width:1920,height:1080,scale:1,transform:"Normal"}},' +
@@ -13172,7 +13775,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
   import { onMount } from 'svelte';
   import {
     onDisplayStatus, requestDisplays, applyDisplays, confirmDisplays, revertDisplays,
-    displayModeId, type DisplayOutput, type DisplayDraft, type DisplayStatus,
+    displayModeId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
   } from '../sdk/core';
 
   let { generation }: { generation: number } = $props();
@@ -13184,6 +13787,8 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
   let loading = $state(true);
   let error = $state<string | null>(null);
   let statusText = $state('');
+  let canSave = $state(false);
+  let persistence = $state<DisplayStatus['persistence']>('manual');
   let pendingId = $state<number | null>(null);
   let remaining = $state(15);
   let drag = $state<{ connector: string; px: number; py: number; x: number; y: number; zoom: number } | null>(null);
@@ -13241,6 +13846,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
   function receive(message: DisplayStatus) {
     loading = false;
     busy = false;
+    persistence = message.persistence;
     if (message.state === 'pending' && message.pending_id !== null) {
       pendingId = message.pending_id;
       remaining = 15;
@@ -13254,6 +13860,9 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
       return;
     }
     pendingId = null;
+    if (message.state === 'confirmed') canSave = true;
+    if (message.state === 'saved') canSave = false;
+    if (message.state === 'reverted') canSave = false;
     if (message.outputs !== null) {
       outputs = message.outputs;
       draft = draftFromOutputs(outputs);
@@ -13262,17 +13871,20 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
     if (message.error) error = message.error;
     else error = null;
     statusText = message.state === 'reverted' ? 'Предыдущая конфигурация восстановлена.'
-      : message.state === 'confirmed' ? 'Изменения применены на время текущего сеанса Niri.'
+      : message.state === 'confirmed' ? 'Изменения действуют в сеансе. Можно сохранить декларативно.'
+      : message.state === 'saved' ? 'Конфигурация сохранена в KDL и будет загружена при следующем запуске Niri.'
         : '';
   }
 
   function change(patch: Partial<DisplayDraft>) {
     if (busy || isPending) return;
+    canSave = false;
     draft = draft.map(out => out.connector === selected ? { ...out, ...patch } : out);
   }
 
   function reset() {
     if (busy || isPending) return;
+    canSave = false;
     draft = draftFromOutputs(outputs);
     error = null;
     statusText = '';
@@ -13280,6 +13892,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
 
   function refresh() {
     if (busy || isPending) return;
+    canSave = false;
     loading = true;
     error = null;
     if (!requestDisplays(generation)) {
@@ -13290,6 +13903,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
 
   function apply() {
     if (busy || isPending) return;
+    canSave = false;
     busy = true;
     error = null;
     statusText = '';
@@ -13310,6 +13924,12 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
       busy = revertDisplays(generation, pendingId);
       if (!busy) error = 'Нет соединения с Shell';
     }
+  }
+
+  function save() {
+    if (busy || !canSave || isPending) return;
+    busy = saveDisplays(generation);
+    if (!busy) error = 'Не удалось отправить команду сохранения';
   }
 
   function snapPosition(connector: string, rawX: number, rawY: number) {
@@ -13345,6 +13965,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
     const { connector, px, py, x, y, zoom: factor } = drag;
     const next = snapPosition(connector, Math.round(x + (event.clientX - px) / factor),
       Math.round(y + (event.clientY - py) / factor));
+    canSave = false;
     draft = draft.map(out => out.connector === connector ? { ...out, ...next } : out);
   }
   function onPointerUp() { drag = null; }
@@ -13548,17 +14169,30 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
         class="bg-kira-accent px-5 py-3 text-[11px] font-extrabold text-black disabled:opacity-40">
         {busy ? 'Применение…' : 'Применить'}
       </button>
+      <button type="button" onclick={save} disabled={loading || busy || isPending || !canSave}
+        title="Сохранить подтверждённые параметры в управляемый KDL"
+        class="border border-kira-accent px-5 py-3 text-[11px] font-bold text-kira-accent disabled:opacity-40">
+        Сохранить в конфиг
+      </button>
       <button type="button" onclick={reset} disabled={loading || busy || isPending}
         class="border border-kira-muted/40 px-5 py-3 text-[11px] font-bold text-kira-text disabled:opacity-40">
         Сбросить изменения
       </button>
     </div>
   {/if}
-  <p class="border-t border-kira-muted/15 pt-4 text-[10px] leading-relaxed text-kira-muted">
-    Изменения действуют в текущем сеансе Niri. Для постоянной конфигурации
-    требуется отдельно сохранить параметры в config.kdl.
-    Зеркалирование экранов compositor Niri не поддерживает.
-  </p>
+  <div class="border-t border-kira-muted/15 pt-4 text-[10px] leading-relaxed text-kira-muted">
+    <p>Источник конфигурации:
+      <strong class="text-kira-accent">{persistence === 'managed' ? 'Kira управляет KDL'
+        : persistence === 'uninitialized' ? 'Подключён пустой слой Kira'
+        : persistence === 'conflict' ? 'Конфликт файла KDL'
+        : 'Пользовательская декларативная конфигурация'}</strong>.
+      Сначала примените настройки и подтвердите их, затем нажмите «Сохранить в конфиг».</p>
+    <p class="mt-2">Kira создаёт отдельный <code>kira-managed-outputs.kdl</code> и включает его в
+      доступный для записи <code>config.kdl</code>. При Nix-managed файле, чужих
+      блоках <code>output</code> или ручных правках Kira не перезаписывает их:
+      нужное подключение выполняется владельцем декларативной конфигурации.</p>
+    <p class="mt-2">Зеркалирование экранов Niri не поддерживает.</p>
+  </div>
 </section>
 
 FILE	frontend/src/lib/components/LauncherWidget.svelte
@@ -15894,7 +16528,7 @@ export function observeOverlaySize(root: HTMLElement, generation: number): () =>
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, saveDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -15959,6 +16593,8 @@ describe('Core SDK JSON-RPC bridge', () => {
     } as unknown as Window & typeof globalThis;
     expect(displayModeId({ width: 2560, height: 1440, refresh_rate: 143912, is_preferred: true }))
       .toBe('2560x1440@143.912');
+    expect(saveDisplays(7)).toBe(true);
+    expect(saveDisplays(0)).toBe(false);
     expect(requestDisplays(7)).toBe(true);
     expect(requestDisplays(0)).toBe(false);
     const draft = [{
@@ -15970,6 +16606,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(revertDisplays(7, 14)).toBe(true);
     expect(confirmDisplays(7, -1)).toBe(false);
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
+      'display-save:7',
       'display-refresh:7',
       'display-apply:7:' + JSON.stringify(draft),
       'display-confirm:7:14',
@@ -15986,7 +16623,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     const callback = vi.fn();
     const stop = onDisplayStatus(42, callback);
     const good = {
-      generation: 42, state: 'ready', pending_id: null, error: null,
+      generation: 42, state: 'ready', persistence: 'manual', pending_id: null, error: null,
       outputs: [{
         connector: 'DP-1', name: 'DP-1', make: 'Example', model: 'Panel',
         modes: [{ width: 1920, height: 1080, refresh_rate: 60000, is_preferred: true }],
@@ -15998,6 +16635,7 @@ describe('Core SDK JSON-RPC bridge', () => {
       detail,
     } as CustomEvent<unknown>);
     dispatch({ ...good, generation: 41 });
+    dispatch({ ...good, persistence: 'invalid' });
     dispatch({ ...good, outputs: [{ ...good.outputs[0], modes: [{ width: 'oops' }] }] });
     dispatch(good);
     expect(callback).toHaveBeenCalledExactlyOnceWith(good);
@@ -16953,7 +17591,8 @@ export interface DisplayDraft {
   vrr: boolean;
 }
 export interface DisplayStatus {
-  state: 'ready' | 'pending' | 'confirmed' | 'reverted' | 'error';
+  state: 'ready' | 'pending' | 'confirmed' | 'reverted' | 'saved' | 'error';
+  persistence: 'manual' | 'uninitialized' | 'managed' | 'conflict';
   outputs: DisplayOutput[] | null;
   pending_id: number | null;
   error: string | null;
@@ -16987,7 +17626,8 @@ export function onDisplayStatus(
   return onNativeEvent('kira:settings:displays',
     (value): value is { generation: number } & DisplayStatus =>
       isRecord(value) && value.generation === generation &&
-      ['ready', 'pending', 'confirmed', 'reverted', 'error'].includes(String(value.state)) &&
+      ['ready', 'pending', 'confirmed', 'reverted', 'saved', 'error'].includes(String(value.state)) &&
+      ['manual', 'uninitialized', 'managed', 'conflict'].includes(String(value.persistence)) &&
       (value.pending_id === null || (Number.isSafeInteger(value.pending_id) &&
         typeof value.pending_id === 'number' && value.pending_id > 0)) &&
       (value.error === null || (typeof value.error === 'string' && value.error.length <= 240)) &&
@@ -17003,6 +17643,10 @@ export function displayModeId(mode: DisplayMode): string {
 }
 
 /** Every command is generation-scoped and independently validated by Rust. */
+export function saveDisplays(generation: number): boolean {
+  return validOverlayGeneration(generation) &&
+    sendCalendarUi('display-save:' + generation);
+}
 export function requestDisplays(generation: number): boolean {
   return validOverlayGeneration(generation) &&
     sendCalendarUi('display-refresh:' + generation);
@@ -19841,6 +20485,7 @@ SHELL = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
 SETTINGS = (ROOT / "frontend/src/lib/components/SettingsWidget.svelte").read_text()
 DISPLAY = (ROOT / "frontend/src/lib/components/DisplaySettings.svelte").read_text()
 SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+CONFIG = (ROOT / "crates/kira-shell/src/config_layers.rs").read_text()
 
 
 class DisplayContract(unittest.TestCase):
@@ -19864,6 +20509,25 @@ class DisplayContract(unittest.TestCase):
         self.assertIn('host["vrr_supported"] != true', MANAGER)
         self.assertIn('Some(UiCommand::DisplayConfirm(generation, id))', SHELL)
         self.assertIn('Some(UiCommand::DisplayRevert(generation, id))', SHELL)
+
+    def test_session_and_declarative_settings_are_separate_transactions(self):
+        self.assertIn('Request::Save => {', MANAGER)
+        self.assertIn('crate::config_layers::save(target)', MANAGER)
+        self.assertIn('confirmed = staged.take()', MANAGER)
+        self.assertIn('actual.len() != target.len()', MANAGER)
+        self.assertIn('pub fn save(desired: &[Desired]) -> Result<(), String>', CONFIG)
+        self.assertIn('crate::config_layers::status()', MANAGER)
+        self.assertIn('fn inspect(', CONFIG)
+        self.assertIn('MAX_SOURCE', CONFIG)
+        self.assertIn('if count > 1', CONFIG)
+        self.assertIn('atomic(&fragment, &new_fragment)', CONFIG)
+        self.assertIn('validate_config(&config)', CONFIG)
+        self.assertIn('rollback_file(&fragment', CONFIG)
+        self.assertIn('fs::symlink_metadata(&config)', CONFIG)
+        self.assertIn('pub fn status()', CONFIG)
+        self.assertIn('sendCalendarUi(\'display-save:\' + generation)', SDK)
+        self.assertIn('Some(UiCommand::DisplaySave(generation))', SHELL)
+        self.assertIn('Сохранить в конфиг', DISPLAY)
 
     def test_both_settings_modes_render_the_real_display_editor(self):
         self.assertIn("section === 'displays'", SETTINGS)
