@@ -170,6 +170,36 @@ official visual language of Kira Desktop.
   another process's CPU history. No new Core JSON-RPC methods or
   user-data collection are introduced.
 
+### Settings · responsive editorial configuration (2026-11)
+
+Settings uses the established Black editorial header and a Prussian Blue
+navigation rail, not a stack of invented brand-colored cards. The selected
+section in the ordinary Niri window owns **one persistent** orange-lipped
+flow marker, animated by the existing `tenetFlowIndicator` from its actual
+last geometry with restrained GSAP elastic settling. The `aria-current`
+state and section contents change immediately. The marker's exact geometry
+is restored on interruption, resize, reduced motion and unmount. Disabled
+destinations stay visibly unavailable and cannot be clicked.
+
+At widths over 720px the normal Niri window exposes the section sidebar;
+below 720px it uses the **same semantic section selector as the popup**,
+with full-width content and no sideways scrolling. This is one live WebView,
+not different settings pages. The About workbench gives the actual OS name
+the primary Prussian Blue material, then displays eight native facts as
+quiet editorial rows with honest unavailable/loading states. The footer
+explicitly says that About is read-only; sidebar copy must **never**
+describe all Settings as read-only, because Displays can modify the session.
+
+The Displays workbench remains authoritative Niri data. Its layout map
+derives scale from the actual available width via `ResizeObserver`; screen
+buttons support click and keyboard selection with visible focus. The
+15-second native rollback confirmation is an accessible, described alert
+and keyboard focus moves to Confirm as soon as it appears. All key actions
+use theme focus outlines. Apply → native 15s Confirm/Revert → explicit
+Save-to-KDL remain **separate**, with the ownership and rollback contracts
+unchanged. This UI review introduces no new config writer, speculative
+device fields, runtime network access or background WebView.
+
 ### Detached Calendar · responsive editorial observatory (2026-11)
 
 Promoted Calendar is a real, resizable Niri window. The compact popup

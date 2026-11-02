@@ -98,6 +98,12 @@ function scriptFor(steps, observationMs = 1150) {
                   'setTimeout(() => {' +
                     'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
+              : kind === 'settings-navigation'
+                ? 'const side=document.querySelector("aside");' +
+                  'if(side && getComputedStyle(side).display!=="none"){' +
+                    'side.querySelector("button[data-kira-tab=displays]")?.click();' +
+                  '}else{const select=document.getElementById("kira-settings-section");' +
+                    'if(select){select.value="displays";select.dispatchEvent(new Event("change",{bubbles:true}));}}'
               : kind === 'settings-about'
                 ? 'window.dispatchEvent(new CustomEvent("kira:settings:about", {detail: {generation: 1, about: {' +
                   'os_name:"Example Linux", kernel:"6.1.0", architecture:"x86_64", hostname:"example-host", ' +
@@ -525,8 +531,62 @@ async function smokeCalendarSky(windowSize, expectStacked) {
   console.log('OK: detached Calendar sky painted at ' + windowSize + (expectStacked ? ' (stacked)' : ' (two-column)'));
 }
 
+/** Checks the real responsive Settings window and editable display map
+ * at the compositor's narrow and wide viewport classes. */
+async function smokeSettingsResponsive(width, narrow) {
+  const steps = [
+    { delay: 25, kind: 'settings', generation: 1 },
+    { delay: 180, kind: 'settings-about' },
+    { delay: 520, kind: 'settings-detach' },
+    { delay: 780, kind: 'settings-navigation' },
+    { delay: 920, kind: 'settings-displays-data' },
+  ];
+  const checks = '<script>window.addEventListener("load",()=>setTimeout(()=>{' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Settings\\\"]");' +
+    'const aside=root?.querySelector("aside");' +
+    'const sideVisible=!!aside&&getComputedStyle(aside).display!=="none";' +
+    'const selector=root?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+    'const selectorVisible=!!selector&&getComputedStyle(selector.parentElement.parentElement).display!=="none";' +
+    'const display=root?.querySelector("section[aria-label=\\\"Настройки дисплеев\\\"]");' +
+    'const map=display?.querySelector("[aria-label=\\\"Схема расположения мониторов\\\"]");' +
+    'const bounds=map?.getBoundingClientRect();' +
+    'const monitors=Array.from(map?.querySelectorAll("button")||[]);' +
+    'const contained=!!bounds&&monitors.length===2&&monitors.every(el=>el.getBoundingClientRect().right<=bounds.right+2);' +
+    'const selected=aside?.querySelector("button[data-kira-tab=displays]");' +
+    'const rail=aside?.querySelector("[data-kira-flow-indicator]");' +
+    'const a=selected?.getBoundingClientRect(),b=rail?.getBoundingClientRect();' +
+    'const flowed=!!a&&!!b&&Math.abs(a.top-b.top)<2&&Math.abs(a.height-b.height)<2;' +
+    'const normal=root?.getBoundingClientRect();' +
+    'const noOverflow=!!root&&root.scrollWidth<=root.clientWidth+2&&!!normal&&normal.width>400;' +
+    'document.documentElement.dataset.smokeSettingsResponsive=!!root&&' +
+      'root.dataset.settingsMode==="window"&&!!display&&contained&&noOverflow&&' +
+      (narrow
+        ? '!sideVisible&&selectorVisible&&selector.value==="displays";'
+        : 'sideVisible&&!selectorVisible&&selected?.getAttribute("aria-current")==="page"&&flowed;') +
+    'document.documentElement.dataset.smokeSettingsWidths=(normal?.width||0)+"/"+(bounds?.width||0);' +
+  '},2050));</script>';
+  const page = html
+    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + checks + '</head>');
+  const filename = join(dir, 'settings-responsive-' + width + '.html');
+  await writeFile(filename, page);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu',
+    '--disable-dev-shm-usage', '--disable-background-networking',
+    '--window-size=' + width + ',760', '--virtual-time-budget=2900',
+    '--dump-dom', 'file://' + filename,
+  ], { encoding: 'utf8', timeout: 18000, stdio: ['ignore', 'pipe', 'ignore'] });
+  if (!output.includes('data-smoke-settings-responsive="true"')) {
+    throw new Error('Settings responsive/navigation/display map regression at ' + width +
+      'px: ' + (output.match(/data-smoke-settings-(?:responsive|widths)="[^"]*"/g) ?? []).join(', '));
+  }
+  console.log('OK: Settings ' + width + 'px responsive navigation and display editor');
+}
+
 try {
   await smokeTopBar();
+  await smokeSettingsResponsive(1100, false);
+  await smokeSettingsResponsive(630, true);
   await smokeCalendarSky('1100,820', false);
   await smokeCalendarSky('680,720', true);
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'tenet');

@@ -52,6 +52,16 @@ class DisplayContract(unittest.TestCase):
         self.assertIn('Some(UiCommand::DisplaySave(generation))', SHELL)
         self.assertIn('Сохранить в конфиг', DISPLAY)
 
+    def test_display_editor_keyboard_focus_and_responsive_preview(self):
+        self.assertIn("let mapViewport = $state<HTMLDivElement | null>(null)", DISPLAY)
+        self.assertIn("observer.observe(mapViewport)", DISPLAY)
+        self.assertIn("Math.max(1, mapWidth - 28)", DISPLAY)
+        self.assertIn("onclick={() => selected = rect.connector}", DISPLAY)
+        self.assertIn("focus-visible:outline-kira-accent", DISPLAY)
+        self.assertIn('aria-describedby="kira-display-confirmation-warning"', DISPLAY)
+        self.assertIn("confirmButton?.focus()", DISPLAY)
+        self.assertIn("if (pendingId === id && !busy)", DISPLAY)
+
     def test_both_settings_modes_render_the_real_display_editor(self):
         self.assertIn("section === 'displays'", SETTINGS)
         self.assertIn('<DisplaySettings {generation} />', SETTINGS)

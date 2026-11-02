@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import {
     onDisplayStatus, requestDisplays, applyDisplays, confirmDisplays, revertDisplays,
     displayModeId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
@@ -19,6 +19,10 @@
   let pendingId = $state<number | null>(null);
   let remaining = $state(15);
   let drag = $state<{ connector: string; px: number; py: number; x: number; y: number; zoom: number } | null>(null);
+
+  let mapViewport = $state<HTMLDivElement | null>(null);
+  let mapWidth = $state(500);
+  let confirmButton: HTMLButtonElement;
 
   const selectedOutput = $derived(outputs.find(output => output.connector === selected));
   const selectedDraft = $derived(draft.find(output => output.connector === selected));
@@ -45,7 +49,7 @@
     ? Math.max(...rectangles.map(r => r.x + r.width)) - minX : 1920);
   const spanY = $derived(rectangles.length
     ? Math.max(...rectangles.map(r => r.y + r.height)) - minY : 1080);
-  const zoom = $derived(Math.min(0.22, 500 / Math.max(spanX, 1), 184 / Math.max(spanY, 1)));
+  const zoom = $derived(Math.min(0.22, Math.max(1, mapWidth - 28) / Math.max(spanX, 1), 184 / Math.max(spanY, 1)));
 
   function draftFromOutputs(data: DisplayOutput[]): DisplayDraft[] {
     let nextX = 0;
@@ -197,6 +201,28 @@
   }
   function onPointerUp() { drag = null; }
 
+  // The display map exists only after Niri supplies outputs; observe the
+  // actual width then. It may disappear when all outputs are disconnected.
+  $effect(() => {
+    if (!mapViewport) return;
+    const observer = new ResizeObserver(entries => {
+      const width = entries[0]?.contentRect.width;
+      if (width && width > 0) mapWidth = width;
+    });
+    observer.observe(mapViewport);
+    return () => observer.disconnect();
+  });
+
+  // Preview is a timed transaction. Move keyboard focus to confirmation
+  // when its 15-second native rollback watchdog starts.
+  $effect(() => {
+    const id = pendingId;
+    if (id === null) return;
+    void tick().then(() => {
+      if (pendingId === id && !busy) confirmButton?.focus();
+    });
+  });
+
   onMount(() => {
     const stop = onDisplayStatus(generation, receive);
     refresh();
@@ -224,23 +250,24 @@
 
   {#if pendingId !== null}
     <div role="alertdialog" aria-label="Подтвердите параметры дисплеев"
+      aria-describedby="kira-display-confirmation-warning"
       class="border-l-[3px] border-kira-accent bg-kira-surface p-4">
       <div class="flex justify-between gap-3">
         <div>
           <p class="text-[13px] font-extrabold">Сохранить конфигурацию?</p>
-          <p class="mt-1 text-[11px] leading-relaxed text-kira-muted">
+          <p id="kira-display-confirmation-warning" class="mt-1 text-[12px] leading-relaxed text-kira-muted">
             Если изображение пропало, подождите. Автоматический откат через {remaining} с.
           </p>
         </div>
         <strong class="text-[23px] font-black tabular-nums text-kira-accent">{remaining}</strong>
       </div>
       <div class="mt-4 flex flex-wrap gap-2">
-        <button type="button" onclick={confirm} disabled={busy}
-          class="bg-kira-accent px-4 py-2 text-[11px] font-extrabold text-black disabled:opacity-50">
+        <button type="button" bind:this={confirmButton} onclick={confirm} disabled={busy}
+          class="bg-kira-accent px-4 py-2 text-[12px] font-extrabold text-kira-on-accent focus-visible:outline-2 focus-visible:outline-kira-text disabled:opacity-50">
           Оставить изменения
         </button>
         <button type="button" onclick={revert} disabled={busy}
-          class="border border-kira-muted/40 px-4 py-2 text-[11px] font-bold text-kira-text disabled:opacity-50">
+          class="border border-kira-muted/40 px-4 py-2 text-[12px] font-bold text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent disabled:opacity-50">
           Вернуть как было
         </button>
       </div>
@@ -259,7 +286,7 @@
       {#if loading}Поиск дисплеев…{:else}{outputs.length} подключено · {activeCount} включено{/if}
     </div>
     <button type="button" onclick={refresh} disabled={loading || busy || isPending}
-      class="border border-kira-muted/40 px-3 py-2 text-[11px] font-bold text-kira-text hover:border-kira-accent disabled:opacity-40">
+      class="border border-kira-muted/40 px-3 py-2 text-[11px] font-bold text-kira-text hover:border-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent disabled:opacity-40">
       Обновить список
     </button>
   </div>
@@ -271,17 +298,18 @@
   {:else if outputs.length > 0}
     <div class="border border-kira-muted/20 bg-kira-surface-soft p-4">
       <p class="mb-3 text-[10px] font-extrabold tracking-widest text-kira-muted">РАСПОЛОЖЕНИЕ ЭКРАНОВ / ПЕРЕТАЩИТЕ</p>
-      <div class="kira-displays-map relative h-[230px] overflow-hidden border border-kira-muted/15 bg-kira-bg"
+      <div bind:this={mapViewport} class="kira-displays-map relative h-[230px] overflow-hidden bg-kira-bg"
         aria-label="Схема расположения мониторов">
         {#each rectangles as rect (rect.connector)}
           <button type="button"
             aria-label={'Переместить или выбрать ' + rect.connector}
             aria-pressed={selected === rect.connector}
+            onclick={() => selected = rect.connector}
             onpointerdown={event => onPointerDown(event, rect.connector)}
             onpointermove={onPointerMove}
             onpointerup={onPointerUp}
             onpointercancel={onPointerUp}
-            class={['absolute flex flex-col items-center justify-center gap-1 overflow-hidden border-2 text-center touch-none select-none',
+            class={['absolute flex flex-col items-center justify-center gap-1 overflow-hidden border-2 text-center touch-none select-none focus-visible:outline-2 focus-visible:outline-kira-accent',
               selected === rect.connector ? 'border-kira-accent bg-kira-surface text-kira-text' : 'border-kira-muted/60 bg-kira-surface-soft text-kira-muted'].join(' ')}
             style:left={14 + (rect.x - minX) * zoom + 'px'}
             style:top={18 + (rect.y - minY) * zoom + 'px'}
@@ -304,8 +332,8 @@
       {#each outputs as output, i (output.connector)}
         <button type="button" onclick={() => selected = output.connector}
           aria-pressed={selected === output.connector}
-          class={['flex min-w-0 items-start gap-3 border p-3 text-left',
-            selected === output.connector ? 'border-kira-accent bg-kira-surface' : 'border-kira-muted/25 bg-kira-bg'].join(' ')}>
+          class={['flex min-w-0 items-start gap-3 border-l-[3px] p-3 text-left focus-visible:outline-2 focus-visible:outline-kira-accent',
+            selected === output.connector ? 'border-kira-accent bg-kira-surface text-kira-text' : 'border-kira-muted/25 bg-kira-bg text-kira-muted hover:bg-kira-surface-soft'].join(' ')}>
           <span class="grid size-7 shrink-0 place-items-center border border-kira-muted/40 text-[12px] font-black">{i + 1}</span>
           <span class="min-w-0">
             <strong class="block truncate text-[11px]">{output.make} {output.model}</strong>
@@ -331,7 +359,7 @@
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
           <label class="block min-w-0 text-[11px] font-semibold text-kira-muted">Разрешение и частота
-            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text"
+            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
               value={selectedDraft.mode} disabled={busy || isPending}
               onchange={event => change({ mode: event.currentTarget.value })}>
               {#each selectedOutput.modes as mode (displayModeId(mode))}
@@ -340,7 +368,7 @@
             </select>
           </label>
           <label class="block min-w-0 text-[11px] font-semibold text-kira-muted">Масштаб
-            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text"
+            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
               value={String(selectedDraft.scale)} disabled={busy || isPending}
               onchange={event => change({ scale: Number(event.currentTarget.value) })}>
               {#each [...new Set([0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, selectedDraft.scale])].sort((a, b) => a - b) as value}
@@ -349,7 +377,7 @@
             </select>
           </label>
           <label class="block min-w-0 text-[11px] font-semibold text-kira-muted">Ориентация
-            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text"
+            <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
               value={selectedDraft.transform} disabled={busy || isPending}
               onchange={event => change({ transform: event.currentTarget.value })}>
               <option value="normal">Альбомная · 0°</option>
@@ -369,13 +397,13 @@
                 X <input type="number" min="-32000" max="32000" step="1" value={selectedDraft.x}
                   disabled={busy || isPending}
                   onchange={event => change({ x: Math.round(Number(event.currentTarget.value)) })}
-                  class="min-w-0 w-full bg-transparent px-1 py-3 text-[12px] text-kira-text" />
+                  class="min-w-0 w-full bg-transparent px-1 py-3 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent" />
               </label>
               <label class="flex items-center gap-1 border border-kira-muted/35 bg-kira-surface px-2">
                 Y <input type="number" min="-32000" max="32000" step="1" value={selectedDraft.y}
                   disabled={busy || isPending}
                   onchange={event => change({ y: Math.round(Number(event.currentTarget.value)) })}
-                  class="min-w-0 w-full bg-transparent px-1 py-3 text-[12px] text-kira-text" />
+                  class="min-w-0 w-full bg-transparent px-1 py-3 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent" />
               </label>
             </div>
           </div>
@@ -393,16 +421,16 @@
 
     <div class="flex flex-wrap gap-2 border-t border-kira-muted/20 pt-4">
       <button type="button" onclick={apply} disabled={loading || busy || isPending || activeCount < 1}
-        class="bg-kira-accent px-5 py-3 text-[11px] font-extrabold text-black disabled:opacity-40">
+        class="bg-kira-accent px-5 py-3 text-[11px] font-extrabold text-kira-on-accent focus-visible:outline-2 focus-visible:outline-kira-text disabled:opacity-40">
         {busy ? 'Применение…' : 'Применить'}
       </button>
       <button type="button" onclick={save} disabled={loading || busy || isPending || !canSave}
         title="Сохранить подтверждённые параметры в управляемый KDL"
-        class="border border-kira-accent px-5 py-3 text-[11px] font-bold text-kira-accent disabled:opacity-40">
+        class="border border-kira-accent px-5 py-3 text-[11px] font-bold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent disabled:opacity-40">
         Сохранить в конфиг
       </button>
       <button type="button" onclick={reset} disabled={loading || busy || isPending}
-        class="border border-kira-muted/40 px-5 py-3 text-[11px] font-bold text-kira-text disabled:opacity-40">
+        class="border border-kira-muted/40 px-5 py-3 text-[11px] font-bold text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent disabled:opacity-40">
         Сбросить изменения
       </button>
     </div>

@@ -43,6 +43,25 @@ class SettingsContracts(unittest.TestCase):
         self.assertIn('onPopout', UI)
         self.assertIn('onSettingsAbout(generation,', UI)
 
+    def test_window_navigation_is_responsive_with_one_flow_indicator(self):
+        self.assertIn("use:tenetFlowIndicator={{ active: section, axis: 'both' }}", UI)
+        self.assertEqual(UI.count("data-kira-flow-indicator"), 1)
+        self.assertIn("data-kira-tab={item.id}", UI)
+        self.assertIn("max-[720px]:hidden", UI)
+        self.assertIn("max-[720px]:block", UI)
+        self.assertIn("max-[720px]:px-5", UI)
+        self.assertIn("aria-current={section === item.id ? 'page' : undefined}", UI)
+        self.assertIn("focus-visible:outline-kira-accent", UI)
+        self.assertIn("Изменения дисплеев применяются и сохраняются отдельно", UI)
+        self.assertNotIn("Данные устройства. Локально и только для чтения.", UI)
+
+    def test_about_preserves_truthful_readonly_facts_without_repetitive_cards(self):
+        self.assertIn("ТОЛЬКО ЧТЕНИЕ", UI)
+        self.assertIn("border-l-[3px] border-kira-accent bg-kira-surface", UI)
+        self.assertIn("grid grid-cols-1 gap-x-8 sm:grid-cols-2", UI)
+        self.assertIn("Недоступные значения не подменяются приблизительными", UI)
+        self.assertIn("sectionIsAvailable(id)", UI)
+
     def test_no_arbitrary_executables_or_fake_system_values(self):
         self.assertIn('read_text("/etc/os-release"', INFO)
         self.assertIn('read_text("/proc/cpuinfo"', INFO)
