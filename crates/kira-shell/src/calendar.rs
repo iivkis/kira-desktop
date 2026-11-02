@@ -143,18 +143,20 @@ impl OverlayPool {
     /// A newly requested surface may take the empty left/right dock, but
     /// an *idle* host is invisible and must never reserve screen space.
     fn choose_dock(&self, kind: Surface) -> PopupDock {
-        let right_occupied = self.windows.borrow().values().any(|view| {
-            view.requested.get() && view.dock.get() == PopupDock::Right
-        });
+        let right_occupied = self
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
         popup_layout::choose_dock(kind, right_occupied)
     }
 
     fn width_for(&self, view: &CalendarOverlay) -> i32 {
         let windows = self.windows.borrow();
         let active_count = windows.values().filter(|view| view.requested.get()).count();
-        let launcher_active = windows.values().any(|view| {
-            view.requested.get() && view.active.get() == Some(Surface::Launcher)
-        });
+        let launcher_active = windows
+            .values()
+            .any(|view| view.requested.get() && view.active.get() == Some(Surface::Launcher));
         popup_layout::popup_width(
             crate::native_ui::popup_output_width(&view.window),
             active_count,
@@ -165,13 +167,19 @@ impl OverlayPool {
     /// Native window dimensions and anchors are independent of the WebKit
     /// lease scheduler. Only requested windows count toward occupied columns.
     fn sync_geometry(&self) {
-        let active: Vec<_> = self.windows.borrow().values()
+        let active: Vec<_> = self
+            .windows
+            .borrow()
+            .values()
             .filter(|view| view.requested.get())
-            .cloned().collect();
+            .cloned()
+            .collect();
         for view in active {
             let width = self.width_for(&view);
             crate::native_ui::resize_webview_popup(
-                &view.window, width, view.content_height.get().max(1),
+                &view.window,
+                width,
+                view.content_height.get().max(1),
             );
         }
     }
@@ -182,13 +190,18 @@ impl OverlayPool {
         // the original right-hand anchor again. Unmap before changing
         // layer-shell anchors to avoid Niri replaying the last buffer at the
         // new coordinates, while preserving the Svelte widget and its state.
-        let right_occupied = self.windows.borrow().values().any(|view| {
-            view.requested.get() && view.dock.get() == PopupDock::Right
-        });
+        let right_occupied = self
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
         if !right_occupied {
-            let left = self.windows.borrow().values().find(|view| {
-                view.requested.get() && view.dock.get() == PopupDock::Left
-            }).cloned();
+            let left = self
+                .windows
+                .borrow()
+                .values()
+                .find(|view| view.requested.get() && view.dock.get() == PopupDock::Left)
+                .cloned();
             if let Some(left) = left {
                 left.move_to_right();
             }
@@ -255,7 +268,9 @@ impl CalendarOverlay {
     /// Select an available dock based on *requested windows*, never on an
     /// idle Calendar WebView. Launcher always keeps the center slot.
     fn position_for(&self, kind: Surface) {
-        let dock = self.pool.upgrade()
+        let dock = self
+            .pool
+            .upgrade()
             .map(|pool| pool.choose_dock(kind))
             .unwrap_or(popup_layout::choose_dock(kind, false));
         self.apply_dock(dock);
@@ -269,21 +284,23 @@ impl CalendarOverlay {
         self.window.set_margin(Edge::Bottom, 0);
         self.window.set_margin(Edge::Left, 0);
         self.window.set_anchor(Edge::Top, dock != PopupDock::Center);
-        self.window.set_anchor(Edge::Right, dock == PopupDock::Right);
+        self.window
+            .set_anchor(Edge::Right, dock == PopupDock::Right);
         self.window.set_anchor(Edge::Bottom, false);
         self.window.set_anchor(Edge::Left, dock == PopupDock::Left);
         if dock == PopupDock::Center {
             self.window.set_exclusive_zone(-1);
         } else {
             self.window.set_exclusive_zone(0);
-            self.window.set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
+            self.window
+                .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
             match dock {
-                PopupDock::Right => self.window.set_margin(
-                    Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN,
-                ),
-                PopupDock::Left => self.window.set_margin(
-                    Edge::Left, crate::native_ui::POPUP_RIGHT_MARGIN,
-                ),
+                PopupDock::Right => self
+                    .window
+                    .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN),
+                PopupDock::Left => self
+                    .window
+                    .set_margin(Edge::Left, crate::native_ui::POPUP_RIGHT_MARGIN),
                 PopupDock::Center => {}
             }
         }
@@ -599,7 +616,9 @@ impl CalendarOverlay {
                     height.min(crate::native_ui::webview_popup_height_limit(&self.window));
                 if clamped != self.content_height.get() {
                     self.content_height.set(clamped);
-                    let width = self.pool.upgrade()
+                    let width = self
+                        .pool
+                        .upgrade()
                         .map(|pool| pool.width_for(self))
                         .unwrap_or(popup_layout::PREFERRED_POPUP_WIDTH);
                     crate::native_ui::resize_webview_popup(&self.window, width, clamped);
