@@ -65,10 +65,7 @@ fn configured_names(raw: &str) -> Vec<String> {
         .collect()
 }
 
-fn selected_entries(
-    full: &serde_json::Value,
-    names: &[String],
-) -> (Vec<usize>, serde_json::Value) {
+fn selected_entries(full: &serde_json::Value, names: &[String]) -> (Vec<usize>, serde_json::Value) {
     let apps = full["apps"].as_array();
     let mut selected = Vec::new();
     let mut allowed = Vec::new();
@@ -195,10 +192,7 @@ mod tests {
     fn accepts_only_a_bounded_explicit_launch_contract() {
         assert_eq!(parse_command("catalog"), Some(Command::Catalog));
         assert_eq!(parse_command("launch:7"), Some(Command::Launch(7)));
-        assert_eq!(
-            parse_command("icons:2,9"),
-            Some(Command::Icons(vec![2, 9]))
-        );
+        assert_eq!(parse_command("icons:2,9"), Some(Command::Icons(vec![2, 9])));
         for invalid in [
             "",
             "open",
