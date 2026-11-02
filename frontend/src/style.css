@@ -77,6 +77,19 @@
     filter: drop-shadow(var(--kira-widget-shadow));
   }
 
+  /* A 1px high-contrast silhouette keeps black Launcher/Calendar/Monitor
+   * headers legible against other black windows even where the offset shadow
+   * is hidden by overlap. The border is paint-only: no layout shift or extra
+   * pointer hit area, and it reveals/reverses with the root's TENET clip. */
+  html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) main[data-kira-ui-root]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    border: 1px solid var(--kira-widget-outline);
+  }
+
   html[data-kira-surface="calendar"] main[data-kira-ui-root] {
     max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset));
     /* Calendar/Overview use page scrolling; Launcher and Processes

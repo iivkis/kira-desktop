@@ -211,9 +211,13 @@ function scriptFor(steps, observationMs = 1150) {
       // A real popup reserves transparent right/bottom pixels outside its
       // TENET-clipped main, so the 4px hard shadow can survive WebKit bounds.
       'const outer=roots[0]?.parentElement;const outerStyle=outer?getComputedStyle(outer):null;' +
+      'const edge=roots[0]?getComputedStyle(roots[0],"::after"):null;' +
       'document.documentElement.dataset.smokeWidgetShadow=!!outerStyle && ' +
-        'outerStyle.filter.includes("drop-shadow(") && outerStyle.paddingBottom==="4px" && outerStyle.paddingRight==="4px";' +
-      'document.documentElement.dataset.smokeDetachedShadow=!!outerStyle && outerStyle.filter==="none" && outerStyle.paddingBottom==="0px";' +
+        'outerStyle.filter.includes("drop-shadow(") && outerStyle.paddingBottom==="4px" && outerStyle.paddingRight==="4px" && ' +
+        '!!edge && edge.content!=="none" && edge.borderTopWidth==="1px" && edge.borderTopStyle==="solid" && ' +
+        'edge.borderTopColor!=="rgb(0, 0, 0)" && edge.pointerEvents==="none";' +
+      'document.documentElement.dataset.smokeDetachedShadow=!!outerStyle && outerStyle.filter==="none" && outerStyle.paddingBottom==="0px" && ' +
+        '!!edge && edge.content==="none";' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
@@ -374,7 +378,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     }
   }
   if (heightMode !== 'settings-window' && !output.includes('data-smoke-widget-shadow="true"')) {
-    throw new Error(name + ': popup should reserve and render a 4px hard outer shadow');
+    throw new Error(name + ': popup must show contrasting 1px outline and 4px hard outer shadow');
   }
   if (heightMode === 'settings-window' && !output.includes('data-smoke-detached-shadow="true"')) {
     throw new Error(name + ': detached Niri window must not retain the popup shadow gutter');

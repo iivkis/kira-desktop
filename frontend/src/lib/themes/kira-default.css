@@ -38,9 +38,12 @@
   --kira-border-strong: 2px;
   --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
   --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
-  /* Popup silhouette only: small, hard black offset with no blur/glow. */
+  /* High-contrast popup silhouette on Black AND Prussian Blue surfaces.
+   * The prior translucent black shadow disappeared over dark Niri windows.
+   * These opaque blue/grey mixes are derived from the five canonical colors. */
   --kira-widget-shadow-offset: 4px;
-  --kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--black) 42%, transparent);
+  --kira-widget-outline: color-mix(in srgb, var(--alabaster-grey) 68%, var(--prussian-blue));
+  --kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--alabaster-grey) 45%, var(--prussian-blue));
 
   --kira-motion-fast: 120ms;
   --kira-motion-standard: 180ms;

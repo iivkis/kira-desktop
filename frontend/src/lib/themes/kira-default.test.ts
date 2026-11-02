@@ -96,7 +96,9 @@ describe('Kira Default Black / Prussian Blue / Orange design tokens', () => {
     expect(css).toContain('--kira-shadow-brutal:');
     expect(css).toContain('--kira-shadow-panel:');
     expect(css).toContain('--kira-widget-shadow-offset: 4px;');
-    expect(css).toContain('--kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--black) 42%, transparent);');
+    expect(css).toContain('--kira-widget-outline: color-mix(in srgb, var(--alabaster-grey) 68%, var(--prussian-blue));');
+    expect(css).toContain('--kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--alabaster-grey) 45%, var(--prussian-blue));');
+    expect(css).not.toContain('--kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--black)');
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
     expect(css).toContain('--kira-motion-fast: 0ms;');
   });
