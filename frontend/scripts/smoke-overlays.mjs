@@ -298,7 +298,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       (!output.includes('data-smoke-reverse-in-flight="true"') ||
        output.includes('data-smoke-closed="closed:1"') ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
-    throw new Error(name + ': rapid reopen must reverse the in-flight exit without releasing the lease');
+    const stages = output.match(/data-smoke-(?:reverse|closed|tenet-reveal|tenet-settled)[a-z-]*="[^"]*"/g) ?? [];
+    throw new Error(name + ': rapid reopen must reverse the in-flight exit without releasing the lease: ' + stages.join(', '));
   }
   if (heightMode === 'reduced' &&
       (!output.includes('data-smoke-tenet-started="false"') ||
