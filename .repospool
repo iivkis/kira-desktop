@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	b44a87731e9e5cc4e786aae9216937fc9c0ec299
+C	0227d6092f011790006bd88aeb9eb4e8fd142596
 F	.cargo/config.toml	98	146	3
 F	.github/workflows/ci.yml	4355	151	112
 F	.github/workflows/frontend-nix.yml	1398	265	43
@@ -128,12 +128,12 @@ F	tests/test_dev_preview.py	9339	21624	219
 F	tests/test_displays.py	4741	21845	82
 F	tests/test_launcher_design.py	10481	21929	190
 F	tests/test_native_theme.py	2098	22121	44
-F	tests/test_popup_geometry.py	3227	22167	58
-F	tests/test_qa_visual.py	10549	22227	217
-F	tests/test_settings.py	4867	22446	87
-F	tests/test_tenet_close.py	6297	22535	115
-F	tests/test_ui_bootstrap_contract.py	1103	22652	29
-F	tests/test_webview_pool.py	11221	22683	192
+F	tests/test_popup_geometry.py	3297	22167	59
+F	tests/test_qa_visual.py	10549	22228	217
+F	tests/test_settings.py	4867	22447	87
+F	tests/test_tenet_close.py	6297	22536	115
+F	tests/test_ui_bootstrap_contract.py	1103	22653	29
+F	tests/test_webview_pool.py	11279	22684	193
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -22179,7 +22179,8 @@ SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
 
 class PopupGeometryTests(unittest.TestCase):
     def test_transient_widget_never_claims_detached_window_columns(self):
-        self.assertIn("PopupDock::Center", LAYOUT)
+        self.assertIn("pub fn choose_dock(_kind: Surface", LAYOUT)
+        self.assertIn("    PopupDock::Right", LAYOUT)
         self.assertIn("PopupDock::Right", LAYOUT)
         self.assertNotIn("PopupDock::Left", LAYOUT)
         self.assertIn("popup_layout::choose_dock(kind, false)", HOST)
@@ -22799,7 +22800,8 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("current.focus_detached()", request)
         self.assertIn("self.pending.replace(Some(open))", request)
         self.assertIn("current.request_close()", request)
-        self.assertIn("if self.pending.borrow().is_some()", request)
+        self.assertIn("let waiting = self.pending.borrow().is_some()", request)
+        self.assertIn("if waiting {", request)
         self.assertIn("fn run_pending(self: &Rc<Self>)", request)
         self.assertIn("pub fn choose_dock(_kind: Surface", layout)
         self.assertIn("    PopupDock::Right", layout)
