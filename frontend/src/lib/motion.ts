@@ -23,12 +23,18 @@ export interface TenetEntrance {
 
 export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const direction = options.direction ?? 1;
+  // The popup backing WebKit surface is transparent; mask the real widget
+  // without ever resizing or repositioning its Wayland window.
+  const hiddenClip = direction < 0 ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)';
+  const visibleClip = 'inset(0% 0% 0% 0%)';
   // Cap moving surfaces: the system monitor's many nested charts/rows
   // must not compete for compositor layers and trigger choppy frames.
   const content = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'))
     .slice(0, options.sections ?? 3);
   let master: gsap.core.Timeline | null = null;
   let traces: HTMLElement[] = [];
+  let seam: HTMLElement | null = null;
   let restore: number | null = null;
   let awaitVisible: number | null = null;
   let started = false;
@@ -43,6 +49,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     if (restore !== null) window.clearTimeout(restore);
     restore = null;
     node.dataset.tenetReveal = 'reversed';
+    node.dataset.tenetSurface = 'retracted';
     notifyOverlayClosed(Number(node.dataset.kiraGeneration));
   }
 
@@ -57,11 +64,19 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     closedAcknowledged = false;
     for (const trace of traces) trace.remove();
     traces = [];
+    if (seam) {
+      gsap.killTweensOf(seam);
+      seam.remove();
+      seam = null;
+    }
+    gsap.killTweensOf(node);
+    gsap.set(node, { clearProps: 'clipPath,willChange' });
     gsap.killTweensOf(content);
     if (content.length) {
       gsap.set(content, { clearProps: 'transform,opacity,willChange' });
     }
     node.dataset.tenetReveal = 'settled';
+    node.dataset.tenetSurface = 'settled';
   }
 
   function begin() {
@@ -74,7 +89,6 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       settle();
       return;
     }
-    const direction = options.direction ?? 1;
     const rootRect = node.getBoundingClientRect();
     const contactRect = contact.getBoundingClientRect();
     const origin = {
@@ -104,9 +118,32 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
 
     master = gsap.timeline({
       paused: true,
-      onComplete: () => { node.dataset.tenetReveal = 'settled'; },
+      onComplete: () => {
+        node.dataset.tenetReveal = 'settled';
+        node.dataset.tenetSurface = 'settled';
+        gsap.set(node, { willChange: 'auto' });
+      },
       onReverseComplete: acknowledgeClose,
     });
+    // The OUTER WebView surface has progressive physical stages. The
+    // clip and contact line belong to the same saved reversible scene.
+    master.to(node, {
+      clipPath: visibleClip,
+      duration: 0.54,
+      ease: 'power3.inOut',
+      force3D: true,
+    }, 0);
+    if (seam) {
+      const travel = Math.max(0, node.clientHeight - 2);
+      master.to(seam, {
+        y: direction < 0 ? 0 : travel,
+        duration: 0.54,
+        ease: 'power3.inOut',
+        force3D: true,
+      }, 0);
+      master.to(seam, { opacity: 0.82, duration: 0.09, ease: 'power2.out' }, 0.025);
+      master.to(seam, { opacity: 0, duration: 0.17, ease: 'power2.in' }, 0.37);
+    }
     master.to(content, {
       y: 0,
       scale: 1,
@@ -134,6 +171,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
         immediateRender: true,
       }, 0);
     node.dataset.tenetReveal = 'started';
+    node.dataset.tenetSurface = 'materializing';
     master.play(0);
     // WebKitGTK can throttle frames. Settle the exact ending geometry but
     // preserve the timeline and fragments as temporal memory for closing.
@@ -142,6 +180,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       if (!closing && master) {
         master.progress(1).pause();
         node.dataset.tenetReveal = 'settled';
+        node.dataset.tenetSurface = 'settled';
+        gsap.set(node, { willChange: 'auto' });
       }
     }, 1200);
   }
@@ -168,6 +208,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       return;
     }
     node.dataset.tenetReveal = 'reversing';
+    node.dataset.tenetSurface = 'dematerializing';
+    gsap.set(node, { willChange: 'clip-path' });
     // A GSAP reverse walks EVERY recorded intermediate state and the
     // saved INVERTED fragment tracks in precisely inverse temporal order.
     // No new random seed, mirrored ease or replacement exit tween.
@@ -191,6 +233,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     restore = null;
     if (master) {
       node.dataset.tenetReveal = 'started';
+      node.dataset.tenetSurface = 'materializing';
+      gsap.set(node, { willChange: 'clip-path' });
       master.play(); // Retarget from the live position, without a snap.
       // A resumed view can be throttled too. Restore exact visible geometry
       // if WebKit stops producing GSAP frames after an interrupted reverse.
@@ -199,6 +243,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
         if (!closing && master) {
           master.progress(1).pause();
           node.dataset.tenetReveal = 'settled';
+          node.dataset.tenetSurface = 'settled';
+          gsap.set(node, { willChange: 'auto' });
         }
       }, 750);
     }
@@ -223,7 +269,21 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   // Only two or three small sections move. The live chart layers remain still.
   if (preference.matches || !content.length) {
     node.dataset.tenetReveal = 'settled';
+    node.dataset.tenetSurface = 'settled';
   } else {
+    // Black pixels remain masked until WebKit has mounted, measured and
+    // painted. Main's layout box stays real for ResizeObserver.
+    gsap.set(node, { clipPath: hiddenClip, willChange: 'clip-path' });
+    seam = node.ownerDocument.createElement('span');
+    seam.dataset.kiraSurfaceSeam = '';
+    seam.setAttribute('aria-hidden', 'true');
+    node.appendChild(seam);
+    gsap.set(seam, {
+      y: direction < 0 ? Math.max(0, node.clientHeight - 2) : 0,
+      opacity: 0,
+      force3D: true,
+    });
+    node.dataset.tenetSurface = 'staged';
     gsap.set(content, {
       y: 9,
       scale: 0.988,
