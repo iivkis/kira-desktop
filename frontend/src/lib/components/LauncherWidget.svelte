@@ -64,6 +64,13 @@
     }
   });
 
+  function clearSearch() {
+    query = '';
+    selected = 0;
+    error = '';
+    void tick().then(() => search?.focus());
+  }
+
   function choose(index: number) {
     const app = displayed[index];
     if (!app) return;
@@ -90,6 +97,9 @@
       return;
     }
     if (event.key === 'Enter' && !event.isComposing) {
+      // A pointer-focused option receives the native Enter click.
+      if (event.target instanceof HTMLElement &&
+          event.target.closest('#kira-launcher-results')) return;
       event.preventDefault();
       choose(activeIndex);
     }
@@ -100,37 +110,59 @@
 
 <main data-kira-ui-root aria-label="Kira Launcher"
   class="flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
-  <header class="shrink-0 px-5 pb-4 pt-5">
-    <div class="flex items-start justify-between gap-2">
-      <div class="min-w-0">
-        <span class="text-[10px] font-extrabold tracking-[0.16em] text-kira-accent">KIRA / APPLICATION INDEX</span>
-        <h1 class="mt-1 text-[30px] font-extrabold leading-tight">Applications</h1>
-        <p class="mt-1 text-xs text-kira-muted">Search your installed tools.</p>
+  <header class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
+        <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
+        <h1 class="mt-2 text-[30px] font-extrabold leading-none tracking-tight">Launch</h1>
       </div>
       <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
-        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+        class="rounded-sm px-2 py-1 text-xl leading-none text-kira-muted hover:text-kira-accent
+          focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
     </div>
   </header>
 
-  <section class="flex min-h-0 flex-1 flex-col gap-3 bg-kira-surface px-4 py-4">
-    <label for="kira-launcher-query" class="text-[10px] font-bold tracking-[0.1em] text-kira-muted">FIND / OPEN</label>
-    <input id="kira-launcher-query" type="search" bind:this={search} bind:value={query}
-      oninput={() => { selected = 0; error = ''; }}
-      autocomplete="off" spellcheck="false"
-      aria-label="Search applications" aria-controls="kira-launcher-results"
-      placeholder="Search applications…"
-      class="h-11 w-full shrink-0 rounded-md border border-kira-muted/40 bg-kira-bg px-3 text-sm text-kira-text outline-none placeholder:text-kira-muted focus-visible:border-kira-accent"/>
-    <div class="flex items-center justify-between gap-2">
-      <span class="text-[10px] font-bold tracking-wider text-kira-muted">APPLICATION CATALOG</span>
-      <span class="text-[10px] font-bold tabular-nums text-kira-muted">{matches.length} / {apps.length} APPS</span>
+  <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
+    <label for="kira-launcher-query" class="mb-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">FIND / OPEN</label>
+    <div class="relative shrink-0 border border-kira-muted/30 bg-kira-bg
+      focus-within:border-kira-accent focus-within:ring-1 focus-within:ring-kira-accent">
+      <svg class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-kira-muted"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </svg>
+      <input id="kira-launcher-query" type="search" bind:this={search} bind:value={query}
+        oninput={() => { selected = 0; error = ''; }}
+        autocomplete="off" spellcheck="false"
+        role="combobox" aria-autocomplete="list" aria-expanded={displayed.length > 0}
+        aria-activedescendant={displayed[activeIndex] ? 'kira-launcher-option-' + displayed[activeIndex].id : undefined}
+        aria-label="Search applications" aria-controls="kira-launcher-results"
+        placeholder="Search applications…"
+        class="h-11 w-full bg-transparent py-2 pl-10 pr-10 text-sm font-semibold text-kira-text
+          outline-none placeholder:font-normal placeholder:text-kira-muted/70"/>
+      {#if query.length > 0}
+        <button type="button" onclick={clearSearch} title="Clear search" aria-label="Clear search"
+          class="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center
+            text-base text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+      {/if}
+    </div>
+
+    <div class="mb-2 mt-4 flex items-center justify-between gap-3 border-b border-kira-muted/20 pb-2">
+      <h2 class="text-[10px] font-extrabold tracking-[0.12em] text-kira-accent">APPLICATION CATALOG</h2>
+      <span class="shrink-0 text-[10px] font-bold tabular-nums text-kira-muted">
+        {loaded ? matches.length + ' / ' + apps.length : '— / —'}
+      </span>
     </div>
     <div id="kira-launcher-results" bind:this={results}
-      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1" role="listbox" aria-label="Matching applications">
+      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1"
+      role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
       {#each displayed as app, index (app.id)}
-        <button type="button" role="option" aria-selected={index === activeIndex}
+        <button type="button" id={'kira-launcher-option-' + app.id}
+          role="option" aria-selected={index === activeIndex} tabindex={-1}
           onclick={() => choose(index)}
           title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'my-0.5 flex min-h-[54px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
+          class={'group my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
           <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
           <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
@@ -151,26 +183,48 @@
             {/if}
           </span>
           <span class="min-w-0 flex-1">
-            <span class={'block truncate text-sm font-semibold ' + (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
-            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim() || 'Installed application'}</span>
+            <span class={'block truncate text-sm font-semibold ' +
+              (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
+            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">
+              {app.description.trim() || 'Installed application'}
+            </span>
           </span>
+          {#if index === activeIndex}
+            <span class="shrink-0 text-sm font-bold text-kira-accent" aria-hidden="true">↵</span>
+          {/if}
         </button>
       {:else}
-        <p class="py-8 text-center text-xs text-kira-muted" role="status">
-          {#if error}{error}{:else if !loaded}LOADING APPLICATIONS…{:else}No matching applications{/if}
-        </p>
+        <div class="px-3 py-8 text-center" role="status">
+          <p class="text-xs font-semibold text-kira-text">
+            {#if error}{error}{:else if !loaded}LOADING APPLICATIONS…{:else}No matching applications{/if}
+          </p>
+          {#if loaded && !error && query.trim()}
+            <button type="button" onclick={clearSearch}
+              class="mt-3 text-[11px] font-bold text-kira-accent
+                focus-visible:outline-2 focus-visible:outline-kira-accent">CLEAR SEARCH</button>
+          {/if}
+        </div>
       {/each}
     </div>
     {#if error && displayed.length}
-      <p class="shrink-0 text-xs font-medium text-kira-accent" role="alert">{error}</p>
+      <p class="shrink-0 py-2 text-xs font-medium text-kira-accent" role="alert">{error}</p>
     {/if}
     {#if matches.length > displayed.length}
-      <p class="shrink-0 text-[10px] text-kira-muted">Showing first {displayed.length} matches. Refine search for more.</p>
+      <p class="shrink-0 pt-2 text-[10px] text-kira-muted">
+        Showing first {displayed.length} matches. Refine search for more.
+      </p>
     {/if}
   </section>
-  <footer class="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 px-5 py-3 text-[10px] text-kira-muted">
-    <kbd class="rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">↑ ↓</kbd><span>Navigate</span>
-    <kbd class="ml-2 rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">ENTER</kbd><span>Open</span>
-    <kbd class="ml-2 rounded border border-kira-muted/40 px-1.5 py-1 text-kira-text">ESC</kbd><span>Close</span>
+  <footer class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
+    px-5 py-2.5 text-[10px] text-kira-muted">
+    <span class="flex items-center gap-1.5">
+      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">↑ ↓</kbd> MOVE
+    </span>
+    <span class="flex items-center gap-1.5">
+      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ENTER</kbd> OPEN
+    </span>
+    <span class="flex items-center gap-1.5">
+      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ESC</kbd> CLOSE
+    </span>
   </footer>
 </main>

@@ -29,6 +29,13 @@ class LauncherDesignTests(unittest.TestCase):
                 continue
             self.assertIn(value, WIDGET)
         self.assertIn('filterLauncherApps(apps, query)', WIDGET)
+        self.assertIn('role="combobox"', WIDGET)
+        self.assertIn('aria-autocomplete="list"', WIDGET)
+        self.assertIn('aria-activedescendant=', WIDGET)
+        self.assertIn('aria-label="Clear search"', WIDGET)
+        self.assertIn("function clearSearch()", WIDGET)
+        self.assertIn("event.target.closest('#kira-launcher-results')", WIDGET)
+        self.assertIn(".sort((a, b) => a.rank - b.rank || a.index - b.index)", MODEL)
         self.assertIn('nextLauncherSelection(', WIDGET)
         self.assertIn('matches.slice(0, 80)', WIDGET)
         self.assertIn('app.id', WIDGET)

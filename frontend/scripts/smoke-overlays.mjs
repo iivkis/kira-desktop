@@ -89,6 +89,9 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-icon-width", firstIcon ? Math.round(firstIcon.getBoundingClientRect().width) : 0);' +
       'const firstRow = document.querySelector("[role=listbox] [role=option]");' +
       'document.documentElement.setAttribute("data-smoke-row-square", !!firstRow && getComputedStyle(firstRow).borderTopRightRadius === "0px");' +
+      'const combo = document.querySelector("input[role=combobox][aria-label=Search\\ applications]");' +
+      'const selectedOption = document.querySelector("[role=listbox] [role=option][aria-selected=true]");' +
+      'document.documentElement.setAttribute("data-smoke-launcher-a11y", !!combo && !!selectedOption && combo.getAttribute("aria-activedescendant") === selectedOption.id && selectedOption.tabIndex === -1);' +
       'document.documentElement.setAttribute("data-smoke-icon-count", document.querySelectorAll("img[src^=\\"data:image/\\"]").length);' +
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
       'const clock = document.querySelector("[data-calendar-clock]");' +
@@ -199,7 +202,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
-  if (heightMode === 'icons' && (!output.includes('data-smoke-square="true"') ||
+  if (heightMode === 'icons' && (!output.includes('data-smoke-launcher-a11y="true"') || !output.includes('data-smoke-square="true"') ||
       !output.includes('data-smoke-real-icon-transparent="true"') ||
       !output.includes('data-smoke-placeholder-background="true"') ||
       !output.includes('data-smoke-icon-width="32"') ||

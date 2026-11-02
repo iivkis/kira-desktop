@@ -114,8 +114,15 @@ official visual language of Kira Desktop.
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
-  Search, catalog, stable application icons, and an orange selection rail
-  communicate function without painting the entire row orange.
+  The prominent search field is a keyboard-focused combobox with an
+  `aria-activedescendant` link to the active app in the result list.
+  Search relevance prioritizes exact and prefix name matches ahead of
+  description-only matches, retaining native GIO identity and stable order
+  among ties. The active application uses a restrained orange rail and
+  title, not an orange-filled row; a single search-clear action and concise
+  keyboard legend prioritize function over decorative copy. A capped
+  80-result list, bounded icon batches, honest empty/error states and native
+  GIO launching preserve performance, accessibility and system boundaries.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
   and visible keyboard focus remain distinct. Niri events are authoritative.
 - **System health:** the Top Bar is a compact **system** indicator, not just
