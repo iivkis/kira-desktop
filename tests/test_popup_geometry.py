@@ -21,39 +21,31 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("self.window.set_exclusive_zone(0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Top, 0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Right, 0);", CALENDAR)
-        self.assertIn("self.window.set_margin(Edge::Right, 12);", CALENDAR)
+        self.assertIn("native_ui::popup_right_margin(&self.window, kind == Surface::System)", CALENDAR)
+        self.assertIn("pub fn popup_right_margin", HELPERS)
         self.assertIn(
             "set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN)",
             CALENDAR,
         )
-        # The shared layer-shell window and WebKit renderer stay in place.
-        self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", CALENDAR)
-        self.assertNotIn("window.close()", CALENDAR)
+        # Separate dedicated hosts never re-anchor another active popup.
+        self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", CALENDAR)
+        self.assertIn("fn concurrent(&self) -> bool", CALENDAR)
+        self.assertIn("self.pool.upgrade()", CALENDAR)
 
-    def test_switching_launcher_never_moves_a_mapped_webkit_buffer(self):
-        # Calendar/System can switch in place. Moving to/from the centered
-        # Launcher must unmap before changing layer-shell anchors, then
-        # remap on a subsequent compositor frame with the new Svelte DOM.
-        self.assertIn("let relocating = self.window.is_visible()", CALENDAR)
-        self.assertIn("(old == Surface::Launcher) != (kind == Surface::Launcher)", CALENDAR)
-        self.assertIn("let defer_present = relocating || self.reposition_pending.get();", CALENDAR)
-        self.assertIn("self.window.set_visible(false);", CALENDAR)
-        self.assertIn("self.reposition_pending.set(defer_present);", CALENDAR)
-        show = CALENDAR.split("fn show(self: &Rc<Self>, kind: Surface)", 1)[1].split(
-            "fn request_mount(", 1
-        )[0]
-        self.assertLess(show.index("self.window.set_visible(false)"),
-                        show.index("self.position_for(kind);"))
-        self.assertIn("self.was_active.set(false);", show)
-        self.assertIn("self.window.set_opacity(0.0);", show)
-        self.assertIn("Duration::from_millis(32)", show)
-        self.assertIn("state.generation.get() == generation", show)
-        self.assertIn("state.window.present();", show)
-        self.assertIn("self.request_mount();", show)
-        self.assertIn("reposition_pending: Cell<bool>", CALENDAR)
-        # The current shared WebKit process must not be restarted on moves.
+    def test_switching_launcher_preserves_existing_buffers_and_generations(self):
+        # A new surface reserves its own hot or newly created WebKit view.
+        # Nothing unmaps the old scene or moves its Wayland surface.
+        self.assertIn("let Some((view, existing)) = pool.acquire(Surface::Launcher)", CALENDAR)
+        self.assertIn("let Some((view, existing)) = pool.acquire(Surface::System)", CALENDAR)
+        self.assertIn("let Some((view, existing)) = pool.acquire(Surface::Calendar)", CALENDAR)
+        self.assertIn("debug_assert!(!self.requested.get())", CALENDAR)
+        self.assertIn("self.position_for(kind);", CALENDAR)
+        self.assertIn("self.window.set_opacity(0.0);", CALENDAR)
+        self.assertIn("self.window.present();", CALENDAR)
+        self.assertIn("self.request_mount();", CALENDAR)
+        self.assertNotIn("defer_present", CALENDAR)
+        self.assertNotIn("reposition_pending", CALENDAR)
         self.assertEqual(CALENDAR.count("webkit6::WebView::builder()"), 1)
-        self.assertNotIn("window.close()", CALENDAR)
 
     def test_svelte_intrinsic_height_and_scroll_are_bound_to_native_cap(self):
         style = (ROOT / "frontend/src/style.css").read_text()

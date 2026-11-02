@@ -7,6 +7,7 @@ mod process_monitor;
 mod renderer_recovery;
 mod system_metrics;
 mod system_panel;
+mod webview_pool;
 use std::cell::{Cell, RefCell};
 use std::env;
 use std::path::{Path, PathBuf};
