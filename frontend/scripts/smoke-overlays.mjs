@@ -35,6 +35,7 @@ function scriptFor(steps, observationMs = 1150) {
         'document.documentElement.dataset.smokeClosed=String(message);' +
         'const root=document.querySelector("main[data-kira-ui-root]");' +
         'document.documentElement.dataset.smokeReverseCompleted=!!root && root.dataset.tenetReveal==="reversed" && ' +
+          'root.dataset.tenetSurface==="retracted" && root.style.clipPath.includes("100%") && ' +
           'root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
       '}' +
       'if (String(message).startsWith("size:")) {' +
@@ -101,6 +102,10 @@ function scriptFor(steps, observationMs = 1150) {
                   'const first=root?.querySelector("[data-kira-enter]");' +
                   'const staged=first ? Number(getComputedStyle(first).opacity) : 0;' +
                   'window.__kiraTenetStagedOpacity=staged;' +
+                  'document.documentElement.dataset.smokeSurfaceStaged=!!root && ' +
+                    '(matchMedia("(prefers-reduced-motion: reduce)").matches ? root.style.clipPath==="" : ' +
+                    '(root.dataset.tenetSurface==="staged" && root.style.clipPath.includes("100%") && ' +
+                     'root.querySelectorAll("[data-kira-surface-seam]").length===1));' +
                   'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
                     'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.92 && staged<0.97;' +
                 '},90);' +
@@ -125,12 +130,21 @@ function scriptFor(steps, observationMs = 1150) {
       'const moving=!!content && transform!=="none" && opacity>=window.__kiraTenetStagedOpacity && opacity<1;' +
       'document.documentElement.dataset.smokeTenetContentMoving=' +
       '(document.documentElement.dataset.smokeTenetContentMoving==="true" || moving);' +
+      'const surface=document.querySelector("main[data-kira-ui-root]");' +
+      'const clip=surface?.style.clipPath || "";' +
+      'const clipped=surface?.dataset.tenetSurface==="materializing" && clip.includes("inset(") && ' +
+        '!clip.includes("100%") && !clip.includes("0% 0% 0% 0%");' +
+      'document.documentElement.dataset.smokeSurfaceMoving=' +
+        '(document.documentElement.dataset.smokeSurfaceMoving==="true" || clipped);' +
       '},at);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+      'document.documentElement.dataset.smokeSurfaceSettled=roots.length===1 && ' +
+        '(matchMedia("(prefers-reduced-motion: reduce)").matches ? roots[0].style.clipPath==="" : ' +
+        '(roots[0].dataset.tenetSurface==="settled" && roots[0].style.clipPath.includes("0% 0% 0% 0%")));' +
       'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && ' +
         'roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === (matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 4) && ' +
         'Array.from(roots[0].querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
@@ -285,11 +299,14 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       ', rows=' + n + ', query=' + q + ', native=' + nativeMessage?.[2] + ', resizes=' + resizeCount + ')');
   }
   if (heightMode === 'tenet' &&
-      (!output.includes('data-smoke-tenet-previsible="true"') ||
+      (!output.includes('data-smoke-surface-staged="true"') ||
+       !output.includes('data-smoke-surface-moving="true"') ||
+       !output.includes('data-smoke-surface-settled="true"') ||
+       !output.includes('data-smoke-tenet-previsible="true"') ||
        !output.includes('data-smoke-tenet-started="true"') ||
        !output.includes('data-smoke-tenet-content-moving="true"') ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
-    const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
+    const stage = output.match(/data-smoke-(?:tenet|surface)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
   }
   if (heightMode === 'reverse' &&
@@ -308,7 +325,9 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': rapid reopen must reverse the in-flight exit without releasing the lease: ' + stages.join(', '));
   }
   if (heightMode === 'reduced' &&
-      (!output.includes('data-smoke-tenet-started="false"') ||
+      (!output.includes('data-smoke-surface-staged="true"') ||
+       !output.includes('data-smoke-surface-settled="true"') ||
+       !output.includes('data-smoke-tenet-started="false"') ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stages = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': reduced motion must skip animation and fragments: ' + stages.join(', '));
