@@ -220,7 +220,12 @@ mod tests {
         let now = Instant::now();
         // Surface identity prevents duplicate active panes. Bounded capacity
         // covers today's three built-ins plus one future trusted surface.
-        for kind in [Surface::Calendar, Surface::System, Surface::Launcher, Surface::Synthetic(1)] {
+        for kind in [
+            Surface::Calendar,
+            Surface::System,
+            Surface::Launcher,
+            Surface::Synthetic(1),
+        ] {
             assert!(matches!(s.reserve(kind, now), Reservation::Created(_)));
         }
         assert_eq!(s.active_count(), MAX_POPUP_VIEWS);
