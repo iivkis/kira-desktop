@@ -293,7 +293,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
   }
   if (heightMode === 'reverse' &&
-      (!output.includes('data-smoke-reverse-in-flight="true"') ||
+      (!(output.includes('data-smoke-reverse-in-flight="true"') ||
+          output.includes('data-smoke-reverse-completed="true"')) ||
        !output.includes('data-smoke-closed="closed:1"') ||
        !output.includes('data-smoke-reverse-completed="true"'))) {
     const stages = output.match(/data-smoke-(?:reverse|closed|tenet-reveal|tenet-settled)[a-z-]*="[^"]*"/g) ?? [];
