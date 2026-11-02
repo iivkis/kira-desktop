@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4572
+index_bytes=4573
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	0f93554b88dbc15539bbbab3b4047e486758c63e
+C	718de8c58d37a1f889d568a73f6a735fd697b819
 F	.cargo/config.toml	98	122	3
 F	.github/workflows/ci.yml	4355	127	112
 F	.github/workflows/frontend-nix.yml	1398	241	43
@@ -46,70 +46,70 @@ F	crates/kira-shell/src/renderer_recovery.rs	3634	5846	116
 F	crates/kira-shell/src/system_metrics.rs	19842	5964	559
 F	crates/kira-shell/src/system_panel.rs	11356	6525	318
 F	docs/CONFIG.md	5801	6845	125
-F	docs/DESIGN_SYSTEM.md	23622	6972	399
-F	docs/DEVELOPMENT.md	29347	7373	577
-F	docs/QA_VISUAL.md	12284	7952	149
-F	docs/SPECIFICATION.md	28960	8103	421
-F	docs/TENET_MOTION.md	22120	8526	142
-F	docs/UI_ARCHITECTURE.md	6737	8670	106
-F	docs/VISUAL_REVIEW.md	9754	8778	84
-F	flake.nix	3181	8864	91
-F	frontend/index.html	2737	8957	66
-F	frontend/package.json	720	9025	27
-F	frontend/scripts/inline-assets.mjs	4457	9054	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9159	106
-F	frontend/scripts/smoke-overlays.mjs	19061	9267	275
-F	frontend/src/App.svelte	8659	9544	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9746	84
-F	frontend/src/lib/bootstrap.ts	2613	9832	70
-F	frontend/src/lib/calendar-model.test.ts	2687	9904	49
-F	frontend/src/lib/calendar-model.ts	4009	9955	88
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10045	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10107	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10138	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10458	50
-F	frontend/src/lib/clock-flight.ts	1977	10510	50
-F	frontend/src/lib/components/CalendarWidget.svelte	9027	10562	198
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	10762	176
-F	frontend/src/lib/components/SystemCharts.svelte	9336	10940	212
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11154	43
-F	frontend/src/lib/components/SystemWidget.svelte	13245	11199	245
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11446	61
-F	frontend/src/lib/launcher-model.test.ts	1370	11509	29
-F	frontend/src/lib/launcher-model.ts	778	11540	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	11560	89
-F	frontend/src/lib/lazy-widget.ts	1984	11651	63
-F	frontend/src/lib/motion.ts	1597	11716	50
-F	frontend/src/lib/overlay-size.ts	1090	11768	29
-F	frontend/src/lib/sdk/core.test.ts	22258	11799	444
-F	frontend/src/lib/sdk/core.ts	17793	12245	473
-F	frontend/src/lib/system-charts.test.ts	6312	12720	141
-F	frontend/src/lib/system-charts.ts	5514	12863	149
-F	frontend/src/lib/system-health.test.ts	2385	13014	42
-F	frontend/src/lib/system-health.ts	2831	13058	60
-F	frontend/src/lib/system-model.test.ts	3900	13120	73
-F	frontend/src/lib/system-model.ts	4983	13195	113
-F	frontend/src/lib/themes/kira-default.css	1687	13310	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13364	101
-F	frontend/src/lib/themes/kira-default.ts	777	13467	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	13491	79
-F	frontend/src/lib/time.test.ts	263	13572	8
-F	frontend/src/lib/time.ts	320	13582	9
-F	frontend/src/main.ts	5907	13593	127
-F	frontend/src/style.css	3447	13722	107
-F	frontend/tsconfig.json	403	13831	16
-F	frontend/vite.config.ts	224	13849	8
-F	nix/package.nix	3132	13859	117
-F	scripts/dev_preview.py	18147	13978	403	x
-F	scripts/qa_visual.py	12052	14383	299
-F	tests/test_calendar_design.py	6835	14684	121
-F	tests/test_detailed_health.py	5195	14807	101
-F	tests/test_dev_preview.py	9339	14910	219
-F	tests/test_launcher_design.py	9956	15131	182
-F	tests/test_native_theme.py	1567	15315	36
-F	tests/test_popup_geometry.py	6956	15353	118
-F	tests/test_qa_visual.py	10549	15473	217
-F	tests/test_ui_bootstrap_contract.py	1103	15692	29
+F	docs/DESIGN_SYSTEM.md	25163	6972	423
+F	docs/DEVELOPMENT.md	29347	7397	577
+F	docs/QA_VISUAL.md	12284	7976	149
+F	docs/SPECIFICATION.md	28960	8127	421
+F	docs/TENET_MOTION.md	22120	8550	142
+F	docs/UI_ARCHITECTURE.md	6737	8694	106
+F	docs/VISUAL_REVIEW.md	9754	8802	84
+F	flake.nix	3181	8888	91
+F	frontend/index.html	2737	8981	66
+F	frontend/package.json	720	9049	27
+F	frontend/scripts/inline-assets.mjs	4457	9078	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9183	106
+F	frontend/scripts/smoke-overlays.mjs	19061	9291	275
+F	frontend/src/App.svelte	8659	9568	200
+F	frontend/src/lib/bootstrap.test.ts	3408	9770	84
+F	frontend/src/lib/bootstrap.ts	2613	9856	70
+F	frontend/src/lib/calendar-model.test.ts	2687	9928	49
+F	frontend/src/lib/calendar-model.ts	4009	9979	88
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10069	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10131	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10162	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10482	50
+F	frontend/src/lib/clock-flight.ts	1977	10534	50
+F	frontend/src/lib/components/CalendarWidget.svelte	9027	10586	198
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	10786	176
+F	frontend/src/lib/components/SystemCharts.svelte	10517	10964	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11192	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11237	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11559	61
+F	frontend/src/lib/launcher-model.test.ts	1370	11622	29
+F	frontend/src/lib/launcher-model.ts	778	11653	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	11673	89
+F	frontend/src/lib/lazy-widget.ts	1984	11764	63
+F	frontend/src/lib/motion.ts	1597	11829	50
+F	frontend/src/lib/overlay-size.ts	1090	11881	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11912	444
+F	frontend/src/lib/sdk/core.ts	17793	12358	473
+F	frontend/src/lib/system-charts.test.ts	6312	12833	141
+F	frontend/src/lib/system-charts.ts	5514	12976	149
+F	frontend/src/lib/system-health.test.ts	2385	13127	42
+F	frontend/src/lib/system-health.ts	2831	13171	60
+F	frontend/src/lib/system-model.test.ts	4455	13233	84
+F	frontend/src/lib/system-model.ts	5457	13319	125
+F	frontend/src/lib/themes/kira-default.css	1687	13446	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13500	101
+F	frontend/src/lib/themes/kira-default.ts	777	13603	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13627	79
+F	frontend/src/lib/time.test.ts	263	13708	8
+F	frontend/src/lib/time.ts	320	13718	9
+F	frontend/src/main.ts	5907	13729	127
+F	frontend/src/style.css	3447	13858	107
+F	frontend/tsconfig.json	403	13967	16
+F	frontend/vite.config.ts	224	13985	8
+F	nix/package.nix	3132	13995	117
+F	scripts/dev_preview.py	18147	14114	403	x
+F	scripts/qa_visual.py	12052	14519	299
+F	tests/test_calendar_design.py	6835	14820	121
+F	tests/test_detailed_health.py	5195	14943	101
+F	tests/test_dev_preview.py	9339	15046	219
+F	tests/test_launcher_design.py	9956	15267	182
+F	tests/test_native_theme.py	1567	15451	36
+F	tests/test_popup_geometry.py	6956	15489	118
+F	tests/test_qa_visual.py	10549	15609	217
+F	tests/test_ui_bootstrap_contract.py	1103	15828	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7191,6 +7191,30 @@ diagnostic bars. The visual hierarchy is intentional:
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
 
+### System Monitor · observability before decoration
+
+The monitor is a read-only instrument panel, not a visual benchmark. The
+information hierarchy is **system health → primary load → measured history →
+capacity → hardware → optional host diagnostics**. Keep Svelte responsible for
+presentation, while native Rust owns sampling and system privileges.
+
+- The status banner distinguishes no data, fresh native samples, and expired
+  telemetry (6 seconds without a system sample). The fast CPU/RAM indicator
+  separately expires after 2.5 seconds. Last readings remain visible but must
+  be identified as stale rather than represented as live.
+- The overview uses only the five-color Kira palette, strong editorial
+  typographic hierarchy, meaningful orange highlights, and real ECharts SVG
+  values. Missing measurements are never drawn as zero. Storage/swap bars exist
+  only for validated readings. Zero configured swap is **NOT CONFIGURED**.
+- Host details use native HTML disclosure to keep the primary view focused.
+  Keyboard focus, reduced motion and contrast remain functional.
+- Process browsing remains read-only, searchable, and sortable, revealing at
+  most 36 more entries per user action and at most 180 DOM rows; filtering
+  exposes the remaining host processes without rendering thousands at once.
+- Sampling remains event-driven in the Rust host. The Svelte monitor has only a
+  2-second local freshness clock while mounted and cleans up all listeners,
+  timers, GSAP timelines and ECharts instances when closed.
+
 ### 500ms CPU/RAM pulse
 
 The **SYSTEM / PULSE** dials and activity lanes receive genuine Linux
@@ -10945,7 +10969,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
-  import { percentUsedPrecise } from '../system-model';
+  import { isSampleFresh, percentUsedPrecise } from '../system-model';
   import {
     activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak,
     type TelemetryPoint,
@@ -10953,7 +10977,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
 
   echarts.use([GaugeChart, LineChart, GridComponent, SVGRenderer]);
 
-  let { metrics }: { metrics: SystemMetrics | null } = $props();
+  let { metrics, now }: { metrics: SystemMetrics | null; now: number } = $props();
 
   let gaugeNode: HTMLDivElement;
   let trendNode: HTMLDivElement;
@@ -10962,6 +10986,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   let reduced = false;
   let history: TelemetryPoint[] = [];
   let pulse = $state<SystemPulse | null>(null);
+  let lastPulseAt = $state<number | null>(null);
   let lastPulse: SystemPulse | null = null;
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
@@ -10976,6 +11001,8 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
     ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
     : metrics ? percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib) : null);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
+  const pulseFresh = $derived(lastPulseAt !== null &&
+    (now < lastPulseAt || isSampleFresh(lastPulseAt, now, 2_500)));
   const trendHeight = $derived(gpuAvailable ? 296 : 202);
   const dialLabel = (value: number | null, precise = false) =>
     value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
@@ -11077,7 +11104,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   onMount(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced = motion.matches;
-    const stopPulse = onSystemPulse(sample => { pulse = sample; });
+    const stopPulse = onSystemPulse(sample => { pulse = sample; lastPulseAt = Date.now(); });
     gauges = echarts.init(gaugeNode, undefined, { renderer: 'svg' });
     trend = echarts.init(trendNode, undefined, { renderer: 'svg' });
     const resize = () => { gauges?.resize(); trend?.resize(); };
@@ -11097,48 +11124,58 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
       trend = null;
       history = [];
       lastPulse = null;
+      lastPulseAt = null;
       lastMetrics = null;
       pendingGpu = undefined;
     };
   });
 </script>
 
-<div class="space-y-4">
+<div class="space-y-5">
   <section aria-label="CPU and memory utilization">
-    <div class="flex items-center justify-between">
-      <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">SYSTEM / PULSE</h2>
-      <span class="text-[9px] font-semibold tracking-widest text-kira-muted">LIVE · 500MS</span>
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">01 / PRIMARY LOAD</h2>
+      <span class="text-right text-[9px] font-semibold tracking-wider"
+        class:text-kira-text={pulseFresh} class:text-kira-muted={!pulseFresh}
+        aria-live="off">
+        {pulse === null ? 'AWAITING FAST FEED' : pulseFresh ? 'LIVE · 500MS' : 'PULSE STALE / LAST READING'}
+      </span>
     </div>
-    <div class="relative mt-1 h-[164px]">
+    <div class="relative mt-3 h-[182px] border-y border-kira-muted/20 bg-kira-bg">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
-      <div class="pointer-events-none absolute inset-0 grid grid-cols-2">
-        <div class="flex flex-col items-center justify-center">
-          <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums text-kira-accent"
+      <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
+        <div class="relative flex min-w-0 flex-col items-center justify-center">
+          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">01 / CPU</span>
+          <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-accent"
             aria-label={'CPU utilization ' + (cpu === null ? 'unavailable' : cpu + ' percent')}>
             {dialLabel(cpu)}
           </div>
-          <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
+          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
         </div>
-        <div class="flex flex-col items-center justify-center">
-          <div class="text-[37px] font-extrabold leading-none tracking-[-0.07em] tabular-nums"
+        <div class="relative flex min-w-0 flex-col items-center justify-center">
+          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">02 / RAM</span>
+          <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-text"
             aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
             {dialLabel(ram, true)}
           </div>
-          <div class="mt-2 text-[10px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
+          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
         </div>
       </div>
     </div>
+    <p class="mt-2 text-[9px] font-medium tracking-wide text-kira-muted">HOST UTILIZATION / LAST MEASURED VALUES</p>
   </section>
+
   <section aria-label="Live resource activity">
-    <div class="flex items-center justify-between">
-      <h2 class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">ACTIVITY / LIVE</h2>
-      <span class="text-[9px] font-semibold text-kira-muted">LAST 60S · 500MS PULSE</span>
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">02 / ACTIVITY HISTORY</h2>
+      <span class="text-right text-[9px] font-semibold tracking-wide text-kira-muted">UP TO 60S / REAL SAMPLES</span>
     </div>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
-        role="img" aria-label={'Measured history with individually labelled adaptive percentage scales. ' +
+        role="img" aria-label={'Measured history with independently labelled adaptive percentage scales. ' +
           'CPU ' + (cpu === null ? 'unavailable' : cpu + '%') +
-          ', RAM ' + (ram === null ? 'unavailable' : ram + '%')}></div>
+          ', RAM ' + (ram === null ? 'unavailable' : ram + '%') +
+          (pulse !== null && !pulseFresh ? '. Last pulse is stale.' : '')}></div>
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
         <div class="absolute left-9 top-[96px] text-[10px] font-bold tracking-wide text-kira-text">RAM</div>
@@ -11147,6 +11184,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
         {/if}
       </div>
     </div>
+    <p class="mt-1 text-[9px] font-medium tracking-wide text-kira-muted">ADAPTIVE SCALES / NO SYNTHETIC MEASUREMENTS</p>
   </section>
 </div>
 
@@ -11205,7 +11243,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
     type SystemOverlayData, type SystemProcesses,
   } from '../sdk/core';
   import {
-    defaultSort, fractionLabel, nextSort, processMemoryLabel,
+    defaultSort, fractionLabel, isSampleFresh, nextSort, percentUsedPrecise, processMemoryLabel,
     sortedProcesses, systemHeadline, temperatureLabel, uptimeLabel, usageLabel, type SortField,
   } from '../system-model';
 
@@ -11221,19 +11259,31 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   let query = $state('');
   let sort = $state({ ...defaultSort });
   let refreshed = $state('');
+  let lastSampleAt = $state<number | null>(null);
+  let now = $state(Date.now());
+  let visibleCount = $state(36);
   const metrics = $derived(status?.metrics ?? null);
-  const health = $derived(systemHeadline(metrics, status?.core ?? false, status?.niri ?? false));
+  const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
+  const health = $derived(status === null ? 'AWAITING TELEMETRY' :
+    !sampleFresh ? 'TELEMETRY STALE' : systemHeadline(metrics, status.core, status.niri));
+  const swapPercent = $derived(percentUsedPrecise(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null));
+  const storagePercent = $derived(percentUsedPrecise(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null));
   const matching = $derived(sortedProcesses(processes?.rows ?? [], query, sort));
-  const visible = $derived(matching.slice(0, 36));
+  const visible = $derived(matching.slice(0, visibleCount));
 
 
   onMount(() => {
+    const clock = window.setInterval(() => { now = Date.now(); }, 2_000);
     const stopMetrics = onSystemOverlayData(data => {
+      const receivedAt = Date.now();
       status = data;
-      refreshed = new Date().toLocaleTimeString();
+      lastSampleAt = receivedAt;
+      now = receivedAt;
+      refreshed = new Date(receivedAt).toLocaleTimeString();
     });
     const stopProcesses = onSystemProcesses(data => { processes = data; });
     return () => {
+      window.clearInterval(clock);
       stopMetrics();
       stopProcesses();
       onTab('overview');
@@ -11243,12 +11293,16 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   function switchTab(tab: 'overview' | 'processes') {
     if (active === tab) return;
     active = tab;
-    if (tab === 'processes') processes = null;
+    if (tab === 'processes') {
+      processes = null;
+      visibleCount = 36;
+    }
     onTab(tab);
   }
 
   function changeSort(field: SortField) {
     sort = nextSort(sort, field);
+    visibleCount = 36;
   }
 
   function keydown(event: KeyboardEvent) {
@@ -11263,17 +11317,29 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
   class="kira-monitor-scroll flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
-  <header class="shrink-0 bg-kira-bg px-5 pb-4 pt-5">
+  <header class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
-      <div>
-        <div class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">KIRA / SYSTEM MONITOR</div>
-        <h1 class="mt-2 text-2xl font-extrabold">System overview</h1>
-        <p class="mt-1 text-[11px] font-semibold tracking-wide"
-          class:text-kira-accent={health === 'ALL SYSTEMS NOMINAL'}
-          class:text-kira-muted={health !== 'ALL SYSTEMS NOMINAL'} aria-live="polite">{health}</p>
+      <div class="border-l-2 border-kira-accent pl-3">
+        <div class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">KIRA / HOST INSTRUMENTS</div>
+        <h1 class="mt-2 text-[25px] font-extrabold leading-none tracking-tight">System monitor</h1>
+        <p class="mt-2 text-[10px] font-medium tracking-wide text-kira-muted">LOCAL TELEMETRY / READ ONLY</p>
       </div>
       <button type="button" onclick={onClose} aria-label="Close system monitor" title="Close (Esc)"
         class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+    </div>
+    <div class="mt-4 flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-3"
+      role="status" aria-live="polite">
+      <div class="flex min-w-0 items-center gap-2">
+        <span class="h-1.5 w-1.5 shrink-0 rounded-full"
+          class:bg-kira-accent={status !== null && sampleFresh && health === 'ALL SYSTEMS NOMINAL'}
+          class:bg-kira-muted={status === null || !sampleFresh || health !== 'ALL SYSTEMS NOMINAL'}></span>
+        <span class="truncate text-[10px] font-bold tracking-wide"
+          class:text-kira-accent={health === 'ALL SYSTEMS NOMINAL'}
+          class:text-kira-muted={health !== 'ALL SYSTEMS NOMINAL'}>{health}</span>
+      </div>
+      <span class="shrink-0 text-right text-[9px] font-semibold tracking-wide text-kira-muted">
+        {status === null ? 'NO SAMPLE' : sampleFresh ? 'CURRENT SAMPLE' : 'LAST SAMPLE / STALE'}
+      </span>
     </div>
   </header>
 
@@ -11292,82 +11358,114 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 
   {#if active === 'overview'}
     <div class="flex min-h-0 flex-1 flex-col" use:revealStagger>
-      <section data-kira-enter class="bg-kira-surface px-5 pb-4 pt-3" aria-label="Live system telemetry">
-        <div class="mb-4 flex items-center gap-4 border-b border-kira-muted/15 pb-3">
-          <div class="flex items-center gap-1.5">
-            <span class="h-1.5 w-1.5 shrink-0 rounded-full"
-              class:bg-kira-accent={status?.core}
-              class:bg-kira-muted={!status?.core}></span>
-            <span class="text-[9px] font-bold tracking-wider">CORE</span>
-            <span class="text-[9px] text-kira-muted">{status?.core ? 'ONLINE' : 'OFFLINE'}</span>
+      <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
+        <div class="mb-4 flex items-center justify-between gap-2 border-b border-kira-muted/15 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-[9px] font-bold tracking-wider text-kira-muted">CORE</span>
+            <span class="text-[9px] font-bold tracking-wide"
+              class:text-kira-accent={status?.core} class:text-kira-muted={!status?.core}>
+              {status === null ? 'UNKNOWN' : status.core ? 'ONLINE' : 'OFFLINE'}
+            </span>
           </div>
-          <div class="flex items-center gap-1.5">
-            <span class="h-1.5 w-1.5 shrink-0 rounded-full"
-              class:bg-kira-accent={status?.niri}
-              class:bg-kira-muted={!status?.niri}></span>
-            <span class="text-[9px] font-bold tracking-wider">NIRI</span>
-            <span class="text-[9px] text-kira-muted">{status?.niri ? 'ONLINE' : 'OFFLINE'}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[9px] font-bold tracking-wider text-kira-muted">NIRI</span>
+            <span class="text-[9px] font-bold tracking-wide"
+              class:text-kira-accent={status?.niri} class:text-kira-muted={!status?.niri}>
+              {status === null ? 'UNKNOWN' : status.niri ? 'ONLINE' : 'OFFLINE'}
+            </span>
           </div>
+          <span class="text-[9px] font-semibold tracking-wide text-kira-muted">NATIVE FEED</span>
         </div>
-        <SystemCharts {metrics} />
+        <SystemCharts {metrics} {now} />
       </section>
 
-      <section data-kira-enter class="grid grid-cols-2 gap-px bg-kira-bg"
-        aria-label="Secondary resource metrics">
-        <div class="min-w-0 bg-kira-surface-soft px-5 py-3">
-          <div class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">SWAP / USED</div>
-          <div class="mt-1 text-[23px] font-extrabold leading-tight tracking-tight tabular-nums">
-            {usageLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
-          </div>
-          <div class="mt-1 truncate text-[10px] text-kira-muted"
-            title={fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}>
-            {fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
-          </div>
+      <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Secondary resource metrics">
+        <div class="mb-3 flex items-center justify-between gap-2">
+          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">03 / CAPACITY</h2>
+          <span class="text-[9px] font-semibold tracking-wide text-kira-muted">USED / TOTAL</span>
         </div>
-        <div class="min-w-0 bg-kira-surface-soft px-5 py-3">
-          <div class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">STORAGE / ROOT</div>
-          <div class="mt-1 text-[23px] font-extrabold leading-tight tracking-tight tabular-nums">
-            {usageLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
-          </div>
-          <div class="mt-1 truncate text-[10px] text-kira-muted"
-            title={fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}>
-            {fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
-          </div>
+        <div class="grid grid-cols-2 gap-3">
+          <article class="min-w-0 border border-kira-muted/15 bg-kira-surface-soft px-3 py-3">
+            <h3 class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">ROOT STORAGE</h3>
+            <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
+              {usageLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
+            </div>
+            {#if storagePercent !== null}
+              <div role="progressbar" aria-label="Root storage used" aria-valuemin={0} aria-valuemax={100}
+                aria-valuenow={storagePercent} class="mt-3 h-1 bg-kira-muted/15">
+                <div class="h-full bg-kira-accent" style:width={storagePercent + '%'}></div>
+              </div>
+            {:else}
+              <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Root storage usage unavailable"></div>
+            {/if}
+            <p class="mt-2 truncate text-[10px] text-kira-muted"
+              title={fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}>
+              {fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
+            </p>
+          </article>
+          <article class="min-w-0 border border-kira-muted/15 bg-kira-surface-soft px-3 py-3">
+            <h3 class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">SWAP MEMORY</h3>
+            <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
+              {usageLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
+            </div>
+            {#if swapPercent !== null}
+              <div role="progressbar" aria-label="Swap memory used" aria-valuemin={0} aria-valuemax={100}
+                aria-valuenow={swapPercent} class="mt-3 h-1 bg-kira-muted/15">
+                <div class="h-full bg-kira-accent" style:width={swapPercent + '%'}></div>
+              </div>
+            {:else}
+              <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Swap memory usage unavailable"></div>
+            {/if}
+            <p class="mt-2 truncate text-[10px] text-kira-muted"
+              title={fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}>
+              {fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
+            </p>
+          </article>
         </div>
       </section>
 
-      <section data-kira-enter class="space-y-2 bg-kira-bg px-5 py-3"
+      <section data-kira-enter class="bg-kira-surface-soft px-5 py-4"
         aria-label="Hardware temperatures and graphics">
         <div class="flex items-center justify-between gap-3">
-          <h2 class="text-[10px] font-bold tracking-[0.13em] text-kira-accent">HARDWARE / THERMALS</h2>
+          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">04 / HARDWARE</h2>
           <div class="flex items-baseline gap-2">
-            <span class="text-[9px] font-semibold tracking-wider text-kira-muted">CPU</span>
+            <span class="text-[9px] font-bold tracking-wider text-kira-muted">CPU TEMP</span>
             <span class="text-[14px] font-extrabold tabular-nums"
               use:pulseReading={temperatureLabel(metrics?.cpu_temperature_c ?? null)}>
               {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
             </span>
           </div>
         </div>
-        {#each metrics?.gpus ?? [] as gpu (gpu.label)}
-          <div class="flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-2 text-[11px]">
-            <span class="min-w-0 flex-1 truncate font-semibold" title={gpu.label}>{gpu.label}</span>
-            <div class="flex shrink-0 items-center gap-3">
-              <span class="tabular-nums text-kira-muted" title="GPU utilization">
-                {gpu.utilization_percent === null ? 'LOAD N/A' : gpu.utilization_percent + '%'}
-              </span>
-              <span class="font-bold tabular-nums" title="GPU temperature"
-                use:pulseReading={temperatureLabel(gpu.temperature_c)}>
-                {gpu.temperature_c === null ? 'TEMP N/A' : temperatureLabel(gpu.temperature_c)}
-              </span>
+        <div class="mt-3 space-y-2">
+          {#each metrics?.gpus ?? [] as gpu (gpu.label)}
+            <div class="flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-2 text-[11px]">
+              <span class="min-w-0 flex-1 truncate font-semibold" title={gpu.label}>{gpu.label}</span>
+              <div class="flex shrink-0 items-center gap-3">
+                <span class="tabular-nums text-kira-muted" title="GPU utilization">
+                  {gpu.utilization_percent === null ? 'LOAD N/A' : gpu.utilization_percent + '%'}
+                </span>
+                <span class="font-bold tabular-nums" title="GPU temperature"
+                  use:pulseReading={temperatureLabel(gpu.temperature_c)}>
+                  {gpu.temperature_c === null ? 'TEMP N/A' : temperatureLabel(gpu.temperature_c)}
+                </span>
+              </div>
             </div>
-          </div>
-        {:else}
-          <p class="text-[10px] text-kira-muted">NO GPU DETECTED</p>
-        {/each}
+          {:else}
+            <p class="text-[10px] text-kira-muted">NO GPU DETECTED</p>
+          {/each}
+        </div>
       </section>
 
-      <section data-kira-enter class="bg-kira-surface-soft px-5 py-3" aria-label="System details">
-        <div class="grid grid-cols-2 gap-x-5 gap-y-3">
+      <details data-kira-enter class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
+        aria-label="Additional host diagnostics">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
+          text-[10px] font-extrabold tracking-[0.12em] text-kira-accent
+          focus-visible:outline-2 focus-visible:outline-kira-accent">
+          <span>05 / HOST DETAILS</span>
+          <span class="text-[9px] font-semibold text-kira-muted group-open:hidden">EXPAND +</span>
+          <span class="hidden text-[9px] font-semibold text-kira-muted group-open:inline">COLLAPSE −</span>
+        </summary>
+        <div class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
           <div class="min-w-0">
             <div class="text-[9px] font-bold tracking-wider text-kira-muted">UPTIME</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
@@ -11389,10 +11487,11 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
             </span>
           </div>
         </div>
-      </section>
-      <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-2.5">
+      </details>
+
+      <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-3">
         <span class="text-[9px] font-semibold tracking-wider text-kira-muted">
-          LIVE / {refreshed || 'WAITING FOR DATA'}
+          {status === null ? 'WAITING FOR DATA' : sampleFresh ? 'UPDATED / ' + refreshed : 'LAST UPDATE / ' + refreshed + ' / STALE'}
         </span>
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[10px] font-bold tracking-wide text-kira-accent
@@ -11402,9 +11501,15 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   {:else}
     <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
       aria-label="Processes" use:revealStagger>
-      <h2 data-kira-enter class="mb-3 text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
-      <input data-kira-enter type="search" aria-label="Filter by process name or PID" placeholder="Filter by process name or PID"
-        bind:value={query} class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
+      <div data-kira-enter class="mb-3 flex items-center justify-between gap-2">
+        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
+        <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>
+      </div>
+      <input data-kira-enter type="search" aria-label="Filter by process name or PID"
+        placeholder="Filter by process name or PID" bind:value={query}
+        oninput={() => { visibleCount = 36; }}
+        class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none
+          placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
       <div data-kira-enter class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
         {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
           <button type="button" onclick={() => changeSort(column.field as SortField)}
@@ -11416,7 +11521,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           </button>
         {/each}
       </div>
-      <div data-kira-enter class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="polite">
+      <div data-kira-enter class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
         {#each visible as process (process.pid)}
           <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
             title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
@@ -11432,11 +11537,19 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
             'PROCESS DATA UNAVAILABLE: ' + processes.error :
             processes && processes.rows.length ? 'NO MATCHING PROCESSES' : 'SAMPLING / PLEASE WAIT'}</p>
         {/each}
+        {#if visible.length < matching.length && visible.length < 180}
+          <button type="button" onclick={() => { visibleCount = Math.min(180, visibleCount + 36); }}
+            class="mt-3 w-full border border-kira-muted/20 px-3 py-2 text-[10px] font-bold tracking-wider
+              text-kira-accent hover:bg-kira-bg focus-visible:outline-2 focus-visible:outline-kira-accent">
+            SHOW 36 MORE / {matching.length - visible.length} REMAINING
+          </button>
+        {/if}
       </div>
       <footer data-kira-enter class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
         <p>SHOWING {visible.length} OF {matching.length} MATCHES / {processes?.total ?? 0} SCANNED
-          {processes?.truncated ? ' / LIMIT REACHED' : ''}</p>
-        <p>READ ONLY / CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
+          {processes?.truncated ? ' / SCAN LIMIT REACHED' : ''}
+          {visible.length === 180 && matching.length > 180 ? ' / REFINE FILTER FOR MORE' : ''}</p>
+        <p>CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
       </footer>
     </section>
   {/if}
@@ -13118,7 +13231,7 @@ export function systemHealth(
 
 FILE	frontend/src/lib/system-model.test.ts
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel } from './system-model';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel, isSampleFresh } from './system-model';
 import type { ProcessRow, SystemMetrics } from './sdk/core';
 
 const processes: ProcessRow[] = [
@@ -13129,6 +13242,17 @@ const processes: ProcessRow[] = [
 ];
 
 describe('Svelte System Monitor model', () => {
+  it('never confuses a missing or stopped native stream with live telemetry', () => {
+    expect(isSampleFresh(null, 10_000)).toBe(false);
+    expect(isSampleFresh(5_000, 10_000)).toBe(true);
+    expect(isSampleFresh(4_000, 10_000)).toBe(true);
+    expect(isSampleFresh(3_999, 10_000)).toBe(false);
+    expect(isSampleFresh(10_001, 10_000)).toBe(false);
+    expect(isSampleFresh(9_000, Number.NaN)).toBe(false);
+    expect(isSampleFresh(7_500, 10_000, 2_500)).toBe(true);
+    expect(isSampleFresh(7_499, 10_000, 2_500)).toBe(false);
+  });
+
   it('sorts each column in both directions and keeps missing metrics last', () => {
     for (const [field, ascending, descending] of [
       ['name', [1, 2, 4, 3], [3, 4, 2, 1]],
@@ -13198,6 +13322,18 @@ export type SortField = 'name' | 'pid' | 'cpu' | 'memory' | 'pss';
 export type SortState = { field: SortField; descending: boolean };
 
 export const defaultSort: SortState = { field: 'cpu', descending: true };
+
+/** No browser polling of sensors: only classify the age of the last native event.
+ * A missing, future, or expired timestamp never counts as a live sample.
+ */
+export function isSampleFresh(
+  lastSampleAt: number | null, now: number, maxAgeMs = 6_000,
+): boolean {
+  return lastSampleAt !== null &&
+    Number.isFinite(lastSampleAt) && Number.isFinite(now) &&
+    Number.isFinite(maxAgeMs) && maxAgeMs >= 0 &&
+    now >= lastSampleAt && now - lastSampleAt <= maxAgeMs;
+}
 
 export function nextSort(current: SortState, field: SortField): SortState {
   return current.field === field
