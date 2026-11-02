@@ -8,6 +8,7 @@ const launcher = readFileSync(new URL('./components/LauncherWidget.svelte', impo
 const system = readFileSync(new URL('./components/SystemWidget.svelte', import.meta.url), 'utf8');
 const workspace = readFileSync(new URL('./components/WorkspacePreview.svelte', import.meta.url), 'utf8');
 const calendarWidget = readFileSync(new URL('./components/CalendarWidget.svelte', import.meta.url), 'utf8');
+const styles = readFileSync(new URL('../style.css', import.meta.url), 'utf8');
 
 describe('TENET shared widget appearance', () => {
   it('preserves one recorded trajectory in reverse chronological order', () => {
@@ -72,6 +73,12 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("overwrite: 'auto', force3D: true");
     expect(motion).toContain("new ResizeObserver(() => relocate(active, false))");
     expect(motion).toContain('gsap.killTweensOf(indicator)');
+    expect(motion).toContain("recovery = window.setTimeout(() => {");
+    expect(motion).toContain("}, 650)");
+    expect(motion).toContain("node.dataset.kiraFlowMoving = 'true'");
+    expect(motion).toContain("onComplete: endTravel");
+    expect(styles).toContain('[data-kira-flow-moving="true"] [data-calendar-selected="true"]');
+    expect(styles).toContain('[data-kira-flow-moving="true"] [data-focused="true"]');
     expect(motion).toContain('export function tenetPanelArrival');
     expect(system).toContain('use:tenetPanelArrival');
   });
@@ -108,6 +115,10 @@ describe('TENET continuous interaction contract', () => {
     expect(motion).toContain('Flip.from(state, {');
     expect(motion).toContain('rows.length || reducedMotion()');
     expect(motion).toContain('slice(0, 24)');
+    expect(motion).toContain('export function tenetReflowScope(');
+    expect(motion).toContain('reflows.delete(container)');
+    expect(launcher).toContain('use:tenetReflowScope use:tenetScrollScope');
+    expect(system).toContain('use:tenetReflowScope');
     for (const source of [launcher, system]) {
       expect(source).toContain('tenetReflow(');
       expect(source).toContain('data-kira-reflow');
@@ -119,6 +130,8 @@ describe('TENET continuous interaction contract', () => {
     expect(launcher).toContain("tenetScrollIntoView(results, item, true, 'y')");
     expect(motion).toContain("gsap.killTweensOf(list, property)");
     expect(motion).toContain('gsap.to(list, {');
+    expect(motion).toContain('export function tenetScrollScope(');
+    expect(workspace).toContain('use:tenetScrollScope');
     expect(calendar).toContain('activeTargets = changedMonth ? [node] : []');
     expect(calendar).toContain("ease: 'back.out(1.18)'");
     expect(calendar).toContain('inverted.progress(dualTime(forward.progress()).inverted)');
