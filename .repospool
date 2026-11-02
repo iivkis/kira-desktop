@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	3720fcc0a585ab40f35a4b71e0c5167739705ebd
+C	b203d0ad36e188bdbaf3850159903ebfe765267b
 F	.cargo/config.toml	98	131	3
 F	.github/workflows/ci.yml	4355	136	112
 F	.github/workflows/frontend-nix.yml	1398	250	43
@@ -61,7 +61,7 @@ F	frontend/index.html	2737	10117	66
 F	frontend/package.json	720	10185	27
 F	frontend/scripts/inline-assets.mjs	4457	10214	103
 F	frontend/scripts/inline-assets.test.mjs	4645	10319	106
-F	frontend/scripts/smoke-overlays.mjs	37453	10427	523
+F	frontend/scripts/smoke-overlays.mjs	37447	10427	523
 F	frontend/src/App.svelte	8589	10952	207
 F	frontend/src/lib/bootstrap.test.ts	3408	11161	84
 F	frontend/src/lib/bootstrap.ts	2613	11247	70
@@ -114,11 +114,11 @@ F	tests/test_detailed_health.py	5481	17696	105
 F	tests/test_dev_preview.py	9339	17803	219
 F	tests/test_launcher_design.py	10481	18024	190
 F	tests/test_native_theme.py	2098	18216	44
-F	tests/test_popup_geometry.py	3189	18262	58
+F	tests/test_popup_geometry.py	3227	18262	58
 F	tests/test_qa_visual.py	10549	18322	217
 F	tests/test_tenet_close.py	6297	18541	115
 F	tests/test_ui_bootstrap_contract.py	1103	18658	29
-F	tests/test_webview_pool.py	4688	18689	82
+F	tests/test_webview_pool.py	4723	18689	83
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -10762,7 +10762,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-surface-settled="true"') ||
        !output.includes('data-smoke-tenet-previsible="true"') ||
        !output.includes('data-smoke-tenet-started="true"') ||
-       !output.includes('data-smoke-tenet-content-moving="true"') ||
+       !output.includes('data-smoke-surface-moving="true"') ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-(?:tenet|surface)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
@@ -17622,7 +17622,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("self.window.set_opacity(0.0)", RUST)
         self.assertIn("self.window.set_opacity(1.0)", RUST)
         self.assertIn("self.schedule_reveal_fallback(generation)", RUST)
-        self.assertIn("Duration::from_millis(150)", RUST)
+        self.assertIn("Duration::from_millis(125)", RUST)
         self.assertIn("state.widget_ready.get()", RUST)
         self.assertIn("self.request_paint()", RUST)
         self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)
@@ -18307,7 +18307,7 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("observeOverlaySize(root, generation)", ENTRY)
         self.assertIn("notifyCalendarMounted(generation, window.matchMedia", ENTRY)
         self.assertIn("Some(UiCommand::ContentHeight(generation, height))", HOST)
-        self.assertIn("if self.detached.get() { return; }", HOST)
+        self.assertIn("if self.detached.get() {\n                    return;\n                }", HOST)
         self.assertIn("height.min(crate::native_ui::webview_popup_height_limit", HOST)
         self.assertIn("sendCalendarUi('size:' + generation + ':' + height)", SDK)
         self.assertIn("pub const POPUP_TOP_MARGIN: i32 = 25;", NATIVE)
@@ -18733,8 +18733,9 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("self.run_pending()", HOST)
         self.assertIn("Some(UiCommand::Closed(generation))", HOST)
         self.assertIn("self.generation.get() == generation", HOST)
+        self.assertIn("pool.request(\n", HOST)
         for kind in ("Calendar", "System", "Launcher"):
-            self.assertIn(f"pool.request(Surface::{kind}", HOST)
+            self.assertIn(f"Surface::{kind},", HOST)
             self.assertIn(f"pool.acquire(Surface::{kind})", HOST)
             self.assertIn(f"view.show(Surface::{kind})", HOST)
 
