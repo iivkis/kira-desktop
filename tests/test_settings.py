@@ -44,7 +44,7 @@ class SettingsContracts(unittest.TestCase):
         self.assertIn('data-settings-mode={detached ? \'window\' : \'widget\'}', UI)
         self.assertIn('aria-label="Разделы настроек"', UI)
         self.assertIn('id="kira-settings-section"', UI)
-        self.assertIn('height: min(560px, var(--kira-overlay-max-height, 560px))', CSS)
+        self.assertIn('height: min(560px, calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset)))', CSS)
         self.assertIn('html[data-kira-detached="true"] .kira-settings', CSS)
         self.assertIn('onPopout', UI)
         self.assertIn('onSettingsAbout(generation,', UI)
