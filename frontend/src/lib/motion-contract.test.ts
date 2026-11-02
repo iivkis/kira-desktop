@@ -55,6 +55,9 @@ describe('TENET shared widget appearance', () => {
   it('cleans all transforms, listeners, memory and fallback on interrupt', () => {
     expect(motion).toContain("restore = window.setTimeout(() => {")
     expect(motion).toContain("master.progress(1).pause()")
+    expect(motion).toContain("master.progress(0).pause()")
+    expect(motion).toContain("}, 850)")
+    expect(motion).toContain("if (!closing || closedAcknowledged) return")
     expect(motion).toContain("}, 1200)");
     expect(motion).toContain("window.clearTimeout(awaitVisible)");
     expect(motion).toContain("master?.kill()");
