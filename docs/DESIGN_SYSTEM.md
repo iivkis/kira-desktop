@@ -24,15 +24,17 @@ official visual language of Kira Desktop.
 
 ### Visual rules
 
-1. Organize the Top Bar as three intentionally different **materials**:
-   Prussian Blue identity, Black workspace navigation, subdued Blue system.
-2. Keep the main orange fill on the current workspace; add only a narrow
-   orange baseline/mark to connect brand and active navigation.
-3. Build a compact typographic hierarchy: wordmark and workspace kicker/title.
-   The right edge is a **single vertically centered utility row**, not
-   stacked SYSTEM/LOCAL labels with inconsistent inner widget heights.
-4. Keep the full Top Bar at exactly 42 logical pixels; the navigation is
-   real Niri state and the text is sourced from the current KDL config.
+1. Structure the Top Bar as three continuous materials: Prussian Blue
+   brand, Black Niri navigation and subdued Blue system utilities.
+2. Give the only strong orange fill to the **actually focused workspace**,
+   not a decorative baseline. A short orange signature identifies KIRA;
+   urgent and error states use orange only when actionable.
+3. Remove duplicate captions such as WORKSPACE / DESKTOP. A user-specified
+   KDL title appears quietly at wide sizes, but the default title stays
+   hidden; workspace state is already legible without it.
+4. Preserve the 42px Wayland exclusive zone and Niri's event-driven focus
+   truth. When the configured workspace limit hides entries, show the
+   truthful preceding/following counts rather than pretending all are visible.
 5. Divide the Launcher into a Black editorial intro and a Blue working area
    for search and catalog; avoid filling the entire selected row with orange.
 6. A slim orange selection rail and orange item title identify the active
@@ -62,13 +64,22 @@ official visual language of Kira Desktop.
 
 ### Component principles
 
-- **Top Bar:** a 42 px strip with three continuous horizontal zones:
-  Blue brand, Black workspaces and metadata, softer Blue system status/clock.
-  The right zone is a condensed single line: combined Core + Niri health,
-  subtle divider and local time, all sharing one optical vertical center.
-  Date and diagnostic details are available via native title tooltips.
-  The time is a semantic button that toggles a separate native calendar overlay;
-  the Top Bar remains 42 px tall.
+- **Top Bar (Niri-first command rail):** the same 42px GTK layer-shell
+  surface, with three materials: Prussian Blue KIRA launcher entrance,
+  Black Niri workspace navigation and subdued Prussian Blue health/clock.
+  No permanent orange full-width underline or redundant workspace caption.
+  A small orange brand stroke contrasts with the **actual focused**
+  workspace, which alone receives a solid orange 29px control. Workspaces
+  active on another output remain visually separate from focus; urgent
+  items show a small semantic corner mark. A pure Svelte/TypeScript model
+  ensures the focused workspace stays visible under KDL's workspace
+  limit and reports how many earlier/later workspaces are omitted.
+  Only explicitly customized KDL titles appear, and they yield space on
+  narrow screens. System status reflects real Core/Niri/host measurements
+  and becomes quieter when READY; its button still opens System Monitor.
+  The local clock opens the existing Calendar. No extra WebKit processes,
+  native services, polling loops, shortcuts, fake app activity or Dock.
+  Keyboard focus and reduced-motion semantics are preserved.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
   zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
   compact Black local-time hero, a Prussian Blue calendar workbench, and a

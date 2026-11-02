@@ -115,29 +115,32 @@
 </script>
 
 <main
-  class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden bg-kira-bg text-kira-text after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-surface"
+  class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden border-b border-kira-muted/15 bg-kira-bg text-kira-text"
   aria-label="Kira Desktop top bar"
   data-kira-ui-root
   data-compact={configState.config.compact}
 >
+  <!-- KIRA opens the application index; it never claims to switch windows. -->
   <section
-    class={`relative z-10 flex shrink-0 items-stretch bg-kira-surface after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-accent ${configState.config.compact ? 'w-[84px]' : 'w-[102px] max-[540px]:w-[78px]'}`}
+    class={['relative z-10 flex shrink-0 items-center border-r border-kira-muted/15 bg-kira-surface',
+      configState.config.compact ? 'w-[78px]' : 'w-[96px] max-[540px]:w-[76px]'].join(' ')}
     aria-label="Kira Launcher"
   >
-    <button
-      type="button"
-      class={`flex h-full w-full cursor-pointer items-center border-0 bg-transparent text-left text-kira-text transition-colors duration-150 hover:bg-kira-accent/10 active:bg-kira-bg/20 focus-visible:-outline-offset-4 focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none ${configState.config.compact ? 'gap-[7px] px-[10px]' : 'gap-[10px] px-[14px] max-[540px]:gap-[6px] max-[540px]:px-[9px]'}`}
+    <button type="button"
+      class={['flex h-full w-full cursor-pointer items-center border-0 bg-transparent text-left text-kira-text transition-colors duration-150 hover:bg-kira-bg/15 focus-visible:-outline-offset-4 focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none',
+        configState.config.compact ? 'gap-2 px-3' : 'gap-[9px] px-[13px] max-[540px]:gap-[6px] max-[540px]:px-[9px]'].join(' ')}
       aria-label="Open applications launcher"
-      title="Open applications"
-      onclick={activateLauncher}
+      title="Open applications" onclick={activateLauncher}
     >
-      <span class="h-[19px] w-[3px] shrink-0 bg-kira-accent" aria-hidden="true"></span>
-      <span class="text-[13px] font-extrabold tracking-[0.11em] max-[540px]:text-xs">KIRA</span>
+      <span class="h-4 w-[3px] shrink-0 bg-kira-accent" aria-hidden="true"></span>
+      <span class="text-[12px] font-extrabold tracking-[0.16em] max-[540px]:text-[11px]">KIRA</span>
     </button>
   </section>
 
+  <!-- Focus and navigation are exclusively owned by Niri's EventStream. -->
   <section
-    class={`flex min-w-0 flex-1 items-center pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'gap-[13px] px-4 max-[540px]:gap-[7px] max-[540px]:px-[7px]'}`}
+    class={['flex min-w-0 flex-1 items-center bg-kira-bg',
+      configState.config.compact ? 'gap-2 px-2' : 'gap-3 px-3 max-[540px]:gap-1.5 max-[540px]:px-2'].join(' ')}
     aria-label="Niri workspaces"
   >
     <WorkspacePreview
@@ -147,28 +150,30 @@
       pending={workspacePending}
       onFocus={(id) => { void activateWorkspace(id); }}
     />
-    {#if !configState.config.compact}
-      <div class="flex min-w-0 max-w-[176px] flex-col justify-center gap-[2px] overflow-hidden max-[820px]:hidden" title={configState.config.title}>
-        <span class="whitespace-nowrap text-[8px] leading-none font-semibold tracking-[0.11em] text-kira-muted/80">WORKSPACE</span>
-        <span class="max-w-40 truncate text-[10px] leading-tight font-bold tracking-[0.06em] text-kira-text">
-          {configState.config.title === 'KIRA DESKTOP' ? 'DESKTOP' : configState.config.title}
-        </span>
-      </div>
+    {#if !configState.config.compact && configState.config.title !== 'KIRA DESKTOP'}
+      <span class="max-w-36 min-w-0 truncate border-l border-kira-muted/20 pl-3 text-[10px] font-semibold tracking-wide text-kira-muted max-[900px]:hidden"
+        title={configState.config.title}>{configState.config.title}</span>
     {/if}
     {#if launcherUnavailable}
-      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent"
+        role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
     {/if}
     {#if workspaceActionError}
-      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="alert" title={workspaceActionError}>WS !</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent"
+        role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
 
+  <!-- Native measurements and local time: no fake taskbar activity. -->
   <section
-    class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}
+    class={['flex shrink-0 items-center justify-end gap-1 border-l border-kira-muted/15 bg-kira-surface-soft px-3',
+      configState.config.compact ? 'px-2' : 'max-[540px]:px-2'].join(' ')}
     aria-label="System status and local time"
   >
     {#if configState.error}
-      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap px-1 text-[10px] font-bold text-kira-accent"
+        title={configState.error}
+        aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
     <SystemHealth
       coreStatus={coreStatus}
@@ -178,21 +183,23 @@
       onOpen={activateSystemPanel}
     />
     {#if systemUnavailable}
-      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+      <span role="status" class="shrink-0 px-1 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
     {/if}
-    <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
+    <span class="mx-1 h-4 w-px shrink-0 bg-kira-muted/20" aria-hidden="true"></span>
     {#if calendarUnavailable}
-      <span class="shrink-0 text-[10px] font-bold text-kira-accent" role="status">CALENDAR OFFLINE</span>
+      <span class="shrink-0 px-1 text-[10px] font-bold text-kira-accent"
+        role="status">CALENDAR OFFLINE</span>
     {/if}
     <button
       type="button"
-      class="shrink-0 cursor-pointer rounded-sm border-0 bg-transparent px-1 py-2 leading-none text-kira-text transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
+      class="shrink-0 cursor-pointer rounded-[2px] border-0 bg-transparent px-2 py-2 leading-none text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
       title="Open calendar and date details"
       aria-label={'Open calendar, local time ' + formatClock(now, undefined, configState.config.show_seconds)}
       aria-haspopup="dialog"
       onclick={activateCalendar}
     >
-      <time class="whitespace-nowrap text-[13px] font-bold tracking-[0.03em] tabular-nums max-[540px]:text-xs" datetime={now.toISOString()}>
+      <time class="whitespace-nowrap text-[13px] font-extrabold tracking-[0.05em] tabular-nums max-[540px]:text-xs"
+        datetime={now.toISOString()}>
         {formatClock(now, undefined, configState.config.show_seconds)}
       </time>
     </button>

@@ -23,12 +23,16 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('h-[42px] min-h-[42px]');
     expect(markup).toContain('bg-kira-surface');
     expect(markup).toContain('bg-kira-surface-soft');
-    expect(markup).toContain('after:bg-kira-accent');
+    expect(markup).toContain('border-b border-kira-muted/15');
+    expect(markup).not.toContain('after:bg-kira-accent');
     expect(markup).toContain('aria-label="Kira Launcher"');
     expect(markup).toContain('aria-label="Niri workspaces"');
     expect(markup).toContain('aria-label="System status and local time"');
     expect(markup).toContain('configState.config.compact');
-    expect(markup).toContain('class={`flex shrink-0 items-center justify-end gap-3');
+    expect(markup).toContain('items-center justify-end gap-1 border-l');
+    expect(markup).not.toContain('WORKSPACE</span>');
+    expect(markup).not.toContain("'DESKTOP' :");
+    expect(markup).toContain("configState.config.title !== 'KIRA DESKTOP'");
     expect(markup).not.toContain('>SYSTEM</span>');
     expect(markup).not.toContain('>LOCAL</span>');
     expect(markup).toContain('niriConnected={workspaceState?.connected ?? null}');
@@ -63,6 +67,11 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('disabled={pending}');
     expect(workspaces).toContain('focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2');
     expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
+    expect(workspaces).toContain('visibleWorkspaceWindow(');
+    expect(workspaces).toContain('data-workspace-strip');
+    expect(workspaces).toContain('windowed.before > 0');
+    expect(workspaces).toContain('windowed.after > 0');
+    expect(workspaces).toContain('rounded-[2px]');
     expect(core).toContain('aria-live="polite"');
     expect(core).toContain('data-phase={health.phase}');
     expect(core).toContain('aria-haspopup="dialog"');
@@ -72,6 +81,7 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
     expect(core).not.toContain('min-h-7');
+    expect(core).toContain("max-[620px]:sr-only");
     expect(markup).toContain('title="Open calendar and date details"');
     expect(markup).toContain('items-center justify-end');
     expect(markup).not.toContain('bar__system-item');
