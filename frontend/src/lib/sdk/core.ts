@@ -301,28 +301,34 @@ export function notifyOverlayMotion(generation: number, reduced: boolean): void 
   sendCalendarUi('motion:' + generation + ':' + (reduced ? '1' : '0'));
 }
 
-export function closeCalendarOverlay(): void {
-  sendCalendarUi('close');
+function validOverlayGeneration(generation: number): boolean {
+  return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff;
 }
 
-export function copyCalendarDate(date: string): void {
+export function closeCalendarOverlay(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
+}
+
+export function copyCalendarDate(generation: number, date: string): void {
   // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
   // revalidates the exact date, including month lengths and leap years.
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
-  sendCalendarUi('copy:' + date);
+  if (!validOverlayGeneration(generation) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+  sendCalendarUi('copy:' + generation + ':' + date);
 }
 
 /** The shared overlay accepts only fixed read-only tab and copy actions. */
-export function closeSystemOverlay(): void {
-  sendCalendarUi('close');
+export function closeSystemOverlay(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
 }
 
-export function setSystemMonitorTab(tab: 'overview' | 'processes'): void {
-  if (tab === 'overview' || tab === 'processes') sendCalendarUi('tab:' + tab);
+export function setSystemMonitorTab(generation: number, tab: 'overview' | 'processes'): void {
+  if (validOverlayGeneration(generation) && (tab === 'overview' || tab === 'processes')) {
+    sendCalendarUi('tab:' + generation + ':' + tab);
+  }
 }
 
-export function copySystemReport(): void {
-  sendCalendarUi('copy-report');
+export function copySystemReport(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('copy-report:' + generation);
 }
 
 export interface LauncherApp {
@@ -400,8 +406,8 @@ export function launchDesktopApp(generation: number, id: number): boolean {
   return sendCalendarUi('launch:' + generation + ':' + id);
 }
 
-export function closeLauncherOverlay(): void {
-  sendCalendarUi('close');
+export function closeLauncherOverlay(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
 }
 
 /** Open or close the shared Svelte read-only system monitor. */

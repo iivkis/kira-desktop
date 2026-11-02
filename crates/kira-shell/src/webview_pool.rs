@@ -12,6 +12,8 @@ pub enum Surface {
     Calendar,
     System,
     Launcher,
+    #[cfg(test)]
+    Synthetic(u8),
 }
 impl Surface {
     pub fn name(self) -> &'static str {
@@ -19,6 +21,8 @@ impl Surface {
             Self::Calendar => "calendar",
             Self::System => "system",
             Self::Launcher => "launcher",
+            #[cfg(test)]
+            Self::Synthetic(_) => "synthetic",
         }
     }
 }
@@ -216,10 +220,13 @@ mod tests {
         let now = Instant::now();
         // Surface identity prevents duplicate active panes. Bounded capacity
         // covers today's three built-ins plus one future trusted surface.
-        for kind in [Surface::Calendar, Surface::System, Surface::Launcher] {
+        for kind in [Surface::Calendar, Surface::System, Surface::Launcher, Surface::Synthetic(1)] {
             assert!(matches!(s.reserve(kind, now), Reservation::Created(_)));
         }
-        assert_eq!(s.active_count(), 3);
-        assert_eq!(s.resident_count(), 3);
+        assert_eq!(s.active_count(), MAX_POPUP_VIEWS);
+        assert_eq!(s.resident_count(), MAX_POPUP_VIEWS);
+        assert_eq!(s.reserve(Surface::Synthetic(2), now), Reservation::Full);
+        assert!(s.expired_idle(now + Duration::from_secs(1_000)).is_empty());
+        assert_eq!(s.active_count(), MAX_POPUP_VIEWS);
     }
 }

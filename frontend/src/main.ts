@@ -41,17 +41,28 @@ whenDocumentReady(document, () => {
         let stopSizing: (() => void) | null = null;
         return {
           mount() {
+            // Commands capture THIS generation, not the mutable current one.
+            // A late callback from a recycled slot can never close a newer
+            // widget or change its subscriptions.
+            const lease = visibleGeneration ?? 0;
             const instance = kind === 'calendar'
               ? mount(CalendarWidget, {
                 target,
-                props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
+                props: {
+                  onClose: () => closeCalendarOverlay(lease),
+                  onCopy: (date: string) => copyCalendarDate(lease, date),
+                },
               })
               : kind === 'system'
                 ? mount(SystemWidget, {
                   target,
-                  props: { onClose: closeSystemOverlay, onCopy: copySystemReport, onTab: setSystemMonitorTab },
+                  props: {
+                    onClose: () => closeSystemOverlay(lease),
+                    onCopy: () => copySystemReport(lease),
+                    onTab: (tab: 'overview' | 'processes') => setSystemMonitorTab(lease, tab),
+                  },
                 })
-                : mount(LauncherWidget, { target, props: { onClose: closeLauncherOverlay, generation: visibleGeneration ?? 0 } });
+                : mount(LauncherWidget, { target, props: { onClose: () => closeLauncherOverlay(lease), generation: lease } });
             flushSync();
             const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {

@@ -40,7 +40,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    closeLauncherOverlay();
+    closeLauncherOverlay(8);
     expect(requestLauncherCatalog(8)).toBe(true);
     expect(launchDesktopApp(8, 42)).toBe(true);
     for (const bad of [-1, 1.5, 1024, Number.NaN]) {
@@ -50,7 +50,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(launchDesktopApp(4294967296, 1)).toBe(false);
     expect(requestLauncherCatalog(-1)).toBe(false);
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
-      'close', 'apps-request:8', 'launch:8:42',
+      'close:8', 'apps-request:8', 'launch:8:42',
     ]);
   });
 
@@ -148,12 +148,12 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    closeCalendarOverlay();
-    copyCalendarDate('2024-02-29');
+    closeCalendarOverlay(12);
+    copyCalendarDate(12, '2024-02-29');
     for (const invalid of ['bogus', '2024-2-29', '2024-02-29;exit', '', '99999-01-01']) {
-      copyCalendarDate(invalid);
+      copyCalendarDate(12, invalid);
     }
-    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close', 'copy:2024-02-29']);
+    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close:12', 'copy:12:2024-02-29']);
   });
 
   it('reports calendar Svelte mount completion only via the private host channel', () => {
@@ -174,13 +174,13 @@ describe('Core SDK JSON-RPC bridge', () => {
   });
 
   it('does not throw without a calendar host, or when its channel fails', () => {
-    expect(() => closeCalendarOverlay()).not.toThrow();
-    expect(() => copyCalendarDate('2024-02-29')).not.toThrow();
+    expect(() => closeCalendarOverlay(12)).not.toThrow();
+    expect(() => copyCalendarDate(12, '2024-02-29')).not.toThrow();
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage: () => { throw new Error('window closed'); } } } },
     } as unknown as Window & typeof globalThis;
-    expect(() => closeCalendarOverlay()).not.toThrow();
-    expect(() => copyCalendarDate('2024-02-29')).not.toThrow();
+    expect(() => closeCalendarOverlay(12)).not.toThrow();
+    expect(() => copyCalendarDate(12, '2024-02-29')).not.toThrow();
   });
 
   it('allows only fixed System Monitor overlay actions', () => {
@@ -188,13 +188,13 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    closeSystemOverlay();
-    copySystemReport();
-    setSystemMonitorTab('overview');
-    setSystemMonitorTab('processes');
-    setSystemMonitorTab('execute' as 'processes');
+    closeSystemOverlay(42);
+    copySystemReport(42);
+    setSystemMonitorTab(42, 'overview');
+    setSystemMonitorTab(42, 'processes');
+    setSystemMonitorTab(42, 'execute' as 'processes');
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
-      'close', 'copy-report', 'tab:overview', 'tab:processes',
+      'close:42', 'copy-report:42', 'tab:42:overview', 'tab:42:processes',
     ]);
   });
 

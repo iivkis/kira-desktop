@@ -467,9 +467,11 @@ impl CalendarOverlay {
             {
                 self.reveal();
             }
-            Some(UiCommand::Close) if self.requested.get() => self.hide(),
-            Some(UiCommand::CopyDate(date))
+            Some(UiCommand::Close(generation))
+                if self.requested.get() && self.generation.get() == generation => self.hide(),
+            Some(UiCommand::CopyDate(generation, date))
                 if self.requested.get()
+                    && self.generation.get() == generation
                     && self.revealed.get()
                     && self.active.get() == Some(Surface::Calendar) =>
             {
@@ -477,16 +479,19 @@ impl CalendarOverlay {
                     display.clipboard().set_text(date);
                 }
             }
-            Some(UiCommand::ProcessesTab(active))
-                if self.requested.get() && self.active.get() == Some(Surface::System) =>
+            Some(UiCommand::ProcessesTab(generation, active))
+                if self.requested.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::System) =>
             {
                 if let Some(model) = self.system.borrow().as_ref() {
                     model.set_processes_active(active);
                     model.set_pulse_active(!active);
                 }
             }
-            Some(UiCommand::CopyReport)
+            Some(UiCommand::CopyReport(generation))
                 if self.requested.get()
+                    && self.generation.get() == generation
                     && self.revealed.get()
                     && self.active.get() == Some(Surface::System) =>
             {
@@ -705,15 +710,15 @@ impl CalendarOverlay {
 
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
-    Close,
+    Close(u32),
     HostReady,
     Mounted(u32, bool),
     MotionPreference(u32, bool),
     Painted(u32),
     ContentHeight(u32, i32),
-    CopyDate(&'a str),
-    ProcessesTab(bool),
-    CopyReport,
+    CopyDate(u32, &'a str),
+    ProcessesTab(u32, bool),
+    CopyReport(u32),
     LauncherCatalog(u32),
     LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
@@ -751,14 +756,29 @@ fn parse_motion_message(value: &str) -> Option<(u32, bool)> {
     Some((generation, reduced))
 }
 
+fn parse_ui_generation(value: &str) -> Option<u32> {
+    if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    value.parse::<u32>().ok().filter(|v| *v > 0)
+}
+
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
-    match message {
-        "close" => return Some(UiCommand::Close),
-        "host-ready" => return Some(UiCommand::HostReady),
-        "tab:processes" => return Some(UiCommand::ProcessesTab(true)),
-        "tab:overview" => return Some(UiCommand::ProcessesTab(false)),
-        "copy-report" => return Some(UiCommand::CopyReport),
-        _ => {}
+    if message == "host-ready" { return Some(UiCommand::HostReady); }
+    if let Some(value) = message.strip_prefix("close:") {
+        return parse_ui_generation(value).map(UiCommand::Close);
+    }
+    if let Some(value) = message.strip_prefix("copy-report:") {
+        return parse_ui_generation(value).map(UiCommand::CopyReport);
+    }
+    if let Some(value) = message.strip_prefix("tab:") {
+        let (generation, tab) = value.split_once(':')?;
+        let active = match tab {
+            "overview" => false,
+            "processes" => true,
+            _ => return None,
+        };
+        return Some(UiCommand::ProcessesTab(parse_ui_generation(generation)?, active));
     }
     if let Some(value) = message.strip_prefix("apps-request:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
@@ -848,7 +868,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         }
         return value.parse().ok().map(UiCommand::Painted);
     }
-    let date = message.strip_prefix("copy:")?;
+    let value = message.strip_prefix("copy:")?;
+    let (generation, date) = value.split_once(':')?;
+    let generation = parse_ui_generation(generation)?;
     let bytes = date.as_bytes();
     if bytes.len() != 10
         || bytes[4] != b'-'
@@ -866,7 +888,7 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if !valid_date(year, month, day) {
         return None;
     }
-    Some(UiCommand::CopyDate(date))
+    Some(UiCommand::CopyDate(generation, date))
 }
 
 fn calendar_document(html: &str) -> Option<String> {
@@ -1114,6 +1136,14 @@ mod tests {
             "",
             "COPY",
             "toggle",
+            "close",
+            "close:0",
+            "close:-2",
+            "close:4294967296",
+            "tab:overview",
+            "tab:0:processes",
+            "copy-report",
+            "copy-report:zero",
             "painted:",
             "painted:2;exit",
             "painted:-1",
@@ -1164,17 +1194,17 @@ mod tests {
         ] {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
-        assert_eq!(calendar_command("close"), Some(UiCommand::Close));
+        assert_eq!(calendar_command("close:12"), Some(UiCommand::Close(12)));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
         assert_eq!(
-            calendar_command("tab:processes"),
-            Some(UiCommand::ProcessesTab(true))
+            calendar_command("tab:12:processes"),
+            Some(UiCommand::ProcessesTab(12, true))
         );
         assert_eq!(
-            calendar_command("tab:overview"),
-            Some(UiCommand::ProcessesTab(false))
+            calendar_command("tab:12:overview"),
+            Some(UiCommand::ProcessesTab(12, false))
         );
-        assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
+        assert_eq!(calendar_command("copy-report:12"), Some(UiCommand::CopyReport(12)));
         assert_eq!(
             calendar_command("apps-request:12"),
             Some(UiCommand::LauncherCatalog(12))
@@ -1205,8 +1235,8 @@ mod tests {
         );
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
-            calendar_command("copy:2024-02-29"),
-            Some(UiCommand::CopyDate("2024-02-29"))
+            calendar_command("copy:12:2024-02-29"),
+            Some(UiCommand::CopyDate(12, "2024-02-29"))
         );
     }
 
