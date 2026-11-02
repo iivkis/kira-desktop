@@ -35,6 +35,19 @@ class WebviewPoolContracts(unittest.TestCase):
             self.assertIn(call, SHELL)
 
 
+    def test_document_viewer_cache_model_is_set_before_first_webview(self):
+        # One shared context means one cache policy, configured before any
+        # WebView exists; lazy popup construction inherits the same policy.
+        self.assertEqual(
+            SHELL.count("context.set_cache_model(webkit6::CacheModel::DocumentViewer);"), 1
+        )
+        self.assertLess(
+            SHELL.index("context.set_cache_model(webkit6::CacheModel::DocumentViewer);"),
+            SHELL.index("webkit6::WebView::builder()"),
+        )
+        self.assertNotIn("set_cache_model(", HOST)
+        self.assertIn("context: context.clone(),", HOST)
+
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
         self.assertIn("pub const HOT_IDLE_TARGET: usize = 1", POOL)

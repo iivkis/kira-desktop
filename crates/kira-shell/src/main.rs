@@ -125,6 +125,11 @@ fn main() {
         // Each WebView still has its own UserContentManager and fixed IPC handlers.
         // Sharing a context does not force WebKit to share renderer processes.
         let context = webkit6::WebContext::new();
+        // The bundled UI is a single, navigation-locked HTML document whose
+        // JS and CSS are inlined. Keep WebKit's document caches minimal.
+        // Configure BEFORE creating the Top Bar or prewarming overlay views:
+        // both use this shared context.
+        context.set_cache_model(webkit6::CacheModel::DocumentViewer);
         let manager = webkit6::UserContentManager::new();
         let view = webkit6::WebView::builder()
             .web_context(&context)

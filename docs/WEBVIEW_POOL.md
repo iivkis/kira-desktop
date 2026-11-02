@@ -20,6 +20,16 @@ Each WebView still creates its **own** `UserContentManager` with the original,
 fixed-purpose script message handlers and locked-down navigation. No generic
 bridge, shared JS global, new web origin, or new privilege is introduced.
 
+The shared context uses `CacheModel::DocumentViewer`, explicitly configured
+**before any WebView is built**. Kira loads one self-contained, navigation-locked
+HTML document with inlined JavaScript/CSS, so caching browser navigation
+history and remote resources provides no benefit. The setting applies to
+the permanent Top Bar and every warm/leased/detached overlay without a
+second configuration path. This changes WebKit's *resource caching policy*;
+it does not clear live Svelte DOM, ECharts graphs or JS heaps and does not
+impose artificial memory limits. If future UI surfaces start navigating
+through external documents, reassess this policy.
+
 The context is shared to avoid duplicate context-level state, not to demand
 one WebKit renderer process for every WebView. WebKitGTK 6 still chooses
 renderer processes independently for security and stability. Measure RSS/PSS
