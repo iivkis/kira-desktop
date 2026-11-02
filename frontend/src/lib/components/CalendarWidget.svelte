@@ -187,8 +187,7 @@
           {#if date}
             {@const marker = calendarDayState(date, selected, today, visible)}
             <button type="button"
-              class={'relative flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums
-                focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+              class={'relative flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
                 (marker.outside ? 'text-kira-muted/60 ' : 'text-kira-text ') +
                 (marker.selected ? 'bg-kira-accent font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
                   'hover:bg-kira-bg/35 hover:text-kira-accent ') +
