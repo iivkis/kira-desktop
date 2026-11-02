@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4944
+index_bytes=4989
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,108 +15,109 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	39c3d85ad957861979c06b1cea0722d7879046b2
-F	.cargo/config.toml	98	129	3
-F	.github/workflows/ci.yml	4355	134	112
-F	.github/workflows/frontend-nix.yml	1398	248	43
-F	.github/workflows/nix.yml	1258	293	38
-F	.github/workflows/overlay-smoke.yml	1064	333	40
-F	.github/workflows/publish-repospool.yml	3048	375	83
-F	.gitignore	178	460	11
-F	.repospoolignore	1028	473	47
-F	AGENTS.md	5193	522	86
-F	Cargo.toml	494	610	22
-F	README.md	11269	634	248
-F	Taskfile.yml	5957	884	185
-F	config/kira.kdl.example	358	1071	8
-F	crates/kira-core/Cargo.toml	207	1081	10
-F	crates/kira-core/src/config.rs	15217	1093	399
-F	crates/kira-core/src/main.rs	32080	1494	839
-F	crates/kira-core/src/niri.rs	16767	2335	453
-F	crates/kira-ipc/Cargo.toml	170	2790	9
-F	crates/kira-ipc/src/client.rs	17794	2801	458
-F	crates/kira-ipc/src/lib.rs	10460	3261	336
-F	crates/kira-shell/Cargo.toml	297	3599	12
-F	crates/kira-shell/src/calendar.rs	52405	3613	1412
-F	crates/kira-shell/src/launcher.rs	14114	5027	392
-F	crates/kira-shell/src/main.rs	19321	5421	449
-F	crates/kira-shell/src/native_ui.rs	3362	5872	84
-F	crates/kira-shell/src/popup_layout.rs	3182	5958	89
-F	crates/kira-shell/src/process_monitor.rs	9336	6049	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6337	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6455	559
-F	crates/kira-shell/src/system_panel.rs	11356	7016	318
-F	crates/kira-shell/src/webview_pool.rs	7991	7336	237
-F	docs/CONFIG.md	5801	7575	125
-F	docs/DESIGN_SYSTEM.md	31404	7702	507
-F	docs/DEVELOPMENT.md	29347	8211	577
-F	docs/QA_VISUAL.md	12284	8790	149
-F	docs/SPECIFICATION.md	28960	8941	421
-F	docs/TENET_MOTION.md	34134	9364	186
-F	docs/UI_ARCHITECTURE.md	6737	9552	106
-F	docs/VISUAL_REVIEW.md	9754	9660	84
-F	docs/WEBVIEW_POOL.md	5265	9746	31
-F	flake.nix	3181	9779	91
-F	frontend/index.html	2737	9872	66
-F	frontend/package.json	720	9940	27
-F	frontend/scripts/inline-assets.mjs	4457	9969	103
-F	frontend/scripts/inline-assets.test.mjs	4645	10074	106
-F	frontend/scripts/smoke-overlays.mjs	29174	10182	414
-F	frontend/src/App.svelte	8589	10598	207
-F	frontend/src/lib/bootstrap.test.ts	3408	10807	84
-F	frontend/src/lib/bootstrap.ts	2613	10893	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10965	65
-F	frontend/src/lib/calendar-model.ts	4648	11032	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11139	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11201	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11232	287
-F	frontend/src/lib/clock-flight.test.ts	2404	11521	50
-F	frontend/src/lib/clock-flight.ts	1977	11573	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11790	11625	244
-F	frontend/src/lib/components/LauncherWidget.svelte	11841	11871	253
-F	frontend/src/lib/components/SystemCharts.svelte	10517	12126	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	12354	46
-F	frontend/src/lib/components/SystemWidget.svelte	19143	12402	337
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	12741	119
-F	frontend/src/lib/launcher-model.test.ts	2266	12862	46
-F	frontend/src/lib/launcher-model.ts	1403	12910	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12941	89
-F	frontend/src/lib/lazy-widget.ts	1984	13032	63
-F	frontend/src/lib/motion-contract.test.ts	8191	13097	148
-F	frontend/src/lib/motion.ts	18295	13247	512
-F	frontend/src/lib/overlay-size.ts	1090	13761	29
-F	frontend/src/lib/sdk/core.test.ts	22478	13792	447
-F	frontend/src/lib/sdk/core.ts	18781	14241	485
-F	frontend/src/lib/system-charts.test.ts	6312	14728	141
-F	frontend/src/lib/system-charts.ts	5514	14871	149
-F	frontend/src/lib/system-health.test.ts	2385	15022	42
-F	frontend/src/lib/system-health.ts	2831	15066	60
-F	frontend/src/lib/system-model.test.ts	4455	15128	84
-F	frontend/src/lib/system-model.ts	5457	15214	125
-F	frontend/src/lib/themes/kira-default.css	1687	15341	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	15395	101
-F	frontend/src/lib/themes/kira-default.ts	777	15498	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	15522	101
-F	frontend/src/lib/time.test.ts	263	15625	8
-F	frontend/src/lib/time.ts	320	15635	9
-F	frontend/src/lib/workspace-window.test.ts	2298	15646	52
-F	frontend/src/lib/workspace-window.ts	1063	15700	32
-F	frontend/src/main.ts	7007	15734	146
-F	frontend/src/style.css	4406	15882	134
-F	frontend/tsconfig.json	403	16018	16
-F	frontend/vite.config.ts	224	16036	8
-F	nix/package.nix	3132	16046	117
-F	scripts/dev_preview.py	18147	16165	403	x
-F	scripts/qa_visual.py	12052	16570	299
-F	tests/test_calendar_design.py	7810	16871	136
-F	tests/test_detailed_health.py	5481	17009	105
-F	tests/test_dev_preview.py	9339	17116	219
-F	tests/test_launcher_design.py	10471	17337	190
-F	tests/test_native_theme.py	1567	17529	36
-F	tests/test_popup_geometry.py	8409	17567	140
-F	tests/test_qa_visual.py	10549	17709	217
-F	tests/test_ui_bootstrap_contract.py	1103	17928	29
-F	tests/test_webview_pool.py	3944	17959	73
+C	dd8ce23ab8057af2bcbdbea3b590e2aaff77b8d3
+F	.cargo/config.toml	98	130	3
+F	.github/workflows/ci.yml	4355	135	112
+F	.github/workflows/frontend-nix.yml	1398	249	43
+F	.github/workflows/nix.yml	1258	294	38
+F	.github/workflows/overlay-smoke.yml	1064	334	40
+F	.github/workflows/publish-repospool.yml	3048	376	83
+F	.gitignore	178	461	11
+F	.repospoolignore	1028	474	47
+F	AGENTS.md	5193	523	86
+F	Cargo.toml	494	611	22
+F	README.md	11269	635	248
+F	Taskfile.yml	5957	885	185
+F	config/kira.kdl.example	358	1072	8
+F	crates/kira-core/Cargo.toml	207	1082	10
+F	crates/kira-core/src/config.rs	15217	1094	399
+F	crates/kira-core/src/main.rs	32080	1495	839
+F	crates/kira-core/src/niri.rs	16767	2336	453
+F	crates/kira-ipc/Cargo.toml	170	2791	9
+F	crates/kira-ipc/src/client.rs	17794	2802	458
+F	crates/kira-ipc/src/lib.rs	10460	3262	336
+F	crates/kira-shell/Cargo.toml	297	3600	12
+F	crates/kira-shell/src/calendar.rs	56771	3614	1526
+F	crates/kira-shell/src/launcher.rs	14114	5142	392
+F	crates/kira-shell/src/main.rs	19321	5536	449
+F	crates/kira-shell/src/native_ui.rs	3362	5987	84
+F	crates/kira-shell/src/popup_layout.rs	3182	6073	89
+F	crates/kira-shell/src/process_monitor.rs	9336	6164	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6452	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6570	559
+F	crates/kira-shell/src/system_panel.rs	11356	7131	318
+F	crates/kira-shell/src/webview_pool.rs	7991	7451	237
+F	docs/CONFIG.md	5801	7690	125
+F	docs/DESIGN_SYSTEM.md	32126	7817	519
+F	docs/DEVELOPMENT.md	29347	8338	577
+F	docs/QA_VISUAL.md	12284	8917	149
+F	docs/SPECIFICATION.md	28960	9068	421
+F	docs/TENET_MOTION.md	37072	9491	194
+F	docs/UI_ARCHITECTURE.md	6737	9687	106
+F	docs/VISUAL_REVIEW.md	9754	9795	84
+F	docs/WEBVIEW_POOL.md	5600	9881	31
+F	flake.nix	3181	9914	91
+F	frontend/index.html	2737	10007	66
+F	frontend/package.json	720	10075	27
+F	frontend/scripts/inline-assets.mjs	4457	10104	103
+F	frontend/scripts/inline-assets.test.mjs	4645	10209	106
+F	frontend/scripts/smoke-overlays.mjs	33182	10317	469
+F	frontend/src/App.svelte	8589	10788	207
+F	frontend/src/lib/bootstrap.test.ts	3408	10997	84
+F	frontend/src/lib/bootstrap.ts	2613	11083	70
+F	frontend/src/lib/calendar-model.test.ts	3571	11155	65
+F	frontend/src/lib/calendar-model.ts	4648	11222	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11329	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11391	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11422	287
+F	frontend/src/lib/clock-flight.test.ts	2404	11711	50
+F	frontend/src/lib/clock-flight.ts	1977	11763	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11790	11815	244
+F	frontend/src/lib/components/LauncherWidget.svelte	11841	12061	253
+F	frontend/src/lib/components/SystemCharts.svelte	10517	12316	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	12544	46
+F	frontend/src/lib/components/SystemWidget.svelte	19143	12592	337
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	12931	119
+F	frontend/src/lib/launcher-model.test.ts	2266	13052	46
+F	frontend/src/lib/launcher-model.ts	1403	13100	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	13131	89
+F	frontend/src/lib/lazy-widget.ts	1984	13222	63
+F	frontend/src/lib/motion-contract.test.ts	9438	13287	168
+F	frontend/src/lib/motion.ts	21413	13457	593
+F	frontend/src/lib/overlay-size.ts	1090	14052	29
+F	frontend/src/lib/sdk/core.test.ts	23026	14083	459
+F	frontend/src/lib/sdk/core.ts	19091	14544	492
+F	frontend/src/lib/system-charts.test.ts	6312	15038	141
+F	frontend/src/lib/system-charts.ts	5514	15181	149
+F	frontend/src/lib/system-health.test.ts	2385	15332	42
+F	frontend/src/lib/system-health.ts	2831	15376	60
+F	frontend/src/lib/system-model.test.ts	4455	15438	84
+F	frontend/src/lib/system-model.ts	5457	15524	125
+F	frontend/src/lib/themes/kira-default.css	1687	15651	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	15705	101
+F	frontend/src/lib/themes/kira-default.ts	777	15808	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	15832	101
+F	frontend/src/lib/time.test.ts	263	15935	8
+F	frontend/src/lib/time.ts	320	15945	9
+F	frontend/src/lib/workspace-window.test.ts	2298	15956	52
+F	frontend/src/lib/workspace-window.ts	1063	16010	32
+F	frontend/src/main.ts	7007	16044	146
+F	frontend/src/style.css	4406	16192	134
+F	frontend/tsconfig.json	403	16328	16
+F	frontend/vite.config.ts	224	16346	8
+F	nix/package.nix	3132	16356	117
+F	scripts/dev_preview.py	18147	16475	403	x
+F	scripts/qa_visual.py	12052	16880	299
+F	tests/test_calendar_design.py	7810	17181	136
+F	tests/test_detailed_health.py	5481	17319	105
+F	tests/test_dev_preview.py	9339	17426	219
+F	tests/test_launcher_design.py	10481	17647	190
+F	tests/test_native_theme.py	1567	17839	36
+F	tests/test_popup_geometry.py	8409	17877	140
+F	tests/test_qa_visual.py	10549	18019	217
+F	tests/test_tenet_close.py	3679	18238	68
+F	tests/test_ui_bootstrap_contract.py	1103	18308	29
+F	tests/test_webview_pool.py	3944	18339	73
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3868,6 +3869,7 @@ struct CalendarOverlay {
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
+    closing: Cell<bool>,
     revealed: Cell<bool>,
     native_reduced_motion: Cell<bool>,
     paint_pending: Cell<bool>,
@@ -3938,10 +3940,13 @@ impl CalendarOverlay {
         });
     }
 
+    /// Emergency/reduced-motion path and completion of the reversible
+    /// exit. Never release this pool lease while the Svelte scene is playing.
     fn hide(&self) {
         if !self.requested.replace(false) {
             return;
         }
+        self.closing.set(false);
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
             model.set_pulse_active(false);
@@ -3981,6 +3986,80 @@ impl CalendarOverlay {
         }
     }
 
+    /// Request a TENET exit without tearing down its renderer or layout.
+    /// WebKit reverses its recorded entrance and confirms 'closed:<gen>'.
+    /// A bounded timeout protects against throttled/crashed WebKit frames.
+    fn request_close(self: &Rc<Self>) {
+        if !self.requested.get() || self.closing.replace(true) {
+            return;
+        }
+        if let Some(model) = self.system.borrow().as_ref() {
+            model.set_processes_active(false);
+            model.set_pulse_active(false);
+        }
+        if self.native_reduced_motion.get()
+            || !self.host_ready.get()
+            || !self.widget_ready.get()
+            || !self.revealed.get()
+        {
+            self.hide();
+            return;
+        }
+        // The reverse takes place on a fully visible native compositor
+        // buffer. Hiding GTK now would erase the recorded intermediate steps.
+        self.window.set_opacity(1.0);
+        let generation = self.generation.get();
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:overlay:close', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: TENET reverse request failed: {error}");
+                }
+            },
+        );
+        let weak = Rc::downgrade(self);
+        gtk::glib::timeout_add_local_once(Duration::from_millis(1100), move || {
+            if let Some(view) = weak.upgrade()
+                && view.requested.get()
+                && view.closing.get()
+                && view.generation.get() == generation
+            {
+                eprintln!("kira-shell: TENET close timed out; reclaiming popup safely");
+                view.hide();
+            }
+        });
+    }
+
+    /// Reopening mid-reverse retargets the SAME recorded timeline rather
+    /// than replacing a live view or starting another mount generation.
+    fn cancel_close(&self) {
+        if !self.closing.replace(false) {
+            return;
+        }
+        let generation = self.generation.get();
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:overlay:reopen', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: TENET reopen delivery failed: {error}");
+                }
+            },
+        );
+        self.window.present();
+    }
+
     fn show(self: &Rc<Self>, kind: Surface) {
         // Dedicated leased WebView: no preceding Svelte widget is unmounted
         // and no other Wayland popup is ever unmapped to start this scene.
@@ -3999,6 +4078,7 @@ impl CalendarOverlay {
             },
         );
         self.requested.set(true);
+        self.closing.set(false);
         self.revealed.set(false);
         self.native_reduced_motion.set(false);
         self.widget_ready.set(false);
@@ -4147,6 +4227,12 @@ impl CalendarOverlay {
                 {
                     return gtk::glib::ControlFlow::Break;
                 }
+                if state.closing.get() {
+                    // The outgoing TENET scene needs an opaque native buffer;
+                    // stop the opening fade rather than fighting JS reverse.
+                    state.window.set_opacity(1.0);
+                    return gtk::glib::ControlFlow::Break;
+                }
                 if state.native_reduced_motion.get() {
                     state.window.set_opacity(1.0);
                     return gtk::glib::ControlFlow::Break;
@@ -4214,7 +4300,9 @@ impl CalendarOverlay {
                 if self.requested.get() && self.generation.get() == generation =>
             {
                 self.native_reduced_motion.set(reduced);
-                if reduced && self.revealed.get() {
+                if reduced && self.closing.get() {
+                    self.hide();
+                } else if reduced && self.revealed.get() {
                     self.window.set_opacity(1.0);
                 }
             }
@@ -4251,7 +4339,14 @@ impl CalendarOverlay {
             Some(UiCommand::Close(generation))
                 if self.requested.get() && self.generation.get() == generation =>
             {
-                self.hide()
+                self.request_close();
+            }
+            Some(UiCommand::Closed(generation))
+                if self.requested.get()
+                    && self.closing.get()
+                    && self.generation.get() == generation =>
+            {
+                self.hide();
             }
             Some(UiCommand::CopyDate(generation, date))
                 if self.requested.get()
@@ -4358,7 +4453,7 @@ impl CalendarOverlay {
     /// Drain a small number of completed worker operations per GTK frame.
     /// Closing/reopening Launcher drops its worker receiver, so stale results
     /// cannot update a newer overlay generation.
-    fn poll_launcher(&self) {
+    fn poll_launcher(self: &Rc<Self>) {
         if !self.requested.get() || self.active.get() != Some(Surface::Launcher) {
             return;
         }
@@ -4378,7 +4473,7 @@ impl CalendarOverlay {
                 crate::launcher::LauncherMessage::Icons(payload) => {
                     self.dispatch_launcher("kira:launcher:icons", payload);
                 }
-                crate::launcher::LauncherMessage::Launched(Ok(())) => self.hide(),
+                crate::launcher::LauncherMessage::Launched(Ok(())) => self.request_close(),
                 crate::launcher::LauncherMessage::Launched(Err(error))
                 | crate::launcher::LauncherMessage::Error(error) => {
                     self.dispatch_launcher(
@@ -4495,6 +4590,7 @@ impl CalendarOverlay {
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
     Close(u32),
+    Closed(u32),
     HostReady,
     Mounted(u32, bool),
     MotionPreference(u32, bool),
@@ -4553,6 +4649,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     }
     if let Some(value) = message.strip_prefix("close:") {
         return parse_ui_generation(value).map(UiCommand::Close);
+    }
+    if let Some(value) = message.strip_prefix("closed:") {
+        return parse_ui_generation(value).map(UiCommand::Closed);
     }
     if let Some(value) = message.strip_prefix("copy-report:") {
         return parse_ui_generation(value).map(UiCommand::CopyReport);
@@ -4730,6 +4829,7 @@ fn build(
         launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
+        closing: Cell::new(false),
         revealed: Cell::new(false),
         native_reduced_motion: Cell::new(false),
         paint_pending: Cell::new(false),
@@ -4813,7 +4913,7 @@ pub fn dismiss(_application: &gtk::Application) -> bool {
             return false;
         };
         if let Some(view) = pool.active(Surface::Calendar) {
-            view.hide();
+            view.request_close();
             return true;
         }
         false
@@ -4826,7 +4926,7 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
             return false;
         };
         if let Some(view) = pool.active(Surface::System) {
-            view.hide();
+            view.request_close();
             return true;
         }
         false
@@ -4841,7 +4941,11 @@ pub fn toggle(application: &gtk::Application, html: &str) {
         return;
     };
     if existing {
-        view.hide();
+        if view.closing.get() {
+            view.cancel_close();
+        } else {
+            view.request_close();
+        }
     } else {
         view.show(Surface::Calendar);
     }
@@ -4855,6 +4959,7 @@ pub fn open_launcher(application: &gtk::Application, html: &str) {
         return;
     };
     if existing {
+        view.cancel_close();
         view.window.present();
     } else {
         view.launcher.borrow_mut().take();
@@ -4876,7 +4981,11 @@ pub fn toggle_system(
         return;
     };
     if existing {
-        view.hide();
+        if view.closing.get() {
+            view.cancel_close();
+        } else {
+            view.request_close();
+        }
         return;
     }
     *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
@@ -4901,6 +5010,11 @@ mod tests {
             "close:0",
             "close:-2",
             "close:4294967296",
+            "closed:",
+            "closed:0",
+            "closed:-1",
+            "closed:4294967296",
+            "closed:12:13",
             "tab:overview",
             "tab:0:processes",
             "copy-report",
@@ -4956,6 +5070,7 @@ mod tests {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
         assert_eq!(calendar_command("close:12"), Some(UiCommand::Close(12)));
+        assert_eq!(calendar_command("closed:12"), Some(UiCommand::Closed(12)));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
         assert_eq!(
             calendar_command("tab:12:processes"),
@@ -7977,6 +8092,18 @@ adapt to two/three columns to avoid overlaps; the one warm idle WebView does
 not reserve physical screen space. Repositioning a remaining left popup after
 its right peer closes briefly unmaps its GTK surface, not its Svelte DOM.
 
+### Shared TENET widget reverse dismissal · 2026-11
+
+Every Calendar, Launcher and System Monitor retains its recorded entrance
+timeline while visible. Explicit close, Escape, Top Bar toggle and successful
+GIO application launch request `kira:overlay:close`; WebKit reverses the
+**same** section stagger, geometric easing and INVERTED decorative flights,
+then sends `closed:<generation>`. Rust unmaps GTK and releases the lease
+**only after** that acknowledgement. Reopening during reverse restores the
+same timeline from its current frame. Reduced motion or an unpainted window
+closes instantly; a bounded 1100ms timeout protects against lost WebKit
+frames. No sensor values or application actions are played backwards.
+
 ### Shared TENET widget entrance · 2026-11
 
 Calendar, Launcher and System Monitor now open with one bounded GSAP
@@ -9525,6 +9652,14 @@ Calendar, Launcher и System Monitor используют общий жизне�
 
 При `prefers-reduced-motion: reduce` Svelte передаёт флаг на Rust через ограниченную команду `mounted:<generation>:<0|1>`, а при смене настройки `motion:<generation>:<0|1>`. Нативное окно становится непрозрачным сразу; GSAP оставляет подлинные стили. Если сигнал видимости не пришёл, содержимое восстанавливается через 550 мс без проигрывания; при throttled WebKit откат срабатывает через 1200 мс. Закрытие, размонтирование и смена настроек убивают tweens, слушатели и следы.
 
+### Reversible widget dismissal · shared TENET temporal memory (2026-11)
+
+Каждый popup Calendar, Launcher и System Monitor сохраняет **один и тот же** master GSAP timeline появления, включая stagger, `back.out`-пружину, отдельную монотонную прозрачность и четыре фиксированных INVERTED-следа у исходной точки контакта. По `kira:overlay:close` таймлайн воспроизводится **в обратном порядке** через `master.reverse()` из текущего времени, а не заменяется новым exit tween: сначала уходят последние собранные секции, затем предыдущие, а следы разлетаются ровно по исходным, уже сохранённым траекториям. Действительные значения часов/метрик и интерактивные состояния не откатываются.
+
+Нативный Rust хост при этом сохраняет WebView и GTK-окно видимыми и удерживает lease. После `onReverseComplete` WebKit отправляет строго проверенный `closed:<generation>`; только тогда Rust вызывает `hide()`, размонтирует Svelte и освобождает слот. Длительность обратного прогона определяется **сохранённой** временной шкалой (~0.5 с), а не произвольной задержкой Rust. При быстро повторённом нажатии того же открытия `kira:overlay:reopen` вызывает `master.play()` с текущего кадра без скачка и с отменой предыдущего запроса. Запоздавшие ACK отвергаются при несовпадении поколения или флага закрытия.
+
+На закрытии до первого paint или при `prefers-reduced-motion` скрытие мгновенное. При зависании WebKit срабатывает ограниченный native watchdog (1100 мс); после него никакой renderer не остаётся захваченным бесконечно. Действия закрытия через Escape, крестик, Top Bar, успешный запуск приложения и системную команду проходят через один двухфазный контракт. Само скрытие/отмена/destroy уничтожает timeline, созданные следы, таймеры и слушатели. Native opacity остаётся 1 во время обратной GSAP-сцены, а не обрезает её преждевременным fade.
+
 ### Continuous selection · System Monitor (2026-11)
 
 Навигация хранит **один** `data-kira-flow-indicator`, а не два активных нижних бордера. `tenetFlowIndicator` измеряет положение и ширину выбранной кнопки, движется через GSAP `back.out(1.18)`, при повторном выборе переназначает цель из текущего положения через `overwrite: 'auto'`. `ResizeObserver` пересчитывает реальные координаты, reduced motion и unmount останавливают tween. `aria-current` и состояние выбранной вкладки меняются сразу; новая панель получает короткое, не мешающее телеметрии появление.
@@ -9756,7 +9891,7 @@ A single active popup host forced Svelte to tear down one widget before the next
 - **Startup:** exactly **one** inert, self-contained, navigation-locked popup WebView is prewarmed. No Svelte widget mounts, metrics sampling, GIO catalog or ECharts instance is started until an explicit show request.
 - **Acquire:** if the requested surface is already leased, use its existing view (toggle Calendar/System, refocus Launcher). Otherwise reuse the most recently released idle host; if none exists, construct **one** additional GTK/WebKit host on demand.
 - **Bound:** maximum **four resident popup hosts** (independent of the Top Bar). Under exhaustion, return backpressure and **never steal an active view** or discard a playing animation.
-- **Release:** close only the requested widget. Notify its own WebKit page with a generation-scoped `kira:overlay:hide`, unmount Svelte effects and stop its owned native pulse/process subscriptions, then keep the bare WebKit host reusable.
+- **Release:** requesting close keeps the GTK surface visible and retains its lease during the exact reverse of its recorded TENET GSAP entrance timeline. WebKit acknowledges completion via allowlisted `closed:<generation>` IPC. **Only then** does the host send `kira:overlay:hide`, unmount Svelte, stop worker subscriptions, and return the bare WebKit host to the pool. A reduced-motion/no-paint close is immediate; a 1100ms native watchdog releases a stuck renderer. A repeated toggle during reverse cancels dismissal and resumes the same timeline rather than re-mounting.
 - **Polling:** a single GTK timer processes Launcher results and live System pulses for *all* currently leased hosts. It starts on the first lease and stops when no hosts remain active; a warm idle WebView has no per-window 30/250ms polling timers.
 - **Rotation:** a single hot spare is retained. Surplus idle hosts have a **45-second grace** for quick reopen/animation chains; a 5-second GTK timer destroys only expired *idle* surplus. Actual WebKit windows are closed only on retirement, never on ordinary widget hide.
 - **Per-window isolation:** each WebView has an independent `UserContentManager`, trusted IPC allowlist, Svelte lifecycle, generation counter, size-before-paint handshake, and native/GSAP visibility timeline. No stale per-host callback is allowed to affect a newer generation.
@@ -10212,6 +10347,12 @@ function scriptFor(steps, observationMs = 1150) {
   });
   return '<script>' +
     'window.webkit = {messageHandlers: {kiraCalendarUi: {postMessage(message) {' +
+      'if (String(message).startsWith("closed:")) {' +
+        'document.documentElement.dataset.smokeClosed=String(message);' +
+        'const root=document.querySelector("main[data-kira-ui-root]");' +
+        'document.documentElement.dataset.smokeReverseCompleted=!!root && root.dataset.tenetReveal==="reversed" && ' +
+          'root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
+      '}' +
       'if (String(message).startsWith("size:")) {' +
         'document.documentElement.setAttribute("data-smoke-size", String(message));' +
         'const count = Number(document.documentElement.getAttribute("data-smoke-resizes") || 0) + 1;' +
@@ -10226,7 +10367,19 @@ function scriptFor(steps, observationMs = 1150) {
     'window.addEventListener("load", () => {' +
     steps.map(({ delay, kind, generation }) =>
       'setTimeout(() => {' +
-        (kind === 'hide'
+        (kind === 'tenet-close-reopen'
+          ? 'window.dispatchEvent(new CustomEvent("kira:overlay:close", {detail:{generation:' + generation + '}}));' +
+            'const root=document.querySelector("main[data-kira-ui-root]");' +
+            'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing";' +
+            'window.dispatchEvent(new CustomEvent("kira:overlay:reopen", {detail:{generation:' + generation + '}}));'
+          : kind === 'tenet-close'
+          ? 'window.dispatchEvent(new CustomEvent("kira:overlay:close", {detail:{generation:' + generation + '}}));' +
+            'const root=document.querySelector("main[data-kira-ui-root]");' +
+            'document.documentElement.dataset.smokeReverseInFlight=!!root && root.dataset.tenetReveal==="reversing" && ' +
+              'root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;'
+          : kind === 'tenet-reopen'
+            ? 'window.dispatchEvent(new CustomEvent("kira:overlay:reopen", {detail:{generation:' + generation + '}}));'
+          : kind === 'hide'
           ? 'window.dispatchEvent(new CustomEvent("kira:overlay:hide", {detail: {generation: ' +
             generation + '}}));'
           : kind === 'catalog'
@@ -10294,7 +10447,9 @@ function scriptFor(steps, observationMs = 1150) {
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
-      'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === 0);' +
+      'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && ' +
+        'roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === (matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 4) && ' +
+        'Array.from(roots[0].querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
@@ -10330,7 +10485,10 @@ function scriptFor(steps, observationMs = 1150) {
       'const calGrid = document.querySelector("[aria-label=\\\"Calendar dates\\\"]");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-events", calGrid?.dataset.tenetScenes || "0");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-contact", !!calGrid?.dataset.tenetContact);' +
-      'document.documentElement.setAttribute("data-smoke-tenet-no-fragments", document.querySelectorAll("[data-tenet-fragment]").length === 0);' +
+      // Four recorded fragments remain DOM-owned but invisible until exit.
+      // Other calendar/clock interaction fragments must still be cleaned up.
+      'document.documentElement.setAttribute("data-smoke-tenet-no-fragments", ' +
+        'Array.from(document.querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
       'document.documentElement.setAttribute("data-smoke-tenet-reveal", document.querySelector("main[data-kira-ui-root]")?.dataset.tenetReveal || "missing");' +
       'document.documentElement.setAttribute("data-smoke-tenet-clock-events", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetEvents || "0");' +
       'document.documentElement.setAttribute("data-smoke-tenet-clock-settled", document.querySelector("[data-calendar-clock-play]")?.dataset.tenetPlayback === "settled");' +
@@ -10359,7 +10517,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : heightMode.startsWith('reverse') ? 1750 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -10369,7 +10527,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
     ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2800 : heightMode === 'tenet' ? 2800 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2800 : heightMode === 'tenet' || heightMode.startsWith('reverse') ? 2800 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -10449,6 +10607,21 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
+  }
+  if (heightMode === 'reverse' &&
+      (!(output.includes('data-smoke-reverse-in-flight="true"') ||
+          output.includes('data-smoke-reverse-completed="true"')) ||
+       !output.includes('data-smoke-closed="closed:1"') ||
+       !output.includes('data-smoke-reverse-completed="true"'))) {
+    const stages = output.match(/data-smoke-(?:reverse|closed|tenet-reveal|tenet-settled)[a-z-]*="[^"]*"/g) ?? [];
+    throw new Error(name + ': reverse must finish on the same retained timeline before host ACK: ' + stages.join(', '));
+  }
+  if (heightMode === 'reverse-reopen' &&
+      (!output.includes('data-smoke-reverse-in-flight="true"') ||
+       output.includes('data-smoke-closed="closed:1"') ||
+       !output.includes('data-smoke-tenet-settled="true"'))) {
+    const stages = output.match(/data-smoke-(?:reverse|closed|tenet-reveal|tenet-settled)[a-z-]*="[^"]*"/g) ?? [];
+    throw new Error(name + ': rapid reopen must reverse the in-flight exit without releasing the lease: ' + stages.join(', '));
   }
   if (heightMode === 'reduced' &&
       (!output.includes('data-smoke-tenet-started="false"') ||
@@ -10538,6 +10711,23 @@ try {
     { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
+  // Native close signal triggers the original GSAP master in reverse,
+  // then emits a generation-bound ACK; the host keeps the DOM alive until
+  // that ACK. Exercise all three real bundled Svelte widget roots.
+  for (const kind of ['calendar', 'system', 'launcher']) {
+    const title = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
+    await smoke(kind + '-tenet-reverse-dismissal', [
+      { delay: 25, kind, generation: 1 },
+      { delay: 800, kind: 'tenet-close', generation: 1 },
+    ], title, 'reverse');
+  }
+  await smoke('calendar-tenet-reopen-in-same-frame', [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    // Virtual Chrome can advance >500ms of GSAP in one 30ms timer step.
+    // A same-frame cancellation guarantees we probe the actual race rather
+    // than a close that has already legitimately completed.
+    { delay: 800, kind: 'tenet-close-reopen', generation: 1 },
+  ], 'Kira Calendar', 'reverse-reopen');
   await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
   await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
   await smoke('launcher-selection-flow', [
@@ -13133,7 +13323,8 @@ describe('TENET shared widget appearance', () => {
 
   it('runs the recorded inverse and forward on one GPU-friendly master', () => {
     expect(motion).toContain("slice(0, options.sections ?? 3)");
-    expect(motion).toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
+    expect(motion).toContain("master = gsap.timeline({")
+    expect(motion).toContain('onReverseComplete: acknowledgeClose');
     expect(motion).toContain("master.to(content, {");
     expect(motion).toContain("master.fromTo(traces,");
     expect(motion).toContain("duration: 0.44");
@@ -13148,7 +13339,12 @@ describe('TENET shared widget appearance', () => {
   });
 
   it('cleans all transforms, listeners, memory and fallback on interrupt', () => {
-    expect(motion).toContain("window.setTimeout(settle, 1200)");
+    expect(motion).toContain("restore = window.setTimeout(() => {")
+    expect(motion).toContain("master.progress(1).pause()")
+    expect(motion).toContain("master.progress(0).pause()")
+    expect(motion).toContain("}, 850)")
+    expect(motion).toContain("if (!closing || closedAcknowledged) return")
+    expect(motion).toContain("}, 1200)");
     expect(motion).toContain("window.clearTimeout(awaitVisible)");
     expect(motion).toContain("master?.kill()");
     expect(motion).toContain("trace.remove()");
@@ -13157,6 +13353,20 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("window.removeEventListener('kira:overlay:visible', onVisible)");
     expect(motion).toContain("preference.removeEventListener");
     expect(motion).toContain("generation === Number(node.dataset.kiraGeneration)");
+  });
+
+  it('reverses the SAME entrance history before GTK releases the popup', () => {
+    expect(motion).toContain("window.addEventListener('kira:overlay:close', onClose)");
+    expect(motion).toContain("window.addEventListener('kira:overlay:reopen', onReopen)");
+    expect(motion).toContain("window.removeEventListener('kira:overlay:close', onClose)");
+    expect(motion).toContain("master.reverse()");
+    expect(motion).toContain("master.play()");
+    expect(motion).toContain("master.progress(1).pause()");
+    expect(motion).toContain("notifyOverlayClosed(Number(node.dataset.kiraGeneration))");
+    expect(motion).toContain("onReverseComplete: acknowledgeClose");
+    expect(motion).toContain("node.dataset.tenetReveal = 'reversing'");
+    expect(motion).toContain("if (preference.matches || !master || master.progress() <= 0)");
+    expect(motion).not.toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
   });
 
   it('uses a single shared tab indicator with interruptible GSAP travel', () => {
@@ -13253,6 +13463,7 @@ FILE	frontend/src/lib/motion.ts
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { tick } from 'svelte';
+import { notifyOverlayClosed } from './sdk/core';
 
 gsap.registerPlugin(Flip);
 import { tenetFragmentsFor } from './calendar-tenet-model';
@@ -13277,6 +13488,19 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   let restore: number | null = null;
   let awaitVisible: number | null = null;
   let started = false;
+  let closing = false;
+  let closedAcknowledged = false;
+
+  // Closing is not unmount: keep the SAME physical history, including
+  // stagger, bounce and inverted traces, until Rust acknowledges the exit.
+  function acknowledgeClose() {
+    if (!closing || closedAcknowledged) return;
+    closedAcknowledged = true;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
+    node.dataset.tenetReveal = 'reversed';
+    notifyOverlayClosed(Number(node.dataset.kiraGeneration));
+  }
 
   function settle() {
     if (restore !== null) window.clearTimeout(restore);
@@ -13285,6 +13509,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     awaitVisible = null;
     master?.kill();
     master = null;
+    closing = false;
+    closedAcknowledged = false;
     for (const trace of traces) trace.remove();
     traces = [];
     gsap.killTweensOf(content);
@@ -13332,7 +13558,11 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       return trace;
     });
 
-    master = gsap.timeline({ paused: true, onComplete: settle });
+    master = gsap.timeline({
+      paused: true,
+      onComplete: () => { node.dataset.tenetReveal = 'settled'; },
+      onReverseComplete: acknowledgeClose,
+    });
     master.to(content, {
       y: 0,
       scale: 1,
@@ -13361,9 +13591,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       }, 0);
     node.dataset.tenetReveal = 'started';
     master.play(0);
-    // WebKitGTK may throttle compositor frames while Niri maps a window.
-    // Never leave foreground controls transformed after a stalled timer.
-    restore = window.setTimeout(settle, 1200);
+    // WebKitGTK can throttle frames. Settle the exact ending geometry but
+    // preserve the timeline and fragments as temporal memory for closing.
+    restore = window.setTimeout(() => {
+      restore = null;
+      if (!closing && master) {
+        master.progress(1).pause();
+        node.dataset.tenetReveal = 'settled';
+      }
+    }, 1200);
   }
 
   function isCurrentGeneration(event: Event): boolean {
@@ -13373,6 +13609,56 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   function onVisible(event: Event) {
     if (isCurrentGeneration(event)) begin();
   }
+  function onClose(event: Event) {
+    if (!isCurrentGeneration(event) || closing) return;
+    closing = true;
+    closedAcknowledged = false;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
+    if (awaitVisible !== null) window.clearTimeout(awaitVisible);
+    awaitVisible = null;
+    // Closing before the first painted frame, without motion, or after a
+    // failed mount must not wait for a timeline that never ran.
+    if (preference.matches || !master || master.progress() <= 0) {
+      acknowledgeClose();
+      return;
+    }
+    node.dataset.tenetReveal = 'reversing';
+    // A GSAP reverse walks EVERY recorded intermediate state and the
+    // saved INVERTED fragment tracks in precisely inverse temporal order.
+    // No new random seed, mirrored ease or replacement exit tween.
+    master.reverse();
+    // Under a throttled WebKitGTK frame clock, rAF may stop before the
+    // reverse-complete callback. Reconcile at the exact first keyframe
+    // before native's longer watchdog can forcibly reclaim the window.
+    restore = window.setTimeout(() => {
+      restore = null;
+      if (closing && master) {
+        master.progress(0).pause();
+        acknowledgeClose();
+      }
+    }, 850);
+  }
+  function onReopen(event: Event) {
+    if (!isCurrentGeneration(event) || !closing) return;
+    closing = false;
+    closedAcknowledged = false;
+    if (restore !== null) window.clearTimeout(restore);
+    restore = null;
+    if (master) {
+      node.dataset.tenetReveal = 'started';
+      master.play(); // Retarget from the live position, without a snap.
+      // A resumed view can be throttled too. Restore exact visible geometry
+      // if WebKit stops producing GSAP frames after an interrupted reverse.
+      restore = window.setTimeout(() => {
+        restore = null;
+        if (!closing && master) {
+          master.progress(1).pause();
+          node.dataset.tenetReveal = 'settled';
+        }
+      }, 750);
+    }
+  }
   function onHide(event: Event) {
     if (isCurrentGeneration(event)) {
       started = true;
@@ -13381,6 +13667,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   }
   function onPreference() {
     if (preference.matches) {
+      if (closing) acknowledgeClose();
       started = true;
       settle();
     }
@@ -13410,11 +13697,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   }
 
   window.addEventListener('kira:overlay:visible', onVisible);
+  window.addEventListener('kira:overlay:close', onClose);
+  window.addEventListener('kira:overlay:reopen', onReopen);
   window.addEventListener('kira:overlay:hide', onHide);
   preference.addEventListener('change', onPreference);
   return {
     destroy() {
       window.removeEventListener('kira:overlay:visible', onVisible);
+      window.removeEventListener('kira:overlay:close', onClose);
+      window.removeEventListener('kira:overlay:reopen', onReopen);
       window.removeEventListener('kira:overlay:hide', onHide);
       preference.removeEventListener('change', onPreference);
       settle();
@@ -13790,7 +14081,7 @@ export function observeOverlaySize(root: HTMLElement, generation: number): () =>
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -13824,6 +14115,18 @@ describe('Core SDK JSON-RPC bridge', () => {
       expect(notifyOverlayHeight(3, height)).toBe(false);
     }
     expect(postMessage.mock.calls.map(call => call[0])).toEqual(['size:3:420']);
+  });
+
+  it('acknowledges reverse completion only for a bounded widget generation', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(notifyOverlayClosed(11)).toBe(true);
+    for (const invalid of [0, -1, 1.5, Number.NaN, 4294967296]) {
+      expect(notifyOverlayClosed(invalid)).toBe(false);
+    }
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual(['closed:11']);
   });
 
   it('allows only generation-scoped indexed Gio launches, no path or shell command', () => {
@@ -14543,6 +14846,13 @@ export function notifyOverlayMotion(generation: number, reduced: boolean): void 
 
 function validOverlayGeneration(generation: number): boolean {
   return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff;
+}
+
+/** A TENET reverse exit has reached its recorded start. Only the owner
+ * generation may release the native popup lease after this acknowledgement.
+ */
+export function notifyOverlayClosed(generation: number): boolean {
+  return validOverlayGeneration(generation) && sendCalendarUi('closed:' + generation);
 }
 
 export function closeCalendarOverlay(generation: number): void {
@@ -17498,7 +17808,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('fn resolve_icon_path(', RUST)
         self.assertIn('fn file_data_url(path: &Path)', RUST)
         self.assertIn('File::open(path)', RUST)
-        self.assertIn('fn poll_launcher(&self)', OVERLAY)
+        self.assertIn('fn poll_launcher(self: &Rc<Self>)', OVERLAY)
         self.assertIn('view.poll_launcher();', OVERLAY)
         self.assertIn('crate::launcher::LauncherMessage::Launched(Ok(()))', OVERLAY)
         self.assertNotIn('Catalog::discover());', OVERLAY)
@@ -17919,6 +18229,76 @@ class VisualQATests(unittest.TestCase):
                 self.assertEqual(json.loads(manifests[0].read_text())["status"], "failed")
             finally:
                 server.close()
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_tenet_close.py
+"""TENET reverse dismissal contract for every pooled WebView surface."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+RUST = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+MOTION = (ROOT / "frontend/src/lib/motion.ts").read_text()
+ENTRY = (ROOT / "frontend/src/main.ts").read_text()
+
+
+class TenetReverseDismissalTests(unittest.TestCase):
+    def test_native_waits_for_reverse_before_unmapping_and_releasing_lease(self):
+        request = RUST.split("fn request_close(self: &Rc<Self>)", 1)[1].split(
+            "fn cancel_close", 1)[0]
+        self.assertIn("self.closing.replace(true)", request)
+        self.assertIn("kira:overlay:close", request)
+        self.assertIn("self.window.set_opacity(1.0)", request)
+        self.assertIn("Duration::from_millis(1100)", request)
+        self.assertNotIn("self.window.set_visible(false)", request)
+        self.assertNotIn("pool.release(self.id)", request)
+        self.assertIn("Some(UiCommand::Closed(generation))", RUST)
+        self.assertIn("&& self.closing.get()", RUST)
+        self.assertIn("&& self.generation.get() == generation", RUST)
+        self.assertIn("self.window.set_visible(false)", RUST)
+        self.assertIn("pool.release(self.id)", RUST)
+
+    def test_all_public_close_paths_use_the_two_phase_protocol(self):
+        self.assertIn("Some(UiCommand::Close(generation))", RUST)
+        self.assertIn("self.request_close();", RUST)
+        self.assertIn("view.request_close();", RUST)
+        self.assertIn("LauncherMessage::Launched(Ok(())) => self.request_close()", RUST)
+        self.assertNotIn("connect_is_active_notify", RUST)
+        self.assertIn("fn cancel_close(&self)", RUST)
+        self.assertIn("kira:overlay:reopen", RUST)
+        self.assertIn("view.cancel_close()", RUST)
+
+    def test_exact_same_recorded_tenet_timeline_runs_backwards(self):
+        self.assertIn("master.reverse()", MOTION)
+        self.assertIn("onReverseComplete: acknowledgeClose", MOTION)
+        self.assertIn("master.play()", MOTION)
+        self.assertIn("master.progress(1).pause()", MOTION)
+        self.assertIn("master.fromTo(traces,", MOTION)
+        self.assertIn("master.to(content, {", MOTION)
+        self.assertIn("window.addEventListener('kira:overlay:visible'", MOTION)
+        self.assertIn("window.addEventListener('kira:overlay:close'", MOTION)
+        self.assertIn("window.addEventListener('kira:overlay:hide'", MOTION)
+        self.assertIn("notifyOverlayClosed(Number(node.dataset.kiraGeneration))", MOTION)
+        self.assertIn("sendCalendarUi('closed:' + generation)", SDK)
+        self.assertIn("parse_ui_generation(value).map(UiCommand::Closed)", RUST)
+        self.assertIn("node.dataset.kiraGeneration = String(generation)", "") if False else None
+        self.assertIn("root.dataset.kiraGeneration = String(generation)", ENTRY)
+
+    def test_reduced_motion_and_renderer_stall_have_finite_exit(self):
+        self.assertIn("self.native_reduced_motion.get()", RUST)
+        self.assertIn("if (preference.matches || !master || master.progress() <= 0)", MOTION)
+        self.assertIn("if (closing) acknowledgeClose()", MOTION)
+        self.assertIn("if reduced && self.closing.get()", RUST)
+        self.assertIn("state.generation.get() == generation", RUST)
+        self.assertIn("view.hide()", RUST)
+        self.assertIn("window.removeEventListener('kira:overlay:close'", MOTION)
+        self.assertIn("window.clearTimeout(restore)", MOTION)
+        self.assertIn("master?.kill()", MOTION)
+        self.assertIn("trace.remove()", MOTION)
 
 
 if __name__ == "__main__":
