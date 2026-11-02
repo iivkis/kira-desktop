@@ -71,7 +71,7 @@ describe('TENET shared widget appearance', () => {
     expect(system).not.toContain("'border-kira-accent text-kira-accent'");
     expect(motion).toContain('gsap.to(indicator, {');
     expect(motion).toContain("overwrite: 'auto', force3D: true");
-    expect(motion).toContain("new ResizeObserver(() => relocate(active, false))");
+    expect(motion).toContain("new ResizeObserver(() => relocate(active, true))");
     expect(motion).toContain('gsap.killTweensOf(indicator)');
     expect(motion).toContain("recovery = window.setTimeout(() => {");
     expect(motion).toContain("}, 650)");
