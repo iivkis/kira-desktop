@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { tenetFlowIndicator, tenetReflow, tenetScrollIntoView, tenetWidgetReveal } from '../motion';
+  import { tenetFlowIndicator, tenetReflow, tenetReflowScope, tenetScrollIntoView, tenetScrollScope, tenetWidgetReveal } from '../motion';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
@@ -174,6 +174,7 @@
     </div>
     <div id="kira-launcher-results" bind:this={results}
       use:tenetFlowIndicator={{ active: displayed[activeIndex] ? String(displayed[activeIndex].id) : '', axis: 'both' }}
+      use:tenetReflowScope use:tenetScrollScope
       class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"
       role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
       <span data-kira-flow-indicator aria-hidden="true"
