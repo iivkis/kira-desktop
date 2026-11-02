@@ -21,22 +21,40 @@ describe('TENET shared widget appearance', () => {
     }
   });
 
-  it('requires a shared master, cancellable streams, reduced motion and DOM cleanup', () => {
-    expect(motion).toContain('gsap.timeline({ paused: true })');
-    expect(motion).toContain('dualTime(forward?.progress() ?? 1).inverted');
-    expect(motion).toContain('preference.addEventListener');
-    expect(motion).toContain("preference.removeEventListener");
-    expect(motion).toContain('forward?.kill()');
-    expect(motion).toContain('inverted?.kill()');
-    expect(motion).toContain('trace.remove()');
-    expect(motion).toContain('window.setTimeout(settle, 1550)');
+  it('prepares compositor layers before native reveal, no visible opacity snap', () => {
+    expect(motion).toContain("gsap.set(content, {");
+    expect(motion).toContain("y: 14,");
+    expect(motion).toContain("opacity: 0.82,");
+    expect(motion).toContain("willChange: 'transform, opacity'");
+    expect(motion).toContain("node.dataset.tenetReveal = 'ready'");
+    expect(motion).toContain("window.setTimeout(() => {");
+    expect(motion).toContain("}, 550)");
+  });
+
+  it('runs the recorded inverse and forward on one GPU-friendly master', () => {
+    expect(motion).toContain("slice(0, 3)");
+    expect(motion).toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
+    expect(motion).toContain("master.to(content, {");
+    expect(motion).toContain("master.fromTo(traces,");
+    expect(motion).toContain("duration: 0.72");
+    expect(motion).toContain("ease: 'sine.inOut'");
+    expect(motion).toContain("ease: 'power3.in'");
+    expect(motion).toContain("from: 'end'");
+    expect(motion).toContain("force3D: true");
+    expect(motion).not.toContain("onUpdate:");
+    expect(motion).not.toContain("inverted?.progress(");
+  });
+
+  it('cleans all transforms, listeners, memory and fallback on interrupt', () => {
+    expect(motion).toContain("window.setTimeout(settle, 1200)");
+    expect(motion).toContain("window.clearTimeout(awaitVisible)");
+    expect(motion).toContain("master?.kill()");
+    expect(motion).toContain("trace.remove()");
+    expect(motion).toContain("clearProps: 'transform,opacity,willChange'");
     expect(motion).toContain("window.addEventListener('kira:overlay:visible', onVisible)");
     expect(motion).toContain("window.removeEventListener('kira:overlay:visible', onVisible)");
-    expect(motion).toContain('generation === Number(node.dataset.kiraGeneration)');
-    expect(motion).toContain("node.dataset.tenetReveal = preference.matches ? 'settled' : 'ready'");
-    expect(motion).toContain("duration: 0.84, stagger, ease: 'power3.out'");
-    expect(motion).toContain("'width:12px', 'height:1px'");
-    expect(motion).toContain("node.dataset.tenetReveal = 'settled'");
+    expect(motion).toContain("preference.removeEventListener");
+    expect(motion).toContain("generation === Number(node.dataset.kiraGeneration)");
   });
 
   it('uses physical widget contacts without duplicating legacy stagger animations', () => {

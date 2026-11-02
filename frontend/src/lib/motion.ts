@@ -5,7 +5,7 @@
  * replay saved paths to the same physical editorial contact point.
  */
 import { gsap } from 'gsap';
-import { dualTime, tenetFragmentsFor } from './calendar-tenet-model';
+import { tenetFragmentsFor } from './calendar-tenet-model';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -17,44 +17,41 @@ export interface TenetEntrance {
 
 export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let forward: gsap.core.Timeline | null = null;
-  let inverted: gsap.core.Timeline | null = null;
+  // Cap moving surfaces: the system monitor's many nested charts/rows
+  // must not compete for compositor layers and trigger choppy frames.
+  const content = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]')).slice(0, 3);
+  let master: gsap.core.Timeline | null = null;
   let traces: HTMLElement[] = [];
   let restore: number | null = null;
+  let awaitVisible: number | null = null;
   let started = false;
 
-  const targets = () => Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
-
   function settle() {
-    if (restore !== null) {
-      window.clearTimeout(restore);
-      restore = null;
-    }
-    forward?.kill();
-    inverted?.kill();
-    forward = null;
-    inverted = null;
+    if (restore !== null) window.clearTimeout(restore);
+    if (awaitVisible !== null) window.clearTimeout(awaitVisible);
+    restore = null;
+    awaitVisible = null;
+    master?.kill();
+    master = null;
     for (const trace of traces) trace.remove();
     traces = [];
-    const content = targets();
     gsap.killTweensOf(content);
-    if (content.length) gsap.set(content, { clearProps: 'transform,opacity,visibility' });
+    if (content.length) {
+      gsap.set(content, { clearProps: 'transform,opacity,willChange' });
+    }
     node.dataset.tenetReveal = 'settled';
   }
 
   function begin() {
-    if (started || preference.matches) {
-      node.dataset.tenetReveal = 'settled';
-      return;
-    }
+    if (started || preference.matches) return;
     started = true;
+    if (awaitVisible !== null) window.clearTimeout(awaitVisible);
+    awaitVisible = null;
     const contact = node.querySelector<HTMLElement>(options.contact);
-    const content = targets();
     if (!contact || !content.length) {
       settle();
       return;
     }
-
     const direction = options.direction ?? 1;
     const rootRect = node.getBoundingClientRect();
     const contactRect = contact.getBoundingClientRect();
@@ -62,14 +59,16 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       x: contactRect.left - rootRect.left + contactRect.width / 2,
       y: contactRect.top - rootRect.top + contactRect.height / 2,
     };
-    // One immutable trajectory memory for the entire entrance event.
+
+    // Memory is fixed for this one event. Reversing a power3.out path
+    // is power3.in on the SAME coordinates, with the order reversed.
+    // One master GSAP timeline lets WebKit render both tracks together
+    // without an imperative second seek on every animation frame.
     const flights = tenetFragmentsFor(direction);
     traces = flights.map((_, index) => {
       const trace = node.ownerDocument.createElement('span');
       trace.dataset.tenetFragment = 'inverted';
       trace.setAttribute('aria-hidden', 'true');
-      // Hairline fragments support the composition; they are no longer
-      // four conspicuous orange/white squares dominating the animation.
       trace.style.cssText = [
         'position:absolute', 'pointer-events:none', 'z-index:2',
         'width:12px', 'height:1px', 'opacity:0',
@@ -81,62 +80,80 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       return trace;
     });
 
-    inverted = gsap.timeline({ paused: true });
-    inverted.to(traces, {
-      x: (i: number) => flights[i].x,
-      y: (i: number) => flights[i].y,
-      rotation: (i: number) => flights[i].rotation,
-      opacity: 0.32,
-      duration: 0.88,
-      stagger: 0.025,
-      ease: 'power3.out',
+    master = gsap.timeline({ paused: true, onComplete: settle });
+    master.to(content, {
+      y: 0,
+      opacity: 1,
+      duration: 0.72,
+      stagger: 0.045,
+      ease: 'sine.inOut',
+      force3D: true,
+      overwrite: 'auto',
     }, 0);
-    inverted.progress(1);
-
-    const stagger = Math.min(0.11, 0.25 / Math.max(1, content.length - 1));
-    forward = gsap.timeline({
-      paused: true,
-      onUpdate: () => {
-        // The inverse replays the ORIGINAL easing and rotations,
-        // synchronized with the progression of the visible content.
-        inverted?.progress(dualTime(forward?.progress() ?? 1).inverted);
-      },
-      onComplete: settle,
-    });
-    forward.fromTo(content,
-      { opacity: 0.18, x: 16 * direction, y: 28 },
+    master.fromTo(traces,
       {
-        opacity: 1, x: 0, y: 0,
-        duration: 0.84, stagger, ease: 'power3.out',
+        x: (i: number) => flights[i].x,
+        y: (i: number) => flights[i].y,
+        rotation: (i: number) => flights[i].rotation,
+        opacity: 0.13,
+      },
+      {
+        x: 0, y: 0, rotation: 0, opacity: 0,
+        duration: 0.72,
+        stagger: { each: 0.015, from: 'end' },
+        ease: 'power3.in',
+        force3D: true,
+        immediateRender: true,
       }, 0);
-
     node.dataset.tenetReveal = 'started';
-    forward.play(0);
-    // Recovery for throttled WebKit frames; never leave content faded out.
-    restore = window.setTimeout(settle, 1550);
+    master.play(0);
+    // WebKitGTK may throttle compositor frames while Niri maps a window.
+    // Never leave foreground controls transformed after a stalled timer.
+    restore = window.setTimeout(settle, 1200);
   }
 
   function isCurrentGeneration(event: Event): boolean {
     const generation = (event as CustomEvent<{ generation?: unknown }>).detail?.generation;
     return Number.isSafeInteger(generation) && generation === Number(node.dataset.kiraGeneration);
   }
-
   function onVisible(event: Event) {
-    if (!isCurrentGeneration(event) || started || preference.matches) return;
-    begin();
+    if (isCurrentGeneration(event)) begin();
   }
-
   function onHide(event: Event) {
-    if (isCurrentGeneration(event)) settle();
+    if (isCurrentGeneration(event)) {
+      started = true;
+      settle();
+    }
   }
-
   function onPreference() {
-    if (preference.matches) settle();
+    if (preference.matches) {
+      started = true;
+      settle();
+    }
   }
 
-  // Never hide controls before the window is mapped. On legacy hosts
-  // without the visibility event, content remains fully usable and static.
-  node.dataset.tenetReveal = preference.matches ? 'settled' : 'ready';
+  // Prepare the visible geometry while the native window is still
+  // transparent. The GTK visible handshake starts the tween from these
+  // exact values, eliminating the old full-opacity -> 0.18 snap.
+  // No layout properties change, and the compositor can cache 3 layers.
+  if (preference.matches || !content.length) {
+    node.dataset.tenetReveal = 'settled';
+  } else {
+    gsap.set(content, {
+      y: 14,
+      opacity: 0.82,
+      force3D: true,
+      willChange: 'transform, opacity',
+    });
+    node.dataset.tenetReveal = 'ready';
+    // Older hosts never send the event. Restore the true DOM promptly;
+    // never strand an inactive panel in a dimmed/transformed state.
+    awaitVisible = window.setTimeout(() => {
+      started = true;
+      settle();
+    }, 550);
+  }
+
   window.addEventListener('kira:overlay:visible', onVisible);
   window.addEventListener('kira:overlay:hide', onHide);
   preference.addEventListener('change', onPreference);

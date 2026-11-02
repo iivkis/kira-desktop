@@ -175,3 +175,28 @@ synchronizes the two chronologies. Native hide, unmount, preference
 changes and a 1550ms WebKit throttle fallback restore all styles and
 remove all traces. A host lacking the event shows the widget normally
 without motion, instead of animating invisibly.
+
+### Smooth native entrance · compositor continuity (2026-11)
+
+On real Niri/WebKitGTK the previous opening could still stutter despite
+the native-visible handshake. Cause: each widget was **re-initialized
+from a fully painted state** after the popup became visible, and a second
+GSAP timeline was forcibly sought on every frame. In System Monitor as
+many as eight heavy telemetry sections moved independently.
+
+The shared entrance now stages only **three** foreground sections at
+14px vertical translation and 0.82 opacity during the native invisible
+phase, ready to be composited with `force3D` / `will-change`. One
+synchronized GSAP timeline animates the actual content to its resting
+position over 0.72s, with only 45ms between sections and smooth
+`sine.inOut` velocity. Saved inverted fragment trajectories use the
+mathematically reversed original `power3.out` ease (`power3.in`) and
+reverse stagger order *within the same timeline*: no per-frame seeking,
+no different random paths and no extra animation clock. Heavy chart
+areas beyond the first groups stay at their real coordinates.
+
+Reduced-motion users see no staging. A stale/missing GTK visibility
+handshake restores the exact content after 550ms and skips animation;
+native hide, preference changes and unmount cancel the scene. A 1200ms
+recovery covers WebKit frame throttling. Animations only change opacity
+and compositor transforms, not sizes or layout metrics.
