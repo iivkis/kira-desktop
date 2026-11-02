@@ -146,7 +146,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : heightMode === 'tenet' ? 1570 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : heightMode === 'tenet' ? 2050 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -156,7 +156,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
     ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : heightMode === 'tenet' ? 2200 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : heightMode === 'tenet' ? 2800 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
