@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5058
+index_bytes=5326
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,110 +15,115 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	b203d0ad36e188bdbaf3850159903ebfe765267b
-F	.cargo/config.toml	98	131	3
-F	.github/workflows/ci.yml	4355	136	112
-F	.github/workflows/frontend-nix.yml	1398	250	43
-F	.github/workflows/nix.yml	1258	295	38
-F	.github/workflows/overlay-smoke.yml	1064	335	40
-F	.github/workflows/publish-repospool.yml	3048	377	83
-F	.gitignore	178	462	11
-F	.repospoolignore	1028	475	47
-F	AGENTS.md	5416	524	89
-F	Cargo.toml	494	615	22
-F	README.md	11269	639	248
-F	Taskfile.yml	5957	889	185
-F	config/kira.kdl.example	358	1076	8
-F	crates/kira-core/Cargo.toml	207	1086	10
-F	crates/kira-core/src/config.rs	15217	1098	399
-F	crates/kira-core/src/main.rs	32080	1499	839
-F	crates/kira-core/src/niri.rs	16767	2340	453
-F	crates/kira-ipc/Cargo.toml	170	2795	9
-F	crates/kira-ipc/src/client.rs	17794	2806	458
-F	crates/kira-ipc/src/lib.rs	10460	3266	336
-F	crates/kira-shell/Cargo.toml	297	3604	12
-F	crates/kira-shell/src/calendar.rs	61392	3618	1647
-F	crates/kira-shell/src/launcher.rs	14114	5267	392
-F	crates/kira-shell/src/main.rs	19321	5661	449
-F	crates/kira-shell/src/native_ui.rs	4536	6112	104
-F	crates/kira-shell/src/popup_layout.rs	1639	6218	49
-F	crates/kira-shell/src/process_monitor.rs	9336	6269	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6557	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6675	559
-F	crates/kira-shell/src/system_panel.rs	11356	7236	318
-F	crates/kira-shell/src/webview_pool.rs	7991	7556	237
-F	docs/CONFIG.md	5801	7795	125
-F	docs/DESIGN_SYSTEM.md	32126	7922	519
-F	docs/DEVELOPMENT.md	29347	8443	577
-F	docs/QA_VISUAL.md	12284	9022	149
-F	docs/SPECIFICATION.md	28960	9173	421
-F	docs/TENET_MOTION.md	40649	9596	204
-F	docs/UI_ARCHITECTURE.md	6737	9802	106
-F	docs/VISUAL_REVIEW.md	9754	9910	84
-F	docs/WEBVIEW_POOL.md	4163	9996	26
-F	flake.nix	3181	10024	91
-F	frontend/index.html	2737	10117	66
-F	frontend/package.json	720	10185	27
-F	frontend/scripts/inline-assets.mjs	4457	10214	103
-F	frontend/scripts/inline-assets.test.mjs	4645	10319	106
-F	frontend/scripts/smoke-overlays.mjs	37447	10427	523
-F	frontend/src/App.svelte	8589	10952	207
-F	frontend/src/lib/bootstrap.test.ts	3408	11161	84
-F	frontend/src/lib/bootstrap.ts	2613	11247	70
-F	frontend/src/lib/calendar-model.test.ts	3571	11319	65
-F	frontend/src/lib/calendar-model.ts	4648	11386	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11493	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11555	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11586	287
-F	frontend/src/lib/clock-flight.test.ts	2404	11875	50
-F	frontend/src/lib/clock-flight.ts	1977	11927	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	11979	246
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	12227	256
-F	frontend/src/lib/components/SystemCharts.svelte	10517	12485	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	12713	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	12761	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	13102	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13142	119
-F	frontend/src/lib/launcher-model.test.ts	2266	13263	46
-F	frontend/src/lib/launcher-model.ts	1403	13311	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	13342	89
-F	frontend/src/lib/lazy-widget.ts	1984	13433	63
-F	frontend/src/lib/motion-contract.test.ts	11242	13498	198
-F	frontend/src/lib/motion.ts	24039	13698	657
-F	frontend/src/lib/overlay-size.ts	1090	14357	29
-F	frontend/src/lib/sdk/core.test.ts	23538	14388	471
-F	frontend/src/lib/sdk/core.ts	19390	14861	498
-F	frontend/src/lib/system-charts.test.ts	6312	15361	141
-F	frontend/src/lib/system-charts.ts	5514	15504	149
-F	frontend/src/lib/system-health.test.ts	2385	15655	42
-F	frontend/src/lib/system-health.ts	2831	15699	60
-F	frontend/src/lib/system-model.test.ts	4455	15761	84
-F	frontend/src/lib/system-model.ts	5457	15847	125
-F	frontend/src/lib/themes/kira-default.css	1687	15974	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	16028	101
-F	frontend/src/lib/themes/kira-default.ts	777	16131	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	16155	101
-F	frontend/src/lib/time.test.ts	263	16258	8
-F	frontend/src/lib/time.ts	320	16268	9
-F	frontend/src/lib/workspace-window.test.ts	2298	16279	52
-F	frontend/src/lib/workspace-window.ts	1063	16333	32
-F	frontend/src/main.ts	7329	16367	154
-F	frontend/src/style.css	5976	16523	180
-F	frontend/tsconfig.json	403	16705	16
-F	frontend/vite.config.ts	224	16723	8
-F	nix/package.nix	3132	16733	117
-F	scripts/dev_preview.py	18147	16852	403	x
-F	scripts/qa_visual.py	12052	17257	299
-F	tests/test_calendar_design.py	7810	17558	136
-F	tests/test_detailed_health.py	5481	17696	105
-F	tests/test_dev_preview.py	9339	17803	219
-F	tests/test_launcher_design.py	10481	18024	190
-F	tests/test_native_theme.py	2098	18216	44
-F	tests/test_popup_geometry.py	3227	18262	58
-F	tests/test_qa_visual.py	10549	18322	217
-F	tests/test_tenet_close.py	6297	18541	115
-F	tests/test_ui_bootstrap_contract.py	1103	18658	29
-F	tests/test_webview_pool.py	4723	18689	83
+C	dc127aa7637a14fb507c920d7ca6ff4b66b859bc
+F	.cargo/config.toml	98	136	3
+F	.github/workflows/ci.yml	4355	141	112
+F	.github/workflows/frontend-nix.yml	1398	255	43
+F	.github/workflows/nix.yml	1258	300	38
+F	.github/workflows/overlay-smoke.yml	1064	340	40
+F	.github/workflows/publish-repospool.yml	3048	382	83
+F	.gitignore	178	467	11
+F	.repospoolignore	1028	480	47
+F	AGENTS.md	5416	529	89
+F	Cargo.toml	494	620	22
+F	README.md	11812	644	252
+F	Taskfile.yml	5957	898	185
+F	config/kira.kdl.example	358	1085	8
+F	crates/kira-core/Cargo.toml	207	1095	10
+F	crates/kira-core/src/config.rs	15217	1107	399
+F	crates/kira-core/src/main.rs	32080	1508	839
+F	crates/kira-core/src/niri.rs	16767	2349	453
+F	crates/kira-ipc/Cargo.toml	170	2804	9
+F	crates/kira-ipc/src/client.rs	17794	2815	458
+F	crates/kira-ipc/src/lib.rs	10460	3275	336
+F	crates/kira-shell/Cargo.toml	297	3613	12
+F	crates/kira-shell/src/calendar.rs	64373	3627	1727
+F	crates/kira-shell/src/launcher.rs	14114	5356	392
+F	crates/kira-shell/src/main.rs	19894	5750	461
+F	crates/kira-shell/src/native_ui.rs	4536	6213	104
+F	crates/kira-shell/src/popup_layout.rs	2055	6319	58
+F	crates/kira-shell/src/process_monitor.rs	9336	6379	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6667	116
+F	crates/kira-shell/src/system_info.rs	3731	6785	96
+F	crates/kira-shell/src/system_metrics.rs	19842	6883	559
+F	crates/kira-shell/src/system_panel.rs	11356	7444	318
+F	crates/kira-shell/src/webview_pool.rs	8477	7764	249
+F	docs/CONFIG.md	5801	8015	125
+F	docs/DESIGN_SYSTEM.md	32126	8142	519
+F	docs/DEVELOPMENT.md	29347	8663	577
+F	docs/QA_VISUAL.md	12284	9242	149
+F	docs/SPECIFICATION.md	28960	9393	421
+F	docs/TENET_MOTION.md	40649	9816	204
+F	docs/UI_ARCHITECTURE.md	6737	10022	106
+F	docs/VISUAL_REVIEW.md	9754	10130	84
+F	docs/WEBVIEW_POOL.md	5046	10216	30
+F	flake.nix	3181	10248	91
+F	frontend/index.html	2737	10341	66
+F	frontend/package.json	720	10409	27
+F	frontend/scripts/inline-assets.mjs	4457	10438	103
+F	frontend/scripts/inline-assets.test.mjs	4645	10543	106
+F	frontend/scripts/smoke-overlays.mjs	37447	10651	523
+F	frontend/src/App.svelte	9665	11176	224
+F	frontend/src/lib/bootstrap.test.ts	3408	11402	84
+F	frontend/src/lib/bootstrap.ts	2613	11488	70
+F	frontend/src/lib/calendar-model.test.ts	3571	11560	65
+F	frontend/src/lib/calendar-model.ts	4648	11627	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11734	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11796	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11827	287
+F	frontend/src/lib/clock-flight.test.ts	2404	12116	50
+F	frontend/src/lib/clock-flight.ts	1977	12168	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	12220	246
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	12468	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9217	12726	165
+F	frontend/src/lib/components/SystemCharts.svelte	10517	12893	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	13121	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	13169	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	13510	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13550	119
+F	frontend/src/lib/launcher-model.test.ts	2266	13671	46
+F	frontend/src/lib/launcher-model.ts	1403	13719	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	13750	89
+F	frontend/src/lib/lazy-widget.ts	1984	13841	63
+F	frontend/src/lib/motion-contract.test.ts	11242	13906	198
+F	frontend/src/lib/motion.ts	24039	14106	657
+F	frontend/src/lib/overlay-size.ts	1090	14765	29
+F	frontend/src/lib/sdk/core.test.ts	25327	14796	508
+F	frontend/src/lib/sdk/core.ts	21046	15306	539
+F	frontend/src/lib/settings-model.test.ts	1011	15847	20
+F	frontend/src/lib/settings-model.ts	1263	15869	26
+F	frontend/src/lib/system-charts.test.ts	6312	15897	141
+F	frontend/src/lib/system-charts.ts	5514	16040	149
+F	frontend/src/lib/system-health.test.ts	2385	16191	42
+F	frontend/src/lib/system-health.ts	2831	16235	60
+F	frontend/src/lib/system-model.test.ts	4455	16297	84
+F	frontend/src/lib/system-model.ts	5457	16383	125
+F	frontend/src/lib/themes/kira-default.css	1687	16510	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	16564	101
+F	frontend/src/lib/themes/kira-default.ts	777	16667	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	16691	101
+F	frontend/src/lib/time.test.ts	263	16794	8
+F	frontend/src/lib/time.ts	320	16804	9
+F	frontend/src/lib/workspace-window.test.ts	2298	16815	52
+F	frontend/src/lib/workspace-window.ts	1063	16869	32
+F	frontend/src/main.ts	7783	16903	161
+F	frontend/src/style.css	6399	17066	194
+F	frontend/tsconfig.json	403	17262	16
+F	frontend/vite.config.ts	224	17280	8
+F	nix/package.nix	3132	17290	117
+F	scripts/dev_preview.py	18147	17409	403	x
+F	scripts/qa_visual.py	12052	17814	299
+F	tests/test_calendar_design.py	7810	18115	136
+F	tests/test_detailed_health.py	5481	18253	105
+F	tests/test_dev_preview.py	9339	18360	219
+F	tests/test_launcher_design.py	10481	18581	190
+F	tests/test_native_theme.py	2098	18773	44
+F	tests/test_popup_geometry.py	3227	18819	58
+F	tests/test_qa_visual.py	10549	18879	217
+F	tests/test_settings.py	3217	19098	62
+F	tests/test_tenet_close.py	6297	19162	115
+F	tests/test_ui_bootstrap_contract.py	1103	19279	29
+F	tests/test_webview_pool.py	5335	19310	94
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -884,6 +889,10 @@ are not substitutes for a real visual review. See
 The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
 
 This project is not ready to replace a working desktop environment.
+
+## System Settings
+
+The gear icon in the Top Bar opens **Kira Settings**. Settings starts as a fixed 600px-wide popup with a section selector; the header's pop-out button promotes the same live WebView to a normal Niri window, where navigation moves to a permanent sidebar. The first implemented page, **About System**, reads the host's OS, kernel, CPU, RAM, session and Shell version from native Linux sources. Other sections are clearly marked as upcoming. The panel is read-only and reports unavailable fields instead of inventing values.
 
 FILE	Taskfile.yml
 version: '3'
@@ -3813,7 +3822,12 @@ impl OverlayPool {
     }
 
     fn width_for(&self, view: &CalendarOverlay) -> i32 {
-        popup_layout::popup_width(crate::native_ui::popup_output_width(&view.window), 1, false)
+        let output_width = crate::native_ui::popup_output_width(&view.window);
+        if view.active.get() == Some(Surface::Settings) {
+            popup_layout::settings_popup_width(output_width)
+        } else {
+            popup_layout::popup_width(output_width, 1, false)
+        }
     }
 
     // Only the single transient window gets layer-shell geometry.
@@ -3883,6 +3897,7 @@ struct CalendarOverlay {
     active: Cell<Option<Surface>>,
     system: RefCell<Option<crate::system_panel::Model>>,
     launcher: RefCell<Option<crate::launcher::Catalog>>,
+    settings_about: RefCell<Option<serde_json::Value>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
     closing: Cell<bool>,
@@ -3950,12 +3965,17 @@ impl CalendarOverlay {
             Surface::Calendar => "Kira Calendar",
             Surface::System => "Kira System Monitor",
             Surface::Launcher => "Kira Launcher",
+            Surface::Settings => "Kira Settings",
             #[cfg(test)]
             Surface::Synthetic(_) => "Kira Widget",
         };
         normal.set_title(Some(title));
         normal.set_decorated(true);
-        normal.set_default_size(500, (self.content_height.get() + 32).clamp(420, 760));
+        if kind == Surface::Settings {
+            normal.set_default_size(940, 700);
+        } else {
+            normal.set_default_size(500, (self.content_height.get() + 32).clamp(420, 760));
+        }
         // Different Wayland roles require two GTK toplevels. Reparenting
         // retains the live WebKit process, DOM and generation.
         self.window.set_child(None::<&gtk::Widget>);
@@ -4019,6 +4039,7 @@ impl CalendarOverlay {
         self.system.borrow_mut().take();
         self.active.set(None);
         self.launcher.borrow_mut().take();
+        self.settings_about.borrow_mut().take();
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.revealed.set(false);
@@ -4164,7 +4185,12 @@ impl CalendarOverlay {
         self.window.set_opacity(0.0);
         // The next widget will report its intrinsic height before reveal.
         // Reset the previous widget's geometry while still transparent.
-        crate::native_ui::resize_webview_popup(&self.window, 420, 1);
+        let preferred_width = if kind == Surface::Settings {
+            popup_layout::SETTINGS_POPUP_WIDTH
+        } else {
+            popup_layout::PREFERRED_POPUP_WIDTH
+        };
+        crate::native_ui::resize_webview_popup(&self.window, preferred_width, 1);
         let generation = self.generation.get();
         if let Some(pool) = self.pool.upgrade() {
             pool.sync_geometry();
@@ -4361,6 +4387,8 @@ impl CalendarOverlay {
                 eprintln!("kira-shell: Svelte overlay DOM verified");
                 if self.active.get() == Some(Surface::System) {
                     self.send_metrics();
+                } else if self.active.get() == Some(Surface::Settings) {
+                    self.send_settings_about();
                 }
                 self.widget_ready.set(true);
                 if self.content_height.get() > 0 {
@@ -4615,6 +4643,37 @@ impl CalendarOverlay {
                 |result| {
                     if let Err(error) = result {
                         eprintln!("kira-shell: System data delivery failed: {error}");
+                    }
+                },
+            );
+        }
+    }
+
+    /// Deliver an immutable, read-only snapshot after the settings Svelte
+    /// component has subscribed. JSON is double-encoded, never JS source.
+    fn send_settings_about(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Settings) {
+            return;
+        }
+        let data = self.settings_about.borrow();
+        let Some(about) = data.as_ref() else {
+            return;
+        };
+        let payload = serde_json::json!({
+            "generation": self.generation.get(),
+            "about": about,
+        });
+        if let Ok(serialized) = serde_json::to_string(&payload)
+            && let Ok(encoded) = serde_json::to_string(&serialized)
+        {
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('kira:settings:about', {{ detail: JSON.parse({encoded}) }}));"
+            );
+            self.view.evaluate_javascript(
+                &script, None, None, None::<&gtk::gio::Cancellable>,
+                |result| {
+                    if let Err(error) = result {
+                        eprintln!("kira-shell: Settings info delivery failed: {error}");
                     }
                 },
             );
@@ -4922,6 +4981,7 @@ fn build(
         active: Cell::new(None),
         system: RefCell::new(None),
         launcher: RefCell::new(None),
+        settings_about: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
         closing: Cell::new(false),
@@ -5074,6 +5134,35 @@ pub fn open_launcher(application: &gtk::Application, html: &str) {
                 view.launcher.borrow_mut().take();
                 view.show(Surface::Launcher);
             }
+        }),
+    );
+}
+
+/// Open the same Settings surface in popup mode; pop-out retains the exact
+/// WebView and its in-memory navigation state.
+pub fn toggle_settings(application: &gtk::Application, html: &str) {
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::Settings,
+        true,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Settings) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+                return;
+            }
+            *view.settings_about.borrow_mut() = Some(crate::system_info::about_snapshot());
+            view.show(Surface::Settings);
         }),
     );
 }
@@ -5667,6 +5756,7 @@ mod popup_layout;
 mod process_monitor;
 mod renderer_recovery;
 mod system_metrics;
+mod system_info;
 mod system_panel;
 mod webview_pool;
 use std::cell::{Cell, RefCell};
@@ -5909,6 +5999,17 @@ fn main() {
             }
         });
         assert!(manager.register_script_message_handler("kiraSystem", None));
+
+        // Settings is a trusted read-only surface. Only a fixed toggle command
+        // is accepted; the renderer cannot request arbitrary system queries.
+        let settings_app = app.clone();
+        let settings_html = html.clone();
+        manager.connect_script_message_received(Some("kiraSettings"), move |_, value| {
+            if value.to_string() == "toggle" {
+                calendar::toggle_settings(&settings_app, &settings_html);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraSettings", None));
 
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
@@ -6226,6 +6327,8 @@ pub enum PopupDock {
 }
 
 pub const PREFERRED_POPUP_WIDTH: i32 = 420;
+// Settings has more information density but remains a fixed-width popup.
+pub const SETTINGS_POPUP_WIDTH: i32 = 600;
 const OUTER_MARGIN: i32 = 12;
 
 /// Launcher is centered; Calendar and System share one original right dock.
@@ -6241,6 +6344,10 @@ pub fn choose_dock(kind: Surface, _right_occupied: bool) -> PopupDock {
 /// No active-window columns: normal Niri windows manage their own layout.
 pub fn popup_width(output_width: i32, _active_count: usize, _launcher_active: bool) -> i32 {
     PREFERRED_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
+}
+
+pub fn settings_popup_width(output_width: i32) -> i32 {
+    SETTINGS_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
 }
 
 #[cfg(test)]
@@ -6262,6 +6369,9 @@ mod tests {
         assert_eq!(popup_width(1264, 3, true), 420);
         assert_eq!(popup_width(800, 4, true), 420);
         assert_eq!(popup_width(400, 3, true), 376);
+        assert_eq!(settings_popup_width(1264), 600);
+        assert_eq!(settings_popup_width(800), 600);
+        assert_eq!(settings_popup_width(480), 456);
     }
 }
 
@@ -6668,6 +6778,104 @@ mod tests {
             recovery.on_terminated(start + Duration::from_secs(59)),
             RetryDecision::Exhausted
         );
+    }
+}
+
+FILE	crates/kira-shell/src/system_info.rs
+//! Bounded, read-only Linux host identity for Settings / About System.
+//! No shell commands, external processes, privileged files or browser input.
+use std::io::Read;
+
+fn read_text(path: &str, limit: u64) -> Option<String> {
+    let file = std::fs::File::open(path).ok()?;
+    let mut text = String::new();
+    file.take(limit).read_to_string(&mut text).ok()?;
+    Some(text)
+}
+
+fn os_name(text: &str) -> Option<String> {
+    text.lines().find_map(|line| {
+        let value = line.strip_prefix("PRETTY_NAME=")?;
+        let name = value.trim().trim_matches('"').trim();
+        (!name.is_empty()).then(|| name.chars().take(120).collect())
+    })
+}
+
+fn cpu_name(text: &str) -> Option<String> {
+    text.lines().find_map(|line| {
+        let (key, value) = line.split_once(':')?;
+        if key.trim() != "model name" && key.trim() != "Hardware" && key.trim() != "Processor" {
+            return None;
+        }
+        let name = value.trim();
+        (!name.is_empty()).then(|| name.chars().take(140).collect())
+    })
+}
+
+fn memory_total(text: &str) -> Option<u64> {
+    let line = text.lines().find(|line| line.starts_with("MemTotal:"))?;
+    line.split_whitespace().nth(1)?.parse::<u64>().ok()
+}
+
+fn single_line(value: Option<String>, limit: usize) -> Option<String> {
+    value
+        .map(|s| s.lines().next().unwrap_or_default().trim().chars().take(limit).collect::<String>())
+        .filter(|s| !s.is_empty())
+}
+
+/// Capture once when Settings opens. A missing kernel field stays null,
+/// never a fabricated operating system, CPU, memory amount or version.
+pub fn about_snapshot() -> serde_json::Value {
+    let os = read_text("/etc/os-release", 8 * 1024).and_then(|s| os_name(&s));
+    let cpu = read_text("/proc/cpuinfo", 128 * 1024).and_then(|s| cpu_name(&s));
+    let memory = read_text("/proc/meminfo", 16 * 1024).and_then(|s| memory_total(&s));
+    let kernel = single_line(read_text("/proc/sys/kernel/osrelease", 256), 120);
+    let hostname = single_line(read_text("/proc/sys/kernel/hostname", 256), 120);
+    let session = single_line(std::env::var("XDG_SESSION_TYPE").ok(), 24);
+
+    serde_json::json!({
+        "os_name": os,
+        "kernel": kernel,
+        "architecture": std::env::consts::ARCH,
+        "hostname": hostname,
+        "cpu_model": cpu,
+        "cpu_threads": std::thread::available_parallelism().ok().map(|n| n.get()),
+        "memory_total_kib": memory,
+        "session": session,
+        "shell_version": env!("CARGO_PKG_VERSION"),
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn os_release_parses_only_explicit_pretty_name() {
+        assert_eq!(os_name("NAME=Example\nPRETTY_NAME=\"Example Linux 1\"\n"),
+                   Some("Example Linux 1".to_string()));
+        assert_eq!(os_name("NAME=Example\n"), None);
+        assert_eq!(os_name("PRETTY_NAME=\"\"\n"), None);
+    }
+
+    #[test]
+    fn cpu_and_memory_missingness_are_truthful() {
+        assert_eq!(cpu_name("processor: 0\nmodel name : Sample CPU\n"),
+                   Some("Sample CPU".to_string()));
+        assert_eq!(cpu_name("processor: 0\n"), None);
+        assert_eq!(memory_total("MemTotal:       16384 kB\nMemFree: 123 kB\n"), Some(16384));
+        assert_eq!(memory_total("MemFree: 123 kB\n"), None);
+        assert_eq!(memory_total("MemTotal: unknown kB\n"), None);
+    }
+
+    #[test]
+    fn snapshot_has_only_read_only_bounded_fields() {
+        let value = about_snapshot();
+        assert!(value["shell_version"].is_string());
+        assert!(value["architecture"].is_string());
+        for field in ["hostname", "os_name", "kernel", "cpu_model", "session"] {
+            assert!(value[field].is_null() || value[field].as_str().is_some_and(|s| s.len() <= 600));
+        }
     }
 }
 
@@ -7567,6 +7775,7 @@ pub enum Surface {
     Calendar,
     System,
     Launcher,
+    Settings,
     #[cfg(test)]
     Synthetic(u8),
 }
@@ -7576,6 +7785,7 @@ impl Surface {
             Self::Calendar => "calendar",
             Self::System => "system",
             Self::Launcher => "launcher",
+            Self::Settings => "settings",
             #[cfg(test)]
             Self::Synthetic(_) => "synthetic",
         }
@@ -7767,6 +7977,16 @@ mod tests {
             s.reserve(Surface::System, now + Duration::from_secs(47)),
             Reservation::Reused(2)
         );
+    }
+
+    #[test]
+    fn settings_is_a_distinct_bounded_lease() {
+        let mut s = WebviewScheduler::default();
+        let now = Instant::now();
+        assert_eq!(s.reserve(Surface::Settings, now), Reservation::Created(1));
+        assert_eq!(s.reserve(Surface::Settings, now), Reservation::Existing(1));
+        assert_eq!(s.reserve(Surface::System, now), Reservation::Created(2));
+        assert_eq!(s.active_count(), 2);
     }
 
     #[test]
@@ -9999,7 +10219,7 @@ FILE	docs/WEBVIEW_POOL.md
 
 ## Two distinct window modes
 
-A **transient widget** is a trusted layer-shell overlay anchored below the Top Bar: Calendar/System on the right, Launcher centered. **Only one transient widget may be open at a time.** A Top Bar request for a different widget queues the target, asks the current widget to run its recorded TENET exit, and waits for the generation-matched `closed:<generation>` acknowledgement (or the native watchdog) before hiding, releasing its WebView lease, and opening the queued target. No side-by-side overlay columns or left-dock relocation are allowed. Requests during exit are last-wins; clicking the outgoing widget again cancels its reverse and clears the pending target.
+A **transient widget** is a trusted layer-shell overlay anchored below the Top Bar: Calendar/System/Settings on the right, Launcher centered. Settings uses a fixed 600px preferred popup width instead of the usual 420px. **Only one transient widget may be open at a time.** A Top Bar request for a different widget queues the target, asks the current widget to run its recorded TENET exit, and waits for the generation-matched `closed:<generation>` acknowledgement (or the native watchdog) before hiding, releasing its WebView lease, and opening the queued target. No side-by-side overlay columns or left-dock relocation are allowed. Requests during exit are last-wins; clicking the outgoing widget again cancels its reverse and clears the pending target.
 
 An **ordinary window** is requested explicitly through the pop-out control in every widget header. The Shell creates a **decorated GtkApplicationWindow without layer-shell initialization**, making it an xdg-toplevel managed by Niri alongside other applications. The existing *live* WebView is reparented from the transient host into the regular window, without `load_html`, Svelte unmount, or a generation change. This preserves the selected date, active tab, search query, scroll position, animations and interactive state. The transient GTK surface disappears. The promoted WebView retains its lease and data subscriptions while the ordinary window is open. Closing the ordinary window performs the reversible TENET exit, unmounts Svelte, reparents WebView to its hidden popup host and releases the lease. Clicking its Top Bar icon raises the existing ordinary window instead of cloning the same widget.
 
@@ -10013,8 +10233,12 @@ The pool makes **multiple ordinary windows** possible without pretending layer-s
 - **Poll:** one 30ms shared GTK source services active Launcher/System leases; the slower metrics tick remains 250ms and stops entirely once all pooled leases are idle.
 - **Isolation:** per-host content manager, locked-down native IPC, generation counters, stateful Svelte mount and renderer recovery. The native `detach:<generation>` command is allowlisted and rejected for stale generations, hidden windows and closing popups.
 - **Motion:** GSAP plays/reverses the same TENET history at 1.44x, an additional 20% over the former 1.2x rate. Popup native fade is 111ms vs 133ms. The incoming widget never reveals until the outgoing popup has actually finished its exit. Reduced motion completes immediately. Native close watchdog is 920ms, with bounded WebKit animation fallback.
-- **Placement:** one visible popup at 420px preferred width, capped by available monitor width and height. Normal Niri windows are resizable and independent. The pop-out button hides once promoted.
+- **Placement:** one visible popup at 420px preferred width (Settings: 600px), capped by available monitor width and height. Normal Niri windows are resizable and independent. The pop-out button hides once promoted.
 - **Renderer failure:** a failed WebView is hidden and safely reloaded, without widening the RPC allowlist.
+
+## Settings / About System
+
+The Top Bar gear opens a Settings surface through the dedicated `kiraSettings:toggle` native channel. Settings starts in widget mode with a fixed 600px width, 560px capped height and a section selector. Popping it out reuses the same live WebView and shows a 220px sidebar in a decorated, resizable Niri xdg-toplevel (initially 940×700). Section definitions are shared, with **About System** implemented; future categories are explicitly disabled instead of opening empty/fake pages. Native Shell delivers a generation-matched, validated `kira:settings:about` snapshot on mount. The data come from bounded local OS files, read-only and with null for unavailable information. No generic shell command, network call or expanded Core RPC is involved.
 
 ## Verification
 
@@ -10954,7 +11178,7 @@ FILE	frontend/src/App.svelte
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { openLauncher, toggleCalendar, toggleSystemPanel, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
@@ -10965,7 +11189,12 @@ FILE	frontend/src/App.svelte
   let launcherUnavailable = $state(false);
   let calendarUnavailable = $state(false);
   let systemUnavailable = $state(false);
+  let settingsUnavailable = $state(false);
   let systemMetrics = $state<SystemMetrics | null>(null);
+
+  function activateSettings() {
+    settingsUnavailable = !toggleSettings();
+  }
 
   function activateSystemPanel() {
     systemUnavailable = !toggleSystemPanel();
@@ -11135,6 +11364,18 @@ FILE	frontend/src/App.svelte
     />
     {#if systemUnavailable}
       <span role="status" class="shrink-0 px-1 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+    {/if}
+    <button type="button" onclick={activateSettings}
+      aria-label="Open system settings" title="System settings" aria-haspopup="dialog"
+      class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none"
+        stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.5v2m0 13v2M3.5 12h2m13 0h2M6 6l1.5 1.5m9 9L18 18M18 6l-1.5 1.5m-9 9L6 18"/>
+        <circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/>
+      </svg>
+    </button>
+    {#if settingsUnavailable}
+      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent">SETTINGS OFFLINE</span>
     {/if}
     <span class="mx-1 h-4 w-px shrink-0 bg-kira-muted/20" aria-hidden="true"></span>
     {#if calendarUnavailable}
@@ -12479,6 +12720,173 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ESC</kbd> CLOSE
     </span>
   </footer>
+</main>
+
+FILE	frontend/src/lib/components/SettingsWidget.svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { tenetWidgetReveal } from '../motion';
+  import { onSettingsAbout, type SettingsAbout } from '../sdk/core';
+  import { SETTINGS_SECTIONS, sectionIsAvailable, formatInstalledMemory, systemValue, type SettingsSectionId } from '../settings-model';
+  import WindowControls from './WindowControls.svelte';
+
+  let { onClose, onPopout, generation }: {
+    onClose: () => void;
+    onPopout: () => void;
+    generation: number;
+  } = $props();
+
+  let detached = $state(false);
+  let section = $state<SettingsSectionId>('about');
+  let about = $state<SettingsAbout | null>(null);
+
+  const fields = $derived([
+    { key: 'kernel', label: 'Версия ядра', value: systemValue(about?.kernel) },
+    { key: 'architecture', label: 'Архитектура', value: systemValue(about?.architecture) },
+    { key: 'hostname', label: 'Имя устройства', value: systemValue(about?.hostname) },
+    { key: 'cpu_model', label: 'Процессор', value: systemValue(about?.cpu_model) },
+    { key: 'cpu_threads', label: 'Доступные логические потоки', value: about?.cpu_threads == null ? 'Недоступно' : String(about.cpu_threads) },
+    { key: 'memory', label: 'Оперативная память', value: formatInstalledMemory(about?.memory_total_kib ?? null) },
+    { key: 'session', label: 'Тип сессии', value: systemValue(about?.session) },
+    { key: 'shell_version', label: 'Версия Kira Shell', value: systemValue(about?.shell_version) },
+  ]);
+
+  function navigate(id: string) {
+    if (sectionIsAvailable(id)) section = id;
+  }
+
+  function onSelect(event: Event) {
+    navigate((event.currentTarget as HTMLSelectElement).value);
+  }
+
+  function onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+    }
+  }
+
+  onMount(() => {
+    const stop = onSettingsAbout(generation, snapshot => { about = snapshot; });
+    const onDetached = (event: Event) => {
+      const current = (event as CustomEvent<{ generation: number }>).detail?.generation;
+      if (current === generation) detached = true;
+    };
+    window.addEventListener('kira:overlay:detached', onDetached);
+    return () => {
+      stop();
+      window.removeEventListener('kira:overlay:detached', onDetached);
+    };
+  });
+</script>
+
+<svelte:window onkeydown={onKeydown} />
+
+<main data-kira-ui-root aria-label="Kira Settings" data-settings-mode={detached ? 'window' : 'widget'}
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1, sections: 2 }}
+  class="kira-settings relative flex min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
+  <header data-kira-enter class="flex shrink-0 items-center justify-between gap-3 border-b border-kira-muted/20 bg-kira-bg px-5 py-3">
+    <div class="flex min-w-0 items-center gap-3">
+      <span data-kira-contact class="flex size-9 shrink-0 items-center justify-center border border-kira-accent/70 bg-kira-accent/10 text-[16px] font-black text-kira-accent" aria-hidden="true">K</span>
+      <div class="min-w-0">
+        <p class="text-[9px] font-extrabold tracking-[0.20em] text-kira-accent">KIRA / CONFIGURATION</p>
+        <h1 class="mt-0.5 truncate text-[16px] font-bold tracking-tight">Настройки системы</h1>
+      </div>
+    </div>
+    <WindowControls {onClose} {onPopout} {generation} label="settings" />
+  </header>
+
+  <div data-kira-enter class="flex min-h-0 flex-1 overflow-hidden">
+    {#if detached}
+      <aside class="flex w-[220px] shrink-0 flex-col border-r border-kira-muted/20 bg-kira-surface-soft px-3 py-6"
+        aria-label="Разделы настроек">
+        <div class="mb-6 px-3">
+          <p class="text-[9px] font-extrabold tracking-[0.19em] text-kira-muted">ПАРАМЕТРЫ</p>
+          <p class="mt-2 text-[12px] font-semibold text-kira-text">Навигация</p>
+        </div>
+        <nav class="flex flex-col gap-1" aria-label="Разделы настроек">
+          {#each SETTINGS_SECTIONS as item (item.id)}
+            <button type="button" disabled={!item.available}
+              onclick={() => navigate(item.id)}
+              aria-current={section === item.id ? 'page' : undefined}
+              class={['flex min-h-11 w-full items-center justify-between gap-2 border-l-2 px-3 text-left text-[12px] font-semibold transition-colors motion-reduce:transition-none',
+                section === item.id ? 'border-kira-accent bg-kira-surface text-kira-text' : 'border-transparent text-kira-muted',
+                item.available ? 'hover:bg-kira-surface' : 'cursor-not-allowed opacity-55'].join(' ')}>
+              <span class="truncate">{item.label}</span>
+              {#if !item.available}
+                <span class="shrink-0 text-[8px] font-semibold uppercase tracking-wider">Скоро</span>
+              {:else if section === item.id}
+                <span aria-hidden="true" class="size-1.5 shrink-0 bg-kira-accent"></span>
+              {/if}
+            </button>
+          {/each}
+        </nav>
+        <div class="mt-auto border-t border-kira-muted/20 px-3 pt-4 text-[10px] leading-relaxed text-kira-muted">
+          Данные устройства. Локально и только для чтения.
+        </div>
+      </aside>
+    {/if}
+
+    <section class={['kira-settings-scroll min-w-0 flex-1 overflow-y-auto pb-7 pt-5', detached ? 'px-8' : 'px-5'].join(' ')} aria-label="Содержимое настроек">
+      {#if !detached}
+        <div class="mb-5">
+          <label for="kira-settings-section" class="mb-2 block text-[10px] font-bold tracking-[0.16em] text-kira-muted">
+            РАЗДЕЛ НАСТРОЕК
+          </label>
+          <div class="relative">
+            <select id="kira-settings-section" aria-label="Раздел настроек" value={section} onchange={onSelect}
+              class="w-full appearance-none rounded-none border border-kira-muted/40 bg-kira-surface px-3 py-3 pr-10 text-[12px] font-bold text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">
+              {#each SETTINGS_SECTIONS as item (item.id)}
+                <option value={item.id} disabled={!item.available}>{item.label}{item.available ? '' : ' · скоро'}</option>
+              {/each}
+            </select>
+            <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-kira-accent" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </div>
+        </div>
+      {/if}
+
+      {#if section === 'about'}
+        <div class="mb-6 border-b border-kira-muted/20 pb-5">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <span class="text-[10px] font-bold tracking-[0.16em] text-kira-accent">01 / SYSTEM IDENTITY</span>
+            <span class="border border-kira-muted/30 px-2 py-1 text-[9px] font-semibold tracking-[0.1em] text-kira-muted">READ ONLY</span>
+          </div>
+          <h2 class="text-[30px] font-black leading-tight tracking-tight">О системе</h2>
+          <p class="mt-2 max-w-xl text-[12px] leading-relaxed text-kira-muted">
+            Информация об операционной системе, устройстве и среде выполнения Kira Desktop.
+          </p>
+        </div>
+
+        <div class="mb-5 border-l-[3px] border-kira-accent bg-kira-surface px-5 py-5">
+          <p class="text-[10px] font-bold tracking-[0.14em] text-kira-muted">ОПЕРАЦИОННАЯ СИСТЕМА</p>
+          <p class="mt-2 break-words text-[21px] font-extrabold leading-snug tracking-tight text-kira-text">
+            {about ? systemValue(about.os_name) : 'Получение данных…'}
+          </p>
+          <p class="mt-3 text-[10px] font-semibold tracking-[0.12em] text-kira-accent">LOCAL HOST / LINUX</p>
+        </div>
+
+        <div class="mb-3 flex items-center justify-between">
+          <h3 class="text-[12px] font-extrabold tracking-wide">Характеристики устройства</h3>
+          <span class="text-[9px] font-bold tracking-widest text-kira-muted">DETAILS / 08</span>
+        </div>
+        <dl class="grid grid-cols-1 gap-px border border-kira-muted/20 bg-kira-muted/20 sm:grid-cols-2">
+          {#each fields as field (field.key)}
+            <div class="min-w-0 bg-kira-bg px-4 py-3">
+              <dt class="text-[10px] font-semibold tracking-wide text-kira-muted">{field.label}</dt>
+              <dd class="mt-1.5 break-words text-[12px] font-bold leading-relaxed text-kira-text">
+                {about ? field.value : 'Получение данных…'}
+              </dd>
+            </div>
+          {/each}
+        </dl>
+        <p class="mt-4 text-[10px] leading-relaxed text-kira-muted">
+          Данные получены из локального ядра и системных файлов. Недоступные значения не подменяются приблизительными.
+        </p>
+      {/if}
+    </section>
+  </div>
 </main>
 
 FILE	frontend/src/lib/components/SystemCharts.svelte
@@ -14386,7 +14794,7 @@ export function observeOverlaySize(root: HTMLElement, generation: number): () =>
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -14405,6 +14813,43 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(postMessage).toHaveBeenCalledExactlyOnceWith('open');
     postMessage.mockImplementation(() => { throw new Error('host disconnected'); });
     expect(openLauncher()).toBe(false);
+  });
+
+  it('opens Settings only via its fixed-purpose native bridge', () => {
+    expect(toggleSettings()).toBe(false);
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraSettings: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(toggleSettings()).toBe(true);
+    expect(postMessage).toHaveBeenCalledExactlyOnceWith('toggle');
+    postMessage.mockImplementation(() => { throw new Error('unavailable'); });
+    expect(toggleSettings()).toBe(false);
+  });
+
+  it('rejects stale, malformed or untrusted About System payloads', () => {
+    const handlers = new Map<string, EventListener>();
+    const removeEventListener = vi.fn();
+    globalThis.window = {
+      addEventListener(name: string, listener: EventListener) { handlers.set(name, listener); },
+      removeEventListener,
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onSettingsAbout(7, callback);
+    const valid = {
+      os_name: 'Example Linux', kernel: '6.0', architecture: 'x86_64',
+      hostname: null, cpu_model: 'Example CPU', cpu_threads: 4,
+      memory_total_kib: 1024, session: 'wayland', shell_version: '0.1.0',
+    };
+    const dispatch = (detail: unknown) =>
+      handlers.get('kira:settings:about')!({ detail } as CustomEvent<unknown>);
+    dispatch({ generation: 6, about: valid });
+    dispatch({ generation: 7, about: { ...valid, cpu_threads: -1 } });
+    dispatch({ generation: 7, about: { ...valid, os_name: 'x'.repeat(500) } });
+    dispatch({ generation: 7, about: valid });
+    expect(callback).toHaveBeenCalledExactlyOnceWith(valid);
+    stop();
+    expect(removeEventListener).toHaveBeenCalledWith('kira:settings:about', expect.any(Function));
   });
 
   it('reports only bounded positive widget heights scoped to the current generation', () => {
@@ -15089,14 +15534,14 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge } };
   }
 }
 
 /** Only fixed commands are exposed to trusted Svelte components. Keep host
  * bridge failures non-throwing so an offline overlay does not crash the bar.
  */
-function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem', command: 'open' | 'toggle'): boolean {
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem' | 'kiraSettings', command: 'open' | 'toggle'): boolean {
   const channel = typeof window === 'undefined'
     ? undefined
     : window.webkit?.messageHandlers?.[channelName];
@@ -15283,6 +15728,47 @@ export function closeLauncherOverlay(generation: number): void {
   if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
 }
 
+/** Toggle the single Settings surface from the Top Bar. */
+export function toggleSettings(): boolean {
+  return postNativeCommand('kiraSettings', 'toggle');
+}
+
+/** About System is an immutable read-only native Linux snapshot. */
+export interface SettingsAbout {
+  os_name: string | null;
+  kernel: string | null;
+  architecture: string;
+  hostname: string | null;
+  cpu_model: string | null;
+  cpu_threads: number | null;
+  memory_total_kib: number | null;
+  session: string | null;
+  shell_version: string;
+}
+
+function isSettingsAbout(value: unknown): value is SettingsAbout {
+  if (!isRecord(value)) return false;
+  const optionalText = (v: unknown) => v === null || (typeof v === 'string' && v.length <= 180);
+  const positiveNumber = (v: unknown) => v === null || (Number.isSafeInteger(v) &&
+    typeof v === 'number' && v > 0);
+  return optionalText(value.os_name) && optionalText(value.kernel) &&
+    typeof value.architecture === 'string' && value.architecture.length <= 40 &&
+    optionalText(value.hostname) && optionalText(value.cpu_model) &&
+    positiveNumber(value.cpu_threads) && positiveNumber(value.memory_total_kib) &&
+    optionalText(value.session) &&
+    typeof value.shell_version === 'string' && value.shell_version.length <= 40;
+}
+
+export function onSettingsAbout(
+  generation: number,
+  callback: (data: SettingsAbout) => void,
+): () => void {
+  return onNativeEvent('kira:settings:about',
+    (value): value is { generation: number; about: SettingsAbout } =>
+      isRecord(value) && value.generation === generation && isSettingsAbout(value.about),
+    ({ about }) => callback(about));
+}
+
 /** Open or close the shared Svelte read-only system monitor. */
 export function toggleSystemPanel(): boolean {
   return postNativeCommand('kiraSystem', 'toggle');
@@ -15355,6 +15841,56 @@ function send(method: string, params?: { id: string }): Promise<unknown> {
       reject(error instanceof Error ? error : new Error('Kira bridge failed'));
     }
   });
+}
+
+FILE	frontend/src/lib/settings-model.test.ts
+import { describe, expect, it } from 'vitest';
+import { SETTINGS_SECTIONS, sectionIsAvailable, formatInstalledMemory, systemValue } from './settings-model';
+
+describe('Settings navigation and truthful host details', () => {
+  it('exposes one implemented page in both navigation modes', () => {
+    expect(SETTINGS_SECTIONS.find(s => s.id === 'about')?.available).toBe(true);
+    expect(SETTINGS_SECTIONS.filter(s => s.available)).toHaveLength(1);
+    expect(sectionIsAvailable('about')).toBe(true);
+    expect(sectionIsAvailable('network')).toBe(false);
+    expect(sectionIsAvailable('arbitrary-script')).toBe(false);
+  });
+
+  it('does not invent missing memory or identity', () => {
+    expect(formatInstalledMemory(null)).toBe('Недоступно');
+    expect(formatInstalledMemory(0)).toBe('Недоступно');
+    expect(formatInstalledMemory(8 * 1024 * 1024)).toContain('ГиБ');
+    expect(systemValue(null)).toBe('Недоступно');
+    expect(systemValue('Linux')).toBe('Linux');
+  });
+});
+
+FILE	frontend/src/lib/settings-model.ts
+/** Sections are declared once for both native window navigation and popup
+ * selector. A disabled destination is never represented as a working page. */
+export const SETTINGS_SECTIONS = [
+  { id: 'about', label: 'О системе', available: true },
+  { id: 'appearance', label: 'Внешний вид', available: false },
+  { id: 'displays', label: 'Дисплеи', available: false },
+  { id: 'network', label: 'Сеть', available: false },
+  { id: 'devices', label: 'Устройства', available: false },
+] as const;
+
+export type SettingsSectionId = (typeof SETTINGS_SECTIONS)[number]['id'];
+
+export function sectionIsAvailable(id: string): id is SettingsSectionId {
+  return SETTINGS_SECTIONS.some(section => section.id === id && section.available);
+}
+
+export function formatInstalledMemory(kib: number | null): string {
+  if (kib === null || !Number.isSafeInteger(kib) || kib <= 0) return 'Недоступно';
+  const gib = kib / (1024 * 1024);
+  return gib >= 1 ? gib.toLocaleString('ru-RU', { maximumFractionDigits: 1 }) + ' ГиБ'
+    : Math.round(kib / 1024).toLocaleString('ru-RU') + ' МиБ';
+}
+
+export function systemValue(value: string | null | undefined): string {
+  return value && value.trim() ? value : 'Недоступно';
 }
 
 FILE	frontend/src/lib/system-charts.test.ts
@@ -16369,6 +16905,7 @@ import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
+import SettingsWidget from './lib/components/SettingsWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, detachOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
@@ -16396,7 +16933,7 @@ whenDocumentReady(document, () => {
       report('Calendar bootstrap failure: #app missing');
       return;
     }
-    let requestedKind: 'calendar' | 'system' | 'launcher' = 'calendar';
+    let requestedKind: 'calendar' | 'system' | 'launcher' | 'settings' = 'calendar';
     let visibleGeneration: number | null = null;
     let lastGeneration = 0;
     const host = createLazyWidget(
@@ -16432,13 +16969,19 @@ whenDocumentReady(document, () => {
                     onTab: (tab: 'overview' | 'processes') => setSystemMonitorTab(lease, tab),
                   },
                 })
-                : mount(LauncherWidget, { target, props: {
-                    onClose: () => closeLauncherOverlay(lease),
-                    onPopout: () => detachOverlay(lease),
-                    generation: lease,
-                  } });
+                : kind === 'settings'
+                  ? mount(SettingsWidget, { target, props: {
+                      onClose: () => closeCalendarOverlay(lease),
+                      onPopout: () => detachOverlay(lease),
+                      generation: lease,
+                    } })
+                  : mount(LauncherWidget, { target, props: {
+                      onClose: () => closeLauncherOverlay(lease),
+                      onPopout: () => detachOverlay(lease),
+                      generation: lease,
+                    } });
             flushSync();
-            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
+            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : kind === 'settings' ? 'Kira Settings' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {
               throw new Error('Svelte ' + kind + ' root missing after mount');
             }
@@ -16472,7 +17015,7 @@ whenDocumentReady(document, () => {
     });
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number; maxHeight: number }>).detail;
-      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||
+      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher' && detail?.kind !== 'settings') ||
           !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
           detail.generation > 0xffffffff || detail.generation <= lastGeneration ||
           !Number.isSafeInteger(detail.maxHeight) || detail.maxHeight < 1 ||
@@ -16666,6 +17209,20 @@ FILE	frontend/src/style.css
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* Settings is intentionally wider than other widgets but has a stable
+ * size. After promotion to Niri it occupies the full resizable WebView. */
+.kira-settings {
+  height: min(560px, var(--kira-overlay-max-height, 560px));
+}
+html[data-kira-detached="true"] .kira-settings {
+  height: 100%;
+  max-height: 100vh;
+}
+.kira-settings-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--kira-color-muted) transparent;
 }
 
 /* A moving solid selection must not turn its new label into black-on-black.
@@ -18537,6 +19094,70 @@ class VisualQATests(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 
+FILE	tests/test_settings.py
+"""System Settings integrates with the existing popup/xdg-toplevel pool."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+NATIVE = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+MAIN = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+INFO = (ROOT / "crates/kira-shell/src/system_info.rs").read_text()
+POOL = (ROOT / "crates/kira-shell/src/webview_pool.rs").read_text()
+GEOMETRY = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
+UI = (ROOT / "frontend/src/lib/components/SettingsWidget.svelte").read_text()
+ENTRY = (ROOT / "frontend/src/main.ts").read_text()
+APP = (ROOT / "frontend/src/App.svelte").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+CSS = (ROOT / "frontend/src/style.css").read_text()
+
+
+class SettingsContracts(unittest.TestCase):
+    def test_settings_is_a_normal_pool_surface_and_topbar_command(self):
+        self.assertIn('Settings,', POOL)
+        self.assertIn('Self::Settings => "settings"', POOL)
+        self.assertIn('kiraSettings', MAIN)
+        self.assertIn('calendar::toggle_settings(', MAIN)
+        self.assertIn('pub fn toggle_settings(', NATIVE)
+        self.assertIn('pool.request(', NATIVE)
+        self.assertIn('Surface::Settings,', NATIVE)
+        self.assertIn('view.show(Surface::Settings)', NATIVE)
+        self.assertIn('toggleSettings()', APP)
+        self.assertIn('aria-label="Open system settings"', APP)
+        self.assertIn('data-kira-surface="calendar"', NATIVE)
+
+    def test_fixed_widget_and_full_xdg_window_are_one_live_webview(self):
+        self.assertIn('pub const SETTINGS_POPUP_WIDTH: i32 = 600', GEOMETRY)
+        self.assertIn('popup_layout::settings_popup_width(output_width)', NATIVE)
+        self.assertIn('normal.set_default_size(940, 700)', NATIVE)
+        self.assertIn('normal.set_child(Some(&self.view))', NATIVE)
+        self.assertIn('window.dispatchEvent(new CustomEvent(\'kira:overlay:detached\'', NATIVE)
+        self.assertIn('data-settings-mode={detached ? \'window\' : \'widget\'}', UI)
+        self.assertIn('aria-label="Разделы настроек"', UI)
+        self.assertIn('id="kira-settings-section"', UI)
+        self.assertIn('height: min(560px, var(--kira-overlay-max-height, 560px))', CSS)
+        self.assertIn('html[data-kira-detached="true"] .kira-settings', CSS)
+        self.assertIn('onPopout', UI)
+        self.assertIn('onSettingsAbout(generation,', UI)
+
+    def test_no_arbitrary_executables_or_fake_system_values(self):
+        self.assertIn('read_text("/etc/os-release"', INFO)
+        self.assertIn('read_text("/proc/cpuinfo"', INFO)
+        self.assertIn('read_text("/proc/meminfo"', INFO)
+        self.assertIn('std::thread::available_parallelism()', INFO)
+        self.assertNotIn('std::process::Command', INFO)
+        self.assertNotIn('unwrap_or(0)', INFO)
+        self.assertIn('kira:settings:about', NATIVE)
+        self.assertIn('self.generation.get()', NATIVE)
+        self.assertIn('isSettingsAbout', SDK)
+        self.assertIn("value.generation === generation", SDK)
+        self.assertIn('kind === \'settings\'', ENTRY)
+        self.assertIn('Kira Settings', ENTRY)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
 FILE	tests/test_tenet_close.py
 """TENET reverse dismissal contract for every pooled WebView surface."""
 import unittest
@@ -18756,6 +19377,17 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("if (!detached)", CONTROLS.replace("{#if !detached}", "if (!detached)"))
         for name in ("CalendarWidget.svelte", "SystemWidget.svelte", "LauncherWidget.svelte"):
             self.assertIn("WindowControls", (ROOT / "frontend/src/lib/components" / name).read_text())
+
+    def test_settings_reuses_the_same_pool_and_native_window_lifecycle(self):
+        self.assertIn("Surface::Settings", HOST)
+        self.assertIn("pub fn toggle_settings(", HOST)
+        self.assertIn("view.show(Surface::Settings)", HOST)
+        self.assertIn("fn send_settings_about(&self)", HOST)
+        self.assertIn("kira:settings:about", HOST)
+        self.assertIn("self.settings_about.borrow_mut().take()", HOST)
+        self.assertIn('Surface::Settings => "Kira Settings"', HOST)
+        self.assertIn("normal.set_default_size(940, 700)", HOST)
+        self.assertIn("settings_popup_width(", HOST)
 
     def test_generation_isolation_and_safe_native_bridge(self):
         self.assertIn("let lastGeneration = 0", ENTRY)
