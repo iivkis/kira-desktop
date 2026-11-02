@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	8c1143fb0d90f2eb6795c40f9cedc52c685ee6c5
+C	516703e5347e6335d6dc1698ca15c841d59507a4
 F	.cargo/config.toml	98	141	3
 F	.github/workflows/ci.yml	4355	146	112
 F	.github/workflows/frontend-nix.yml	1398	260	43
@@ -37,98 +37,98 @@ F	crates/kira-ipc/Cargo.toml	170	2823	9
 F	crates/kira-ipc/src/client.rs	17794	2834	458
 F	crates/kira-ipc/src/lib.rs	10460	3294	336
 F	crates/kira-shell/Cargo.toml	297	3632	12
-F	crates/kira-shell/src/calendar.rs	70785	3646	1884
-F	crates/kira-shell/src/config_layers.rs	19239	5532	496
-F	crates/kira-shell/src/display_manager.rs	20641	6030	546
-F	crates/kira-shell/src/launcher.rs	14114	6578	392
-F	crates/kira-shell/src/main.rs	20787	6972	476
-F	crates/kira-shell/src/native_ui.rs	4536	7450	104
-F	crates/kira-shell/src/popup_layout.rs	2055	7556	58
-F	crates/kira-shell/src/process_monitor.rs	9336	7616	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	7904	116
-F	crates/kira-shell/src/system_info.rs	3951	8022	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8137	559
-F	crates/kira-shell/src/system_panel.rs	11356	8698	318
-F	crates/kira-shell/src/webview_pool.rs	8477	9018	249
-F	docs/CONFIG.md	5801	9269	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9396	135
-F	docs/DESIGN_SYSTEM.md	32126	9533	519
-F	docs/DEVELOPMENT.md	29347	10054	577
-F	docs/QA_VISUAL.md	12284	10633	149
-F	docs/SPECIFICATION.md	28960	10784	421
-F	docs/TENET_MOTION.md	40649	11207	204
-F	docs/UI_ARCHITECTURE.md	6737	11413	106
-F	docs/VISUAL_REVIEW.md	9754	11521	84
-F	docs/WEBVIEW_POOL.md	8591	11607	64
-F	flake.nix	3181	11673	91
-F	frontend/index.html	2737	11766	66
-F	frontend/package.json	720	11834	27
-F	frontend/scripts/inline-assets.mjs	4457	11863	103
-F	frontend/scripts/inline-assets.test.mjs	4645	11968	106
-F	frontend/scripts/smoke-overlays.mjs	42286	12076	582
-F	frontend/src/App.svelte	9665	12660	224
-F	frontend/src/lib/bootstrap.test.ts	3408	12886	84
-F	frontend/src/lib/bootstrap.ts	2613	12972	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13044	65
-F	frontend/src/lib/calendar-model.ts	4648	13111	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13218	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	13280	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	13311	287
-F	frontend/src/lib/clock-flight.test.ts	2404	13600	50
-F	frontend/src/lib/clock-flight.ts	1977	13652	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	13704	246
-F	frontend/src/lib/components/DisplaySettings.svelte	21886	13952	423
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	14377	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	14635	168
-F	frontend/src/lib/components/SystemCharts.svelte	10517	14805	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	15033	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	15081	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	15422	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15462	119
-F	frontend/src/lib/launcher-model.test.ts	2266	15583	46
-F	frontend/src/lib/launcher-model.ts	1403	15631	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	15662	89
-F	frontend/src/lib/lazy-widget.ts	1984	15753	63
-F	frontend/src/lib/motion-contract.test.ts	11242	15818	198
-F	frontend/src/lib/motion.ts	24039	16018	657
-F	frontend/src/lib/overlay-size.ts	1090	16677	29
-F	frontend/src/lib/sdk/core.test.ts	27884	16708	564
-F	frontend/src/lib/sdk/core.ts	25417	17274	645
-F	frontend/src/lib/settings-model.test.ts	1064	17921	21
-F	frontend/src/lib/settings-model.ts	1262	17944	26
-F	frontend/src/lib/system-charts.test.ts	6312	17972	141
-F	frontend/src/lib/system-charts.ts	5514	18115	149
-F	frontend/src/lib/system-health.test.ts	2385	18266	42
-F	frontend/src/lib/system-health.ts	2831	18310	60
-F	frontend/src/lib/system-model.test.ts	4455	18372	84
-F	frontend/src/lib/system-model.ts	5457	18458	125
-F	frontend/src/lib/themes/kira-default.css	1687	18585	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	18639	101
-F	frontend/src/lib/themes/kira-default.ts	777	18742	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	18766	101
-F	frontend/src/lib/time.test.ts	263	18869	8
-F	frontend/src/lib/time.ts	320	18879	9
-F	frontend/src/lib/workspace-window.test.ts	2298	18890	52
-F	frontend/src/lib/workspace-window.ts	1063	18944	32
-F	frontend/src/main.ts	7783	18978	161
-F	frontend/src/style.css	6399	19141	194
-F	frontend/tsconfig.json	403	19337	16
-F	frontend/vite.config.ts	224	19355	8
-F	nix/package.nix	3132	19365	117
-F	scripts/dev_preview.py	18147	19484	403	x
-F	scripts/qa_visual.py	12052	19889	299
-F	tests/test_calendar_design.py	7782	20190	136
-F	tests/test_detailed_health.py	5481	20328	105
-F	tests/test_dev_preview.py	9339	20435	219
-F	tests/test_displays.py	4101	20656	72
-F	tests/test_launcher_design.py	10481	20730	190
-F	tests/test_native_theme.py	2098	20922	44
-F	tests/test_popup_geometry.py	3227	20968	58
-F	tests/test_qa_visual.py	10549	21028	217
-F	tests/test_settings.py	3212	21247	62
-F	tests/test_tenet_close.py	6297	21311	115
-F	tests/test_ui_bootstrap_contract.py	1103	21428	29
-F	tests/test_webview_pool.py	7126	21459	130
+F	crates/kira-shell/src/calendar.rs	72300	3646	1914
+F	crates/kira-shell/src/config_layers.rs	19239	5562	496
+F	crates/kira-shell/src/display_manager.rs	20641	6060	546
+F	crates/kira-shell/src/launcher.rs	14114	6608	392
+F	crates/kira-shell/src/main.rs	21295	7002	486
+F	crates/kira-shell/src/native_ui.rs	4536	7490	104
+F	crates/kira-shell/src/popup_layout.rs	2055	7596	58
+F	crates/kira-shell/src/process_monitor.rs	9336	7656	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	7944	116
+F	crates/kira-shell/src/system_info.rs	3951	8062	113
+F	crates/kira-shell/src/system_metrics.rs	19842	8177	559
+F	crates/kira-shell/src/system_panel.rs	11356	8738	318
+F	crates/kira-shell/src/webview_pool.rs	8477	9058	249
+F	docs/CONFIG.md	5801	9309	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9436	135
+F	docs/DESIGN_SYSTEM.md	32126	9573	519
+F	docs/DEVELOPMENT.md	29347	10094	577
+F	docs/QA_VISUAL.md	12284	10673	149
+F	docs/SPECIFICATION.md	28960	10824	421
+F	docs/TENET_MOTION.md	40649	11247	204
+F	docs/UI_ARCHITECTURE.md	6737	11453	106
+F	docs/VISUAL_REVIEW.md	9754	11561	84
+F	docs/WEBVIEW_POOL.md	8591	11647	64
+F	flake.nix	3181	11713	91
+F	frontend/index.html	2737	11806	66
+F	frontend/package.json	720	11874	27
+F	frontend/scripts/inline-assets.mjs	4457	11903	103
+F	frontend/scripts/inline-assets.test.mjs	4645	12008	106
+F	frontend/scripts/smoke-overlays.mjs	42286	12116	582
+F	frontend/src/App.svelte	9665	12700	224
+F	frontend/src/lib/bootstrap.test.ts	3408	12926	84
+F	frontend/src/lib/bootstrap.ts	2613	13012	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13084	65
+F	frontend/src/lib/calendar-model.ts	4648	13151	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13258	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13320	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	13351	287
+F	frontend/src/lib/clock-flight.test.ts	2404	13640	50
+F	frontend/src/lib/clock-flight.ts	1977	13692	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	13744	246
+F	frontend/src/lib/components/DisplaySettings.svelte	21886	13992	423
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	14417	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	14675	168
+F	frontend/src/lib/components/SystemCharts.svelte	10517	14845	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	15073	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	15121	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	15462	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15502	119
+F	frontend/src/lib/launcher-model.test.ts	2266	15623	46
+F	frontend/src/lib/launcher-model.ts	1403	15671	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	15702	89
+F	frontend/src/lib/lazy-widget.ts	1984	15793	63
+F	frontend/src/lib/motion-contract.test.ts	11242	15858	198
+F	frontend/src/lib/motion.ts	24039	16058	657
+F	frontend/src/lib/overlay-size.ts	1090	16717	29
+F	frontend/src/lib/sdk/core.test.ts	27884	16748	564
+F	frontend/src/lib/sdk/core.ts	25417	17314	645
+F	frontend/src/lib/settings-model.test.ts	1064	17961	21
+F	frontend/src/lib/settings-model.ts	1262	17984	26
+F	frontend/src/lib/system-charts.test.ts	6312	18012	141
+F	frontend/src/lib/system-charts.ts	5514	18155	149
+F	frontend/src/lib/system-health.test.ts	2385	18306	42
+F	frontend/src/lib/system-health.ts	2831	18350	60
+F	frontend/src/lib/system-model.test.ts	4455	18412	84
+F	frontend/src/lib/system-model.ts	5457	18498	125
+F	frontend/src/lib/themes/kira-default.css	1687	18625	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	18679	101
+F	frontend/src/lib/themes/kira-default.ts	777	18782	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	18806	101
+F	frontend/src/lib/time.test.ts	263	18909	8
+F	frontend/src/lib/time.ts	320	18919	9
+F	frontend/src/lib/workspace-window.test.ts	2298	18930	52
+F	frontend/src/lib/workspace-window.ts	1063	18984	32
+F	frontend/src/main.ts	7783	19018	161
+F	frontend/src/style.css	6399	19181	194
+F	frontend/tsconfig.json	403	19377	16
+F	frontend/vite.config.ts	224	19395	8
+F	nix/package.nix	3132	19405	117
+F	scripts/dev_preview.py	18147	19524	403	x
+F	scripts/qa_visual.py	12052	19929	299
+F	tests/test_calendar_design.py	7782	20230	136
+F	tests/test_detailed_health.py	5481	20368	105
+F	tests/test_dev_preview.py	9339	20475	219
+F	tests/test_displays.py	4101	20696	72
+F	tests/test_launcher_design.py	10481	20770	190
+F	tests/test_native_theme.py	2098	20962	44
+F	tests/test_popup_geometry.py	3227	21008	58
+F	tests/test_qa_visual.py	10549	21068	217
+F	tests/test_settings.py	3212	21287	62
+F	tests/test_tenet_close.py	6297	21351	115
+F	tests/test_ui_bootstrap_contract.py	1103	21468	29
+F	tests/test_webview_pool.py	8503	21499	149
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3749,6 +3749,13 @@ impl OverlayPool {
             }
         };
         let view = self.windows.borrow().get(&id).cloned()?;
+        // An exhausted renderer must not be re-leased on the next click.
+        // Keep its slot quarantined until the Shell is restarted.
+        if view.disposed.get() {
+            self.scheduler.borrow_mut().release(id, Instant::now());
+            eprintln!("kira-shell: popup renderer unavailable after repeated crashes; restart Shell");
+            return None;
+        }
         self.ensure_polling();
         self.update_launcher_keyboard_mode();
         Some((view, existing))
@@ -3914,6 +3921,7 @@ struct CalendarOverlay {
     id: u32,
     pool: std::rc::Weak<OverlayPool>,
     disposed: Cell<bool>,
+    recovery: RefCell<crate::renderer_recovery::RendererRecovery>,
     window: gtk::ApplicationWindow,
     regular_window: RefCell<Option<gtk::ApplicationWindow>>,
     detached: Cell<bool>,
@@ -5139,6 +5147,7 @@ fn build(
         id,
         pool,
         disposed: Cell::new(false),
+        recovery: RefCell::new(crate::renderer_recovery::RendererRecovery::default()),
         window: window.clone(),
         regular_window: RefCell::new(None),
         detached: Cell::new(false),
@@ -5188,13 +5197,34 @@ fn build(
     });
     let weak = Rc::downgrade(&overlay);
     view.connect_web_process_terminated(move |_, reason| {
-        eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
-        if let Some(state) = weak.upgrade()
-            && !state.disposed.get()
-        {
-            state.host_ready.set(false);
-            state.hide();
-            state.view.load_html(&state.document, None);
+        use crate::renderer_recovery::RetryDecision;
+        let Some(state) = weak.upgrade() else {
+            return;
+        };
+        if state.disposed.get() {
+            return;
+        }
+        let decision = state.recovery.borrow_mut().on_terminated(Instant::now());
+        eprintln!("kira-shell: Popup WebKit renderer terminated ({reason:?}): {decision:?}");
+        state.host_ready.set(false);
+        // Quarantine before hide(), because hiding releases the lease and can
+        // immediately dispatch a queued popup request on this same slot.
+        if decision == RetryDecision::Exhausted {
+            state.disposed.set(true);
+        }
+        state.hide();
+        if let RetryDecision::After(delay) = decision {
+            // Reload outside the WebKit termination callback. Using the shared
+            // exponential backoff prevents a busy crash/restart loop.
+            let weak = Rc::downgrade(&state);
+            gtk::glib::timeout_add_local_once(delay, move || {
+                if let Some(state) = weak.upgrade()
+                    && !state.disposed.get()
+                {
+                    state.recovery.borrow_mut().retry_started();
+                    state.view.load_html(&state.document, None);
+                }
+            });
         }
     });
 
@@ -7078,8 +7108,18 @@ fn main() {
         .application_id("dev.kira.Desktop")
         .flags(flags)
         .build();
+    // GApplication may deliver repeated activate signals to the primary
+    // process (including a second kira-shell invocation). Reuse the existing
+    // layer-shell bar instead of duplicating contexts, IPC workers and timers.
+    let primary_bar: Rc<RefCell<Option<gtk::ApplicationWindow>>> =
+        Rc::new(RefCell::new(None));
     app.connect_activate(move |app| {
+        if let Some(window) = primary_bar.borrow().as_ref() {
+            window.present();
+            return;
+        }
         let window = gtk::ApplicationWindow::new(app);
+        primary_bar.replace(Some(window.clone()));
         window.set_title(Some("Kira Desktop"));
         window.set_decorated(false);
         window.set_default_size(800, BAR_HEIGHT);
@@ -21473,6 +21513,14 @@ SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
 
 
 class WebviewPoolContracts(unittest.TestCase):
+    def test_repeated_activation_reuses_existing_bar_and_workers(self):
+        self.assertIn("let primary_bar: Rc<RefCell<Option<gtk::ApplicationWindow>>>", SHELL)
+        activation = SHELL.split("app.connect_activate(move |app| {", 1)[1]
+        self.assertLess(activation.index("if let Some(window) = primary_bar.borrow().as_ref()"),
+                        activation.index("let context = webkit6::WebContext::new()"))
+        self.assertIn("primary_bar.replace(Some(window.clone()));", activation)
+        self.assertIn("window.present();\n            return;", activation)
+
     def test_one_shared_context_for_bar_and_all_popup_leases(self):
         self.assertEqual(SHELL.count("webkit6::WebContext::new()"), 1)
         self.assertNotIn("webkit6::WebContext::new()", HOST)
@@ -21505,6 +21553,17 @@ class WebviewPoolContracts(unittest.TestCase):
         )
         self.assertNotIn("set_cache_model(", HOST)
         self.assertIn("context: context.clone(),", HOST)
+
+    def test_popup_recovery_reuses_bounded_backoff_and_quarantines_failures(self):
+        self.assertIn("recovery: RefCell<crate::renderer_recovery::RendererRecovery>", HOST)
+        self.assertIn("state.recovery.borrow_mut().on_terminated(Instant::now())", HOST)
+        self.assertIn("gtk::glib::timeout_add_local_once(delay, move ||", HOST)
+        self.assertIn("state.recovery.borrow_mut().retry_started()", HOST)
+        self.assertIn("if decision == RetryDecision::Exhausted", HOST)
+        self.assertIn("state.disposed.set(true);", HOST)
+        self.assertIn("if view.disposed.get()", HOST)
+        handler = HOST.split("view.connect_web_process_terminated(move |_, reason|", 1)[1]
+        self.assertNotIn("state.view.load_html(&state.document, None);\n        }\n    });", handler)
 
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
