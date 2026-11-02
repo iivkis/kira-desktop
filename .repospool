@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	c9dece6833c11d804242dc64864e20963558f72d
+C	710bd2d55f4cf937b2b4d62fd966463bc508e75a
 F	.cargo/config.toml	98	122	3
 F	.github/workflows/ci.yml	4355	127	112
 F	.github/workflows/frontend-nix.yml	1398	241	43
@@ -69,47 +69,47 @@ F	frontend/src/lib/calendar-tenet-model.ts	1247	10172	29
 F	frontend/src/lib/calendar-tenet-motion.ts	11523	10203	318
 F	frontend/src/lib/clock-flight.test.ts	2404	10523	50
 F	frontend/src/lib/clock-flight.ts	1977	10575	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11726	10627	243
-F	frontend/src/lib/components/LauncherWidget.svelte	8274	10872	176
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11050	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11278	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11323	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11645	61
-F	frontend/src/lib/launcher-model.test.ts	1370	11708	29
-F	frontend/src/lib/launcher-model.ts	778	11739	18
-F	frontend/src/lib/lazy-widget.test.ts	3236	11759	89
-F	frontend/src/lib/lazy-widget.ts	1984	11850	63
-F	frontend/src/lib/motion.ts	1597	11915	50
-F	frontend/src/lib/overlay-size.ts	1090	11967	29
-F	frontend/src/lib/sdk/core.test.ts	22258	11998	444
-F	frontend/src/lib/sdk/core.ts	17793	12444	473
-F	frontend/src/lib/system-charts.test.ts	6312	12919	141
-F	frontend/src/lib/system-charts.ts	5514	13062	149
-F	frontend/src/lib/system-health.test.ts	2385	13213	42
-F	frontend/src/lib/system-health.ts	2831	13257	60
-F	frontend/src/lib/system-model.test.ts	4455	13319	84
-F	frontend/src/lib/system-model.ts	5457	13405	125
-F	frontend/src/lib/themes/kira-default.css	1687	13532	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13586	101
-F	frontend/src/lib/themes/kira-default.ts	777	13689	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	13713	79
-F	frontend/src/lib/time.test.ts	263	13794	8
-F	frontend/src/lib/time.ts	320	13804	9
-F	frontend/src/main.ts	5907	13815	127
-F	frontend/src/style.css	3817	13944	121
-F	frontend/tsconfig.json	403	14067	16
-F	frontend/vite.config.ts	224	14085	8
-F	nix/package.nix	3132	14095	117
-F	scripts/dev_preview.py	18147	14214	403	x
-F	scripts/qa_visual.py	12052	14619	299
-F	tests/test_calendar_design.py	7384	14920	130
-F	tests/test_detailed_health.py	5429	15052	105
-F	tests/test_dev_preview.py	9339	15159	219
-F	tests/test_launcher_design.py	9956	15380	182
-F	tests/test_native_theme.py	1567	15564	36
-F	tests/test_popup_geometry.py	6956	15602	118
-F	tests/test_qa_visual.py	10549	15722	217
-F	tests/test_ui_bootstrap_contract.py	1103	15941	29
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10627	239
+F	frontend/src/lib/components/LauncherWidget.svelte	8274	10868	176
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11046	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11274	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11319	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11641	61
+F	frontend/src/lib/launcher-model.test.ts	1370	11704	29
+F	frontend/src/lib/launcher-model.ts	778	11735	18
+F	frontend/src/lib/lazy-widget.test.ts	3236	11755	89
+F	frontend/src/lib/lazy-widget.ts	1984	11846	63
+F	frontend/src/lib/motion.ts	1597	11911	50
+F	frontend/src/lib/overlay-size.ts	1090	11963	29
+F	frontend/src/lib/sdk/core.test.ts	22258	11994	444
+F	frontend/src/lib/sdk/core.ts	17793	12440	473
+F	frontend/src/lib/system-charts.test.ts	6312	12915	141
+F	frontend/src/lib/system-charts.ts	5514	13058	149
+F	frontend/src/lib/system-health.test.ts	2385	13209	42
+F	frontend/src/lib/system-health.ts	2831	13253	60
+F	frontend/src/lib/system-model.test.ts	4455	13315	84
+F	frontend/src/lib/system-model.ts	5457	13401	125
+F	frontend/src/lib/themes/kira-default.css	1687	13528	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13582	101
+F	frontend/src/lib/themes/kira-default.ts	777	13685	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	13709	79
+F	frontend/src/lib/time.test.ts	263	13790	8
+F	frontend/src/lib/time.ts	320	13800	9
+F	frontend/src/main.ts	5907	13811	127
+F	frontend/src/style.css	3817	13940	121
+F	frontend/tsconfig.json	403	14063	16
+F	frontend/vite.config.ts	224	14081	8
+F	nix/package.nix	3132	14091	117
+F	scripts/dev_preview.py	18147	14210	403	x
+F	scripts/qa_visual.py	12052	14615	299
+F	tests/test_calendar_design.py	7384	14916	130
+F	tests/test_detailed_health.py	5429	15048	105
+F	tests/test_dev_preview.py	9339	15155	219
+F	tests/test_launcher_design.py	9956	15376	182
+F	tests/test_native_theme.py	1567	15560	36
+F	tests/test_popup_geometry.py	6956	15598	118
+F	tests/test_qa_visual.py	10549	15718	217
+F	tests/test_ui_bootstrap_contract.py	1103	15937	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -10831,10 +10831,6 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
           {/if}
         {/each}
       {/each}
-    </div>
-    <div class="mt-2 flex items-center justify-between text-[9px] font-semibold tracking-wide text-kira-muted">
-      <span>MON / SUN · ISO WEEKS</span>
-      <span><span class="text-kira-accent">_</span> TODAY</span>
     </div>
   </section>
 
