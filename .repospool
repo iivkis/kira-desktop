@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4752
+index_bytes=4889
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,104 +15,107 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	70a1c76115e5e36b76c6b50d7ce0075ec3a2ccb8
-F	.cargo/config.toml	98	125	3
-F	.github/workflows/ci.yml	4355	130	112
-F	.github/workflows/frontend-nix.yml	1398	244	43
-F	.github/workflows/nix.yml	1258	289	38
-F	.github/workflows/overlay-smoke.yml	1064	329	40
-F	.github/workflows/publish-repospool.yml	3048	371	83
-F	.gitignore	178	456	11
-F	.repospoolignore	1028	469	47
-F	AGENTS.md	4435	518	75
-F	Cargo.toml	494	595	22
-F	README.md	11269	619	248
-F	Taskfile.yml	5957	869	185
-F	config/kira.kdl.example	358	1056	8
-F	crates/kira-core/Cargo.toml	207	1066	10
-F	crates/kira-core/src/config.rs	15217	1078	399
-F	crates/kira-core/src/main.rs	32080	1479	839
-F	crates/kira-core/src/niri.rs	16767	2320	453
-F	crates/kira-ipc/Cargo.toml	170	2775	9
-F	crates/kira-ipc/src/client.rs	17794	2786	458
-F	crates/kira-ipc/src/lib.rs	10460	3246	336
-F	crates/kira-shell/Cargo.toml	297	3584	12
-F	crates/kira-shell/src/calendar.rs	39739	3598	1064
-F	crates/kira-shell/src/launcher.rs	14114	4664	392
-F	crates/kira-shell/src/main.rs	19285	5058	447
-F	crates/kira-shell/src/native_ui.rs	2857	5507	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5582	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5870	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5988	559
-F	crates/kira-shell/src/system_panel.rs	11356	6549	318
-F	docs/CONFIG.md	5801	6869	125
-F	docs/DESIGN_SYSTEM.md	28474	6996	473
-F	docs/DEVELOPMENT.md	29347	7471	577
-F	docs/QA_VISUAL.md	12284	8050	149
-F	docs/SPECIFICATION.md	28960	8201	421
-F	docs/TENET_MOTION.md	26075	8624	204
-F	docs/UI_ARCHITECTURE.md	6737	8830	106
-F	docs/VISUAL_REVIEW.md	9754	8938	84
-F	flake.nix	3181	9024	91
-F	frontend/index.html	2737	9117	66
-F	frontend/package.json	720	9185	27
-F	frontend/scripts/inline-assets.mjs	4457	9214	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9319	106
-F	frontend/scripts/smoke-overlays.mjs	25846	9427	367
-F	frontend/src/App.svelte	8589	9796	207
-F	frontend/src/lib/bootstrap.test.ts	3408	10005	84
-F	frontend/src/lib/bootstrap.ts	2613	10091	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10163	65
-F	frontend/src/lib/calendar-model.ts	4648	10230	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10337	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10399	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10490	10430	285
-F	frontend/src/lib/clock-flight.test.ts	2404	10717	50
-F	frontend/src/lib/clock-flight.ts	1977	10769	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10821	239
-F	frontend/src/lib/components/LauncherWidget.svelte	10868	11062	232
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11296	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	11524	46
-F	frontend/src/lib/components/SystemWidget.svelte	18129	11572	321
-F	frontend/src/lib/components/WorkspacePreview.svelte	5560	11895	110
-F	frontend/src/lib/launcher-model.test.ts	2266	12007	46
-F	frontend/src/lib/launcher-model.ts	1403	12055	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12086	89
-F	frontend/src/lib/lazy-widget.ts	1984	12177	63
-F	frontend/src/lib/motion-contract.test.ts	3612	12242	68
-F	frontend/src/lib/motion.ts	6603	12312	191
-F	frontend/src/lib/overlay-size.ts	1090	12505	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12536	444
-F	frontend/src/lib/sdk/core.ts	17793	12982	473
-F	frontend/src/lib/system-charts.test.ts	6312	13457	141
-F	frontend/src/lib/system-charts.ts	5514	13600	149
-F	frontend/src/lib/system-health.test.ts	2385	13751	42
-F	frontend/src/lib/system-health.ts	2831	13795	60
-F	frontend/src/lib/system-model.test.ts	4455	13857	84
-F	frontend/src/lib/system-model.ts	5457	13943	125
-F	frontend/src/lib/themes/kira-default.css	1687	14070	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	14124	101
-F	frontend/src/lib/themes/kira-default.ts	777	14227	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5400	14251	97
-F	frontend/src/lib/time.test.ts	263	14350	8
-F	frontend/src/lib/time.ts	320	14360	9
-F	frontend/src/lib/workspace-window.test.ts	2298	14371	52
-F	frontend/src/lib/workspace-window.ts	1063	14425	32
-F	frontend/src/main.ts	6171	14459	131
-F	frontend/src/style.css	3817	14592	121
-F	frontend/tsconfig.json	403	14715	16
-F	frontend/vite.config.ts	224	14733	8
-F	nix/package.nix	3132	14743	117
-F	scripts/dev_preview.py	18147	14862	403	x
-F	scripts/qa_visual.py	12052	15267	299
-F	tests/test_calendar_design.py	7384	15568	130
-F	tests/test_detailed_health.py	5429	15700	105
-F	tests/test_dev_preview.py	9339	15807	219
-F	tests/test_launcher_design.py	10400	16028	189
-F	tests/test_native_theme.py	1567	16219	36
-F	tests/test_popup_geometry.py	6956	16257	118
-F	tests/test_qa_visual.py	10549	16377	217
-F	tests/test_ui_bootstrap_contract.py	1103	16596	29
+C	8b666b6a4d804edd761a49918287068bf1020697
+F	.cargo/config.toml	98	128	3
+F	.github/workflows/ci.yml	4355	133	112
+F	.github/workflows/frontend-nix.yml	1398	247	43
+F	.github/workflows/nix.yml	1258	292	38
+F	.github/workflows/overlay-smoke.yml	1064	332	40
+F	.github/workflows/publish-repospool.yml	3048	374	83
+F	.gitignore	178	459	11
+F	.repospoolignore	1028	472	47
+F	AGENTS.md	5193	521	86
+F	Cargo.toml	494	609	22
+F	README.md	11269	633	248
+F	Taskfile.yml	5957	883	185
+F	config/kira.kdl.example	358	1070	8
+F	crates/kira-core/Cargo.toml	207	1080	10
+F	crates/kira-core/src/config.rs	15217	1092	399
+F	crates/kira-core/src/main.rs	32080	1493	839
+F	crates/kira-core/src/niri.rs	16767	2334	453
+F	crates/kira-ipc/Cargo.toml	170	2789	9
+F	crates/kira-ipc/src/client.rs	17794	2800	458
+F	crates/kira-ipc/src/lib.rs	10460	3260	336
+F	crates/kira-shell/Cargo.toml	297	3598	12
+F	crates/kira-shell/src/calendar.rs	48940	3612	1321
+F	crates/kira-shell/src/launcher.rs	14114	4935	392
+F	crates/kira-shell/src/main.rs	19303	5329	448
+F	crates/kira-shell/src/native_ui.rs	3558	5779	91
+F	crates/kira-shell/src/process_monitor.rs	9336	5872	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6160	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6278	559
+F	crates/kira-shell/src/system_panel.rs	11356	6839	318
+F	crates/kira-shell/src/webview_pool.rs	7991	7159	237
+F	docs/CONFIG.md	5801	7398	125
+F	docs/DESIGN_SYSTEM.md	30949	7525	501
+F	docs/DEVELOPMENT.md	29347	8028	577
+F	docs/QA_VISUAL.md	12284	8607	149
+F	docs/SPECIFICATION.md	28960	8758	421
+F	docs/TENET_MOTION.md	34134	9181	186
+F	docs/UI_ARCHITECTURE.md	6737	9369	106
+F	docs/VISUAL_REVIEW.md	9754	9477	84
+F	docs/WEBVIEW_POOL.md	4518	9563	31
+F	flake.nix	3181	9596	91
+F	frontend/index.html	2737	9689	66
+F	frontend/package.json	720	9757	27
+F	frontend/scripts/inline-assets.mjs	4457	9786	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9891	106
+F	frontend/scripts/smoke-overlays.mjs	29174	9999	414
+F	frontend/src/App.svelte	8589	10415	207
+F	frontend/src/lib/bootstrap.test.ts	3408	10624	84
+F	frontend/src/lib/bootstrap.ts	2613	10710	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10782	65
+F	frontend/src/lib/calendar-model.ts	4648	10849	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10956	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11018	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11049	287
+F	frontend/src/lib/clock-flight.test.ts	2404	11338	50
+F	frontend/src/lib/clock-flight.ts	1977	11390	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11790	11442	244
+F	frontend/src/lib/components/LauncherWidget.svelte	11841	11688	253
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11943	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	12171	46
+F	frontend/src/lib/components/SystemWidget.svelte	19143	12219	337
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	12558	119
+F	frontend/src/lib/launcher-model.test.ts	2266	12679	46
+F	frontend/src/lib/launcher-model.ts	1403	12727	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12758	89
+F	frontend/src/lib/lazy-widget.ts	1984	12849	63
+F	frontend/src/lib/motion-contract.test.ts	8191	12914	148
+F	frontend/src/lib/motion.ts	18295	13064	512
+F	frontend/src/lib/overlay-size.ts	1090	13578	29
+F	frontend/src/lib/sdk/core.test.ts	22478	13609	447
+F	frontend/src/lib/sdk/core.ts	18781	14058	485
+F	frontend/src/lib/system-charts.test.ts	6312	14545	141
+F	frontend/src/lib/system-charts.ts	5514	14688	149
+F	frontend/src/lib/system-health.test.ts	2385	14839	42
+F	frontend/src/lib/system-health.ts	2831	14883	60
+F	frontend/src/lib/system-model.test.ts	4455	14945	84
+F	frontend/src/lib/system-model.ts	5457	15031	125
+F	frontend/src/lib/themes/kira-default.css	1687	15158	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	15212	101
+F	frontend/src/lib/themes/kira-default.ts	777	15315	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	15339	101
+F	frontend/src/lib/time.test.ts	263	15442	8
+F	frontend/src/lib/time.ts	320	15452	9
+F	frontend/src/lib/workspace-window.test.ts	2298	15463	52
+F	frontend/src/lib/workspace-window.ts	1063	15517	32
+F	frontend/src/main.ts	7007	15551	146
+F	frontend/src/style.css	4406	15699	134
+F	frontend/tsconfig.json	403	15835	16
+F	frontend/vite.config.ts	224	15853	8
+F	nix/package.nix	3132	15863	117
+F	scripts/dev_preview.py	18147	15982	403	x
+F	scripts/qa_visual.py	12052	16387	299
+F	tests/test_calendar_design.py	7810	16688	136
+F	tests/test_detailed_health.py	5481	16826	105
+F	tests/test_dev_preview.py	9339	16933	219
+F	tests/test_launcher_design.py	10471	17154	190
+F	tests/test_native_theme.py	1567	17346	36
+F	tests/test_popup_geometry.py	6542	17384	110
+F	tests/test_qa_visual.py	10549	17496	217
+F	tests/test_ui_bootstrap_contract.py	1103	17715	29
+F	tests/test_webview_pool.py	3689	17746	69
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -526,7 +529,12 @@ This includes GSAP effects, ECharts transitions, GTK/native visual motion,
 hover/focus reactions, animated data readouts, and future widgets.
 
 The five required laws are **Reverse Causality, Dual Time Flow, Physical
-Continuity, Temporal Memory, and Causal Consistency**. For each animation:
+Continuity, Temporal Memory, and Causal Consistency**. In addition, **flow and
+elastic continuity are mandatory for every moving selection, highlight, widget
+entrance and component transition**: a shared visual element must travel from
+its current geometry to the next, never blink between separate instances.
+Keep GSAP transitions interruptible and spring settling restrained.
+For each animation:
 
 - Choose FORWARD (+1), INVERTED (-1), or a synchronized DUAL scene **by
   event sequence**, never by merely reversing the CSS direction or axis.
@@ -570,6 +578,12 @@ acceptance, in addition to the TENET motion principles.
 - Respect `prefers-reduced-motion` everywhere, and retain accessible labels,
   meaningful numeric fallback text, keyboard focus and functional no-motion UI.
   Never animate fake data into a chart or replace missing sensor data with zero.
+- **WebView Pool:** Read [docs/WEBVIEW_POOL.md](docs/WEBVIEW_POOL.md) before
+  modifying native popup lifecycle, scheduling or rotation. Start exactly one
+  inert warm host; acquire additional popup hosts only on demand, up to the
+  fixed cap. Never recycle or reposition an active WebView to show another
+  widget. Reuse one hot idle view, retire surplus idle views after 45 seconds,
+  and reject stale generation-scoped UI commands.
 - **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
   ECharts and GSAP effects on mount, resize charts when geometry changes,
   dispose chart instances, kill GSAP tweens and detach observers on unmount.
@@ -3595,9 +3609,11 @@ kira-ipc = { path = "../kira-ipc" }
 serde_json.workspace = true
 
 FILE	crates/kira-shell/src/calendar.rs
-//! One warm WebKit layer-shell host shared by the Svelte Calendar and System.
-//! GTK owns one window, trusted IPC and clipboard; Svelte renders both widgets.
+//! Bounded, reusable GTK/WebKit popup hosts for concurrent trusted widgets.
+//! Each active Calendar/System/Launcher has its own window and IPC manager.
+use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::cell::{Cell, RefCell};
+use std::collections::HashMap;
 use std::rc::Rc;
 use std::time::{Duration, Instant};
 
@@ -3606,32 +3622,174 @@ use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
 
 const TITLE: &str = "Kira Overlay";
+// Native fade stays intentionally shorter than the GSAP content landing.
+const OVERLAY_FADE_MS: u64 = 160;
+
+fn native_fade_progress(elapsed: Duration) -> f64 {
+    let t = (elapsed.as_secs_f64() / Duration::from_millis(OVERLAY_FADE_MS).as_secs_f64())
+        .clamp(0.0, 1.0);
+    1.0 - (1.0 - t).powi(3)
+}
 const CALENDAR_MARKER: &str = "<html lang=\"en\">";
 const CALENDAR_SURFACE: &str = "<html lang=\"en\" data-kira-surface=\"calendar\">";
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum Surface {
-    Calendar,
-    System,
-    Launcher,
+thread_local! {
+    static POOL: RefCell<Option<Rc<OverlayPool>>> = const { RefCell::new(None) };
 }
 
-impl Surface {
-    fn name(self) -> &'static str {
-        match self {
-            Self::Calendar => "calendar",
-            Self::System => "system",
-            Self::Launcher => "launcher",
+/// Top Bar is permanently separate. Only one of these hosts is prewarmed;
+/// extra popup WebViews are created on actual concurrent requests.
+struct OverlayPool {
+    application: gtk::Application,
+    document: String,
+    scheduler: RefCell<WebviewScheduler>,
+    windows: RefCell<HashMap<u32, Rc<CalendarOverlay>>>,
+    poll_source: RefCell<Option<gtk::glib::SourceId>>,
+    last_tick: Cell<Instant>,
+}
+
+impl OverlayPool {
+    fn new(application: &gtk::Application, document: String) -> Rc<Self> {
+        let pool = Rc::new(Self {
+            application: application.clone(),
+            document,
+            scheduler: RefCell::new(WebviewScheduler::default()),
+            windows: RefCell::new(HashMap::new()),
+            poll_source: RefCell::new(None),
+            last_tick: Cell::new(Instant::now()),
+        });
+        if let Some(id) = pool.scheduler.borrow_mut().prewarm_one(Instant::now()) {
+            let view = build(
+                &pool.application,
+                pool.document.clone(),
+                id,
+                Rc::downgrade(&pool),
+            );
+            pool.windows.borrow_mut().insert(id, view);
+        }
+        let weak = Rc::downgrade(&pool);
+        gtk::glib::timeout_add_local(Duration::from_secs(5), move || {
+            let Some(pool) = weak.upgrade() else {
+                return gtk::glib::ControlFlow::Break;
+            };
+            pool.prune();
+            gtk::glib::ControlFlow::Continue
+        });
+        pool
+    }
+
+    fn acquire(self: &Rc<Self>, kind: Surface) -> Option<(Rc<CalendarOverlay>, bool)> {
+        let choice = self.scheduler.borrow_mut().reserve(kind, Instant::now());
+        let (id, existing) = match choice {
+            Reservation::Existing(id) => (id, true),
+            Reservation::Reused(id) => (id, false),
+            Reservation::Created(id) => {
+                let view = build(
+                    &self.application,
+                    self.document.clone(),
+                    id,
+                    Rc::downgrade(self),
+                );
+                self.windows.borrow_mut().insert(id, view);
+                (id, false)
+            }
+            Reservation::Full => {
+                eprintln!("kira-shell: popup pool full; active widgets never evicted");
+                return None;
+            }
+        };
+        let view = self.windows.borrow().get(&id).cloned()?;
+        self.ensure_polling();
+        self.update_launcher_keyboard_mode();
+        Some((view, existing))
+    }
+
+    /// Exactly one GTK source serves all concurrently leased hosts. A warm
+    /// idle WebView has ZERO 30/250ms pollers, unlike the legacy per-window
+    /// timers. The source tears itself down once the last lease is released.
+    fn ensure_polling(self: &Rc<Self>) {
+        if self.poll_source.borrow().is_some() {
+            return;
+        }
+        self.last_tick.set(Instant::now());
+        let weak = Rc::downgrade(self);
+        let source = gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
+            let Some(pool) = weak.upgrade() else {
+                return gtk::glib::ControlFlow::Break;
+            };
+            if pool.scheduler.borrow().active_count() == 0 {
+                pool.poll_source.borrow_mut().take();
+                return gtk::glib::ControlFlow::Break;
+            }
+            // Snapshot owned handles before calling poll_launcher(): a
+            // successful GIO launch may close its own slot mid-iteration.
+            let active: Vec<_> = pool
+                .windows
+                .borrow()
+                .values()
+                .filter(|view| view.requested.get())
+                .cloned()
+                .collect();
+            for view in &active {
+                view.poll_launcher();
+                view.poll_pulse();
+            }
+            if pool.last_tick.get().elapsed() >= Duration::from_millis(250) {
+                pool.last_tick.set(Instant::now());
+                for view in &active {
+                    view.tick();
+                }
+            }
+            gtk::glib::ControlFlow::Continue
+        });
+        self.poll_source.replace(Some(source));
+    }
+
+    fn active(&self, kind: Surface) -> Option<Rc<CalendarOverlay>> {
+        let id = self.scheduler.borrow().active_slot(kind)?;
+        self.windows.borrow().get(&id).cloned()
+    }
+
+    fn release(&self, id: u32) {
+        self.scheduler.borrow_mut().release(id, Instant::now());
+        self.update_launcher_keyboard_mode();
+    }
+
+    fn update_launcher_keyboard_mode(&self) {
+        // Exclusive is useful for an isolated type-to-search Launcher but
+        // blocks interaction with other simultaneously visible windows.
+        // Keep its solo behavior; use OnDemand with multiple popup leases.
+        if let Some(launcher) = self.active(Surface::Launcher) {
+            launcher.window.set_keyboard_mode(if self.concurrent() {
+                KeyboardMode::OnDemand
+            } else {
+                KeyboardMode::Exclusive
+            });
+        }
+    }
+
+    fn concurrent(&self) -> bool {
+        self.scheduler.borrow().active_count() > 1
+    }
+
+    fn prune(&self) {
+        let expired = self.scheduler.borrow_mut().expired_idle(Instant::now());
+        for id in expired {
+            let retired = { self.windows.borrow_mut().remove(&id) };
+            if let Some(view) = retired {
+                view.disposed.set(true);
+                // Never close an active window. This reclaims surplus idle
+                // WebKit processes, keeping only the newest hot spare.
+                view.window.close();
+            }
         }
     }
 }
 
-thread_local! {
-    // One GTK/WebKit host, shared by every built-in overlay type.
-    static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>> = const { RefCell::new(None) };
-}
-
 struct CalendarOverlay {
+    id: u32,
+    pool: std::rc::Weak<OverlayPool>,
+    disposed: Cell<bool>,
     window: gtk::ApplicationWindow,
     view: webkit6::WebView,
     document: String,
@@ -3643,8 +3801,8 @@ struct CalendarOverlay {
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
-    reposition_pending: Cell<bool>,
     revealed: Cell<bool>,
+    native_reduced_motion: Cell<bool>,
     paint_pending: Cell<bool>,
     generation: Cell<u32>,
     was_active: Cell<bool>,
@@ -3679,17 +3837,24 @@ impl CalendarOverlay {
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            self.window.set_margin(Edge::Right, 12);
+            self.window.set_margin(
+                Edge::Right,
+                crate::native_ui::popup_right_margin(&self.window, kind == Surface::System),
+            );
         }
     }
 
     fn hide(&self) {
-        self.requested.set(false);
-        self.reposition_pending.set(false);
+        if !self.requested.replace(false) {
+            return;
+        }
         if let Some(model) = self.system.borrow().as_ref() {
             model.set_processes_active(false);
             model.set_pulse_active(false);
         }
+        // Idle WebKit is warm, but it must retain no live sampler or
+        // expensive widget-specific model from a previous lease.
+        self.system.borrow_mut().take();
         self.active.set(None);
         self.launcher.borrow_mut().take();
         self.widget_ready.set(false);
@@ -3717,45 +3882,31 @@ impl CalendarOverlay {
             );
         }
         self.window.set_visible(false);
+        if let Some(pool) = self.pool.upgrade() {
+            pool.release(self.id);
+        }
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // Moving an already mapped layer-shell surface causes Niri to display
-        // its previous WebKit buffer for a frame at the NEW coordinates.
-        // Unmap first and allow the compositor to process that unmap in a
-        // different main-loop iteration before remapping at the new anchors.
-        // Switching Calendar <-> System keeps its instant in-place path.
-        let relocating = self.window.is_visible()
-            && self
-                .active
-                .get()
-                .is_some_and(|old| (old == Surface::Launcher) != (kind == Surface::Launcher));
-        let defer_present = relocating || self.reposition_pending.get();
-        if relocating {
-            // Unmapping can trigger is_active_notify: it must not count as
-            // an outside click that closes the *new* popup.
-            self.was_active.set(false);
-            self.window.set_visible(false);
-        }
-        self.reposition_pending.set(defer_present);
-
-        if self.active.get() == Some(Surface::System) && kind != Surface::System {
-            if let Some(model) = self.system.borrow().as_ref() {
-                model.set_processes_active(false);
-                model.set_pulse_active(false);
-            }
-        }
+        // Dedicated leased WebView: no preceding Svelte widget is unmounted
+        // and no other Wayland popup is ever unmapped to start this scene.
+        debug_assert!(!self.requested.get());
         self.position_for(kind);
         self.active.set(Some(kind));
         // The launcher needs reliable keyboard focus for type-to-search;
         // other popups preserve their former on-demand keyboard behavior.
-        self.window.set_keyboard_mode(if kind == Surface::Launcher {
-            KeyboardMode::Exclusive
-        } else {
-            KeyboardMode::OnDemand
-        });
+        self.window.set_keyboard_mode(
+            if kind == Surface::Launcher
+                && self.pool.upgrade().is_some_and(|pool| !pool.concurrent())
+            {
+                KeyboardMode::Exclusive
+            } else {
+                KeyboardMode::OnDemand
+            },
+        );
         self.requested.set(true);
         self.revealed.set(false);
+        self.native_reduced_motion.set(false);
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.paint_pending.set(false);
@@ -3770,33 +3921,15 @@ impl CalendarOverlay {
         // Reset the previous widget's geometry while still transparent.
         crate::native_ui::resize_webview_popup(&self.window, 420, 1);
         let generation = self.generation.get();
-        if defer_present {
-            // Start replacing the Svelte DOM while the old buffer is NOT
-            // mapped. The window is revealed only after the new generation
-            // has mounted and painted (or the verified-DOM fallback runs).
-            self.request_mount();
-            let weak = Rc::downgrade(self);
-            gtk::glib::timeout_add_local_once(Duration::from_millis(32), move || {
-                if let Some(state) = weak.upgrade()
-                    && state.requested.get()
-                    && state.generation.get() == generation
-                {
-                    state.reposition_pending.set(false);
-                    state.window.present();
-                }
-            });
-        } else {
-            self.window.present();
-            self.request_mount();
-        }
+        self.window.present();
+        self.request_mount();
         eprintln!(
-            "kira-shell: Overlay requested: {} generation {} (host ready: {}, reposition: {})",
+            "kira-shell: Pooled popup {} slot {} generation {} (host ready: {})",
             kind.name(),
+            self.id,
             generation,
-            self.host_ready.get(),
-            defer_present
+            self.host_ready.get()
         );
-
         // A dead renderer should not leave an invisible focus-stealing popup.
         let generation = self.generation.get();
         let weak = Rc::downgrade(self);
@@ -3818,7 +3951,7 @@ impl CalendarOverlay {
     }
 
     fn request_mount(&self) {
-        if !self.requested.get() || !self.host_ready.get() {
+        if self.disposed.get() || !self.requested.get() || !self.host_ready.get() {
             return;
         }
         let generation = self.generation.get();
@@ -3894,16 +4027,46 @@ impl CalendarOverlay {
         });
     }
 
-    fn reveal(&self) {
+    fn reveal(self: &Rc<Self>) {
         if self.revealed.replace(true) {
             return;
         }
         self.paint_pending.set(false);
-        self.window.set_opacity(1.0);
-        // The WebKit widget was mounted while GTK opacity was zero.
-        // Starting GSAP at mount plays the entrance behind an invisible
-        // Wayland surface. Tell the current generation that the *native*
-        // window is now visible; the widget action starts only then.
+        if self.native_reduced_motion.get() {
+            self.window.set_opacity(1.0);
+        } else {
+            // Animate only the already-sized, already-painted native surface.
+            // Never animate geometry: Niri must not see a 1px or drifting popup.
+            let generation = self.generation.get();
+            let started = Instant::now();
+            let weak = Rc::downgrade(self);
+            gtk::glib::timeout_add_local(Duration::from_millis(16), move || {
+                let Some(state) = weak.upgrade() else {
+                    return gtk::glib::ControlFlow::Break;
+                };
+                // A previous opening cannot fade a newer generation.
+                if !state.requested.get()
+                    || !state.revealed.get()
+                    || state.generation.get() != generation
+                {
+                    return gtk::glib::ControlFlow::Break;
+                }
+                if state.native_reduced_motion.get() {
+                    state.window.set_opacity(1.0);
+                    return gtk::glib::ControlFlow::Break;
+                }
+                let elapsed = started.elapsed();
+                state.window.set_opacity(native_fade_progress(elapsed));
+                if elapsed >= Duration::from_millis(OVERLAY_FADE_MS) {
+                    state.window.set_opacity(1.0);
+                    gtk::glib::ControlFlow::Break
+                } else {
+                    gtk::glib::ControlFlow::Continue
+                }
+            });
+        }
+        // Trigger the matching GSAP scene at the START of native compositing.
+        // Both tracks now share one visible opening instead of two jumps.
         let generation = self.generation.get();
         let script = format!(
             "window.dispatchEvent(new CustomEvent('kira:overlay:visible', {{ detail: {{ generation: {generation} }} }}));"
@@ -3928,15 +4091,19 @@ impl CalendarOverlay {
     }
 
     fn on_message(self: &Rc<Self>, message: &str) {
+        if self.disposed.get() {
+            return;
+        }
         match calendar_command(message) {
             Some(UiCommand::HostReady) => {
                 eprintln!("kira-shell: Shared Svelte overlay host ready");
                 self.host_ready.set(true);
                 self.request_mount();
             }
-            Some(UiCommand::Mounted(generation))
+            Some(UiCommand::Mounted(generation, reduced))
                 if self.requested.get() && self.generation.get() == generation =>
             {
+                self.native_reduced_motion.set(reduced);
                 eprintln!("kira-shell: Svelte overlay DOM verified");
                 if self.active.get() == Some(Surface::System) {
                     self.send_metrics();
@@ -3945,6 +4112,14 @@ impl CalendarOverlay {
                 if self.content_height.get() > 0 {
                     self.request_paint();
                     self.schedule_reveal_fallback(generation);
+                }
+            }
+            Some(UiCommand::MotionPreference(generation, reduced))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
+                self.native_reduced_motion.set(reduced);
+                if reduced && self.revealed.get() {
+                    self.window.set_opacity(1.0);
                 }
             }
             Some(UiCommand::ContentHeight(generation, height))
@@ -3972,9 +4147,14 @@ impl CalendarOverlay {
             {
                 self.reveal();
             }
-            Some(UiCommand::Close) if self.requested.get() => self.hide(),
-            Some(UiCommand::CopyDate(date))
+            Some(UiCommand::Close(generation))
+                if self.requested.get() && self.generation.get() == generation =>
+            {
+                self.hide()
+            }
+            Some(UiCommand::CopyDate(generation, date))
                 if self.requested.get()
+                    && self.generation.get() == generation
                     && self.revealed.get()
                     && self.active.get() == Some(Surface::Calendar) =>
             {
@@ -3982,16 +4162,19 @@ impl CalendarOverlay {
                     display.clipboard().set_text(date);
                 }
             }
-            Some(UiCommand::ProcessesTab(active))
-                if self.requested.get() && self.active.get() == Some(Surface::System) =>
+            Some(UiCommand::ProcessesTab(generation, active))
+                if self.requested.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::System) =>
             {
                 if let Some(model) = self.system.borrow().as_ref() {
                     model.set_processes_active(active);
                     model.set_pulse_active(!active);
                 }
             }
-            Some(UiCommand::CopyReport)
+            Some(UiCommand::CopyReport(generation))
                 if self.requested.get()
+                    && self.generation.get() == generation
                     && self.revealed.get()
                     && self.active.get() == Some(Surface::System) =>
             {
@@ -4210,14 +4393,15 @@ impl CalendarOverlay {
 
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
-    Close,
+    Close(u32),
     HostReady,
-    Mounted(u32),
+    Mounted(u32, bool),
+    MotionPreference(u32, bool),
     Painted(u32),
     ContentHeight(u32, i32),
-    CopyDate(&'a str),
-    ProcessesTab(bool),
-    CopyReport,
+    CopyDate(u32, &'a str),
+    ProcessesTab(u32, bool),
+    CopyReport(u32),
     LauncherCatalog(u32),
     LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
@@ -4238,14 +4422,51 @@ fn valid_date(year: i32, month: u8, day: u8) -> bool {
     (1..=last).contains(&day)
 }
 
+fn parse_motion_message(value: &str) -> Option<(u32, bool)> {
+    let (generation, reduced) = value.split_once(':')?;
+    if generation.is_empty()
+        || generation.len() > 10
+        || !generation.bytes().all(|b| b.is_ascii_digit())
+    {
+        return None;
+    }
+    let generation = generation.parse::<u32>().ok().filter(|v| *v > 0)?;
+    let reduced = match reduced {
+        "0" => false,
+        "1" => true,
+        _ => return None,
+    };
+    Some((generation, reduced))
+}
+
+fn parse_ui_generation(value: &str) -> Option<u32> {
+    if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    value.parse::<u32>().ok().filter(|v| *v > 0)
+}
+
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
-    match message {
-        "close" => return Some(UiCommand::Close),
-        "host-ready" => return Some(UiCommand::HostReady),
-        "tab:processes" => return Some(UiCommand::ProcessesTab(true)),
-        "tab:overview" => return Some(UiCommand::ProcessesTab(false)),
-        "copy-report" => return Some(UiCommand::CopyReport),
-        _ => {}
+    if message == "host-ready" {
+        return Some(UiCommand::HostReady);
+    }
+    if let Some(value) = message.strip_prefix("close:") {
+        return parse_ui_generation(value).map(UiCommand::Close);
+    }
+    if let Some(value) = message.strip_prefix("copy-report:") {
+        return parse_ui_generation(value).map(UiCommand::CopyReport);
+    }
+    if let Some(value) = message.strip_prefix("tab:") {
+        let (generation, tab) = value.split_once(':')?;
+        let active = match tab {
+            "overview" => false,
+            "processes" => true,
+            _ => return None,
+        };
+        return Some(UiCommand::ProcessesTab(
+            parse_ui_generation(generation)?,
+            active,
+        ));
     }
     if let Some(value) = message.strip_prefix("apps-request:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
@@ -4300,11 +4521,15 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
             id.parse::<usize>().ok().filter(|v| *v < 1024)?,
         ));
     }
+    // A bounded boolean accompanies each mount; native motion must honor
+    // the exact WebKit prefers-reduced-motion setting for this generation.
     if let Some(value) = message.strip_prefix("mounted:") {
-        if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
-            return None;
-        }
-        return value.parse().ok().map(UiCommand::Mounted);
+        let (generation, reduced) = parse_motion_message(value)?;
+        return Some(UiCommand::Mounted(generation, reduced));
+    }
+    if let Some(value) = message.strip_prefix("motion:") {
+        let (generation, reduced) = parse_motion_message(value)?;
+        return Some(UiCommand::MotionPreference(generation, reduced));
     }
     if let Some(value) = message.strip_prefix("size:") {
         let (generation, height) = value.split_once(':')?;
@@ -4331,7 +4556,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         }
         return value.parse().ok().map(UiCommand::Painted);
     }
-    let date = message.strip_prefix("copy:")?;
+    let value = message.strip_prefix("copy:")?;
+    let (generation, date) = value.split_once(':')?;
+    let generation = parse_ui_generation(generation)?;
     let bytes = date.as_bytes();
     if bytes.len() != 10
         || bytes[4] != b'-'
@@ -4349,7 +4576,7 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if !valid_date(year, month, day) {
         return None;
     }
-    Some(UiCommand::CopyDate(date))
+    Some(UiCommand::CopyDate(generation, date))
 }
 
 fn calendar_document(html: &str) -> Option<String> {
@@ -4357,7 +4584,12 @@ fn calendar_document(html: &str) -> Option<String> {
         .then(|| html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
 }
 
-fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay> {
+fn build(
+    application: &gtk::Application,
+    document: String,
+    id: u32,
+    pool: std::rc::Weak<OverlayPool>,
+) -> Rc<CalendarOverlay> {
     let window = gtk::ApplicationWindow::new(application);
     window.set_title(Some(TITLE));
     window.set_decorated(false);
@@ -4383,6 +4615,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     crate::native_ui::restrict_webview_navigation(&view);
 
     let overlay = Rc::new(CalendarOverlay {
+        id,
+        pool,
+        disposed: Cell::new(false),
         window: window.clone(),
         view: view.clone(),
         document,
@@ -4394,8 +4629,8 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
         launcher: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
-        reposition_pending: Cell::new(false),
         revealed: Cell::new(false),
+        native_reduced_motion: Cell::new(false),
         paint_pending: Cell::new(false),
         generation: Cell::new(0),
         was_active: Cell::new(false),
@@ -4417,7 +4652,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     let weak = Rc::downgrade(&overlay);
     view.connect_load_failed(move |_, event, uri, error| {
         eprintln!("kira-shell: Calendar WebKit load failed ({event:?}) for {uri}: {error}");
-        if let Some(state) = weak.upgrade() {
+        if let Some(state) = weak.upgrade()
+            && !state.disposed.get()
+        {
             state.host_ready.set(false);
             state.hide();
         }
@@ -4426,7 +4663,9 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     let weak = Rc::downgrade(&overlay);
     view.connect_web_process_terminated(move |_, reason| {
         eprintln!("kira-shell: Calendar WebKit renderer terminated: {reason:?}");
-        if let Some(state) = weak.upgrade() {
+        if let Some(state) = weak.upgrade()
+            && !state.disposed.get()
+        {
             state.host_ready.set(false);
             state.hide();
             state.view.load_html(&state.document, None);
@@ -4439,7 +4678,11 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
             if window.is_active() {
                 state.was_active.set(true);
             } else if state.requested.get() && state.was_active.get() {
-                state.hide();
+                // Focus shifts BETWEEN our concurrent popup windows must
+                // never cancel another visible widget's GSAP timeline.
+                if !state.pool.upgrade().is_some_and(|pool| pool.concurrent()) {
+                    state.hide();
+                }
             }
         }
     });
@@ -4448,69 +4691,50 @@ fn build(application: &gtk::Application, document: String) -> Rc<CalendarOverlay
     // shows. The Calendar component, timer and DOM are unmounted on hide.
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
-    let weak = Rc::downgrade(&overlay);
-    gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
-        if let Some(state) = weak.upgrade() {
-            state.poll_launcher();
-            // Reuse the existing 30ms GTK source for the 500ms CPU/RAM
-            // stream. Never schedule WebKit scripts on a worker thread.
-            state.poll_pulse();
-            gtk::glib::ControlFlow::Continue
-        } else {
-            gtk::glib::ControlFlow::Break
-        }
-    });
-    let weak = Rc::downgrade(&overlay);
-    gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
-        if let Some(state) = weak.upgrade() {
-            state.tick();
-            gtk::glib::ControlFlow::Continue
-        } else {
-            gtk::glib::ControlFlow::Break
-        }
-    });
+    // Timed native work runs only from the pool's single active lease
+    // scheduler. This window owns no permanent polling sources.
     overlay
 }
 
-fn ensure(application: &gtk::Application, html: &str) -> Option<Rc<CalendarOverlay>> {
-    CALENDAR.with(|cache| {
-        let existing = cache.borrow().clone();
-        if existing.is_some() {
-            return existing;
+fn ensure(application: &gtk::Application, html: &str) -> Option<Rc<OverlayPool>> {
+    POOL.with(|cache| {
+        if let Some(pool) = cache.borrow().as_ref() {
+            return Some(pool.clone());
         }
         let document = calendar_document(html)?;
-        let overlay = build(application, document);
-        *cache.borrow_mut() = Some(overlay.clone());
-        Some(overlay)
+        let pool = OverlayPool::new(application, document);
+        *cache.borrow_mut() = Some(pool.clone());
+        Some(pool)
     })
 }
 
-/// Start WebKit loading shortly after the bar is activated, not on first click.
+/// One inert, bounded warm popup WebView, no speculative widget DOM or ECharts.
 pub fn prewarm(application: &gtk::Application, html: &str) {
     if ensure(application, html).is_none() {
-        eprintln!("kira-shell: Calendar HTML root not found");
+        eprintln!("kira-shell: Overlay HTML root not found");
     }
 }
 
 pub fn dismiss(_application: &gtk::Application) -> bool {
-    CALENDAR.with(|cache| {
-        if let Some(state) = cache.borrow().as_ref() {
-            if state.requested.get() {
-                state.hide();
-                return true;
-            }
+    POOL.with(|cache| {
+        let Some(pool) = cache.borrow().as_ref().cloned() else {
+            return false;
+        };
+        if let Some(view) = pool.active(Surface::Calendar) {
+            view.hide();
+            return true;
         }
         false
     })
 }
 
 pub fn dismiss_system(_application: &gtk::Application) -> bool {
-    CALENDAR.with(|cache| {
-        if let Some(state) = cache.borrow().as_ref()
-            && state.requested.get()
-            && state.active.get() == Some(Surface::System)
-        {
-            state.hide();
+    POOL.with(|cache| {
+        let Some(pool) = cache.borrow().as_ref().cloned() else {
+            return false;
+        };
+        if let Some(view) = pool.active(Surface::System) {
+            view.hide();
             return true;
         }
         false
@@ -4518,29 +4742,32 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
 }
 
 pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(state) = ensure(application, html) else {
-        eprintln!("kira-shell: Overlay HTML root not found");
+    let Some(pool) = ensure(application, html) else {
         return;
     };
-    if state.requested.get() && state.active.get() == Some(Surface::Calendar) {
-        state.hide();
+    let Some((view, existing)) = pool.acquire(Surface::Calendar) else {
         return;
+    };
+    if existing {
+        view.hide();
+    } else {
+        view.show(Surface::Calendar);
     }
-    state.show(Surface::Calendar);
 }
 
 pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(state) = ensure(application, html) else {
-        eprintln!("kira-shell: Overlay HTML root not found");
+    let Some(pool) = ensure(application, html) else {
         return;
     };
-    // Opening the launcher again should focus its existing search field.
-    if state.requested.get() && state.active.get() == Some(Surface::Launcher) {
-        state.window.present();
+    let Some((view, existing)) = pool.acquire(Surface::Launcher) else {
         return;
+    };
+    if existing {
+        view.window.present();
+    } else {
+        view.launcher.borrow_mut().take();
+        view.show(Surface::Launcher);
     }
-    state.launcher.borrow_mut().take();
-    state.show(Surface::Launcher);
 }
 
 pub fn toggle_system(
@@ -4550,20 +4777,22 @@ pub fn toggle_system(
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(state) = ensure(application, html) else {
-        eprintln!("kira-shell: Overlay HTML root not found");
+    let Some(pool) = ensure(application, html) else {
         return;
     };
-    if state.requested.get() && state.active.get() == Some(Surface::System) {
-        state.hide();
+    let Some((view, existing)) = pool.acquire(Surface::System) else {
+        return;
+    };
+    if existing {
+        view.hide();
         return;
     }
-    *state.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
-    if let Some(model) = state.system.borrow().as_ref() {
+    *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
+    if let Some(model) = view.system.borrow().as_ref() {
         model.set_pulse_active(true);
     }
-    state.last_metrics.set(None);
-    state.show(Surface::System);
+    view.last_metrics.set(None);
+    view.show(Surface::System);
 }
 
 #[cfg(test)]
@@ -4576,6 +4805,14 @@ mod tests {
             "",
             "COPY",
             "toggle",
+            "close",
+            "close:0",
+            "close:-2",
+            "close:4294967296",
+            "tab:overview",
+            "tab:0:processes",
+            "copy-report",
+            "copy-report:zero",
             "painted:",
             "painted:2;exit",
             "painted:-1",
@@ -4600,6 +4837,13 @@ mod tests {
             "mounted:",
             "mounted:abc",
             "mounted:4294967296",
+            "mounted:2",
+            "mounted:2:2",
+            "mounted:2:1:0",
+            "mounted:0:1",
+            "motion:0:1",
+            "motion:2:false",
+            "motion:2:1;exit",
             "size:",
             "size:0:100",
             "size:1:0",
@@ -4619,17 +4863,20 @@ mod tests {
         ] {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
-        assert_eq!(calendar_command("close"), Some(UiCommand::Close));
+        assert_eq!(calendar_command("close:12"), Some(UiCommand::Close(12)));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
         assert_eq!(
-            calendar_command("tab:processes"),
-            Some(UiCommand::ProcessesTab(true))
+            calendar_command("tab:12:processes"),
+            Some(UiCommand::ProcessesTab(12, true))
         );
         assert_eq!(
-            calendar_command("tab:overview"),
-            Some(UiCommand::ProcessesTab(false))
+            calendar_command("tab:12:overview"),
+            Some(UiCommand::ProcessesTab(12, false))
         );
-        assert_eq!(calendar_command("copy-report"), Some(UiCommand::CopyReport));
+        assert_eq!(
+            calendar_command("copy-report:12"),
+            Some(UiCommand::CopyReport(12))
+        );
         assert_eq!(
             calendar_command("apps-request:12"),
             Some(UiCommand::LauncherCatalog(12))
@@ -4638,16 +4885,40 @@ mod tests {
             calendar_command("launch:12:42"),
             Some(UiCommand::LaunchApp(12, 42))
         );
-        assert_eq!(calendar_command("mounted:42"), Some(UiCommand::Mounted(42)));
+        assert_eq!(
+            calendar_command("mounted:42:0"),
+            Some(UiCommand::Mounted(42, false))
+        );
+        assert_eq!(
+            calendar_command("mounted:42:1"),
+            Some(UiCommand::Mounted(42, true))
+        );
+        assert_eq!(
+            calendar_command("motion:42:1"),
+            Some(UiCommand::MotionPreference(42, true))
+        );
+        assert_eq!(
+            calendar_command("motion:42:0"),
+            Some(UiCommand::MotionPreference(42, false))
+        );
         assert_eq!(
             calendar_command("size:42:512"),
             Some(UiCommand::ContentHeight(42, 512))
         );
         assert_eq!(calendar_command("painted:42"), Some(UiCommand::Painted(42)));
         assert_eq!(
-            calendar_command("copy:2024-02-29"),
-            Some(UiCommand::CopyDate("2024-02-29"))
+            calendar_command("copy:12:2024-02-29"),
+            Some(UiCommand::CopyDate(12, "2024-02-29"))
         );
+    }
+
+    #[test]
+    fn native_fade_is_monotone_and_settles_exactly() {
+        assert_eq!(native_fade_progress(Duration::ZERO), 0.0);
+        let half = native_fade_progress(Duration::from_millis(80));
+        assert!(half > 0.5 && half < 1.0);
+        assert_eq!(native_fade_progress(Duration::from_millis(160)), 1.0);
+        assert_eq!(native_fade_progress(Duration::from_millis(500)), 1.0);
     }
 
     #[test]
@@ -5064,6 +5335,7 @@ mod process_monitor;
 mod renderer_recovery;
 mod system_metrics;
 mod system_panel;
+mod webview_pool;
 use std::cell::{Cell, RefCell};
 use std::env;
 use std::path::{Path, PathBuf};
@@ -5577,6 +5849,24 @@ pub fn configure_webview_popup(window: &gtk::ApplicationWindow, width: i32, heig
 
 /// The offset below the 42px Top Bar.
 pub const POPUP_TOP_MARGIN: i32 = 25;
+
+/// Fixed per-surface anchor, never repositions an already-mapped window.
+/// On wide outputs Calendar sits at the right and System to its left.
+/// On narrow outputs, constrained Wayland geometry may overlap, but both
+/// windows remain alive, independently focusable and explicitly dismissible.
+pub fn popup_right_margin(window: &gtk::ApplicationWindow, system: bool) -> i32 {
+    if !system {
+        return 12;
+    }
+    let (width, _) = output_size(window);
+    if width >= 880 {
+        448
+    } else {
+        // Fit the full popup on-screen even if side-by-side is impossible.
+        let popup_width = 420.min(width.saturating_sub(24)).max(1);
+        (width - popup_width).max(12)
+    }
+}
 
 FILE	crates/kira-shell/src/process_monitor.rs
 //! Read-only Linux process accounting for the System Monitor.
@@ -6865,6 +7155,245 @@ mod tests {
     }
 }
 
+FILE	crates/kira-shell/src/webview_pool.rs
+//! A bounded, deterministic scheduler for trusted GTK/WebKit popup hosts.
+//! Pure policy: no GTK objects, renderer state, or timers live here.
+//! Top Bar has its own permanent WebView and is deliberately outside the pool.
+use std::time::{Duration, Instant};
+
+pub const MAX_POPUP_VIEWS: usize = 4;
+pub const HOT_IDLE_TARGET: usize = 1;
+pub const IDLE_GRACE: Duration = Duration::from_secs(45);
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum Surface {
+    Calendar,
+    System,
+    Launcher,
+    #[cfg(test)]
+    Synthetic(u8),
+}
+impl Surface {
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Calendar => "calendar",
+            Self::System => "system",
+            Self::Launcher => "launcher",
+            #[cfg(test)]
+            Self::Synthetic(_) => "synthetic",
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Reservation {
+    Existing(u32),
+    Reused(u32),
+    Created(u32),
+    Full,
+}
+
+#[derive(Clone, Debug)]
+struct Slot {
+    id: u32,
+    owner: Option<Surface>,
+    idle_since: Instant,
+}
+
+/// No active slot may be stolen. One slot is warmed at startup; additional
+/// slots exist only after real demand. A short idle grace protects quick
+/// reopen/animation chains without keeping an unbounded WebKit farm alive.
+#[derive(Default)]
+pub struct WebviewScheduler {
+    slots: Vec<Slot>,
+    next_id: u32,
+}
+
+impl WebviewScheduler {
+    pub fn reserve(&mut self, surface: Surface, now: Instant) -> Reservation {
+        if let Some(slot) = self.slots.iter().find(|s| s.owner == Some(surface)) {
+            return Reservation::Existing(slot.id);
+        }
+        // Favor the most recently used warm renderer: it is more likely to
+        // have an active WebKit process and cached compiled Svelte scripts.
+        if let Some(slot) = self
+            .slots
+            .iter_mut()
+            .filter(|s| s.owner.is_none())
+            .max_by_key(|s| s.idle_since)
+        {
+            slot.owner = Some(surface);
+            return Reservation::Reused(slot.id);
+        }
+        if self.slots.len() == MAX_POPUP_VIEWS {
+            return Reservation::Full;
+        }
+        self.next_id = self
+            .next_id
+            .checked_add(1)
+            .expect("bounded popup slot identifiers");
+        let id = self.next_id;
+        self.slots.push(Slot {
+            id,
+            owner: Some(surface),
+            idle_since: now,
+        });
+        Reservation::Created(id)
+    }
+
+    /// This only runs once at Shell activation, not for every possible widget.
+    pub fn prewarm_one(&mut self, now: Instant) -> Option<u32> {
+        if !self.slots.is_empty() {
+            return None;
+        }
+        let Reservation::Created(id) = self.reserve(Surface::Calendar, now) else {
+            return None;
+        };
+        self.release(id, now);
+        Some(id)
+    }
+
+    pub fn release(&mut self, id: u32, now: Instant) -> bool {
+        let Some(slot) = self.slots.iter_mut().find(|s| s.id == id) else {
+            return false;
+        };
+        if slot.owner.is_none() {
+            return false;
+        }
+        slot.owner = None;
+        slot.idle_since = now;
+        true
+    }
+
+    pub fn active_count(&self) -> usize {
+        self.slots.iter().filter(|s| s.owner.is_some()).count()
+    }
+
+    pub fn active_slot(&self, surface: Surface) -> Option<u32> {
+        self.slots
+            .iter()
+            .find(|s| s.owner == Some(surface))
+            .map(|s| s.id)
+    }
+
+    #[cfg(test)]
+    pub fn is_active(&self, id: u32) -> bool {
+        self.slots.iter().any(|s| s.id == id && s.owner.is_some())
+    }
+
+    /// Retain exactly one hot spare after the grace period. A renderer with a
+    /// visible widget is NEVER a reclaim candidate, even at full capacity.
+    pub fn expired_idle(&mut self, now: Instant) -> Vec<u32> {
+        let mut idle: Vec<_> = self
+            .slots
+            .iter()
+            .filter(|s| s.owner.is_none())
+            .map(|s| (s.id, s.idle_since))
+            .collect();
+        idle.sort_unstable_by_key(|(_, instant)| std::cmp::Reverse(*instant));
+        let expired: Vec<_> = idle
+            .into_iter()
+            .skip(HOT_IDLE_TARGET)
+            .filter(|(_, since)| now.saturating_duration_since(*since) >= IDLE_GRACE)
+            .map(|(id, _)| id)
+            .collect();
+        self.slots.retain(|slot| !expired.contains(&slot.id));
+        expired
+    }
+
+    #[cfg(test)]
+    pub fn resident_count(&self) -> usize {
+        self.slots.len()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_initial_hot_webview_not_ten_speculative_instances() {
+        let mut s = WebviewScheduler::default();
+        let now = Instant::now();
+        assert_eq!(s.prewarm_one(now), Some(1));
+        assert_eq!(s.prewarm_one(now), None);
+        assert_eq!(s.resident_count(), 1);
+        assert_eq!(s.reserve(Surface::Calendar, now), Reservation::Reused(1));
+    }
+
+    #[test]
+    fn simultaneous_windows_never_steal_active_or_interrupt_other_surface() {
+        let mut s = WebviewScheduler::default();
+        let now = Instant::now();
+        s.prewarm_one(now);
+        assert_eq!(s.reserve(Surface::Calendar, now), Reservation::Reused(1));
+        assert_eq!(s.reserve(Surface::System, now), Reservation::Created(2));
+        assert_eq!(s.reserve(Surface::Launcher, now), Reservation::Created(3));
+        assert_eq!(s.active_count(), 3);
+        assert_eq!(s.reserve(Surface::Calendar, now), Reservation::Existing(1));
+        assert_eq!(s.active_slot(Surface::System), Some(2));
+        assert!(s.expired_idle(now + Duration::from_secs(500)).is_empty());
+    }
+
+    #[test]
+    fn closing_one_widget_keeps_others_and_reuses_warm_slot() {
+        let mut s = WebviewScheduler::default();
+        let now = Instant::now();
+        s.prewarm_one(now);
+        s.reserve(Surface::Calendar, now);
+        s.reserve(Surface::System, now);
+        assert!(s.release(1, now + Duration::from_secs(1)));
+        assert!(!s.release(1, now + Duration::from_secs(2)));
+        assert_eq!(s.active_slot(Surface::System), Some(2));
+        assert_eq!(
+            s.reserve(Surface::Launcher, now + Duration::from_secs(2)),
+            Reservation::Reused(1)
+        );
+        assert_eq!(s.active_count(), 2);
+    }
+
+    #[test]
+    fn idle_eviction_is_time_bounded_preserves_most_recent_and_live_leases() {
+        let mut s = WebviewScheduler::default();
+        let now = Instant::now();
+        s.prewarm_one(now);
+        s.reserve(Surface::Calendar, now);
+        s.reserve(Surface::System, now);
+        s.reserve(Surface::Launcher, now);
+        s.release(1, now);
+        s.release(2, now + Duration::from_secs(1));
+        assert!(s.expired_idle(now + Duration::from_secs(10)).is_empty());
+        assert_eq!(s.expired_idle(now + Duration::from_secs(46)), vec![1]);
+        assert!(s.is_active(3));
+        assert_eq!(s.resident_count(), 2);
+        assert_eq!(
+            s.reserve(Surface::System, now + Duration::from_secs(47)),
+            Reservation::Reused(2)
+        );
+    }
+
+    #[test]
+    fn fixed_cap_reports_backpressure_without_eviction_of_active_windows() {
+        let mut s = WebviewScheduler::default();
+        let now = Instant::now();
+        // Surface identity prevents duplicate active panes. Bounded capacity
+        // covers today's three built-ins plus one future trusted surface.
+        for kind in [
+            Surface::Calendar,
+            Surface::System,
+            Surface::Launcher,
+            Surface::Synthetic(1),
+        ] {
+            assert!(matches!(s.reserve(kind, now), Reservation::Created(_)));
+        }
+        assert_eq!(s.active_count(), MAX_POPUP_VIEWS);
+        assert_eq!(s.resident_count(), MAX_POPUP_VIEWS);
+        assert_eq!(s.reserve(Surface::Synthetic(2), now), Reservation::Full);
+        assert!(s.expired_idle(now + Duration::from_secs(1_000)).is_empty());
+        assert_eq!(s.active_count(), MAX_POPUP_VIEWS);
+    }
+}
+
 FILE	docs/CONFIG.md
 # Kira Desktop: KDL configuration (first functional profile)
 
@@ -7072,8 +7601,10 @@ official visual language of Kira Desktop.
   Only explicitly customized KDL titles appear, and they yield space on
   narrow screens. System status reflects real Core/Niri/host measurements
   and becomes quieter when READY; its button still opens System Monitor.
-  The local clock opens the existing Calendar. No extra WebKit processes,
-  native services, polling loops, shortcuts, fake app activity or Dock.
+  The local clock opens the existing Calendar. Additional trusted popup
+  WebKit hosts are leased **on demand** from a bounded pool, never spawned
+  speculatively per hypothetical widget. No extra native services, polling
+  loops, shortcuts, fake app activity or Dock.
   Keyboard focus and reduced-motion semantics are preserved.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
   zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
@@ -7093,8 +7624,10 @@ official visual language of Kira Desktop.
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
   to the clipboard only on click.
-  Clicking time again or pressing Escape closes; focus loss also dismisses
-  after activation. The calendar and Launcher close each other when opened.
+  Clicking time again or pressing Escape closes; focus loss dismisses
+  when there is only one popup. With multiple concurrently leased popups,
+  switching focus between windows never closes another widget. Calendar,
+  Launcher and System Monitor may stay open independently.
   Calendar motion now uses **TENET dual-time GSAP scenes**:
   when sections appear or month/day selection changes, actual content moves
   FORWARD while four recorded decorative fragments replay their original
@@ -7185,6 +7718,17 @@ System Monitor и будущих поверхностей подчиняются
 **GSAP** исполняет JS-motion; **Apache ECharts** остаётся для настоящих
 данных и графиков. Обычные функциональные микроанимации могут оставаться
 FORWARD и должны соблюдать физическую непрерывность, доступность и cleanup.
+**Перетекание и упругость обязательны:** активный индикатор, выделение и всякая
+двигающаяся сущность остаются одним физически узнаваемым объектом, который
+плавно меняет геометрию, а не исчезает в одном месте и возникает в другом.
+При новом взаимодействии tween перенаправляется из текущего положения;
+фокус, метрики и ARIA обновляются без задержки. Это касается не только
+вкладок, но и выбранной даты Calendar, строки Launcher, фокуса Niri
+в Top Bar, сортируемых строк процессов и раскрытия деталей.
+Общие физические маркеры используют GSAP; перестановка небольших keyed
+списков использует GSAP Flip. Измеренные графики ECharts сохраняют
+монотонную анимацию без пружинящего искажения показаний. Упругость сдержанная,
+без затяжных въездов и скачков opacity.
 Рекомендуемый баланс 70–80% обычных движений и немного выразительных
 инверсий — *ориентир*, а не обязательная доля в каждом виджете.
 Проверять reduced motion, прерывания и точку контакта; не вводить
@@ -7240,6 +7784,18 @@ diagnostic bars. The visual hierarchy is intentional:
    entrances and readout updates, with reduced-motion support and lifecycle
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
+
+### Demand-driven pooled WebViews · 2026-11
+
+**Normative lifecycle:** [WebView Pool & Scheduler](WEBVIEW_POOL.md). The Top
+Bar keeps its separate permanent WebView; the popup pool starts one inert warm
+WebKit host and creates more only when simultaneously requested. Every active
+Calendar, Launcher or System Monitor owns a separate GTK window, isolated
+generation-scoped IPC channel and Svelte/GSAP scene. A bounded four-host cap,
+one persistent hot spare and 45-second surplus-idle grace prevent runaway
+renderer growth. Active surfaces and their animations are never evicted to
+open another widget. Wide displays can show Calendar and System side by side;
+smaller displays permit overlap rather than unsafe live anchor changes.
 
 ### Shared TENET widget entrance · 2026-11
 
@@ -7322,8 +7878,9 @@ overlays; Top Bar still reserves 42px.
 Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
 controls, and **one deliberate surface contrast per functional region**.
 An orange line can anchor a section, but offset shadows and nested borders
-are not a shortcut to depth. Use 120–180 ms transitions without positional
-jumps. Keep interaction functional without motion. Niri's reserved 42 px
+are not a shortcut to depth. Use short 120–180 ms micro-transitions without positional jumps;
+shared selection markers and widget entrances use the measured, interruptible
+TENET motion profiles (about 300–440 ms) with restrained spring settling. Keep interaction functional without motion. Niri's reserved 42 px
 height is unchanged, including the bottom accent rule.
 
 ## Kira Default · canonical palette
@@ -8647,6 +9204,19 @@ FILE	docs/TENET_MOTION.md
 
 **Важно:** правила относятся и к обычной анимации. Простые состояния и микроотклики могут оставаться FORWARD, если причинность, непрерывность и доступность соблюдены. Инвертировать *всё* запрещено. Ориентир **70–80% привычного движения** и **20–30% выразительных инверсий** — дизайнерская эвристика, **не** автоматическая квота.
 
+### Обязательное качество: перетекание и упругость
+
+**Анимация TENET обязана быть непрерывной, направленной и физически отзывчивой.** Если объект меняет расположение, размер, выбранное состояние или визуальный акцент, он *движется из своего текущего отрисованного положения* в следующее. Нельзя заменять его двумя элементами, которые попеременно исчезают/появляются. Например, в System Monitor **один** оранжевый индикатор перетекает под другую вкладку; переключение двух `border-bottom` запрещено.
+
+- **Shared element / continuity.** Сохранять идентичность визуального маркера при переходе (один DOM-элемент, измеренная геометрия, FLIP/GSAP). При смене цели посреди анимации перенаправлять текущий tween через `overwrite: 'auto'` без возврата в старое начало.
+- **Elastic landing.** У движущегося элемента есть ускорение, замедление и *сдержанное* пружинящее завершение, а не монотонная «ползучая» поступь. Для акцентных перемещений подходят настроенные `back.out(1.1–1.3)` или эквивалентные физические профили. Упругость не означает хаотичную тряску, бесконечный bounce и перерегулирование прозрачности. Для opacity выбирать отдельный монотонный easing.
+- **Tempo.** Короткий native fade порядка 160 мс, содержимое при открытии около 440 мс с лёгким stagger, перемещение индикатора около 420 мс, отклик новой панели около 300 мс. Это **отправные профили**, не глобальная задержка реальных действий. Длительные `sine.inOut`-въезды целых виджетов не соответствуют характеру Kira.
+- **One event, one trajectory.** При повторном клике, смене вкладки, resize, Escape или закрытии незавершённое движение немедленно принимает новую корректную цель. Для INVERTED событий запоминается исходная история, как предписано законами выше; обычный FORWARD-переход вкладок не нужно искусственно инвертировать.
+- **Visual truth.** Тексты, ARIA, данные, фокус и клики обновляются сразу. Подвижны только визуальные слои, а не настоящая выборка метрик. Прозрачность не должна скрывать важный контент, размеры окна не должны анимироваться и создавать обратную связь с WebKit resize.
+- **Motion budget.** Предпочитать transform/opacity на 1–3 поверхностях, не анимировать множество вложенных ECharts-графиков, не создавать JS-цикл поиска геометрии на каждом кадре. Под `prefers-reduced-motion` выставлять точную конечную геометрию и мгновенно останавливать обе стороны native/WebKit.
+
+Любой новый tabs, segmented control, selection underline, carousel thumb, active row, expandable rail и другой *перемещающийся* указатель должен иметь **один физически сохраняемый маркер** с прерываемым GSAP-переходом. Исключения для дискретных состояний (нет общего объекта для интерполяции) нужно обосновать; мгновенная замена содержимого допустима, но новая панель входит коротко и непрерывно, без фальшивого «сдвига» показаний.
+
 ## I. Шестнадцать правил
 
 ### Фундамент движения
@@ -8764,67 +9334,36 @@ IDLE -> PREPARED -> FORWARD / INVERTED / DUAL -> CONTACT -> SETTLED
 
 **Нормативный приоритет:** этот документ определяет причинность, время и качество *всех новых/изменяемых анимаций*, [`AGENTS.md`](../AGENTS.md) делает его обязательным для участников и AI-агентов, а [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) сохраняет палитру и общую визуальную иерархию. При конфликте декоративной идеи с доступностью, безопасностью, точностью данных или функциональностью всегда побеждает функциональность.
 
-### Общая анимация появления · DUAL
+### Shared overlay entrance · synchronized native + WebKit (2026-11)
 
-Calendar, Launcher и System Monitor используют одну сцену на открытие:
-секции приходят FORWARD, четыре декоративных следа возвращаются INVERTED
-по сохранённым траекториям к фактической точке контакта часов/заголовка.
-Общий курсор синхронизирует два GSAP timeline через `dualTime(u)`.
-Launcher меняет исходную траекторию, но не подменяет инверсию CSS-зеркалом.
+Calendar, Launcher и System Monitor используют общий жизненный цикл. Тёплый WebView получает содержимое Svelte и реальную высоту, пока GTK-окно прозрачно. Только после подтверждения mount/paint и проверки поколения `kira:overlay:visible` запускает **одну** короткую композицию: native GTK проявляет уже готовый window за 160 мс (`cubic-out`), GSAP мягко собирает 2–3 передние секции за 440 мс (9 px, scale 0.988, opacity 0.94; `back.out(1.22)` с монотонным opacity), а четыре заранее определённых инвертированных следа возвращаются в тот же contact point по сохранённым путям и обратному `power3.in`. Тяжёлые графики System Monitor не перемещаются.
 
-Данные, время, ввод и фокус не задерживаются. На закрытии, повторном
-открытии, смене reduced-motion или после 1100 мс в throttled WebKit
-обе timelines останавливаются, все фрагменты удаляются, а transform,
-opacity и visibility возвращаются к подлинным значениям. Дополнительные
-виджеты, поверхность Dock, hover lens и ложные показания не вводятся.
+Нативное окно **не** масштабируется и не изменяет позицию при reveal. Размер определяется `ResizeObserver` до открытия и не зависит от GSAP transform. Время и реальные данные не тормозятся. Общий event поколения исключает запуск stale WebKit-сцены. Native fade прерывается новым открытием/закрытием и никогда не управляет opacity следующего поколения.
 
-### Native visibility handshake · 2026-11
+При `prefers-reduced-motion: reduce` Svelte передаёт флаг на Rust через ограниченную команду `mounted:<generation>:<0|1>`, а при смене настройки `motion:<generation>:<0|1>`. Нативное окно становится непрозрачным сразу; GSAP оставляет подлинные стили. Если сигнал видимости не пришёл, содержимое восстанавливается через 550 мс без проигрывания; при throttled WebKit откат срабатывает через 1200 мс. Закрытие, размонтирование и смена настроек убивают tweens, слушатели и следы.
 
-The native GTK/Wayland overlay mounts the trusted Svelte DOM while its
-toplevel opacity is **zero**. Starting GSAP in the Svelte action at mount
-played the actual content entrance before the window appeared, leaving
-only residual orange/white fragments visible to users. The native host
-now sends the generation-scoped `kira:overlay:visible` event **after**
-setting the mapped window's opacity to one. A widget starts motion only
-for its own mounted generation. Before that event, all content remains
-fully visible and accessible, with no hidden text or interactive delay.
+### Continuous selection · System Monitor (2026-11)
 
-The new FORWARD phase assembles real header/content/footer sections
-through a clearly perceptible ~0.84s displacement/scale/opacity
-trajectory (max 0.25s stagger). The INVERTED phase retains the saved
-path and easing at the same contact but uses subtle 12×1px traces rather
-than conspicuous 3×3px orange/white squares. The shared cursor still
-synchronizes the two chronologies. Native hide, unmount, preference
-changes and a 1550ms WebKit throttle fallback restore all styles and
-remove all traces. A host lacking the event shows the widget normally
-without motion, instead of animating invisibly.
+Навигация хранит **один** `data-kira-flow-indicator`, а не два активных нижних бордера. `tenetFlowIndicator` измеряет положение и ширину выбранной кнопки, движется через GSAP `back.out(1.18)`, при повторном выборе переназначает цель из текущего положения через `overwrite: 'auto'`. `ResizeObserver` пересчитывает реальные координаты, reduced motion и unmount останавливают tween. `aria-current` и состояние выбранной вкладки меняются сразу; новая панель получает короткое, не мешающее телеметрии появление.
 
-### Smooth native entrance · compositor continuity (2026-11)
 
-On real Niri/WebKitGTK the previous opening could still stutter despite
-the native-visible handshake. Cause: each widget was **re-initialized
-from a fully painted state** after the popup became visible, and a second
-GSAP timeline was forcibly sought on every frame. In System Monitor as
-many as eight heavy telemetry sections moved independently.
+### Continuous motion across built-in widgets · all moving selections (2026-11)
 
-The shared entrance stages **three** foreground sections for Calendar
-and Launcher (only **two** for System Monitor, keeping heavy live charts
-completely stationary) at
-14px vertical translation and 0.82 opacity during the native invisible
-phase, ready to be composited with `force3D` / `will-change`. One
-synchronized GSAP timeline animates the actual content to its resting
-position over 0.72s, with only 45ms between sections and smooth
-`sine.inOut` velocity. Saved inverted fragment trajectories use the
-mathematically reversed original `power3.out` ease (`power3.in`) and
-reverse stagger order *within the same timeline*: no per-frame seeking,
-no different random paths and no extra animation clock. Heavy chart
-areas beyond the first groups stay at their real coordinates.
+**Тот же инвариант, что у вкладок System Monitor, распространяется на все существующие элементы, которые меняют положение или выбор:**
 
-Reduced-motion users see no staging. A stale/missing GTK visibility
-handshake restores the exact content after 550ms and skips animation;
-native hide, preference changes and unmount cancel the scene. A 1200ms
-recovery covers WebKit frame throttling. Animations only change opacity
-and compositor transforms, not sizes or layout metrics.
+| Поверхность | Непрерывный объект | Реакция |
+| --- | --- | --- |
+| Calendar / выбранный день | Один оранжевый фон за реальными кнопками дат | Измеренные `x/y/width/height`, `back.out`, повторное нажатие перенаправляет tween |
+| Calendar / смена месяца | Одна поверхность сетки вместо десятков независимо летающих ячеек | Короткое упругое приземление, инвертированные TENET-следы сохраняют записанную историю и контакт |
+| Launcher / выбранное приложение | Один общий фон со штрихом слева вместо множества включаемых/выключаемых полос | Переход по обеим осям, реальная прокрутка к выбранной строке |
+| Launcher / результаты поиска | Сохранившиеся элементы маленьких списков | GSAP Flip для реального перемещения, но без искусственного пролёта 80 строк при радикальном изменении запроса |
+| Top Bar / рабочие пространства Niri | Один общий оранжевый фон, лежащий под физическими кнопками | Переход по реальной геометрии и мягкая горизонтальная прокрутка к новому фокусу, сам фокус меняет только Niri |
+| System Monitor / сортировка процессов | Переиспользуемые строки по PID | GSAP Flip только по пользовательской сортировке/фильтру, не на каждом обновлении датчиков |
+| System Monitor / раскрытие диагностики | Один контент-блок | Прерываемое раскрытие вместо мгновенного телепорта высоты, корректная семантика `details` |
+
+Общая реализация: `tenetFlowIndicator` (один persistent DOM-маркер), `tenetReflow` (FLIP по stable keys), `tenetScrollIntoView` (прерываемая GSAP-прокрутка), `tenetDisclosure` (управляемый контент), а также существующие `tenetWidgetReveal` и календарные DUAL-сцены. Любое изменение на лету начинается от текущей отрисованной позиции и при reduced motion мгновенно становится в точную цель. Все действия и ARIA обновляются до окончания анимации.
+
+**Исключения, которые защищают смысл UI:** измеренные ECharts-линии и шкалы не получают упругие overshoot значений (их факты нельзя «отпружинить» за реальные 100%). Тексты, недоступные датчики, время и изменённый результат поиска могут переключаться дискретно, если между состояниями **нет общей физической сущности**. Не добавлять бесконечное декоративное движение, не оживлять скрытые виджеты, не менять базовую палитру или GTK-геометрию во время entrance.
 
 FILE	docs/UI_ARCHITECTURE.md
 # UI architecture: Rust host, Svelte 5 widgets
@@ -9019,6 +9558,39 @@ lookup/dismiss logic. Shared canonical GTK declarations now live in
 **does not** unify their layouts or behavior: these surfaces have different
 interaction models. Nix explicitly retains the new stylesheet, and one
 cross-surface test checks canonical palette alignment and assembly.
+
+FILE	docs/WEBVIEW_POOL.md
+# WebView Pool & Scheduler · Kira Desktop
+
+**Status:** native architecture contract, 2026-11. The permanent Top Bar WebView is **not** a pool member. The trusted Calendar, System Monitor and Launcher share a *pool of popup hosts*, not a shared active WebView.
+
+## Rationale
+
+A single active popup host forced Svelte to tear down one widget before the next could appear. This prevented concurrent widget windows and interrupted the previous widget's GSAP/TENET motion timeline. Conversely, launching one speculative WebView for every hypothetical widget wastes memory and renderer processes.
+
+## Operating policy
+
+- **Startup:** exactly **one** inert, self-contained, navigation-locked popup WebView is prewarmed. No Svelte widget mounts, metrics sampling, GIO catalog or ECharts instance is started until an explicit show request.
+- **Acquire:** if the requested surface is already leased, use its existing view (toggle Calendar/System, refocus Launcher). Otherwise reuse the most recently released idle host; if none exists, construct **one** additional GTK/WebKit host on demand.
+- **Bound:** maximum **four resident popup hosts** (independent of the Top Bar). Under exhaustion, return backpressure and **never steal an active view** or discard a playing animation.
+- **Release:** close only the requested widget. Notify its own WebKit page with a generation-scoped `kira:overlay:hide`, unmount Svelte effects and stop its owned native pulse/process subscriptions, then keep the bare WebKit host reusable.
+- **Polling:** a single GTK timer processes Launcher results and live System pulses for *all* currently leased hosts. It starts on the first lease and stops when no hosts remain active; a warm idle WebView has no per-window 30/250ms polling timers.
+- **Rotation:** a single hot spare is retained. Surplus idle hosts have a **45-second grace** for quick reopen/animation chains; a 5-second GTK timer destroys only expired *idle* surplus. Actual WebKit windows are closed only on retirement, never on ordinary widget hide.
+- **Per-window isolation:** each WebView has an independent `UserContentManager`, trusted IPC allowlist, Svelte lifecycle, generation counter, size-before-paint handshake, and native/GSAP visibility timeline. No stale per-host callback is allowed to affect a newer generation.
+- **Placement:** Launcher remains centered. Calendar stays right-aligned. System Monitor uses a stable second anchor to the left on wide outputs; smaller outputs constrain the windows on-screen, permitting overlap rather than breaking layout. Crucially, a mapped Wayland surface is not moved solely to open another widget.
+- **Focus:** losing focus to another concurrently active popup must not auto-close the previous popup. With only one popup the established outside-click dismissal remains; the explicit close controls and Escape remain available. Launcher retains its exclusive keyboard focus only when it is the sole popup, switching to OnDemand while multiple windows coexist so it cannot starve Calendar/System of keyboard input.
+
+## Deterministic scheduler
+
+The pure Rust `WebviewScheduler` has no GTK objects or threads. It tracks `(slot_id, owner, idle_since)`, supplies distinct `Existing`, `Reused`, `Created` and `Full` decisions, and computes reclaimable slot IDs based solely on a supplied clock. `OverlayPool` alone owns the GTK windows and reconciles these decisions on the GTK main loop. Renderer crashes remain local to their individual host, and the original trusted HTML reloads without expanding the Core RPC allowlist.
+
+Avoid proactively creating more than one idle WebView. Avoid arbitrary background memory watchers or heuristic predictive warming until measured need exists. Active animation continuity and actual widget function take precedence over LRU eviction.
+
+## QA / evolution
+
+Cover: cold startup, two and three concurrent surfaces, switching focus without unmount, repeated toggles, generation-scoped stale commands, size + mount + paint acknowledgements, native reduced motion, synthetic capacity exhaustion, closed-vs-idle renderer cleanup, and 45s idle expiry. Keep native compile/Rust unit tests, Python source contracts and browser smoke green. Verify side-by-side anchoring on wide and small Niri outputs when a real compositor is available.
+
+Future widget types should register through the same fixed-purpose allowlist and scheduler lease contract, not create ten per-widget pools. The cap is a policy constant, not an aspiration to keep four renderers alive at idle.
 
 FILE	flake.nix
 {
@@ -9479,6 +10051,12 @@ function scriptFor(steps, observationMs = 1150) {
             : kind === 'filter'
               ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
+              : kind === 'launcher-down'
+                ? 'window.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowDown", bubbles:true}));'
+              : kind === 'system-processes'
+                ? 'document.querySelector("nav [data-kira-tab=processes]")?.click();'
+              : kind === 'system-overview'
+                ? 'document.querySelector("nav [data-kira-tab=overview]")?.click();'
               : kind === 'calendar-next'
                 ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent;' +
                   'document.querySelector("button[aria-label=\\\"Next month\\\"]")?.click();'
@@ -9504,7 +10082,7 @@ function scriptFor(steps, observationMs = 1150) {
                   'const staged=first ? Number(getComputedStyle(first).opacity) : 0;' +
                   'window.__kiraTenetStagedOpacity=staged;' +
                   'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
-                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.8 && staged<0.9;' +
+                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.92 && staged<0.97;' +
                 '},90);' +
                 'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:overlay:visible", {detail:{generation:' +
                   generation + '}})),140);') +
@@ -9518,12 +10096,16 @@ function scriptFor(steps, observationMs = 1150) {
     // The first WebKit frame can be delayed by ECharts SVG painting.
     // Verify *actual* opacity progression mid-flight, after the renderer
     // has had time to composite at least one frame.
-    'setTimeout(() => {' +
+    // Sample multiple compositor frames. WebKit/Chromium can delay a
+    // single frame under the launcher catalog and ECharts SVG load.
+    'for(const at of [210,250,290,330])setTimeout(() => {' +
       'const content=document.querySelector("main[data-kira-ui-root] [data-kira-enter]");' +
       'const transform=content ? getComputedStyle(content).transform : "none";' +
       'const opacity=content ? Number(getComputedStyle(content).opacity) : 0;' +
-      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && opacity>window.__kiraTenetStagedOpacity && opacity<1;' +
-      '},545);' +
+      'const moving=!!content && transform!=="none" && opacity>=window.__kiraTenetStagedOpacity && opacity<1;' +
+      'document.documentElement.dataset.smokeTenetContentMoving=' +
+      '(document.documentElement.dataset.smokeTenetContentMoving==="true" || moving);' +
+      '},at);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
@@ -9535,6 +10117,19 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
+      'document.documentElement.setAttribute("data-smoke-option-count", list?.querySelectorAll("[role=option]").length ?? 0);' +
+      'const shared=roots[0]?.querySelector("[aria-label=\\\"Calendar dates\\\"] [data-kira-flow-indicator]") ||' +
+        'roots[0]?.querySelector("[role=listbox] [data-kira-flow-indicator]") ||' +
+        'roots[0]?.querySelector("nav [data-kira-flow-indicator]");' +
+      'const area=shared?.parentElement;' +
+      'const chosen=area?.querySelector("[data-calendar-selected=true], [role=option][aria-selected=true], [aria-current=page]");' +
+      'const sr=shared?.getBoundingClientRect(), cr=chosen?.getBoundingClientRect();' +
+      'document.documentElement.dataset.smokeFlowAligned=!!sr && !!cr &&' +
+        'Math.abs(sr.left-cr.left)<2 && Math.abs(sr.width-cr.width)<2 &&' +
+        '(area?.tagName==="NAV"?Math.abs(sr.bottom-cr.bottom):Math.abs(sr.top-cr.top))<2;' +
+      'document.documentElement.dataset.smokeFlowGeometry=sr&&cr?' +
+        '[sr.left,sr.top,sr.width,sr.height,cr.left,cr.top,cr.width,cr.height].map(n=>Math.round(n)).join(","):"missing";' +
+      'document.documentElement.setAttribute("data-smoke-query-value", document.querySelector("input[aria-label=\\\"Search applications\\\"]")?.value ?? "absent");' +
       'document.documentElement.setAttribute("data-smoke-scrollbar-hidden", !!list && getComputedStyle(list).scrollbarWidth === "none");' +
       'if (list && list.scrollHeight > list.clientHeight) list.scrollTop = 80;' +
       'document.documentElement.setAttribute("data-smoke-scrolled", !!list && list.scrollTop > 0);' +
@@ -9614,14 +10209,19 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': widget text must be unselectable while search inputs remain editable/selectable');
   }
   if (heightMode === 'calendar' &&
-      (!output.includes('data-smoke-calendar-navigated="true"') ||
+      (!output.includes('data-smoke-flow-aligned="true"') ||
+        !output.includes('data-smoke-calendar-navigated="true"') ||
        !output.includes('data-smoke-calendar-picked="true"') ||
        !output.includes('data-smoke-calendar-odometer="true"') ||
        !output.includes('data-smoke-tenet-grid-events="2"') ||
        !output.includes('data-smoke-tenet-grid-contact="true"') ||
        !output.includes('data-smoke-tenet-no-fragments="true"'))) {
-    const flags = output.match(/data-smoke-(?:calendar|tenet)-[a-z-]+="[^"]*"/g) ?? [];
+    const flags = output.match(/data-smoke-(?:calendar|tenet|flow)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
+  }
+  if (heightMode === 'flow' && !output.includes('data-smoke-flow-aligned="true"')) {
+    throw new Error(name + ': shared highlight missed selected geometry (' +
+      (output.match(/data-smoke-flow-geometry="([^"]*)"/)?.[1] ?? 'missing') + ')');
   }
   if (heightMode === 'clock' &&
       (!output.includes('data-smoke-clock-chaos-flew="true"') ||
@@ -9654,7 +10254,10 @@ async function smoke(name, steps, expected, heightMode = 'any') {
       throw new Error(name + ': long launcher list should fill the cap and scroll internally');
     }
   } else if (heightMode === 'shrink' && size >= 420) {
-    throw new Error(name + ': filtered launcher should shrink below the cap');
+    const n = output.match(/data-smoke-option-count="([^"]*)"/)?.[1];
+    const q = output.match(/data-smoke-query-value="([^"]*)"/)?.[1];
+    throw new Error(name + ': filtered launcher should shrink below the cap (height=' + size +
+      ', rows=' + n + ', query=' + q + ', native=' + nativeMessage?.[2] + ', resizes=' + resizeCount + ')');
   }
   if (heightMode === 'tenet' &&
       (!output.includes('data-smoke-tenet-previsible="true"') ||
@@ -9704,12 +10307,17 @@ async function smokeTopBar() {
     'const list=root?.querySelector("ol[aria-label=\\\"Niri workspaces\\\"]");' +
     'const focused=list?.querySelector("[data-focused=true]");' +
     'const listRect=list?.getBoundingClientRect();const focusRect=focused?.getBoundingClientRect();' +
+    'const shared=list?.querySelector("[data-kira-flow-indicator]");' +
+    'const selectedRect=shared?.getBoundingClientRect();' +
+    'const flowAligned=!!selectedRect && !!focusRect &&' +
+      'Math.abs(selectedRect.left-focusRect.left)<2 &&' +
+      'Math.abs(selectedRect.width-focusRect.width)<2;' +
     'const urgency=root?.querySelectorAll("[aria-label*=\\\"urgent workspace hidden\\\"]");' +
     'const visibleUrgent=root?.querySelector("[aria-label*=\\\", urgent\\\"]");' +
     'document.documentElement.dataset.smokeTopbar=!!root && root.getBoundingClientRect().height===42 &&' +
     '!!list && list.scrollWidth>list.clientWidth && list.scrollLeft>0 && !!focused &&' +
     'focused.dataset.workspaceId==="9" && focusRect.left>=listRect.left-2 &&' +
-    'focusRect.right<=listRect.right+2 && urgency.length===2 && !!visibleUrgent;' +
+    'focusRect.right<=listRect.right+2 && flowAligned && urgency.length===2 && !!visibleUrgent;' +
     '},600);});</script>';
   const page = html.replace('</head>', script + '</head>');
   const filename = join(dir, 'topbar.html');
@@ -9749,6 +10357,17 @@ try {
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
   await smoke('calendar-reduced-motion', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'reduced');
   await smoke('system-reduced-motion', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'reduced');
+  await smoke('launcher-selection-flow', [
+    { delay: 25, kind: 'launcher', generation: 1 },
+    { delay: 90, kind: 'catalog' },
+    { delay: 220, kind: 'launcher-down' },
+    { delay: 310, kind: 'launcher-down' },
+  ], 'Kira Launcher', 'flow');
+  await smoke('system-tab-flow', [
+    { delay: 25, kind: 'system', generation: 1 },
+    { delay: 220, kind: 'system-processes' },
+    { delay: 320, kind: 'system-overview' },
+  ], 'Kira System Monitor', 'flow');
   await smoke('launcher-reduced-motion', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'reduced');
   await smoke('launcher-square-with-themed-icons', [
     { delay: 25, kind: 'launcher', generation: 1 },
@@ -10494,13 +11113,17 @@ function dualScene(
     onUpdate: () => { inverted.progress(dualTime(forward.progress()).inverted); },
     onComplete: cleanup,
   });
-  forward.fromTo(targets,
-    { autoAlpha: 0, x: 10 * direction, y: 5, scale: 0.985 },
-    {
-      autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.43, stagger: 0.005,
-      ease: 'power2.out',
-    },
-    0);
+  // Month content arrives as ONE compositor surface, not 35 individual
+  // day cells racing the real WebKit frame budget. For same-month selection,
+  // the persistent highlight owns the forward geometry and this master
+  // only provides the inverse contact chronology.
+  forward.to({}, { duration: 0.44 }, 0);
+  if (targets.length) {
+    forward.fromTo(targets,
+      { x: 8 * direction, y: 2, scale: 0.991, opacity: 0.94 },
+      { x: 0, y: 0, scale: 1, duration: 0.44, ease: 'back.out(1.18)' }, 0);
+    forward.to(targets, { opacity: 1, duration: 0.20, ease: 'power2.out' }, 0);
+  }
   forward.play(0);
   return { forward, inverted, fragments };
 }
@@ -10559,9 +11182,7 @@ export function tenetCalendarGrid(
       if (reduced(motion)) return;
       const selected = node.querySelector<HTMLElement>('[data-calendar-selected="true"]');
       if (!selected) return;
-      activeTargets = changedMonth
-        ? Array.from(node.querySelectorAll<HTMLElement>('[data-calendar-day]'))
-        : [selected];
+      activeTargets = changedMonth ? [node] : [];
       node.dataset.tenetScenes = String(Number(node.dataset.tenetScenes || '0') + 1);
       node.dataset.tenetContact = next.selected;
       scene = dualScene(node, selected, activeTargets, direction, stop);
@@ -10821,6 +11442,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
+  import { tenetFlowIndicator } from '../motion';
   import {
     calendarDayState, clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
@@ -10990,7 +11612,10 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
     </div>
 
     <div class="relative grid grid-cols-8 gap-y-0.5 text-center" role="group" aria-label="Calendar dates"
-      use:tenetCalendarGrid={{ month: visible.year * 12 + visible.month, selected: selectedIso }}>
+      use:tenetCalendarGrid={{ month: visible.year * 12 + visible.month, selected: selectedIso }}
+      use:tenetFlowIndicator={{ active: selectedIso, axis: 'both' }}>
+      <span data-kira-flow-indicator aria-hidden="true"
+        class="pointer-events-none absolute left-0 top-0 z-0 bg-kira-accent"></span>
       <span class="flex min-h-7 items-center justify-center border-b border-r border-kira-muted/15 bg-kira-bg/20
         text-[9px] font-bold tracking-wide text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
@@ -11007,9 +11632,9 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
           {#if date}
             {@const marker = calendarDayState(date, selected, today, visible)}
             <button type="button"
-              class={'relative flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+              class={'relative z-10 flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
                 (marker.outside ? 'text-kira-muted/60 ' : 'text-kira-text ') +
-                (marker.selected ? 'bg-kira-accent font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
+                (marker.selected ? 'font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
                   'hover:bg-kira-bg/35 hover:text-kira-accent ') +
                 (marker.today && !marker.selected ? 'underline decoration-2 decoration-kira-accent underline-offset-4' : '')}
               aria-label={localDateLabel(date, locale)}
@@ -11017,6 +11642,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
               aria-current={marker.today ? 'date' : undefined}
               tabindex={marker.selected ? 0 : -1}
               data-calendar-day
+              data-kira-tab={isoDate(date)}
               data-calendar-selected={marker.selected}
               onclick={() => choose(date)}
             >{date.day}</button>
@@ -11061,7 +11687,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 FILE	frontend/src/lib/components/LauncherWidget.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { tenetWidgetReveal } from '../motion';
+  import { tenetFlowIndicator, tenetReflow, tenetReflowScope, tenetScrollIntoView, tenetScrollScope, tenetWidgetReveal } from '../motion';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
@@ -11127,9 +11753,11 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
   });
 
   function clearSearch() {
-    query = '';
-    selected = 0;
-    error = '';
+    tenetReflow(results, () => {
+      query = '';
+      selected = 0;
+      error = '';
+    });
     void tick().then(() => search?.focus());
   }
 
@@ -11143,6 +11771,20 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
     }
   }
 
+  function filter(event: Event) {
+    const next = (event.currentTarget as HTMLInputElement).value;
+    const update = () => {
+      query = next;
+      selected = 0;
+      error = '';
+    };
+    // A broad catalog search is a new set, not a physical relocation of
+    // eighty items: keep typing responsive and the native popup resizable.
+    // Small filtered lists retain real FLIP continuity.
+    if (displayed.length > 20) update();
+    else tenetReflow(results, update);
+  }
+
   function keydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -11154,7 +11796,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       selected = nextLauncherSelection(selected, displayed.length, event.key === 'ArrowDown' ? 1 : -1);
       void tick().then(() => {
         const item = results?.querySelector<HTMLElement>('[aria-selected="true"]');
-        item?.scrollIntoView({ block: 'nearest' });
+        if (item && results) tenetScrollIntoView(results, item, true, 'y');
       });
       return;
     }
@@ -11195,8 +11837,8 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
         <circle cx="10.5" cy="10.5" r="6.5" />
         <path d="m16 16 5 5" />
       </svg>
-      <input id="kira-launcher-query" type="search" bind:this={search} bind:value={query}
-        oninput={() => { selected = 0; error = ''; }}
+      <input id="kira-launcher-query" type="search" bind:this={search} value={query}
+        oninput={filter}
         autocomplete="off" spellcheck="false"
         role="combobox" aria-autocomplete="list" aria-expanded={displayed.length > 0}
         aria-activedescendant={displayed[activeIndex] ? 'kira-launcher-option-' + displayed[activeIndex].id : undefined}
@@ -11218,16 +11860,21 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       </span>
     </div>
     <div id="kira-launcher-results" bind:this={results}
-      class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1"
+      use:tenetFlowIndicator={{ active: displayed[activeIndex] ? String(displayed[activeIndex].id) : '', axis: 'both' }}
+      use:tenetReflowScope use:tenetScrollScope
+      class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"
       role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
+      <span data-kira-flow-indicator aria-hidden="true"
+        class="pointer-events-none absolute left-0 top-0 z-0 border-l-[3px] border-kira-accent bg-kira-bg/80"></span>
       {#each displayed as app, index (app.id)}
         <button type="button" id={'kira-launcher-option-' + app.id}
+          data-kira-tab={String(app.id)} data-kira-reflow
           role="option" aria-selected={index === activeIndex} tabindex={-1}
           onclick={() => choose(index)}
           title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'group my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
-            (index === activeIndex ? 'bg-kira-bg/80' : 'hover:bg-kira-bg/30')}>
-          <span class={'h-10 w-[3px] shrink-0 ' + (index === activeIndex ? 'bg-kira-accent' : 'bg-transparent')}></span>
+          class={'group relative z-10 my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
+            (index === activeIndex ? '' : 'hover:bg-kira-bg/30')}>
+          <span class="h-10 w-[3px] shrink-0" aria-hidden="true"></span>
           <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
               (icons[app.id] ? 'bg-transparent' : 'bg-kira-surface-soft')}
             aria-hidden="true" data-kira-icon-slot>
@@ -11572,7 +12219,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
-  import { pulseReading, tenetWidgetReveal } from '../motion';
+  import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetReflowScope, tenetWidgetReveal } from '../motion';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -11597,6 +12244,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   let lastSampleAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
+  let processList: HTMLDivElement;
   const metrics = $derived(status?.metrics ?? null);
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
   const health = $derived(status === null ? 'AWAITING TELEMETRY' :
@@ -11636,8 +12284,18 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   }
 
   function changeSort(field: SortField) {
-    sort = nextSort(sort, field);
-    visibleCount = 36;
+    tenetReflow(processList, () => {
+      sort = nextSort(sort, field);
+      visibleCount = 36;
+    });
+  }
+
+  function filterProcesses(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
+    tenetReflow(processList, () => {
+      query = input.value;
+      visibleCount = 36;
+    });
   }
 
   function keydown(event: KeyboardEvent) {
@@ -11679,21 +12337,22 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
     </div>
   </header>
 
-  <nav data-kira-enter class="grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
-    <button type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
-      class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
-        (active === 'overview' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
+  <nav data-kira-enter use:tenetFlowIndicator={{ active }} class="relative grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
+    <span data-kira-flow-indicator aria-hidden="true" class="pointer-events-none absolute bottom-0 left-0 z-10 h-0.5 bg-kira-accent"></span>
+    <button data-kira-tab="overview" type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
+      class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+        (active === 'overview' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
       01 / OVERVIEW
     </button>
-    <button type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
-      class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
-        (active === 'processes' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
+    <button data-kira-tab="processes" type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
+      class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+        (active === 'processes' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
       02 / PROCESSES
     </button>
   </nav>
 
   {#if active === 'overview'}
-    <div class="flex min-h-0 flex-1 flex-col">
+    <div use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col">
       <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
         <div class="mb-4 flex items-center justify-between gap-2 border-b border-kira-muted/15 pb-3">
           <div class="flex items-center gap-2">
@@ -11792,7 +12451,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
         </div>
       </section>
 
-      <details data-kira-enter class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
+      <details data-kira-enter use:tenetDisclosure class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
         aria-label="Additional host diagnostics">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
           text-[10px] font-extrabold tracking-[0.12em] text-kira-accent
@@ -11801,7 +12460,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           <span class="text-[9px] font-semibold text-kira-muted group-open:hidden">EXPAND +</span>
           <span class="hidden text-[9px] font-semibold text-kira-muted group-open:inline">COLLAPSE −</span>
         </summary>
-        <div class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
+        <div data-kira-disclosure-content class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
           <div class="min-w-0">
             <div class="text-[9px] font-bold tracking-wider text-kira-muted">UPTIME</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
@@ -11835,20 +12494,24 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       </footer>
     </div>
   {:else}
-    <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
+    <section use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
       aria-label="Processes">
       <div data-kira-enter class="mb-3 flex items-center justify-between gap-2">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
         <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>
       </div>
       <input data-kira-enter type="search" aria-label="Filter by process name or PID"
-        placeholder="Filter by process name or PID" bind:value={query}
-        oninput={() => { visibleCount = 36; }}
+        placeholder="Filter by process name or PID" value={query}
+        oninput={filterProcesses}
         class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none
           placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
-      <div data-kira-enter class="grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+      <div data-kira-enter use:tenetFlowIndicator={{ active: sort.field }}
+        class="relative grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
+        <span data-kira-flow-indicator aria-hidden="true"
+          class="pointer-events-none absolute bottom-0 left-0 z-0 h-0.5 bg-kira-accent"></span>
         {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
-          <button type="button" onclick={() => changeSort(column.field as SortField)}
+          <button data-kira-tab={column.field} type="button" onclick={() => changeSort(column.field as SortField)}
+            aria-pressed={sort.field === column.field}
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
@@ -11857,9 +12520,9 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           </button>
         {/each}
       </div>
-      <div data-kira-enter class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
+      <div bind:this={processList} data-kira-enter use:tenetReflowScope class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
         {#each visible as process (process.pid)}
-          <div class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
+          <div data-kira-reflow class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
             title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
               ' / RSS ' + processMemoryLabel(process.rss_kib) + ' / PSS ' + processMemoryLabel(process.pss_kib)}>
             <span class="truncate font-semibold">{process.name}</span>
@@ -11896,6 +12559,7 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
   import { tick } from 'svelte';
   import type { WorkspaceState } from '../sdk/core';
   import { visibleWorkspaceWindow } from '../workspace-window';
+  import { tenetFlowIndicator, tenetScrollIntoView, tenetScrollScope } from '../motion';
 
   let { state, showNames, limit, onFocus, pending }: {
     state: WorkspaceState | null;
@@ -11908,18 +12572,21 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
   const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
   const focusedId = $derived(windowed.items.find(item => item.is_focused)?.id ?? null);
   let list: HTMLOListElement;
+  let previousFocus: string | null = null;
 
   // The model guarantees inclusion; WebKit's fixed-width horizontal
   // viewport still needs explicit pixel visibility after Niri changes focus.
   $effect(() => {
     const id = focusedId;
     if (id === null) return;
+    const animate = previousFocus !== null && previousFocus !== id;
+    previousFocus = id;
     let cancelled = false;
     void tick().then(() => {
       if (cancelled || !list) return;
       const match = Array.from(list.querySelectorAll<HTMLElement>('[data-workspace-id]'))
         .find(item => item.dataset.workspaceId === id);
-      match?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+      if (match) tenetScrollIntoView(list, match, animate);
     });
     return () => { cancelled = true; };
   });
@@ -11947,18 +12614,23 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
         −{windowed.before}
       </span>
     {/if}
-    <ol bind:this={list} class="flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    <ol bind:this={list} use:tenetFlowIndicator={{ active: focusedId ?? '', axis: 'both' }}
+      use:tenetScrollScope
+      class="relative flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Niri workspaces">
+      <li data-kira-flow-indicator aria-hidden="true"
+        class="pointer-events-none absolute left-0 top-0 z-0 list-none rounded-[2px] bg-kira-accent"></li>
       {#each windowed.items as workspace (workspace.id)}
         <li
-          class={['relative h-[29px] min-w-[31px] max-w-[108px] shrink-0 rounded-[2px] text-[11px] font-extrabold tabular-nums transition-colors duration-150 motion-reduce:transition-none',
+          class={['relative z-10 h-[29px] min-w-[31px] max-w-[108px] shrink-0 rounded-[2px] text-[11px] font-extrabold tabular-nums transition-colors duration-150 motion-reduce:transition-none',
             workspace.is_focused
-              ? 'bg-kira-accent text-kira-on-accent'
+              ? 'text-kira-on-accent'
               : workspace.is_active
                 ? 'bg-kira-surface-soft text-kira-text'
                 : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'].join(' ')}
           data-focused={workspace.is_focused}
           data-workspace-id={workspace.id}
+          data-kira-tab={workspace.id}
           data-urgent={workspace.is_urgent}
         >
           <button
@@ -12247,6 +12919,9 @@ const motion = readFileSync(new URL('./motion.ts', import.meta.url), 'utf8');
 const calendar = readFileSync(new URL('./calendar-tenet-motion.ts', import.meta.url), 'utf8');
 const launcher = readFileSync(new URL('./components/LauncherWidget.svelte', import.meta.url), 'utf8');
 const system = readFileSync(new URL('./components/SystemWidget.svelte', import.meta.url), 'utf8');
+const workspace = readFileSync(new URL('./components/WorkspacePreview.svelte', import.meta.url), 'utf8');
+const calendarWidget = readFileSync(new URL('./components/CalendarWidget.svelte', import.meta.url), 'utf8');
+const styles = readFileSync(new URL('../style.css', import.meta.url), 'utf8');
 
 describe('TENET shared widget appearance', () => {
   it('preserves one recorded trajectory in reverse chronological order', () => {
@@ -12264,8 +12939,9 @@ describe('TENET shared widget appearance', () => {
 
   it('prepares compositor layers before native reveal, no visible opacity snap', () => {
     expect(motion).toContain("gsap.set(content, {");
-    expect(motion).toContain("y: 14,");
-    expect(motion).toContain("opacity: 0.82,");
+    expect(motion).toContain("y: 9,");
+    expect(motion).toContain("scale: 0.988,");
+    expect(motion).toContain("opacity: 0.94,");
     expect(motion).toContain("willChange: 'transform, opacity'");
     expect(motion).toContain("node.dataset.tenetReveal = 'ready'");
     expect(motion).toContain("window.setTimeout(() => {");
@@ -12277,8 +12953,10 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
     expect(motion).toContain("master.to(content, {");
     expect(motion).toContain("master.fromTo(traces,");
-    expect(motion).toContain("duration: 0.72");
-    expect(motion).toContain("ease: 'sine.inOut'");
+    expect(motion).toContain("duration: 0.44");
+    expect(motion).toContain("duration: 0.22");
+    expect(motion).toContain("ease: 'back.out(1.22)'");
+    expect(motion).not.toContain("ease: 'sine.inOut'");
     expect(motion).toContain("ease: 'power3.in'");
     expect(motion).toContain("from: 'end'");
     expect(motion).toContain("force3D: true");
@@ -12298,6 +12976,26 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("generation === Number(node.dataset.kiraGeneration)");
   });
 
+  it('uses a single shared tab indicator with interruptible GSAP travel', () => {
+    expect(system).toContain('use:tenetFlowIndicator={{ active }}');
+    expect(system).toContain('data-kira-flow-indicator');
+    expect(system).toContain('data-kira-tab="overview"');
+    expect(system).toContain('data-kira-tab="processes"');
+    expect(system).not.toContain("'border-kira-accent text-kira-accent'");
+    expect(motion).toContain('gsap.to(indicator, {');
+    expect(motion).toContain("overwrite: 'auto', force3D: true");
+    expect(motion).toContain("new ResizeObserver(() => relocate(active, true))");
+    expect(motion).toContain('gsap.killTweensOf(indicator)');
+    expect(motion).toContain("recovery = window.setTimeout(() => {");
+    expect(motion).toContain("}, 650)");
+    expect(motion).toContain("node.dataset.kiraFlowMoving = 'true'");
+    expect(motion).toContain("onComplete: endTravel");
+    expect(styles).toContain('[data-kira-flow-moving="true"] [data-calendar-selected="true"]');
+    expect(styles).toContain('[data-kira-flow-moving="true"] [data-focused="true"]');
+    expect(motion).toContain('export function tenetPanelArrival');
+    expect(system).toContain('use:tenetPanelArrival');
+  });
+
   it('uses physical widget contacts without duplicating legacy stagger animations', () => {
     expect(calendar).toContain('return tenetWidgetReveal(node, {');
     expect(launcher).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: -1 }}");
@@ -12305,6 +13003,60 @@ describe('TENET shared widget appearance', () => {
     expect(launcher).toContain('data-kira-contact');
     expect(system).toContain('data-kira-contact');
     expect(system).not.toContain('use:revealStagger');
+  });
+});
+
+describe('TENET continuous interaction contract', () => {
+  it('shares one physical 2D marker across every selection surface', () => {
+    for (const source of [calendarWidget, launcher, workspace]) {
+      expect(source).toContain('data-kira-flow-indicator');
+      expect(source).toContain('use:tenetFlowIndicator={{ active:');
+      expect(source).toContain("axis: 'both'");
+      expect(source).toContain('data-kira-tab=');
+    }
+    expect(system).toContain("use:tenetFlowIndicator={{ active }}");
+    expect(motion).toContain("ease: 'back.out(1.18)'");
+    expect(motion).toContain("overwrite: 'auto', force3D: true");
+    expect(motion).toContain("const preference = window.matchMedia('(prefers-reduced-motion: reduce)')");
+    expect(motion).toContain('observer?.disconnect()');
+    expect(motion).toContain('gsap.killTweensOf(indicator)');
+  });
+
+  it('uses keyed GSAP FLIP for purposeful row reordering, not live sensor values', () => {
+    expect(motion).toContain("import { Flip } from 'gsap/Flip'");
+    expect(motion).toContain('Flip.getState(rows)');
+    expect(motion).toContain('Flip.from(state, {');
+    expect(motion).toContain('rows.length || reducedMotion()');
+    expect(motion).toContain('slice(0, 24)');
+    expect(motion).toContain('export function tenetReflowScope(');
+    expect(motion).toContain('reflows.delete(container)');
+    expect(launcher).toContain('use:tenetReflowScope use:tenetScrollScope');
+    expect(system).toContain('use:tenetReflowScope');
+    for (const source of [launcher, system]) {
+      expect(source).toContain('tenetReflow(');
+      expect(source).toContain('data-kira-reflow');
+    }
+  });
+
+  it('moves workspace scroll along the correct axis and keeps calendar contact history', () => {
+    expect(workspace).toContain('tenetScrollIntoView(list, match, animate)');
+    expect(launcher).toContain("tenetScrollIntoView(results, item, true, 'y')");
+    expect(motion).toContain("gsap.killTweensOf(list, property)");
+    expect(motion).toContain('gsap.to(list, {');
+    expect(motion).toContain('export function tenetScrollScope(');
+    expect(workspace).toContain('use:tenetScrollScope');
+    expect(calendar).toContain('activeTargets = changedMonth ? [node] : []');
+    expect(calendar).toContain("ease: 'back.out(1.18)'");
+    expect(calendar).toContain('inverted.progress(dualTime(forward.progress()).inverted)');
+  });
+
+  it('expands a single accessible diagnostics surface and cleans up all tweens', () => {
+    expect(system).toContain('use:tenetDisclosure');
+    expect(system).toContain('data-kira-disclosure-content');
+    expect(motion).toContain("summary.addEventListener('click', onClick)");
+    expect(motion).toContain("summary.setAttribute('aria-expanded', String(next))");
+    expect(motion).toContain("summary.removeEventListener('click', onClick)");
+    expect(motion).toContain("preference.removeEventListener('change', onPreference)");
   });
 });
 
@@ -12316,6 +13068,10 @@ FILE	frontend/src/lib/motion.ts
  * replay saved paths to the same physical editorial contact point.
  */
 import { gsap } from 'gsap';
+import { Flip } from 'gsap/Flip';
+import { tick } from 'svelte';
+
+gsap.registerPlugin(Flip);
 import { tenetFragmentsFor } from './calendar-tenet-model';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
@@ -12396,13 +13152,15 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     master = gsap.timeline({ paused: true, onComplete: settle });
     master.to(content, {
       y: 0,
-      opacity: 1,
-      duration: 0.72,
-      stagger: 0.045,
-      ease: 'sine.inOut',
+      scale: 1,
+      duration: 0.44,
+      stagger: 0.035,
+      ease: 'back.out(1.22)',
       force3D: true,
       overwrite: 'auto',
     }, 0);
+    // Fade is kept separate from the elastic transform: no opacity overshoot.
+    master.to(content, { opacity: 1, duration: 0.22, stagger: 0.035, ease: 'power2.out' }, 0);
     master.fromTo(traces,
       {
         x: (i: number) => flights[i].x,
@@ -12412,8 +13170,8 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       },
       {
         x: 0, y: 0, rotation: 0, opacity: 0,
-        duration: 0.72,
-        stagger: { each: 0.015, from: 'end' },
+        duration: 0.44,
+        stagger: { each: 0.012, from: 'end' },
         ease: 'power3.in',
         force3D: true,
         immediateRender: true,
@@ -12448,13 +13206,14 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   // Prepare the visible geometry while the native window is still
   // transparent. The GTK visible handshake starts the tween from these
   // exact values, eliminating the old full-opacity -> 0.18 snap.
-  // No layout properties change, and the compositor can cache 3 layers.
+  // Only two or three small sections move. The live chart layers remain still.
   if (preference.matches || !content.length) {
     node.dataset.tenetReveal = 'settled';
   } else {
     gsap.set(content, {
-      y: 14,
-      opacity: 0.82,
+      y: 9,
+      scale: 0.988,
+      opacity: 0.94,
       force3D: true,
       willChange: 'transform, opacity',
     });
@@ -12474,6 +13233,320 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     destroy() {
       window.removeEventListener('kira:overlay:visible', onVisible);
       window.removeEventListener('kira:overlay:hide', onHide);
+      preference.removeEventListener('change', onPreference);
+      settle();
+    },
+  };
+}
+
+/** A single marker owns the selected state across tabs, calendar days,
+ * launcher rows and workspace chips. It always retargets from the actual
+ * in-flight position instead of cross-fading between separate highlights.
+ */
+export interface TenetFlowTarget {
+  active: string;
+  axis?: 'x' | 'both';
+}
+
+export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const indicator = node.querySelector<HTMLElement>('[data-kira-flow-indicator]');
+  let active = initial.active;
+  const axis = initial.axis ?? 'x';
+  if (!indicator) return { update(_next: TenetFlowTarget) {}, destroy() {} };
+  let last: { x: number; y: number; width: number; height: number } | null = null;
+  let recovery: number | null = null;
+  function cancelRecovery() {
+    if (recovery !== null) window.clearTimeout(recovery);
+    recovery = null;
+  }
+  const endTravel = () => { delete node.dataset.kiraFlowMoving; };
+
+  function geometry(key: string) {
+    const target = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-tab]'))
+      .find(item => item.dataset.kiraTab === key);
+    if (!target || !target.isConnected || target.offsetWidth <= 0) return null;
+    return {
+      x: target.offsetLeft, y: target.offsetTop,
+      width: target.offsetWidth, height: target.offsetHeight,
+    };
+  }
+
+  function relocate(key: string, animate: boolean) {
+    const next = geometry(key);
+    if (!next) {
+      cancelRecovery();
+      endTravel();
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { autoAlpha: 0 });
+      last = null;
+      return;
+    }
+    const vars = axis === 'both'
+      ? { x: next.x, y: next.y, width: next.width, height: next.height }
+      : { x: next.x, width: next.width };
+    if (last && Object.keys(vars).every(prop => next[prop as keyof typeof next] === last![prop as keyof typeof last])) {
+      return;
+    }
+    const moving = animate && !preference.matches && last !== null;
+    cancelRecovery();
+    last = next;
+    if (!moving) {
+      endTravel();
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { ...vars, autoAlpha: 1 });
+      return;
+    }
+    // Selected black text must never be black-on-black before the orange
+    // background arrives. The selected text stays light only while moving.
+    node.dataset.kiraFlowMoving = 'true';
+    // Only geometry springs. Visibility stays monotonic and never overshoots.
+    gsap.to(indicator, {
+      ...vars, duration: 0.42, ease: 'back.out(1.18)',
+      overwrite: 'auto', force3D: true, onComplete: endTravel,
+    });
+    gsap.to(indicator, { autoAlpha: 1, duration: 0.12, ease: 'power2.out', overwrite: 'auto' });
+    // rAF can stall for a compact, obscured WebKitGTK surface. Correctness
+    // always wins: reconcile exact geometry after one bounded grace period.
+    recovery = window.setTimeout(() => {
+      recovery = null;
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { ...vars, autoAlpha: 1 });
+      endTravel();
+    }, 650);
+  }
+
+  relocate(active, false);
+  const onPreference = () => {
+    if (preference.matches) {
+      last = null;
+      relocate(active, false);
+    }
+  };
+  preference.addEventListener('change', onPreference);
+  const observer = typeof ResizeObserver === 'undefined' ? null :
+    new ResizeObserver(() => relocate(active, true));
+  observer?.observe(node);
+
+  return {
+    update(next: TenetFlowTarget) {
+      active = next.active;
+      // Same selection can still change physical coordinates after keyed
+      // reorder or filter; its marker must follow rather than teleport.
+      relocate(active, true);
+    },
+    destroy() {
+      cancelRecovery();
+      endTravel();
+      observer?.disconnect();
+      preference.removeEventListener('change', onPreference);
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { clearProps: 'transform,width,height,opacity,visibility,willChange' });
+    },
+  };
+}
+
+/** User-driven FLIP transitions are bounded and owned by the list's lifetime. */
+type RunningReflow = { tween: gsap.core.Timeline; release: () => void };
+const reflows = new WeakMap<HTMLElement, RunningReflow>();
+const reflowEpochs = new WeakMap<HTMLElement, number>();
+
+function stopReflow(container: HTMLElement, finish: boolean) {
+  const running = reflows.get(container);
+  if (!running) return;
+  reflows.delete(container);
+  if (finish) running.tween.progress(1);
+  running.tween.kill();
+  running.release();
+}
+
+export function tenetReflowScope(node: HTMLElement) {
+  return {
+    destroy() {
+      reflowEpochs.set(node, (reflowEpochs.get(node) ?? 0) + 1);
+      stopReflow(node, false);
+    },
+  };
+}
+
+/** Retain painted positions of stable rows during explicit user reorder/filter.
+ * Reacting to sensor samples this way would animate facts and is forbidden.
+ */
+export function tenetReflow(container: HTMLElement | undefined, mutate: () => void): void {
+  if (!container) {
+    mutate();
+    return;
+  }
+  const epoch = (reflowEpochs.get(container) ?? 0) + 1;
+  reflowEpochs.set(container, epoch);
+  stopReflow(container, false);
+  const rows = Array.from(container.querySelectorAll<HTMLElement>('[data-kira-reflow]')).slice(0, 24);
+  if (!rows.length || reducedMotion()) {
+    mutate();
+    return;
+  }
+  let state: ReturnType<typeof Flip.getState>;
+  try {
+    state = Flip.getState(rows);
+  } catch {
+    // Motion is always optional; malformed geometry must never block typing.
+    mutate();
+    return;
+  }
+  mutate();
+  void tick().then(() => {
+    if (!container.isConnected || reflowEpochs.get(container) !== epoch || reducedMotion()) return;
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let tween: gsap.core.Timeline | null = null;
+    const onPreference = () => {
+      if (preference.matches) stopReflow(container, true);
+    };
+    const release = () => {
+      preference.removeEventListener('change', onPreference);
+      if (reflows.get(container)?.tween === tween) reflows.delete(container);
+    };
+    try {
+      tween = Flip.from(state, {
+        duration: 0.34,
+        ease: 'back.out(1.14)',
+        absolute: false,
+        scale: false,
+        prune: true,
+        overwrite: true,
+        onComplete: release,
+      });
+      reflows.set(container, { tween, release });
+      preference.addEventListener('change', onPreference);
+      // An unchanged keyed list can produce a zero-length FLIP scene.
+      // Do not retain its listeners or entries after a synchronous settle.
+      if (tween.duration() === 0) release();
+    } catch {
+      release();
+      // Keep the already-committed user action, even if the FLIP plugin fails.
+    }
+  });
+}
+
+/** Reusable, interruptible GSAP scroll with a reliable reduced-motion reset.
+ * The nearest visible position, not scrollIntoView's implicit browser jump.
+ */
+export function tenetScrollIntoView(
+  list: HTMLElement, item: HTMLElement, animate: boolean, axis: 'x' | 'y' = 'x',
+): void {
+  const vertical = axis === 'y';
+  const start = vertical ? item.offsetTop : item.offsetLeft;
+  const end = start + (vertical ? item.offsetHeight : item.offsetWidth);
+  const current = vertical ? list.scrollTop : list.scrollLeft;
+  const size = vertical ? list.clientHeight : list.clientWidth;
+  const destination = Math.max(0, start < current ? start : end > current + size ? end - size : current);
+  if (Math.abs(destination - current) < 1) return;
+  const property = vertical ? 'scrollTop' : 'scrollLeft';
+  gsap.killTweensOf(list, property);
+  if (!animate || reducedMotion()) {
+    if (vertical) list.scrollTop = destination;
+    else list.scrollLeft = destination;
+    return;
+  }
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const release = () => preference.removeEventListener('change', onPreference);
+  const onPreference = () => {
+    if (!preference.matches) return;
+    gsap.killTweensOf(list, property);
+    if (vertical) list.scrollTop = destination;
+    else list.scrollLeft = destination;
+    release();
+  };
+  preference.addEventListener('change', onPreference);
+  gsap.to(list, {
+    [property]: destination,
+    duration: 0.34,
+    ease: 'power3.out',
+    overwrite: 'auto',
+    onComplete: release,
+    onInterrupt: release,
+  });
+}
+
+export function tenetScrollScope(node: HTMLElement) {
+  return {
+    destroy() {
+      gsap.killTweensOf(node, 'scrollLeft,scrollTop');
+    },
+  };
+}
+
+/** A controlled disclosure retains one content surface while height follows
+ * a short elastic trajectory, rather than popping its layout instantly.
+ */
+export function tenetDisclosure(node: HTMLDetailsElement) {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const summary = node.querySelector('summary');
+  const content = node.querySelector<HTMLElement>('[data-kira-disclosure-content]');
+  if (!summary || !content) return { destroy() {} };
+  let expanded = node.open;
+  let animation: gsap.core.Tween | null = null;
+  const finish = () => {
+    animation?.kill();
+    animation = null;
+    gsap.set(content, { clearProps: 'height,overflow,opacity,visibility' });
+    if (!expanded) node.open = false;
+  };
+  const onClick = (event: MouseEvent) => {
+    event.preventDefault();
+    const next = !expanded;
+    expanded = next;
+    animation?.kill();
+    animation = null;
+    summary.setAttribute('aria-expanded', String(next));
+    if (preference.matches) {
+      node.open = next;
+      gsap.set(content, { clearProps: 'height,overflow,opacity,visibility' });
+      return;
+    }
+    const previousHeight = node.open ? content.getBoundingClientRect().height : 0;
+    node.open = true;
+    const full = content.scrollHeight;
+    gsap.set(content, { overflow: 'hidden', height: previousHeight, opacity: next ? 0.88 : 1 });
+    animation = gsap.to(content, {
+      height: next ? full : 0,
+      opacity: next ? 1 : 0.88,
+      duration: 0.34,
+      ease: 'power3.out',
+      overwrite: 'auto',
+      onComplete: finish,
+    });
+  };
+  const onPreference = () => { if (preference.matches) finish(); };
+  summary.addEventListener('click', onClick);
+  preference.addEventListener('change', onPreference);
+  return {
+    destroy() {
+      summary.removeEventListener('click', onClick);
+      preference.removeEventListener('change', onPreference);
+      animation?.kill();
+      gsap.set(content, { clearProps: 'height,overflow,opacity,visibility' });
+    },
+  };
+}
+
+/** Soft panel arrival on tab changes; the initial native mount is excluded. */
+export function tenetPanelArrival(node: HTMLElement) {
+  const root = node.closest<HTMLElement>('[data-kira-ui-root]');
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!root?.dataset.kiraGeneration || preference.matches) return { destroy() {} };
+  let tween: gsap.core.Tween | null = null;
+  const settle = () => {
+    tween?.kill();
+    tween = null;
+    gsap.set(node, { clearProps: 'transform,opacity,visibility,willChange' });
+  };
+  gsap.set(node, { willChange: 'transform, opacity' });
+  tween = gsap.fromTo(node, { y: 6, autoAlpha: 0.94 },
+    { y: 0, autoAlpha: 1, duration: 0.30, ease: 'power3.out', onComplete: settle });
+  const onPreference = () => { if (preference.matches) settle(); };
+  preference.addEventListener('change', onPreference);
+  return {
+    destroy() {
       preference.removeEventListener('change', onPreference);
       settle();
     },
@@ -12534,7 +13607,7 @@ export function observeOverlaySize(root: HTMLElement, generation: number): () =>
 
 FILE	frontend/src/lib/sdk/core.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, openLauncher, closeCalendarOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -12575,7 +13648,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    closeLauncherOverlay();
+    closeLauncherOverlay(8);
     expect(requestLauncherCatalog(8)).toBe(true);
     expect(launchDesktopApp(8, 42)).toBe(true);
     for (const bad of [-1, 1.5, 1024, Number.NaN]) {
@@ -12585,7 +13658,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(launchDesktopApp(4294967296, 1)).toBe(false);
     expect(requestLauncherCatalog(-1)).toBe(false);
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
-      'close', 'apps-request:8', 'launch:8:42',
+      'close:8', 'apps-request:8', 'launch:8:42',
     ]);
   });
 
@@ -12683,12 +13756,12 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    closeCalendarOverlay();
-    copyCalendarDate('2024-02-29');
+    closeCalendarOverlay(12);
+    copyCalendarDate(12, '2024-02-29');
     for (const invalid of ['bogus', '2024-2-29', '2024-02-29;exit', '', '99999-01-01']) {
-      copyCalendarDate(invalid);
+      copyCalendarDate(12, invalid);
     }
-    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close', 'copy:2024-02-29']);
+    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close:12', 'copy:12:2024-02-29']);
   });
 
   it('reports calendar Svelte mount completion only via the private host channel', () => {
@@ -12698,21 +13771,24 @@ describe('Core SDK JSON-RPC bridge', () => {
     } as unknown as Window & typeof globalThis;
     notifyCalendarHostReady();
     notifyCalendarMounted(42);
+    notifyCalendarMounted(43, true);
+    notifyOverlayMotion(43, false);
+    notifyOverlayMotion(0, true);
     notifyCalendarMounted(0);
     notifyCalendarMounted(-1);
     notifyCalendarMounted(Number.NaN);
     notifyCalendarMounted(4294967296);
-    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['host-ready', 'mounted:42']);
+    expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['host-ready', 'mounted:42:0', 'mounted:43:1', 'motion:43:0']);
   });
 
   it('does not throw without a calendar host, or when its channel fails', () => {
-    expect(() => closeCalendarOverlay()).not.toThrow();
-    expect(() => copyCalendarDate('2024-02-29')).not.toThrow();
+    expect(() => closeCalendarOverlay(12)).not.toThrow();
+    expect(() => copyCalendarDate(12, '2024-02-29')).not.toThrow();
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage: () => { throw new Error('window closed'); } } } },
     } as unknown as Window & typeof globalThis;
-    expect(() => closeCalendarOverlay()).not.toThrow();
-    expect(() => copyCalendarDate('2024-02-29')).not.toThrow();
+    expect(() => closeCalendarOverlay(12)).not.toThrow();
+    expect(() => copyCalendarDate(12, '2024-02-29')).not.toThrow();
   });
 
   it('allows only fixed System Monitor overlay actions', () => {
@@ -12720,13 +13796,13 @@ describe('Core SDK JSON-RPC bridge', () => {
     globalThis.window = {
       webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
     } as unknown as Window & typeof globalThis;
-    closeSystemOverlay();
-    copySystemReport();
-    setSystemMonitorTab('overview');
-    setSystemMonitorTab('processes');
-    setSystemMonitorTab('execute' as 'processes');
+    closeSystemOverlay(42);
+    copySystemReport(42);
+    setSystemMonitorTab(42, 'overview');
+    setSystemMonitorTab(42, 'processes');
+    setSystemMonitorTab(42, 'execute' as 'processes');
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
-      'close', 'copy-report', 'tab:overview', 'tab:processes',
+      'close:42', 'copy-report:42', 'tab:42:overview', 'tab:42:processes',
     ]);
   });
 
@@ -13271,33 +14347,45 @@ export function notifyOverlayHeight(generation: number, height: number): boolean
 }
 
 /** A specific popup generation has finished its lazy Svelte mount. */
-export function notifyCalendarMounted(generation: number): void {
+export function notifyCalendarMounted(generation: number, reduced = false): void {
   if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;
-  sendCalendarUi('mounted:' + generation);
+  sendCalendarUi('mounted:' + generation + ':' + (reduced ? '1' : '0'));
 }
 
-export function closeCalendarOverlay(): void {
-  sendCalendarUi('close');
+/** Keep native fade and WebKit GSAP synchronized if accessibility changes. */
+export function notifyOverlayMotion(generation: number, reduced: boolean): void {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return;
+  sendCalendarUi('motion:' + generation + ':' + (reduced ? '1' : '0'));
 }
 
-export function copyCalendarDate(date: string): void {
+function validOverlayGeneration(generation: number): boolean {
+  return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff;
+}
+
+export function closeCalendarOverlay(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
+}
+
+export function copyCalendarDate(generation: number, date: string): void {
   // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
   // revalidates the exact date, including month lengths and leap years.
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
-  sendCalendarUi('copy:' + date);
+  if (!validOverlayGeneration(generation) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+  sendCalendarUi('copy:' + generation + ':' + date);
 }
 
 /** The shared overlay accepts only fixed read-only tab and copy actions. */
-export function closeSystemOverlay(): void {
-  sendCalendarUi('close');
+export function closeSystemOverlay(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
 }
 
-export function setSystemMonitorTab(tab: 'overview' | 'processes'): void {
-  if (tab === 'overview' || tab === 'processes') sendCalendarUi('tab:' + tab);
+export function setSystemMonitorTab(generation: number, tab: 'overview' | 'processes'): void {
+  if (validOverlayGeneration(generation) && (tab === 'overview' || tab === 'processes')) {
+    sendCalendarUi('tab:' + generation + ':' + tab);
+  }
 }
 
-export function copySystemReport(): void {
-  sendCalendarUi('copy-report');
+export function copySystemReport(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('copy-report:' + generation);
 }
 
 export interface LauncherApp {
@@ -13375,8 +14463,8 @@ export function launchDesktopApp(generation: number, id: number): boolean {
   return sendCalendarUi('launch:' + generation + ':' + id);
 }
 
-export function closeLauncherOverlay(): void {
-  sendCalendarUi('close');
+export function closeLauncherOverlay(generation: number): void {
+  if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
 }
 
 /** Open or close the shared Svelte read-only system monitor. */
@@ -14297,7 +15385,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
   });
 
   it('retains focus scrolling and hidden urgency in workspace navigation', () => {
-    expect(workspaces).toContain('scrollIntoView(');
+    expect(workspaces).toContain('tenetScrollIntoView(list, match, animate)');
+    expect(workspaces).toContain("use:tenetFlowIndicator={{ active: focusedId ?? '', axis: 'both' }}");
+    expect(workspaces).toContain('data-kira-flow-indicator');
     expect(workspaces).toContain('data-workspace-id={workspace.id}');
     expect(workspaces).toContain('windowed.beforeUrgent');
     expect(workspaces).toContain('windowed.afterUrgent');
@@ -14324,7 +15414,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('data-urgent={workspace.is_urgent}');
     expect(workspaces).toContain('disabled={pending}');
     expect(workspaces).toContain('focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2');
-    expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
+    expect(workspaces).toContain("? 'text-kira-on-accent'");
+    expect(workspaces).toContain('data-kira-tab={workspace.id}');
+    expect(workspaces).toContain('rounded-[2px] bg-kira-accent');
     expect(workspaces).toContain('visibleWorkspaceWindow(');
     expect(workspaces).toContain('data-workspace-strip');
     expect(workspaces).toContain('windowed.before > 0');
@@ -14461,7 +15553,7 @@ import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted } from './lib/sdk/core';
+import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
@@ -14499,17 +15591,28 @@ whenDocumentReady(document, () => {
         let stopSizing: (() => void) | null = null;
         return {
           mount() {
+            // Commands capture THIS generation, not the mutable current one.
+            // A late callback from a recycled slot can never close a newer
+            // widget or change its subscriptions.
+            const lease = visibleGeneration ?? 0;
             const instance = kind === 'calendar'
               ? mount(CalendarWidget, {
                 target,
-                props: { onClose: closeCalendarOverlay, onCopy: copyCalendarDate },
+                props: {
+                  onClose: () => closeCalendarOverlay(lease),
+                  onCopy: (date: string) => copyCalendarDate(lease, date),
+                },
               })
               : kind === 'system'
                 ? mount(SystemWidget, {
                   target,
-                  props: { onClose: closeSystemOverlay, onCopy: copySystemReport, onTab: setSystemMonitorTab },
+                  props: {
+                    onClose: () => closeSystemOverlay(lease),
+                    onCopy: () => copySystemReport(lease),
+                    onTab: (tab: 'overview' | 'processes') => setSystemMonitorTab(lease, tab),
+                  },
                 })
-                : mount(LauncherWidget, { target, props: { onClose: closeLauncherOverlay, generation: visibleGeneration ?? 0 } });
+                : mount(LauncherWidget, { target, props: { onClose: () => closeLauncherOverlay(lease), generation: lease } });
             flushSync();
             const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {
@@ -14533,12 +15636,16 @@ whenDocumentReady(document, () => {
             // could become visible before the first actual resize.
             stopSizing = observeOverlaySize(root, generation);
             report('Overlay Svelte ' + kind + ' mounted; generation=' + generation);
-            notifyCalendarMounted(generation);
+            notifyCalendarMounted(generation, window.matchMedia('(prefers-reduced-motion: reduce)').matches);
           },
         };
       },
       (error) => report('Overlay lazy mount/unmount failed: ' + String(error)),
     );
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    motionPreference.addEventListener('change', () => {
+      if (visibleGeneration !== null) notifyOverlayMotion(visibleGeneration, motionPreference.matches);
+    });
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number; maxHeight: number }>).detail;
       if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher') ||
@@ -14709,6 +15816,19 @@ FILE	frontend/src/style.css
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* A moving solid selection must not turn its new label into black-on-black.
+ * Keep actual selection/ARIA immediate; switch foreground contrast only while
+ * its ONE orange background is travelling between physical positions.
+ * Unlayered so this wins over Tailwind's generated utility color classes.
+ */
+[data-kira-flow-moving="true"] [data-calendar-selected="true"],
+[data-kira-flow-moving="true"] [data-focused="true"] {
+  color: var(--kira-color-text);
+}
+[data-kira-flow-moving="true"] [data-focused="true"] span[aria-hidden="true"] {
+  background-color: var(--kira-color-accent);
 }
 
 FILE	frontend/tsconfig.json
@@ -15622,7 +16742,11 @@ class CalendarDesignTests(unittest.TestCase):
 
     def test_calendar_is_preloaded_and_reused_without_a_blank_surface(self):
         self.assertIn("calendar::prewarm(&calendar_app, &calendar_source)", SHELL)
-        self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", RUST)
+        self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", RUST)
+        self.assertIn("scheduler: RefCell<WebviewScheduler>", RUST)
+        self.assertIn("pool.scheduler.borrow_mut().prewarm_one(Instant::now())", RUST)
+        self.assertIn("Reservation::Reused(id)", RUST)
+        self.assertIn("Reservation::Created(id)", RUST)
         self.assertIn("fn ensure(application: &gtk::Application, html: &str)", RUST)
         self.assertIn("self.window.set_visible(false)", RUST)
         self.assertIn("self.window.set_opacity(0.0)", RUST)
@@ -15633,19 +16757,20 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("self.request_paint()", RUST)
         self.assertIn("requestAnimationFrame(() => requestAnimationFrame(", RUST)
         self.assertIn("self.generation.get() == generation", RUST)
-        self.assertNotIn("window.close()", RUST)
+        self.assertIn("view.window.close()", RUST)
+        self.assertIn("view.disposed.set(true)", RUST)
         self.assertIn("pub fn prewarm(", RUST)
         self.assertIn("requestAnimationFrame", RUST)
         self.assertIn("sendCalendarUi('host-ready')", SDK)
-        self.assertIn("sendCalendarUi('mounted:' + generation)", SDK)
-        self.assertIn("notifyCalendarMounted(generation)", ENTRY)
+        self.assertIn("sendCalendarUi('mounted:' + generation + ':'", SDK)
+        self.assertIn("notifyCalendarMounted(generation, window.matchMedia", ENTRY)
 
     def test_lazy_svelte_mount_and_dispose_on_hide(self):
         self.assertIn("self.view.evaluate_javascript(", RUST)
         self.assertIn("kira:overlay:show", RUST)
         self.assertIn("kira:overlay:hide", RUST)
         self.assertIn("Some(UiCommand::HostReady)", RUST)
-        self.assertIn("Some(UiCommand::Mounted(generation))", RUST)
+        self.assertIn("Some(UiCommand::Mounted(generation, reduced))", RUST)
         self.assertIn("self.widget_ready.set(false)", RUST)
         self.assertIn("self.generation.get() == generation", RUST)
         self.assertIn("notifyCalendarHostReady();", ENTRY)
@@ -15660,8 +16785,9 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("if ((active?.generation ?? null) !== desired) void drain()", lifecycle)
         # The offline classic script cannot issue a dynamic import request.
         self.assertNotIn("await import(", ENTRY)
-        # WebKit must remain alive to preserve instant reopening.
-        self.assertNotIn("window.close()", RUST)
+        # Live WebKit hosts remain warm; only excess idle hosts are reclaimed.
+        self.assertIn("pool.release(self.id)", RUST)
+        self.assertIn("fn prune(&self)", RUST)
 
     def test_surface_is_selected_by_trusted_html_marker(self):
         self.assertIn('data-kira-surface=\\"calendar\\"', RUST)
@@ -15678,8 +16804,8 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("valid_date(year, month, day)", RUST)
         self.assertIn("display.clipboard().set_text(date)", RUST)
         self.assertIn("fn rejects_untrusted_calendar_commands()", RUST)
-        self.assertIn('sendCalendarUi("close")'.replace('"', "'"), SDK)
-        self.assertIn("sendCalendarUi('copy:' + date)", SDK)
+        self.assertIn("sendCalendarUi('close:' + generation)", SDK)
+        self.assertIn("sendCalendarUi('copy:' + generation + ':' + date)", SDK)
         self.assertIn("kiraCalendarUi?: Bridge", SDK)
         self.assertIn('register_script_message_handler("kiraCalendar", None)', SHELL)
         self.assertIn('if value.to_string() == "toggle"', SHELL)
@@ -15717,7 +16843,7 @@ NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class DetailedHealthContractTests(unittest.TestCase):
-    def test_same_warm_webview_hosts_calendar_and_system(self):
+    def test_warm_pool_hosts_calendar_and_system_independently(self):
         self.assertIn('register_script_message_handler("kiraSystem", None)', HOST)
         self.assertIn('if value.to_string() == "toggle"', HOST)
         self.assertIn("calendar::toggle_system(", HOST)
@@ -15728,8 +16854,8 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('set_namespace(Some("kira-overlay"))', OVERLAY)
         self.assertIn('configure_webview_popup(&window, 420, 1)', OVERLAY)
         self.assertIn("self.active.set(Some(kind))", OVERLAY)
-        self.assertIn("state.show(Surface::System)", OVERLAY)
-        self.assertIn("state.show(Surface::Calendar)", OVERLAY)
+        self.assertIn("view.show(Surface::System)", OVERLAY)
+        self.assertIn("view.show(Surface::Calendar)", OVERLAY)
         self.assertIn("kira:overlay:show", OVERLAY)
         self.assertIn("kira:overlay:hide", OVERLAY)
         self.assertIn("mount(SystemWidget", ENTRY)
@@ -15754,7 +16880,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("LOW BATTERY", MODEL)
         self.assertIn("NOT DETECTED", WIDGET)
         self.assertIn("COPY REPORT", WIDGET)
-        self.assertIn("sendCalendarUi('copy-report')", SDK)
+        self.assertIn("sendCalendarUi('copy-report:' + generation)", SDK)
         self.assertIn("display.clipboard().set_text(&model.report())", OVERLAY)
         for source in (RUST, OVERLAY, MONITOR):
             self.assertNotIn("std::process::Command", source)
@@ -15767,9 +16893,9 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("std::thread::spawn", RUST)
         self.assertIn("mpsc::sync_channel(1)", RUST)
         self.assertIn("set_processes_active(false)", OVERLAY)
-        self.assertIn("Some(UiCommand::ProcessesTab(active))", OVERLAY)
-        self.assertIn("tab:processes", OVERLAY)
-        self.assertIn("tab:overview", OVERLAY)
+        self.assertIn("Some(UiCommand::ProcessesTab(generation, active))", OVERLAY)
+        self.assertIn('message.strip_prefix("tab:")', OVERLAY)
+        self.assertIn('"overview" => false', OVERLAY)
         self.assertIn("setSystemMonitorTab", ENTRY)
         self.assertIn("01 / OVERVIEW", WIDGET)
         self.assertIn("02 / PROCESSES", WIDGET)
@@ -16111,7 +17237,7 @@ class LauncherDesignTests(unittest.TestCase):
 
     def test_scrollbar_does_not_cover_selected_row(self):
         style = (ROOT / "frontend/src/style.css").read_text()
-        self.assertIn('class="kira-launcher-scroll min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
+        self.assertIn('class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
         self.assertIn(".kira-launcher-scroll {", style)
         self.assertIn("scrollbar-width: none;", style)
         self.assertIn(".kira-launcher-scroll::-webkit-scrollbar", style)
@@ -16190,7 +17316,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('fn file_data_url(path: &Path)', RUST)
         self.assertIn('File::open(path)', RUST)
         self.assertIn('fn poll_launcher(&self)', OVERLAY)
-        self.assertIn('state.poll_launcher();', OVERLAY)
+        self.assertIn('view.poll_launcher();', OVERLAY)
         self.assertIn('crate::launcher::LauncherMessage::Launched(Ok(()))', OVERLAY)
         self.assertNotIn('Catalog::discover());', OVERLAY)
         self.assertNotIn('catalog.icons_json(&ids)', OVERLAY)
@@ -16201,7 +17327,8 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('mount(CalendarWidget', ENTRY)
         self.assertIn('mount(SystemWidget', ENTRY)
         self.assertIn("detail?.kind !== 'launcher'", ENTRY)
-        self.assertIn('Self::Launcher => "launcher"', OVERLAY)
+        scheduler = (SOURCE / "webview_pool.rs").read_text()
+        self.assertIn('Self::Launcher => "launcher"', scheduler)
         self.assertIn('KeyboardMode::Exclusive', OVERLAY)
         self.assertIn('set_exclusive_zone(0)', OVERLAY)
         self.assertIn('native_ui::configure_webview_popup', OVERLAY)
@@ -16277,39 +17404,31 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("self.window.set_exclusive_zone(0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Top, 0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Right, 0);", CALENDAR)
-        self.assertIn("self.window.set_margin(Edge::Right, 12);", CALENDAR)
+        self.assertIn("native_ui::popup_right_margin(&self.window, kind == Surface::System)", CALENDAR)
+        self.assertIn("pub fn popup_right_margin", HELPERS)
         self.assertIn(
             "set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN)",
             CALENDAR,
         )
-        # The shared layer-shell window and WebKit renderer stay in place.
-        self.assertIn("static CALENDAR: RefCell<Option<Rc<CalendarOverlay>>>", CALENDAR)
-        self.assertNotIn("window.close()", CALENDAR)
+        # Separate dedicated hosts never re-anchor another active popup.
+        self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", CALENDAR)
+        self.assertIn("fn concurrent(&self) -> bool", CALENDAR)
+        self.assertIn("self.pool.upgrade()", CALENDAR)
 
-    def test_switching_launcher_never_moves_a_mapped_webkit_buffer(self):
-        # Calendar/System can switch in place. Moving to/from the centered
-        # Launcher must unmap before changing layer-shell anchors, then
-        # remap on a subsequent compositor frame with the new Svelte DOM.
-        self.assertIn("let relocating = self.window.is_visible()", CALENDAR)
-        self.assertIn("(old == Surface::Launcher) != (kind == Surface::Launcher)", CALENDAR)
-        self.assertIn("let defer_present = relocating || self.reposition_pending.get();", CALENDAR)
-        self.assertIn("self.window.set_visible(false);", CALENDAR)
-        self.assertIn("self.reposition_pending.set(defer_present);", CALENDAR)
-        show = CALENDAR.split("fn show(self: &Rc<Self>, kind: Surface)", 1)[1].split(
-            "fn request_mount(", 1
-        )[0]
-        self.assertLess(show.index("self.window.set_visible(false)"),
-                        show.index("self.position_for(kind);"))
-        self.assertIn("self.was_active.set(false);", show)
-        self.assertIn("self.window.set_opacity(0.0);", show)
-        self.assertIn("Duration::from_millis(32)", show)
-        self.assertIn("state.generation.get() == generation", show)
-        self.assertIn("state.window.present();", show)
-        self.assertIn("self.request_mount();", show)
-        self.assertIn("reposition_pending: Cell<bool>", CALENDAR)
-        # The current shared WebKit process must not be restarted on moves.
+    def test_switching_launcher_preserves_existing_buffers_and_generations(self):
+        # A new surface reserves its own hot or newly created WebKit view.
+        # Nothing unmaps the old scene or moves its Wayland surface.
+        self.assertIn("let Some((view, existing)) = pool.acquire(Surface::Launcher)", CALENDAR)
+        self.assertIn("let Some((view, existing)) = pool.acquire(Surface::System)", CALENDAR)
+        self.assertIn("let Some((view, existing)) = pool.acquire(Surface::Calendar)", CALENDAR)
+        self.assertIn("debug_assert!(!self.requested.get())", CALENDAR)
+        self.assertIn("self.position_for(kind);", CALENDAR)
+        self.assertIn("self.window.set_opacity(0.0);", CALENDAR)
+        self.assertIn("self.window.present();", CALENDAR)
+        self.assertIn("self.request_mount();", CALENDAR)
+        self.assertNotIn("defer_present", CALENDAR)
+        self.assertNotIn("reposition_pending", CALENDAR)
         self.assertEqual(CALENDAR.count("webkit6::WebView::builder()"), 1)
-        self.assertNotIn("window.close()", CALENDAR)
 
     def test_svelte_intrinsic_height_and_scroll_are_bound_to_native_cap(self):
         style = (ROOT / "frontend/src/style.css").read_text()
@@ -16326,9 +17445,9 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn('detail.maxHeight + \'px\'', entry)
         self.assertIn('observeOverlaySize(root, generation)', entry)
         self.assertIn('stopSizing?.()', entry)
-        self.assertIn('notifyCalendarMounted(generation)', entry)
+        self.assertIn('notifyCalendarMounted(generation, window.matchMedia', entry)
         self.assertLess(entry.index('observeOverlaySize(root, generation)'),
-                        entry.index('notifyCalendarMounted(generation)'))
+                        entry.index('notifyCalendarMounted(generation, window.matchMedia'))
         self.assertIn('new ResizeObserver(measure)', measure)
         self.assertIn('root.getBoundingClientRect().height', measure)
         self.assertIn('observer?.disconnect()', measure)
@@ -16618,6 +17737,77 @@ class BootstrapContractTests(unittest.TestCase):
         html = (ROOT / "frontend/index.html").read_text()
         self.assertIn("bootstrapError", bootstrap)
         self.assertIn("window.__kiraBoot.bootstrapError", html)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+FILE	tests/test_webview_pool.py
+"""Source-level contracts for bounded, independent GTK/WebKit popup leases."""
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+POOL = (ROOT / "crates/kira-shell/src/webview_pool.rs").read_text()
+HOST = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
+ENTRY = (ROOT / "frontend/src/main.ts").read_text()
+SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+NATIVE = (ROOT / "crates/kira-shell/src/native_ui.rs").read_text()
+
+
+class WebviewPoolContracts(unittest.TestCase):
+    def test_one_demand_driven_warm_host_and_explicit_backpressure(self):
+        self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
+        self.assertIn("pub const HOT_IDLE_TARGET: usize = 1", POOL)
+        self.assertIn("Duration::from_secs(45)", POOL)
+        self.assertIn("pub fn prewarm_one", POOL)
+        self.assertIn("Reservation::Full", POOL)
+        self.assertIn("self.slots.retain", POOL)
+        self.assertIn("pool.scheduler.borrow_mut().prewarm_one", HOST)
+        self.assertIn("Reservation::Created(id)", HOST)
+        self.assertIn("Reservation::Reused(id)", HOST)
+        self.assertIn("view.window.close()", HOST)
+        self.assertIn("view.disposed.set(true)", HOST)
+
+    def test_one_live_poll_source_for_all_active_slots_only(self):
+        self.assertIn("poll_source: RefCell<Option<gtk::glib::SourceId>>", HOST)
+        self.assertIn("fn ensure_polling(self: &Rc<Self>)", HOST)
+        self.assertIn("if pool.scheduler.borrow().active_count() == 0", HOST)
+        self.assertIn("pool.poll_source.borrow_mut().take()", HOST)
+        self.assertIn("view.poll_launcher()", HOST)
+        self.assertIn("view.poll_pulse()", HOST)
+        self.assertIn("view.tick()", HOST)
+        self.assertIn("self.system.borrow_mut().take()", HOST)
+        # The timer lives on the pool, not every GTK widget/window build.
+        build = HOST.split("fn build(", 1)[1].split("fn ensure(", 1)[0]
+        self.assertNotIn("timeout_add_local(Duration::from_millis(30)", build)
+        self.assertNotIn("timeout_add_local(Duration::from_millis(250)", build)
+
+    def test_each_surface_has_a_separate_active_window_and_ipc_generation(self):
+        for kind in ("Calendar", "Launcher", "System"):
+            self.assertIn(f"pool.acquire(Surface::{kind})", HOST)
+            self.assertIn(f"view.show(Surface::{kind})", HOST)
+        self.assertIn("pool.concurrent()", HOST)
+        self.assertIn("fn update_launcher_keyboard_mode(&self)", HOST)
+        self.assertIn("KeyboardMode::Exclusive", HOST)
+        self.assertIn("KeyboardMode::OnDemand", HOST)
+        self.assertIn("self.window.present()", HOST)
+        self.assertIn("self.generation.get() == generation", HOST)
+        self.assertIn("manager.register_script_message_handler", HOST)
+        self.assertIn("fn popup_right_margin", NATIVE)
+        self.assertIn("set_exclusive_zone(-1)", HOST)
+
+    def test_recycled_slot_cannot_accept_stale_close_or_tab_actions(self):
+        for command in ("Close", "CopyDate", "ProcessesTab", "CopyReport"):
+            self.assertIn(f"Some(UiCommand::{command}(generation", HOST)
+        self.assertIn("parse_ui_generation(value)", HOST)
+        self.assertIn("self.generation.get() == generation", HOST)
+        self.assertIn("const lease = visibleGeneration ?? 0", ENTRY)
+        self.assertIn("onClose: () => closeCalendarOverlay(lease)", ENTRY)
+        self.assertIn("onClose: () => closeLauncherOverlay(lease)", ENTRY)
+        self.assertIn("onClose: () => closeSystemOverlay(lease)", ENTRY)
+        for prefix in ("close:", "copy-report:", "tab:", "copy:"):
+            self.assertIn(prefix, SDK)
 
 
 if __name__ == "__main__":
