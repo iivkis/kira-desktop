@@ -464,6 +464,106 @@ export function onSettingsAbout(
     ({ about }) => callback(about));
 }
 
+/** Niri outputs are queried from the compositor. No inferred resolutions. */
+export interface DisplayMode {
+  width: number;
+  height: number;
+  refresh_rate: number;
+  is_preferred: boolean;
+}
+export interface DisplayOutput {
+  connector: string;
+  name: string;
+  make: string;
+  model: string;
+  modes: DisplayMode[];
+  current_mode: number | null;
+  vrr_supported: boolean;
+  vrr_enabled: boolean;
+  logical: {
+    x: number; y: number; width: number; height: number;
+    scale: number; transform: string;
+  } | null;
+}
+export interface DisplayDraft {
+  connector: string;
+  enabled: boolean;
+  mode: string;
+  scale: number;
+  transform: string;
+  x: number;
+  y: number;
+  vrr: boolean;
+}
+export interface DisplayStatus {
+  state: 'ready' | 'pending' | 'confirmed' | 'reverted' | 'error';
+  outputs: DisplayOutput[] | null;
+  pending_id: number | null;
+  error: string | null;
+}
+
+function isDisplayOutput(value: unknown): value is DisplayOutput {
+  if (!isRecord(value)) return false;
+  const s = (v: unknown) => typeof v === 'string' && v.length <= 150;
+  const i = (v: unknown) => Number.isSafeInteger(v);
+  const logical = value.logical;
+  return s(value.connector) && s(value.name) && s(value.make) && s(value.model) &&
+    Array.isArray(value.modes) && value.modes.length <= 80 &&
+    value.modes.every((mode: unknown) => isRecord(mode) &&
+      i(mode.width) && i(mode.height) && i(mode.refresh_rate) &&
+      typeof mode.is_preferred === 'boolean') &&
+    (value.current_mode === null ||
+      (i(value.current_mode) && (value.current_mode as number) >= 0 &&
+       (value.current_mode as number) < value.modes.length)) &&
+    typeof value.vrr_supported === 'boolean' &&
+    typeof value.vrr_enabled === 'boolean' &&
+    (logical === null || (isRecord(logical) &&
+      i(logical.x) && i(logical.y) && i(logical.width) && i(logical.height) &&
+      typeof logical.scale === 'number' && Number.isFinite(logical.scale) &&
+      s(logical.transform)));
+}
+
+export function onDisplayStatus(
+  generation: number,
+  callback: (data: DisplayStatus) => void,
+): () => void {
+  return onNativeEvent('kira:settings:displays',
+    (value): value is { generation: number } & DisplayStatus =>
+      isRecord(value) && value.generation === generation &&
+      ['ready', 'pending', 'confirmed', 'reverted', 'error'].includes(String(value.state)) &&
+      (value.pending_id === null || (Number.isSafeInteger(value.pending_id) &&
+        typeof value.pending_id === 'number' && value.pending_id > 0)) &&
+      (value.error === null || (typeof value.error === 'string' && value.error.length <= 240)) &&
+      (value.outputs === null || (Array.isArray(value.outputs) &&
+        value.outputs.length <= 8 && value.outputs.every(isDisplayOutput))),
+    (value) => callback(value));
+}
+
+export function displayModeId(mode: DisplayMode): string {
+  return mode.width + 'x' + mode.height + '@' +
+    Math.floor(mode.refresh_rate / 1000) + '.' +
+    String(mode.refresh_rate % 1000).padStart(3, '0');
+}
+
+/** Every command is generation-scoped and independently validated by Rust. */
+export function requestDisplays(generation: number): boolean {
+  return validOverlayGeneration(generation) &&
+    sendCalendarUi('display-refresh:' + generation);
+}
+export function applyDisplays(generation: number, changes: DisplayDraft[]): boolean {
+  if (!validOverlayGeneration(generation) || changes.length < 1 || changes.length > 8) return false;
+  const raw = JSON.stringify(changes);
+  return raw.length <= 8192 && sendCalendarUi('display-apply:' + generation + ':' + raw);
+}
+export function confirmDisplays(generation: number, token: number): boolean {
+  return validOverlayGeneration(generation) && Number.isSafeInteger(token) && token > 0 &&
+    sendCalendarUi('display-confirm:' + generation + ':' + token);
+}
+export function revertDisplays(generation: number, token: number): boolean {
+  return validOverlayGeneration(generation) && Number.isSafeInteger(token) && token > 0 &&
+    sendCalendarUi('display-revert:' + generation + ':' + token);
+}
+
 /** Open or close the shared Svelte read-only system monitor. */
 export function toggleSystemPanel(): boolean {
   return postNativeCommand('kiraSystem', 'toggle');

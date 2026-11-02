@@ -3,7 +3,7 @@
 export const SETTINGS_SECTIONS = [
   { id: 'about', label: 'О системе', available: true },
   { id: 'appearance', label: 'Внешний вид', available: false },
-  { id: 'displays', label: 'Дисплеи', available: false },
+  { id: 'displays', label: 'Дисплеи', available: true },
   { id: 'network', label: 'Сеть', available: false },
   { id: 'devices', label: 'Устройства', available: false },
 ] as const;

@@ -103,6 +103,20 @@ function scriptFor(steps, observationMs = 1150) {
                   'os_name:"Example Linux", kernel:"6.1.0", architecture:"x86_64", hostname:"example-host", ' +
                   'cpu_model:"Example CPU", cpu_threads:8, memory_total_kib:8388608, ' +
                   'session:"wayland", shell_version:"0.1.0"}}}));'
+              : kind === 'settings-displays'
+                ? 'const select=document.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+                  'if(select){select.value="displays";select.dispatchEvent(new Event("change",{bubbles:true}));}' +
+                  'else {document.querySelector("aside button:nth-child(3)")?.click();}'
+              : kind === 'settings-displays-data'
+                ? 'window.dispatchEvent(new CustomEvent("kira:settings:displays",{detail:{' +
+                  'generation:1,state:"ready",error:null,pending_id:null,outputs:[' +
+                  '{connector:"eDP-1",name:"eDP-1",make:"Example",model:"Laptop",current_mode:0,' +
+                  'modes:[{width:1920,height:1080,refresh_rate:60000,is_preferred:true}],vrr_supported:false,vrr_enabled:false,' +
+                  'logical:{x:0,y:0,width:1920,height:1080,scale:1,transform:"Normal"}},' +
+                  '{connector:"HDMI-A-1",name:"HDMI-A-1",make:"Example",model:"External",current_mode:0,' +
+                  'modes:[{width:2560,height:1440,refresh_rate:144000,is_preferred:true}],vrr_supported:true,vrr_enabled:false,' +
+                  'logical:{x:1920,y:0,width:2560,height:1440,scale:1,transform:"Normal"}}' +
+                  ']}}));'
               : kind === 'settings-detach'
                 ? 'document.documentElement.dataset.kiraDetached="true";' +
                   'window.dispatchEvent(new CustomEvent("kira:overlay:detached", {detail:{generation:1}}));'
@@ -243,6 +257,8 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.dataset.smokeSettingsData=!!settings && settings.textContent.includes("Example Linux") && settings.textContent.includes("Example CPU");' +
       'document.documentElement.dataset.smokeSettingsSelector=!!settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
       'document.documentElement.dataset.smokeSettingsSidebar=!!settings?.querySelector("aside[aria-label=\\\"Разделы настроек\\\"]");' +
+      'document.documentElement.dataset.smokeDisplays=!!settings?.querySelector("section[aria-label=\\\"Настройки дисплеев\\\"]") && settings.textContent.includes("HDMI-A-1") && settings.textContent.includes("Example External");' +
+      'document.documentElement.dataset.smokeDisplayBoxes=settings?.querySelectorAll("button[aria-label^=\\\"Переместить или выбрать\\\"]").length || 0;' +
       'document.documentElement.setAttribute("data-smoke-no-hover-warp", !document.querySelector("filter[id^=kira-temporal-warp], [data-tenet-warp-state], [data-tenet-warp-pixels], [data-tenet-lens-body]"));' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
       'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
@@ -291,6 +307,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-settings-sidebar="' + (heightMode === 'settings-window' ? 'true' : 'false') + '"'))) {
     throw new Error(name + ': Settings mode, navigation or native data failed: ' +
       (output.match(/data-smoke-settings-[a-z-]+="[^"]*"/g) ?? []).join(', '));
+  }
+  if (heightMode === 'settings-displays' &&
+      (!output.includes('data-smoke-displays="true"') ||
+       !output.includes('data-smoke-display-boxes="2"'))) {
+    throw new Error(name + ': Niri display topology and controls did not mount (' +
+      (output.match(/data-smoke-display[a-z-]*="[^"]*"/g) ?? []).join(', ') + ')');
   }
   if (!output.includes('data-smoke-no-hover-warp="true"')) {
     throw new Error(name + ': removed pixel-distortion must not mount in any widget');
@@ -480,6 +502,11 @@ try {
     { delay: 180, kind: 'settings-about' },
     { delay: 520, kind: 'settings-detach' },
   ], 'Kira Settings', 'settings-window');
+  await smoke('settings-displays', [
+    { delay: 25, kind: 'settings', generation: 1 },
+    { delay: 180, kind: 'settings-displays' },
+    { delay: 350, kind: 'settings-displays-data' },
+  ], 'Kira Settings', 'settings-displays');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
   // Native close signal triggers the original GSAP master in reverse,
   // then emits a generation-bound ACK; the host keeps the DOM alive until

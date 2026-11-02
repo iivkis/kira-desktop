@@ -4,6 +4,7 @@
   import { onSettingsAbout, type SettingsAbout } from '../sdk/core';
   import { SETTINGS_SECTIONS, sectionIsAvailable, formatInstalledMemory, systemValue, type SettingsSectionId } from '../settings-model';
   import WindowControls from './WindowControls.svelte';
+  import DisplaySettings from './DisplaySettings.svelte';
 
   let { onClose, onPopout, generation }: {
     onClose: () => void;
@@ -159,6 +160,8 @@
         <p class="mt-4 text-[10px] leading-relaxed text-kira-muted">
           Данные получены из локального ядра и системных файлов. Недоступные значения не подменяются приблизительными.
         </p>
+      {:else if section === 'displays'}
+        <DisplaySettings {generation} />
       {/if}
     </section>
   </div>

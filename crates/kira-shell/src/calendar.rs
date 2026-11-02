@@ -130,6 +130,7 @@ impl OverlayPool {
             for view in &active {
                 view.poll_launcher();
                 view.poll_pulse();
+                view.poll_displays();
             }
             if pool.last_tick.get().elapsed() >= Duration::from_millis(250) {
                 pool.last_tick.set(Instant::now());
@@ -272,6 +273,7 @@ struct CalendarOverlay {
     system: RefCell<Option<crate::system_panel::Model>>,
     launcher: RefCell<Option<crate::launcher::Catalog>>,
     settings_about: RefCell<Option<serde_json::Value>>,
+    settings_displays: RefCell<Option<crate::display_manager::Model>>,
     last_metrics: Cell<Option<Instant>>,
     requested: Cell<bool>,
     closing: Cell<bool>,
@@ -414,6 +416,9 @@ impl CalendarOverlay {
         self.active.set(None);
         self.launcher.borrow_mut().take();
         self.settings_about.borrow_mut().take();
+        // Dropping the sender while confirmation is pending forces the
+        // display worker to roll back even if the WebView was closed.
+        self.settings_displays.borrow_mut().take();
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.revealed.set(false);
@@ -763,6 +768,9 @@ impl CalendarOverlay {
                     self.send_metrics();
                 } else if self.active.get() == Some(Surface::Settings) {
                     self.send_settings_about();
+                    if let Some(displays) = self.settings_displays.borrow().as_ref() {
+                        displays.refresh();
+                    }
                 }
                 self.widget_ready.set(true);
                 if self.content_height.get() > 0 {
@@ -819,6 +827,47 @@ impl CalendarOverlay {
                     && !self.closing.get() =>
             {
                 self.detach();
+            }
+            Some(UiCommand::DisplayRefresh(generation))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.refresh();
+                }
+            }
+            Some(UiCommand::DisplayApply(generation, payload))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    if let Ok(value) = serde_json::from_str(payload) {
+                        model.apply(value);
+                    }
+                }
+            }
+            Some(UiCommand::DisplayConfirm(generation, id))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.confirm(id);
+                }
+            }
+            Some(UiCommand::DisplayRevert(generation, id))
+                if self.requested.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.revert(id);
+                }
             }
             Some(UiCommand::Close(generation))
                 if self.requested.get() && self.generation.get() == generation =>
@@ -1057,6 +1106,38 @@ impl CalendarOverlay {
         }
     }
 
+    fn poll_displays(&self) {
+        if !self.requested.get() || self.active.get() != Some(Surface::Settings) {
+            return;
+        }
+        let events = self.settings_displays.borrow().as_ref()
+            .map(crate::display_manager::Model::poll).unwrap_or_default();
+        for event in events {
+            let payload = serde_json::json!({
+                "generation": self.generation.get(),
+                "state": event.state,
+                "outputs": event.outputs,
+                "pending_id": event.pending_id,
+                "error": event.error,
+            });
+            if let Ok(serialized) = serde_json::to_string(&payload)
+                && let Ok(encoded) = serde_json::to_string(&serialized)
+            {
+                let script = format!(
+                    "window.dispatchEvent(new CustomEvent('kira:settings:displays', {{ detail: JSON.parse({encoded}) }}));"
+                );
+                self.view.evaluate_javascript(
+                    &script, None, None, None::<&gtk::gio::Cancellable>,
+                    |result| {
+                        if let Err(error) = result {
+                            eprintln!("kira-shell: display status dispatch failed: {error}");
+                        }
+                    },
+                );
+            }
+        }
+    }
+
     fn poll_pulse(&self) {
         if !self.requested.get() || self.active.get() != Some(Surface::System) {
             return;
@@ -1121,6 +1202,10 @@ enum UiCommand<'a> {
     LauncherCatalog(u32),
     LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
+    DisplayRefresh(u32),
+    DisplayApply(u32, &'a str),
+    DisplayConfirm(u32, u64),
+    DisplayRevert(u32, u64),
 }
 
 /// Revalidate date-copy requests without duplicating the Svelte date grid.
@@ -1165,6 +1250,29 @@ fn parse_ui_generation(value: &str) -> Option<u32> {
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if message == "host-ready" {
         return Some(UiCommand::HostReady);
+    }
+    if let Some(value) = message.strip_prefix("display-refresh:") {
+        return parse_ui_generation(value).map(UiCommand::DisplayRefresh);
+    }
+    if let Some(value) = message.strip_prefix("display-apply:") {
+        let (generation, payload) = value.split_once(':')?;
+        if payload.len() > 8192 || payload.len() < 2 {
+            return None;
+        }
+        return Some(UiCommand::DisplayApply(parse_ui_generation(generation)?, payload));
+    }
+    for (prefix, confirm) in [("display-confirm:", true), ("display-revert:", false)] {
+        if let Some(value) = message.strip_prefix(prefix) {
+            let (generation, token) = value.split_once(':')?;
+            if token.is_empty() || token.len() > 20 ||
+                !token.bytes().all(|byte| byte.is_ascii_digit()) {
+                return None;
+            }
+            let generation = parse_ui_generation(generation)?;
+            let token = token.parse::<u64>().ok().filter(|id| *id > 0)?;
+            return Some(if confirm { UiCommand::DisplayConfirm(generation, token) }
+                        else { UiCommand::DisplayRevert(generation, token) });
+        }
     }
     if let Some(value) = message.strip_prefix("close:") {
         return parse_ui_generation(value).map(UiCommand::Close);
@@ -1359,6 +1467,7 @@ fn build(
         system: RefCell::new(None),
         launcher: RefCell::new(None),
         settings_about: RefCell::new(None),
+        settings_displays: RefCell::new(None),
         last_metrics: Cell::new(None),
         requested: Cell::new(false),
         closing: Cell::new(false),
@@ -1539,6 +1648,7 @@ pub fn toggle_settings(application: &gtk::Application, html: &str) {
                 return;
             }
             *view.settings_about.borrow_mut() = Some(crate::system_info::about_snapshot());
+            *view.settings_displays.borrow_mut() = Some(crate::display_manager::Model::new());
             view.show(Surface::Settings);
         }),
     );

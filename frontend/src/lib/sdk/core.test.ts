@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -55,6 +55,58 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(callback).toHaveBeenCalledExactlyOnceWith(valid);
     stop();
     expect(removeEventListener).toHaveBeenCalledWith('kira:settings:about', expect.any(Function));
+  });
+
+  it('uses generation-scoped display controls and exact mHz output modes', () => {
+    const postMessage = vi.fn();
+    globalThis.window = {
+      webkit: { messageHandlers: { kiraCalendarUi: { postMessage } } },
+    } as unknown as Window & typeof globalThis;
+    expect(displayModeId({ width: 2560, height: 1440, refresh_rate: 143912, is_preferred: true }))
+      .toBe('2560x1440@143.912');
+    expect(requestDisplays(7)).toBe(true);
+    expect(requestDisplays(0)).toBe(false);
+    const draft = [{
+      connector: 'DP-1', enabled: true, mode: '2560x1440@143.912',
+      scale: 1.5, transform: 'normal', x: 0, y: 0, vrr: false,
+    }];
+    expect(applyDisplays(7, draft)).toBe(true);
+    expect(confirmDisplays(7, 14)).toBe(true);
+    expect(revertDisplays(7, 14)).toBe(true);
+    expect(confirmDisplays(7, -1)).toBe(false);
+    expect(postMessage.mock.calls.map(call => call[0])).toEqual([
+      'display-refresh:7',
+      'display-apply:7:' + JSON.stringify(draft),
+      'display-confirm:7:14',
+      'display-revert:7:14',
+    ]);
+  });
+
+  it('validates native display response and rejects stale generations', () => {
+    const handlers = new Map<string, EventListener>();
+    globalThis.window = {
+      addEventListener(name: string, handler: EventListener) { handlers.set(name, handler); },
+      removeEventListener() {},
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onDisplayStatus(42, callback);
+    const good = {
+      generation: 42, state: 'ready', pending_id: null, error: null,
+      outputs: [{
+        connector: 'DP-1', name: 'DP-1', make: 'Example', model: 'Panel',
+        modes: [{ width: 1920, height: 1080, refresh_rate: 60000, is_preferred: true }],
+        current_mode: 0, vrr_supported: false, vrr_enabled: false,
+        logical: { x: 0, y: 0, width: 1920, height: 1080, scale: 1, transform: 'Normal' },
+      }],
+    };
+    const dispatch = (detail: unknown) => handlers.get('kira:settings:displays')!({
+      detail,
+    } as CustomEvent<unknown>);
+    dispatch({ ...good, generation: 41 });
+    dispatch({ ...good, outputs: [{ ...good.outputs[0], modes: [{ width: 'oops' }] }] });
+    dispatch(good);
+    expect(callback).toHaveBeenCalledExactlyOnceWith(good);
+    stop();
   });
 
   it('reports only bounded positive widget heights scoped to the current generation', () => {

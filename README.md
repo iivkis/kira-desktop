@@ -250,3 +250,7 @@ This project is not ready to replace a working desktop environment.
 ## System Settings
 
 The gear icon in the Top Bar opens **Kira Settings**. Settings starts as a fixed 600px-wide popup with a section selector; the header's pop-out button promotes the same live WebView to a normal Niri window, where navigation moves to a permanent sidebar. The first implemented page, **About System**, reads the host's OS, kernel, CPU, RAM, session and Shell version from native Linux sources. Other sections are clearly marked as upcoming. The panel is read-only and reports unavailable fields instead of inventing values.
+
+## Multiple displays
+
+**Settings → Displays** configures the current Niri session using the compositor's real connected-output list. Select screens, arrange them on the map, change resolution/refresh rate, scale, orientation, VRR and on/off state. Apply uses a 15-second safety confirmation with automatic rollback. This does not rewrite `config.kdl` (important for declarative NixOS setups), and Niri's native output API does not provide desktop mirroring.

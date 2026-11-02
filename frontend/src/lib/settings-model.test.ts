@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { SETTINGS_SECTIONS, sectionIsAvailable, formatInstalledMemory, systemValue } from './settings-model';
 
 describe('Settings navigation and truthful host details', () => {
-  it('exposes one implemented page in both navigation modes', () => {
+  it('exposes About and Displays in both navigation modes', () => {
     expect(SETTINGS_SECTIONS.find(s => s.id === 'about')?.available).toBe(true);
-    expect(SETTINGS_SECTIONS.filter(s => s.available)).toHaveLength(1);
+    expect(SETTINGS_SECTIONS.filter(s => s.available)).toHaveLength(2);
     expect(sectionIsAvailable('about')).toBe(true);
+    expect(sectionIsAvailable('displays')).toBe(true);
     expect(sectionIsAvailable('network')).toBe(false);
     expect(sectionIsAvailable('arbitrary-script')).toBe(false);
   });
