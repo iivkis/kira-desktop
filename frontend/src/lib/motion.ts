@@ -262,13 +262,14 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
   };
   preference.addEventListener('change', onPreference);
   const observer = typeof ResizeObserver === 'undefined' ? null :
-    new ResizeObserver(() => relocate(active, false));
+    new ResizeObserver(() => relocate(active, true));
   observer?.observe(node);
 
   return {
     update(next: TenetFlowTarget) {
-      if (next.active === active) return;
       active = next.active;
+      // Same selection can still change physical coordinates after keyed
+      // reorder or filter; its marker must follow rather than teleport.
       relocate(active, true);
     },
     destroy() {
