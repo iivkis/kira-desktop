@@ -85,12 +85,17 @@
   }
 
   function filter(event: Event) {
-    const input = event.currentTarget as HTMLInputElement;
-    tenetReflow(results, () => {
-      query = input.value;
+    const next = (event.currentTarget as HTMLInputElement).value;
+    const update = () => {
+      query = next;
       selected = 0;
       error = '';
-    });
+    };
+    // A broad catalog search is a new set, not a physical relocation of
+    // eighty items: keep typing responsive and the native popup resizable.
+    // Small filtered lists retain real FLIP continuity.
+    if (displayed.length > 20) update();
+    else tenetReflow(results, update);
   }
 
   function keydown(event: KeyboardEvent) {
