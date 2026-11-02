@@ -53,7 +53,7 @@ class TenetReverseDismissalTests(unittest.TestCase):
 
     def test_reduced_motion_and_renderer_stall_have_finite_exit(self):
         self.assertIn("self.native_reduced_motion.get()", RUST)
-        self.assertIn("if preference.matches || !master || master.progress() <= 0", MOTION)
+        self.assertIn("if (preference.matches || !master || master.progress() <= 0)", MOTION)
         self.assertIn("if (closing) acknowledgeClose()", MOTION)
         self.assertIn("if reduced && self.closing.get()", RUST)
         self.assertIn("state.generation.get() == generation", RUST)
