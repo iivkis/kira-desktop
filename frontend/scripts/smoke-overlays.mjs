@@ -111,6 +111,14 @@ function scriptFor(steps, observationMs = 1150) {
                   'const first=root?.querySelector("[data-kira-enter]");' +
                   'const staged=first ? Number(getComputedStyle(first).opacity) : 0;' +
                   'window.__kiraTenetStagedOpacity=staged;' +
+                  // At 1.44x the content opacity tween can complete between
+                  // coarse virtual-time samples. Observe actual GSAP writes.
+                  'if(first){new MutationObserver(()=>{' +
+                    'const opacity=Number(getComputedStyle(first).opacity);' +
+                    'const transform=getComputedStyle(first).transform;' +
+                    'if(transform!=="none" && opacity>staged && opacity<1)' +
+                      'document.documentElement.dataset.smokeTenetContentMoving="true";' +
+                  '}).observe(first,{attributes:true,attributeFilter:["style"]});}' +
                   'document.documentElement.dataset.smokeSurfaceStaged=!!root && ' +
                     '(matchMedia("(prefers-reduced-motion: reduce)").matches ? root.style.clipPath==="" : ' +
                     '(root.dataset.tenetSurface==="staged" && root.style.clipPath.includes("100%") && ' +
@@ -322,7 +330,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   }
   if (heightMode === 'tenet' &&
       (!output.includes('data-smoke-surface-staged="true"') ||
-       // The 1.2x surface transition can finish between virtual Chromium
+       // The 1.44x surface transition can finish between virtual Chromium
        // frames. Verify its real staged and fully revealed geometries here;
        // GSAP's exact intermediate clip tween is asserted by motion tests.
        !output.includes('data-smoke-surface-settled="true"') ||

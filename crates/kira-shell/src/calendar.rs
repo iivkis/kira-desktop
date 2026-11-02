@@ -149,7 +149,9 @@ impl OverlayPool {
 
     // A detached widget is a normal Niri application window, not a popup.
     fn popup(&self) -> Option<Rc<CalendarOverlay>> {
-        self.windows.borrow().values()
+        self.windows
+            .borrow()
+            .values()
             .find(|view| view.requested.get() && !view.detached.get())
             .cloned()
     }
@@ -194,16 +196,16 @@ impl OverlayPool {
     }
 
     fn width_for(&self, view: &CalendarOverlay) -> i32 {
-        popup_layout::popup_width(
-            crate::native_ui::popup_output_width(&view.window), 1, false,
-        )
+        popup_layout::popup_width(crate::native_ui::popup_output_width(&view.window), 1, false)
     }
 
     // Only the single transient window gets layer-shell geometry.
     fn sync_geometry(&self) {
         if let Some(view) = self.popup() {
             crate::native_ui::resize_webview_popup(
-                &view.window, self.width_for(&view), view.content_height.get().max(1),
+                &view.window,
+                self.width_for(&view),
+                view.content_height.get().max(1),
             );
         }
     }
@@ -219,7 +221,10 @@ impl OverlayPool {
         // Exclusive is useful for an isolated type-to-search Launcher but
         // blocks interaction with other simultaneously visible windows.
         // Keep its solo behavior; use OnDemand with multiple popup leases.
-        if let Some(launcher) = self.active(Surface::Launcher).filter(|view| !view.detached.get()) {
+        if let Some(launcher) = self
+            .active(Surface::Launcher)
+            .filter(|view| !view.detached.get())
+        {
             launcher.window.set_keyboard_mode(if self.concurrent() {
                 KeyboardMode::OnDemand
             } else {
@@ -302,7 +307,8 @@ impl CalendarOverlay {
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
             if dock == PopupDock::Right {
-                self.window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
+                self.window
+                    .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
             }
         }
     }
@@ -310,12 +316,16 @@ impl CalendarOverlay {
     /// Keep the SAME WebView and Svelte state while moving it from the
     /// layer-shell popup to a decorated xdg-toplevel managed by Niri.
     fn detach(self: &Rc<Self>) {
-        if !self.requested.get() || self.closing.get() || !self.revealed.get()
+        if !self.requested.get()
+            || self.closing.get()
+            || !self.revealed.get()
             || self.detached.get()
         {
             return;
         }
-        let Some(pool) = self.pool.upgrade() else { return; };
+        let Some(pool) = self.pool.upgrade() else {
+            return;
+        };
         let kind = self.active.get().expect("requested view has a surface");
         self.detached.set(true);
         let normal = gtk::ApplicationWindow::new(&pool.application);
@@ -352,7 +362,10 @@ impl CalendarOverlay {
             "document.documentElement.dataset.kiraDetached = 'true';              window.dispatchEvent(new CustomEvent('kira:overlay:detached',              {{ detail: {{ generation: {generation} }} }}));"
         );
         self.view.evaluate_javascript(
-            &script, None, None, None::<&gtk::gio::Cancellable>,
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
             |result| {
                 if let Err(error) = result {
                     eprintln!("kira-shell: widget detach notification failed: {error}");
@@ -754,7 +767,9 @@ impl CalendarOverlay {
                 // Layout-driven dimensions come only from the bounded,
                 // trusted overlay channel. Ignore stale generations and
                 // no-op resizes to avoid feedback from ResizeObserver.
-                if self.detached.get() { return; }
+                if self.detached.get() {
+                    return;
+                }
                 let clamped =
                     height.min(crate::native_ui::webview_popup_height_limit(&self.window));
                 if clamped != self.content_height.get() {
@@ -1397,34 +1412,53 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
 }
 
 pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else { return; };
-    pool.request(Surface::Calendar, true, Box::new(|pool| {
-        let Some((view, existing)) = pool.acquire(Surface::Calendar) else { return; };
-        if existing {
-            if !view.focus_detached() {
-                if view.closing.get() { view.cancel_close(); }
-                else { view.request_close(); }
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::Calendar,
+        true,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Calendar) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+            } else {
+                view.show(Surface::Calendar);
             }
-        } else {
-            view.show(Surface::Calendar);
-        }
-    }));
+        }),
+    );
 }
 
 pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else { return; };
-    pool.request(Surface::Launcher, false, Box::new(|pool| {
-        let Some((view, existing)) = pool.acquire(Surface::Launcher) else { return; };
-        if existing {
-            if !view.focus_detached() {
-                view.cancel_close();
-                view.window.present();
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::Launcher,
+        false,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Launcher) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    view.cancel_close();
+                    view.window.present();
+                }
+            } else {
+                view.launcher.borrow_mut().take();
+                view.show(Surface::Launcher);
             }
-        } else {
-            view.launcher.borrow_mut().take();
-            view.show(Surface::Launcher);
-        }
-    }));
+        }),
+    );
 }
 
 pub fn toggle_system(
@@ -1434,23 +1468,34 @@ pub fn toggle_system(
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(pool) = ensure(application, html) else { return; };
-    pool.request(Surface::System, true, Box::new(move |pool| {
-        let Some((view, existing)) = pool.acquire(Surface::System) else { return; };
-        if existing {
-            if !view.focus_detached() {
-                if view.closing.get() { view.cancel_close(); }
-                else { view.request_close(); }
+    let Some(pool) = ensure(application, html) else {
+        return;
+    };
+    pool.request(
+        Surface::System,
+        true,
+        Box::new(move |pool| {
+            let Some((view, existing)) = pool.acquire(Surface::System) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+                return;
             }
-            return;
-        }
-        *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
-        if let Some(model) = view.system.borrow().as_ref() {
-            model.set_pulse_active(true);
-        }
-        view.last_metrics.set(None);
-        view.show(Surface::System);
-    }));
+            *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
+            if let Some(model) = view.system.borrow().as_ref() {
+                model.set_pulse_active(true);
+            }
+            view.last_metrics.set(None);
+            view.show(Surface::System);
+        }),
+    );
 }
 
 #[cfg(test)]

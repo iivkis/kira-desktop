@@ -14,8 +14,11 @@ const OUTER_MARGIN: i32 = 12;
 /// Launcher is centered; Calendar and System share one original right dock.
 /// Other surfaces can coexist only after promotion to an xdg-toplevel.
 pub fn choose_dock(kind: Surface, _right_occupied: bool) -> PopupDock {
-    if kind == Surface::Launcher { PopupDock::Center }
-    else { PopupDock::Right }
+    if kind == Surface::Launcher {
+        PopupDock::Center
+    } else {
+        PopupDock::Right
+    }
 }
 
 /// No active-window columns: normal Niri windows manage their own layout.
