@@ -109,7 +109,7 @@ function scriptFor(steps, observationMs = 1150) {
                   'else {document.querySelector("aside button:nth-child(3)")?.click();}'
               : kind === 'settings-displays-data'
                 ? 'window.dispatchEvent(new CustomEvent("kira:settings:displays",{detail:{' +
-                  'generation:1,state:"ready",error:null,pending_id:null,outputs:[' +
+                  'generation:1,state:"ready",persistence:"manual",error:null,pending_id:null,outputs:[' +
                   '{connector:"eDP-1",name:"eDP-1",make:"Example",model:"Laptop",current_mode:0,' +
                   'modes:[{width:1920,height:1080,refresh_rate:60000,is_preferred:true}],vrr_supported:false,vrr_enabled:false,' +
                   'logical:{x:0,y:0,width:1920,height:1080,scale:1,transform:"Normal"}},' +

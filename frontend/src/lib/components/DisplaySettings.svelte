@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import {
     onDisplayStatus, requestDisplays, applyDisplays, confirmDisplays, revertDisplays,
-    displayModeId, type DisplayOutput, type DisplayDraft, type DisplayStatus,
+    displayModeId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
   } from '../sdk/core';
 
   let { generation }: { generation: number } = $props();
@@ -14,6 +14,8 @@
   let loading = $state(true);
   let error = $state<string | null>(null);
   let statusText = $state('');
+  let canSave = $state(false);
+  let persistence = $state<DisplayStatus['persistence']>('manual');
   let pendingId = $state<number | null>(null);
   let remaining = $state(15);
   let drag = $state<{ connector: string; px: number; py: number; x: number; y: number; zoom: number } | null>(null);
@@ -71,6 +73,7 @@
   function receive(message: DisplayStatus) {
     loading = false;
     busy = false;
+    persistence = message.persistence;
     if (message.state === 'pending' && message.pending_id !== null) {
       pendingId = message.pending_id;
       remaining = 15;
@@ -84,6 +87,9 @@
       return;
     }
     pendingId = null;
+    if (message.state === 'confirmed') canSave = true;
+    if (message.state === 'saved') canSave = false;
+    if (message.state === 'reverted') canSave = false;
     if (message.outputs !== null) {
       outputs = message.outputs;
       draft = draftFromOutputs(outputs);
@@ -92,17 +98,20 @@
     if (message.error) error = message.error;
     else error = null;
     statusText = message.state === 'reverted' ? 'Предыдущая конфигурация восстановлена.'
-      : message.state === 'confirmed' ? 'Изменения применены на время текущего сеанса Niri.'
+      : message.state === 'confirmed' ? 'Изменения действуют в сеансе. Можно сохранить декларативно.'
+      : message.state === 'saved' ? 'Конфигурация сохранена в KDL и будет загружена при следующем запуске Niri.'
         : '';
   }
 
   function change(patch: Partial<DisplayDraft>) {
     if (busy || isPending) return;
+    canSave = false;
     draft = draft.map(out => out.connector === selected ? { ...out, ...patch } : out);
   }
 
   function reset() {
     if (busy || isPending) return;
+    canSave = false;
     draft = draftFromOutputs(outputs);
     error = null;
     statusText = '';
@@ -110,6 +119,7 @@
 
   function refresh() {
     if (busy || isPending) return;
+    canSave = false;
     loading = true;
     error = null;
     if (!requestDisplays(generation)) {
@@ -120,6 +130,7 @@
 
   function apply() {
     if (busy || isPending) return;
+    canSave = false;
     busy = true;
     error = null;
     statusText = '';
@@ -140,6 +151,12 @@
       busy = revertDisplays(generation, pendingId);
       if (!busy) error = 'Нет соединения с Shell';
     }
+  }
+
+  function save() {
+    if (busy || !canSave || isPending) return;
+    busy = saveDisplays(generation);
+    if (!busy) error = 'Не удалось отправить команду сохранения';
   }
 
   function snapPosition(connector: string, rawX: number, rawY: number) {
@@ -175,6 +192,7 @@
     const { connector, px, py, x, y, zoom: factor } = drag;
     const next = snapPosition(connector, Math.round(x + (event.clientX - px) / factor),
       Math.round(y + (event.clientY - py) / factor));
+    canSave = false;
     draft = draft.map(out => out.connector === connector ? { ...out, ...next } : out);
   }
   function onPointerUp() { drag = null; }
@@ -378,15 +396,28 @@
         class="bg-kira-accent px-5 py-3 text-[11px] font-extrabold text-black disabled:opacity-40">
         {busy ? 'Применение…' : 'Применить'}
       </button>
+      <button type="button" onclick={save} disabled={loading || busy || isPending || !canSave}
+        title="Сохранить подтверждённые параметры в управляемый KDL"
+        class="border border-kira-accent px-5 py-3 text-[11px] font-bold text-kira-accent disabled:opacity-40">
+        Сохранить в конфиг
+      </button>
       <button type="button" onclick={reset} disabled={loading || busy || isPending}
         class="border border-kira-muted/40 px-5 py-3 text-[11px] font-bold text-kira-text disabled:opacity-40">
         Сбросить изменения
       </button>
     </div>
   {/if}
-  <p class="border-t border-kira-muted/15 pt-4 text-[10px] leading-relaxed text-kira-muted">
-    Изменения действуют в текущем сеансе Niri. Для постоянной конфигурации
-    требуется отдельно сохранить параметры в config.kdl.
-    Зеркалирование экранов compositor Niri не поддерживает.
-  </p>
+  <div class="border-t border-kira-muted/15 pt-4 text-[10px] leading-relaxed text-kira-muted">
+    <p>Источник конфигурации:
+      <strong class="text-kira-accent">{persistence === 'managed' ? 'Kira управляет KDL'
+        : persistence === 'uninitialized' ? 'Подключён пустой слой Kira'
+        : persistence === 'conflict' ? 'Конфликт файла KDL'
+        : 'Пользовательская декларативная конфигурация'}</strong>.
+      Сначала примените настройки и подтвердите их, затем нажмите «Сохранить в конфиг».</p>
+    <p class="mt-2">Kira создаёт отдельный <code>kira-managed-outputs.kdl</code> и включает его в
+      доступный для записи <code>config.kdl</code>. При Nix-managed файле, чужих
+      блоках <code>output</code> или ручных правках Kira не перезаписывает их:
+      нужное подключение выполняется владельцем декларативной конфигурации.</p>
+    <p class="mt-2">Зеркалирование экранов Niri не поддерживает.</p>
+  </div>
 </section>

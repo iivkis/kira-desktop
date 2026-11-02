@@ -1,5 +1,5 @@
 //! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
-//! Operations are session-scoped; persistent Niri KDL remains user-owned.
+//! Persistent changes require explicit ownership and native confirmation.
 use std::process::Command;
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
@@ -10,15 +10,15 @@ const MAX_OUTPUTS: usize = 8;
 const MAX_MODES: usize = 80;
 
 #[derive(Debug, Clone)]
-struct Desired {
-    name: String,
-    enabled: bool,
-    mode: String,
-    scale: f64,
-    transform: String,
-    x: i32,
-    y: i32,
-    vrr: bool,
+pub(crate) struct Desired {
+    pub(crate) name: String,
+    pub(crate) enabled: bool,
+    pub(crate) mode: String,
+    pub(crate) scale: f64,
+    pub(crate) transform: String,
+    pub(crate) x: i32,
+    pub(crate) y: i32,
+    pub(crate) vrr: bool,
 }
 
 #[derive(Debug)]
@@ -27,6 +27,7 @@ enum Request {
     Apply(serde_json::Value),
     Confirm(u64),
     Revert(u64),
+    Save,
 }
 
 #[derive(Debug)]
@@ -35,6 +36,7 @@ pub struct Event {
     pub outputs: Option<serde_json::Value>,
     pub pending_id: Option<u64>,
     pub error: Option<String>,
+    pub persistence: &'static str,
 }
 
 pub struct Model {
@@ -66,6 +68,10 @@ impl Model {
         let _ = self.sender.send(Request::Revert(id));
     }
 
+    pub fn save(&self) {
+        let _ = self.sender.send(Request::Save);
+    }
+
     pub fn poll(&self) -> Vec<Event> {
         // Never block GTK. Limit messages consumed per frame.
         (0..6)
@@ -86,6 +92,7 @@ fn report(
         outputs: snapshot,
         pending_id,
         error: error.map(|value| value.chars().take(240).collect()),
+        persistence: crate::config_layers::status(),
     });
 }
 
@@ -328,6 +335,8 @@ fn revert(before: &[Desired], events: &Sender<Event>) {
 fn run(requests: Receiver<Request>, events: Sender<Event>) {
     let mut next_id = 0_u64;
     let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
+    let mut staged: Option<Vec<Desired>> = None;
+    let mut confirmed: Option<Vec<Desired>> = None;
     loop {
         let received = match pending.as_ref() {
             Some((_, _, deadline)) => {
@@ -339,12 +348,14 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             Ok(message) => message,
             Err(RecvTimeoutError::Timeout) => {
                 if let Some((_, before, _)) = pending.take() {
+                    staged = None;
                     revert(&before, &events);
                 }
                 continue;
             }
             Err(RecvTimeoutError::Disconnected) => {
                 if let Some((_, before, _)) = pending.take() {
+                    staged = None;
                     revert(&before, &events);
                 }
                 break;
@@ -360,6 +371,7 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                                 outputs: Some(outputs),
                                 pending_id: None,
                                 error: None,
+                                persistence: crate::config_layers::status(),
                             });
                         }
                         Err(error) => report(&events, "error", None, Some(error)),
@@ -367,6 +379,8 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 }
             }
             Request::Apply(value) => {
+                confirmed = None;
+                staged = None;
                 if pending.is_some() {
                     report(
                         &events,
@@ -388,6 +402,7 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                             revert(&before, &events);
                             report(&events, "error", None, Some(error));
                         } else {
+                            staged = Some(target);
                             next_id = next_id.wrapping_add(1).max(1);
                             let id = next_id;
                             pending = Some((
@@ -403,14 +418,47 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             Request::Confirm(id) => {
                 if pending.as_ref().is_some_and(|p| p.0 == id) {
                     pending.take();
+                    confirmed = staged.take();
                     report(&events, "confirmed", None, None);
                 }
             }
             Request::Revert(id) => {
                 if pending.as_ref().is_some_and(|p| p.0 == id) {
                     if let Some((_, before, _)) = pending.take() {
+                        staged = None;
                         revert(&before, &events);
                     }
+                }
+            }
+            Request::Save => {
+                if pending.is_some() {
+                    report(&events, "error", pending.as_ref().map(|p| p.0),
+                        Some("Сначала подтвердите временные настройки".into()));
+                    continue;
+                }
+                let Some(target) = confirmed.as_ref() else {
+                    report(&events, "error", None,
+                        Some("Сначала примените и подтвердите изменения дисплеев".into()));
+                    continue;
+                };
+                let saved = query().and_then(|source| {
+                    let actual = baseline(&source)?;
+                    // Never persist a stale preview after hotplug, another
+                    // client change or an automatic Niri reposition.
+                    if actual.len() != target.len() || actual.iter().zip(target.iter()).any(
+                        |(a, b)| a.name != b.name || a.enabled != b.enabled ||
+                        (a.enabled && (a.mode != b.mode ||
+                            (a.scale - b.scale).abs() > 0.001 ||
+                            a.transform != b.transform ||
+                            a.x != b.x || a.y != b.y || a.vrr != b.vrr))
+                    ) {
+                        return Err("Параметры Niri изменились после подтверждения. Обновите список.".into());
+                    }
+                    crate::config_layers::save(target)
+                });
+                match saved {
+                    Ok(()) => report(&events, "saved", None, None),
+                    Err(error) => report(&events, "error", None, Some(error)),
                 }
             }
         }

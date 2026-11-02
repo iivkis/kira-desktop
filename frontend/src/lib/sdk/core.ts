@@ -496,7 +496,8 @@ export interface DisplayDraft {
   vrr: boolean;
 }
 export interface DisplayStatus {
-  state: 'ready' | 'pending' | 'confirmed' | 'reverted' | 'error';
+  state: 'ready' | 'pending' | 'confirmed' | 'reverted' | 'saved' | 'error';
+  persistence: 'manual' | 'uninitialized' | 'managed' | 'conflict';
   outputs: DisplayOutput[] | null;
   pending_id: number | null;
   error: string | null;
@@ -530,7 +531,8 @@ export function onDisplayStatus(
   return onNativeEvent('kira:settings:displays',
     (value): value is { generation: number } & DisplayStatus =>
       isRecord(value) && value.generation === generation &&
-      ['ready', 'pending', 'confirmed', 'reverted', 'error'].includes(String(value.state)) &&
+      ['ready', 'pending', 'confirmed', 'reverted', 'saved', 'error'].includes(String(value.state)) &&
+      ['manual', 'uninitialized', 'managed', 'conflict'].includes(String(value.persistence)) &&
       (value.pending_id === null || (Number.isSafeInteger(value.pending_id) &&
         typeof value.pending_id === 'number' && value.pending_id > 0)) &&
       (value.error === null || (typeof value.error === 'string' && value.error.length <= 240)) &&
@@ -546,6 +548,10 @@ export function displayModeId(mode: DisplayMode): string {
 }
 
 /** Every command is generation-scoped and independently validated by Rust. */
+export function saveDisplays(generation: number): boolean {
+  return validOverlayGeneration(generation) &&
+    sendCalendarUi('display-save:' + generation);
+}
 export function requestDisplays(generation: number): boolean {
   return validOverlayGeneration(generation) &&
     sendCalendarUi('display-refresh:' + generation);

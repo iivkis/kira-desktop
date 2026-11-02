@@ -828,6 +828,16 @@ impl CalendarOverlay {
             {
                 self.detach();
             }
+            Some(UiCommand::DisplaySave(generation))
+                if self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Settings) =>
+            {
+                if let Some(model) = self.settings_displays.borrow().as_ref() {
+                    model.save();
+                }
+            }
             Some(UiCommand::DisplayRefresh(generation))
                 if self.requested.get()
                     && !self.closing.get()
@@ -1123,6 +1133,7 @@ impl CalendarOverlay {
                 "outputs": event.outputs,
                 "pending_id": event.pending_id,
                 "error": event.error,
+                "persistence": event.persistence,
             });
             if let Ok(serialized) = serde_json::to_string(&payload)
                 && let Ok(encoded) = serde_json::to_string(&serialized)
@@ -1209,6 +1220,7 @@ enum UiCommand<'a> {
     LauncherCatalog(u32),
     LauncherIcons(u32, Vec<usize>),
     LaunchApp(u32, usize),
+    DisplaySave(u32),
     DisplayRefresh(u32),
     DisplayApply(u32, &'a str),
     DisplayConfirm(u32, u64),
@@ -1257,6 +1269,9 @@ fn parse_ui_generation(value: &str) -> Option<u32> {
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     if message == "host-ready" {
         return Some(UiCommand::HostReady);
+    }
+    if let Some(value) = message.strip_prefix("display-save:") {
+        return parse_ui_generation(value).map(UiCommand::DisplaySave);
     }
     if let Some(value) = message.strip_prefix("display-refresh:") {
         return parse_ui_generation(value).map(UiCommand::DisplayRefresh);

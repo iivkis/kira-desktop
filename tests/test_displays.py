@@ -8,6 +8,7 @@ SHELL = (ROOT / "crates/kira-shell/src/calendar.rs").read_text()
 SETTINGS = (ROOT / "frontend/src/lib/components/SettingsWidget.svelte").read_text()
 DISPLAY = (ROOT / "frontend/src/lib/components/DisplaySettings.svelte").read_text()
 SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
+CONFIG = (ROOT / "crates/kira-shell/src/config_layers.rs").read_text()
 
 
 class DisplayContract(unittest.TestCase):
@@ -31,6 +32,25 @@ class DisplayContract(unittest.TestCase):
         self.assertIn('host["vrr_supported"] != true', MANAGER)
         self.assertIn('Some(UiCommand::DisplayConfirm(generation, id))', SHELL)
         self.assertIn('Some(UiCommand::DisplayRevert(generation, id))', SHELL)
+
+    def test_session_and_declarative_settings_are_separate_transactions(self):
+        self.assertIn('Request::Save => {', MANAGER)
+        self.assertIn('crate::config_layers::save(target)', MANAGER)
+        self.assertIn('confirmed = staged.take()', MANAGER)
+        self.assertIn('actual.len() != target.len()', MANAGER)
+        self.assertIn('pub fn save(desired: &[Desired]) -> Result<(), String>', CONFIG)
+        self.assertIn('crate::config_layers::status()', MANAGER)
+        self.assertIn('fn inspect(', CONFIG)
+        self.assertIn('MAX_SOURCE', CONFIG)
+        self.assertIn('if count > 1', CONFIG)
+        self.assertIn('atomic(&fragment, &new_fragment)', CONFIG)
+        self.assertIn('validate_config(&config)', CONFIG)
+        self.assertIn('rollback_file(&fragment', CONFIG)
+        self.assertIn('fs::symlink_metadata(&config)', CONFIG)
+        self.assertIn('pub fn status()', CONFIG)
+        self.assertIn('sendCalendarUi(\'display-save:\' + generation)', SDK)
+        self.assertIn('Some(UiCommand::DisplaySave(generation))', SHELL)
+        self.assertIn('Сохранить в конфиг', DISPLAY)
 
     def test_both_settings_modes_render_the_real_display_editor(self):
         self.assertIn("section === 'displays'", SETTINGS)

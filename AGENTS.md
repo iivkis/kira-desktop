@@ -79,6 +79,16 @@ acceptance, in addition to the TENET motion principles.
   `frontend/src/lib/themes/kira-default.css`, the 42px top bar, and the
   locked-down Rust/GIO ↔ WebKit bridge. Charts are read-only presentation.
 
+## Ownership rules for settings (mandatory)
+
+Read [docs/CONFIG_OWNERSHIP.md](docs/CONFIG_OWNERSHIP.md) before changing
+any configuration writer or adding editable Settings pages. Explicit source
+ownership, read-back of observed state, independent Apply/Confirm/Save,
+fail-closed KDL conflicts, generation-scoped native commands and atomic writes
+are required. Do not rewrite Nix-generated configs or merge Niri multipart
+`output` blocks as if they were fields. New settings adapters must not
+receive a general shell or filesystem write bridge.
+
 ## Build and review
 
 Changes to runtime JS dependencies require updates to both

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, saveDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -64,6 +64,8 @@ describe('Core SDK JSON-RPC bridge', () => {
     } as unknown as Window & typeof globalThis;
     expect(displayModeId({ width: 2560, height: 1440, refresh_rate: 143912, is_preferred: true }))
       .toBe('2560x1440@143.912');
+    expect(saveDisplays(7)).toBe(true);
+    expect(saveDisplays(0)).toBe(false);
     expect(requestDisplays(7)).toBe(true);
     expect(requestDisplays(0)).toBe(false);
     const draft = [{
@@ -75,6 +77,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     expect(revertDisplays(7, 14)).toBe(true);
     expect(confirmDisplays(7, -1)).toBe(false);
     expect(postMessage.mock.calls.map(call => call[0])).toEqual([
+      'display-save:7',
       'display-refresh:7',
       'display-apply:7:' + JSON.stringify(draft),
       'display-confirm:7:14',
@@ -91,7 +94,7 @@ describe('Core SDK JSON-RPC bridge', () => {
     const callback = vi.fn();
     const stop = onDisplayStatus(42, callback);
     const good = {
-      generation: 42, state: 'ready', pending_id: null, error: null,
+      generation: 42, state: 'ready', persistence: 'manual', pending_id: null, error: null,
       outputs: [{
         connector: 'DP-1', name: 'DP-1', make: 'Example', model: 'Panel',
         modes: [{ width: 1920, height: 1080, refresh_rate: 60000, is_preferred: true }],
@@ -103,6 +106,7 @@ describe('Core SDK JSON-RPC bridge', () => {
       detail,
     } as CustomEvent<unknown>);
     dispatch({ ...good, generation: 41 });
+    dispatch({ ...good, persistence: 'invalid' });
     dispatch({ ...good, outputs: [{ ...good.outputs[0], modes: [{ width: 'oops' }] }] });
     dispatch(good);
     expect(callback).toHaveBeenCalledExactlyOnceWith(good);

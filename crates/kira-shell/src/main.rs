@@ -1,6 +1,7 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
+mod config_layers;
 mod display_manager;
 mod launcher;
 mod native_ui;
