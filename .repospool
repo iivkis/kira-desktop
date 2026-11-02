@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	5dd16d893794a2f00b4290d9bb992acb6cefc670
+C	e16230907dd922805e736d8c7d037a16d086733a
 F	.cargo/config.toml	98	127	3
 F	.github/workflows/ci.yml	4355	132	112
 F	.github/workflows/frontend-nix.yml	1398	246	43
@@ -38,83 +38,83 @@ F	crates/kira-ipc/src/client.rs	17794	2788	458
 F	crates/kira-ipc/src/lib.rs	10460	3248	336
 F	crates/kira-shell/Cargo.toml	297	3586	12
 F	crates/kira-shell/src/calendar.rs	38858	3600	1043
-F	crates/kira-shell/src/dock.rs	8695	4645	206
-F	crates/kira-shell/src/launcher.rs	14114	4853	392
-F	crates/kira-shell/src/main.rs	19494	5247	453
-F	crates/kira-shell/src/native_ui.rs	2857	5702	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5777	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6065	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6183	559
-F	crates/kira-shell/src/system_panel.rs	11356	6744	318
-F	docs/CONFIG.md	5801	7064	125
-F	docs/DESIGN_SYSTEM.md	27078	7191	449
-F	docs/DEVELOPMENT.md	29347	7642	577
-F	docs/QA_VISUAL.md	12284	8221	149
-F	docs/SPECIFICATION.md	28960	8372	421
-F	docs/TENET_MOTION.md	22120	8795	142
-F	docs/UI_ARCHITECTURE.md	6737	8939	106
-F	docs/VISUAL_REVIEW.md	9754	9047	84
-F	flake.nix	3181	9133	91
-F	frontend/index.html	2737	9226	66
-F	frontend/package.json	720	9294	27
-F	frontend/scripts/inline-assets.mjs	4457	9323	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9428	106
-F	frontend/scripts/smoke-overlays.mjs	19543	9536	278
-F	frontend/src/App.svelte	8659	9816	200
-F	frontend/src/lib/bootstrap.test.ts	3408	10018	84
-F	frontend/src/lib/bootstrap.ts	2613	10104	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10176	65
-F	frontend/src/lib/calendar-model.ts	4648	10243	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10350	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10412	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10443	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10763	50
-F	frontend/src/lib/clock-flight.ts	1977	10815	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10867	239
-F	frontend/src/lib/components/DockWidget.svelte	3739	11108	95
-F	frontend/src/lib/components/LauncherWidget.svelte	10668	11205	230
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11437	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11665	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11710	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12032	61
-F	frontend/src/lib/dock-model.test.ts	973	12095	22
-F	frontend/src/lib/dock-model.ts	890	12119	24
-F	frontend/src/lib/launcher-model.test.ts	2266	12145	46
-F	frontend/src/lib/launcher-model.ts	1403	12193	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12224	89
-F	frontend/src/lib/lazy-widget.ts	1984	12315	63
-F	frontend/src/lib/motion.ts	1597	12380	50
-F	frontend/src/lib/overlay-size.ts	1090	12432	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12463	444
-F	frontend/src/lib/sdk/core.ts	20447	12909	536
-F	frontend/src/lib/system-charts.test.ts	6312	13447	141
-F	frontend/src/lib/system-charts.ts	5514	13590	149
-F	frontend/src/lib/system-health.test.ts	2385	13741	42
-F	frontend/src/lib/system-health.ts	2831	13785	60
-F	frontend/src/lib/system-model.test.ts	4455	13847	84
-F	frontend/src/lib/system-model.ts	5457	13933	125
-F	frontend/src/lib/themes/kira-default.css	1687	14060	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	14114	101
-F	frontend/src/lib/themes/kira-default.ts	777	14217	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	14241	79
-F	frontend/src/lib/time.test.ts	263	14322	8
-F	frontend/src/lib/time.ts	320	14332	9
-F	frontend/src/main.ts	6243	14343	137
-F	frontend/src/style.css	4076	14482	130
-F	frontend/tsconfig.json	403	14614	16
-F	frontend/vite.config.ts	224	14632	8
-F	nix/package.nix	3132	14642	117
-F	scripts/dev_preview.py	18147	14761	403	x
-F	scripts/qa_visual.py	12052	15166	299
-F	tests/test_calendar_design.py	7384	15467	130
-F	tests/test_detailed_health.py	5429	15599	105
-F	tests/test_dev_preview.py	9339	15706	219
-F	tests/test_dock_design.py	1664	15927	34
-F	tests/test_launcher_design.py	10400	15963	189
-F	tests/test_native_theme.py	1567	16154	36
-F	tests/test_popup_geometry.py	6956	16192	118
-F	tests/test_qa_visual.py	10549	16312	217
-F	tests/test_ui_bootstrap_contract.py	1103	16531	29
+F	crates/kira-shell/src/dock.rs	9478	4645	258
+F	crates/kira-shell/src/launcher.rs	14114	4905	392
+F	crates/kira-shell/src/main.rs	19494	5299	453
+F	crates/kira-shell/src/native_ui.rs	2857	5754	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5829	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6117	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6235	559
+F	crates/kira-shell/src/system_panel.rs	11356	6796	318
+F	docs/CONFIG.md	5801	7116	125
+F	docs/DESIGN_SYSTEM.md	27078	7243	449
+F	docs/DEVELOPMENT.md	29347	7694	577
+F	docs/QA_VISUAL.md	12284	8273	149
+F	docs/SPECIFICATION.md	28960	8424	421
+F	docs/TENET_MOTION.md	22120	8847	142
+F	docs/UI_ARCHITECTURE.md	6737	8991	106
+F	docs/VISUAL_REVIEW.md	9754	9099	84
+F	flake.nix	3181	9185	91
+F	frontend/index.html	2737	9278	66
+F	frontend/package.json	720	9346	27
+F	frontend/scripts/inline-assets.mjs	4457	9375	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9480	106
+F	frontend/scripts/smoke-overlays.mjs	19543	9588	278
+F	frontend/src/App.svelte	8659	9868	200
+F	frontend/src/lib/bootstrap.test.ts	3408	10070	84
+F	frontend/src/lib/bootstrap.ts	2613	10156	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10228	65
+F	frontend/src/lib/calendar-model.ts	4648	10295	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10402	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10464	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10495	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10815	50
+F	frontend/src/lib/clock-flight.ts	1977	10867	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10919	239
+F	frontend/src/lib/components/DockWidget.svelte	3739	11160	95
+F	frontend/src/lib/components/LauncherWidget.svelte	10668	11257	230
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11489	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11717	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11762	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12084	61
+F	frontend/src/lib/dock-model.test.ts	973	12147	22
+F	frontend/src/lib/dock-model.ts	890	12171	24
+F	frontend/src/lib/launcher-model.test.ts	2266	12197	46
+F	frontend/src/lib/launcher-model.ts	1403	12245	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12276	89
+F	frontend/src/lib/lazy-widget.ts	1984	12367	63
+F	frontend/src/lib/motion.ts	1597	12432	50
+F	frontend/src/lib/overlay-size.ts	1090	12484	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12515	444
+F	frontend/src/lib/sdk/core.ts	20447	12961	536
+F	frontend/src/lib/system-charts.test.ts	6312	13499	141
+F	frontend/src/lib/system-charts.ts	5514	13642	149
+F	frontend/src/lib/system-health.test.ts	2385	13793	42
+F	frontend/src/lib/system-health.ts	2831	13837	60
+F	frontend/src/lib/system-model.test.ts	4455	13899	84
+F	frontend/src/lib/system-model.ts	5457	13985	125
+F	frontend/src/lib/themes/kira-default.css	1687	14112	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	14166	101
+F	frontend/src/lib/themes/kira-default.ts	777	14269	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	14293	79
+F	frontend/src/lib/time.test.ts	263	14374	8
+F	frontend/src/lib/time.ts	320	14384	9
+F	frontend/src/main.ts	6243	14395	137
+F	frontend/src/style.css	4076	14534	130
+F	frontend/tsconfig.json	403	14666	16
+F	frontend/vite.config.ts	224	14684	8
+F	nix/package.nix	3132	14694	117
+F	scripts/dev_preview.py	18147	14813	403	x
+F	scripts/qa_visual.py	12052	15218	299
+F	tests/test_calendar_design.py	7384	15519	130
+F	tests/test_detailed_health.py	5429	15651	105
+F	tests/test_dev_preview.py	9339	15758	219
+F	tests/test_dock_design.py	1664	15979	34
+F	tests/test_launcher_design.py	10400	16015	189
+F	tests/test_native_theme.py	1567	16206	36
+F	tests/test_popup_geometry.py	6956	16244	118
+F	tests/test_qa_visual.py	10549	16364	217
+F	tests/test_ui_bootstrap_contract.py	1103	16583	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -4647,21 +4647,30 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::{Duration, Instant};
 
+use crate::{calendar, launcher, native_ui, renderer_recovery};
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
-use crate::{calendar, launcher, native_ui, renderer_recovery};
 
 #[derive(Debug, PartialEq, Eq)]
-enum Command { Catalog, Open, Launch(usize), Icons(Vec<usize>) }
+enum Command {
+    Catalog,
+    Open,
+    Launch(usize),
+    Icons(Vec<usize>),
+}
 
 fn id(raw: &str) -> Option<usize> {
-    if raw.is_empty() || !raw.bytes().all(|c| c.is_ascii_digit()) { return None }
+    if raw.is_empty() || !raw.bytes().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
     let value = raw.parse::<usize>().ok()?;
     (value < 1024).then_some(value)
 }
 fn parse(raw: &str) -> Option<Command> {
-    if raw.len() > 160 { return None }
+    if raw.len() > 160 {
+        return None;
+    }
     match raw {
         "catalog" => return Some(Command::Catalog),
         "open" => return Some(Command::Open),
@@ -4674,23 +4683,34 @@ fn parse(raw: &str) -> Option<Command> {
         let mut ids = Vec::new();
         for word in value.split(',') {
             let next = id(word)?;
-            if ids.len() >= 8 || ids.contains(&next) { return None }
+            if ids.len() >= 8 || ids.contains(&next) {
+                return None;
+            }
             ids.push(next);
         }
-        if !ids.is_empty() { return Some(Command::Icons(ids)) }
+        if !ids.is_empty() {
+            return Some(Command::Icons(ids));
+        }
     }
     None
 }
 fn favorites() -> Vec<String> {
-    std::env::var("KIRA_DOCK_APPS").unwrap_or_default()
-        .split(',').map(str::trim)
-        .filter(|s| !s.is_empty() && s.len() <= 120 &&
-            !s.chars().any(char::is_control))
-        .take(8).map(str::to_owned).collect()
+    std::env::var("KIRA_DOCK_APPS")
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|s| !s.is_empty() && s.len() <= 120 && !s.chars().any(char::is_control))
+        .take(8)
+        .map(str::to_owned)
+        .collect()
 }
 fn dispatch(view: &webkit6::WebView, event: &str, data: serde_json::Value) {
-    let Ok(encoded) = serde_json::to_string(&data) else { return };
-    let Ok(quoted) = serde_json::to_string(&encoded) else { return };
+    let Ok(encoded) = serde_json::to_string(&data) else {
+        return;
+    };
+    let Ok(quoted) = serde_json::to_string(&encoded) else {
+        return;
+    };
     let js = format!(
         "window.dispatchEvent(new CustomEvent('{event}', {{detail: JSON.parse({quoted})}}));"
     );
@@ -4705,9 +4725,11 @@ fn catalog_data(data: serde_json::Value, pins: &[String]) -> serde_json::Value {
 }
 pub fn start(app: &gtk::Application, html: &str) {
     let marker = "<html lang=\"en\">";
-    if !html.contains(marker) { eprintln!("kira-dock: no document marker"); return }
-    let document = html.replacen(marker,
-        "<html lang=\"en\" data-kira-surface=\"dock\">", 1);
+    if !html.contains(marker) {
+        eprintln!("kira-dock: no document marker");
+        return;
+    }
+    let document = html.replacen(marker, "<html lang=\"en\" data-kira-surface=\"dock\">", 1);
     let window = gtk::ApplicationWindow::new(app);
     window.set_title(Some("Kira Dock"));
     window.set_decorated(false);
@@ -4723,13 +4745,18 @@ pub fn start(app: &gtk::Application, html: &str) {
     let context = webkit6::WebContext::new();
     let manager = webkit6::UserContentManager::new();
     let view = webkit6::WebView::builder()
-        .web_context(&context).user_content_manager(&manager).build();
+        .web_context(&context)
+        .user_content_manager(&manager)
+        .build();
     view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
 
     let pins = Rc::new(favorites());
     let service = Rc::new(RefCell::new(match launcher::Catalog::discover() {
         Ok(catalog) => Some(catalog),
-        Err(error) => { eprintln!("kira-dock: {error}"); None }
+        Err(error) => {
+            eprintln!("kira-dock: {error}");
+            None
+        }
     }));
     let weak_view = view.downgrade();
     let commands = service.clone();
@@ -4745,11 +4772,17 @@ pub fn start(app: &gtk::Application, html: &str) {
                 if let Some(view) = weak_view.upgrade() {
                     let borrowed = commands.borrow();
                     if let Some(data) = borrowed.as_ref().and_then(launcher::Catalog::ready_json) {
-                        dispatch(&view, "kira:dock:apps",
-                            catalog_data(data, command_pins.as_slice()));
+                        dispatch(
+                            &view,
+                            "kira:dock:apps",
+                            catalog_data(data, command_pins.as_slice()),
+                        );
                     } else if borrowed.is_none() {
-                        dispatch(&view, "kira:dock:error",
-                            serde_json::json!({"message":"Application service unavailable"}));
+                        dispatch(
+                            &view,
+                            "kira:dock:error",
+                            serde_json::json!({"message":"Application service unavailable"}),
+                        );
                     }
                 }
             }
@@ -4757,8 +4790,11 @@ pub fn start(app: &gtk::Application, html: &str) {
                 if let Some(catalog) = commands.borrow().as_ref() {
                     if let Err(error) = catalog.launch(id) {
                         if let Some(view) = weak_view.upgrade() {
-                            dispatch(&view, "kira:dock:error",
-                                serde_json::json!({"message":error}));
+                            dispatch(
+                                &view,
+                                "kira:dock:error",
+                                serde_json::json!({"message":error}),
+                            );
                         }
                     }
                 }
@@ -4767,8 +4803,11 @@ pub fn start(app: &gtk::Application, html: &str) {
                 if let Some(catalog) = commands.borrow().as_ref() {
                     if let Err(error) = catalog.request_icons(&ids) {
                         if let Some(view) = weak_view.upgrade() {
-                            dispatch(&view, "kira:dock:error",
-                                serde_json::json!({"message":error}));
+                            dispatch(
+                                &view,
+                                "kira:dock:error",
+                                serde_json::json!({"message":error}),
+                            );
                         }
                     }
                 }
@@ -4789,14 +4828,20 @@ pub fn start(app: &gtk::Application, html: &str) {
             for _ in 0..4 {
                 let Some(event) = catalog.poll() else { break };
                 match event {
-                    launcher::LauncherMessage::Apps(data) =>
-                        dispatch(&view, "kira:dock:apps", catalog_data(data, poll_pins.as_slice())),
-                    launcher::LauncherMessage::Icons(data) =>
-                        dispatch(&view, "kira:dock:icons", data),
+                    launcher::LauncherMessage::Apps(data) => dispatch(
+                        &view,
+                        "kira:dock:apps",
+                        catalog_data(data, poll_pins.as_slice()),
+                    ),
+                    launcher::LauncherMessage::Icons(data) => {
+                        dispatch(&view, "kira:dock:icons", data)
+                    }
                     launcher::LauncherMessage::Launched(Err(error))
-                    | launcher::LauncherMessage::Error(error) =>
-                        dispatch(&view, "kira:dock:error",
-                            serde_json::json!({"message":error})),
+                    | launcher::LauncherMessage::Error(error) => dispatch(
+                        &view,
+                        "kira:dock:error",
+                        serde_json::json!({"message":error}),
+                    ),
                     launcher::LauncherMessage::Launched(Ok(())) => {}
                 }
             }
@@ -4840,10 +4885,17 @@ mod tests {
         assert_eq!(parse("catalog"), Some(Command::Catalog));
         assert_eq!(parse("open"), Some(Command::Open));
         assert_eq!(parse("launch:7"), Some(Command::Launch(7)));
-        assert_eq!(parse("icons:0,9"), Some(Command::Icons(vec![0,9])));
-        for bad in ["", "run:sh", "launch:-1", "launch:1024",
-            "launch:1:2", "icons:", "icons:1,1",
-            "icons:0,1,2,3,4,5,6,7,8"] {
+        assert_eq!(parse("icons:0,9"), Some(Command::Icons(vec![0, 9])));
+        for bad in [
+            "",
+            "run:sh",
+            "launch:-1",
+            "launch:1024",
+            "launch:1:2",
+            "icons:",
+            "icons:1,1",
+            "icons:0,1,2,3,4,5,6,7,8",
+        ] {
             assert_eq!(parse(bad), None);
         }
     }
