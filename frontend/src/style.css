@@ -119,3 +119,16 @@
     }
   }
 }
+
+/* A moving solid selection must not turn its new label into black-on-black.
+ * Keep actual selection/ARIA immediate; switch foreground contrast only while
+ * its ONE orange background is travelling between physical positions.
+ * Unlayered so this wins over Tailwind's generated utility color classes.
+ */
+[data-kira-flow-moving="true"] [data-calendar-selected="true"],
+[data-kira-flow-moving="true"] [data-focused="true"] {
+  color: var(--kira-color-text);
+}
+[data-kira-flow-moving="true"] [data-focused="true"] span[aria-hidden="true"] {
+  background-color: var(--kira-color-accent);
+}
