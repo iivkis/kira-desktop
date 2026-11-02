@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5595
+index_bytes=5597
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	516703e5347e6335d6dc1698ca15c841d59507a4
+C	c02571375d920fe698e71bc64faefe7cedfe3db1
 F	.cargo/config.toml	98	141	3
 F	.github/workflows/ci.yml	4355	146	112
 F	.github/workflows/frontend-nix.yml	1398	260	43
@@ -37,98 +37,98 @@ F	crates/kira-ipc/Cargo.toml	170	2823	9
 F	crates/kira-ipc/src/client.rs	17794	2834	458
 F	crates/kira-ipc/src/lib.rs	10460	3294	336
 F	crates/kira-shell/Cargo.toml	297	3632	12
-F	crates/kira-shell/src/calendar.rs	72300	3646	1914
-F	crates/kira-shell/src/config_layers.rs	19239	5562	496
-F	crates/kira-shell/src/display_manager.rs	20641	6060	546
-F	crates/kira-shell/src/launcher.rs	14114	6608	392
-F	crates/kira-shell/src/main.rs	21295	7002	486
-F	crates/kira-shell/src/native_ui.rs	4536	7490	104
-F	crates/kira-shell/src/popup_layout.rs	2055	7596	58
-F	crates/kira-shell/src/process_monitor.rs	9336	7656	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	7944	116
-F	crates/kira-shell/src/system_info.rs	3951	8062	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8177	559
-F	crates/kira-shell/src/system_panel.rs	11356	8738	318
-F	crates/kira-shell/src/webview_pool.rs	8477	9058	249
-F	docs/CONFIG.md	5801	9309	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9436	135
-F	docs/DESIGN_SYSTEM.md	32126	9573	519
-F	docs/DEVELOPMENT.md	29347	10094	577
-F	docs/QA_VISUAL.md	12284	10673	149
-F	docs/SPECIFICATION.md	28960	10824	421
-F	docs/TENET_MOTION.md	40649	11247	204
-F	docs/UI_ARCHITECTURE.md	6737	11453	106
-F	docs/VISUAL_REVIEW.md	9754	11561	84
-F	docs/WEBVIEW_POOL.md	8591	11647	64
-F	flake.nix	3181	11713	91
-F	frontend/index.html	2737	11806	66
-F	frontend/package.json	720	11874	27
-F	frontend/scripts/inline-assets.mjs	4457	11903	103
-F	frontend/scripts/inline-assets.test.mjs	4645	12008	106
-F	frontend/scripts/smoke-overlays.mjs	42286	12116	582
-F	frontend/src/App.svelte	9665	12700	224
-F	frontend/src/lib/bootstrap.test.ts	3408	12926	84
-F	frontend/src/lib/bootstrap.ts	2613	13012	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13084	65
-F	frontend/src/lib/calendar-model.ts	4648	13151	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13258	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	13320	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	13351	287
-F	frontend/src/lib/clock-flight.test.ts	2404	13640	50
-F	frontend/src/lib/clock-flight.ts	1977	13692	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	13744	246
-F	frontend/src/lib/components/DisplaySettings.svelte	21886	13992	423
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	14417	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	14675	168
-F	frontend/src/lib/components/SystemCharts.svelte	10517	14845	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	15073	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	15121	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	15462	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15502	119
-F	frontend/src/lib/launcher-model.test.ts	2266	15623	46
-F	frontend/src/lib/launcher-model.ts	1403	15671	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	15702	89
-F	frontend/src/lib/lazy-widget.ts	1984	15793	63
-F	frontend/src/lib/motion-contract.test.ts	11242	15858	198
-F	frontend/src/lib/motion.ts	24039	16058	657
-F	frontend/src/lib/overlay-size.ts	1090	16717	29
-F	frontend/src/lib/sdk/core.test.ts	27884	16748	564
-F	frontend/src/lib/sdk/core.ts	25417	17314	645
-F	frontend/src/lib/settings-model.test.ts	1064	17961	21
-F	frontend/src/lib/settings-model.ts	1262	17984	26
-F	frontend/src/lib/system-charts.test.ts	6312	18012	141
-F	frontend/src/lib/system-charts.ts	5514	18155	149
-F	frontend/src/lib/system-health.test.ts	2385	18306	42
-F	frontend/src/lib/system-health.ts	2831	18350	60
-F	frontend/src/lib/system-model.test.ts	4455	18412	84
-F	frontend/src/lib/system-model.ts	5457	18498	125
-F	frontend/src/lib/themes/kira-default.css	1687	18625	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	18679	101
-F	frontend/src/lib/themes/kira-default.ts	777	18782	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	18806	101
-F	frontend/src/lib/time.test.ts	263	18909	8
-F	frontend/src/lib/time.ts	320	18919	9
-F	frontend/src/lib/workspace-window.test.ts	2298	18930	52
-F	frontend/src/lib/workspace-window.ts	1063	18984	32
-F	frontend/src/main.ts	7783	19018	161
-F	frontend/src/style.css	6399	19181	194
-F	frontend/tsconfig.json	403	19377	16
-F	frontend/vite.config.ts	224	19395	8
-F	nix/package.nix	3132	19405	117
-F	scripts/dev_preview.py	18147	19524	403	x
-F	scripts/qa_visual.py	12052	19929	299
-F	tests/test_calendar_design.py	7782	20230	136
-F	tests/test_detailed_health.py	5481	20368	105
-F	tests/test_dev_preview.py	9339	20475	219
-F	tests/test_displays.py	4101	20696	72
-F	tests/test_launcher_design.py	10481	20770	190
-F	tests/test_native_theme.py	2098	20962	44
-F	tests/test_popup_geometry.py	3227	21008	58
-F	tests/test_qa_visual.py	10549	21068	217
-F	tests/test_settings.py	3212	21287	62
-F	tests/test_tenet_close.py	6297	21351	115
-F	tests/test_ui_bootstrap_contract.py	1103	21468	29
-F	tests/test_webview_pool.py	8503	21499	149
+F	crates/kira-shell/src/calendar.rs	72756	3646	1925
+F	crates/kira-shell/src/config_layers.rs	19239	5573	496
+F	crates/kira-shell/src/display_manager.rs	20641	6071	546
+F	crates/kira-shell/src/launcher.rs	14114	6619	392
+F	crates/kira-shell/src/main.rs	22631	7013	517
+F	crates/kira-shell/src/native_ui.rs	4536	7532	104
+F	crates/kira-shell/src/popup_layout.rs	2055	7638	58
+F	crates/kira-shell/src/process_monitor.rs	13067	7698	394
+F	crates/kira-shell/src/renderer_recovery.rs	3634	8094	116
+F	crates/kira-shell/src/system_info.rs	3951	8212	113
+F	crates/kira-shell/src/system_metrics.rs	19842	8327	559
+F	crates/kira-shell/src/system_panel.rs	11356	8888	318
+F	crates/kira-shell/src/webview_pool.rs	9530	9208	281
+F	docs/CONFIG.md	5801	9491	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9618	135
+F	docs/DESIGN_SYSTEM.md	32126	9755	519
+F	docs/DEVELOPMENT.md	29347	10276	577
+F	docs/QA_VISUAL.md	12284	10855	149
+F	docs/SPECIFICATION.md	28960	11006	421
+F	docs/TENET_MOTION.md	40649	11429	204
+F	docs/UI_ARCHITECTURE.md	6737	11635	106
+F	docs/VISUAL_REVIEW.md	9754	11743	84
+F	docs/WEBVIEW_POOL.md	10481	11829	97
+F	flake.nix	3181	11928	91
+F	frontend/index.html	2737	12021	66
+F	frontend/package.json	720	12089	27
+F	frontend/scripts/inline-assets.mjs	4457	12118	103
+F	frontend/scripts/inline-assets.test.mjs	4645	12223	106
+F	frontend/scripts/smoke-overlays.mjs	42286	12331	582
+F	frontend/src/App.svelte	9665	12915	224
+F	frontend/src/lib/bootstrap.test.ts	3408	13141	84
+F	frontend/src/lib/bootstrap.ts	2613	13227	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13299	65
+F	frontend/src/lib/calendar-model.ts	4648	13366	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13473	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13535	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	13566	287
+F	frontend/src/lib/clock-flight.test.ts	2404	13855	50
+F	frontend/src/lib/clock-flight.ts	1977	13907	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	13959	246
+F	frontend/src/lib/components/DisplaySettings.svelte	21886	14207	423
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	14632	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	14890	168
+F	frontend/src/lib/components/SystemCharts.svelte	10517	15060	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	15288	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	15336	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	15677	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15717	119
+F	frontend/src/lib/launcher-model.test.ts	2266	15838	46
+F	frontend/src/lib/launcher-model.ts	1403	15886	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	15917	89
+F	frontend/src/lib/lazy-widget.ts	1984	16008	63
+F	frontend/src/lib/motion-contract.test.ts	11242	16073	198
+F	frontend/src/lib/motion.ts	24039	16273	657
+F	frontend/src/lib/overlay-size.ts	1090	16932	29
+F	frontend/src/lib/sdk/core.test.ts	27884	16963	564
+F	frontend/src/lib/sdk/core.ts	25417	17529	645
+F	frontend/src/lib/settings-model.test.ts	1064	18176	21
+F	frontend/src/lib/settings-model.ts	1262	18199	26
+F	frontend/src/lib/system-charts.test.ts	6312	18227	141
+F	frontend/src/lib/system-charts.ts	5514	18370	149
+F	frontend/src/lib/system-health.test.ts	2385	18521	42
+F	frontend/src/lib/system-health.ts	2831	18565	60
+F	frontend/src/lib/system-model.test.ts	4455	18627	84
+F	frontend/src/lib/system-model.ts	5457	18713	125
+F	frontend/src/lib/themes/kira-default.css	1687	18840	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	18894	101
+F	frontend/src/lib/themes/kira-default.ts	777	18997	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	19021	101
+F	frontend/src/lib/time.test.ts	263	19124	8
+F	frontend/src/lib/time.ts	320	19134	9
+F	frontend/src/lib/workspace-window.test.ts	2298	19145	52
+F	frontend/src/lib/workspace-window.ts	1063	19199	32
+F	frontend/src/main.ts	7783	19233	161
+F	frontend/src/style.css	6399	19396	194
+F	frontend/tsconfig.json	403	19592	16
+F	frontend/vite.config.ts	224	19610	8
+F	nix/package.nix	3132	19620	117
+F	scripts/dev_preview.py	18147	19739	403	x
+F	scripts/qa_visual.py	12052	20144	299
+F	tests/test_calendar_design.py	7782	20445	136
+F	tests/test_detailed_health.py	5481	20583	105
+F	tests/test_dev_preview.py	9339	20690	219
+F	tests/test_displays.py	4101	20911	72
+F	tests/test_launcher_design.py	10481	20985	190
+F	tests/test_native_theme.py	2098	21177	44
+F	tests/test_popup_geometry.py	3227	21223	58
+F	tests/test_qa_visual.py	10549	21283	217
+F	tests/test_settings.py	3212	21502	62
+F	tests/test_tenet_close.py	6297	21566	115
+F	tests/test_ui_bootstrap_contract.py	1103	21683	29
+F	tests/test_webview_pool.py	9633	21714	168
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3696,11 +3696,20 @@ impl OverlayPool {
         // Install once per popup pool, before any warm GtkApplicationWindow
         // is constructed. The selector never touches the permanent Top Bar.
         crate::native_ui::install_transparent_popup_style();
+        // KIRA_WEBVIEW_WARM=0 disables startup prewarm AND the retained
+        // hot spare after closing a widget (45s grace still applies).
+        // Keep the default unchanged until before/after PSS is measured.
+        let cold = std::env::var("KIRA_WEBVIEW_WARM").is_ok_and(|value| value == "0");
+        let scheduler = if cold {
+            WebviewScheduler::cold()
+        } else {
+            WebviewScheduler::default()
+        };
         let pool = Rc::new(Self {
             application: application.clone(),
             context: context.clone(),
             document,
-            scheduler: RefCell::new(WebviewScheduler::default()),
+            scheduler: RefCell::new(scheduler),
             windows: RefCell::new(HashMap::new()),
             pending: RefCell::new(None),
             poll_source: RefCell::new(None),
@@ -3753,7 +3762,9 @@ impl OverlayPool {
         // Keep its slot quarantined until the Shell is restarted.
         if view.disposed.get() {
             self.scheduler.borrow_mut().release(id, Instant::now());
-            eprintln!("kira-shell: popup renderer unavailable after repeated crashes; restart Shell");
+            eprintln!(
+                "kira-shell: popup renderer unavailable after repeated crashes; restart Shell"
+            );
             return None;
         }
         self.ensure_polling();
@@ -7077,6 +7088,37 @@ fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     }
 }
 
+/// Opt-in worker: no GTK objects cross thread boundaries. We deliberately
+/// avoid collecting global-process PSS continuously while the UI is idle.
+fn start_memory_probe() {
+    if !env::var("KIRA_MEMORY_PROBE").is_ok_and(|value| value == "1") {
+        return;
+    }
+    std::thread::spawn(|| {
+        // Let the delayed popup prewarm complete before the first sample.
+        std::thread::sleep(Duration::from_secs(5));
+        loop {
+            match process_monitor::shell_tree_memory(std::process::id()) {
+                Ok(sample) => {
+                    let mib = |kib: Option<u64>| {
+                        kib.map(|value| format!("{:.1}", value as f64 / 1024.0))
+                            .unwrap_or_else(|| "unknown".to_owned())
+                    };
+                    eprintln!(
+                        "kira-shell memory: scope=process-tree processes={} rss_mib={} pss_mib={} truncated={}",
+                        sample.processes,
+                        mib(sample.rss_kib),
+                        mib(sample.pss_kib),
+                        sample.truncated
+                    );
+                }
+                Err(error) => eprintln!("kira-shell memory: sampling unavailable: {error}"),
+            }
+            std::thread::sleep(Duration::from_secs(10));
+        }
+    });
+}
+
 fn main() {
     let index = ui_index();
     if !index.is_file() {
@@ -7111,8 +7153,7 @@ fn main() {
     // GApplication may deliver repeated activate signals to the primary
     // process (including a second kira-shell invocation). Reuse the existing
     // layer-shell bar instead of duplicating contexts, IPC workers and timers.
-    let primary_bar: Rc<RefCell<Option<gtk::ApplicationWindow>>> =
-        Rc::new(RefCell::new(None));
+    let primary_bar: Rc<RefCell<Option<gtk::ApplicationWindow>>> = Rc::new(RefCell::new(None));
     app.connect_activate(move |app| {
         if let Some(window) = primary_bar.borrow().as_ref() {
             window.present();
@@ -7120,6 +7161,7 @@ fn main() {
         }
         let window = gtk::ApplicationWindow::new(app);
         primary_bar.replace(Some(window.clone()));
+        start_memory_probe();
         window.set_title(Some("Kira Desktop"));
         window.set_decorated(false);
         window.set_default_size(800, BAR_HEIGHT);
@@ -7656,7 +7698,7 @@ FILE	crates/kira-shell/src/process_monitor.rs
 //! Read-only Linux process accounting for the System Monitor.
 //! CPU is shown as percentage of the *entire host*, not one logical core.
 //! Sampling and /proc enumeration run only while Processes is the active tab.
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::io::{self, Read};
 use std::path::Path;
@@ -7690,6 +7732,7 @@ pub struct ProcessSnapshot {
 struct Stat {
     name: String,
     state: char,
+    parent_pid: u32,
     ticks: u64,
     start_ticks: u64,
 }
@@ -7718,6 +7761,7 @@ fn parse_stat(input: &str) -> Option<Stat> {
     Some(Stat {
         name,
         state,
+        parent_pid: fields[1].parse().ok()?,
         ticks: user.checked_add(kernel)?,
         start_ticks: fields[19].parse().ok()?,
     })
@@ -7867,6 +7911,89 @@ fn read_stat(path: &Path) -> Option<Stat> {
     parse_stat(&fs::read_to_string(path.join("stat")).ok()?)
 }
 
+/// A shell can have nested WebKit/bubblewrap helper processes. Account for
+/// descendants, not only the kira-shell PID. Never include unrelated users'
+/// processes, and bound both the /proc scan and expensive smaps_rollup reads.
+const MAX_SHELL_TREE_MEMBERS: usize = 64;
+
+#[derive(Debug)]
+pub struct ShellTreeMemory {
+    pub processes: usize,
+    pub rss_kib: Option<u64>,
+    pub pss_kib: Option<u64>,
+    pub truncated: bool,
+}
+
+fn shell_descendants(parents: &[(u32, u32)], root: u32) -> (Vec<u32>, bool) {
+    let mut seen = HashSet::from([root]);
+    let mut children = vec![root];
+    let mut truncated = false;
+    // A process can spawn multiple generations of sandbox helpers.
+    let mut index = 0;
+    while index < children.len() {
+        let parent = children[index];
+        index += 1;
+        for &(pid, ppid) in parents {
+            if ppid != parent || seen.contains(&pid) {
+                continue;
+            }
+            if children.len() == MAX_SHELL_TREE_MEMBERS {
+                truncated = true;
+                continue;
+            }
+            seen.insert(pid);
+            children.push(pid);
+        }
+    }
+    children.sort_unstable();
+    (children, truncated)
+}
+
+/// Optional diagnostic for Kira's own process tree. These are point-in-time
+/// values; helpers that exit or become unreadable yield None, not a fabricated
+/// complete sum. PSS comes from Linux smaps_rollup, RSS from /proc/status.
+pub fn shell_tree_memory(root_pid: u32) -> io::Result<ShellTreeMemory> {
+    let mut parents = Vec::new();
+    let mut scanned = 0;
+    let mut truncated = false;
+    for entry in fs::read_dir("/proc")?.flatten() {
+        let Some(pid) = entry
+            .file_name()
+            .to_str()
+            .and_then(|s| s.parse::<u32>().ok())
+        else {
+            continue;
+        };
+        if scanned == MAX_SCANNED {
+            truncated = true;
+            break;
+        }
+        scanned += 1;
+        if let Some(stat) = read_stat(&entry.path()) {
+            parents.push((pid, stat.parent_pid));
+        }
+    }
+    let (pids, too_many) = shell_descendants(&parents, root_pid);
+    truncated |= too_many;
+    let mut rss_total = Some(0u64);
+    let mut pss_total = Some(0u64);
+    for pid in &pids {
+        let path = Path::new("/proc").join(pid.to_string());
+        let rss = fs::read_to_string(path.join("status"))
+            .ok()
+            .and_then(|text| rss_kib(&text));
+        let pss = read_pss_kib(&path.join("smaps_rollup"));
+        rss_total = rss_total.zip(rss).and_then(|(a, b)| a.checked_add(b));
+        pss_total = pss_total.zip(pss).and_then(|(a, b)| a.checked_add(b));
+    }
+    Ok(ShellTreeMemory {
+        processes: pids.len(),
+        rss_kib: (!truncated).then_some(rss_total).flatten(),
+        pss_kib: (!truncated).then_some(pss_total).flatten(),
+        truncated,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -7874,6 +8001,7 @@ mod tests {
     fn stat_line(name: &str, utime: u64, stime: u64, start: u64) -> String {
         let mut fields = vec!["0".to_string(); 20];
         fields[0] = "S".into();
+        fields[1] = "1".into();
         fields[11] = utime.to_string();
         fields[12] = stime.to_string();
         fields[19] = start.to_string();
@@ -7885,6 +8013,7 @@ mod tests {
         let record = parse_stat(&stat_line("renderer (worker) extra)", 20, 5, 902)).unwrap();
         assert_eq!(record.name, "renderer (worker) extra)");
         assert_eq!(record.state, 'S');
+        assert_eq!(record.parent_pid, 1);
         assert_eq!(record.ticks, 25);
         assert_eq!(record.start_ticks, 902);
         assert_eq!(parse_stat("42 (truncated"), None);
@@ -7930,6 +8059,27 @@ mod tests {
         assert!(second.contains(&96));
         assert!(second.contains(&100));
         assert!(second.contains(&0));
+    }
+
+    #[test]
+    fn shell_tree_includes_grandchildren_without_unrelated_processes() {
+        let parents = [(10, 1), (11, 10), (12, 11), (15, 10), (20, 1), (21, 20)];
+        assert_eq!(
+            shell_descendants(&parents, 10),
+            (vec![10, 11, 12, 15], false)
+        );
+        assert_eq!(shell_descendants(&parents, 99), (vec![99], false));
+    }
+
+    #[test]
+    fn shell_tree_caps_memory_reads_when_process_count_is_unbounded() {
+        let mut parents = Vec::new();
+        for pid in 2..100 {
+            parents.push((pid, 1));
+        }
+        let (pids, truncated) = shell_descendants(&parents, 1);
+        assert_eq!(pids.len(), MAX_SHELL_TREE_MEMBERS);
+        assert!(truncated);
     }
 
     #[test]
@@ -9104,13 +9254,32 @@ struct Slot {
 /// No active slot may be stolen. One slot is warmed at startup; additional
 /// slots exist only after real demand. A short idle grace protects quick
 /// reopen/animation chains without keeping an unbounded WebKit farm alive.
-#[derive(Default)]
 pub struct WebviewScheduler {
     slots: Vec<Slot>,
     next_id: u32,
+    hot_idle_target: usize,
+}
+
+impl Default for WebviewScheduler {
+    fn default() -> Self {
+        Self {
+            slots: Vec::new(),
+            next_id: 0,
+            hot_idle_target: HOT_IDLE_TARGET,
+        }
+    }
 }
 
 impl WebviewScheduler {
+    /// Test cold startup and reclaim idle renderers without changing the
+    /// ordinary session's default one-spare policy.
+    pub fn cold() -> Self {
+        Self {
+            hot_idle_target: 0,
+            ..Self::default()
+        }
+    }
+
     pub fn reserve(&mut self, surface: Surface, now: Instant) -> Reservation {
         if let Some(slot) = self.slots.iter().find(|s| s.owner == Some(surface)) {
             return Reservation::Existing(slot.id);
@@ -9144,7 +9313,7 @@ impl WebviewScheduler {
 
     /// This only runs once at Shell activation, not for every possible widget.
     pub fn prewarm_one(&mut self, now: Instant) -> Option<u32> {
-        if !self.slots.is_empty() {
+        if self.hot_idle_target == 0 || !self.slots.is_empty() {
             return None;
         }
         let Reservation::Created(id) = self.reserve(Surface::Calendar, now) else {
@@ -9194,7 +9363,7 @@ impl WebviewScheduler {
         idle.sort_unstable_by_key(|(_, instant)| std::cmp::Reverse(*instant));
         let expired: Vec<_> = idle
             .into_iter()
-            .skip(HOT_IDLE_TARGET)
+            .skip(self.hot_idle_target)
             .filter(|(_, since)| now.saturating_duration_since(*since) >= IDLE_GRACE)
             .map(|(id, _)| id)
             .collect();
@@ -9211,6 +9380,19 @@ impl WebviewScheduler {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cold_mode_does_not_prewarm_and_retires_last_idle_view() {
+        let mut s = WebviewScheduler::cold();
+        let now = Instant::now();
+        assert_eq!(s.prewarm_one(now), None);
+        assert_eq!(s.resident_count(), 0);
+        assert_eq!(s.reserve(Surface::Calendar, now), Reservation::Created(1));
+        assert!(s.release(1, now));
+        assert!(s.expired_idle(now + Duration::from_secs(44)).is_empty());
+        assert_eq!(s.expired_idle(now + Duration::from_secs(46)), vec![1]);
+        assert_eq!(s.resident_count(), 0);
+    }
 
     #[test]
     fn one_initial_hot_webview_not_ten_speculative_instances() {
@@ -11681,6 +11863,39 @@ one WebKit renderer process for every WebView. WebKitGTK 6 still chooses
 renderer processes independently for security and stability. Measure RSS/PSS
 for the entire Kira/WebKit process tree before and after; savings are
 workload-dependent and must not be advertised as a fixed amount.
+
+## Measuring actual WebKit memory
+
+Set `KIRA_MEMORY_PROBE=1` in the `kira-shell` environment to log a sample
+five seconds after startup and every ten seconds thereafter. This is opt-in:
+reading `/proc/*/smaps_rollup` on every UI frame would be unnecessary work.
+The probe reads the Shell PID and descendants (including nested WebKit
+renderers and sandbox helpers), reporting `rss_mib`, `pss_mib` and process
+count to stderr. Use **PSS**, not the sum of RSS, to estimate the real
+proportional cost of shared libraries and mappings. Measurements are a
+point-in-time process-tree estimate; exited, reparented, sandbox-hidden or
+unreadable processes can make an apparent sum incomplete. When required
+fields cannot be read or a bounded scan is truncated, the affected total
+is reported as `unknown` rather than silently presented as complete.
+The scanner caps /proc enumeration at 4096 processes and PSS reads at
+64 tree members; the default idle shell does not run the probe.
+
+## Warm versus cold A/B test
+
+The default remains **warm**: pre-create one inert WebView after startup,
+and keep one hot idle spare between widget activations. To compare memory
+and latency without changing code, launch the shell with
+`KIRA_WEBVIEW_WARM=0 KIRA_MEMORY_PROBE=1`. This disables startup prewarm,
+and closes **all** idle popup WebViews after the existing 45-second grace
+period, while preserving all active and promoted windows. With the default
+`KIRA_WEBVIEW_WARM=1 KIRA_MEMORY_PROBE=1`, one idle WebView remains.
+
+Measure both modes after five seconds idle, after opening/closing a widget,
+and after at least 50 seconds idle. Record PSS, process count, first-open
+latency, and reopen latency under the same Niri session and machine.
+No hardware measurements are available in CI, so neither mode is declared
+faster or better in production until both numbers and interaction latency
+have been observed.
 
 ## Pool lifecycle
 
@@ -21564,6 +21779,25 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("if view.disposed.get()", HOST)
         handler = HOST.split("view.connect_web_process_terminated(move |_, reason|", 1)[1]
         self.assertNotIn("state.view.load_html(&state.document, None);\n        }\n    });", handler)
+
+    def test_opt_in_process_tree_memory_probe_does_not_run_in_ui_loop(self):
+        monitor = (ROOT / "crates/kira-shell/src/process_monitor.rs").read_text()
+        self.assertIn('KIRA_MEMORY_PROBE', SHELL)
+        self.assertIn('start_memory_probe();', SHELL)
+        self.assertIn('scope=process-tree', SHELL)
+        self.assertIn('std::thread::spawn(||', SHELL)
+        self.assertIn('process_monitor::shell_tree_memory(std::process::id())', SHELL)
+        self.assertIn('read_pss_kib(&path.join("smaps_rollup"))', monitor)
+        self.assertIn('shell_descendants(&parents, root_pid)', monitor)
+        self.assertIn('MAX_SHELL_TREE_MEMBERS: usize = 64', monitor)
+
+    def test_cold_mode_is_opt_in_and_retires_the_hot_spare(self):
+        self.assertIn('KIRA_WEBVIEW_WARM', HOST)
+        self.assertIn("WebviewScheduler::cold()", HOST)
+        self.assertIn("hot_idle_target: 0,", POOL)
+        self.assertIn(".skip(self.hot_idle_target)", POOL)
+        self.assertIn("if self.hot_idle_target == 0 || !self.slots.is_empty()", POOL)
+        self.assertIn("fn cold_mode_does_not_prewarm_and_retires_last_idle_view()", POOL)
 
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
