@@ -87,12 +87,17 @@ function scriptFor(steps, observationMs = 1150) {
     // Sample the in-flight DUAL chronology before observing settled DOM.
     'setTimeout(() => {' +
       'const root=document.querySelector("main[data-kira-ui-root]");' +
-      'const content=root?.querySelector("[data-kira-enter]");' +
-      'const transform=content ? getComputedStyle(content).transform : "none";' +
       'document.documentElement.dataset.smokeTenetStarted=!!root && root.dataset.tenetReveal==="started" && root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
+      '},245);' +
+    // The first WebKit frame can be delayed by ECharts SVG painting.
+    // Verify *actual* opacity progression mid-flight, after the renderer
+    // has had time to composite at least one frame.
+    'setTimeout(() => {' +
+      'const content=document.querySelector("main[data-kira-ui-root] [data-kira-enter]");' +
+      'const transform=content ? getComputedStyle(content).transform : "none";' +
       'const opacity=content ? Number(getComputedStyle(content).opacity) : 0;' +
       'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && opacity>window.__kiraTenetStagedOpacity && opacity<1;' +
-      '},245);' +
+      '},545);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
