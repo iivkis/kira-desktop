@@ -260,7 +260,11 @@ pub fn shell_tree_memory(root_pid: u32) -> io::Result<ShellTreeMemory> {
     let mut scanned = 0;
     let mut truncated = false;
     for entry in fs::read_dir("/proc")?.flatten() {
-        let Some(pid) = entry.file_name().to_str().and_then(|s| s.parse::<u32>().ok()) else {
+        let Some(pid) = entry
+            .file_name()
+            .to_str()
+            .and_then(|s| s.parse::<u32>().ok())
+        else {
             continue;
         };
         if scanned == MAX_SCANNED {
@@ -363,7 +367,10 @@ mod tests {
     #[test]
     fn shell_tree_includes_grandchildren_without_unrelated_processes() {
         let parents = [(10, 1), (11, 10), (12, 11), (15, 10), (20, 1), (21, 20)];
-        assert_eq!(shell_descendants(&parents, 10), (vec![10, 11, 12, 15], false));
+        assert_eq!(
+            shell_descendants(&parents, 10),
+            (vec![10, 11, 12, 15], false)
+        );
         assert_eq!(shell_descendants(&parents, 99), (vec![99], false));
     }
 

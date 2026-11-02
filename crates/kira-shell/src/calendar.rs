@@ -117,7 +117,9 @@ impl OverlayPool {
         // Keep its slot quarantined until the Shell is restarted.
         if view.disposed.get() {
             self.scheduler.borrow_mut().release(id, Instant::now());
-            eprintln!("kira-shell: popup renderer unavailable after repeated crashes; restart Shell");
+            eprintln!(
+                "kira-shell: popup renderer unavailable after repeated crashes; restart Shell"
+            );
             return None;
         }
         self.ensure_polling();
