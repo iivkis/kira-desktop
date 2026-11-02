@@ -22,7 +22,7 @@
 
   let mapViewport = $state<HTMLDivElement | null>(null);
   let mapWidth = $state(500);
-  let confirmButton: HTMLButtonElement;
+  let confirmButton = $state<HTMLButtonElement | null>(null);
 
   const selectedOutput = $derived(outputs.find(output => output.connector === selected));
   const selectedDraft = $derived(draft.find(output => output.connector === selected));

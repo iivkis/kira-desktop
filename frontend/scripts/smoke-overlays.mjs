@@ -261,7 +261,9 @@ function scriptFor(steps, observationMs = 1150) {
       'const settings=document.querySelector("main[aria-label=\\\"Kira Settings\\\"]");' +
       'document.documentElement.dataset.smokeSettingsMode=settings?.dataset.settingsMode || "none";' +
       'document.documentElement.dataset.smokeSettingsData=!!settings && settings.textContent.includes("Example Linux") && settings.textContent.includes("Example CPU");' +
-      'document.documentElement.dataset.smokeSettingsSelector=!!settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+      'const settingsSelect=settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+      'document.documentElement.dataset.smokeSettingsSelector=!!settingsSelect&&' +
+        'getComputedStyle(settingsSelect.parentElement.parentElement).display!=="none";' +
       'document.documentElement.dataset.smokeSettingsSidebar=!!settings?.querySelector("aside[aria-label=\\\"Разделы настроек\\\"]");' +
       'document.documentElement.dataset.smokeDisplays=!!settings?.querySelector("section[aria-label=\\\"Настройки дисплеев\\\"]") && settings.textContent.includes("HDMI-A-1") && settings.textContent.includes("Example External");' +
       'document.documentElement.dataset.smokeDisplayBoxes=settings?.querySelectorAll("button[aria-label^=\\\"Переместить или выбрать\\\"]").length || 0;' +
