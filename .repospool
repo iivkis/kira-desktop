@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4829
+index_bytes=4831
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	b943091e3c94cd9c2fd27efa9ecb372f882a035f
+C	6724189a4d4dcbffe96a1f53597b16b30126b8bd
 F	.cargo/config.toml	98	127	3
 F	.github/workflows/ci.yml	4355	132	112
 F	.github/workflows/frontend-nix.yml	1398	246	43
@@ -38,83 +38,83 @@ F	crates/kira-ipc/src/client.rs	17794	2788	458
 F	crates/kira-ipc/src/lib.rs	10460	3248	336
 F	crates/kira-shell/Cargo.toml	297	3586	12
 F	crates/kira-shell/src/calendar.rs	38858	3600	1043
-F	crates/kira-shell/src/dock.rs	9478	4645	258
-F	crates/kira-shell/src/launcher.rs	14114	4905	392
-F	crates/kira-shell/src/main.rs	19494	5299	453
-F	crates/kira-shell/src/native_ui.rs	2857	5754	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5829	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	6117	116
-F	crates/kira-shell/src/system_metrics.rs	19842	6235	559
-F	crates/kira-shell/src/system_panel.rs	11356	6796	318
-F	docs/CONFIG.md	5801	7116	125
-F	docs/DESIGN_SYSTEM.md	27078	7243	449
-F	docs/DEVELOPMENT.md	29347	7694	577
-F	docs/QA_VISUAL.md	12284	8273	149
-F	docs/SPECIFICATION.md	28960	8424	421
-F	docs/TENET_MOTION.md	22120	8847	142
-F	docs/UI_ARCHITECTURE.md	6737	8991	106
-F	docs/VISUAL_REVIEW.md	9754	9099	84
-F	flake.nix	3181	9185	91
-F	frontend/index.html	2737	9278	66
-F	frontend/package.json	720	9346	27
-F	frontend/scripts/inline-assets.mjs	4457	9375	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9480	106
-F	frontend/scripts/smoke-overlays.mjs	22168	9588	322
-F	frontend/src/App.svelte	8659	9912	200
-F	frontend/src/lib/bootstrap.test.ts	3408	10114	84
-F	frontend/src/lib/bootstrap.ts	2613	10200	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10272	65
-F	frontend/src/lib/calendar-model.ts	4648	10339	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10446	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10508	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10539	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10859	50
-F	frontend/src/lib/clock-flight.ts	1977	10911	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10963	239
-F	frontend/src/lib/components/DockWidget.svelte	3739	11204	95
-F	frontend/src/lib/components/LauncherWidget.svelte	10668	11301	230
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11533	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11761	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11806	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12128	61
-F	frontend/src/lib/dock-model.test.ts	973	12191	22
-F	frontend/src/lib/dock-model.ts	890	12215	24
-F	frontend/src/lib/launcher-model.test.ts	2266	12241	46
-F	frontend/src/lib/launcher-model.ts	1403	12289	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12320	89
-F	frontend/src/lib/lazy-widget.ts	1984	12411	63
-F	frontend/src/lib/motion.ts	1597	12476	50
-F	frontend/src/lib/overlay-size.ts	1090	12528	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12559	444
-F	frontend/src/lib/sdk/core.ts	20447	13005	536
-F	frontend/src/lib/system-charts.test.ts	6312	13543	141
-F	frontend/src/lib/system-charts.ts	5514	13686	149
-F	frontend/src/lib/system-health.test.ts	2385	13837	42
-F	frontend/src/lib/system-health.ts	2831	13881	60
-F	frontend/src/lib/system-model.test.ts	4455	13943	84
-F	frontend/src/lib/system-model.ts	5457	14029	125
-F	frontend/src/lib/themes/kira-default.css	1687	14156	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	14210	101
-F	frontend/src/lib/themes/kira-default.ts	777	14313	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	14337	79
-F	frontend/src/lib/time.test.ts	263	14418	8
-F	frontend/src/lib/time.ts	320	14428	9
-F	frontend/src/main.ts	6243	14439	137
-F	frontend/src/style.css	4076	14578	130
-F	frontend/tsconfig.json	403	14710	16
-F	frontend/vite.config.ts	224	14728	8
-F	nix/package.nix	3132	14738	117
-F	scripts/dev_preview.py	18147	14857	403	x
-F	scripts/qa_visual.py	12052	15262	299
-F	tests/test_calendar_design.py	7384	15563	130
-F	tests/test_detailed_health.py	5429	15695	105
-F	tests/test_dev_preview.py	9339	15802	219
-F	tests/test_dock_design.py	1664	16023	34
-F	tests/test_launcher_design.py	10400	16059	189
-F	tests/test_native_theme.py	1567	16250	36
-F	tests/test_popup_geometry.py	6956	16288	118
-F	tests/test_qa_visual.py	10549	16408	217
-F	tests/test_ui_bootstrap_contract.py	1103	16627	29
+F	crates/kira-shell/src/dock.rs	10322	4645	274
+F	crates/kira-shell/src/launcher.rs	14114	4921	392
+F	crates/kira-shell/src/main.rs	19494	5315	453
+F	crates/kira-shell/src/native_ui.rs	2857	5770	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5845	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	6133	116
+F	crates/kira-shell/src/system_metrics.rs	19842	6251	559
+F	crates/kira-shell/src/system_panel.rs	11356	6812	318
+F	docs/CONFIG.md	5801	7132	125
+F	docs/DESIGN_SYSTEM.md	27344	7259	453
+F	docs/DEVELOPMENT.md	29347	7714	577
+F	docs/QA_VISUAL.md	12284	8293	149
+F	docs/SPECIFICATION.md	28960	8444	421
+F	docs/TENET_MOTION.md	22120	8867	142
+F	docs/UI_ARCHITECTURE.md	6737	9011	106
+F	docs/VISUAL_REVIEW.md	9754	9119	84
+F	flake.nix	3181	9205	91
+F	frontend/index.html	2737	9298	66
+F	frontend/package.json	720	9366	27
+F	frontend/scripts/inline-assets.mjs	4457	9395	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9500	106
+F	frontend/scripts/smoke-overlays.mjs	22737	9608	328
+F	frontend/src/App.svelte	8659	9938	200
+F	frontend/src/lib/bootstrap.test.ts	3408	10140	84
+F	frontend/src/lib/bootstrap.ts	2613	10226	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10298	65
+F	frontend/src/lib/calendar-model.ts	4648	10365	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10472	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10534	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10565	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10885	50
+F	frontend/src/lib/clock-flight.ts	1977	10937	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10989	239
+F	frontend/src/lib/components/DockWidget.svelte	4919	11230	120
+F	frontend/src/lib/components/LauncherWidget.svelte	10668	11352	230
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11584	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11812	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11857	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12179	61
+F	frontend/src/lib/dock-model.test.ts	973	12242	22
+F	frontend/src/lib/dock-model.ts	890	12266	24
+F	frontend/src/lib/launcher-model.test.ts	2266	12292	46
+F	frontend/src/lib/launcher-model.ts	1403	12340	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12371	89
+F	frontend/src/lib/lazy-widget.ts	1984	12462	63
+F	frontend/src/lib/motion.ts	1597	12527	50
+F	frontend/src/lib/overlay-size.ts	1090	12579	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12610	444
+F	frontend/src/lib/sdk/core.ts	20447	13056	536
+F	frontend/src/lib/system-charts.test.ts	6312	13594	141
+F	frontend/src/lib/system-charts.ts	5514	13737	149
+F	frontend/src/lib/system-health.test.ts	2385	13888	42
+F	frontend/src/lib/system-health.ts	2831	13932	60
+F	frontend/src/lib/system-model.test.ts	4455	13994	84
+F	frontend/src/lib/system-model.ts	5457	14080	125
+F	frontend/src/lib/themes/kira-default.css	1687	14207	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	14261	101
+F	frontend/src/lib/themes/kira-default.ts	777	14364	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	14388	79
+F	frontend/src/lib/time.test.ts	263	14469	8
+F	frontend/src/lib/time.ts	320	14479	9
+F	frontend/src/main.ts	6243	14490	137
+F	frontend/src/style.css	4896	14629	150
+F	frontend/tsconfig.json	403	14781	16
+F	frontend/vite.config.ts	224	14799	8
+F	nix/package.nix	3132	14809	117
+F	scripts/dev_preview.py	18147	14928	403	x
+F	scripts/qa_visual.py	12052	15333	299
+F	tests/test_calendar_design.py	7384	15634	130
+F	tests/test_detailed_health.py	5429	15766	105
+F	tests/test_dev_preview.py	9339	15873	219
+F	tests/test_dock_design.py	2550	16094	53
+F	tests/test_launcher_design.py	10400	16149	189
+F	tests/test_native_theme.py	1567	16340	36
+F	tests/test_popup_geometry.py	6956	16378	118
+F	tests/test_qa_visual.py	10549	16498	217
+F	tests/test_ui_bootstrap_contract.py	1103	16717	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -4733,13 +4733,27 @@ pub fn start(app: &gtk::Application, html: &str) {
     let window = gtk::ApplicationWindow::new(app);
     window.set_title(Some("Kira Dock"));
     window.set_decorated(false);
-    window.set_default_size(520, 72);
+    // A transparent canvas surrounds the smaller compositional platform.
+    // Keep enough room for 8 icons at normal Wayland scale.
+    window.set_default_size(704, 104);
     window.init_layer_shell();
     window.set_namespace(Some("kira-dock"));
     window.set_layer(Layer::Top);
     window.set_anchor(Edge::Bottom, true);
-    window.set_margin(Edge::Bottom, 12);
+    window.set_margin(Edge::Bottom, 18);
     window.set_exclusive_zone(0);
+
+    // GTK's toplevel theme background must be transparent as well: making
+    // HTML transparent alone still leaves a solid rectangular Wayland buffer.
+    // Scope the CSS to this window; the Top Bar and overlays stay opaque.
+    window.add_css_class("kira-dock-window");
+    let dock_css = gtk::CssProvider::new();
+    dock_css.load_from_data("window.kira-dock-window { background: transparent; }");
+    gtk::style_context_add_provider_for_display(
+        &gtk::prelude::WidgetExt::display(&window),
+        &dock_css,
+        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+    );
     window.set_keyboard_mode(KeyboardMode::OnDemand);
 
     let context = webkit6::WebContext::new();
@@ -4748,7 +4762,9 @@ pub fn start(app: &gtk::Application, html: &str) {
         .web_context(&context)
         .user_content_manager(&manager)
         .build();
-    view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
+    // WebKit's default opaque background was the second source of the
+    // black slab surrounding the actual Dock buttons.
+    view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
 
     let pins = Rc::new(favorites());
     let service = Rc::new(RefCell::new(match launcher::Catalog::discover() {
@@ -7355,17 +7371,21 @@ official visual language of Kira Desktop.
   click's direction. Every digit returns to its exact original position;
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
-- **Dock (first working increment):** A permanent, centered 72px bottom
-  layer-shell surface with no exclusive zone. Its KIRA button opens Launcher.
-  Up to eight real GIO desktop apps are shown with bounded native icon
-  resolution and launched through trusted AppInfo IDs. Without configured
-  pins the first eight alphabetical catalog entries appear (not fabricated
-  favorites). Set `KIRA_DOCK_APPS="Firefox,Terminal,Files"` to select exact
-  case-insensitive display names in the requested order; unmatched names are
-  omitted. `KIRA_DOCK_DISABLE=1` disables the surface. Black, Prussian Blue
-  and Orange communicate hierarchy, focus and hover without pretending
-  that an app is running. KDL pins, real Niri window state, per-output
-  behavior and autohide remain future milestones.
+- **Dock (floating platform):** A centered, permanent bottom layer-shell
+  surface (704×104 transparent GTK/WebKit canvas, 18px bottom margin, zero
+  exclusive zone). Unlike the initial prototype it never paints an opaque
+  black rectangle across the whole window. A single 80px-high, rounded
+  Prussian Blue platform has a restrained derived-tone border and soft
+  shadow; no permanent orange top stripe. Its KIRA launcher button is a
+  76px editorial anchor with one narrow orange mark. Eight 56px application
+  controls use centered 32px native GIO icons, one consistent neutral SVG
+  placeholder, and transient hover/focus feedback. No visual marks pretend
+  to indicate running windows.
+  Up to eight actual GIO AppInfo entries launch via trusted native IDs;
+  without configured pins, the first eight alphabetical entries are shown.
+  `KIRA_DOCK_APPS="Firefox,Terminal,Files"` selects case-insensitive exact
+  names in that order. `KIRA_DOCK_DISABLE=1` disables the surface. Niri
+  running-state indicators, KDL pins and autohide remain future work.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   The prominent search field is a keyboard-focused combobox with an
   `aria-activedescendant` link to the active app in the result list.
@@ -9823,7 +9843,13 @@ async function smokeDock() {
     'const root=document.querySelector("main[aria-label=\\\"Kira Dock\\\"]");' +
     'const buttons=Array.from(root?.querySelectorAll("nav button")||[]);' +
     'const names=buttons.map(button=>button.getAttribute("aria-label"));' +
-    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===72 &&' +
+    'const platform=root?.querySelector("[data-dock-platform]");' +
+    'const canvasClear=getComputedStyle(document.documentElement).backgroundColor==="rgba(0, 0, 0, 0)";' +
+    'const buttonSize=Math.round(root?.querySelector("[data-dock-app]")?.getBoundingClientRect().width||0);' +
+    'const platformRect=platform?.getBoundingClientRect();' +
+    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===104 &&' +
+    'canvasClear && !!platformRect && platformRect.height===80 && platformRect.width<root.getBoundingClientRect().width &&' +
+    'parseInt(getComputedStyle(platform).borderTopLeftRadius,10)>=12 && buttonSize===56 &&' +
     'names.join("|")==="Open application launcher|Launch Terminal|Launch Firefox" &&' +
     'root.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
     'document.documentElement.dataset.dockLaunched==="launch:8";' +
@@ -11257,42 +11283,67 @@ FILE	frontend/src/lib/components/DockWidget.svelte
 </script>
 
 <main data-kira-ui-root aria-label="Kira Dock"
-  class="flex h-[72px] min-h-[72px] w-full items-center justify-center overflow-hidden bg-kira-bg text-kira-text">
-  <nav aria-label="Dock applications"
-    class="flex h-full max-w-full items-center justify-center gap-1.5 border-t-2 border-kira-accent bg-kira-surface px-3">
+  class="flex h-[104px] min-h-[104px] w-full items-center justify-center overflow-hidden bg-transparent text-kira-text">
+  <!-- One floating platform rather than a full-width toolbar. No permanent
+       orange "active" bar: running-window state is not implemented yet. -->
+  <nav data-dock-platform aria-label="Dock applications"
+    class="kira-dock-platform flex h-[80px] max-w-[calc(100%-16px)] items-center justify-center
+      gap-2 px-3.5">
     <button type="button" onclick={openLauncherFromDock}
-      aria-label="Open application launcher" title="Application index"
-      class="flex size-11 shrink-0 items-center justify-center border border-kira-muted/25 bg-kira-bg
-        text-[11px] font-extrabold tracking-widest text-kira-accent
-        hover:border-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">
-      KIRA
+      data-dock-launcher
+      aria-label="Open application launcher" title="Open application launcher"
+      class="group relative flex h-14 w-[76px] shrink-0 items-center justify-center gap-2
+        rounded-md bg-kira-bg/65 text-kira-text
+        transition-[background-color,transform] duration-150
+        hover:bg-kira-bg focus-visible:outline-2 focus-visible:outline-kira-accent
+        active:translate-y-px">
+      <span aria-hidden="true" class="h-6 w-[3px] shrink-0 bg-kira-accent"></span>
+      <span class="text-[12px] font-extrabold tracking-[0.15em]">KIRA</span>
     </button>
-    {#if visible.length}
-      <span class="mx-1 h-8 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
+
+    {#if visible.length > 0}
+      <span aria-hidden="true" class="mx-0.5 h-8 w-px shrink-0 bg-kira-muted/20"></span>
     {/if}
+
     {#each visible as app (app.id)}
-      <button type="button" onclick={() => launch(app.id)}
+      <button type="button" data-dock-app
+        onclick={() => launch(app.id)}
         title={app.name} aria-label={'Launch ' + app.name}
-        class="group relative flex size-11 shrink-0 items-center justify-center border border-transparent
-          bg-kira-bg/60 hover:border-kira-muted/50
-          focus-visible:border-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">
-        {#if icons[app.id]}
-          <img class="size-8 object-contain" src={icons[app.id]} alt="" aria-hidden="true"
-            onerror={() => { delete icons[app.id]; }} />
-        {:else}
-          <span aria-hidden="true" class="text-[17px] font-extrabold text-kira-muted">
-            {app.name.trim().slice(0, 1).toLocaleUpperCase()}
-          </span>
-        {/if}
-        <span class="absolute -bottom-1 left-3 right-3 h-[2px] bg-transparent
-          group-hover:bg-kira-accent group-focus-visible:bg-kira-accent" aria-hidden="true"></span>
+        class="group relative flex size-14 shrink-0 items-center justify-center rounded-md
+          bg-transparent transition-[background-color,transform] duration-150
+          hover:bg-kira-bg/55 focus-visible:bg-kira-bg/55
+          focus-visible:outline-2 focus-visible:outline-kira-accent
+          active:translate-y-px">
+        <span class="flex size-11 items-center justify-center" aria-hidden="true">
+          {#if icons[app.id]}
+            <img class="size-8 object-contain" src={icons[app.id]} alt=""
+              loading="lazy" onerror={() => { delete icons[app.id]; }} />
+          {:else}
+            <!-- A single neutral placeholder; don't invent an app's identity
+                 from its first character while the trusted icon is loading. -->
+            <svg data-dock-icon-placeholder class="size-7 text-kira-muted/75"
+              viewBox="0 0 32 32" fill="none" stroke="currentColor"
+              stroke-width="1.6" stroke-linejoin="round">
+              <rect x="5" y="5" width="9" height="9" rx="1.5" />
+              <rect x="18" y="5" width="9" height="9" rx="1.5" />
+              <rect x="5" y="18" width="9" height="9" rx="1.5" />
+              <rect x="18" y="18" width="9" height="9" rx="1.5" />
+            </svg>
+          {/if}
+        </span>
+        <!-- A transient interaction cue, never a fabricated running indicator. -->
+        <span aria-hidden="true"
+          class="absolute bottom-1 h-[2px] w-3 bg-transparent
+            group-hover:bg-kira-accent group-focus-visible:bg-kira-accent"></span>
       </button>
     {/each}
+
     {#if !loaded && !error}
-      <span class="px-2 text-[10px] font-semibold tracking-widest text-kira-muted" role="status">INDEXING</span>
+      <span class="px-2 text-[10px] font-semibold tracking-wider text-kira-muted"
+        role="status">INDEXING</span>
     {:else if error}
-      <span class="max-w-40 truncate px-2 text-[10px] text-kira-muted" role="status"
-        title={error}>UNAVAILABLE</span>
+      <span class="max-w-36 truncate px-2 text-[10px] text-kira-muted"
+        role="status" title={error}>UNAVAILABLE</span>
     {/if}
   </nav>
 </main>
@@ -14639,13 +14690,33 @@ FILE	frontend/src/style.css
      * keep their own list scrollers inside a constrained flex column. */
   }
 
-  /* Dock is a separate 72px bottom Wayland surface, not a viewport-sized bar. */
+  /* The bottom Wayland surface contains a floating platform, not a black
+   * rectangle. GTK and WebKit must both clear to alpha zero as well. */
   html[data-kira-surface="dock"],
   html[data-kira-surface="dock"] body,
   html[data-kira-surface="dock"] #app {
     height: auto;
     min-height: 0;
     overflow: hidden;
+    background: transparent;
+  }
+  html[data-kira-surface="dock"] #kira-loading {
+    background: transparent !important;
+  }
+
+  /* A single low-contrast, self-contained platform. The transparent canvas
+   * and native layer-shell position supply the separation from other windows. */
+  .kira-dock-platform {
+    border: 1px solid color-mix(in srgb, var(--alabaster-grey) 17%, transparent);
+    border-radius: 14px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--prussian-blue) 88%, var(--black)),
+      color-mix(in srgb, var(--prussian-blue) 72%, var(--black))
+    );
+    box-shadow:
+      0 14px 34px color-mix(in srgb, var(--black) 56%, transparent),
+      inset 0 1px color-mix(in srgb, var(--white) 10%, transparent);
   }
 
   /* Calendar preserves all six ISO weeks within a height-capped native
@@ -16042,6 +16113,25 @@ class DockTests(unittest.TestCase):
                        "catalog.request_icons(&ids)"]:
             self.assertIn(needle, DOCK)
         self.assertNotIn("std::process::Command", DOCK)
+    def test_floating_platform_does_not_paint_an_opaque_rectangle(self):
+        for needle in (
+            "set_default_size(704, 104)",
+            "set_margin(Edge::Bottom, 18)",
+            'window.add_css_class("kira-dock-window")',
+            "dock_css.load_from_data",
+            "gtk::STYLE_PROVIDER_PRIORITY_APPLICATION",
+            "RGBA::new(0.0, 0.0, 0.0, 0.0)",
+        ):
+            self.assertIn(needle, DOCK)
+        self.assertIn("data-dock-platform", UI)
+        self.assertIn("bg-transparent text-kira-text", UI)
+        self.assertIn("size-14 shrink-0", UI)
+        self.assertIn("data-dock-icon-placeholder", UI)
+        self.assertNotIn("border-t-2 border-kira-accent", UI)
+        style = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn(".kira-dock-platform {", style)
+        self.assertIn('html[data-kira-surface="dock"] #app', style)
+
     def test_dom_bridge_and_lifecycle(self):
         self.assertIn("dataset.kiraSurface === 'dock'", ENTRY)
         self.assertIn("mount(DockWidget", ENTRY)
