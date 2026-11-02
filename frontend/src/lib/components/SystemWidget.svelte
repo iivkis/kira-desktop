@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import SystemCharts from './SystemCharts.svelte';
-  import { pulseReading, revealStagger } from '../motion';
+  import { pulseReading, tenetWidgetReveal } from '../motion';
   import {
     onSystemOverlayData, onSystemProcesses,
     type SystemOverlayData, type SystemProcesses,
@@ -80,11 +80,12 @@
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
-  class="kira-monitor-scroll flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
-  <header class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
+  class="kira-monitor-scroll relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
+  <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div class="border-l-2 border-kira-accent pl-3">
-        <div class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">KIRA / HOST INSTRUMENTS</div>
+        <div data-kira-contact class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">KIRA / HOST INSTRUMENTS</div>
         <h1 class="mt-2 text-[25px] font-extrabold leading-none tracking-tight">System monitor</h1>
         <p class="mt-2 text-[10px] font-medium tracking-wide text-kira-muted">LOCAL TELEMETRY / READ ONLY</p>
       </div>
@@ -107,7 +108,7 @@
     </div>
   </header>
 
-  <nav class="grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
+  <nav data-kira-enter class="grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
     <button type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'overview' ? 'border-kira-accent text-kira-accent' : 'border-transparent text-kira-muted hover:text-kira-text')}>
@@ -121,7 +122,7 @@
   </nav>
 
   {#if active === 'overview'}
-    <div class="flex min-h-0 flex-1 flex-col" use:revealStagger>
+    <div class="flex min-h-0 flex-1 flex-col">
       <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
         <div class="mb-4 flex items-center justify-between gap-2 border-b border-kira-muted/15 pb-3">
           <div class="flex items-center gap-2">
@@ -264,7 +265,7 @@
     </div>
   {:else}
     <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
-      aria-label="Processes" use:revealStagger>
+      aria-label="Processes">
       <div data-kira-enter class="mb-3 flex items-center justify-between gap-2">
         <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
         <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import type { WorkspaceState } from '../sdk/core';
   import { visibleWorkspaceWindow } from '../workspace-window';
 
@@ -11,6 +12,23 @@
   } = $props();
 
   const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
+  const focusedId = $derived(windowed.items.find(item => item.is_focused)?.id ?? null);
+  let list: HTMLOListElement;
+
+  // The model guarantees inclusion; WebKit's fixed-width horizontal
+  // viewport still needs explicit pixel visibility after Niri changes focus.
+  $effect(() => {
+    const id = focusedId;
+    if (id === null) return;
+    let cancelled = false;
+    void tick().then(() => {
+      if (cancelled || !list) return;
+      const match = Array.from(list.querySelectorAll<HTMLElement>('[data-workspace-id]'))
+        .find(item => item.dataset.workspaceId === id);
+      match?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+    });
+    return () => { cancelled = true; };
+  });
 
 </script>
 
@@ -26,13 +44,16 @@
 {:else}
   <div class="flex min-w-0 shrink items-center gap-1" data-workspace-strip>
     {#if windowed.before > 0}
-      <span class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted/80"
-        title={windowed.before + ' preceding Niri workspaces hidden'}
-        aria-label={windowed.before + ' preceding workspaces not shown'}>
+      <span class="shrink-0 text-[10px] font-semibold tabular-nums"
+        class:text-kira-accent={windowed.beforeUrgent}
+        class:text-kira-muted={!windowed.beforeUrgent}
+        role={windowed.beforeUrgent ? 'status' : undefined}
+        title={windowed.before + ' preceding Niri workspaces hidden' + (windowed.beforeUrgent ? ' / urgent workspace' : '')}
+        aria-label={windowed.before + ' preceding workspaces not shown' + (windowed.beforeUrgent ? ', urgent workspace hidden' : '')}>
         −{windowed.before}
       </span>
     {/if}
-    <ol class="flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    <ol bind:this={list} class="flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Niri workspaces">
       {#each windowed.items as workspace (workspace.id)}
         <li
@@ -43,6 +64,7 @@
                 ? 'bg-kira-surface-soft text-kira-text'
                 : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'].join(' ')}
           data-focused={workspace.is_focused}
+          data-workspace-id={workspace.id}
           data-urgent={workspace.is_urgent}
         >
           <button
@@ -52,7 +74,8 @@
                 ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2'
                 : 'focus-visible:outline-kira-accent focus-visible:outline-offset-1'].join(' ')}
             aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
-              + (workspace.output ? ' on ' + workspace.output : '')}
+              + (workspace.output ? ' on ' + workspace.output : '')
+              + (workspace.is_urgent ? ', urgent' : '')}
             aria-pressed={workspace.is_focused}
             title={'Workspace ' + (workspace.name || workspace.idx)
               + (workspace.output ? ' on ' + workspace.output : '')
@@ -74,9 +97,12 @@
       {/each}
     </ol>
     {#if windowed.after > 0}
-      <span class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted/80"
-        title={windowed.after + ' following Niri workspaces hidden'}
-        aria-label={windowed.after + ' following workspaces not shown'}>
+      <span class="shrink-0 text-[10px] font-semibold tabular-nums"
+        class:text-kira-accent={windowed.afterUrgent}
+        class:text-kira-muted={!windowed.afterUrgent}
+        role={windowed.afterUrgent ? 'status' : undefined}
+        title={windowed.after + ' following Niri workspaces hidden' + (windowed.afterUrgent ? ' / urgent workspace' : '')}
+        aria-label={windowed.after + ' following workspaces not shown' + (windowed.afterUrgent ? ', urgent workspace hidden' : '')}>
         +{windowed.after}
       </span>
     {/if}

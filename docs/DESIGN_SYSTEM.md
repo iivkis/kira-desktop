@@ -246,6 +246,21 @@ diagnostic bars. The visual hierarchy is intentional:
    disposal. Visual tests must check the **real packaged overlay** at a
    narrow width in isolated Niri, not infer beauty from passing unit tests.
 
+### Shared TENET widget entrance · 2026-11
+
+Calendar, Launcher and System Monitor now open with one bounded GSAP
+DUAL-time scene. Sections move FORWARD into position while four
+noninteractive fragments replay their previously recorded outbound paths
+and easing INVERTED into the real header or clock contact. A single
+master progress synchronizes both chronologies. Launcher records a
+different outward direction; inversion is historical, not CSS reflection.
+
+No real date, telemetry, search, keyboard interaction or focus is delayed.
+One mount owns both timelines, fragments and an 1100ms WebKit-throttle
+recovery. Unmount or changed reduced-motion preference removes every
+fragment and restores exact transforms. Calendar's clock and day
+interactions retain their separate recorded motion histories.
+
 ### System Monitor · observability before decoration
 
 The monitor is a read-only instrument panel, not a visual benchmark. The

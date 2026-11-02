@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import { tenetWidgetReveal } from '../motion';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
@@ -109,11 +110,12 @@
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira Launcher"
-  class="flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
-  <header class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: -1 }}
+  class="relative flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
+  <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
+        <p data-kira-contact class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
         <h1 class="mt-2 text-[30px] font-extrabold leading-none tracking-tight">Launch</h1>
       </div>
       <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
@@ -122,7 +124,7 @@
     </div>
   </header>
 
-  <section class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
+  <section data-kira-enter class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
     <label for="kira-launcher-query" class="mb-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">FIND / OPEN</label>
     <div class="relative shrink-0 border border-kira-muted/30 bg-kira-bg
       focus-within:border-kira-accent focus-within:ring-1 focus-within:ring-kira-accent">
@@ -215,7 +217,7 @@
       </p>
     {/if}
   </section>
-  <footer class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
+  <footer data-kira-enter class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
     px-5 py-2.5 text-[10px] text-kira-muted">
     <span class="flex items-center gap-1.5">
       <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">↑ ↓</kbd> MOVE

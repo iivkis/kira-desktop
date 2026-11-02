@@ -7,6 +7,8 @@ export interface WorkspaceWindow {
   items: Workspace[];
   before: number;
   after: number;
+  beforeUrgent: boolean;
+  afterUrgent: boolean;
 }
 
 export function visibleWorkspaceWindow(
@@ -24,5 +26,7 @@ export function visibleWorkspaceWindow(
     items,
     before: start,
     after: Math.max(0, workspaces.length - start - items.length),
+    beforeUrgent: workspaces.slice(0, start).some(item => item.is_urgent),
+    afterUrgent: workspaces.slice(start + items.length).some(item => item.is_urgent),
   };
 }

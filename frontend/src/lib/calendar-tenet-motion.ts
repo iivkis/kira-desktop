@@ -6,6 +6,7 @@
  * leave no transforms, fragments, timers or RAF loops behind.
  */
 import { gsap } from 'gsap';
+import { tenetWidgetReveal } from './motion';
 import { nextClockFlights, type ClockFlight } from './clock-flight';
 import { dualTime, tenetFragmentsFor, type FragmentFlight } from './calendar-tenet-model';
 
@@ -75,47 +76,13 @@ function dualScene(
   return { forward, inverted, fragments };
 }
 
+/** Shared entry scene anchored at the clock. Independent digit and day
+ * interactions retain their recorded trajectories and timeline direction.
+ */
 export function tenetCalendarReveal(node: HTMLElement) {
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const targets = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
-  const clock = node.querySelector<HTMLElement>('[data-calendar-clock-play]');
-  let scene: Scene | null = null;
-  let restoreTimer: number | null = null;
-
-  function stop() {
-    if (restoreTimer !== null) {
-      window.clearTimeout(restoreTimer);
-      restoreTimer = null;
-    }
-    const old = scene;
-    scene = null;
-    old?.forward.kill();
-    old?.inverted.kill();
-    old?.fragments.forEach(fragment => fragment.remove());
-    gsap.killTweensOf(targets);
-    gsap.set(targets, { clearProps: 'opacity,visibility,transform' });
-  }
-  const onMotionChange = () => { if (reduced(motion)) stop(); };
-  motion.addEventListener('change', onMotionChange);
-  if (!reduced(motion) && clock) {
-    node.dataset.tenetReveal = 'started';
-    scene = dualScene(node, clock, targets, 1, () => {
-      stop();
-      node.dataset.tenetReveal = 'settled';
-    });
-    // Hidden/throttled WebKit views may suspend RAF. Never strand fragments.
-    restoreTimer = window.setTimeout(() => {
-      stop();
-      node.dataset.tenetReveal = 'settled';
-    }, 950);
-  }
-
-  return {
-    destroy() {
-      motion.removeEventListener('change', onMotionChange);
-      stop();
-    },
-  };
+  return tenetWidgetReveal(node, {
+    contact: '[data-calendar-clock-play]', direction: 1,
+  });
 }
 
 /** Calendar navigation: day/date text moves FORWARD; four fragments move

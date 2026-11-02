@@ -46,7 +46,15 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).not.toContain('box-shadow');
   });
 
-  it('keeps launcher, KDL settings and live clock functional', () => {
+  it('retains focus scrolling and hidden urgency in workspace navigation', () => {
+    expect(workspaces).toContain('scrollIntoView(');
+    expect(workspaces).toContain('data-workspace-id={workspace.id}');
+    expect(workspaces).toContain('windowed.beforeUrgent');
+    expect(workspaces).toContain('windowed.afterUrgent');
+    expect(workspaces).toContain("workspace.is_urgent ? ', urgent' : ''");
+  });
+
+    it('keeps launcher, KDL settings and live clock functional', () => {
     expect(markup).toContain('onclick={activateLauncher}');
     expect(markup).toContain('configState.config.title');
     expect(markup).toContain('configState.config.show_seconds');

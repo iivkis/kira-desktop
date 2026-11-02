@@ -72,11 +72,17 @@ function scriptFor(steps, observationMs = 1150) {
                 kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
         '}, ' + delay + ');'
     ).join('') +
+    // Sample the in-flight DUAL chronology before observing settled DOM.
+    'setTimeout(() => {' +
+      'const root=document.querySelector("main[data-kira-ui-root]");' +
+      'document.documentElement.dataset.smokeTenetStarted=!!root && root.dataset.tenetReveal==="started" && root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
+      '},170);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+      'document.documentElement.setAttribute("data-smoke-tenet-settled", roots.length === 1 && roots[0].dataset.tenetReveal === "settled" && roots[0].querySelectorAll("[data-tenet-fragment=inverted]").length === 0);' +
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
@@ -202,6 +208,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   } else if (heightMode === 'shrink' && size >= 420) {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
+  if (heightMode === 'tenet' &&
+      (!output.includes('data-smoke-tenet-started="true"') ||
+       !output.includes('data-smoke-tenet-settled="true"'))) {
+    const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
+    throw new Error(name + ': TENET entry/restore failed: ' + stage.join(', '));
+  }
   if (heightMode === 'icons' && (!output.includes('data-smoke-launcher-a11y="true"') || !output.includes('data-smoke-square="true"') ||
       !output.includes('data-smoke-real-icon-transparent="true"') ||
       !output.includes('data-smoke-placeholder-background="true"') ||
@@ -215,8 +227,52 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
+
+/** Exercise real browser pixels, not just pure array projections or CSS strings.
+ * 11 Niri entries, a limit of 8, two hidden urgent entries, and a long-name
+ * strip that overflows the 680px viewport. Focus must be in visible pixels.
+ */
+async function smokeTopBar() {
+  const script = '<script>' +
+    'window.webkit={messageHandlers:{kiraDiagnostics:{postMessage(){}},kiraCore:{postMessage(){}}}};' +
+    'window.addEventListener("load",()=>{' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:config",{detail:{config:{' +
+    'compact:false,title:"KIRA DESKTOP",show_seconds:false,show_names:true,max_workspaces:8' +
+    '},error:null}})),45);' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:workspaces",{detail:{connected:true,' +
+    'workspaces:Array.from({length:11},(_,i)=>({id:String(i+1),idx:i+1,' +
+    'name:"Workspace long name "+(i+1),output:"DP-1",is_active:i===8,is_focused:i===8,' +
+    'is_urgent:i===0||i===5||i===10}))}})),85);' +
+    'setTimeout(()=>{' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Desktop top bar\\\"]");' +
+    'const list=root?.querySelector("ol[aria-label=\\\"Niri workspaces\\\"]");' +
+    'const focused=list?.querySelector("[data-focused=true]");' +
+    'const listRect=list?.getBoundingClientRect();const focusRect=focused?.getBoundingClientRect();' +
+    'const urgency=root?.querySelectorAll("[aria-label*=\\\"urgent workspace hidden\\\"]");' +
+    'const visibleUrgent=root?.querySelector("[aria-label*=\\\", urgent\\\"]");' +
+    'document.documentElement.dataset.smokeTopbar=!!root && root.getBoundingClientRect().height===42 &&' +
+    '!!list && list.scrollWidth>list.clientWidth && list.scrollLeft>0 && !!focused &&' +
+    'focused.dataset.workspaceId==="9" && focusRect.left>=listRect.left-2 &&' +
+    'focusRect.right<=listRect.right+2 && urgency.length===2 && !!visibleUrgent;' +
+    '},600);});</script>';
+  const page = html.replace('</head>', script + '</head>');
+  const filename = join(dir, 'topbar.html');
+  await writeFile(filename, page);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--disable-background-networking', '--window-size=680,440',
+    '--virtual-time-budget=1200', '--dump-dom', 'file://' + filename,
+  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
+  if (!output.includes('data-smoke-topbar="true"')) {
+    const list = output.match(/<ol[^>]*aria-label="Niri workspaces"[\s\S]{0,800}/)?.[0] ?? 'not mounted';
+    throw new Error('Top Bar focused pixel visibility or urgency regression: ' + list.slice(0, 600));
+  }
+  console.log('OK: Top Bar focus auto-scroll and urgency on both hidden sides');
+}
+
 try {
-  await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
+  await smokeTopBar();
+  await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'tenet');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
     { delay: 130, kind: 'clock-chaos' },
@@ -228,13 +284,13 @@ try {
     { delay: 180, kind: 'calendar-next' },
     { delay: 420, kind: 'calendar-pick' },
   ], 'Kira Calendar', 'calendar');
-  await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor');
+  await smoke('system', [{ delay: 25, kind: 'system', generation: 1 }], 'Kira System Monitor', 'tenet');
   await smoke('system-live-telemetry', [
     { delay: 25, kind: 'system', generation: 1 },
     { delay: 170, kind: 'metrics' },
     { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
-  await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher');
+  await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
   await smoke('launcher-square-with-themed-icons', [
     { delay: 25, kind: 'launcher', generation: 1 },
     { delay: 90, kind: 'catalog' },
