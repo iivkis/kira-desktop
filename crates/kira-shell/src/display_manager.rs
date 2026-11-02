@@ -1,7 +1,7 @@
 //! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
 //! Operations are session-scoped; persistent Niri KDL remains user-owned.
 use std::process::Command;
-use std::sync::mpsc::{self, Receiver, Sender, RecvTimeoutError};
+use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -68,7 +68,9 @@ impl Model {
 
     pub fn poll(&self) -> Vec<Event> {
         // Never block GTK. Limit messages consumed per frame.
-        (0..6).filter_map(|_| self.receiver.try_recv().ok()).collect()
+        (0..6)
+            .filter_map(|_| self.receiver.try_recv().ok())
+            .collect()
     }
 }
 
@@ -98,7 +100,10 @@ fn niri(args: &[&str]) -> Result<String, String> {
     if !output.status.success() {
         return Err(format!(
             "Niri отклонил команду: {}",
-            String::from_utf8_lossy(&output.stderr).chars().take(180).collect::<String>()
+            String::from_utf8_lossy(&output.stderr)
+                .chars()
+                .take(180)
+                .collect::<String>()
         ));
     }
     if output.stdout.len() > 256 * 1024 {
@@ -120,7 +125,9 @@ fn query() -> Result<serde_json::Value, String> {
         if connector.len() > 128 || !value.is_object() {
             return Err("Некорректное описание дисплея".into());
         }
-        let modes = value.get("modes").and_then(serde_json::Value::as_array)
+        let modes = value
+            .get("modes")
+            .and_then(serde_json::Value::as_array)
             .ok_or("Niri не сообщает доступные режимы")?;
         if modes.len() > MAX_MODES {
             return Err("Слишком много режимов дисплея".into());
@@ -137,16 +144,24 @@ fn mode_id(mode: &serde_json::Value) -> Option<String> {
     let width = mode["width"].as_u64()?;
     let height = mode["height"].as_u64()?;
     let refresh = mode["refresh_rate"].as_u64()?;
-    if !(320..=16384).contains(&width) || !(200..=16384).contains(&height)
-        || !(1000..=1_000_000).contains(&refresh) {
+    if !(320..=16384).contains(&width)
+        || !(200..=16384).contains(&height)
+        || !(1000..=1_000_000).contains(&refresh)
+    {
         return None;
     }
-    Some(format!("{width}x{height}@{}.{:03}", refresh / 1000, refresh % 1000))
+    Some(format!(
+        "{width}x{height}@{}.{:03}",
+        refresh / 1000,
+        refresh % 1000
+    ))
 }
 
 fn valid_transform(value: &str) -> bool {
-    matches!(value, "normal" | "90" | "180" | "270" | "flipped"
-        | "flipped-90" | "flipped-180" | "flipped-270")
+    matches!(
+        value,
+        "normal" | "90" | "180" | "270" | "flipped" | "flipped-90" | "flipped-180" | "flipped-270"
+    )
 }
 
 fn normalized_transform(value: &str) -> Option<&'static str> {
@@ -166,21 +181,36 @@ fn normalized_transform(value: &str) -> Option<&'static str> {
 fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
     let mut result = Vec::new();
     for output in outputs.as_array().ok_or("Неверные данные дисплеев")? {
-        let name = output["connector"].as_str().ok_or("Нет идентификатора дисплея")?;
+        let name = output["connector"]
+            .as_str()
+            .ok_or("Нет идентификатора дисплея")?;
         let logical = &output["logical"];
-        let current = output["current_mode"].as_u64().and_then(|i| {
-            output["modes"].as_array()?.get(usize::try_from(i).ok()?)
+        let current = output["current_mode"]
+            .as_u64()
+            .and_then(|i| output["modes"].as_array()?.get(usize::try_from(i).ok()?));
+        let fallback = output["modes"].as_array().and_then(|modes| {
+            modes
+                .iter()
+                .find(|m| m["is_preferred"] == true)
+                .or(modes.first())
         });
-        let fallback = output["modes"].as_array()
-            .and_then(|modes| modes.iter().find(|m| m["is_preferred"] == true).or(modes.first()));
-        let mode = current.or(fallback).and_then(mode_id)
+        let mode = current
+            .or(fallback)
+            .and_then(mode_id)
             .ok_or("Невозможно определить режим дисплея")?;
         let enabled = !logical.is_null();
         let scale = logical["scale"].as_f64().unwrap_or(1.0);
-        let transform = logical["transform"].as_str()
-            .and_then(normalized_transform).unwrap_or("normal").to_string();
+        let transform = logical["transform"]
+            .as_str()
+            .and_then(normalized_transform)
+            .unwrap_or("normal")
+            .to_string();
         result.push(Desired {
-            name: name.to_string(), enabled, mode, scale, transform,
+            name: name.to_string(),
+            enabled,
+            mode,
+            scale,
+            transform,
             x: logical["x"].as_i64().unwrap_or(0) as i32,
             y: logical["y"].as_i64().unwrap_or(0) as i32,
             vrr: output["vrr_enabled"] == true,
@@ -189,9 +219,10 @@ fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
     Ok(result)
 }
 
-fn validate(value: &serde_json::Value, current: &serde_json::Value)
-    -> Result<Vec<Desired>, String>
-{
+fn validate(
+    value: &serde_json::Value,
+    current: &serde_json::Value,
+) -> Result<Vec<Desired>, String> {
     let requested = value.as_array().ok_or("Ожидался массив дисплеев")?;
     let existing = current.as_array().ok_or("Не удалось прочитать дисплеи")?;
     if requested.is_empty() || requested.len() != existing.len() || requested.len() > MAX_OUTPUTS {
@@ -199,16 +230,25 @@ fn validate(value: &serde_json::Value, current: &serde_json::Value)
     }
     let mut result = Vec::new();
     for input in requested {
-        let name = input["connector"].as_str().ok_or("Нет идентификатора дисплея")?;
-        let host = existing.iter().find(|out| out["connector"] == name)
+        let name = input["connector"]
+            .as_str()
+            .ok_or("Нет идентификатора дисплея")?;
+        let host = existing
+            .iter()
+            .find(|out| out["connector"] == name)
             .ok_or("Дисплей был отключён. Обновите список.")?;
         if result.iter().any(|out: &Desired| out.name == name) {
             return Err("Повтор дисплея".into());
         }
-        let enabled = input["enabled"].as_bool().ok_or("Некорректное состояние дисплея")?;
+        let enabled = input["enabled"]
+            .as_bool()
+            .ok_or("Некорректное состояние дисплея")?;
         let mode = input["mode"].as_str().ok_or("Не указан режим")?;
-        if !host["modes"].as_array().is_some_and(|modes|
-            modes.iter().any(|item| mode_id(item).as_deref() == Some(mode))) {
+        if !host["modes"].as_array().is_some_and(|modes| {
+            modes
+                .iter()
+                .any(|item| mode_id(item).as_deref() == Some(mode))
+        }) {
             return Err("Режим не поддерживается дисплеем".into());
         }
         let scale = input["scale"].as_f64().ok_or("Некорректный масштаб")?;
@@ -229,8 +269,14 @@ fn validate(value: &serde_json::Value, current: &serde_json::Value)
             return Err("Монитор не поддерживает VRR".into());
         }
         result.push(Desired {
-            name: name.to_string(), enabled, mode: mode.to_string(), scale,
-            transform: transform.to_string(), x: x as i32, y: y as i32, vrr,
+            name: name.to_string(),
+            enabled,
+            mode: mode.to_string(),
+            scale,
+            transform: transform.to_string(),
+            x: x as i32,
+            y: y as i32,
+            vrr,
         });
     }
     if !result.iter().any(|out| out.enabled) {
@@ -255,7 +301,10 @@ fn execute(desired: &[Desired]) -> Result<(), String> {
         command(&out.name, &["mode", &out.mode])?;
         command(&out.name, &["scale", &out.scale.to_string()])?;
         command(&out.name, &["transform", &out.transform])?;
-        command(&out.name, &["position", "set", &out.x.to_string(), &out.y.to_string()])?;
+        command(
+            &out.name,
+            &["position", "set", &out.x.to_string(), &out.y.to_string()],
+        )?;
         command(&out.name, &["vrr", if out.vrr { "on" } else { "off" }])?;
     }
     for out in desired.iter().filter(|out| !out.enabled) {
@@ -266,8 +315,14 @@ fn execute(desired: &[Desired]) -> Result<(), String> {
 
 fn revert(before: &[Desired], events: &Sender<Event>) {
     let result = execute(before);
-    report(events, "reverted", None, result.err()
-        .map(|error| format!("Не удалось полностью восстановить конфигурацию: {error}")));
+    report(
+        events,
+        "reverted",
+        None,
+        result
+            .err()
+            .map(|error| format!("Не удалось полностью восстановить конфигурацию: {error}")),
+    );
 }
 
 fn run(requests: Receiver<Request>, events: Sender<Event>) {
@@ -275,9 +330,9 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
     let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
     loop {
         let received = match pending.as_ref() {
-            Some((_, _, deadline)) => requests.recv_timeout(
-                deadline.saturating_duration_since(Instant::now())
-            ),
+            Some((_, _, deadline)) => {
+                requests.recv_timeout(deadline.saturating_duration_since(Instant::now()))
+            }
             None => requests.recv().map_err(|_| RecvTimeoutError::Disconnected),
         };
         let message = match received {
@@ -300,8 +355,12 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 if pending.is_none() {
                     match query() {
                         Ok(outputs) => {
-                            let _ = events.send(Event { state: "ready",
-                                outputs: Some(outputs), pending_id: None, error: None });
+                            let _ = events.send(Event {
+                                state: "ready",
+                                outputs: Some(outputs),
+                                pending_id: None,
+                                error: None,
+                            });
                         }
                         Err(error) => report(&events, "error", None, Some(error)),
                     }
@@ -309,8 +368,12 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             }
             Request::Apply(value) => {
                 if pending.is_some() {
-                    report(&events, "error", pending.as_ref().map(|p| p.0),
-                        Some("Сначала подтвердите или отмените текущую конфигурацию".into()));
+                    report(
+                        &events,
+                        "error",
+                        pending.as_ref().map(|p| p.0),
+                        Some("Сначала подтвердите или отмените текущую конфигурацию".into()),
+                    );
                     continue;
                 }
                 let result = query().and_then(|outputs| {
@@ -327,7 +390,11 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                         } else {
                             next_id = next_id.wrapping_add(1).max(1);
                             let id = next_id;
-                            pending = Some((id, before, Instant::now() + Duration::from_secs(CONFIRM_SECS)));
+                            pending = Some((
+                                id,
+                                before,
+                                Instant::now() + Duration::from_secs(CONFIRM_SECS),
+                            ));
                             report(&events, "pending", Some(id), None);
                         }
                     }
@@ -377,8 +444,10 @@ mod tests {
 
     #[test]
     fn mode_refresh_uses_exact_millihertz() {
-        assert_eq!(mode_id(&json!({"width":2560,"height":1440,"refresh_rate":143912})),
-                   Some("2560x1440@143.912".into()));
+        assert_eq!(
+            mode_id(&json!({"width":2560,"height":1440,"refresh_rate":143912})),
+            Some("2560x1440@143.912".into())
+        );
     }
 
     #[test]

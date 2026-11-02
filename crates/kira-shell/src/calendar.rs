@@ -1110,8 +1110,12 @@ impl CalendarOverlay {
         if !self.requested.get() || self.active.get() != Some(Surface::Settings) {
             return;
         }
-        let events = self.settings_displays.borrow().as_ref()
-            .map(crate::display_manager::Model::poll).unwrap_or_default();
+        let events = self
+            .settings_displays
+            .borrow()
+            .as_ref()
+            .map(crate::display_manager::Model::poll)
+            .unwrap_or_default();
         for event in events {
             let payload = serde_json::json!({
                 "generation": self.generation.get(),
@@ -1127,7 +1131,10 @@ impl CalendarOverlay {
                     "window.dispatchEvent(new CustomEvent('kira:settings:displays', {{ detail: JSON.parse({encoded}) }}));"
                 );
                 self.view.evaluate_javascript(
-                    &script, None, None, None::<&gtk::gio::Cancellable>,
+                    &script,
+                    None,
+                    None,
+                    None::<&gtk::gio::Cancellable>,
                     |result| {
                         if let Err(error) = result {
                             eprintln!("kira-shell: display status dispatch failed: {error}");
@@ -1259,19 +1266,27 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         if payload.len() > 8192 || payload.len() < 2 {
             return None;
         }
-        return Some(UiCommand::DisplayApply(parse_ui_generation(generation)?, payload));
+        return Some(UiCommand::DisplayApply(
+            parse_ui_generation(generation)?,
+            payload,
+        ));
     }
     for (prefix, confirm) in [("display-confirm:", true), ("display-revert:", false)] {
         if let Some(value) = message.strip_prefix(prefix) {
             let (generation, token) = value.split_once(':')?;
-            if token.is_empty() || token.len() > 20 ||
-                !token.bytes().all(|byte| byte.is_ascii_digit()) {
+            if token.is_empty()
+                || token.len() > 20
+                || !token.bytes().all(|byte| byte.is_ascii_digit())
+            {
                 return None;
             }
             let generation = parse_ui_generation(generation)?;
             let token = token.parse::<u64>().ok().filter(|id| *id > 0)?;
-            return Some(if confirm { UiCommand::DisplayConfirm(generation, token) }
-                        else { UiCommand::DisplayRevert(generation, token) });
+            return Some(if confirm {
+                UiCommand::DisplayConfirm(generation, token)
+            } else {
+                UiCommand::DisplayRevert(generation, token)
+            });
         }
     }
     if let Some(value) = message.strip_prefix("close:") {
