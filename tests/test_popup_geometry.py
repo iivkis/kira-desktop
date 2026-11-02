@@ -21,8 +21,8 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("self.window.set_exclusive_zone(0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Top, 0);", CALENDAR)
         self.assertIn("self.window.set_margin(Edge::Right, 0);", CALENDAR)
-        self.assertIn("native_ui::popup_right_margin(&self.window, kind == Surface::System)", CALENDAR)
-        self.assertIn("pub fn popup_right_margin", HELPERS)
+        self.assertIn("native_ui::POPUP_RIGHT_MARGIN", CALENDAR)
+        self.assertIn("pub const POPUP_RIGHT_MARGIN: i32 = 12;", HELPERS)
         self.assertIn(
             "set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN)",
             CALENDAR,
@@ -31,6 +31,22 @@ class PopupGeometryTests(unittest.TestCase):
         self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", CALENDAR)
         self.assertIn("fn concurrent(&self) -> bool", CALENDAR)
         self.assertIn("self.pool.upgrade()", CALENDAR)
+
+    def test_closed_calendar_never_reserves_position_for_system_monitor(self):
+        # Regression: the previous pool shifted System 448px left on wide
+        # monitors, even with an inert/closed Calendar host. Geometry must
+        # depend only on whether the requested surface is Launcher.
+        position = CALENDAR.split("fn position_for(&self, kind: Surface)", 1)[1].split(
+            "fn hide(&self)", 1
+        )[0]
+        self.assertIn("let centered = kind == Surface::Launcher;", position)
+        self.assertIn("set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", position)
+        self.assertNotIn("Surface::System", position)
+        self.assertNotIn("Surface::Calendar", position)
+        self.assertNotIn("self.pool", position)
+        self.assertNotIn("popup_right_margin(", HELPERS)
+        self.assertNotIn("448", HELPERS)
+        self.assertIn("window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN)", CALENDAR)
 
     def test_switching_launcher_preserves_existing_buffers_and_generations(self):
         # A new surface reserves its own hot or newly created WebKit view.
