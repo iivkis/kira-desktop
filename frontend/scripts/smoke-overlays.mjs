@@ -92,12 +92,16 @@ function scriptFor(steps, observationMs = 1150) {
     // The first WebKit frame can be delayed by ECharts SVG painting.
     // Verify *actual* opacity progression mid-flight, after the renderer
     // has had time to composite at least one frame.
-    'setTimeout(() => {' +
+    // Sample multiple compositor frames. WebKit/Chromium can delay a
+    // single frame under the launcher catalog and ECharts SVG load.
+    'for(const at of [210,250,290,330])setTimeout(() => {' +
       'const content=document.querySelector("main[data-kira-ui-root] [data-kira-enter]");' +
       'const transform=content ? getComputedStyle(content).transform : "none";' +
       'const opacity=content ? Number(getComputedStyle(content).opacity) : 0;' +
-      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && opacity>window.__kiraTenetStagedOpacity && opacity<1;' +
-      '},300);' +
+      'const moving=!!content && transform!=="none" && opacity>=window.__kiraTenetStagedOpacity && opacity<1;' +
+      'document.documentElement.dataset.smokeTenetContentMoving=' +
+      '(document.documentElement.dataset.smokeTenetContentMoving==="true" || moving);' +
+      '},at);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
