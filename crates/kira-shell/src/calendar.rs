@@ -325,7 +325,8 @@ impl CalendarOverlay {
                     return gtk::glib::ControlFlow::Break;
                 };
                 // A previous opening cannot fade a newer generation.
-                if !state.requested.get() || !state.revealed.get()
+                if !state.requested.get()
+                    || !state.revealed.get()
                     || state.generation.get() != generation
                 {
                     return gtk::glib::ControlFlow::Break;
@@ -692,7 +693,8 @@ fn valid_date(year: i32, month: u8, day: u8) -> bool {
 
 fn parse_motion_message(value: &str) -> Option<(u32, bool)> {
     let (generation, reduced) = value.split_once(':')?;
-    if generation.is_empty() || generation.len() > 10
+    if generation.is_empty()
+        || generation.len() > 10
         || !generation.bytes().all(|b| b.is_ascii_digit())
     {
         return None;
@@ -1118,10 +1120,22 @@ mod tests {
             calendar_command("launch:12:42"),
             Some(UiCommand::LaunchApp(12, 42))
         );
-        assert_eq!(calendar_command("mounted:42:0"), Some(UiCommand::Mounted(42, false)));
-        assert_eq!(calendar_command("mounted:42:1"), Some(UiCommand::Mounted(42, true)));
-        assert_eq!(calendar_command("motion:42:1"), Some(UiCommand::MotionPreference(42, true)));
-        assert_eq!(calendar_command("motion:42:0"), Some(UiCommand::MotionPreference(42, false)));
+        assert_eq!(
+            calendar_command("mounted:42:0"),
+            Some(UiCommand::Mounted(42, false))
+        );
+        assert_eq!(
+            calendar_command("mounted:42:1"),
+            Some(UiCommand::Mounted(42, true))
+        );
+        assert_eq!(
+            calendar_command("motion:42:1"),
+            Some(UiCommand::MotionPreference(42, true))
+        );
+        assert_eq!(
+            calendar_command("motion:42:0"),
+            Some(UiCommand::MotionPreference(42, false))
+        );
         assert_eq!(
             calendar_command("size:42:512"),
             Some(UiCommand::ContentHeight(42, 512))
