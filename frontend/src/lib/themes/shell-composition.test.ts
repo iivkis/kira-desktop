@@ -5,6 +5,7 @@ const css = readFileSync(new URL('../../style.css', import.meta.url), 'utf8');
 const markup = readFileSync(new URL('../../App.svelte', import.meta.url), 'utf8');
 const workspaces = readFileSync(new URL('../components/WorkspacePreview.svelte', import.meta.url), 'utf8');
 const core = readFileSync(new URL('../components/SystemHealth.svelte', import.meta.url), 'utf8');
+const quick = readFileSync(new URL('../components/QuickLaunch.svelte', import.meta.url), 'utf8');
 const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), 'utf8');
 const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
@@ -55,6 +56,17 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('aria-haspopup="dialog"');
     expect(markup).toContain('<time class=');
     expect(markup).toContain('CALENDAR OFFLINE');
+  });
+
+  it('puts optional launch-only shortcuts in the existing bar, not a Dock', () => {
+    expect(markup).toContain('<QuickLaunch />');
+    expect(quick).toContain('aria-label="Quick launch"');
+    expect(quick).toContain("aria-label={'Launch ' + app.name}");
+    expect(quick).toContain('min-[740px]:flex');
+    expect(quick).toContain('onQuickLaunchApps(');
+    expect(quick).toContain('stopApps();');
+    expect(markup).not.toContain('DockWidget');
+    expect(css).not.toContain('data-kira-surface="dock"');
   });
 
   it('preserves accessible live workspace and Core states without component CSS', () => {

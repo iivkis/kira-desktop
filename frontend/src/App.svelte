@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
+  import QuickLaunch from './lib/components/QuickLaunch.svelte';
   import { formatClock } from './lib/time';
   import { openLauncher, toggleCalendar, toggleSystemPanel, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
@@ -162,6 +163,10 @@
       <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
+
+  <!-- Shortcuts launch configured apps; workspaces above remain Niri's
+       authoritative navigation and keep their existing keyboard behavior. -->
+  <QuickLaunch />
 
   <section
     class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}

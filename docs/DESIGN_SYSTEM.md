@@ -2,7 +2,7 @@
 
 **Status:** implemented visual system for the Svelte Top Bar, native GTK
 Launcher and custom Calendar. Visual acceptance is still open. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
-Dock, notifications and other desktop surfaces remain future milestones.
+Dedicated desktop docks are intentionally omitted in favor of Niri's workspace navigation. Notifications and other surfaces remain future milestones.
 
 ## Kira official visual direction
 
@@ -113,21 +113,22 @@ official visual language of Kira Desktop.
   click's direction. Every digit returns to its exact original position;
   interruption, repeated activation, unmount and reduced-motion reset
   transformations without delaying the real wall time.
-- **Dock (floating platform):** A centered, permanent bottom layer-shell
-  surface (704×104 transparent GTK/WebKit canvas, 18px bottom margin, zero
-  exclusive zone). Unlike the initial prototype it never paints an opaque
-  black rectangle across the whole window. A single 80px-high, rounded
-  Prussian Blue platform has a restrained derived-tone border and soft
-  shadow; no permanent orange top stripe. Its KIRA launcher button is a
-  76px editorial anchor with one narrow orange mark. Eight 56px application
-  controls use centered 32px native GIO icons, one consistent neutral SVG
-  placeholder, and transient hover/focus feedback. No visual marks pretend
-  to indicate running windows.
-  Up to eight actual GIO AppInfo entries launch via trusted native IDs;
-  without configured pins, the first eight alphabetical entries are shown.
-  `KIRA_DOCK_APPS="Firefox,Terminal,Files"` selects case-insensitive exact
-  names in that order. `KIRA_DOCK_DISABLE=1` disables the surface. Niri
-  running-state indicators, KDL pins and autohide remain future work.
+- **Quick Launch (Top Bar, opt-in):** Kira Desktop is keyboard-first:
+  Niri is responsible for focusing workspaces and switching windows; the
+  launcher handles discovery. A persistent macOS/Windows-style Dock would
+  duplicate window navigation and waste screen space, so **no bottom
+  layer-shell surface is created**. Instead, up to three explicitly pinned
+  GIO desktop applications may appear as quiet 32px controls inside the
+  existing 42px Top Bar. This is an **application-launch shortcut**, not a
+  taskbar. Buttons never represent running, focused or active windows.
+  Without user configuration, no shortcuts appear and no catalog worker
+  is started. `KIRA_QUICK_APPS="foot,Firefox,Files"` resolves exact,
+  case-insensitive GIO display names, preserving order and omitting missing
+  entries. `KIRA_DOCK_APPS` is supported as a migration alias.
+  At narrow widths (below 740px), shortcuts yield space to workspaces
+  and system status. The trusted Rust bridge accepts only allowlisted GIO
+  IDs, and icons are fetched in bounded batches. KDL integration is future
+  work. Keyboard focus and visible active workspace states remain separate.
 - **Launcher:** Black editorial introduction and Prussian Blue workbench.
   The prominent search field is a keyboard-focused combobox with an
   `aria-activedescendant` link to the active app in the result list.

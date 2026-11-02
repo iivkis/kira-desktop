@@ -1,7 +1,7 @@
 //! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
 
 mod calendar;
-mod dock;
+mod quick_launch;
 mod launcher;
 mod native_ui;
 mod process_monitor;
@@ -249,6 +249,46 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraSystem", None));
 
+        // Quick Launch is optional and lives INSIDE this existing Top Bar.
+        // No bottom surface, no task-switching semantics and no worker at all
+        // unless the user explicitly configures application shortcuts.
+        let quick = Rc::new(RefCell::new(match quick_launch::QuickLaunch::discover() {
+            Ok(service) => service,
+            Err(error) => {
+                eprintln!("kira-shell: Quick Launch unavailable: {error}");
+                None
+            }
+        }));
+        let quick_messages = quick.clone();
+        let quick_view = view.downgrade();
+        manager.connect_script_message_received(Some("kiraQuickLaunch"), move |_, value| {
+            let raw = value.to_string();
+            if let Some(service) = quick_messages.borrow().as_ref()
+                && let Some(event) = service.handle(&raw)
+                && let Some(view) = quick_view.upgrade()
+            {
+                quick_launch::deliver(&view, event);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraQuickLaunch", None));
+
+        if quick.borrow().is_some() {
+            let quick_poll = quick.clone();
+            let quick_view = view.downgrade();
+            gtk::glib::timeout_add_local(Duration::from_millis(60), move || {
+                let Some(view) = quick_view.upgrade() else {
+                    return gtk::glib::ControlFlow::Break;
+                };
+                if let Some(service) = quick_poll.borrow_mut().as_mut() {
+                    for _ in 0..4 {
+                        let Some(event) = service.poll() else { break };
+                        quick_launch::deliver(&view, event);
+                    }
+                }
+                gtk::glib::ControlFlow::Continue
+            });
+        }
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -368,11 +408,6 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
-
-        // Dock owns a distinct bottom Wayland surface and trusted GIO bridge.
-        if env::var("KIRA_DOCK_DISABLE").ok().as_deref() != Some("1") {
-            dock::start(app, &html);
-        }
 
         // Warm the isolated Calendar WebKit process after the Top Bar starts.
         // The popup stays unmapped until requested; initial startup is not

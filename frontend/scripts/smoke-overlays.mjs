@@ -216,56 +216,49 @@ async function smoke(name, steps, expected, heightMode = 'any') {
 }
 
 
-/** Dock's permanent WebKit page has a distinct marker and bridge; it must
- * mount real GIO IDs without involving the Calendar/Launcher popup lifecycle.
- */
-async function smokeDock() {
+/** Quick Launch is a tiny optional section of the existing Top Bar. */
+async function smokeQuickLaunch() {
   const script = '<script>' +
-    'window.webkit={messageHandlers:{kiraDock:{postMessage(message){' +
-    'if(message==="catalog"){setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:apps",{detail:{' +
-    'apps:[{id:2,name:"Firefox",description:"Browser"},{id:8,name:"Terminal",description:"Shell"}],' +
-    'favorites:["Terminal","Firefox"]}})),25);}' +
+    'window.webkit={messageHandlers:{kiraQuickLaunch:{postMessage(message){' +
+    'if(message==="catalog"){setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:quick:apps",{detail:{' +
+    'apps:[{id:8,name:"Terminal",description:"Shell"},{id:2,name:"Firefox",description:"Browser"}]' +
+    '}})),25);}' +
     'if(String(message).startsWith("icons:")){' +
-    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:icons",{detail:{icons:[' +
-    '{id:2,data_url:' + JSON.stringify(testIcon) + '},{id:8,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
-    'if(String(message).startsWith("launch:")){document.documentElement.dataset.dockLaunched=String(message);}' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:quick:icons",{detail:{icons:[' +
+    '{id:8,data_url:' + JSON.stringify(testIcon) + '},{id:2,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
+    'if(String(message).startsWith("launch:")){document.documentElement.dataset.quickLaunched=String(message);}' +
     '}},kiraDiagnostics:{postMessage(){}}}};' +
     'window.addEventListener("load",()=>{' +
     'setTimeout(()=>document.querySelector("button[aria-label=\\\"Launch Terminal\\\"]")?.click(),280);' +
     'setTimeout(()=>{' +
-    'const root=document.querySelector("main[aria-label=\\\"Kira Dock\\\"]");' +
-    'const buttons=Array.from(root?.querySelectorAll("nav button")||[]);' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Desktop top bar\\\"]");' +
+    'const nav=root?.querySelector("nav[aria-label=\\\"Quick launch\\\"]");' +
+    'const buttons=Array.from(nav?.querySelectorAll("button")||[]);' +
     'const names=buttons.map(button=>button.getAttribute("aria-label"));' +
-    'const platform=root?.querySelector("[data-dock-platform]");' +
-    'const canvasClear=getComputedStyle(document.documentElement).backgroundColor==="rgba(0, 0, 0, 0)";' +
-    'const buttonSize=Math.round(root?.querySelector("[data-dock-app]")?.getBoundingClientRect().width||0);' +
-    'const platformRect=platform?.getBoundingClientRect();' +
-    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===104 &&' +
-    'canvasClear && !!platformRect && platformRect.height===80 && platformRect.width<root.getBoundingClientRect().width &&' +
-    'parseInt(getComputedStyle(platform).borderTopLeftRadius,10)>=12 && buttonSize===56 &&' +
-    'names.join("|")==="Open application launcher|Launch Terminal|Launch Firefox" &&' +
-    'root.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
-    'document.documentElement.dataset.dockLaunched==="launch:8";' +
+    'document.documentElement.dataset.quickTest=!!root && root.getBoundingClientRect().height===42 &&' +
+    '!document.querySelector("main[aria-label=\\\"Kira Dock\\\"]") &&' +
+    'names.join("|")==="Launch Terminal|Launch Firefox" &&' +
+    'buttons.every(button=>Math.round(button.getBoundingClientRect().width)===32) &&' +
+    'nav.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
+    'document.documentElement.dataset.quickLaunched==="launch:8";' +
     '},700);});</script>';
-  const document = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="dock">')
-    .replace('</head>', script + '</head>');
-  const path = join(dir, 'dock.html');
+  const document = html.replace('</head>', script + '</head>');
+  const path = join(dir, 'quick-launch.html');
   await writeFile(path, document);
   const output = execFileSync(chrome, [
     '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
     '--disable-background-networking', '--virtual-time-budget=1500',
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
-  if (!output.includes('data-dock-test="true"')) {
-    const flags = output.match(/data-dock-(?:test|launched)="[^"]*"/g) || [];
-    throw new Error('dock: GIO catalog, icons, launch or accessibility failed: ' + flags.join(', '));
+  if (!output.includes('data-quick-test="true"')) {
+    const flags = output.match(/data-quick-(?:test|launched)="[^"]*"/g) || [];
+    throw new Error('quick launch: top bar sizing, icons or GIO bridge failed: ' + flags.join(', '));
   }
-  console.log('OK: dock mounted, pinned true native IDs, icons and launch bridge');
+  console.log('OK: quick launch mounted in 42px Top Bar and launched pinned GIO ID');
 }
 
 try {
-  await smokeDock();
+  await smokeQuickLaunch();
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
