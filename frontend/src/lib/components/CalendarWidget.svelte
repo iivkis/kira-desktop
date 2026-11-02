@@ -206,10 +206,6 @@
         {/each}
       {/each}
     </div>
-    <div class="mt-2 flex items-center justify-between text-[9px] font-semibold tracking-wide text-kira-muted">
-      <span>MON / SUN · ISO WEEKS</span>
-      <span><span class="text-kira-accent">_</span> TODAY</span>
-    </div>
   </section>
 
   <!-- Selected date is a factual summary, not a fictitious event agenda. -->
