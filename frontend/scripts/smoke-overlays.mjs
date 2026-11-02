@@ -106,6 +106,16 @@ function scriptFor(steps, observationMs = 1150) {
                     '(matchMedia("(prefers-reduced-motion: reduce)").matches ? root.style.clipPath==="" : ' +
                     '(root.dataset.tenetSurface==="staged" && root.style.clipPath.includes("100%") && ' +
                      'root.querySelectorAll("[data-kira-surface-seam]").length===1));' +
+                  // In a faster (450ms) scene Chrome's virtual clock can skip
+                  // all coarse timeout snapshots. Observe real inline
+                  // clip-path changes as the compositor makes them instead.
+                  'if(root){new MutationObserver(()=>{' +
+                    'const clip=root.style.clipPath||"";' +
+                    'const materializing=root.dataset.tenetSurface==="materializing" && ' +
+                      'clip.includes("inset(") && !clip.includes("100%") && clip!=="inset(0%)" && ' +
+                      '!clip.includes("0% 0% 0% 0%");' +
+                    'if(materializing)document.documentElement.dataset.smokeSurfaceMoving="true";' +
+                  '}).observe(root,{attributes:true,attributeFilter:["style"]});}' +
                   'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
                     'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.92 && staged<0.97;' +
                 '},90);' +
@@ -133,7 +143,7 @@ function scriptFor(steps, observationMs = 1150) {
       'const surface=document.querySelector("main[data-kira-ui-root]");' +
       'const clip=surface?.style.clipPath || "";' +
       'const clipped=surface?.dataset.tenetSurface==="materializing" && clip.includes("inset(") && ' +
-        '!clip.includes("100%") && !clip.includes("0% 0% 0% 0%");' +
+        '!clip.includes("100%") && clip!=="inset(0%)" && !clip.includes("0% 0% 0% 0%");' +
       'document.documentElement.dataset.smokeSurfaceMoving=' +
         '(document.documentElement.dataset.smokeSurfaceMoving==="true" || clipped);' +
       '},at);' +
