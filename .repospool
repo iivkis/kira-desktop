@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5494
+index_bytes=5495
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	66c79e36411435ef69cc1c6df1d8ab0e68d32fdc
+C	1075b8121775c97b43bb51116c21f1213da70dd4
 F	.cargo/config.toml	98	139	3
 F	.github/workflows/ci.yml	4355	144	112
 F	.github/workflows/frontend-nix.yml	1398	258	43
@@ -37,96 +37,96 @@ F	crates/kira-ipc/Cargo.toml	170	2811	9
 F	crates/kira-ipc/src/client.rs	17794	2822	458
 F	crates/kira-ipc/src/lib.rs	10460	3282	336
 F	crates/kira-shell/Cargo.toml	297	3620	12
-F	crates/kira-shell/src/calendar.rs	69410	3634	1840
-F	crates/kira-shell/src/display_manager.rs	16588	5476	412
-F	crates/kira-shell/src/launcher.rs	14114	5890	392
-F	crates/kira-shell/src/main.rs	19915	6284	462
-F	crates/kira-shell/src/native_ui.rs	4536	6748	104
-F	crates/kira-shell/src/popup_layout.rs	2055	6854	58
-F	crates/kira-shell/src/process_monitor.rs	9336	6914	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	7202	116
-F	crates/kira-shell/src/system_info.rs	3951	7320	113
-F	crates/kira-shell/src/system_metrics.rs	19842	7435	559
-F	crates/kira-shell/src/system_panel.rs	11356	7996	318
-F	crates/kira-shell/src/webview_pool.rs	8477	8316	249
-F	docs/CONFIG.md	5801	8567	125
-F	docs/DESIGN_SYSTEM.md	32126	8694	519
-F	docs/DEVELOPMENT.md	29347	9215	577
-F	docs/QA_VISUAL.md	12284	9794	149
-F	docs/SPECIFICATION.md	28960	9945	421
-F	docs/TENET_MOTION.md	40649	10368	204
-F	docs/UI_ARCHITECTURE.md	6737	10574	106
-F	docs/VISUAL_REVIEW.md	9754	10682	84
-F	docs/WEBVIEW_POOL.md	6732	10768	38
-F	flake.nix	3181	10808	91
-F	frontend/index.html	2737	10901	66
-F	frontend/package.json	720	10969	27
-F	frontend/scripts/inline-assets.mjs	4457	10998	103
-F	frontend/scripts/inline-assets.test.mjs	4645	11103	106
-F	frontend/scripts/smoke-overlays.mjs	42265	11211	582
-F	frontend/src/App.svelte	9665	11795	224
-F	frontend/src/lib/bootstrap.test.ts	3408	12021	84
-F	frontend/src/lib/bootstrap.ts	2613	12107	70
-F	frontend/src/lib/calendar-model.test.ts	3571	12179	65
-F	frontend/src/lib/calendar-model.ts	4648	12246	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	12353	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	12415	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	12446	287
-F	frontend/src/lib/clock-flight.test.ts	2404	12735	50
-F	frontend/src/lib/clock-flight.ts	1977	12787	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	12839	246
-F	frontend/src/lib/components/DisplaySettings.svelte	19817	13087	392
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	13481	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	13739	168
-F	frontend/src/lib/components/SystemCharts.svelte	10517	13909	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	14137	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	14185	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	14526	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	14566	119
-F	frontend/src/lib/launcher-model.test.ts	2266	14687	46
-F	frontend/src/lib/launcher-model.ts	1403	14735	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	14766	89
-F	frontend/src/lib/lazy-widget.ts	1984	14857	63
-F	frontend/src/lib/motion-contract.test.ts	11242	14922	198
-F	frontend/src/lib/motion.ts	24039	15122	657
-F	frontend/src/lib/overlay-size.ts	1090	15781	29
-F	frontend/src/lib/sdk/core.test.ts	27691	15812	560
-F	frontend/src/lib/sdk/core.ts	25075	16374	639
-F	frontend/src/lib/settings-model.test.ts	1064	17015	21
-F	frontend/src/lib/settings-model.ts	1262	17038	26
-F	frontend/src/lib/system-charts.test.ts	6312	17066	141
-F	frontend/src/lib/system-charts.ts	5514	17209	149
-F	frontend/src/lib/system-health.test.ts	2385	17360	42
-F	frontend/src/lib/system-health.ts	2831	17404	60
-F	frontend/src/lib/system-model.test.ts	4455	17466	84
-F	frontend/src/lib/system-model.ts	5457	17552	125
-F	frontend/src/lib/themes/kira-default.css	1687	17679	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	17733	101
-F	frontend/src/lib/themes/kira-default.ts	777	17836	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	17860	101
-F	frontend/src/lib/time.test.ts	263	17963	8
-F	frontend/src/lib/time.ts	320	17973	9
-F	frontend/src/lib/workspace-window.test.ts	2298	17984	52
-F	frontend/src/lib/workspace-window.ts	1063	18038	32
-F	frontend/src/main.ts	7783	18072	161
-F	frontend/src/style.css	6399	18235	194
-F	frontend/tsconfig.json	403	18431	16
-F	frontend/vite.config.ts	224	18449	8
-F	nix/package.nix	3132	18459	117
-F	scripts/dev_preview.py	18147	18578	403	x
-F	scripts/qa_visual.py	12052	18983	299
-F	tests/test_calendar_design.py	7810	19284	136
-F	tests/test_detailed_health.py	5481	19422	105
-F	tests/test_dev_preview.py	9339	19529	219
-F	tests/test_displays.py	2905	19750	52
-F	tests/test_launcher_design.py	10481	19804	190
-F	tests/test_native_theme.py	2098	19996	44
-F	tests/test_popup_geometry.py	3227	20042	58
-F	tests/test_qa_visual.py	10549	20102	217
-F	tests/test_settings.py	3212	20321	62
-F	tests/test_tenet_close.py	6297	20385	115
-F	tests/test_ui_bootstrap_contract.py	1103	20502	29
-F	tests/test_webview_pool.py	5335	20533	94
+F	crates/kira-shell/src/calendar.rs	69617	3634	1855
+F	crates/kira-shell/src/display_manager.rs	17607	5491	481
+F	crates/kira-shell/src/launcher.rs	14114	5974	392
+F	crates/kira-shell/src/main.rs	19915	6368	462
+F	crates/kira-shell/src/native_ui.rs	4536	6832	104
+F	crates/kira-shell/src/popup_layout.rs	2055	6938	58
+F	crates/kira-shell/src/process_monitor.rs	9336	6998	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	7286	116
+F	crates/kira-shell/src/system_info.rs	3951	7404	113
+F	crates/kira-shell/src/system_metrics.rs	19842	7519	559
+F	crates/kira-shell/src/system_panel.rs	11356	8080	318
+F	crates/kira-shell/src/webview_pool.rs	8477	8400	249
+F	docs/CONFIG.md	5801	8651	125
+F	docs/DESIGN_SYSTEM.md	32126	8778	519
+F	docs/DEVELOPMENT.md	29347	9299	577
+F	docs/QA_VISUAL.md	12284	9878	149
+F	docs/SPECIFICATION.md	28960	10029	421
+F	docs/TENET_MOTION.md	40649	10452	204
+F	docs/UI_ARCHITECTURE.md	6737	10658	106
+F	docs/VISUAL_REVIEW.md	9754	10766	84
+F	docs/WEBVIEW_POOL.md	6732	10852	38
+F	flake.nix	3181	10892	91
+F	frontend/index.html	2737	10985	66
+F	frontend/package.json	720	11053	27
+F	frontend/scripts/inline-assets.mjs	4457	11082	103
+F	frontend/scripts/inline-assets.test.mjs	4645	11187	106
+F	frontend/scripts/smoke-overlays.mjs	42265	11295	582
+F	frontend/src/App.svelte	9665	11879	224
+F	frontend/src/lib/bootstrap.test.ts	3408	12105	84
+F	frontend/src/lib/bootstrap.ts	2613	12191	70
+F	frontend/src/lib/calendar-model.test.ts	3571	12263	65
+F	frontend/src/lib/calendar-model.ts	4648	12330	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	12437	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	12499	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	12530	287
+F	frontend/src/lib/clock-flight.test.ts	2404	12819	50
+F	frontend/src/lib/clock-flight.ts	1977	12871	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	12923	246
+F	frontend/src/lib/components/DisplaySettings.svelte	19817	13171	392
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	13565	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	13823	168
+F	frontend/src/lib/components/SystemCharts.svelte	10517	13993	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	14221	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	14269	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	14610	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	14650	119
+F	frontend/src/lib/launcher-model.test.ts	2266	14771	46
+F	frontend/src/lib/launcher-model.ts	1403	14819	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	14850	89
+F	frontend/src/lib/lazy-widget.ts	1984	14941	63
+F	frontend/src/lib/motion-contract.test.ts	11242	15006	198
+F	frontend/src/lib/motion.ts	24039	15206	657
+F	frontend/src/lib/overlay-size.ts	1090	15865	29
+F	frontend/src/lib/sdk/core.test.ts	27691	15896	560
+F	frontend/src/lib/sdk/core.ts	25075	16458	639
+F	frontend/src/lib/settings-model.test.ts	1064	17099	21
+F	frontend/src/lib/settings-model.ts	1262	17122	26
+F	frontend/src/lib/system-charts.test.ts	6312	17150	141
+F	frontend/src/lib/system-charts.ts	5514	17293	149
+F	frontend/src/lib/system-health.test.ts	2385	17444	42
+F	frontend/src/lib/system-health.ts	2831	17488	60
+F	frontend/src/lib/system-model.test.ts	4455	17550	84
+F	frontend/src/lib/system-model.ts	5457	17636	125
+F	frontend/src/lib/themes/kira-default.css	1687	17763	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	17817	101
+F	frontend/src/lib/themes/kira-default.ts	777	17920	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	17944	101
+F	frontend/src/lib/time.test.ts	263	18047	8
+F	frontend/src/lib/time.ts	320	18057	9
+F	frontend/src/lib/workspace-window.test.ts	2298	18068	52
+F	frontend/src/lib/workspace-window.ts	1063	18122	32
+F	frontend/src/main.ts	7783	18156	161
+F	frontend/src/style.css	6399	18319	194
+F	frontend/tsconfig.json	403	18515	16
+F	frontend/vite.config.ts	224	18533	8
+F	nix/package.nix	3132	18543	117
+F	scripts/dev_preview.py	18147	18662	403	x
+F	scripts/qa_visual.py	12052	19067	299
+F	tests/test_calendar_design.py	7810	19368	136
+F	tests/test_detailed_health.py	5481	19506	105
+F	tests/test_dev_preview.py	9339	19613	219
+F	tests/test_displays.py	2905	19834	52
+F	tests/test_launcher_design.py	10481	19888	190
+F	tests/test_native_theme.py	2098	20080	44
+F	tests/test_popup_geometry.py	3227	20126	58
+F	tests/test_qa_visual.py	10549	20186	217
+F	tests/test_settings.py	3212	20405	62
+F	tests/test_tenet_close.py	6297	20469	115
+F	tests/test_ui_bootstrap_contract.py	1103	20586	29
+F	tests/test_webview_pool.py	5335	20617	94
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -4743,8 +4743,12 @@ impl CalendarOverlay {
         if !self.requested.get() || self.active.get() != Some(Surface::Settings) {
             return;
         }
-        let events = self.settings_displays.borrow().as_ref()
-            .map(crate::display_manager::Model::poll).unwrap_or_default();
+        let events = self
+            .settings_displays
+            .borrow()
+            .as_ref()
+            .map(crate::display_manager::Model::poll)
+            .unwrap_or_default();
         for event in events {
             let payload = serde_json::json!({
                 "generation": self.generation.get(),
@@ -4760,7 +4764,10 @@ impl CalendarOverlay {
                     "window.dispatchEvent(new CustomEvent('kira:settings:displays', {{ detail: JSON.parse({encoded}) }}));"
                 );
                 self.view.evaluate_javascript(
-                    &script, None, None, None::<&gtk::gio::Cancellable>,
+                    &script,
+                    None,
+                    None,
+                    None::<&gtk::gio::Cancellable>,
                     |result| {
                         if let Err(error) = result {
                             eprintln!("kira-shell: display status dispatch failed: {error}");
@@ -4892,19 +4899,27 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
         if payload.len() > 8192 || payload.len() < 2 {
             return None;
         }
-        return Some(UiCommand::DisplayApply(parse_ui_generation(generation)?, payload));
+        return Some(UiCommand::DisplayApply(
+            parse_ui_generation(generation)?,
+            payload,
+        ));
     }
     for (prefix, confirm) in [("display-confirm:", true), ("display-revert:", false)] {
         if let Some(value) = message.strip_prefix(prefix) {
             let (generation, token) = value.split_once(':')?;
-            if token.is_empty() || token.len() > 20 ||
-                !token.bytes().all(|byte| byte.is_ascii_digit()) {
+            if token.is_empty()
+                || token.len() > 20
+                || !token.bytes().all(|byte| byte.is_ascii_digit())
+            {
                 return None;
             }
             let generation = parse_ui_generation(generation)?;
             let token = token.parse::<u64>().ok().filter(|id| *id > 0)?;
-            return Some(if confirm { UiCommand::DisplayConfirm(generation, token) }
-                        else { UiCommand::DisplayRevert(generation, token) });
+            return Some(if confirm {
+                UiCommand::DisplayConfirm(generation, token)
+            } else {
+                UiCommand::DisplayRevert(generation, token)
+            });
         }
     }
     if let Some(value) = message.strip_prefix("close:") {
@@ -5476,7 +5491,7 @@ FILE	crates/kira-shell/src/display_manager.rs
 //! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
 //! Operations are session-scoped; persistent Niri KDL remains user-owned.
 use std::process::Command;
-use std::sync::mpsc::{self, Receiver, Sender, RecvTimeoutError};
+use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -5543,7 +5558,9 @@ impl Model {
 
     pub fn poll(&self) -> Vec<Event> {
         // Never block GTK. Limit messages consumed per frame.
-        (0..6).filter_map(|_| self.receiver.try_recv().ok()).collect()
+        (0..6)
+            .filter_map(|_| self.receiver.try_recv().ok())
+            .collect()
     }
 }
 
@@ -5573,7 +5590,10 @@ fn niri(args: &[&str]) -> Result<String, String> {
     if !output.status.success() {
         return Err(format!(
             "Niri отклонил команду: {}",
-            String::from_utf8_lossy(&output.stderr).chars().take(180).collect::<String>()
+            String::from_utf8_lossy(&output.stderr)
+                .chars()
+                .take(180)
+                .collect::<String>()
         ));
     }
     if output.stdout.len() > 256 * 1024 {
@@ -5595,7 +5615,9 @@ fn query() -> Result<serde_json::Value, String> {
         if connector.len() > 128 || !value.is_object() {
             return Err("Некорректное описание дисплея".into());
         }
-        let modes = value.get("modes").and_then(serde_json::Value::as_array)
+        let modes = value
+            .get("modes")
+            .and_then(serde_json::Value::as_array)
             .ok_or("Niri не сообщает доступные режимы")?;
         if modes.len() > MAX_MODES {
             return Err("Слишком много режимов дисплея".into());
@@ -5612,16 +5634,24 @@ fn mode_id(mode: &serde_json::Value) -> Option<String> {
     let width = mode["width"].as_u64()?;
     let height = mode["height"].as_u64()?;
     let refresh = mode["refresh_rate"].as_u64()?;
-    if !(320..=16384).contains(&width) || !(200..=16384).contains(&height)
-        || !(1000..=1_000_000).contains(&refresh) {
+    if !(320..=16384).contains(&width)
+        || !(200..=16384).contains(&height)
+        || !(1000..=1_000_000).contains(&refresh)
+    {
         return None;
     }
-    Some(format!("{width}x{height}@{}.{:03}", refresh / 1000, refresh % 1000))
+    Some(format!(
+        "{width}x{height}@{}.{:03}",
+        refresh / 1000,
+        refresh % 1000
+    ))
 }
 
 fn valid_transform(value: &str) -> bool {
-    matches!(value, "normal" | "90" | "180" | "270" | "flipped"
-        | "flipped-90" | "flipped-180" | "flipped-270")
+    matches!(
+        value,
+        "normal" | "90" | "180" | "270" | "flipped" | "flipped-90" | "flipped-180" | "flipped-270"
+    )
 }
 
 fn normalized_transform(value: &str) -> Option<&'static str> {
@@ -5641,21 +5671,36 @@ fn normalized_transform(value: &str) -> Option<&'static str> {
 fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
     let mut result = Vec::new();
     for output in outputs.as_array().ok_or("Неверные данные дисплеев")? {
-        let name = output["connector"].as_str().ok_or("Нет идентификатора дисплея")?;
+        let name = output["connector"]
+            .as_str()
+            .ok_or("Нет идентификатора дисплея")?;
         let logical = &output["logical"];
-        let current = output["current_mode"].as_u64().and_then(|i| {
-            output["modes"].as_array()?.get(usize::try_from(i).ok()?)
+        let current = output["current_mode"]
+            .as_u64()
+            .and_then(|i| output["modes"].as_array()?.get(usize::try_from(i).ok()?));
+        let fallback = output["modes"].as_array().and_then(|modes| {
+            modes
+                .iter()
+                .find(|m| m["is_preferred"] == true)
+                .or(modes.first())
         });
-        let fallback = output["modes"].as_array()
-            .and_then(|modes| modes.iter().find(|m| m["is_preferred"] == true).or(modes.first()));
-        let mode = current.or(fallback).and_then(mode_id)
+        let mode = current
+            .or(fallback)
+            .and_then(mode_id)
             .ok_or("Невозможно определить режим дисплея")?;
         let enabled = !logical.is_null();
         let scale = logical["scale"].as_f64().unwrap_or(1.0);
-        let transform = logical["transform"].as_str()
-            .and_then(normalized_transform).unwrap_or("normal").to_string();
+        let transform = logical["transform"]
+            .as_str()
+            .and_then(normalized_transform)
+            .unwrap_or("normal")
+            .to_string();
         result.push(Desired {
-            name: name.to_string(), enabled, mode, scale, transform,
+            name: name.to_string(),
+            enabled,
+            mode,
+            scale,
+            transform,
             x: logical["x"].as_i64().unwrap_or(0) as i32,
             y: logical["y"].as_i64().unwrap_or(0) as i32,
             vrr: output["vrr_enabled"] == true,
@@ -5664,9 +5709,10 @@ fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
     Ok(result)
 }
 
-fn validate(value: &serde_json::Value, current: &serde_json::Value)
-    -> Result<Vec<Desired>, String>
-{
+fn validate(
+    value: &serde_json::Value,
+    current: &serde_json::Value,
+) -> Result<Vec<Desired>, String> {
     let requested = value.as_array().ok_or("Ожидался массив дисплеев")?;
     let existing = current.as_array().ok_or("Не удалось прочитать дисплеи")?;
     if requested.is_empty() || requested.len() != existing.len() || requested.len() > MAX_OUTPUTS {
@@ -5674,16 +5720,25 @@ fn validate(value: &serde_json::Value, current: &serde_json::Value)
     }
     let mut result = Vec::new();
     for input in requested {
-        let name = input["connector"].as_str().ok_or("Нет идентификатора дисплея")?;
-        let host = existing.iter().find(|out| out["connector"] == name)
+        let name = input["connector"]
+            .as_str()
+            .ok_or("Нет идентификатора дисплея")?;
+        let host = existing
+            .iter()
+            .find(|out| out["connector"] == name)
             .ok_or("Дисплей был отключён. Обновите список.")?;
         if result.iter().any(|out: &Desired| out.name == name) {
             return Err("Повтор дисплея".into());
         }
-        let enabled = input["enabled"].as_bool().ok_or("Некорректное состояние дисплея")?;
+        let enabled = input["enabled"]
+            .as_bool()
+            .ok_or("Некорректное состояние дисплея")?;
         let mode = input["mode"].as_str().ok_or("Не указан режим")?;
-        if !host["modes"].as_array().is_some_and(|modes|
-            modes.iter().any(|item| mode_id(item).as_deref() == Some(mode))) {
+        if !host["modes"].as_array().is_some_and(|modes| {
+            modes
+                .iter()
+                .any(|item| mode_id(item).as_deref() == Some(mode))
+        }) {
             return Err("Режим не поддерживается дисплеем".into());
         }
         let scale = input["scale"].as_f64().ok_or("Некорректный масштаб")?;
@@ -5704,8 +5759,14 @@ fn validate(value: &serde_json::Value, current: &serde_json::Value)
             return Err("Монитор не поддерживает VRR".into());
         }
         result.push(Desired {
-            name: name.to_string(), enabled, mode: mode.to_string(), scale,
-            transform: transform.to_string(), x: x as i32, y: y as i32, vrr,
+            name: name.to_string(),
+            enabled,
+            mode: mode.to_string(),
+            scale,
+            transform: transform.to_string(),
+            x: x as i32,
+            y: y as i32,
+            vrr,
         });
     }
     if !result.iter().any(|out| out.enabled) {
@@ -5730,7 +5791,10 @@ fn execute(desired: &[Desired]) -> Result<(), String> {
         command(&out.name, &["mode", &out.mode])?;
         command(&out.name, &["scale", &out.scale.to_string()])?;
         command(&out.name, &["transform", &out.transform])?;
-        command(&out.name, &["position", "set", &out.x.to_string(), &out.y.to_string()])?;
+        command(
+            &out.name,
+            &["position", "set", &out.x.to_string(), &out.y.to_string()],
+        )?;
         command(&out.name, &["vrr", if out.vrr { "on" } else { "off" }])?;
     }
     for out in desired.iter().filter(|out| !out.enabled) {
@@ -5741,8 +5805,14 @@ fn execute(desired: &[Desired]) -> Result<(), String> {
 
 fn revert(before: &[Desired], events: &Sender<Event>) {
     let result = execute(before);
-    report(events, "reverted", None, result.err()
-        .map(|error| format!("Не удалось полностью восстановить конфигурацию: {error}")));
+    report(
+        events,
+        "reverted",
+        None,
+        result
+            .err()
+            .map(|error| format!("Не удалось полностью восстановить конфигурацию: {error}")),
+    );
 }
 
 fn run(requests: Receiver<Request>, events: Sender<Event>) {
@@ -5750,9 +5820,9 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
     let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
     loop {
         let received = match pending.as_ref() {
-            Some((_, _, deadline)) => requests.recv_timeout(
-                deadline.saturating_duration_since(Instant::now())
-            ),
+            Some((_, _, deadline)) => {
+                requests.recv_timeout(deadline.saturating_duration_since(Instant::now()))
+            }
             None => requests.recv().map_err(|_| RecvTimeoutError::Disconnected),
         };
         let message = match received {
@@ -5775,8 +5845,12 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 if pending.is_none() {
                     match query() {
                         Ok(outputs) => {
-                            let _ = events.send(Event { state: "ready",
-                                outputs: Some(outputs), pending_id: None, error: None });
+                            let _ = events.send(Event {
+                                state: "ready",
+                                outputs: Some(outputs),
+                                pending_id: None,
+                                error: None,
+                            });
                         }
                         Err(error) => report(&events, "error", None, Some(error)),
                     }
@@ -5784,8 +5858,12 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             }
             Request::Apply(value) => {
                 if pending.is_some() {
-                    report(&events, "error", pending.as_ref().map(|p| p.0),
-                        Some("Сначала подтвердите или отмените текущую конфигурацию".into()));
+                    report(
+                        &events,
+                        "error",
+                        pending.as_ref().map(|p| p.0),
+                        Some("Сначала подтвердите или отмените текущую конфигурацию".into()),
+                    );
                     continue;
                 }
                 let result = query().and_then(|outputs| {
@@ -5802,7 +5880,11 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                         } else {
                             next_id = next_id.wrapping_add(1).max(1);
                             let id = next_id;
-                            pending = Some((id, before, Instant::now() + Duration::from_secs(CONFIRM_SECS)));
+                            pending = Some((
+                                id,
+                                before,
+                                Instant::now() + Duration::from_secs(CONFIRM_SECS),
+                            ));
                             report(&events, "pending", Some(id), None);
                         }
                     }
@@ -5852,8 +5934,10 @@ mod tests {
 
     #[test]
     fn mode_refresh_uses_exact_millihertz() {
-        assert_eq!(mode_id(&json!({"width":2560,"height":1440,"refresh_rate":143912})),
-                   Some("2560x1440@143.912".into()));
+        assert_eq!(
+            mode_id(&json!({"width":2560,"height":1440,"refresh_rate":143912})),
+            Some("2560x1440@143.912".into())
+        );
     }
 
     #[test]
