@@ -614,6 +614,12 @@ impl CalendarOverlay {
                 {
                     return gtk::glib::ControlFlow::Break;
                 }
+                if state.closing.get() {
+                    // The outgoing TENET scene needs an opaque native buffer;
+                    // stop the opening fade rather than fighting JS reverse.
+                    state.window.set_opacity(1.0);
+                    return gtk::glib::ControlFlow::Break;
+                }
                 if state.native_reduced_motion.get() {
                     state.window.set_opacity(1.0);
                     return gtk::glib::ControlFlow::Break;
