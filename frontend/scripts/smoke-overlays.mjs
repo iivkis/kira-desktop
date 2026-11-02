@@ -129,6 +129,8 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.dataset.smokeFlowAligned=!!sr && !!cr &&' +
         'Math.abs(sr.left-cr.left)<2 && Math.abs(sr.width-cr.width)<2 &&' +
         'Math.abs(sr.top-cr.top)<2;' +
+      'document.documentElement.dataset.smokeFlowGeometry=sr&&cr?' +
+        '[sr.left,sr.top,sr.width,sr.height,cr.left,cr.top,cr.width,cr.height].map(n=>Math.round(n)).join(","):"missing";' +
       'document.documentElement.setAttribute("data-smoke-query-value", document.querySelector("input[aria-label=\\\"Search applications\\\"]")?.value ?? "absent");' +
       'document.documentElement.setAttribute("data-smoke-scrollbar-hidden", !!list && getComputedStyle(list).scrollbarWidth === "none");' +
       'if (list && list.scrollHeight > list.clientHeight) list.scrollTop = 80;' +
@@ -216,7 +218,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-tenet-grid-events="2"') ||
        !output.includes('data-smoke-tenet-grid-contact="true"') ||
        !output.includes('data-smoke-tenet-no-fragments="true"'))) {
-    const flags = output.match(/data-smoke-(?:calendar|tenet)-[a-z-]+="[^"]*"/g) ?? [];
+    const flags = output.match(/data-smoke-(?:calendar|tenet|flow)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': GSAP calendar navigation/selection: ' + flags.join(', '));
   }
   if (heightMode === 'flow' && !output.includes('data-smoke-flow-aligned="true"')) {
