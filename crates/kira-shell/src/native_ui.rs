@@ -7,7 +7,9 @@ use gtk::prelude::*;
 /// never affects the permanent Top Bar or the widget's black HTML <main>.
 pub fn install_transparent_popup_style() {
     let provider = gtk::CssProvider::new();
-    provider.load_from_string(
+    // The shell targets GTK 4.10; load_from_string is available only in
+    // GTK >= 4.12, so keep the compatible API here.
+    provider.load_from_data(
         "window.kira-popup-transparent, window.kira-popup-transparent.background {            background-color: transparent; background-image: none;            border: none; box-shadow: none; }          window.kira-popup-transparent > decoration {            background-color: transparent; background-image: none;            border: none; box-shadow: none; }",
     );
     let display =
