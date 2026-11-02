@@ -55,7 +55,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("LOW BATTERY", MODEL)
         self.assertIn("NOT DETECTED", WIDGET)
         self.assertIn("COPY REPORT", WIDGET)
-        self.assertIn("sendCalendarUi('copy-report')", SDK)
+        self.assertIn("sendCalendarUi('copy-report:' + generation)", SDK)
         self.assertIn("display.clipboard().set_text(&model.report())", OVERLAY)
         for source in (RUST, OVERLAY, MONITOR):
             self.assertNotIn("std::process::Command", source)
