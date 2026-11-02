@@ -98,6 +98,14 @@ function scriptFor(steps, observationMs = 1150) {
                   'setTimeout(() => {' +
                     'window.__kiraClockFlew = !!window.__kiraClockFlew || Array.from(document.querySelectorAll("[data-clock-cell]")).some(cell => getComputedStyle(cell).transform !== "none");' +
                   '}, 180);'
+              : kind === 'settings-about'
+                ? 'window.dispatchEvent(new CustomEvent("kira:settings:about", {detail: {generation: 1, about: {' +
+                  'os_name:"Example Linux", kernel:"6.1.0", architecture:"x86_64", hostname:"example-host", ' +
+                  'cpu_model:"Example CPU", cpu_threads:8, memory_total_kib:8388608, ' +
+                  'session:"wayland", shell_version:"0.1.0"}}}));'
+              : kind === 'settings-detach'
+                ? 'document.documentElement.dataset.kiraDetached="true";' +
+                  'window.dispatchEvent(new CustomEvent("kira:overlay:detached", {detail:{generation:1}}));'
               : kind === 'metrics'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:data", {detail: ' + telemetry + '}));'
               : kind === 'pulse'
@@ -230,6 +238,11 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
       'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
+      'const settings=document.querySelector("main[aria-label=\\\"Kira Settings\\\"]");' +
+      'document.documentElement.dataset.smokeSettingsMode=settings?.dataset.settingsMode || "none";' +
+      'document.documentElement.dataset.smokeSettingsData=!!settings && settings.textContent.includes("Example Linux") && settings.textContent.includes("Example CPU");' +
+      'document.documentElement.dataset.smokeSettingsSelector=!!settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+      'document.documentElement.dataset.smokeSettingsSidebar=!!settings?.querySelector("aside[aria-label=\\\"Разделы настроек\\\"]");' +
       'document.documentElement.setAttribute("data-smoke-no-hover-warp", !document.querySelector("filter[id^=kira-temporal-warp], [data-tenet-warp-state], [data-tenet-warp-pixels], [data-tenet-lens-body]"));' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
       'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
@@ -265,10 +278,19 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   const size = Number(output.match(/data-smoke-height="(\d+)"/)?.[1] ?? 0);
   const nativeMessage = output.match(/data-smoke-size="size:(\d+):(\d+)"/);
   const resizeCount = Number(output.match(/data-smoke-resizes="(\d+)"/)?.[1] ?? 0);
-  if (!nativeMessage || size <= 0 || size > 420 || Number(nativeMessage[2]) <= 0 ||
-      Number(nativeMessage[2]) > 420 || resizeCount > 12) {
+  if (!nativeMessage || size <= 0 || (heightMode !== 'settings-window' && size > 420) ||
+      Number(nativeMessage[2]) <= 0 ||
+      (heightMode !== 'settings-window' && Number(nativeMessage[2]) > 420) || resizeCount > 12) {
     throw new Error(name + ': popup size bridge/cap invalid (height=' +
       size + ', native=' + nativeMessage?.[2] + ', changes=' + resizeCount + ')');
+  }
+  if ((heightMode === 'settings-widget' || heightMode === 'settings-window') &&
+      (!output.includes('data-smoke-settings-data="true"') ||
+       !output.includes('data-smoke-settings-mode="' + (heightMode === 'settings-window' ? 'window' : 'widget') + '"') ||
+       !output.includes('data-smoke-settings-selector="' + (heightMode === 'settings-window' ? 'false' : 'true') + '"') ||
+       !output.includes('data-smoke-settings-sidebar="' + (heightMode === 'settings-window' ? 'true' : 'false') + '"'))) {
+    throw new Error(name + ': Settings mode, navigation or native data failed: ' +
+      (output.match(/data-smoke-settings-[a-z-]+="[^"]*"/g) ?? []).join(', '));
   }
   if (!output.includes('data-smoke-no-hover-warp="true"')) {
     throw new Error(name + ': removed pixel-distortion must not mount in any widget');
@@ -448,6 +470,15 @@ try {
     { delay: 170, kind: 'metrics' },
     { delay: 280, kind: 'pulse' },
   ], 'Kira System Monitor', 'system');
+  await smoke('settings-widget', [
+    { delay: 25, kind: 'settings', generation: 1 },
+    { delay: 180, kind: 'settings-about' },
+  ], 'Kira Settings', 'settings-widget');
+  await smoke('settings-window', [
+    { delay: 25, kind: 'settings', generation: 1 },
+    { delay: 180, kind: 'settings-about' },
+    { delay: 520, kind: 'settings-detach' },
+  ], 'Kira Settings', 'settings-window');
   await smoke('launcher', [{ delay: 25, kind: 'launcher', generation: 1 }], 'Kira Launcher', 'tenet');
   // Native close signal triggers the original GSAP master in reverse,
   // then emits a generation-bound ACK; the host keeps the DOM alive until

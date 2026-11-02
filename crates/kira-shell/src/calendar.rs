@@ -1044,7 +1044,10 @@ impl CalendarOverlay {
                 "window.dispatchEvent(new CustomEvent('kira:settings:about', {{ detail: JSON.parse({encoded}) }}));"
             );
             self.view.evaluate_javascript(
-                &script, None, None, None::<&gtk::gio::Cancellable>,
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
                 |result| {
                     if let Err(error) = result {
                         eprintln!("kira-shell: Settings info delivery failed: {error}");

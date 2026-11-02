@@ -35,7 +35,15 @@ fn memory_total(text: &str) -> Option<u64> {
 
 fn single_line(value: Option<String>, limit: usize) -> Option<String> {
     value
-        .map(|s| s.lines().next().unwrap_or_default().trim().chars().take(limit).collect::<String>())
+        .map(|s| {
+            s.lines()
+                .next()
+                .unwrap_or_default()
+                .trim()
+                .chars()
+                .take(limit)
+                .collect::<String>()
+        })
         .filter(|s| !s.is_empty())
 }
 
@@ -68,18 +76,25 @@ mod tests {
 
     #[test]
     fn os_release_parses_only_explicit_pretty_name() {
-        assert_eq!(os_name("NAME=Example\nPRETTY_NAME=\"Example Linux 1\"\n"),
-                   Some("Example Linux 1".to_string()));
+        assert_eq!(
+            os_name("NAME=Example\nPRETTY_NAME=\"Example Linux 1\"\n"),
+            Some("Example Linux 1".to_string())
+        );
         assert_eq!(os_name("NAME=Example\n"), None);
         assert_eq!(os_name("PRETTY_NAME=\"\"\n"), None);
     }
 
     #[test]
     fn cpu_and_memory_missingness_are_truthful() {
-        assert_eq!(cpu_name("processor: 0\nmodel name : Sample CPU\n"),
-                   Some("Sample CPU".to_string()));
+        assert_eq!(
+            cpu_name("processor: 0\nmodel name : Sample CPU\n"),
+            Some("Sample CPU".to_string())
+        );
         assert_eq!(cpu_name("processor: 0\n"), None);
-        assert_eq!(memory_total("MemTotal:       16384 kB\nMemFree: 123 kB\n"), Some(16384));
+        assert_eq!(
+            memory_total("MemTotal:       16384 kB\nMemFree: 123 kB\n"),
+            Some(16384)
+        );
         assert_eq!(memory_total("MemFree: 123 kB\n"), None);
         assert_eq!(memory_total("MemTotal: unknown kB\n"), None);
     }
@@ -90,7 +105,9 @@ mod tests {
         assert!(value["shell_version"].is_string());
         assert!(value["architecture"].is_string());
         for field in ["hostname", "os_name", "kernel", "cpu_model", "session"] {
-            assert!(value[field].is_null() || value[field].as_str().is_some_and(|s| s.len() <= 600));
+            assert!(
+                value[field].is_null() || value[field].as_str().is_some_and(|s| s.len() <= 600)
+            );
         }
     }
 }
