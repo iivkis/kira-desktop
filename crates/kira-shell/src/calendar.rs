@@ -33,6 +33,8 @@ struct OverlayPool {
     document: String,
     scheduler: RefCell<WebviewScheduler>,
     windows: RefCell<HashMap<u32, Rc<CalendarOverlay>>>,
+    poll_source: RefCell<Option<gtk::glib::SourceId>>,
+    last_tick: Cell<Instant>,
 }
 
 impl OverlayPool {
@@ -42,6 +44,8 @@ impl OverlayPool {
             document,
             scheduler: RefCell::new(WebviewScheduler::default()),
             windows: RefCell::new(HashMap::new()),
+            poll_source: RefCell::new(None),
+            last_tick: Cell::new(Instant::now()),
         });
         if let Some(id) = pool.scheduler.borrow_mut().prewarm_one(Instant::now()) {
             let view = build(
@@ -83,11 +87,50 @@ impl OverlayPool {
                 return None;
             }
         };
-        self.windows
-            .borrow()
-            .get(&id)
-            .cloned()
-            .map(|view| (view, existing))
+        let view = self.windows.borrow().get(&id).cloned()?;
+        self.ensure_polling();
+        Some((view, existing))
+    }
+
+    /// Exactly one GTK source serves all concurrently leased hosts. A warm
+    /// idle WebView has ZERO 30/250ms pollers, unlike the legacy per-window
+    /// timers. The source tears itself down once the last lease is released.
+    fn ensure_polling(self: &Rc<Self>) {
+        if self.poll_source.borrow().is_some() {
+            return;
+        }
+        self.last_tick.set(Instant::now());
+        let weak = Rc::downgrade(self);
+        let source = gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
+            let Some(pool) = weak.upgrade() else {
+                return gtk::glib::ControlFlow::Break;
+            };
+            if pool.scheduler.borrow().active_count() == 0 {
+                pool.poll_source.borrow_mut().take();
+                return gtk::glib::ControlFlow::Break;
+            }
+            // Snapshot owned handles before calling poll_launcher(): a
+            // successful GIO launch may close its own slot mid-iteration.
+            let active: Vec<_> = pool
+                .windows
+                .borrow()
+                .values()
+                .filter(|view| view.requested.get())
+                .cloned()
+                .collect();
+            for view in &active {
+                view.poll_launcher();
+                view.poll_pulse();
+            }
+            if pool.last_tick.get().elapsed() >= Duration::from_millis(250) {
+                pool.last_tick.set(Instant::now());
+                for view in &active {
+                    view.tick();
+                }
+            }
+            gtk::glib::ControlFlow::Continue
+        });
+        self.poll_source.replace(Some(source));
     }
 
     fn active(&self, kind: Surface) -> Option<Rc<CalendarOverlay>> {
@@ -1018,27 +1061,8 @@ fn build(
     // shows. The Calendar component, timer and DOM are unmounted on hide.
     window.set_child(Some(&view));
     view.load_html(&overlay.document, None);
-    let weak = Rc::downgrade(&overlay);
-    gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
-        if let Some(state) = weak.upgrade() {
-            state.poll_launcher();
-            // Reuse the existing 30ms GTK source for the 500ms CPU/RAM
-            // stream. Never schedule WebKit scripts on a worker thread.
-            state.poll_pulse();
-            gtk::glib::ControlFlow::Continue
-        } else {
-            gtk::glib::ControlFlow::Break
-        }
-    });
-    let weak = Rc::downgrade(&overlay);
-    gtk::glib::timeout_add_local(Duration::from_millis(250), move || {
-        if let Some(state) = weak.upgrade() {
-            state.tick();
-            gtk::glib::ControlFlow::Continue
-        } else {
-            gtk::glib::ControlFlow::Break
-        }
-    });
+    // Timed native work runs only from the pool's single active lease
+    // scheduler. This window owns no permanent polling sources.
     overlay
 }
 
