@@ -192,6 +192,11 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
   const axis = initial.axis ?? 'x';
   if (!indicator) return { update(_next: TenetFlowTarget) {}, destroy() {} };
   let last: { x: number; y: number; width: number; height: number } | null = null;
+  let recovery: number | null = null;
+  function cancelRecovery() {
+    if (recovery !== null) window.clearTimeout(recovery);
+    recovery = null;
+  }
 
   function geometry(key: string) {
     const target = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-tab]'))
@@ -206,6 +211,7 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
   function relocate(key: string, animate: boolean) {
     const next = geometry(key);
     if (!next) {
+      cancelRecovery();
       gsap.killTweensOf(indicator);
       gsap.set(indicator, { autoAlpha: 0 });
       last = null;
@@ -218,6 +224,7 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
       return;
     }
     const moving = animate && !preference.matches && last !== null;
+    cancelRecovery();
     last = next;
     if (!moving) {
       gsap.killTweensOf(indicator);
@@ -230,6 +237,13 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
       overwrite: 'auto', force3D: true,
     });
     gsap.to(indicator, { autoAlpha: 1, duration: 0.12, ease: 'power2.out', overwrite: 'auto' });
+    // rAF can stall for a compact, obscured WebKitGTK surface. Correctness
+    // always wins: reconcile exact geometry after one bounded grace period.
+    recovery = window.setTimeout(() => {
+      recovery = null;
+      gsap.killTweensOf(indicator);
+      gsap.set(indicator, { ...vars, autoAlpha: 1 });
+    }, 650);
   }
 
   relocate(active, false);
@@ -251,6 +265,7 @@ export function tenetFlowIndicator(node: HTMLElement, initial: TenetFlowTarget) 
       relocate(active, true);
     },
     destroy() {
+      cancelRecovery();
       observer?.disconnect();
       preference.removeEventListener('change', onPreference);
       gsap.killTweensOf(indicator);
