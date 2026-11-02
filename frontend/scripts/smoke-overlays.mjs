@@ -473,8 +473,53 @@ async function smokeTopBar() {
   console.log('OK: Top Bar focus auto-scroll and urgency on both hidden sides');
 }
 
+/** Native detachment event must build and paint the genuine Svelte canvas;
+ * no mock sky pixels or remote data is used in this browser smoke. */
+async function smokeCalendarSky() {
+  const steps = [
+    { delay: 25, kind: 'calendar', generation: 1 },
+    { delay: 600, kind: 'settings-detach', generation: 1 },
+    { delay: 820, kind: 'calendar-next', generation: 1 },
+  ];
+  const check = '<script>window.addEventListener("load",()=>setTimeout(()=>{' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Calendar\\\"]");' +
+    'const atlas=root?.querySelector("[data-kira-sky-map]");' +
+    'const canvas=atlas?.querySelector("canvas");' +
+    'const context=canvas?.getContext("2d");' +
+    'const pixel=context?.getImageData(Math.floor(canvas.width/2),Math.floor(canvas.height/2),1,1).data;' +
+    'const selected=root?.querySelector("[aria-label=\\\"Copy date\\\"]")?.textContent;' +
+    'const current=root?.querySelector("footer p.text-kira-accent")?.textContent?.trim();' +
+    'document.documentElement.dataset.smokeSkyPainted=!!pixel && pixel[3]===255;' +
+    'document.documentElement.dataset.smokeSkyMode=root?.dataset.calendarMode||"none";' +
+    'document.documentElement.dataset.smokeSkySize=(canvas?.width||0)+"x"+(canvas?.height||0);' +
+    'document.documentElement.dataset.smokeSkyDate=!!window.__kiraCalendarBefore && ' +
+      'window.__kiraCalendarBefore!==root?.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent && ' +
+      '!!atlas?.textContent?.includes("Звёздное небо");' +
+  '},2150));</script>';
+  const document = html
+    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + check + '</head>');
+  const path = join(dir, 'calendar-sky.html');
+  await writeFile(path, document);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--disable-background-networking', '--window-size=1100,820',
+    '--virtual-time-budget=2800', '--dump-dom', 'file://' + path,
+  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
+  const size = output.match(/data-smoke-sky-size="(\d+)x(\d+)"/);
+  if (!output.includes('data-smoke-sky-mode="window"') ||
+      !output.includes('data-smoke-sky-painted="true"') ||
+      !output.includes('data-smoke-sky-date="true"') ||
+      !size || Number(size[1]) < 250 || Number(size[2]) < 250) {
+    throw new Error('Calendar detached atlas failed to paint date-aware sky: ' +
+      (output.match(/data-smoke-sky-[a-z-]+="[^"]*"/g) ?? []).join(', '));
+  }
+  console.log('OK: detached Calendar sky canvas painted for selected date');
+}
+
 try {
   await smokeTopBar();
+  await smokeCalendarSky();
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar', 'tenet');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },

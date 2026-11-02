@@ -14,7 +14,7 @@
   let longitude = $state('0');
   let time = $state('22:00');
   let viewport: HTMLDivElement;
-  let canvas: HTMLCanvasElement;
+  let canvas = $state<HTMLCanvasElement | null>(null);
   let dimensions = $state({ width: 0, height: 0 });
   const observer = $derived(observerCoordinates(latitude, longitude));
   const when = $derived(localObservationDate(date, time));
@@ -228,8 +228,10 @@
 
   <div bind:this={viewport} class="relative mt-3 min-h-[270px] flex-1 overflow-hidden border border-kira-muted/15 bg-kira-bg">
     {#if observer && when}
-      <canvas bind:this={canvas} class="block h-full w-full" role="img"
-        aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}></canvas>
+      <div class="h-full w-full" role="img"
+        aria-label={'Карта созвездий над горизонтом ' + isoDate(date) + ' в ' + time + ', широта ' + observer.latitude + ', долгота ' + observer.longitude}>
+        <canvas bind:this={canvas} class="block h-full w-full" aria-hidden="true"></canvas>
+      </div>
     {:else}
       <div class="flex h-full items-center justify-center px-8 text-center text-[12px] text-kira-muted" role="status">
         Проверьте координаты (широта ±90°, долгота ±180°), время и год (1900–2100).
