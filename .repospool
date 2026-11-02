@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4751
+index_bytes=4752
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	22464b2f411561585230e37b5af6ed047c2c624a
+C	2cf5389c25023993465a0a46045c5b871e6f2d63
 F	.cargo/config.toml	98	125	3
 F	.github/workflows/ci.yml	4355	130	112
 F	.github/workflows/frontend-nix.yml	1398	244	43
@@ -46,73 +46,73 @@ F	crates/kira-shell/src/renderer_recovery.rs	3634	5870	116
 F	crates/kira-shell/src/system_metrics.rs	19842	5988	559
 F	crates/kira-shell/src/system_panel.rs	11356	6549	318
 F	docs/CONFIG.md	5801	6869	125
-F	docs/DESIGN_SYSTEM.md	28353	6996	471
-F	docs/DEVELOPMENT.md	29347	7469	577
-F	docs/QA_VISUAL.md	12284	8048	149
-F	docs/SPECIFICATION.md	28960	8199	421
-F	docs/TENET_MOTION.md	24546	8622	177
-F	docs/UI_ARCHITECTURE.md	6737	8801	106
-F	docs/VISUAL_REVIEW.md	9754	8909	84
-F	flake.nix	3181	8995	91
-F	frontend/index.html	2737	9088	66
-F	frontend/package.json	720	9156	27
-F	frontend/scripts/inline-assets.mjs	4457	9185	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9290	106
-F	frontend/scripts/smoke-overlays.mjs	25228	9398	358
-F	frontend/src/App.svelte	8589	9758	207
-F	frontend/src/lib/bootstrap.test.ts	3408	9967	84
-F	frontend/src/lib/bootstrap.ts	2613	10053	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10125	65
-F	frontend/src/lib/calendar-model.ts	4648	10192	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10299	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10361	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10490	10392	285
-F	frontend/src/lib/clock-flight.test.ts	2404	10679	50
-F	frontend/src/lib/clock-flight.ts	1977	10731	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10783	239
-F	frontend/src/lib/components/LauncherWidget.svelte	10868	11024	232
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11258	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	11486	46
-F	frontend/src/lib/components/SystemWidget.svelte	18116	11534	321
-F	frontend/src/lib/components/WorkspacePreview.svelte	5560	11857	110
-F	frontend/src/lib/launcher-model.test.ts	2266	11969	46
-F	frontend/src/lib/launcher-model.ts	1403	12017	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12048	89
-F	frontend/src/lib/lazy-widget.ts	1984	12139	63
-F	frontend/src/lib/motion-contract.test.ts	2855	12204	50
-F	frontend/src/lib/motion.ts	5937	12256	172
-F	frontend/src/lib/overlay-size.ts	1090	12430	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12461	444
-F	frontend/src/lib/sdk/core.ts	17793	12907	473
-F	frontend/src/lib/system-charts.test.ts	6312	13382	141
-F	frontend/src/lib/system-charts.ts	5514	13525	149
-F	frontend/src/lib/system-health.test.ts	2385	13676	42
-F	frontend/src/lib/system-health.ts	2831	13720	60
-F	frontend/src/lib/system-model.test.ts	4455	13782	84
-F	frontend/src/lib/system-model.ts	5457	13868	125
-F	frontend/src/lib/themes/kira-default.css	1687	13995	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	14049	101
-F	frontend/src/lib/themes/kira-default.ts	777	14152	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5400	14176	97
-F	frontend/src/lib/time.test.ts	263	14275	8
-F	frontend/src/lib/time.ts	320	14285	9
-F	frontend/src/lib/workspace-window.test.ts	2298	14296	52
-F	frontend/src/lib/workspace-window.ts	1063	14350	32
-F	frontend/src/main.ts	6171	14384	131
-F	frontend/src/style.css	3817	14517	121
-F	frontend/tsconfig.json	403	14640	16
-F	frontend/vite.config.ts	224	14658	8
-F	nix/package.nix	3132	14668	117
-F	scripts/dev_preview.py	18147	14787	403	x
-F	scripts/qa_visual.py	12052	15192	299
-F	tests/test_calendar_design.py	7384	15493	130
-F	tests/test_detailed_health.py	5429	15625	105
-F	tests/test_dev_preview.py	9339	15732	219
-F	tests/test_launcher_design.py	10400	15953	189
-F	tests/test_native_theme.py	1567	16144	36
-F	tests/test_popup_geometry.py	6956	16182	118
-F	tests/test_qa_visual.py	10549	16302	217
-F	tests/test_ui_bootstrap_contract.py	1103	16521	29
+F	docs/DESIGN_SYSTEM.md	28474	6996	473
+F	docs/DEVELOPMENT.md	29347	7471	577
+F	docs/QA_VISUAL.md	12284	8050	149
+F	docs/SPECIFICATION.md	28960	8201	421
+F	docs/TENET_MOTION.md	26075	8624	204
+F	docs/UI_ARCHITECTURE.md	6737	8830	106
+F	docs/VISUAL_REVIEW.md	9754	8938	84
+F	flake.nix	3181	9024	91
+F	frontend/index.html	2737	9117	66
+F	frontend/package.json	720	9185	27
+F	frontend/scripts/inline-assets.mjs	4457	9214	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9319	106
+F	frontend/scripts/smoke-overlays.mjs	25577	9427	362
+F	frontend/src/App.svelte	8589	9791	207
+F	frontend/src/lib/bootstrap.test.ts	3408	10000	84
+F	frontend/src/lib/bootstrap.ts	2613	10086	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10158	65
+F	frontend/src/lib/calendar-model.ts	4648	10225	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10332	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10394	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10490	10425	285
+F	frontend/src/lib/clock-flight.test.ts	2404	10712	50
+F	frontend/src/lib/clock-flight.ts	1977	10764	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10816	239
+F	frontend/src/lib/components/LauncherWidget.svelte	10868	11057	232
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11291	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	11519	46
+F	frontend/src/lib/components/SystemWidget.svelte	18129	11567	321
+F	frontend/src/lib/components/WorkspacePreview.svelte	5560	11890	110
+F	frontend/src/lib/launcher-model.test.ts	2266	12002	46
+F	frontend/src/lib/launcher-model.ts	1403	12050	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12081	89
+F	frontend/src/lib/lazy-widget.ts	1984	12172	63
+F	frontend/src/lib/motion-contract.test.ts	3612	12237	68
+F	frontend/src/lib/motion.ts	6603	12307	191
+F	frontend/src/lib/overlay-size.ts	1090	12500	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12531	444
+F	frontend/src/lib/sdk/core.ts	17793	12977	473
+F	frontend/src/lib/system-charts.test.ts	6312	13452	141
+F	frontend/src/lib/system-charts.ts	5514	13595	149
+F	frontend/src/lib/system-health.test.ts	2385	13746	42
+F	frontend/src/lib/system-health.ts	2831	13790	60
+F	frontend/src/lib/system-model.test.ts	4455	13852	84
+F	frontend/src/lib/system-model.ts	5457	13938	125
+F	frontend/src/lib/themes/kira-default.css	1687	14065	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	14119	101
+F	frontend/src/lib/themes/kira-default.ts	777	14222	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5400	14246	97
+F	frontend/src/lib/time.test.ts	263	14345	8
+F	frontend/src/lib/time.ts	320	14355	9
+F	frontend/src/lib/workspace-window.test.ts	2298	14366	52
+F	frontend/src/lib/workspace-window.ts	1063	14420	32
+F	frontend/src/main.ts	6171	14454	131
+F	frontend/src/style.css	3817	14587	121
+F	frontend/tsconfig.json	403	14710	16
+F	frontend/vite.config.ts	224	14728	8
+F	nix/package.nix	3132	14738	117
+F	scripts/dev_preview.py	18147	14857	403	x
+F	scripts/qa_visual.py	12052	15262	299
+F	tests/test_calendar_design.py	7384	15563	130
+F	tests/test_detailed_health.py	5429	15695	105
+F	tests/test_dev_preview.py	9339	15802	219
+F	tests/test_launcher_design.py	10400	16023	189
+F	tests/test_native_theme.py	1567	16214	36
+F	tests/test_popup_geometry.py	6956	16252	118
+F	tests/test_qa_visual.py	10549	16372	217
+F	tests/test_ui_bootstrap_contract.py	1103	16591	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -7251,17 +7251,19 @@ master progress synchronizes both chronologies. Launcher records a
 different outward direction; inversion is historical, not CSS reflection.
 
 No real date, telemetry, search, keyboard interaction or focus is delayed.
-The native host now acknowledges actual popup visibility after GTK
-opacity becomes 1, then the generation-matched GSAP scene begins. This
-fixes the old mount-time animation that was played behind an invisible
-Wayland window. Real content now assembles visibly over approximately
-0.84–1.09 seconds with 28px displacement and bounded section staggering.
-Four low-opacity 12×1px traces are secondary, replacing distracting
-orange/white squares. The 1550ms WebKit-throttle fallback, hide,
-unmount or reduced-motion change removes all decorative fragments
-and restores exact transforms. Before native visibility arrives the
-content remains readable and functional. Calendar's clock and day
-interactions retain their separate recorded motion histories.
+The native host acknowledges popup visibility after GTK opacity
+becomes 1. Three foreground sections are pre-staged *while the GTK
+window is invisible* at 14px translation and 0.82 opacity, so native
+reveal never triggers a full-opacity-to-offset snap. A single GSAP
+timeline brings content home in 0.72s with a quiet 45ms stagger and
+smooth velocity. Four subtle 12×1px traces travel back along the same
+recorded paths using inverse easing in the same master timeline,
+rather than forcing an inverse-timeline seek every frame. Complex
+System Monitor charts are not individually moved. A missing native
+visible event restores static content after 550ms; a 1200ms fallback,
+hide, unmount or reduced-motion change clears styles and fragments.
+No input, measurement, hitbox or window geometry is held back.
+Calendar's clock and day interactions retain their own histories.
 
 ### System Monitor · observability before decoration
 
@@ -8797,6 +8799,33 @@ changes and a 1550ms WebKit throttle fallback restore all styles and
 remove all traces. A host lacking the event shows the widget normally
 without motion, instead of animating invisibly.
 
+### Smooth native entrance · compositor continuity (2026-11)
+
+On real Niri/WebKitGTK the previous opening could still stutter despite
+the native-visible handshake. Cause: each widget was **re-initialized
+from a fully painted state** after the popup became visible, and a second
+GSAP timeline was forcibly sought on every frame. In System Monitor as
+many as eight heavy telemetry sections moved independently.
+
+The shared entrance stages **three** foreground sections for Calendar
+and Launcher (only **two** for System Monitor, keeping heavy live charts
+completely stationary) at
+14px vertical translation and 0.82 opacity during the native invisible
+phase, ready to be composited with `force3D` / `will-change`. One
+synchronized GSAP timeline animates the actual content to its resting
+position over 0.72s, with only 45ms between sections and smooth
+`sine.inOut` velocity. Saved inverted fragment trajectories use the
+mathematically reversed original `power3.out` ease (`power3.in`) and
+reverse stagger order *within the same timeline*: no per-frame seeking,
+no different random paths and no extra animation clock. Heavy chart
+areas beyond the first groups stay at their real coordinates.
+
+Reduced-motion users see no staging. A stale/missing GTK visibility
+handshake restores the exact content after 550ms and skips animation;
+native hide, preference changes and unmount cancel the scene. A 1200ms
+recovery covers WebKit frame throttling. Animations only change opacity
+and compositor transforms, not sizes or layout metrics.
+
 FILE	docs/UI_ARCHITECTURE.md
 # UI architecture: Rust host, Svelte 5 widgets
 
@@ -9471,8 +9500,11 @@ function scriptFor(steps, observationMs = 1150) {
                 // the generation-scoped visible event only AFTER reveal.
                 'setTimeout(()=>{' +
                   'const root=document.querySelector("main[data-kira-ui-root]");' +
+                  'const first=root?.querySelector("[data-kira-enter]");' +
+                  'const staged=first ? Number(getComputedStyle(first).opacity) : 0;' +
+                  'window.__kiraTenetStagedOpacity=staged;' +
                   'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
-                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0;' +
+                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0 && staged>=0.8 && staged<0.9;' +
                 '},90);' +
                 'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:overlay:visible", {detail:{generation:' +
                   generation + '}})),140);') +
@@ -9484,7 +9516,8 @@ function scriptFor(steps, observationMs = 1150) {
       'const content=root?.querySelector("[data-kira-enter]");' +
       'const transform=content ? getComputedStyle(content).transform : "none";' +
       'document.documentElement.dataset.smokeTenetStarted=!!root && root.dataset.tenetReveal==="started" && root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
-      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && getComputedStyle(content).opacity!=="1";' +
+      'const opacity=content ? Number(getComputedStyle(content).opacity) : 0;' +
+      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && opacity>window.__kiraTenetStagedOpacity && opacity<1;' +
       '},245);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
@@ -11613,7 +11646,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 <svelte:window onkeydown={keydown} />
 
 <main data-kira-ui-root aria-label="Kira System Monitor"
-  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1, sections: 2 }}
   class="kira-monitor-scroll relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text">
   <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
@@ -12224,28 +12257,46 @@ describe('TENET shared widget appearance', () => {
     }
   });
 
-  it('requires a shared master, cancellable streams, reduced motion and DOM cleanup', () => {
-    expect(motion).toContain('gsap.timeline({ paused: true })');
-    expect(motion).toContain('dualTime(forward?.progress() ?? 1).inverted');
-    expect(motion).toContain('preference.addEventListener');
-    expect(motion).toContain("preference.removeEventListener");
-    expect(motion).toContain('forward?.kill()');
-    expect(motion).toContain('inverted?.kill()');
-    expect(motion).toContain('trace.remove()');
-    expect(motion).toContain('window.setTimeout(settle, 1550)');
+  it('prepares compositor layers before native reveal, no visible opacity snap', () => {
+    expect(motion).toContain("gsap.set(content, {");
+    expect(motion).toContain("y: 14,");
+    expect(motion).toContain("opacity: 0.82,");
+    expect(motion).toContain("willChange: 'transform, opacity'");
+    expect(motion).toContain("node.dataset.tenetReveal = 'ready'");
+    expect(motion).toContain("window.setTimeout(() => {");
+    expect(motion).toContain("}, 550)");
+  });
+
+  it('runs the recorded inverse and forward on one GPU-friendly master', () => {
+    expect(motion).toContain("slice(0, options.sections ?? 3)");
+    expect(motion).toContain("master = gsap.timeline({ paused: true, onComplete: settle })");
+    expect(motion).toContain("master.to(content, {");
+    expect(motion).toContain("master.fromTo(traces,");
+    expect(motion).toContain("duration: 0.72");
+    expect(motion).toContain("ease: 'sine.inOut'");
+    expect(motion).toContain("ease: 'power3.in'");
+    expect(motion).toContain("from: 'end'");
+    expect(motion).toContain("force3D: true");
+    expect(motion).not.toContain("onUpdate:");
+    expect(motion).not.toContain("inverted?.progress(");
+  });
+
+  it('cleans all transforms, listeners, memory and fallback on interrupt', () => {
+    expect(motion).toContain("window.setTimeout(settle, 1200)");
+    expect(motion).toContain("window.clearTimeout(awaitVisible)");
+    expect(motion).toContain("master?.kill()");
+    expect(motion).toContain("trace.remove()");
+    expect(motion).toContain("clearProps: 'transform,opacity,willChange'");
     expect(motion).toContain("window.addEventListener('kira:overlay:visible', onVisible)");
     expect(motion).toContain("window.removeEventListener('kira:overlay:visible', onVisible)");
-    expect(motion).toContain('generation === Number(node.dataset.kiraGeneration)');
-    expect(motion).toContain("node.dataset.tenetReveal = preference.matches ? 'settled' : 'ready'");
-    expect(motion).toContain("duration: 0.84, stagger, ease: 'power3.out'");
-    expect(motion).toContain("'width:12px', 'height:1px'");
-    expect(motion).toContain("node.dataset.tenetReveal = 'settled'");
+    expect(motion).toContain("preference.removeEventListener");
+    expect(motion).toContain("generation === Number(node.dataset.kiraGeneration)");
   });
 
   it('uses physical widget contacts without duplicating legacy stagger animations', () => {
     expect(calendar).toContain('return tenetWidgetReveal(node, {');
     expect(launcher).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: -1 }}");
-    expect(system).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}");
+    expect(system).toContain("use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1, sections: 2 }}");
     expect(launcher).toContain('data-kira-contact');
     expect(system).toContain('data-kira-contact');
     expect(system).not.toContain('use:revealStagger');
@@ -12260,7 +12311,7 @@ FILE	frontend/src/lib/motion.ts
  * replay saved paths to the same physical editorial contact point.
  */
 import { gsap } from 'gsap';
-import { dualTime, tenetFragmentsFor } from './calendar-tenet-model';
+import { tenetFragmentsFor } from './calendar-tenet-model';
 
 const reducedMotion = () => typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -12268,48 +12319,47 @@ const reducedMotion = () => typeof window !== 'undefined' &&
 export interface TenetEntrance {
   contact: string;
   direction?: 1 | -1;
+  sections?: number;
 }
 
 export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
   const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let forward: gsap.core.Timeline | null = null;
-  let inverted: gsap.core.Timeline | null = null;
+  // Cap moving surfaces: the system monitor's many nested charts/rows
+  // must not compete for compositor layers and trigger choppy frames.
+  const content = Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'))
+    .slice(0, options.sections ?? 3);
+  let master: gsap.core.Timeline | null = null;
   let traces: HTMLElement[] = [];
   let restore: number | null = null;
+  let awaitVisible: number | null = null;
   let started = false;
 
-  const targets = () => Array.from(node.querySelectorAll<HTMLElement>('[data-kira-enter]'));
-
   function settle() {
-    if (restore !== null) {
-      window.clearTimeout(restore);
-      restore = null;
-    }
-    forward?.kill();
-    inverted?.kill();
-    forward = null;
-    inverted = null;
+    if (restore !== null) window.clearTimeout(restore);
+    if (awaitVisible !== null) window.clearTimeout(awaitVisible);
+    restore = null;
+    awaitVisible = null;
+    master?.kill();
+    master = null;
     for (const trace of traces) trace.remove();
     traces = [];
-    const content = targets();
     gsap.killTweensOf(content);
-    if (content.length) gsap.set(content, { clearProps: 'transform,opacity,visibility' });
+    if (content.length) {
+      gsap.set(content, { clearProps: 'transform,opacity,willChange' });
+    }
     node.dataset.tenetReveal = 'settled';
   }
 
   function begin() {
-    if (started || preference.matches) {
-      node.dataset.tenetReveal = 'settled';
-      return;
-    }
+    if (started || preference.matches) return;
     started = true;
+    if (awaitVisible !== null) window.clearTimeout(awaitVisible);
+    awaitVisible = null;
     const contact = node.querySelector<HTMLElement>(options.contact);
-    const content = targets();
     if (!contact || !content.length) {
       settle();
       return;
     }
-
     const direction = options.direction ?? 1;
     const rootRect = node.getBoundingClientRect();
     const contactRect = contact.getBoundingClientRect();
@@ -12317,14 +12367,16 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       x: contactRect.left - rootRect.left + contactRect.width / 2,
       y: contactRect.top - rootRect.top + contactRect.height / 2,
     };
-    // One immutable trajectory memory for the entire entrance event.
+
+    // Memory is fixed for this one event. Reversing a power3.out path
+    // is power3.in on the SAME coordinates, with the order reversed.
+    // One master GSAP timeline lets WebKit render both tracks together
+    // without an imperative second seek on every animation frame.
     const flights = tenetFragmentsFor(direction);
     traces = flights.map((_, index) => {
       const trace = node.ownerDocument.createElement('span');
       trace.dataset.tenetFragment = 'inverted';
       trace.setAttribute('aria-hidden', 'true');
-      // Hairline fragments support the composition; they are no longer
-      // four conspicuous orange/white squares dominating the animation.
       trace.style.cssText = [
         'position:absolute', 'pointer-events:none', 'z-index:2',
         'width:12px', 'height:1px', 'opacity:0',
@@ -12336,62 +12388,80 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       return trace;
     });
 
-    inverted = gsap.timeline({ paused: true });
-    inverted.to(traces, {
-      x: (i: number) => flights[i].x,
-      y: (i: number) => flights[i].y,
-      rotation: (i: number) => flights[i].rotation,
-      opacity: 0.32,
-      duration: 0.88,
-      stagger: 0.025,
-      ease: 'power3.out',
+    master = gsap.timeline({ paused: true, onComplete: settle });
+    master.to(content, {
+      y: 0,
+      opacity: 1,
+      duration: 0.72,
+      stagger: 0.045,
+      ease: 'sine.inOut',
+      force3D: true,
+      overwrite: 'auto',
     }, 0);
-    inverted.progress(1);
-
-    const stagger = Math.min(0.11, 0.25 / Math.max(1, content.length - 1));
-    forward = gsap.timeline({
-      paused: true,
-      onUpdate: () => {
-        // The inverse replays the ORIGINAL easing and rotations,
-        // synchronized with the progression of the visible content.
-        inverted?.progress(dualTime(forward?.progress() ?? 1).inverted);
-      },
-      onComplete: settle,
-    });
-    forward.fromTo(content,
-      { opacity: 0.18, x: 16 * direction, y: 28 },
+    master.fromTo(traces,
       {
-        opacity: 1, x: 0, y: 0,
-        duration: 0.84, stagger, ease: 'power3.out',
+        x: (i: number) => flights[i].x,
+        y: (i: number) => flights[i].y,
+        rotation: (i: number) => flights[i].rotation,
+        opacity: 0.13,
+      },
+      {
+        x: 0, y: 0, rotation: 0, opacity: 0,
+        duration: 0.72,
+        stagger: { each: 0.015, from: 'end' },
+        ease: 'power3.in',
+        force3D: true,
+        immediateRender: true,
       }, 0);
-
     node.dataset.tenetReveal = 'started';
-    forward.play(0);
-    // Recovery for throttled WebKit frames; never leave content faded out.
-    restore = window.setTimeout(settle, 1550);
+    master.play(0);
+    // WebKitGTK may throttle compositor frames while Niri maps a window.
+    // Never leave foreground controls transformed after a stalled timer.
+    restore = window.setTimeout(settle, 1200);
   }
 
   function isCurrentGeneration(event: Event): boolean {
     const generation = (event as CustomEvent<{ generation?: unknown }>).detail?.generation;
     return Number.isSafeInteger(generation) && generation === Number(node.dataset.kiraGeneration);
   }
-
   function onVisible(event: Event) {
-    if (!isCurrentGeneration(event) || started || preference.matches) return;
-    begin();
+    if (isCurrentGeneration(event)) begin();
   }
-
   function onHide(event: Event) {
-    if (isCurrentGeneration(event)) settle();
+    if (isCurrentGeneration(event)) {
+      started = true;
+      settle();
+    }
   }
-
   function onPreference() {
-    if (preference.matches) settle();
+    if (preference.matches) {
+      started = true;
+      settle();
+    }
   }
 
-  // Never hide controls before the window is mapped. On legacy hosts
-  // without the visibility event, content remains fully usable and static.
-  node.dataset.tenetReveal = preference.matches ? 'settled' : 'ready';
+  // Prepare the visible geometry while the native window is still
+  // transparent. The GTK visible handshake starts the tween from these
+  // exact values, eliminating the old full-opacity -> 0.18 snap.
+  // No layout properties change, and the compositor can cache 3 layers.
+  if (preference.matches || !content.length) {
+    node.dataset.tenetReveal = 'settled';
+  } else {
+    gsap.set(content, {
+      y: 14,
+      opacity: 0.82,
+      force3D: true,
+      willChange: 'transform, opacity',
+    });
+    node.dataset.tenetReveal = 'ready';
+    // Older hosts never send the event. Restore the true DOM promptly;
+    // never strand an inactive panel in a dimmed/transformed state.
+    awaitVisible = window.setTimeout(() => {
+      started = true;
+      settle();
+    }, 550);
+  }
+
   window.addEventListener('kira:overlay:visible', onVisible);
   window.addEventListener('kira:overlay:hide', onHide);
   preference.addEventListener('change', onPreference);
