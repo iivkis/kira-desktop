@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	e16230907dd922805e736d8c7d037a16d086733a
+C	b943091e3c94cd9c2fd27efa9ecb372f882a035f
 F	.cargo/config.toml	98	127	3
 F	.github/workflows/ci.yml	4355	132	112
 F	.github/workflows/frontend-nix.yml	1398	246	43
@@ -59,62 +59,62 @@ F	frontend/index.html	2737	9278	66
 F	frontend/package.json	720	9346	27
 F	frontend/scripts/inline-assets.mjs	4457	9375	103
 F	frontend/scripts/inline-assets.test.mjs	4645	9480	106
-F	frontend/scripts/smoke-overlays.mjs	19543	9588	278
-F	frontend/src/App.svelte	8659	9868	200
-F	frontend/src/lib/bootstrap.test.ts	3408	10070	84
-F	frontend/src/lib/bootstrap.ts	2613	10156	70
-F	frontend/src/lib/calendar-model.test.ts	3571	10228	65
-F	frontend/src/lib/calendar-model.ts	4648	10295	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10402	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10464	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10495	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10815	50
-F	frontend/src/lib/clock-flight.ts	1977	10867	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10919	239
-F	frontend/src/lib/components/DockWidget.svelte	3739	11160	95
-F	frontend/src/lib/components/LauncherWidget.svelte	10668	11257	230
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11489	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11717	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11762	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12084	61
-F	frontend/src/lib/dock-model.test.ts	973	12147	22
-F	frontend/src/lib/dock-model.ts	890	12171	24
-F	frontend/src/lib/launcher-model.test.ts	2266	12197	46
-F	frontend/src/lib/launcher-model.ts	1403	12245	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	12276	89
-F	frontend/src/lib/lazy-widget.ts	1984	12367	63
-F	frontend/src/lib/motion.ts	1597	12432	50
-F	frontend/src/lib/overlay-size.ts	1090	12484	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12515	444
-F	frontend/src/lib/sdk/core.ts	20447	12961	536
-F	frontend/src/lib/system-charts.test.ts	6312	13499	141
-F	frontend/src/lib/system-charts.ts	5514	13642	149
-F	frontend/src/lib/system-health.test.ts	2385	13793	42
-F	frontend/src/lib/system-health.ts	2831	13837	60
-F	frontend/src/lib/system-model.test.ts	4455	13899	84
-F	frontend/src/lib/system-model.ts	5457	13985	125
-F	frontend/src/lib/themes/kira-default.css	1687	14112	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	14166	101
-F	frontend/src/lib/themes/kira-default.ts	777	14269	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	14293	79
-F	frontend/src/lib/time.test.ts	263	14374	8
-F	frontend/src/lib/time.ts	320	14384	9
-F	frontend/src/main.ts	6243	14395	137
-F	frontend/src/style.css	4076	14534	130
-F	frontend/tsconfig.json	403	14666	16
-F	frontend/vite.config.ts	224	14684	8
-F	nix/package.nix	3132	14694	117
-F	scripts/dev_preview.py	18147	14813	403	x
-F	scripts/qa_visual.py	12052	15218	299
-F	tests/test_calendar_design.py	7384	15519	130
-F	tests/test_detailed_health.py	5429	15651	105
-F	tests/test_dev_preview.py	9339	15758	219
-F	tests/test_dock_design.py	1664	15979	34
-F	tests/test_launcher_design.py	10400	16015	189
-F	tests/test_native_theme.py	1567	16206	36
-F	tests/test_popup_geometry.py	6956	16244	118
-F	tests/test_qa_visual.py	10549	16364	217
-F	tests/test_ui_bootstrap_contract.py	1103	16583	29
+F	frontend/scripts/smoke-overlays.mjs	22168	9588	322
+F	frontend/src/App.svelte	8659	9912	200
+F	frontend/src/lib/bootstrap.test.ts	3408	10114	84
+F	frontend/src/lib/bootstrap.ts	2613	10200	70
+F	frontend/src/lib/calendar-model.test.ts	3571	10272	65
+F	frontend/src/lib/calendar-model.ts	4648	10339	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10446	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10508	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10539	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10859	50
+F	frontend/src/lib/clock-flight.ts	1977	10911	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10963	239
+F	frontend/src/lib/components/DockWidget.svelte	3739	11204	95
+F	frontend/src/lib/components/LauncherWidget.svelte	10668	11301	230
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11533	226
+F	frontend/src/lib/components/SystemHealth.svelte	1684	11761	43
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11806	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	3447	12128	61
+F	frontend/src/lib/dock-model.test.ts	973	12191	22
+F	frontend/src/lib/dock-model.ts	890	12215	24
+F	frontend/src/lib/launcher-model.test.ts	2266	12241	46
+F	frontend/src/lib/launcher-model.ts	1403	12289	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	12320	89
+F	frontend/src/lib/lazy-widget.ts	1984	12411	63
+F	frontend/src/lib/motion.ts	1597	12476	50
+F	frontend/src/lib/overlay-size.ts	1090	12528	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12559	444
+F	frontend/src/lib/sdk/core.ts	20447	13005	536
+F	frontend/src/lib/system-charts.test.ts	6312	13543	141
+F	frontend/src/lib/system-charts.ts	5514	13686	149
+F	frontend/src/lib/system-health.test.ts	2385	13837	42
+F	frontend/src/lib/system-health.ts	2831	13881	60
+F	frontend/src/lib/system-model.test.ts	4455	13943	84
+F	frontend/src/lib/system-model.ts	5457	14029	125
+F	frontend/src/lib/themes/kira-default.css	1687	14156	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	14210	101
+F	frontend/src/lib/themes/kira-default.ts	777	14313	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4425	14337	79
+F	frontend/src/lib/time.test.ts	263	14418	8
+F	frontend/src/lib/time.ts	320	14428	9
+F	frontend/src/main.ts	6243	14439	137
+F	frontend/src/style.css	4076	14578	130
+F	frontend/tsconfig.json	403	14710	16
+F	frontend/vite.config.ts	224	14728	8
+F	nix/package.nix	3132	14738	117
+F	scripts/dev_preview.py	18147	14857	403	x
+F	scripts/qa_visual.py	12052	15262	299
+F	tests/test_calendar_design.py	7384	15563	130
+F	tests/test_detailed_health.py	5429	15695	105
+F	tests/test_dev_preview.py	9339	15802	219
+F	tests/test_dock_design.py	1664	16023	34
+F	tests/test_launcher_design.py	10400	16059	189
+F	tests/test_native_theme.py	1567	16250	36
+F	tests/test_popup_geometry.py	6956	16288	118
+F	tests/test_qa_visual.py	10549	16408	217
+F	tests/test_ui_bootstrap_contract.py	1103	16627	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -9802,7 +9802,51 @@ async function smoke(name, steps, expected, heightMode = 'any') {
   console.log('OK: ' + name + ' mounted ' + expected + ' at ' + size + 'px');
 }
 
+
+/** Dock's permanent WebKit page has a distinct marker and bridge; it must
+ * mount real GIO IDs without involving the Calendar/Launcher popup lifecycle.
+ */
+async function smokeDock() {
+  const script = '<script>' +
+    'window.webkit={messageHandlers:{kiraDock:{postMessage(message){' +
+    'if(message==="catalog"){setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:apps",{detail:{' +
+    'apps:[{id:2,name:"Firefox",description:"Browser"},{id:8,name:"Terminal",description:"Shell"}],' +
+    'favorites:["Terminal","Firefox"]}})),25);}' +
+    'if(String(message).startsWith("icons:")){' +
+    'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:dock:icons",{detail:{icons:[' +
+    '{id:2,data_url:' + JSON.stringify(testIcon) + '},{id:8,data_url:' + JSON.stringify(testIcon) + '}]}})),25);}' +
+    'if(String(message).startsWith("launch:")){document.documentElement.dataset.dockLaunched=String(message);}' +
+    '}},kiraDiagnostics:{postMessage(){}}}};' +
+    'window.addEventListener("load",()=>{' +
+    'setTimeout(()=>document.querySelector("button[aria-label=\\\"Launch Terminal\\\"]")?.click(),280);' +
+    'setTimeout(()=>{' +
+    'const root=document.querySelector("main[aria-label=\\\"Kira Dock\\\"]");' +
+    'const buttons=Array.from(root?.querySelectorAll("nav button")||[]);' +
+    'const names=buttons.map(button=>button.getAttribute("aria-label"));' +
+    'document.documentElement.dataset.dockTest=!!root && root.getBoundingClientRect().height===72 &&' +
+    'names.join("|")==="Open application launcher|Launch Terminal|Launch Firefox" &&' +
+    'root.querySelectorAll("img[src^=\\\"data:image/\\\"]").length===2 &&' +
+    'document.documentElement.dataset.dockLaunched==="launch:8";' +
+    '},700);});</script>';
+  const document = html
+    .replace('<html lang="en">', '<html lang="en" data-kira-surface="dock">')
+    .replace('</head>', script + '</head>');
+  const path = join(dir, 'dock.html');
+  await writeFile(path, document);
+  const output = execFileSync(chrome, [
+    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--disable-background-networking', '--virtual-time-budget=1500',
+    '--dump-dom', 'file://' + path,
+  ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
+  if (!output.includes('data-dock-test="true"')) {
+    const flags = output.match(/data-dock-(?:test|launched)="[^"]*"/g) || [];
+    throw new Error('dock: GIO catalog, icons, launch or accessibility failed: ' + flags.join(', '));
+  }
+  console.log('OK: dock mounted, pinned true native IDs, icons and launch bridge');
+}
+
 try {
+  await smokeDock();
   await smoke('calendar', [{ delay: 25, kind: 'calendar', generation: 1 }], 'Kira Calendar');
   await smoke('calendar-click-clock-chaos', [
     { delay: 25, kind: 'calendar', generation: 1 },
