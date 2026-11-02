@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5594
+index_bytes=5595
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	eb12866cc638475867f28988a6c8c312bc6c7314
+C	d652cce5b8a6961445111fb88d4e9375cff1a540
 F	.cargo/config.toml	98	141	3
 F	.github/workflows/ci.yml	4355	146	112
 F	.github/workflows/frontend-nix.yml	1398	260	43
@@ -37,98 +37,98 @@ F	crates/kira-ipc/Cargo.toml	170	2823	9
 F	crates/kira-ipc/src/client.rs	17794	2834	458
 F	crates/kira-ipc/src/lib.rs	10460	3294	336
 F	crates/kira-shell/Cargo.toml	297	3632	12
-F	crates/kira-shell/src/calendar.rs	70257	3646	1870
-F	crates/kira-shell/src/config_layers.rs	19239	5518	496
-F	crates/kira-shell/src/display_manager.rs	20641	6016	546
-F	crates/kira-shell/src/launcher.rs	14114	6564	392
-F	crates/kira-shell/src/main.rs	19934	6958	463
-F	crates/kira-shell/src/native_ui.rs	4536	7423	104
-F	crates/kira-shell/src/popup_layout.rs	2055	7529	58
-F	crates/kira-shell/src/process_monitor.rs	9336	7589	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	7877	116
-F	crates/kira-shell/src/system_info.rs	3951	7995	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8110	559
-F	crates/kira-shell/src/system_panel.rs	11356	8671	318
-F	crates/kira-shell/src/webview_pool.rs	8477	8991	249
-F	docs/CONFIG.md	5801	9242	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9369	135
-F	docs/DESIGN_SYSTEM.md	32126	9506	519
-F	docs/DEVELOPMENT.md	29347	10027	577
-F	docs/QA_VISUAL.md	12284	10606	149
-F	docs/SPECIFICATION.md	28960	10757	421
-F	docs/TENET_MOTION.md	40649	11180	204
-F	docs/UI_ARCHITECTURE.md	6737	11386	106
-F	docs/VISUAL_REVIEW.md	9754	11494	84
-F	docs/WEBVIEW_POOL.md	7022	11580	38
-F	flake.nix	3181	11620	91
-F	frontend/index.html	2737	11713	66
-F	frontend/package.json	720	11781	27
-F	frontend/scripts/inline-assets.mjs	4457	11810	103
-F	frontend/scripts/inline-assets.test.mjs	4645	11915	106
-F	frontend/scripts/smoke-overlays.mjs	42286	12023	582
-F	frontend/src/App.svelte	9665	12607	224
-F	frontend/src/lib/bootstrap.test.ts	3408	12833	84
-F	frontend/src/lib/bootstrap.ts	2613	12919	70
-F	frontend/src/lib/calendar-model.test.ts	3571	12991	65
-F	frontend/src/lib/calendar-model.ts	4648	13058	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13165	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	13227	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	13258	287
-F	frontend/src/lib/clock-flight.test.ts	2404	13547	50
-F	frontend/src/lib/clock-flight.ts	1977	13599	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	13651	246
-F	frontend/src/lib/components/DisplaySettings.svelte	21886	13899	423
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	14324	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9356	14582	168
-F	frontend/src/lib/components/SystemCharts.svelte	10517	14752	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	14980	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	15028	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	15369	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15409	119
-F	frontend/src/lib/launcher-model.test.ts	2266	15530	46
-F	frontend/src/lib/launcher-model.ts	1403	15578	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	15609	89
-F	frontend/src/lib/lazy-widget.ts	1984	15700	63
-F	frontend/src/lib/motion-contract.test.ts	11242	15765	198
-F	frontend/src/lib/motion.ts	24039	15965	657
-F	frontend/src/lib/overlay-size.ts	1090	16624	29
-F	frontend/src/lib/sdk/core.test.ts	27884	16655	564
-F	frontend/src/lib/sdk/core.ts	25417	17221	645
-F	frontend/src/lib/settings-model.test.ts	1064	17868	21
-F	frontend/src/lib/settings-model.ts	1262	17891	26
-F	frontend/src/lib/system-charts.test.ts	6312	17919	141
-F	frontend/src/lib/system-charts.ts	5514	18062	149
-F	frontend/src/lib/system-health.test.ts	2385	18213	42
-F	frontend/src/lib/system-health.ts	2831	18257	60
-F	frontend/src/lib/system-model.test.ts	4455	18319	84
-F	frontend/src/lib/system-model.ts	5457	18405	125
-F	frontend/src/lib/themes/kira-default.css	1687	18532	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	18586	101
-F	frontend/src/lib/themes/kira-default.ts	777	18689	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	18713	101
-F	frontend/src/lib/time.test.ts	263	18816	8
-F	frontend/src/lib/time.ts	320	18826	9
-F	frontend/src/lib/workspace-window.test.ts	2298	18837	52
-F	frontend/src/lib/workspace-window.ts	1063	18891	32
-F	frontend/src/main.ts	7783	18925	161
-F	frontend/src/style.css	6399	19088	194
-F	frontend/tsconfig.json	403	19284	16
-F	frontend/vite.config.ts	224	19302	8
-F	nix/package.nix	3132	19312	117
-F	scripts/dev_preview.py	18147	19431	403	x
-F	scripts/qa_visual.py	12052	19836	299
-F	tests/test_calendar_design.py	7810	20137	136
-F	tests/test_detailed_health.py	5481	20275	105
-F	tests/test_dev_preview.py	9339	20382	219
-F	tests/test_displays.py	4101	20603	72
-F	tests/test_launcher_design.py	10481	20677	190
-F	tests/test_native_theme.py	2098	20869	44
-F	tests/test_popup_geometry.py	3227	20915	58
-F	tests/test_qa_visual.py	10549	20975	217
-F	tests/test_settings.py	3212	21194	62
-F	tests/test_tenet_close.py	6297	21258	115
-F	tests/test_ui_bootstrap_contract.py	1103	21375	29
-F	tests/test_webview_pool.py	5335	21406	94
+F	crates/kira-shell/src/calendar.rs	70785	3646	1884
+F	crates/kira-shell/src/config_layers.rs	19239	5532	496
+F	crates/kira-shell/src/display_manager.rs	20641	6030	546
+F	crates/kira-shell/src/launcher.rs	14114	6578	392
+F	crates/kira-shell/src/main.rs	20447	6972	471
+F	crates/kira-shell/src/native_ui.rs	4536	7445	104
+F	crates/kira-shell/src/popup_layout.rs	2055	7551	58
+F	crates/kira-shell/src/process_monitor.rs	9336	7611	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	7899	116
+F	crates/kira-shell/src/system_info.rs	3951	8017	113
+F	crates/kira-shell/src/system_metrics.rs	19842	8132	559
+F	crates/kira-shell/src/system_panel.rs	11356	8693	318
+F	crates/kira-shell/src/webview_pool.rs	8477	9013	249
+F	docs/CONFIG.md	5801	9264	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9391	135
+F	docs/DESIGN_SYSTEM.md	32126	9528	519
+F	docs/DEVELOPMENT.md	29347	10049	577
+F	docs/QA_VISUAL.md	12284	10628	149
+F	docs/SPECIFICATION.md	28960	10779	421
+F	docs/TENET_MOTION.md	40649	11202	204
+F	docs/UI_ARCHITECTURE.md	6737	11408	106
+F	docs/VISUAL_REVIEW.md	9754	11516	84
+F	docs/WEBVIEW_POOL.md	7942	11602	54
+F	flake.nix	3181	11658	91
+F	frontend/index.html	2737	11751	66
+F	frontend/package.json	720	11819	27
+F	frontend/scripts/inline-assets.mjs	4457	11848	103
+F	frontend/scripts/inline-assets.test.mjs	4645	11953	106
+F	frontend/scripts/smoke-overlays.mjs	42286	12061	582
+F	frontend/src/App.svelte	9665	12645	224
+F	frontend/src/lib/bootstrap.test.ts	3408	12871	84
+F	frontend/src/lib/bootstrap.ts	2613	12957	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13029	65
+F	frontend/src/lib/calendar-model.ts	4648	13096	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13203	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13265	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	13296	287
+F	frontend/src/lib/clock-flight.test.ts	2404	13585	50
+F	frontend/src/lib/clock-flight.ts	1977	13637	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	13689	246
+F	frontend/src/lib/components/DisplaySettings.svelte	21886	13937	423
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	14362	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9356	14620	168
+F	frontend/src/lib/components/SystemCharts.svelte	10517	14790	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	15018	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	15066	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	15407	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	15447	119
+F	frontend/src/lib/launcher-model.test.ts	2266	15568	46
+F	frontend/src/lib/launcher-model.ts	1403	15616	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	15647	89
+F	frontend/src/lib/lazy-widget.ts	1984	15738	63
+F	frontend/src/lib/motion-contract.test.ts	11242	15803	198
+F	frontend/src/lib/motion.ts	24039	16003	657
+F	frontend/src/lib/overlay-size.ts	1090	16662	29
+F	frontend/src/lib/sdk/core.test.ts	27884	16693	564
+F	frontend/src/lib/sdk/core.ts	25417	17259	645
+F	frontend/src/lib/settings-model.test.ts	1064	17906	21
+F	frontend/src/lib/settings-model.ts	1262	17929	26
+F	frontend/src/lib/system-charts.test.ts	6312	17957	141
+F	frontend/src/lib/system-charts.ts	5514	18100	149
+F	frontend/src/lib/system-health.test.ts	2385	18251	42
+F	frontend/src/lib/system-health.ts	2831	18295	60
+F	frontend/src/lib/system-model.test.ts	4455	18357	84
+F	frontend/src/lib/system-model.ts	5457	18443	125
+F	frontend/src/lib/themes/kira-default.css	1687	18570	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	18624	101
+F	frontend/src/lib/themes/kira-default.ts	777	18727	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	18751	101
+F	frontend/src/lib/time.test.ts	263	18854	8
+F	frontend/src/lib/time.ts	320	18864	9
+F	frontend/src/lib/workspace-window.test.ts	2298	18875	52
+F	frontend/src/lib/workspace-window.ts	1063	18929	32
+F	frontend/src/main.ts	7783	18963	161
+F	frontend/src/style.css	6399	19126	194
+F	frontend/tsconfig.json	403	19322	16
+F	frontend/vite.config.ts	224	19340	8
+F	nix/package.nix	3132	19350	117
+F	scripts/dev_preview.py	18147	19469	403	x
+F	scripts/qa_visual.py	12052	19874	299
+F	tests/test_calendar_design.py	7782	20175	136
+F	tests/test_detailed_health.py	5481	20313	105
+F	tests/test_dev_preview.py	9339	20420	219
+F	tests/test_displays.py	4101	20641	72
+F	tests/test_launcher_design.py	10481	20715	190
+F	tests/test_native_theme.py	2098	20907	44
+F	tests/test_popup_geometry.py	3227	20953	58
+F	tests/test_qa_visual.py	10549	21013	217
+F	tests/test_settings.py	3212	21232	62
+F	tests/test_tenet_close.py	6297	21296	115
+F	tests/test_ui_bootstrap_contract.py	1103	21413	29
+F	tests/test_webview_pool.py	6481	21444	117
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3678,6 +3678,7 @@ thread_local! {
 type OpenRequest = Box<dyn FnOnce(&Rc<OverlayPool>)>;
 struct OverlayPool {
     application: gtk::Application,
+    context: webkit6::WebContext,
     document: String,
     scheduler: RefCell<WebviewScheduler>,
     windows: RefCell<HashMap<u32, Rc<CalendarOverlay>>>,
@@ -3687,12 +3688,17 @@ struct OverlayPool {
 }
 
 impl OverlayPool {
-    fn new(application: &gtk::Application, document: String) -> Rc<Self> {
+    fn new(
+        application: &gtk::Application,
+        document: String,
+        context: &webkit6::WebContext,
+    ) -> Rc<Self> {
         // Install once per popup pool, before any warm GtkApplicationWindow
         // is constructed. The selector never touches the permanent Top Bar.
         crate::native_ui::install_transparent_popup_style();
         let pool = Rc::new(Self {
             application: application.clone(),
+            context: context.clone(),
             document,
             scheduler: RefCell::new(WebviewScheduler::default()),
             windows: RefCell::new(HashMap::new()),
@@ -3703,6 +3709,7 @@ impl OverlayPool {
         if let Some(id) = pool.scheduler.borrow_mut().prewarm_one(Instant::now()) {
             let view = build(
                 &pool.application,
+                &pool.context,
                 pool.document.clone(),
                 id,
                 Rc::downgrade(&pool),
@@ -3728,6 +3735,7 @@ impl OverlayPool {
             Reservation::Created(id) => {
                 let view = build(
                     &self.application,
+                    &self.context,
                     self.document.clone(),
                     id,
                     Rc::downgrade(self),
@@ -5091,6 +5099,7 @@ fn calendar_document(html: &str) -> Option<String> {
 
 fn build(
     application: &gtk::Application,
+    context: &webkit6::WebContext,
     document: String,
     id: u32,
     pool: std::rc::Weak<OverlayPool>,
@@ -5114,10 +5123,10 @@ fn build(
     crate::native_ui::configure_webview_popup(&window, 420, 1);
 
     // The calendar has no general Core RPC bridge, only its own messages.
-    let context = webkit6::WebContext::new();
+    // Share only the WebKit context; script-message registrations are per host.
     let manager = webkit6::UserContentManager::new();
     let view = webkit6::WebView::builder()
-        .web_context(&context)
+        .web_context(context)
         .user_content_manager(&manager)
         .build();
     // A black WebKit backing layer would flash as a full rectangle before
@@ -5204,21 +5213,25 @@ fn build(
     overlay
 }
 
-fn ensure(application: &gtk::Application, html: &str) -> Option<Rc<OverlayPool>> {
+fn ensure(
+    application: &gtk::Application,
+    html: &str,
+    context: &webkit6::WebContext,
+) -> Option<Rc<OverlayPool>> {
     POOL.with(|cache| {
         if let Some(pool) = cache.borrow().as_ref() {
             return Some(pool.clone());
         }
         let document = calendar_document(html)?;
-        let pool = OverlayPool::new(application, document);
+        let pool = OverlayPool::new(application, document, context);
         *cache.borrow_mut() = Some(pool.clone());
         Some(pool)
     })
 }
 
 /// One inert, bounded warm popup WebView, no speculative widget DOM or ECharts.
-pub fn prewarm(application: &gtk::Application, html: &str) {
-    if ensure(application, html).is_none() {
+pub fn prewarm(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    if ensure(application, html, context).is_none() {
         eprintln!("kira-shell: Overlay HTML root not found");
     }
 }
@@ -5249,8 +5262,8 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
     })
 }
 
-pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
+pub fn toggle(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(
@@ -5275,8 +5288,8 @@ pub fn toggle(application: &gtk::Application, html: &str) {
     );
 }
 
-pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
+pub fn open_launcher(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(
@@ -5301,8 +5314,8 @@ pub fn open_launcher(application: &gtk::Application, html: &str) {
 
 /// Open the same Settings surface in popup mode; pop-out retains the exact
 /// WebView and its in-memory navigation state.
-pub fn toggle_settings(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
+pub fn toggle_settings(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(
@@ -5332,11 +5345,12 @@ pub fn toggle_settings(application: &gtk::Application, html: &str) {
 pub fn toggle_system(
     application: &gtk::Application,
     html: &str,
+    context: &webkit6::WebContext,
     metrics: Rc<RefCell<crate::system_metrics::Snapshot>>,
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(pool) = ensure(application, html) else {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(
@@ -7078,7 +7092,9 @@ fn main() {
         window.set_anchor(Edge::Right, true);
         window.set_exclusive_zone(BAR_HEIGHT);
 
-        // Keep a dedicated context for the locked-down, self-contained UI.
+        // One WebKit context for the trusted Top Bar and every pooled overlay.
+        // Each WebView still has its own UserContentManager and fixed IPC handlers.
+        // Sharing a context does not force WebKit to share renderer processes.
         let context = webkit6::WebContext::new();
         let manager = webkit6::UserContentManager::new();
         let view = webkit6::WebView::builder()
@@ -7172,9 +7188,10 @@ fn main() {
         // local UI. Never forward launcher requests to Core or execute JS text.
         let launcher_application = app.clone();
         let launcher_html = html.clone();
+        let launcher_context = context.clone();
         manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
             if value.to_string() == "open" {
-                calendar::open_launcher(&launcher_application, &launcher_html);
+                calendar::open_launcher(&launcher_application, &launcher_html, &launcher_context);
             }
         });
         assert!(manager.register_script_message_handler("kiraLauncher", None));
@@ -7183,9 +7200,10 @@ fn main() {
         // messages or expand the Core JSON-RPC method allowlist.
         let calendar_application = app.clone();
         let calendar_html = html.clone();
+        let calendar_context = context.clone();
         manager.connect_script_message_received(Some("kiraCalendar"), move |_, value| {
             if value.to_string() == "toggle" {
-                calendar::toggle(&calendar_application, &calendar_html);
+                calendar::toggle(&calendar_application, &calendar_html, &calendar_context);
             }
         });
         assert!(manager.register_script_message_handler("kiraCalendar", None));
@@ -7193,6 +7211,7 @@ fn main() {
         // Fixed-purpose system diagnostics toggle. GTK samples the kernel
         // read-only; the page can neither supply metric values nor commands.
         let system_app = app.clone();
+        let system_context = context.clone();
         let system_stats = latest_metrics.clone();
         let system_core = core_online.clone();
         let system_niri = niri_online.clone();
@@ -7202,6 +7221,7 @@ fn main() {
                 calendar::toggle_system(
                     &system_app,
                     &system_html,
+                    &system_context,
                     system_stats.clone(),
                     system_core.clone(),
                     system_niri.clone(),
@@ -7214,9 +7234,10 @@ fn main() {
         // is accepted; the renderer cannot request arbitrary system queries.
         let settings_app = app.clone();
         let settings_html = html.clone();
+        let settings_context = context.clone();
         manager.connect_script_message_received(Some("kiraSettings"), move |_, value| {
             if value.to_string() == "toggle" {
-                calendar::toggle_settings(&settings_app, &settings_html);
+                calendar::toggle_settings(&settings_app, &settings_html, &settings_context);
             }
         });
         assert!(manager.register_script_message_handler("kiraSettings", None));
@@ -7341,13 +7362,14 @@ fn main() {
         window.set_child(Some(&view));
         window.present();
 
-        // Warm the isolated Calendar WebKit process after the Top Bar starts.
+        // Warm the inert Calendar WebView with the SAME WebContext as Top Bar.
         // The popup stays unmapped until requested; initial startup is not
         // blocked by the Calendar's JS initialization.
         let calendar_app = app.clone();
         let calendar_source = html.clone();
+        let warm_context = context.clone();
         gtk::glib::timeout_add_local_once(Duration::from_millis(200), move || {
-            calendar::prewarm(&calendar_app, &calendar_source);
+            calendar::prewarm(&calendar_app, &calendar_source, &warm_context);
         });
     });
     app.run();
@@ -11588,6 +11610,22 @@ A **transient widget** is a trusted layer-shell overlay anchored below the Top B
 An **ordinary window** is requested explicitly through the pop-out control in every widget header. The Shell creates a **decorated GtkApplicationWindow without layer-shell initialization**, making it an xdg-toplevel managed by Niri alongside other applications. The existing *live* WebView is reparented from the transient host into the regular window, without `load_html`, Svelte unmount, or a generation change. This preserves the selected date, active tab, search query, scroll position, animations and interactive state. The transient GTK surface disappears. The promoted WebView retains its lease and data subscriptions while the ordinary window is open. Closing the ordinary window performs the reversible TENET exit, unmounts Svelte, reparents WebView to its hidden popup host and releases the lease. Clicking its Top Bar icon raises the existing ordinary window instead of cloning the same widget.
 
 The pool makes **multiple ordinary windows** possible without pretending layer-shell widgets are desktop application windows. Detached xdg-toplevels do **not** consume popup dock geometry or shrink the width of a future transient widget.
+
+## Shared WebKit context
+
+At GTK activation, **exactly one** `webkit6::WebContext` is created by the
+Shell and passed explicitly to the permanent Top Bar and the popup pool. Every
+warm, reused, newly allocated, or promoted WebView uses this same context.
+The pool retains a strong GObject reference for later lazy allocations.
+Each WebView still creates its **own** `UserContentManager` with the original,
+fixed-purpose script message handlers and locked-down navigation. No generic
+bridge, shared JS global, new web origin, or new privilege is introduced.
+
+The context is shared to avoid duplicate context-level state, not to demand
+one WebKit renderer process for every WebView. WebKitGTK 6 still chooses
+renderer processes independently for security and stability. Measure RSS/PSS
+for the entire Kira/WebKit process tree before and after; savings are
+workload-dependent and must not be advertised as a fixed amount.
 
 ## Pool lifecycle
 
@@ -20190,13 +20228,13 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("pub fn configure_webview_popup", NATIVE)
 
     def test_calendar_is_preloaded_and_reused_without_a_blank_surface(self):
-        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source)", SHELL)
+        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source, &warm_context)", SHELL)
         self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", RUST)
         self.assertIn("scheduler: RefCell<WebviewScheduler>", RUST)
         self.assertIn("pool.scheduler.borrow_mut().prewarm_one(Instant::now())", RUST)
         self.assertIn("Reservation::Reused(id)", RUST)
         self.assertIn("Reservation::Created(id)", RUST)
-        self.assertIn("fn ensure(application: &gtk::Application, html: &str)", RUST)
+        self.assertIn("fn ensure(", RUST)
         self.assertIn("self.window.set_visible(false)", RUST)
         self.assertIn("self.window.set_opacity(0.0)", RUST)
         self.assertIn("self.window.set_opacity(1.0)", RUST)
@@ -21416,7 +21454,30 @@ NATIVE = (ROOT / "crates/kira-shell/src/native_ui.rs").read_text()
 CONTROLS = (ROOT / "frontend/src/lib/components/WindowControls.svelte").read_text()
 
 
+SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+
+
 class WebviewPoolContracts(unittest.TestCase):
+    def test_one_shared_context_for_bar_and_all_popup_leases(self):
+        self.assertEqual(SHELL.count("webkit6::WebContext::new()"), 1)
+        self.assertNotIn("webkit6::WebContext::new()", HOST)
+        self.assertIn("context: webkit6::WebContext,", HOST)
+        self.assertIn("context: context.clone(),", HOST)
+        self.assertIn("&pool.context,", HOST)
+        self.assertIn("&self.context,", HOST)
+        self.assertIn(".web_context(&context)", SHELL)
+        self.assertIn(".web_context(context)", HOST)
+        self.assertIn("UserContentManager::new()", SHELL)
+        self.assertIn("UserContentManager::new()", HOST)
+        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source, &warm_context)", SHELL)
+        for call in (
+            "calendar::toggle(&calendar_application, &calendar_html, &calendar_context)",
+            "calendar::toggle_settings(&settings_app, &settings_html, &settings_context)",
+            "calendar::open_launcher(&launcher_application, &launcher_html, &launcher_context)",
+        ):
+            self.assertIn(call, SHELL)
+
+
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
         self.assertIn("pub const HOT_IDLE_TARGET: usize = 1", POOL)
