@@ -67,6 +67,17 @@ class WebviewPoolContracts(unittest.TestCase):
         handler = HOST.split("view.connect_web_process_terminated(move |_, reason|", 1)[1]
         self.assertNotIn("state.view.load_html(&state.document, None);\n        }\n    });", handler)
 
+    def test_opt_in_process_tree_memory_probe_does_not_run_in_ui_loop(self):
+        monitor = (ROOT / "crates/kira-shell/src/process_monitor.rs").read_text()
+        self.assertIn('KIRA_MEMORY_PROBE', SHELL)
+        self.assertIn('start_memory_probe();', SHELL)
+        self.assertIn('scope=process-tree', SHELL)
+        self.assertIn('std::thread::spawn(||', SHELL)
+        self.assertIn('process_monitor::shell_tree_memory(std::process::id())', SHELL)
+        self.assertIn('read_pss_kib(&path.join("smaps_rollup"))', monitor)
+        self.assertIn('shell_descendants(&parents, root_pid)', monitor)
+        self.assertIn('MAX_SHELL_TREE_MEMBERS: usize = 64', monitor)
+
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
         self.assertIn("pub const HOT_IDLE_TARGET: usize = 1", POOL)

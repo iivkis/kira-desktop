@@ -36,6 +36,22 @@ renderer processes independently for security and stability. Measure RSS/PSS
 for the entire Kira/WebKit process tree before and after; savings are
 workload-dependent and must not be advertised as a fixed amount.
 
+## Measuring actual WebKit memory
+
+Set `KIRA_MEMORY_PROBE=1` in the `kira-shell` environment to log a sample
+five seconds after startup and every ten seconds thereafter. This is opt-in:
+reading `/proc/*/smaps_rollup` on every UI frame would be unnecessary work.
+The probe reads the Shell PID and descendants (including nested WebKit
+renderers and sandbox helpers), reporting `rss_mib`, `pss_mib` and process
+count to stderr. Use **PSS**, not the sum of RSS, to estimate the real
+proportional cost of shared libraries and mappings. Measurements are a
+point-in-time process-tree estimate; exited, reparented, sandbox-hidden or
+unreadable processes can make an apparent sum incomplete. When required
+fields cannot be read or a bounded scan is truncated, the affected total
+is reported as `unknown` rather than silently presented as complete.
+The scanner caps /proc enumeration at 4096 processes and PSS reads at
+64 tree members; the default idle shell does not run the probe.
+
 ## Pool lifecycle
 
 - **Startup:** exactly one inert warm host and one permanent Top Bar host. No idle Svelte widget DOM, telemetry graph, app catalog or per-window poll loop.

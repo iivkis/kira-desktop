@@ -76,6 +76,37 @@ fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
     }
 }
 
+/// Opt-in worker: no GTK objects cross thread boundaries. We deliberately
+/// avoid collecting global-process PSS continuously while the UI is idle.
+fn start_memory_probe() {
+    if !env::var("KIRA_MEMORY_PROBE").is_ok_and(|value| value == "1") {
+        return;
+    }
+    std::thread::spawn(|| {
+        // Let the delayed popup prewarm complete before the first sample.
+        std::thread::sleep(Duration::from_secs(5));
+        loop {
+            match process_monitor::shell_tree_memory(std::process::id()) {
+                Ok(sample) => {
+                    let mib = |kib: Option<u64>| {
+                        kib.map(|value| format!("{:.1}", value as f64 / 1024.0))
+                            .unwrap_or_else(|| "unknown".to_owned())
+                    };
+                    eprintln!(
+                        "kira-shell memory: scope=process-tree processes={} rss_mib={} pss_mib={} truncated={}",
+                        sample.processes,
+                        mib(sample.rss_kib),
+                        mib(sample.pss_kib),
+                        sample.truncated
+                    );
+                }
+                Err(error) => eprintln!("kira-shell memory: sampling unavailable: {error}"),
+            }
+            std::thread::sleep(Duration::from_secs(10));
+        }
+    });
+}
+
 fn main() {
     let index = ui_index();
     if !index.is_file() {
@@ -119,6 +150,7 @@ fn main() {
         }
         let window = gtk::ApplicationWindow::new(app);
         primary_bar.replace(Some(window.clone()));
+        start_memory_probe();
         window.set_title(Some("Kira Desktop"));
         window.set_decorated(false);
         window.set_default_size(800, BAR_HEIGHT);

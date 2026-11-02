@@ -1,7 +1,7 @@
 //! Read-only Linux process accounting for the System Monitor.
 //! CPU is shown as percentage of the *entire host*, not one logical core.
 //! Sampling and /proc enumeration run only while Processes is the active tab.
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::io::{self, Read};
 use std::path::Path;
@@ -35,6 +35,7 @@ pub struct ProcessSnapshot {
 struct Stat {
     name: String,
     state: char,
+    parent_pid: u32,
     ticks: u64,
     start_ticks: u64,
 }
@@ -63,6 +64,7 @@ fn parse_stat(input: &str) -> Option<Stat> {
     Some(Stat {
         name,
         state,
+        parent_pid: fields[1].parse().ok()?,
         ticks: user.checked_add(kernel)?,
         start_ticks: fields[19].parse().ok()?,
     })
@@ -212,6 +214,85 @@ fn read_stat(path: &Path) -> Option<Stat> {
     parse_stat(&fs::read_to_string(path.join("stat")).ok()?)
 }
 
+/// A shell can have nested WebKit/bubblewrap helper processes. Account for
+/// descendants, not only the kira-shell PID. Never include unrelated users'
+/// processes, and bound both the /proc scan and expensive smaps_rollup reads.
+const MAX_SHELL_TREE_MEMBERS: usize = 64;
+
+#[derive(Debug)]
+pub struct ShellTreeMemory {
+    pub processes: usize,
+    pub rss_kib: Option<u64>,
+    pub pss_kib: Option<u64>,
+    pub truncated: bool,
+}
+
+fn shell_descendants(parents: &[(u32, u32)], root: u32) -> (Vec<u32>, bool) {
+    let mut seen = HashSet::from([root]);
+    let mut children = vec![root];
+    let mut truncated = false;
+    // A process can spawn multiple generations of sandbox helpers.
+    let mut index = 0;
+    while index < children.len() {
+        let parent = children[index];
+        index += 1;
+        for &(pid, ppid) in parents {
+            if ppid != parent || seen.contains(&pid) {
+                continue;
+            }
+            if children.len() == MAX_SHELL_TREE_MEMBERS {
+                truncated = true;
+                continue;
+            }
+            seen.insert(pid);
+            children.push(pid);
+        }
+    }
+    children.sort_unstable();
+    (children, truncated)
+}
+
+/// Optional diagnostic for Kira's own process tree. These are point-in-time
+/// values; helpers that exit or become unreadable yield None, not a fabricated
+/// complete sum. PSS comes from Linux smaps_rollup, RSS from /proc/status.
+pub fn shell_tree_memory(root_pid: u32) -> io::Result<ShellTreeMemory> {
+    let mut parents = Vec::new();
+    let mut scanned = 0;
+    let mut truncated = false;
+    for entry in fs::read_dir("/proc")?.flatten() {
+        let Some(pid) = entry.file_name().to_str().and_then(|s| s.parse::<u32>().ok()) else {
+            continue;
+        };
+        if scanned == MAX_SCANNED {
+            truncated = true;
+            break;
+        }
+        scanned += 1;
+        if let Some(stat) = read_stat(&entry.path()) {
+            parents.push((pid, stat.parent_pid));
+        }
+    }
+    let (pids, too_many) = shell_descendants(&parents, root_pid);
+    truncated |= too_many;
+    let mut rss_total = Some(0u64);
+    let mut pss_total = Some(0u64);
+    for pid in &pids {
+        let path = Path::new("/proc").join(pid.to_string());
+        let rss = fs::read_to_string(path.join("status"))
+            .ok()
+            .and_then(|text| rss_kib(&text));
+        let pss = read_pss_kib(&path.join("smaps_rollup"));
+        rss_total = rss_total.zip(rss).and_then(|(a, b)| a.checked_add(b));
+        pss_total = pss_total.zip(pss).and_then(|(a, b)| a.checked_add(b));
+    }
+    Ok(ShellTreeMemory {
+        processes: pids.len(),
+        rss_kib: (!truncated).then_some(rss_total).flatten(),
+        pss_kib: (!truncated).then_some(pss_total).flatten(),
+        truncated,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -219,6 +300,7 @@ mod tests {
     fn stat_line(name: &str, utime: u64, stime: u64, start: u64) -> String {
         let mut fields = vec!["0".to_string(); 20];
         fields[0] = "S".into();
+        fields[1] = "1".into();
         fields[11] = utime.to_string();
         fields[12] = stime.to_string();
         fields[19] = start.to_string();
@@ -230,6 +312,7 @@ mod tests {
         let record = parse_stat(&stat_line("renderer (worker) extra)", 20, 5, 902)).unwrap();
         assert_eq!(record.name, "renderer (worker) extra)");
         assert_eq!(record.state, 'S');
+        assert_eq!(record.parent_pid, 1);
         assert_eq!(record.ticks, 25);
         assert_eq!(record.start_ticks, 902);
         assert_eq!(parse_stat("42 (truncated"), None);
@@ -275,6 +358,24 @@ mod tests {
         assert!(second.contains(&96));
         assert!(second.contains(&100));
         assert!(second.contains(&0));
+    }
+
+    #[test]
+    fn shell_tree_includes_grandchildren_without_unrelated_processes() {
+        let parents = [(10, 1), (11, 10), (12, 11), (15, 10), (20, 1), (21, 20)];
+        assert_eq!(shell_descendants(&parents, 10), (vec![10, 11, 12, 15], false));
+        assert_eq!(shell_descendants(&parents, 99), (vec![99], false));
+    }
+
+    #[test]
+    fn shell_tree_caps_memory_reads_when_process_count_is_unbounded() {
+        let mut parents = Vec::new();
+        for pid in 2..100 {
+            parents.push((pid, 1));
+        }
+        let (pids, truncated) = shell_descendants(&parents, 1);
+        assert_eq!(pids.len(), MAX_SHELL_TREE_MEMBERS);
+        assert!(truncated);
     }
 
     #[test]
