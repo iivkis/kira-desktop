@@ -20,10 +20,19 @@ class CalendarDesignTests(unittest.TestCase):
             'data-kira-ui-root', 'aria-label="Kira Calendar"',
             "monthGrid(", "onclick={() => choose(date)}",
             "onclick={goToday}", "onCopy(selectedIso)",
-            "aria-pressed={isoDate(date) === selectedIso}",
+            "aria-pressed={marker.selected}",
+            "aria-current={marker.today ? 'date' : undefined}",
+            "tabindex={marker.selected ? 0 : -1}",
             "focus-visible:outline-kira-on-accent",
         ):
             self.assertIn(token, CALENDAR)
+        for token in ("KIRA / CHRONOLOGY", "02 / DATE INDEX", "03 / ",
+                      "role=\"group\" aria-label=\"Calendar dates\"",
+                      "data-calendar-clock-play", "use:tenetCalendarGrid",
+                      "kira-calendar-scroll", "aria-label=\"Navigate calendar\""):
+            self.assertIn(token, CALENDAR)
+        self.assertIn("calendarDayState(", CALENDAR)
+        self.assertIn("calendarDayState(", TS_MODEL)
         for token in ("monthGrid(", "shiftMonth(", "isoWeek(", "dayOfYear("):
             self.assertIn(token, TS_MODEL)
         for native_ui in ("gtk::Grid", "gtk::Button", "gtk::Label",

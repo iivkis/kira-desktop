@@ -25,6 +25,23 @@ export function todayCivilDate(date = new Date()): CivilDate {
 export function isoDate(date: CivilDate): string {
   return [String(date.year).padStart(4, '0'), String(date.month).padStart(2, '0'), String(date.day).padStart(2, '0')].join('-');
 }
+
+/** One semantic source for calendar-day states: selection, today's date
+ * and the displayed month are independent. Dates are compared as civil
+ * values, never by local timestamps (which shift across DST boundaries).
+ */
+export function calendarDayState(
+  date: CivilDate, selected: CivilDate, today: CivilDate,
+  visible: { year: number; month: number },
+): { iso: string; selected: boolean; today: boolean; outside: boolean } {
+  const iso = isoDate(date);
+  return {
+    iso,
+    selected: iso === isoDate(selected),
+    today: iso === isoDate(today),
+    outside: date.year !== visible.year || date.month !== visible.month,
+  };
+}
 export function daysInMonth(year: number, month: number): number {
   if (month < 1 || month > 12 || year < 1 || year > 9999) throw new RangeError('Invalid calendar month');
   if (month === 2) return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;

@@ -1,7 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth, clockGlyphs, localClockText } from './calendar-model';
+import { dayOfYear, daysInMonth, isoDate, isoWeek, monthGrid, shiftDays, shiftMonth, clockGlyphs, localClockText, calendarDayState } from './calendar-model';
 
 describe('Svelte Calendar Gregorian model', () => {
+  it('keeps today, selection and adjacent-month identity independent', () => {
+    const today = { year: 2026, month: 11, day: 2 };
+    const selected = { year: 2026, month: 11, day: 4 };
+    const visible = { year: 2026, month: 11 };
+    expect(calendarDayState(today, selected, today, visible)).toEqual({
+      iso: '2026-11-02', selected: false, today: true, outside: false,
+    });
+    expect(calendarDayState(selected, selected, today, visible)).toEqual({
+      iso: '2026-11-04', selected: true, today: false, outside: false,
+    });
+    expect(calendarDayState({ year: 2026, month: 10, day: 31 }, selected, today, visible))
+      .toEqual({ iso: '2026-10-31', selected: false, today: false, outside: true });
+    expect(calendarDayState(today, today, today, visible))
+      .toEqual({ iso: '2026-11-02', selected: true, today: true, outside: false });
+  });
+
   it('respects leap years, including century rules', () => {
     expect(daysInMonth(2024, 2)).toBe(29);
     expect(daysInMonth(1900, 2)).toBe(28);

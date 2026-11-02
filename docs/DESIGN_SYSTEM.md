@@ -70,11 +70,19 @@ official visual language of Kira Desktop.
   The time is a semantic button that toggles a separate native calendar overlay;
   the Top Bar remains 42 px tall.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
-  zone. Black time hero, Prussian Blue month/day selector and Black detail
-  footer; the time updates live, a custom Monday-first 6×7 GTK Grid of
-  accessible buttons supports month/year navigation, adjacent-month dates,
-  ISO weeks and arrow/PageUp/PageDown/Home keyboard navigation. Selecting
-  a date exposes the correct ISO week-year and day of year.
+  zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
+  compact Black local-time hero, a Prussian Blue calendar workbench, and a
+  Black factual selection footer. The clock is actual local time; the date
+  grid is a custom Svelte Monday-first 6×7 composition of accessible buttons
+  with a distinct ISO week-number rail, month/year navigation and adjacent
+  month dates. Selected state, today's civil date and outside-month identity
+  are independent, pure Gregorian model states. Keyboard support includes
+  arrow/PageUp/PageDown/Home navigation with focus following selection; the
+  selected button is the sole tab stop in the grid, and today's date uses
+  `aria-current="date"`. The footer keeps the selected ISO date, week number
+  and day of year plainly visible without pretending to provide events.
+  The native overlay remains height-capped and scrollable, with hidden
+  WebKit scrollbar chrome but usable wheel/touch/keyboard navigation.
   Today and Copy Date are both flat orange typographic commands, without
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
