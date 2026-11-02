@@ -468,7 +468,10 @@ impl CalendarOverlay {
                 self.reveal();
             }
             Some(UiCommand::Close(generation))
-                if self.requested.get() && self.generation.get() == generation => self.hide(),
+                if self.requested.get() && self.generation.get() == generation =>
+            {
+                self.hide()
+            }
             Some(UiCommand::CopyDate(generation, date))
                 if self.requested.get()
                     && self.generation.get() == generation
@@ -764,7 +767,9 @@ fn parse_ui_generation(value: &str) -> Option<u32> {
 }
 
 fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
-    if message == "host-ready" { return Some(UiCommand::HostReady); }
+    if message == "host-ready" {
+        return Some(UiCommand::HostReady);
+    }
     if let Some(value) = message.strip_prefix("close:") {
         return parse_ui_generation(value).map(UiCommand::Close);
     }
@@ -778,7 +783,10 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
             "processes" => true,
             _ => return None,
         };
-        return Some(UiCommand::ProcessesTab(parse_ui_generation(generation)?, active));
+        return Some(UiCommand::ProcessesTab(
+            parse_ui_generation(generation)?,
+            active,
+        ));
     }
     if let Some(value) = message.strip_prefix("apps-request:") {
         if value.is_empty() || value.len() > 10 || !value.bytes().all(|b| b.is_ascii_digit()) {
@@ -1204,7 +1212,10 @@ mod tests {
             calendar_command("tab:12:overview"),
             Some(UiCommand::ProcessesTab(12, false))
         );
-        assert_eq!(calendar_command("copy-report:12"), Some(UiCommand::CopyReport(12)));
+        assert_eq!(
+            calendar_command("copy-report:12"),
+            Some(UiCommand::CopyReport(12))
+        );
         assert_eq!(
             calendar_command("apps-request:12"),
             Some(UiCommand::LauncherCatalog(12))
