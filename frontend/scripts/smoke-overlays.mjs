@@ -142,6 +142,8 @@ function scriptFor(steps, observationMs = 1150) {
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
       'const label = roots.length === 1 ? roots[0].getAttribute("aria-label") : "invalid-root-count";' +
       'document.documentElement.setAttribute("data-smoke-result", label || "none");' +
+      'document.documentElement.dataset.smokeSurfaceClip=roots[0]?.style.clipPath || "none";' +
+      'document.documentElement.dataset.smokeSurfaceState=roots[0]?.dataset.tenetSurface || "missing";' +
       'document.documentElement.dataset.smokeSurfaceSettled=roots.length===1 && ' +
         '(matchMedia("(prefers-reduced-motion: reduce)").matches ? roots[0].style.clipPath==="" : ' +
         '(roots[0].dataset.tenetSurface==="settled" && roots[0].style.clipPath.includes("0% 0% 0% 0%")));' +
