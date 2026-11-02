@@ -1,5 +1,6 @@
 //! Bounded, reusable GTK/WebKit popup hosts for concurrent trusted widgets.
 //! Each active Calendar/System/Launcher has its own window and IPC manager.
+use crate::popup_layout::{self, PopupDock};
 use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
@@ -139,8 +140,73 @@ impl OverlayPool {
         self.windows.borrow().get(&id).cloned()
     }
 
+    /// A newly requested surface may take the empty left/right dock, but
+    /// an *idle* host is invisible and must never reserve screen space.
+    fn choose_dock(&self, kind: Surface) -> PopupDock {
+        let right_occupied = self
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
+        popup_layout::choose_dock(kind, right_occupied)
+    }
+
+    fn width_for(&self, view: &CalendarOverlay) -> i32 {
+        let windows = self.windows.borrow();
+        let active_count = windows.values().filter(|view| view.requested.get()).count();
+        let launcher_active = windows
+            .values()
+            .any(|view| view.requested.get() && view.active.get() == Some(Surface::Launcher));
+        popup_layout::popup_width(
+            crate::native_ui::popup_output_width(&view.window),
+            active_count,
+            launcher_active,
+        )
+    }
+
+    /// Native window dimensions and anchors are independent of the WebKit
+    /// lease scheduler. Only requested windows count toward occupied columns.
+    fn sync_geometry(&self) {
+        let active: Vec<_> = self
+            .windows
+            .borrow()
+            .values()
+            .filter(|view| view.requested.get())
+            .cloned()
+            .collect();
+        for view in active {
+            let width = self.width_for(&view);
+            crate::native_ui::resize_webview_popup(
+                &view.window,
+                width,
+                view.content_height.get().max(1),
+            );
+        }
+    }
+
     fn release(&self, id: u32) {
         self.scheduler.borrow_mut().release(id, Instant::now());
+        // If a right-hand popup closes, the sole remaining left popup takes
+        // the original right-hand anchor again. Unmap before changing
+        // layer-shell anchors to avoid Niri replaying the last buffer at the
+        // new coordinates, while preserving the Svelte widget and its state.
+        let right_occupied = self
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
+        if !right_occupied {
+            let left = self
+                .windows
+                .borrow()
+                .values()
+                .find(|view| view.requested.get() && view.dock.get() == PopupDock::Left)
+                .cloned();
+            if let Some(left) = left {
+                left.move_to_right();
+            }
+        }
+        self.sync_geometry();
         self.update_launcher_keyboard_mode();
     }
 
@@ -194,42 +260,70 @@ struct CalendarOverlay {
     native_reduced_motion: Cell<bool>,
     paint_pending: Cell<bool>,
     generation: Cell<u32>,
-    was_active: Cell<bool>,
+    dock: Cell<PopupDock>,
     open_started: Cell<Option<Instant>>,
 }
 
 impl CalendarOverlay {
-    /// Each leased WebView has its own layer-shell window. Calendar and
-    /// System Monitor ALWAYS share the original top-right anchor, regardless
-    /// of how many peer windows are currently in the pool. With no edge
-    /// anchors, wlr-layer-shell centers Launcher on its output.
+    /// Select an available dock based on *requested windows*, never on an
+    /// idle Calendar WebView. Launcher always keeps the center slot.
     fn position_for(&self, kind: Surface) {
-        let centered = kind == Surface::Launcher;
+        let dock = self
+            .pool
+            .upgrade()
+            .map(|pool| pool.choose_dock(kind))
+            .unwrap_or(popup_layout::choose_dock(kind, false));
+        self.apply_dock(dock);
+    }
 
-        // Reset margins before removing anchors. Margins only belong to
-        // anchored edges, so stale top/right values cannot leak into the
-        // centered launcher (or trigger a compositor protocol error).
+    fn apply_dock(&self, dock: PopupDock) {
+        self.dock.set(dock);
+        // Reset every edge before retargeting the layer-shell surface.
         self.window.set_margin(Edge::Top, 0);
         self.window.set_margin(Edge::Right, 0);
         self.window.set_margin(Edge::Bottom, 0);
         self.window.set_margin(Edge::Left, 0);
-        self.window.set_anchor(Edge::Top, !centered);
-        self.window.set_anchor(Edge::Right, !centered);
+        self.window.set_anchor(Edge::Top, dock != PopupDock::Center);
+        self.window
+            .set_anchor(Edge::Right, dock == PopupDock::Right);
         self.window.set_anchor(Edge::Bottom, false);
-        self.window.set_anchor(Edge::Left, false);
-
-        if centered {
-            // Ignore the bar's reserved top zone to center in the entire
-            // output, rather than the usable area below the bar.
+        self.window.set_anchor(Edge::Left, dock == PopupDock::Left);
+        if dock == PopupDock::Center {
             self.window.set_exclusive_zone(-1);
         } else {
-            // Calendar and System keep their existing top-right placement.
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            self.window
-                .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
+            match dock {
+                PopupDock::Right => self
+                    .window
+                    .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN),
+                PopupDock::Left => self
+                    .window
+                    .set_margin(Edge::Left, crate::native_ui::POPUP_RIGHT_MARGIN),
+                PopupDock::Center => {}
+            }
         }
+    }
+
+    fn move_to_right(self: &Rc<Self>) {
+        if !self.requested.get() || self.dock.get() != PopupDock::Left {
+            return;
+        }
+        let generation = self.generation.get();
+        // Niri must see the UNMAP before a changed layer-shell anchor.
+        self.window.set_visible(false);
+        self.apply_dock(PopupDock::Right);
+        let weak = Rc::downgrade(self);
+        gtk::glib::timeout_add_local_once(Duration::from_millis(32), move || {
+            if let Some(view) = weak.upgrade()
+                && view.requested.get()
+                && view.generation.get() == generation
+                && view.dock.get() == PopupDock::Right
+            {
+                view.window.present();
+            }
+        });
     }
 
     fn hide(&self) {
@@ -298,7 +392,6 @@ impl CalendarOverlay {
         self.widget_ready.set(false);
         self.content_height.set(0);
         self.paint_pending.set(false);
-        self.was_active.set(false);
         self.open_started.set(Some(Instant::now()));
         self.generation
             .set(self.generation.get().wrapping_add(1).max(1));
@@ -309,6 +402,9 @@ impl CalendarOverlay {
         // Reset the previous widget's geometry while still transparent.
         crate::native_ui::resize_webview_popup(&self.window, 420, 1);
         let generation = self.generation.get();
+        if let Some(pool) = self.pool.upgrade() {
+            pool.sync_geometry();
+        }
         self.window.present();
         self.request_mount();
         eprintln!(
@@ -520,7 +616,12 @@ impl CalendarOverlay {
                     height.min(crate::native_ui::webview_popup_height_limit(&self.window));
                 if clamped != self.content_height.get() {
                     self.content_height.set(clamped);
-                    crate::native_ui::resize_webview_popup(&self.window, 420, clamped);
+                    let width = self
+                        .pool
+                        .upgrade()
+                        .map(|pool| pool.width_for(self))
+                        .unwrap_or(popup_layout::PREFERRED_POPUP_WIDTH);
+                    crate::native_ui::resize_webview_popup(&self.window, width, clamped);
                 }
                 if self.widget_ready.get() && !self.paint_pending.get() && !self.revealed.get() {
                     self.request_paint();
@@ -1021,7 +1122,7 @@ fn build(
         native_reduced_motion: Cell::new(false),
         paint_pending: Cell::new(false),
         generation: Cell::new(0),
-        was_active: Cell::new(false),
+        dock: Cell::new(PopupDock::Right),
         open_started: Cell::new(None),
     });
     let weak = Rc::downgrade(&overlay);
@@ -1060,20 +1161,11 @@ fn build(
         }
     });
 
-    let weak = Rc::downgrade(&overlay);
-    window.connect_is_active_notify(move |window| {
-        if let Some(state) = weak.upgrade() {
-            if window.is_active() {
-                state.was_active.set(true);
-            } else if state.requested.get() && state.was_active.get() {
-                // Focus shifts BETWEEN our concurrent popup windows must
-                // never cancel another visible widget's GSAP timeline.
-                if !state.pool.upgrade().is_some_and(|pool| pool.concurrent()) {
-                    state.hide();
-                }
-            }
-        }
-    });
+    // Focus is not a close request. Clicking a Top Bar button first
+    // deactivates the previous popup, and only then runs its new WebKit
+    // command. Hiding on is-active-notify would destroy that first widget
+    // before the scheduler has a chance to lease another WebView. Explicit
+    // close/Escape and the per-window generation guard remain available.
 
     // Load WebKit once; only the lightweight JS host survives between
     // shows. The Calendar component, timer and DOM are unmounted on hide.
