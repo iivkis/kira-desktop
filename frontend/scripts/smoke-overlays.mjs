@@ -69,14 +69,26 @@ function scriptFor(steps, observationMs = 1150) {
               : kind === 'pulse'
                 ? 'window.dispatchEvent(new CustomEvent("kira:system:pulse", {detail: {cpu_percent: 42, memory_total_kib: 1000, memory_available_kib: 500}}));'
               : 'window.dispatchEvent(new CustomEvent("kira:overlay:show", {detail: {kind: "' +
-                kind + '", generation: ' + generation + ', maxHeight: 420}}));') +
+                kind + '", generation: ' + generation + ', maxHeight: 420}}));' +
+                // Real GTK mounts content behind opacity zero and sends
+                // the generation-scoped visible event only AFTER reveal.
+                'setTimeout(()=>{' +
+                  'const root=document.querySelector("main[data-kira-ui-root]");' +
+                  'if(root)document.documentElement.dataset.smokeTenetPrevisible=' +
+                    'root.dataset.tenetReveal==="ready" && root.querySelectorAll("[data-tenet-fragment]").length===0;' +
+                '},90);' +
+                'setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:overlay:visible", {detail:{generation:' +
+                  generation + '}})),140);') +
         '}, ' + delay + ');'
     ).join('') +
     // Sample the in-flight DUAL chronology before observing settled DOM.
     'setTimeout(() => {' +
       'const root=document.querySelector("main[data-kira-ui-root]");' +
+      'const content=root?.querySelector("[data-kira-enter]");' +
+      'const transform=content ? getComputedStyle(content).transform : "none";' +
       'document.documentElement.dataset.smokeTenetStarted=!!root && root.dataset.tenetReveal==="started" && root.querySelectorAll("[data-tenet-fragment=inverted]").length===4;' +
-      '},170);' +
+      'document.documentElement.dataset.smokeTenetContentMoving=!!content && transform!=="none" && getComputedStyle(content).opacity!=="1";' +
+      '},245);' +
     // Test the live DOM, not strings in the bundled Svelte templates.
     'setTimeout(() => {' +
       'const roots = document.querySelectorAll("main[data-kira-ui-root]");' +
@@ -134,7 +146,7 @@ function scriptFor(steps, observationMs = 1150) {
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
     .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
-    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : 1150) + '</head>');
+    .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 1650 : heightMode === 'tenet' ? 1570 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
   }
@@ -144,7 +156,7 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     '--headless=new', '--no-sandbox', '--disable-gpu',
     '--disable-dev-shm-usage', '--disable-background-networking',
     ...(heightMode === 'reduced' ? ['--force-prefers-reduced-motion=reduce'] : []),
-    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : 1800),
+    '--virtual-time-budget=' + (heightMode === 'clock' ? 2600 : heightMode === 'calendar' ? 2300 : heightMode === 'tenet' ? 2200 : 1800),
     '--dump-dom', 'file://' + path,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-result="' + expected + '"')) {
@@ -210,10 +222,12 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     throw new Error(name + ': filtered launcher should shrink below the cap');
   }
   if (heightMode === 'tenet' &&
-      (!output.includes('data-smoke-tenet-started="true"') ||
+      (!output.includes('data-smoke-tenet-previsible="true"') ||
+       !output.includes('data-smoke-tenet-started="true"') ||
+       !output.includes('data-smoke-tenet-content-moving="true"') ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-tenet-[a-z-]+="[^"]*"/g) ?? [];
-    throw new Error(name + ': TENET entry/restore failed: ' + stage.join(', '));
+    throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
   }
   if (heightMode === 'reduced' &&
       (!output.includes('data-smoke-tenet-started="false"') ||

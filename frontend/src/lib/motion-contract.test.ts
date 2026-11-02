@@ -29,7 +29,13 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain('forward?.kill()');
     expect(motion).toContain('inverted?.kill()');
     expect(motion).toContain('trace.remove()');
-    expect(motion).toContain('window.setTimeout(settle, 1100)');
+    expect(motion).toContain('window.setTimeout(settle, 1550)');
+    expect(motion).toContain("window.addEventListener('kira:overlay:visible', onVisible)");
+    expect(motion).toContain("window.removeEventListener('kira:overlay:visible', onVisible)");
+    expect(motion).toContain('generation === Number(node.dataset.kiraGeneration)');
+    expect(motion).toContain("node.dataset.tenetReveal = preference.matches ? 'settled' : 'ready'");
+    expect(motion).toContain("duration: 0.84, stagger, ease: 'power3.out'");
+    expect(motion).toContain("'width:12px', 'height:1px'");
     expect(motion).toContain("node.dataset.tenetReveal = 'settled'");
   });
 

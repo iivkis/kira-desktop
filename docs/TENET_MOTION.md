@@ -154,3 +154,24 @@ Launcher меняет исходную траекторию, но не подм�
 обе timelines останавливаются, все фрагменты удаляются, а transform,
 opacity и visibility возвращаются к подлинным значениям. Дополнительные
 виджеты, поверхность Dock, hover lens и ложные показания не вводятся.
+
+### Native visibility handshake · 2026-11
+
+The native GTK/Wayland overlay mounts the trusted Svelte DOM while its
+toplevel opacity is **zero**. Starting GSAP in the Svelte action at mount
+played the actual content entrance before the window appeared, leaving
+only residual orange/white fragments visible to users. The native host
+now sends the generation-scoped `kira:overlay:visible` event **after**
+setting the mapped window's opacity to one. A widget starts motion only
+for its own mounted generation. Before that event, all content remains
+fully visible and accessible, with no hidden text or interactive delay.
+
+The new FORWARD phase assembles real header/content/footer sections
+through a clearly perceptible ~0.84s displacement/scale/opacity
+trajectory (max 0.25s stagger). The INVERTED phase retains the saved
+path and easing at the same contact but uses subtle 12×1px traces rather
+than conspicuous 3×3px orange/white squares. The shared cursor still
+synchronizes the two chronologies. Native hide, unmount, preference
+changes and a 1550ms WebKit throttle fallback restore all styles and
+remove all traces. A host lacking the event shows the widget normally
+without motion, instead of animating invisibly.

@@ -298,9 +298,30 @@ impl CalendarOverlay {
     }
 
     fn reveal(&self) {
-        self.revealed.set(true);
+        if self.revealed.replace(true) {
+            return;
+        }
         self.paint_pending.set(false);
         self.window.set_opacity(1.0);
+        // The WebKit widget was mounted while GTK opacity was zero.
+        // Starting GSAP at mount plays the entrance behind an invisible
+        // Wayland surface. Tell the current generation that the *native*
+        // window is now visible; the widget action starts only then.
+        let generation = self.generation.get();
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:overlay:visible', {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script,
+            None,
+            None,
+            None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: Overlay visible event delivery failed: {error}");
+                }
+            },
+        );
         if let Some(start) = self.open_started.take() {
             eprintln!(
                 "kira-shell: Overlay visible after {} ms",

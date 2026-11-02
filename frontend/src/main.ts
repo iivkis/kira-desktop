@@ -67,6 +67,10 @@ whenDocumentReady(document, () => {
           onMounted(generation: number) {
             const root = target.querySelector<HTMLElement>('main[data-kira-ui-root]');
             if (!root) throw new Error('Overlay root missing when measuring size');
+            // Bind the native visibility acknowledgement to this exact
+            // Svelte generation; stale GTK callbacks cannot animate
+            // whichever overlay happens to be mounted next.
+            root.dataset.kiraGeneration = String(generation);
             // Size must reach GTK before mounted, otherwise a 1px popup
             // could become visible before the first actual resize.
             stopSizing = observeOverlaySize(root, generation);

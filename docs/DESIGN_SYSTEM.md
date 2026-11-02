@@ -256,9 +256,16 @@ master progress synchronizes both chronologies. Launcher records a
 different outward direction; inversion is historical, not CSS reflection.
 
 No real date, telemetry, search, keyboard interaction or focus is delayed.
-One mount owns both timelines, fragments and an 1100ms WebKit-throttle
-recovery. Unmount or changed reduced-motion preference removes every
-fragment and restores exact transforms. Calendar's clock and day
+The native host now acknowledges actual popup visibility after GTK
+opacity becomes 1, then the generation-matched GSAP scene begins. This
+fixes the old mount-time animation that was played behind an invisible
+Wayland window. Real content now assembles visibly over approximately
+0.84–1.09 seconds with 28px displacement and bounded section staggering.
+Four low-opacity 12×1px traces are secondary, replacing distracting
+orange/white squares. The 1550ms WebKit-throttle fallback, hide,
+unmount or reduced-motion change removes all decorative fragments
+and restores exact transforms. Before native visibility arrives the
+content remains readable and functional. Calendar's clock and day
 interactions retain their separate recorded motion histories.
 
 ### System Monitor · observability before decoration
