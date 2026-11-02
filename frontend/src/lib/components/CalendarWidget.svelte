@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import WindowControls from './WindowControls.svelte';
+  import SkyMap from './SkyMap.svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import { tenetFlowIndicator } from '../motion';
   import {
@@ -23,6 +24,7 @@
     locale?: string;
   } = $props();
 
+  let detached = $state(false);
   let now = $state(new Date());
   let today = $state<CivilDate>(todayCivilDate(now));
   let selected = $state<CivilDate>(today);
@@ -49,7 +51,15 @@
       now = new Date();
       today = todayCivilDate(now);
     }, 1_000);
-    return () => window.clearInterval(interval);
+    const onDetached = (event: Event) => {
+      const current = (event as CustomEvent<{ generation: number }>).detail?.generation;
+      if (current === generation) detached = true;
+    };
+    window.addEventListener('kira:overlay:detached', onDetached);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('kira:overlay:detached', onDetached);
+    };
   });
 
   function navigate(months: number) {
@@ -110,9 +120,14 @@
 <main
   data-kira-ui-root
   use:tenetCalendarReveal
-  class="kira-calendar-scroll relative flex h-auto min-h-0 w-full flex-col overflow-y-auto bg-kira-bg text-kira-text"
+  class={'kira-calendar-scroll relative flex min-h-0 w-full bg-kira-bg text-kira-text ' +
+    (detached ? 'h-full flex-row overflow-hidden' : 'h-auto flex-col overflow-y-auto')}
+  data-calendar-mode={detached ? 'window' : 'widget'}
   aria-label="Kira Calendar"
 >
+  <div class={detached
+    ? 'flex h-full w-[370px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20'
+    : 'flex w-full min-h-0 flex-col'}>
   <!-- Clock is the identity anchor; native host remains the only window owner. -->
   <header data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-3 pt-4">
     <div class="flex items-start justify-between gap-3">
@@ -243,4 +258,8 @@
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">COPY DATE</button>
     </div>
   </footer>
+  </div>
+  {#if detached}
+    <SkyMap date={selected} />
+  {/if}
 </main>

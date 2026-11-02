@@ -15,6 +15,24 @@ NIX = (ROOT / "nix/package.nix").read_text()
 
 
 class CalendarDesignTests(unittest.TestCase):
+    def test_sky_atlas_only_mounts_in_calendar_niri_window(self):
+        atlas = (ROOT / "frontend/src/lib/components/SkyMap.svelte").read_text()
+        model = (ROOT / "frontend/src/lib/astronomy/sky-model.ts").read_text()
+        catalog = (ROOT / "frontend/src/lib/astronomy/sky-catalog.ts").read_text()
+        self.assertIn("data-calendar-mode={detached ? 'window' : 'widget'}", CALENDAR)
+        self.assertIn("if (current === generation) detached = true;", CALENDAR)
+        self.assertIn("{#if detached}\n    <SkyMap date={selected} />", CALENDAR)
+        self.assertIn("normal.set_default_size(1040, 720)", RUST)
+        self.assertIn("const observer = $derived(observerCoordinates(latitude, longitude))", atlas)
+        self.assertIn("const when = $derived(localObservationDate(date, time))", atlas)
+        self.assertIn("shortestSiderealDelta", atlas)
+        self.assertIn("prefers-reduced-motion", atlas)
+        self.assertIn("ResizeObserver", atlas)
+        self.assertIn("siderealDegrees", model)
+        self.assertIn("constellation", catalog.lower())
+        self.assertNotIn("fetch(", atlas)
+        self.assertNotIn("navigator.geolocation", atlas)
+
     def test_svelte_owns_date_grid_and_calendar_actions(self):
         for token in (
             'data-kira-ui-root', 'aria-label="Kira Calendar"',

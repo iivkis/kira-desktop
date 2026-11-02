@@ -376,6 +376,10 @@ impl CalendarOverlay {
         normal.set_decorated(true);
         if kind == Surface::Settings {
             normal.set_default_size(940, 700);
+        } else if kind == Surface::Calendar {
+            // A real Niri window hosts the date grid and the offline sky atlas.
+            // The 420px transient popup stays unchanged.
+            normal.set_default_size(1040, 720);
         } else {
             normal.set_default_size(500, (self.content_height.get() + 32).clamp(420, 760));
         }
