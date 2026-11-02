@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=4579
+index_bytes=4689
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,101 +15,103 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	00e6bd8ac719dce2235157e0233c2b52b018154d
-F	.cargo/config.toml	98	122	3
-F	.github/workflows/ci.yml	4355	127	112
-F	.github/workflows/frontend-nix.yml	1398	241	43
-F	.github/workflows/nix.yml	1258	286	38
-F	.github/workflows/overlay-smoke.yml	1064	326	40
-F	.github/workflows/publish-repospool.yml	3048	368	83
-F	.gitignore	178	453	11
-F	.repospoolignore	1028	466	47
-F	AGENTS.md	4435	515	75
-F	Cargo.toml	494	592	22
-F	README.md	11269	616	248
-F	Taskfile.yml	5957	866	185
-F	config/kira.kdl.example	358	1053	8
-F	crates/kira-core/Cargo.toml	207	1063	10
-F	crates/kira-core/src/config.rs	15217	1075	399
-F	crates/kira-core/src/main.rs	32080	1476	839
-F	crates/kira-core/src/niri.rs	16767	2317	453
-F	crates/kira-ipc/Cargo.toml	170	2772	9
-F	crates/kira-ipc/src/client.rs	17794	2783	458
-F	crates/kira-ipc/src/lib.rs	10460	3243	336
-F	crates/kira-shell/Cargo.toml	297	3581	12
-F	crates/kira-shell/src/calendar.rs	38858	3595	1043
-F	crates/kira-shell/src/launcher.rs	14114	4640	392
-F	crates/kira-shell/src/main.rs	19285	5034	447
-F	crates/kira-shell/src/native_ui.rs	2857	5483	73
-F	crates/kira-shell/src/process_monitor.rs	9336	5558	286
-F	crates/kira-shell/src/renderer_recovery.rs	3634	5846	116
-F	crates/kira-shell/src/system_metrics.rs	19842	5964	559
-F	crates/kira-shell/src/system_panel.rs	11356	6525	318
-F	docs/CONFIG.md	5801	6845	125
-F	docs/DESIGN_SYSTEM.md	26287	6972	438
-F	docs/DEVELOPMENT.md	29347	7412	577
-F	docs/QA_VISUAL.md	12284	7991	149
-F	docs/SPECIFICATION.md	28960	8142	421
-F	docs/TENET_MOTION.md	22120	8565	142
-F	docs/UI_ARCHITECTURE.md	6737	8709	106
-F	docs/VISUAL_REVIEW.md	9754	8817	84
-F	flake.nix	3181	8903	91
-F	frontend/index.html	2737	8996	66
-F	frontend/package.json	720	9064	27
-F	frontend/scripts/inline-assets.mjs	4457	9093	103
-F	frontend/scripts/inline-assets.test.mjs	4645	9198	106
-F	frontend/scripts/smoke-overlays.mjs	19543	9306	278
-F	frontend/src/App.svelte	8659	9586	200
-F	frontend/src/lib/bootstrap.test.ts	3408	9788	84
-F	frontend/src/lib/bootstrap.ts	2613	9874	70
-F	frontend/src/lib/calendar-model.test.ts	3571	9946	65
-F	frontend/src/lib/calendar-model.ts	4648	10013	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10120	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	10182	29
-F	frontend/src/lib/calendar-tenet-motion.ts	11523	10213	318
-F	frontend/src/lib/clock-flight.test.ts	2404	10533	50
-F	frontend/src/lib/clock-flight.ts	1977	10585	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11496	10637	239
-F	frontend/src/lib/components/LauncherWidget.svelte	10668	10878	230
-F	frontend/src/lib/components/SystemCharts.svelte	10517	11110	226
-F	frontend/src/lib/components/SystemHealth.svelte	1684	11338	43
-F	frontend/src/lib/components/SystemWidget.svelte	18014	11383	320
-F	frontend/src/lib/components/WorkspacePreview.svelte	3447	11705	61
-F	frontend/src/lib/launcher-model.test.ts	2266	11768	46
-F	frontend/src/lib/launcher-model.ts	1403	11816	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	11847	89
-F	frontend/src/lib/lazy-widget.ts	1984	11938	63
-F	frontend/src/lib/motion.ts	1597	12003	50
-F	frontend/src/lib/overlay-size.ts	1090	12055	29
-F	frontend/src/lib/sdk/core.test.ts	22258	12086	444
-F	frontend/src/lib/sdk/core.ts	17793	12532	473
-F	frontend/src/lib/system-charts.test.ts	6312	13007	141
-F	frontend/src/lib/system-charts.ts	5514	13150	149
-F	frontend/src/lib/system-health.test.ts	2385	13301	42
-F	frontend/src/lib/system-health.ts	2831	13345	60
-F	frontend/src/lib/system-model.test.ts	4455	13407	84
-F	frontend/src/lib/system-model.ts	5457	13493	125
-F	frontend/src/lib/themes/kira-default.css	1687	13620	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	13674	101
-F	frontend/src/lib/themes/kira-default.ts	777	13777	22
-F	frontend/src/lib/themes/shell-composition.test.ts	4425	13801	79
-F	frontend/src/lib/time.test.ts	263	13882	8
-F	frontend/src/lib/time.ts	320	13892	9
-F	frontend/src/main.ts	5907	13903	127
-F	frontend/src/style.css	3817	14032	121
-F	frontend/tsconfig.json	403	14155	16
-F	frontend/vite.config.ts	224	14173	8
-F	nix/package.nix	3132	14183	117
-F	scripts/dev_preview.py	18147	14302	403	x
-F	scripts/qa_visual.py	12052	14707	299
-F	tests/test_calendar_design.py	7384	15008	130
-F	tests/test_detailed_health.py	5429	15140	105
-F	tests/test_dev_preview.py	9339	15247	219
-F	tests/test_launcher_design.py	10400	15468	189
-F	tests/test_native_theme.py	1567	15659	36
-F	tests/test_popup_geometry.py	6956	15697	118
-F	tests/test_qa_visual.py	10549	15817	217
-F	tests/test_ui_bootstrap_contract.py	1103	16036	29
+C	1cabe23e7c2c34cdb5b797891b280347d69adb68
+F	.cargo/config.toml	98	124	3
+F	.github/workflows/ci.yml	4355	129	112
+F	.github/workflows/frontend-nix.yml	1398	243	43
+F	.github/workflows/nix.yml	1258	288	38
+F	.github/workflows/overlay-smoke.yml	1064	328	40
+F	.github/workflows/publish-repospool.yml	3048	370	83
+F	.gitignore	178	455	11
+F	.repospoolignore	1028	468	47
+F	AGENTS.md	4435	517	75
+F	Cargo.toml	494	594	22
+F	README.md	11269	618	248
+F	Taskfile.yml	5957	868	185
+F	config/kira.kdl.example	358	1055	8
+F	crates/kira-core/Cargo.toml	207	1065	10
+F	crates/kira-core/src/config.rs	15217	1077	399
+F	crates/kira-core/src/main.rs	32080	1478	839
+F	crates/kira-core/src/niri.rs	16767	2319	453
+F	crates/kira-ipc/Cargo.toml	170	2774	9
+F	crates/kira-ipc/src/client.rs	17794	2785	458
+F	crates/kira-ipc/src/lib.rs	10460	3245	336
+F	crates/kira-shell/Cargo.toml	297	3583	12
+F	crates/kira-shell/src/calendar.rs	38858	3597	1043
+F	crates/kira-shell/src/launcher.rs	14114	4642	392
+F	crates/kira-shell/src/main.rs	19285	5036	447
+F	crates/kira-shell/src/native_ui.rs	2857	5485	73
+F	crates/kira-shell/src/process_monitor.rs	9336	5560	286
+F	crates/kira-shell/src/renderer_recovery.rs	3634	5848	116
+F	crates/kira-shell/src/system_metrics.rs	19842	5966	559
+F	crates/kira-shell/src/system_panel.rs	11356	6527	318
+F	docs/CONFIG.md	5801	6847	125
+F	docs/DESIGN_SYSTEM.md	27066	6974	449
+F	docs/DEVELOPMENT.md	29347	7425	577
+F	docs/QA_VISUAL.md	12284	8004	149
+F	docs/SPECIFICATION.md	28960	8155	421
+F	docs/TENET_MOTION.md	22120	8578	142
+F	docs/UI_ARCHITECTURE.md	6737	8722	106
+F	docs/VISUAL_REVIEW.md	9754	8830	84
+F	flake.nix	3181	8916	91
+F	frontend/index.html	2737	9009	66
+F	frontend/package.json	720	9077	27
+F	frontend/scripts/inline-assets.mjs	4457	9106	103
+F	frontend/scripts/inline-assets.test.mjs	4645	9211	106
+F	frontend/scripts/smoke-overlays.mjs	19543	9319	278
+F	frontend/src/App.svelte	8589	9599	207
+F	frontend/src/lib/bootstrap.test.ts	3408	9808	84
+F	frontend/src/lib/bootstrap.ts	2613	9894	70
+F	frontend/src/lib/calendar-model.test.ts	3571	9966	65
+F	frontend/src/lib/calendar-model.ts	4648	10033	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	10140	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	10202	29
+F	frontend/src/lib/calendar-tenet-motion.ts	11523	10233	318
+F	frontend/src/lib/clock-flight.test.ts	2404	10553	50
+F	frontend/src/lib/clock-flight.ts	1977	10605	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11496	10657	239
+F	frontend/src/lib/components/LauncherWidget.svelte	10668	10898	230
+F	frontend/src/lib/components/SystemCharts.svelte	10517	11130	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	11358	46
+F	frontend/src/lib/components/SystemWidget.svelte	18014	11406	320
+F	frontend/src/lib/components/WorkspacePreview.svelte	4161	11728	84
+F	frontend/src/lib/launcher-model.test.ts	2266	11814	46
+F	frontend/src/lib/launcher-model.ts	1403	11862	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	11893	89
+F	frontend/src/lib/lazy-widget.ts	1984	11984	63
+F	frontend/src/lib/motion.ts	1597	12049	50
+F	frontend/src/lib/overlay-size.ts	1090	12101	29
+F	frontend/src/lib/sdk/core.test.ts	22258	12132	444
+F	frontend/src/lib/sdk/core.ts	17793	12578	473
+F	frontend/src/lib/system-charts.test.ts	6312	13053	141
+F	frontend/src/lib/system-charts.ts	5514	13196	149
+F	frontend/src/lib/system-health.test.ts	2385	13347	42
+F	frontend/src/lib/system-health.ts	2831	13391	60
+F	frontend/src/lib/system-model.test.ts	4455	13453	84
+F	frontend/src/lib/system-model.ts	5457	13539	125
+F	frontend/src/lib/themes/kira-default.css	1687	13666	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	13720	101
+F	frontend/src/lib/themes/kira-default.ts	777	13823	22
+F	frontend/src/lib/themes/shell-composition.test.ts	4993	13847	89
+F	frontend/src/lib/time.test.ts	263	13938	8
+F	frontend/src/lib/time.ts	320	13948	9
+F	frontend/src/lib/workspace-window.test.ts	1491	13959	35
+F	frontend/src/lib/workspace-window.ts	853	13996	28
+F	frontend/src/main.ts	5907	14026	127
+F	frontend/src/style.css	3817	14155	121
+F	frontend/tsconfig.json	403	14278	16
+F	frontend/vite.config.ts	224	14296	8
+F	nix/package.nix	3132	14306	117
+F	scripts/dev_preview.py	18147	14425	403	x
+F	scripts/qa_visual.py	12052	14830	299
+F	tests/test_calendar_design.py	7384	15131	130
+F	tests/test_detailed_health.py	5429	15263	105
+F	tests/test_dev_preview.py	9339	15370	219
+F	tests/test_launcher_design.py	10400	15591	189
+F	tests/test_native_theme.py	1567	15782	36
+F	tests/test_popup_geometry.py	6956	15820	118
+F	tests/test_qa_visual.py	10549	15940	217
+F	tests/test_ui_bootstrap_contract.py	1103	16159	29
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -6995,15 +6997,17 @@ official visual language of Kira Desktop.
 
 ### Visual rules
 
-1. Organize the Top Bar as three intentionally different **materials**:
-   Prussian Blue identity, Black workspace navigation, subdued Blue system.
-2. Keep the main orange fill on the current workspace; add only a narrow
-   orange baseline/mark to connect brand and active navigation.
-3. Build a compact typographic hierarchy: wordmark and workspace kicker/title.
-   The right edge is a **single vertically centered utility row**, not
-   stacked SYSTEM/LOCAL labels with inconsistent inner widget heights.
-4. Keep the full Top Bar at exactly 42 logical pixels; the navigation is
-   real Niri state and the text is sourced from the current KDL config.
+1. Structure the Top Bar as three continuous materials: Prussian Blue
+   brand, Black Niri navigation and subdued Blue system utilities.
+2. Give the only strong orange fill to the **actually focused workspace**,
+   not a decorative baseline. A short orange signature identifies KIRA;
+   urgent and error states use orange only when actionable.
+3. Remove duplicate captions such as WORKSPACE / DESKTOP. A user-specified
+   KDL title appears quietly at wide sizes, but the default title stays
+   hidden; workspace state is already legible without it.
+4. Preserve the 42px Wayland exclusive zone and Niri's event-driven focus
+   truth. When the configured workspace limit hides entries, show the
+   truthful preceding/following counts rather than pretending all are visible.
 5. Divide the Launcher into a Black editorial intro and a Blue working area
    for search and catalog; avoid filling the entire selected row with orange.
 6. A slim orange selection rail and orange item title identify the active
@@ -7033,13 +7037,22 @@ official visual language of Kira Desktop.
 
 ### Component principles
 
-- **Top Bar:** a 42 px strip with three continuous horizontal zones:
-  Blue brand, Black workspaces and metadata, softer Blue system status/clock.
-  The right zone is a condensed single line: combined Core + Niri health,
-  subtle divider and local time, all sharing one optical vertical center.
-  Date and diagnostic details are available via native title tooltips.
-  The time is a semantic button that toggles a separate native calendar overlay;
-  the Top Bar remains 42 px tall.
+- **Top Bar (Niri-first command rail):** the same 42px GTK layer-shell
+  surface, with three materials: Prussian Blue KIRA launcher entrance,
+  Black Niri workspace navigation and subdued Prussian Blue health/clock.
+  No permanent orange full-width underline or redundant workspace caption.
+  A small orange brand stroke contrasts with the **actual focused**
+  workspace, which alone receives a solid orange 29px control. Workspaces
+  active on another output remain visually separate from focus; urgent
+  items show a small semantic corner mark. A pure Svelte/TypeScript model
+  ensures the focused workspace stays visible under KDL's workspace
+  limit and reports how many earlier/later workspaces are omitted.
+  Only explicitly customized KDL titles appear, and they yield space on
+  narrow screens. System status reflects real Core/Niri/host measurements
+  and becomes quieter when READY; its button still opens System Monitor.
+  The local clock opens the existing Calendar. No extra WebKit processes,
+  native services, polling loops, shortcuts, fake app activity or Dock.
+  Keyboard focus and reduced-motion semantics are preserved.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
   zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
   compact Black local-time hero, a Prussian Blue calendar workbench, and a
@@ -9700,29 +9713,32 @@ FILE	frontend/src/App.svelte
 </script>
 
 <main
-  class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden bg-kira-bg text-kira-text after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-surface"
+  class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden border-b border-kira-muted/15 bg-kira-bg text-kira-text"
   aria-label="Kira Desktop top bar"
   data-kira-ui-root
   data-compact={configState.config.compact}
 >
+  <!-- KIRA opens the application index; it never claims to switch windows. -->
   <section
-    class={`relative z-10 flex shrink-0 items-stretch bg-kira-surface after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-kira-accent ${configState.config.compact ? 'w-[84px]' : 'w-[102px] max-[540px]:w-[78px]'}`}
+    class={['relative z-10 flex shrink-0 items-center border-r border-kira-muted/15 bg-kira-surface',
+      configState.config.compact ? 'w-[78px]' : 'w-[96px] max-[540px]:w-[76px]'].join(' ')}
     aria-label="Kira Launcher"
   >
-    <button
-      type="button"
-      class={`flex h-full w-full cursor-pointer items-center border-0 bg-transparent text-left text-kira-text transition-colors duration-150 hover:bg-kira-accent/10 active:bg-kira-bg/20 focus-visible:-outline-offset-4 focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none ${configState.config.compact ? 'gap-[7px] px-[10px]' : 'gap-[10px] px-[14px] max-[540px]:gap-[6px] max-[540px]:px-[9px]'}`}
+    <button type="button"
+      class={['flex h-full w-full cursor-pointer items-center border-0 bg-transparent text-left text-kira-text transition-colors duration-150 hover:bg-kira-bg/15 focus-visible:-outline-offset-4 focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none',
+        configState.config.compact ? 'gap-2 px-3' : 'gap-[9px] px-[13px] max-[540px]:gap-[6px] max-[540px]:px-[9px]'].join(' ')}
       aria-label="Open applications launcher"
-      title="Open applications"
-      onclick={activateLauncher}
+      title="Open applications" onclick={activateLauncher}
     >
-      <span class="h-[19px] w-[3px] shrink-0 bg-kira-accent" aria-hidden="true"></span>
-      <span class="text-[13px] font-extrabold tracking-[0.11em] max-[540px]:text-xs">KIRA</span>
+      <span class="h-4 w-[3px] shrink-0 bg-kira-accent" aria-hidden="true"></span>
+      <span class="text-[12px] font-extrabold tracking-[0.16em] max-[540px]:text-[11px]">KIRA</span>
     </button>
   </section>
 
+  <!-- Focus and navigation are exclusively owned by Niri's EventStream. -->
   <section
-    class={`flex min-w-0 flex-1 items-center pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'gap-[13px] px-4 max-[540px]:gap-[7px] max-[540px]:px-[7px]'}`}
+    class={['flex min-w-0 flex-1 items-center bg-kira-bg',
+      configState.config.compact ? 'gap-2 px-2' : 'gap-3 px-3 max-[540px]:gap-1.5 max-[540px]:px-2'].join(' ')}
     aria-label="Niri workspaces"
   >
     <WorkspacePreview
@@ -9732,28 +9748,30 @@ FILE	frontend/src/App.svelte
       pending={workspacePending}
       onFocus={(id) => { void activateWorkspace(id); }}
     />
-    {#if !configState.config.compact}
-      <div class="flex min-w-0 max-w-[176px] flex-col justify-center gap-[2px] overflow-hidden max-[820px]:hidden" title={configState.config.title}>
-        <span class="whitespace-nowrap text-[8px] leading-none font-semibold tracking-[0.11em] text-kira-muted/80">WORKSPACE</span>
-        <span class="max-w-40 truncate text-[10px] leading-tight font-bold tracking-[0.06em] text-kira-text">
-          {configState.config.title === 'KIRA DESKTOP' ? 'DESKTOP' : configState.config.title}
-        </span>
-      </div>
+    {#if !configState.config.compact && configState.config.title !== 'KIRA DESKTOP'}
+      <span class="max-w-36 min-w-0 truncate border-l border-kira-muted/20 pl-3 text-[10px] font-semibold tracking-wide text-kira-muted max-[900px]:hidden"
+        title={configState.config.title}>{configState.config.title}</span>
     {/if}
     {#if launcherUnavailable}
-      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent"
+        role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
     {/if}
     {#if workspaceActionError}
-      <span class="shrink-0 cursor-help self-center whitespace-nowrap text-[10px] font-bold text-kira-accent" role="alert" title={workspaceActionError}>WS !</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent"
+        role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
 
+  <!-- Native measurements and local time: no fake taskbar activity. -->
   <section
-    class={`flex shrink-0 items-center justify-end gap-3 bg-kira-surface-soft px-3 pb-[2px] ${configState.config.compact ? 'gap-2 px-2' : 'max-[540px]:gap-2 max-[540px]:px-2'}`}
+    class={['flex shrink-0 items-center justify-end gap-1 border-l border-kira-muted/15 bg-kira-surface-soft px-3',
+      configState.config.compact ? 'px-2' : 'max-[540px]:px-2'].join(' ')}
     aria-label="System status and local time"
   >
     {#if configState.error}
-      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent" title={configState.error} aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
+      <span class="shrink-0 cursor-help whitespace-nowrap px-1 text-[10px] font-bold text-kira-accent"
+        title={configState.error}
+        aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
     <SystemHealth
       coreStatus={coreStatus}
@@ -9763,21 +9781,23 @@ FILE	frontend/src/App.svelte
       onOpen={activateSystemPanel}
     />
     {#if systemUnavailable}
-      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+      <span role="status" class="shrink-0 px-1 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
     {/if}
-    <span class="h-3 w-px shrink-0 bg-kira-muted/25" aria-hidden="true"></span>
+    <span class="mx-1 h-4 w-px shrink-0 bg-kira-muted/20" aria-hidden="true"></span>
     {#if calendarUnavailable}
-      <span class="shrink-0 text-[10px] font-bold text-kira-accent" role="status">CALENDAR OFFLINE</span>
+      <span class="shrink-0 px-1 text-[10px] font-bold text-kira-accent"
+        role="status">CALENDAR OFFLINE</span>
     {/if}
     <button
       type="button"
-      class="shrink-0 cursor-pointer rounded-sm border-0 bg-transparent px-1 py-2 leading-none text-kira-text transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
+      class="shrink-0 cursor-pointer rounded-[2px] border-0 bg-transparent px-2 py-2 leading-none text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
       title="Open calendar and date details"
       aria-label={'Open calendar, local time ' + formatClock(now, undefined, configState.config.show_seconds)}
       aria-haspopup="dialog"
       onclick={activateCalendar}
     >
-      <time class="whitespace-nowrap text-[13px] font-bold tracking-[0.03em] tabular-nums max-[540px]:text-xs" datetime={now.toISOString()}>
+      <time class="whitespace-nowrap text-[13px] font-extrabold tracking-[0.05em] tabular-nums max-[540px]:text-xs"
+        datetime={now.toISOString()}>
         {formatClock(now, undefined, configState.config.show_seconds)}
       </time>
     </button>
@@ -11358,7 +11378,7 @@ FILE	frontend/src/lib/components/SystemHealth.svelte
 
 <button
   type="button"
-  class="inline-flex h-7 shrink-0 cursor-pointer items-center justify-center gap-[6px] rounded-sm border-0 bg-transparent px-1 text-kira-muted transition-colors hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
+  class="inline-flex h-8 shrink-0 cursor-pointer items-center justify-center gap-[7px] rounded-[2px] border-0 bg-transparent px-2 text-kira-muted transition-colors duration-150 hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
   aria-haspopup="dialog"
   aria-label={'Open system monitor: ' + health.label}
   title={health.details + '\nClick for detailed system monitor'}
@@ -11366,16 +11386,19 @@ FILE	frontend/src/lib/components/SystemHealth.svelte
   onclick={onOpen}
 >
   <span
-    class={`h-[7px] w-[7px] shrink-0 border ${health.phase === 'ready'
-      ? 'rounded-full border-kira-muted bg-kira-muted'
-      : health.phase === 'error' || health.phase === 'warning'
-        ? 'rounded-[2px] border-kira-accent bg-kira-accent'
-        : 'rounded-full border-kira-muted bg-transparent'}`}
+    class={['h-[7px] w-[7px] shrink-0 border',
+      health.phase === 'ready'
+        ? 'rounded-full border-kira-muted bg-kira-muted'
+        : health.phase === 'error' || health.phase === 'warning'
+          ? 'rounded-[2px] border-kira-accent bg-kira-accent'
+          : 'rounded-full border-kira-muted bg-transparent'].join(' ')}
     aria-hidden="true"
   ></span>
   <span role="status" aria-live="polite" aria-atomic="true"
-    class={`text-[10px] leading-none font-semibold tracking-[0.02em] ${health.phase === 'error' || health.phase === 'warning'
-      ? 'text-kira-accent' : 'text-kira-text'} ${health.phase === 'ready' ? 'max-[540px]:hidden' : ''}`}
+    class={['text-[10px] leading-none font-bold tracking-[0.04em]',
+      health.phase === 'error' || health.phase === 'warning'
+        ? 'text-kira-accent' : 'text-kira-text',
+      health.phase === 'ready' ? 'max-[620px]:sr-only' : ''].join(' ')}
   >{health.label}</span>
 </button>
 
@@ -11704,6 +11727,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
 FILE	frontend/src/lib/components/WorkspacePreview.svelte
 <script lang="ts">
   import type { WorkspaceState } from '../sdk/core';
+  import { visibleWorkspaceWindow } from '../workspace-window';
 
   let { state, showNames, limit, onFocus, pending }: {
     state: WorkspaceState | null;
@@ -11713,55 +11737,77 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
     pending: boolean;
   } = $props();
 
-  // Follow Niri focus, not DOM position; do not lose the current workspace
-  // when the configured visible-workspace limit is reached.
-  let visible = $derived.by(() => {
-    const all = state?.workspaces ?? [];
-    const count = Math.max(1, Math.min(32, limit));
-    const focused = Math.max(0, all.findIndex((item) => item.is_focused));
-    return all.slice(Math.max(0, focused - count + 1), Math.max(0, focused - count + 1) + count);
-  });
+  const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
+
 </script>
 
 {#if !state}
-  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite">NIRI…</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
+    role="status" aria-live="polite">NIRI…</span>
 {:else if !state.connected}
-  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
+    role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
 {:else if state.workspaces.length === 0}
-  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold text-kira-muted" role="status" aria-live="polite">NO WORKSPACES</span>
+  <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
+    role="status" aria-live="polite">NO WORKSPACES</span>
 {:else}
-  <ol class="flex max-w-[min(40vw,348px)] shrink-0 items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Niri workspaces">
-    {#each visible as workspace (workspace.id)}
-      <li
-        class={`relative h-7 min-w-8 max-w-[90px] shrink-0 rounded-md text-[11px] font-bold tabular-nums transition-colors duration-150 motion-reduce:transition-none ${workspace.is_focused
-          ? 'bg-kira-accent text-kira-on-accent'
-          : workspace.is_active
-            ? 'bg-kira-surface-soft text-kira-text'
-            : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'}`}
-        data-focused={workspace.is_focused}
-        data-urgent={workspace.is_urgent}
-      >
-        <button
-          type="button"
-          class={`grid h-full w-full cursor-pointer place-items-center rounded-[inherit] border-0 bg-transparent px-[9px] font-inherit text-inherit focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-progress ${workspace.is_focused ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2' : 'focus-visible:outline-kira-accent'}`}
-          aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
-            + (workspace.output ? ' on ' + workspace.output : '')}
-          aria-pressed={workspace.is_focused}
-          title={'Workspace ' + (workspace.name || workspace.idx)
-            + (workspace.output ? ' on ' + workspace.output : '')
-            + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
-            + (workspace.is_urgent ? ' (urgent)' : '')}
-          disabled={pending}
-          onclick={() => onFocus(workspace.id)}
+  <div class="flex min-w-0 shrink items-center gap-1" data-workspace-strip>
+    {#if windowed.before > 0}
+      <span class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted/80"
+        title={windowed.before + ' preceding Niri workspaces hidden'}
+        aria-label={windowed.before + ' preceding workspaces not shown'}>
+        −{windowed.before}
+      </span>
+    {/if}
+    <ol class="flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      aria-label="Niri workspaces">
+      {#each windowed.items as workspace (workspace.id)}
+        <li
+          class={['relative h-[29px] min-w-[31px] max-w-[108px] shrink-0 rounded-[2px] text-[11px] font-extrabold tabular-nums transition-colors duration-150 motion-reduce:transition-none',
+            workspace.is_focused
+              ? 'bg-kira-accent text-kira-on-accent'
+              : workspace.is_active
+                ? 'bg-kira-surface-soft text-kira-text'
+                : 'text-kira-muted hover:bg-kira-surface-soft hover:text-kira-text'].join(' ')}
+          data-focused={workspace.is_focused}
+          data-urgent={workspace.is_urgent}
         >
-          <span class="block max-w-[72px] truncate whitespace-nowrap">{showNames ? (workspace.name || workspace.idx) : workspace.idx}</span>
-          {#if workspace.is_urgent}
-            <span class={`pointer-events-none absolute bottom-[2px] left-1/2 h-[2px] w-2 -translate-x-1/2 ${workspace.is_focused ? 'bg-kira-on-accent' : 'bg-kira-accent'}`} aria-hidden="true"></span>
-          {/if}
-        </button>
-      </li>
-    {/each}
-  </ol>
+          <button
+            type="button"
+            class={['grid h-full w-full cursor-pointer place-items-center rounded-[inherit] border-0 bg-transparent px-[10px] font-inherit text-inherit focus-visible:outline-2 disabled:cursor-progress',
+              workspace.is_focused
+                ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2'
+                : 'focus-visible:outline-kira-accent focus-visible:outline-offset-1'].join(' ')}
+            aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
+              + (workspace.output ? ' on ' + workspace.output : '')}
+            aria-pressed={workspace.is_focused}
+            title={'Workspace ' + (workspace.name || workspace.idx)
+              + (workspace.output ? ' on ' + workspace.output : '')
+              + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
+              + (workspace.is_urgent ? ' (urgent)' : '')}
+            disabled={pending}
+            onclick={() => onFocus(workspace.id)}
+          >
+            <span class="block max-w-[86px] truncate whitespace-nowrap">
+              {showNames ? (workspace.name || workspace.idx) : workspace.idx}
+            </span>
+            {#if workspace.is_urgent}
+              <span aria-hidden="true"
+                class={['pointer-events-none absolute right-[3px] top-[3px] h-[4px] w-[4px]',
+                  workspace.is_focused ? 'bg-kira-on-accent' : 'bg-kira-accent'].join(' ')}></span>
+            {/if}
+          </button>
+        </li>
+      {/each}
+    </ol>
+    {#if windowed.after > 0}
+      <span class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted/80"
+        title={windowed.after + ' following Niri workspaces hidden'}
+        aria-label={windowed.after + ' following workspaces not shown'}>
+        +{windowed.after}
+      </span>
+    {/if}
+  </div>
 {/if}
 
 FILE	frontend/src/lib/launcher-model.test.ts
@@ -13823,12 +13869,16 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('h-[42px] min-h-[42px]');
     expect(markup).toContain('bg-kira-surface');
     expect(markup).toContain('bg-kira-surface-soft');
-    expect(markup).toContain('after:bg-kira-accent');
+    expect(markup).toContain('border-b border-kira-muted/15');
+    expect(markup).not.toContain('after:bg-kira-accent');
     expect(markup).toContain('aria-label="Kira Launcher"');
     expect(markup).toContain('aria-label="Niri workspaces"');
     expect(markup).toContain('aria-label="System status and local time"');
     expect(markup).toContain('configState.config.compact');
-    expect(markup).toContain('class={`flex shrink-0 items-center justify-end gap-3');
+    expect(markup).toContain('items-center justify-end gap-1 border-l');
+    expect(markup).not.toContain('WORKSPACE</span>');
+    expect(markup).not.toContain("'DESKTOP' :");
+    expect(markup).toContain("configState.config.title !== 'KIRA DESKTOP'");
     expect(markup).not.toContain('>SYSTEM</span>');
     expect(markup).not.toContain('>LOCAL</span>');
     expect(markup).toContain('niriConnected={workspaceState?.connected ?? null}');
@@ -13863,6 +13913,11 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('disabled={pending}');
     expect(workspaces).toContain('focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2');
     expect(workspaces).toContain('bg-kira-accent text-kira-on-accent');
+    expect(workspaces).toContain('visibleWorkspaceWindow(');
+    expect(workspaces).toContain('data-workspace-strip');
+    expect(workspaces).toContain('windowed.before > 0');
+    expect(workspaces).toContain('windowed.after > 0');
+    expect(workspaces).toContain('rounded-[2px]');
     expect(core).toContain('aria-live="polite"');
     expect(core).toContain('data-phase={health.phase}');
     expect(core).toContain('aria-haspopup="dialog"');
@@ -13872,6 +13927,7 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
     expect(core).not.toContain('min-h-7');
+    expect(core).toContain("max-[620px]:sr-only");
     expect(markup).toContain('title="Open calendar and date details"');
     expect(markup).toContain('items-center justify-end');
     expect(markup).not.toContain('bar__system-item');
@@ -13897,6 +13953,73 @@ export function formatClock(date: Date, timeZone?: string, showSeconds = false):
     hourCycle: 'h23',
     ...(timeZone ? { timeZone } : {}),
   }).format(date);
+}
+
+FILE	frontend/src/lib/workspace-window.test.ts
+import { describe, expect, it } from 'vitest';
+import { visibleWorkspaceWindow } from './workspace-window';
+import type { Workspace } from './sdk/core';
+
+function ws(i: number, focused = false): Workspace {
+  return {
+    id: String(i), idx: i, name: i === 3 ? 'edit' : null,
+    output: 'DP-1', is_active: focused, is_focused: focused, is_urgent: false,
+  };
+}
+
+describe('Niri workspace display window', () => {
+  it('preserves the full Niri list when no workspaces are hidden', () => {
+    const apps = [ws(1), ws(2, true)];
+    expect(visibleWorkspaceWindow(apps, 8))
+      .toEqual({ items: apps, before: 0, after: 0 });
+  });
+  it('always keeps real focus visible with honest hidden counts', () => {
+    const entries = [1, 2, 3, 4, 5, 6].map(i => ws(i, i === 5));
+    const visible = visibleWorkspaceWindow(entries, 3);
+    expect(visible.items.map(item => item.id)).toEqual(['3', '4', '5']);
+    expect(visible.before).toBe(2);
+    expect(visible.after).toBe(1);
+  });
+  it('handles no focused workspace and bounds the configured limit', () => {
+    const entries = [1, 2, 3, 4].map(i => ws(i));
+    expect(visibleWorkspaceWindow(entries, 2)).toEqual({
+      items: entries.slice(0, 2), before: 0, after: 2,
+    });
+    expect(visibleWorkspaceWindow(entries, Number.NaN).items).toHaveLength(1);
+    expect(visibleWorkspaceWindow(entries, 0).items).toHaveLength(1);
+    expect(visibleWorkspaceWindow(entries, 999).items).toHaveLength(4);
+    expect(entries).toHaveLength(4);
+  });
+});
+
+FILE	frontend/src/lib/workspace-window.ts
+import type { Workspace } from './sdk/core';
+
+/** Niri's focused workspace must remain visible when the KDL limit hides
+ * some entries. Counts refer only to omitted workspaces, never windows.
+ */
+export interface WorkspaceWindow {
+  items: Workspace[];
+  before: number;
+  after: number;
+}
+
+export function visibleWorkspaceWindow(
+  workspaces: readonly Workspace[], limit: number,
+): WorkspaceWindow {
+  const count = Number.isFinite(limit)
+    ? Math.max(1, Math.min(32, Math.trunc(limit))) : 1;
+  const focus = workspaces.findIndex(workspace => workspace.is_focused);
+  const start = Math.min(
+    Math.max(0, focus - count + 1),
+    Math.max(0, workspaces.length - count),
+  );
+  const items = workspaces.slice(start, start + count);
+  return {
+    items,
+    before: start,
+    after: Math.max(0, workspaces.length - start - items.length),
+  };
 }
 
 FILE	frontend/src/main.ts
