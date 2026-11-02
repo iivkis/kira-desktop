@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	d35ca92731db303972ce0dfb630a75e1896ba845
+C	252e8ab271e50da8a3edde75493c2153b080b2cf
 F	.cargo/config.toml	98	146	3
 F	.github/workflows/ci.yml	4355	151	112
 F	.github/workflows/frontend-nix.yml	1398	265	43
@@ -66,74 +66,74 @@ F	frontend/index.html	2737	12200	66
 F	frontend/package.json	720	12268	27
 F	frontend/scripts/inline-assets.mjs	4457	12297	103
 F	frontend/scripts/inline-assets.test.mjs	4645	12402	106
-F	frontend/scripts/smoke-overlays.mjs	49696	12510	696
-F	frontend/src/App.svelte	9665	13208	224
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13434	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13452	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	13513	69
-F	frontend/src/lib/bootstrap.test.ts	3408	13584	84
-F	frontend/src/lib/bootstrap.ts	2613	13670	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13742	65
-F	frontend/src/lib/calendar-model.ts	4648	13809	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13916	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	13978	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	14009	287
-F	frontend/src/lib/clock-flight.test.ts	2404	14298	50
-F	frontend/src/lib/clock-flight.ts	1977	14350	50
-F	frontend/src/lib/components/CalendarWidget.svelte	12672	14402	267
-F	frontend/src/lib/components/DisplaySettings.svelte	23799	14671	451
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	15124	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9899	15382	172
-F	frontend/src/lib/components/SkyMap.svelte	13008	15556	274
-F	frontend/src/lib/components/SystemCharts.svelte	10517	15832	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	16060	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	16108	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	16449	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16489	119
-F	frontend/src/lib/launcher-model.test.ts	2266	16610	46
-F	frontend/src/lib/launcher-model.ts	1403	16658	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	16689	89
-F	frontend/src/lib/lazy-widget.ts	1984	16780	63
-F	frontend/src/lib/motion-contract.test.ts	11242	16845	198
-F	frontend/src/lib/motion.ts	24039	17045	657
-F	frontend/src/lib/overlay-size.ts	1090	17704	29
-F	frontend/src/lib/sdk/core.test.ts	27884	17735	564
-F	frontend/src/lib/sdk/core.ts	25417	18301	645
-F	frontend/src/lib/settings-model.test.ts	1064	18948	21
-F	frontend/src/lib/settings-model.ts	1262	18971	26
-F	frontend/src/lib/system-charts.test.ts	6312	18999	141
-F	frontend/src/lib/system-charts.ts	5514	19142	149
-F	frontend/src/lib/system-health.test.ts	2385	19293	42
-F	frontend/src/lib/system-health.ts	2831	19337	60
-F	frontend/src/lib/system-model.test.ts	4455	19399	84
-F	frontend/src/lib/system-model.ts	5457	19485	125
-F	frontend/src/lib/themes/kira-default.css	1687	19612	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	19666	101
-F	frontend/src/lib/themes/kira-default.ts	777	19769	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	19793	101
-F	frontend/src/lib/time.test.ts	263	19896	8
-F	frontend/src/lib/time.ts	320	19906	9
-F	frontend/src/lib/workspace-window.test.ts	2298	19917	52
-F	frontend/src/lib/workspace-window.ts	1063	19971	32
-F	frontend/src/main.ts	7783	20005	161
-F	frontend/src/style.css	6399	20168	194
-F	frontend/tsconfig.json	403	20364	16
-F	frontend/vite.config.ts	224	20382	8
-F	nix/package.nix	3132	20392	117
-F	scripts/dev_preview.py	18147	20511	403	x
-F	scripts/qa_visual.py	12052	20916	299
-F	tests/test_calendar_design.py	9935	21217	171
-F	tests/test_detailed_health.py	5481	21390	105
-F	tests/test_dev_preview.py	9339	21497	219
-F	tests/test_displays.py	4741	21718	82
-F	tests/test_launcher_design.py	10481	21802	190
-F	tests/test_native_theme.py	2098	21994	44
-F	tests/test_popup_geometry.py	3227	22040	58
-F	tests/test_qa_visual.py	10549	22100	217
-F	tests/test_settings.py	4508	22319	81
-F	tests/test_tenet_close.py	6297	22402	115
-F	tests/test_ui_bootstrap_contract.py	1103	22519	29
-F	tests/test_webview_pool.py	9633	22550	168
+F	frontend/scripts/smoke-overlays.mjs	49835	12510	698
+F	frontend/src/App.svelte	9665	13210	224
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13436	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13454	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	13515	69
+F	frontend/src/lib/bootstrap.test.ts	3408	13586	84
+F	frontend/src/lib/bootstrap.ts	2613	13672	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13744	65
+F	frontend/src/lib/calendar-model.ts	4648	13811	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	13918	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	13980	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	14011	287
+F	frontend/src/lib/clock-flight.test.ts	2404	14300	50
+F	frontend/src/lib/clock-flight.ts	1977	14352	50
+F	frontend/src/lib/components/CalendarWidget.svelte	12672	14404	267
+F	frontend/src/lib/components/DisplaySettings.svelte	23821	14673	451
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	15126	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9899	15384	172
+F	frontend/src/lib/components/SkyMap.svelte	13008	15558	274
+F	frontend/src/lib/components/SystemCharts.svelte	10517	15834	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	16062	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	16110	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	16451	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16491	119
+F	frontend/src/lib/launcher-model.test.ts	2266	16612	46
+F	frontend/src/lib/launcher-model.ts	1403	16660	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	16691	89
+F	frontend/src/lib/lazy-widget.ts	1984	16782	63
+F	frontend/src/lib/motion-contract.test.ts	11242	16847	198
+F	frontend/src/lib/motion.ts	24039	17047	657
+F	frontend/src/lib/overlay-size.ts	1090	17706	29
+F	frontend/src/lib/sdk/core.test.ts	27884	17737	564
+F	frontend/src/lib/sdk/core.ts	25417	18303	645
+F	frontend/src/lib/settings-model.test.ts	1064	18950	21
+F	frontend/src/lib/settings-model.ts	1262	18973	26
+F	frontend/src/lib/system-charts.test.ts	6312	19001	141
+F	frontend/src/lib/system-charts.ts	5514	19144	149
+F	frontend/src/lib/system-health.test.ts	2385	19295	42
+F	frontend/src/lib/system-health.ts	2831	19339	60
+F	frontend/src/lib/system-model.test.ts	4455	19401	84
+F	frontend/src/lib/system-model.ts	5457	19487	125
+F	frontend/src/lib/themes/kira-default.css	1687	19614	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	19668	101
+F	frontend/src/lib/themes/kira-default.ts	777	19771	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	19795	101
+F	frontend/src/lib/time.test.ts	263	19898	8
+F	frontend/src/lib/time.ts	320	19908	9
+F	frontend/src/lib/workspace-window.test.ts	2298	19919	52
+F	frontend/src/lib/workspace-window.ts	1063	19973	32
+F	frontend/src/main.ts	7783	20007	161
+F	frontend/src/style.css	6399	20170	194
+F	frontend/tsconfig.json	403	20366	16
+F	frontend/vite.config.ts	224	20384	8
+F	nix/package.nix	3132	20394	117
+F	scripts/dev_preview.py	18147	20513	403	x
+F	scripts/qa_visual.py	12052	20918	299
+F	tests/test_calendar_design.py	9935	21219	171
+F	tests/test_detailed_health.py	5481	21392	105
+F	tests/test_dev_preview.py	9339	21499	219
+F	tests/test_displays.py	4741	21720	82
+F	tests/test_launcher_design.py	10481	21804	190
+F	tests/test_native_theme.py	2098	21996	44
+F	tests/test_popup_geometry.py	3227	22042	58
+F	tests/test_qa_visual.py	10549	22102	217
+F	tests/test_settings.py	4508	22321	81
+F	tests/test_tenet_close.py	6297	22404	115
+F	tests/test_ui_bootstrap_contract.py	1103	22521	29
+F	tests/test_webview_pool.py	9633	22552	168
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -12770,7 +12770,9 @@ function scriptFor(steps, observationMs = 1150) {
       'const settings=document.querySelector("main[aria-label=\\\"Kira Settings\\\"]");' +
       'document.documentElement.dataset.smokeSettingsMode=settings?.dataset.settingsMode || "none";' +
       'document.documentElement.dataset.smokeSettingsData=!!settings && settings.textContent.includes("Example Linux") && settings.textContent.includes("Example CPU");' +
-      'document.documentElement.dataset.smokeSettingsSelector=!!settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+      'const settingsSelect=settings?.querySelector("select[aria-label=\\\"Раздел настроек\\\"]");' +
+      'document.documentElement.dataset.smokeSettingsSelector=!!settingsSelect&&' +
+        'getComputedStyle(settingsSelect.parentElement.parentElement).display!=="none";' +
       'document.documentElement.dataset.smokeSettingsSidebar=!!settings?.querySelector("aside[aria-label=\\\"Разделы настроек\\\"]");' +
       'document.documentElement.dataset.smokeDisplays=!!settings?.querySelector("section[aria-label=\\\"Настройки дисплеев\\\"]") && settings.textContent.includes("HDMI-A-1") && settings.textContent.includes("Example External");' +
       'document.documentElement.dataset.smokeDisplayBoxes=settings?.querySelectorAll("button[aria-label^=\\\"Переместить или выбрать\\\"]").length || 0;' +
@@ -14692,7 +14694,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
 
   let mapViewport = $state<HTMLDivElement | null>(null);
   let mapWidth = $state(500);
-  let confirmButton: HTMLButtonElement;
+  let confirmButton = $state<HTMLButtonElement | null>(null);
 
   const selectedOutput = $derived(outputs.find(output => output.connector === selected));
   const selectedDraft = $derived(draft.find(output => output.connector === selected));
