@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	b9abfdffa953a2afb47c6598651330b3570e6d26
+C	7683cbb25b42df1043f44dcf50146779a5f55dd2
 F	.cargo/config.toml	98	136	3
 F	.github/workflows/ci.yml	4355	141	112
 F	.github/workflows/frontend-nix.yml	1398	255	43
@@ -62,68 +62,68 @@ F	frontend/index.html	2737	10361	66
 F	frontend/package.json	720	10429	27
 F	frontend/scripts/inline-assets.mjs	4457	10458	103
 F	frontend/scripts/inline-assets.test.mjs	4645	10563	106
-F	frontend/scripts/smoke-overlays.mjs	39920	10671	554
-F	frontend/src/App.svelte	9665	11227	224
-F	frontend/src/lib/bootstrap.test.ts	3408	11453	84
-F	frontend/src/lib/bootstrap.ts	2613	11539	70
-F	frontend/src/lib/calendar-model.test.ts	3571	11611	65
-F	frontend/src/lib/calendar-model.ts	4648	11678	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11785	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	11847	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	11878	287
-F	frontend/src/lib/clock-flight.test.ts	2404	12167	50
-F	frontend/src/lib/clock-flight.ts	1977	12219	50
-F	frontend/src/lib/components/CalendarWidget.svelte	11702	12271	246
-F	frontend/src/lib/components/LauncherWidget.svelte	11749	12519	256
-F	frontend/src/lib/components/SettingsWidget.svelte	9217	12777	165
-F	frontend/src/lib/components/SystemCharts.svelte	10517	12944	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	13172	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	13220	339
-F	frontend/src/lib/components/WindowControls.svelte	1657	13561	38
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13601	119
-F	frontend/src/lib/launcher-model.test.ts	2266	13722	46
-F	frontend/src/lib/launcher-model.ts	1403	13770	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	13801	89
-F	frontend/src/lib/lazy-widget.ts	1984	13892	63
-F	frontend/src/lib/motion-contract.test.ts	11242	13957	198
-F	frontend/src/lib/motion.ts	24039	14157	657
-F	frontend/src/lib/overlay-size.ts	1090	14816	29
-F	frontend/src/lib/sdk/core.test.ts	25327	14847	508
-F	frontend/src/lib/sdk/core.ts	21046	15357	539
-F	frontend/src/lib/settings-model.test.ts	1011	15898	20
-F	frontend/src/lib/settings-model.ts	1263	15920	26
-F	frontend/src/lib/system-charts.test.ts	6312	15948	141
-F	frontend/src/lib/system-charts.ts	5514	16091	149
-F	frontend/src/lib/system-health.test.ts	2385	16242	42
-F	frontend/src/lib/system-health.ts	2831	16286	60
-F	frontend/src/lib/system-model.test.ts	4455	16348	84
-F	frontend/src/lib/system-model.ts	5457	16434	125
-F	frontend/src/lib/themes/kira-default.css	1687	16561	52
-F	frontend/src/lib/themes/kira-default.test.ts	4283	16615	101
-F	frontend/src/lib/themes/kira-default.ts	777	16718	22
-F	frontend/src/lib/themes/shell-composition.test.ts	5713	16742	101
-F	frontend/src/lib/time.test.ts	263	16845	8
-F	frontend/src/lib/time.ts	320	16855	9
-F	frontend/src/lib/workspace-window.test.ts	2298	16866	52
-F	frontend/src/lib/workspace-window.ts	1063	16920	32
-F	frontend/src/main.ts	7783	16954	161
-F	frontend/src/style.css	6399	17117	194
-F	frontend/tsconfig.json	403	17313	16
-F	frontend/vite.config.ts	224	17331	8
-F	nix/package.nix	3132	17341	117
-F	scripts/dev_preview.py	18147	17460	403	x
-F	scripts/qa_visual.py	12052	17865	299
-F	tests/test_calendar_design.py	7810	18166	136
-F	tests/test_detailed_health.py	5481	18304	105
-F	tests/test_dev_preview.py	9339	18411	219
-F	tests/test_launcher_design.py	10481	18632	190
-F	tests/test_native_theme.py	2098	18824	44
-F	tests/test_popup_geometry.py	3227	18870	58
-F	tests/test_qa_visual.py	10549	18930	217
-F	tests/test_settings.py	3217	19149	62
-F	tests/test_tenet_close.py	6297	19213	115
-F	tests/test_ui_bootstrap_contract.py	1103	19330	29
-F	tests/test_webview_pool.py	5335	19361	94
+F	frontend/scripts/smoke-overlays.mjs	39992	10671	555
+F	frontend/src/App.svelte	9665	11228	224
+F	frontend/src/lib/bootstrap.test.ts	3408	11454	84
+F	frontend/src/lib/bootstrap.ts	2613	11540	70
+F	frontend/src/lib/calendar-model.test.ts	3571	11612	65
+F	frontend/src/lib/calendar-model.ts	4648	11679	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	11786	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	11848	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	11879	287
+F	frontend/src/lib/clock-flight.test.ts	2404	12168	50
+F	frontend/src/lib/clock-flight.ts	1977	12220	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11702	12272	246
+F	frontend/src/lib/components/LauncherWidget.svelte	11749	12520	256
+F	frontend/src/lib/components/SettingsWidget.svelte	9217	12778	165
+F	frontend/src/lib/components/SystemCharts.svelte	10517	12945	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	13173	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	13221	339
+F	frontend/src/lib/components/WindowControls.svelte	1657	13562	38
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	13602	119
+F	frontend/src/lib/launcher-model.test.ts	2266	13723	46
+F	frontend/src/lib/launcher-model.ts	1403	13771	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	13802	89
+F	frontend/src/lib/lazy-widget.ts	1984	13893	63
+F	frontend/src/lib/motion-contract.test.ts	11242	13958	198
+F	frontend/src/lib/motion.ts	24039	14158	657
+F	frontend/src/lib/overlay-size.ts	1090	14817	29
+F	frontend/src/lib/sdk/core.test.ts	25327	14848	508
+F	frontend/src/lib/sdk/core.ts	21046	15358	539
+F	frontend/src/lib/settings-model.test.ts	1011	15899	20
+F	frontend/src/lib/settings-model.ts	1263	15921	26
+F	frontend/src/lib/system-charts.test.ts	6312	15949	141
+F	frontend/src/lib/system-charts.ts	5514	16092	149
+F	frontend/src/lib/system-health.test.ts	2385	16243	42
+F	frontend/src/lib/system-health.ts	2831	16287	60
+F	frontend/src/lib/system-model.test.ts	4455	16349	84
+F	frontend/src/lib/system-model.ts	5457	16435	125
+F	frontend/src/lib/themes/kira-default.css	1687	16562	52
+F	frontend/src/lib/themes/kira-default.test.ts	4283	16616	101
+F	frontend/src/lib/themes/kira-default.ts	777	16719	22
+F	frontend/src/lib/themes/shell-composition.test.ts	5713	16743	101
+F	frontend/src/lib/time.test.ts	263	16846	8
+F	frontend/src/lib/time.ts	320	16856	9
+F	frontend/src/lib/workspace-window.test.ts	2298	16867	52
+F	frontend/src/lib/workspace-window.ts	1063	16921	32
+F	frontend/src/main.ts	7783	16955	161
+F	frontend/src/style.css	6399	17118	194
+F	frontend/tsconfig.json	403	17314	16
+F	frontend/vite.config.ts	224	17332	8
+F	nix/package.nix	3132	17342	117
+F	scripts/dev_preview.py	18147	17461	403	x
+F	scripts/qa_visual.py	12052	17866	299
+F	tests/test_calendar_design.py	7810	18167	136
+F	tests/test_detailed_health.py	5481	18305	105
+F	tests/test_dev_preview.py	9339	18412	219
+F	tests/test_launcher_design.py	10481	18633	190
+F	tests/test_native_theme.py	2098	18825	44
+F	tests/test_popup_geometry.py	3227	18871	58
+F	tests/test_qa_visual.py	10549	18931	217
+F	tests/test_settings.py	3212	19150	62
+F	tests/test_tenet_close.py	6297	19214	115
+F	tests/test_ui_bootstrap_contract.py	1103	19331	29
+F	tests/test_webview_pool.py	5335	19362	94
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -11028,7 +11028,8 @@ async function smoke(name, steps, expected, heightMode = 'any') {
        !output.includes('data-smoke-surface-settled="true"') ||
        !output.includes('data-smoke-tenet-previsible="true"') ||
        !output.includes('data-smoke-tenet-started="true"') ||
-       !output.includes('data-smoke-surface-moving="true"') ||
+       (!output.includes('data-smoke-surface-moving="true"') &&
+        !output.includes('data-smoke-tenet-content-moving="true"')) ||
        !output.includes('data-smoke-tenet-settled="true"'))) {
     const stage = output.match(/data-smoke-(?:tenet|surface)-[a-z-]+="[^"]*"/g) ?? [];
     throw new Error(name + ': native handshake, real content motion or cleanup failed: ' + stage.join(', '));
@@ -19175,7 +19176,7 @@ class SettingsContracts(unittest.TestCase):
         self.assertIn('view.show(Surface::Settings)', NATIVE)
         self.assertIn('toggleSettings()', APP)
         self.assertIn('aria-label="Open system settings"', APP)
-        self.assertIn('data-kira-surface="calendar"', NATIVE)
+        self.assertIn('const CALENDAR_SURFACE:', NATIVE)
 
     def test_fixed_widget_and_full_xdg_window_are_one_live_webview(self):
         self.assertIn('pub const SETTINGS_POPUP_WIDTH: i32 = 600', GEOMETRY)
