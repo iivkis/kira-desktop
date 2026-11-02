@@ -61,8 +61,11 @@ acceptance, in addition to the TENET motion principles.
 - **WebView Pool:** Read [docs/WEBVIEW_POOL.md](docs/WEBVIEW_POOL.md) before
   modifying native popup lifecycle, scheduling or rotation. Start exactly one
   inert warm host; acquire additional popup hosts only on demand, up to the
-  fixed cap. Never recycle or reposition an active WebView to show another
-  widget. Reuse one hot idle view, retire surplus idle views after 45 seconds,
+  fixed cap. Never recycle an active lease for a different widget. A
+  user-requested pop-out may reparent its SAME active WebView into a regular
+  Niri window without remounting or losing Svelte state. Keep at most one
+  transient popup; wait for its reverse-close acknowledgement before showing
+  another. Reuse one hot idle view, retire surplus idle views after 45 seconds,
   and reject stale generation-scoped UI commands.
 - **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
   ECharts and GSAP effects on mount, resize charts when geometry changes,

@@ -32,7 +32,7 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("willChange: 'transform, opacity'");
     expect(motion).toContain("node.dataset.tenetReveal = 'ready'");
     expect(motion).toContain("window.setTimeout(() => {");
-    expect(motion).toContain("}, 550)");
+    expect(motion).toContain("}, 460)");
   });
 
   it('runs the recorded inverse and forward on one GPU-friendly master', () => {
@@ -56,9 +56,9 @@ describe('TENET shared widget appearance', () => {
     expect(motion).toContain("restore = window.setTimeout(() => {")
     expect(motion).toContain("master.progress(1).pause()")
     expect(motion).toContain("master.progress(0).pause()")
-    expect(motion).toContain("}, 850)")
+    expect(motion).toContain("}, 710)")
     expect(motion).toContain("if (!closing || closedAcknowledged) return")
-    expect(motion).toContain("}, 1200)");
+    expect(motion).toContain("}, 1000)");
     expect(motion).toContain("window.clearTimeout(awaitVisible)");
     expect(motion).toContain("master?.kill()");
     expect(motion).toContain("trace.remove()");
@@ -91,12 +91,12 @@ describe('TENET shared widget appearance', () => {
     expect(styles).toContain('background: transparent;');
   });
 
-  it('runs both surface assembly and disappearance at 1.2x, preserving one shared history', () => {
-    expect(motion).toContain('master.timeScale(1.2)');
+  it('runs both surface assembly and disappearance at 1.44x, preserving one shared history', () => {
+    expect(motion).toContain('master.timeScale(1.44)');
     expect(motion).toContain('master.play(0)');
     expect(motion).toContain('master.reverse()');
     expect(motion).toContain('master.play(); // Retarget from the live position');
-    expect(0.54 / 1.2).toBeCloseTo(0.45);
+    expect(0.54 / 1.44).toBeCloseTo(0.375);
   });
 
   it('reverses the SAME entrance history before GTK releases the popup', () => {

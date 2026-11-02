@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import WindowControls from './WindowControls.svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetReflowScope, tenetWidgetReveal } from '../motion';
   import {
@@ -11,10 +12,12 @@
     sortedProcesses, systemHeadline, temperatureLabel, uptimeLabel, usageLabel, type SortField,
   } from '../system-model';
 
-  let { onClose, onCopy, onTab }: {
+  let { onClose, onPopout, onCopy, onTab, generation }: {
     onClose: () => void;
+    onPopout: () => void;
     onCopy: () => void;
     onTab: (tab: 'overview' | 'processes') => void;
+    generation: number;
   } = $props();
 
   let status = $state<SystemOverlayData | null>(null);
@@ -100,8 +103,7 @@
         <h1 class="mt-2 text-[25px] font-extrabold leading-none tracking-tight">System monitor</h1>
         <p class="mt-2 text-[10px] font-medium tracking-wide text-kira-muted">LOCAL TELEMETRY / READ ONLY</p>
       </div>
-      <button type="button" onclick={onClose} aria-label="Close system monitor" title="Close (Esc)"
-        class="rounded px-2 py-1 text-xl text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+      <WindowControls {onClose} {onPopout} {generation} label="system monitor" />
     </div>
     <div class="mt-4 flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-3"
       role="status" aria-live="polite">

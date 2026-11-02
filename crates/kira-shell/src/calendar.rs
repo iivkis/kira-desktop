@@ -1,5 +1,5 @@
-//! Bounded, reusable GTK/WebKit popup hosts for concurrent trusted widgets.
-//! Each active Calendar/System/Launcher has its own window and IPC manager.
+//! One transient GTK layer-shell widget at a time; promoted widgets become
+//! ordinary Niri windows without recreating their live WebKit/Svelte state.
 use crate::popup_layout::{self, PopupDock};
 use crate::webview_pool::{Reservation, Surface, WebviewScheduler};
 use std::cell::{Cell, RefCell};
@@ -12,9 +12,9 @@ use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
 
 const TITLE: &str = "Kira Overlay";
-// 20% higher motion speed: 160ms / 1.2 ~= 133ms. The native fade
-// remains shorter than the reversible GSAP surface materialization.
-const OVERLAY_FADE_MS: u64 = 133;
+// Another 20% increase over the existing 133ms fade, synchronized with
+// the 1.44x reversible WebKit scene.
+const OVERLAY_FADE_MS: u64 = 111;
 
 fn native_fade_progress(elapsed: Duration) -> f64 {
     let t = (elapsed.as_secs_f64() / Duration::from_millis(OVERLAY_FADE_MS).as_secs_f64())
@@ -28,13 +28,15 @@ thread_local! {
     static POOL: RefCell<Option<Rc<OverlayPool>>> = const { RefCell::new(None) };
 }
 
-/// Top Bar is permanently separate. Only one of these hosts is prewarmed;
-/// extra popup WebViews are created on actual concurrent requests.
+/// Top Bar stays separate. Only one transient widget is ever visible;
+/// additional leased WebViews belong to independently tiled Niri windows.
+type OpenRequest = Box<dyn FnOnce(&Rc<OverlayPool>)>;
 struct OverlayPool {
     application: gtk::Application,
     document: String,
     scheduler: RefCell<WebviewScheduler>,
     windows: RefCell<HashMap<u32, Rc<CalendarOverlay>>>,
+    pending: RefCell<Option<OpenRequest>>,
     poll_source: RefCell<Option<gtk::glib::SourceId>>,
     last_tick: Cell<Instant>,
 }
@@ -49,6 +51,7 @@ impl OverlayPool {
             document,
             scheduler: RefCell::new(WebviewScheduler::default()),
             windows: RefCell::new(HashMap::new()),
+            pending: RefCell::new(None),
             poll_source: RefCell::new(None),
             last_tick: Cell::new(Instant::now()),
         });
@@ -144,81 +147,79 @@ impl OverlayPool {
         self.windows.borrow().get(&id).cloned()
     }
 
-    /// A newly requested surface may take the empty left/right dock, but
-    /// an *idle* host is invisible and must never reserve screen space.
+    // A detached widget is a normal Niri application window, not a popup.
+    fn popup(&self) -> Option<Rc<CalendarOverlay>> {
+        self.windows.borrow().values()
+            .find(|view| view.requested.get() && !view.detached.get())
+            .cloned()
+    }
+
+    /// Last request wins while a popup reverses its recorded scene. Nothing
+    /// new is mounted until closed:<generation> releases the old slot.
+    fn request(self: &Rc<Self>, kind: Surface, toggle: bool, open: OpenRequest) {
+        if let Some(current) = self.popup() {
+            if current.active.get() == Some(kind) {
+                self.pending.borrow_mut().take();
+                if toggle && !current.closing.get() {
+                    current.request_close();
+                } else {
+                    current.cancel_close();
+                    if !toggle {
+                        current.window.present();
+                    }
+                }
+                return;
+            }
+            self.pending.replace(Some(open));
+            current.request_close();
+        } else {
+            open(self);
+        }
+    }
+
+    fn run_pending(self: &Rc<Self>) {
+        if self.popup().is_some() {
+            return;
+        }
+        // A pending callback can acquire and enqueue another window: release
+        // the RefCell borrow BEFORE calling it.
+        let next = self.pending.borrow_mut().take();
+        if let Some(open) = next {
+            open(self);
+        }
+    }
+
     fn choose_dock(&self, kind: Surface) -> PopupDock {
-        let right_occupied = self
-            .windows
-            .borrow()
-            .values()
-            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
-        popup_layout::choose_dock(kind, right_occupied)
+        popup_layout::choose_dock(kind, false)
     }
 
     fn width_for(&self, view: &CalendarOverlay) -> i32 {
-        let windows = self.windows.borrow();
-        let active_count = windows.values().filter(|view| view.requested.get()).count();
-        let launcher_active = windows
-            .values()
-            .any(|view| view.requested.get() && view.active.get() == Some(Surface::Launcher));
         popup_layout::popup_width(
-            crate::native_ui::popup_output_width(&view.window),
-            active_count,
-            launcher_active,
+            crate::native_ui::popup_output_width(&view.window), 1, false,
         )
     }
 
-    /// Native window dimensions and anchors are independent of the WebKit
-    /// lease scheduler. Only requested windows count toward occupied columns.
+    // Only the single transient window gets layer-shell geometry.
     fn sync_geometry(&self) {
-        let active: Vec<_> = self
-            .windows
-            .borrow()
-            .values()
-            .filter(|view| view.requested.get())
-            .cloned()
-            .collect();
-        for view in active {
-            let width = self.width_for(&view);
+        if let Some(view) = self.popup() {
             crate::native_ui::resize_webview_popup(
-                &view.window,
-                width,
-                view.content_height.get().max(1),
+                &view.window, self.width_for(&view), view.content_height.get().max(1),
             );
         }
     }
 
-    fn release(&self, id: u32) {
+    fn release(self: &Rc<Self>, id: u32) {
         self.scheduler.borrow_mut().release(id, Instant::now());
-        // If a right-hand popup closes, the sole remaining left popup takes
-        // the original right-hand anchor again. Unmap before changing
-        // layer-shell anchors to avoid Niri replaying the last buffer at the
-        // new coordinates, while preserving the Svelte widget and its state.
-        let right_occupied = self
-            .windows
-            .borrow()
-            .values()
-            .any(|view| view.requested.get() && view.dock.get() == PopupDock::Right);
-        if !right_occupied {
-            let left = self
-                .windows
-                .borrow()
-                .values()
-                .find(|view| view.requested.get() && view.dock.get() == PopupDock::Left)
-                .cloned();
-            if let Some(left) = left {
-                left.move_to_right();
-            }
-        }
         self.sync_geometry();
         self.update_launcher_keyboard_mode();
+        self.run_pending();
     }
 
     fn update_launcher_keyboard_mode(&self) {
         // Exclusive is useful for an isolated type-to-search Launcher but
         // blocks interaction with other simultaneously visible windows.
         // Keep its solo behavior; use OnDemand with multiple popup leases.
-        if let Some(launcher) = self.active(Surface::Launcher) {
+        if let Some(launcher) = self.active(Surface::Launcher).filter(|view| !view.detached.get()) {
             launcher.window.set_keyboard_mode(if self.concurrent() {
                 KeyboardMode::OnDemand
             } else {
@@ -250,6 +251,8 @@ struct CalendarOverlay {
     pool: std::rc::Weak<OverlayPool>,
     disposed: Cell<bool>,
     window: gtk::ApplicationWindow,
+    regular_window: RefCell<Option<gtk::ApplicationWindow>>,
+    detached: Cell<bool>,
     view: webkit6::WebView,
     document: String,
     host_ready: Cell<bool>,
@@ -270,8 +273,7 @@ struct CalendarOverlay {
 }
 
 impl CalendarOverlay {
-    /// Select an available dock based on *requested windows*, never on an
-    /// idle Calendar WebView. Launcher always keeps the center slot.
+    /// Exactly one transient dock exists; detached windows are placed by Niri.
     fn position_for(&self, kind: Surface) {
         let dock = self
             .pool
@@ -292,43 +294,83 @@ impl CalendarOverlay {
         self.window
             .set_anchor(Edge::Right, dock == PopupDock::Right);
         self.window.set_anchor(Edge::Bottom, false);
-        self.window.set_anchor(Edge::Left, dock == PopupDock::Left);
+        self.window.set_anchor(Edge::Left, false);
         if dock == PopupDock::Center {
             self.window.set_exclusive_zone(-1);
         } else {
             self.window.set_exclusive_zone(0);
             self.window
                 .set_margin(Edge::Top, crate::native_ui::POPUP_TOP_MARGIN);
-            match dock {
-                PopupDock::Right => self
-                    .window
-                    .set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN),
-                PopupDock::Left => self
-                    .window
-                    .set_margin(Edge::Left, crate::native_ui::POPUP_RIGHT_MARGIN),
-                PopupDock::Center => {}
+            if dock == PopupDock::Right {
+                self.window.set_margin(Edge::Right, crate::native_ui::POPUP_RIGHT_MARGIN);
             }
         }
     }
 
-    fn move_to_right(self: &Rc<Self>) {
-        if !self.requested.get() || self.dock.get() != PopupDock::Left {
+    /// Keep the SAME WebView and Svelte state while moving it from the
+    /// layer-shell popup to a decorated xdg-toplevel managed by Niri.
+    fn detach(self: &Rc<Self>) {
+        if !self.requested.get() || self.closing.get() || !self.revealed.get()
+            || self.detached.get()
+        {
             return;
         }
-        let generation = self.generation.get();
-        // Niri must see the UNMAP before a changed layer-shell anchor.
+        let Some(pool) = self.pool.upgrade() else { return; };
+        let kind = self.active.get().expect("requested view has a surface");
+        self.detached.set(true);
+        let normal = gtk::ApplicationWindow::new(&pool.application);
+        let title = match kind {
+            Surface::Calendar => "Kira Calendar",
+            Surface::System => "Kira System Monitor",
+            Surface::Launcher => "Kira Launcher",
+            #[cfg(test)]
+            Surface::Synthetic(_) => "Kira Widget",
+        };
+        normal.set_title(Some(title));
+        normal.set_decorated(true);
+        normal.set_default_size(500, (self.content_height.get() + 32).clamp(420, 760));
+        // Different Wayland roles require two GTK toplevels. Reparenting
+        // retains the live WebKit process, DOM and generation.
+        self.window.set_child(None::<&gtk::Widget>);
         self.window.set_visible(false);
-        self.apply_dock(PopupDock::Right);
+        self.window.set_keyboard_mode(KeyboardMode::None);
+        normal.set_child(Some(&self.view));
         let weak = Rc::downgrade(self);
-        gtk::glib::timeout_add_local_once(Duration::from_millis(32), move || {
-            if let Some(view) = weak.upgrade()
-                && view.requested.get()
-                && view.generation.get() == generation
-                && view.dock.get() == PopupDock::Right
-            {
-                view.window.present();
+        normal.connect_close_request(move |_| {
+            if let Some(view) = weak.upgrade() {
+                if view.requested.get() {
+                    view.request_close();
+                    return gtk::glib::Propagation::Stop;
+                }
             }
+            gtk::glib::Propagation::Proceed
         });
+        self.regular_window.replace(Some(normal.clone()));
+        normal.present();
+        let generation = self.generation.get();
+        let script = format!(
+            "document.documentElement.dataset.kiraDetached = 'true';              window.dispatchEvent(new CustomEvent('kira:overlay:detached',              {{ detail: {{ generation: {generation} }} }}));"
+        );
+        self.view.evaluate_javascript(
+            &script, None, None, None::<&gtk::gio::Cancellable>,
+            |result| {
+                if let Err(error) = result {
+                    eprintln!("kira-shell: widget detach notification failed: {error}");
+                }
+            },
+        );
+        pool.update_launcher_keyboard_mode();
+        pool.run_pending();
+    }
+
+    fn focus_detached(&self) -> bool {
+        if !self.detached.get() {
+            return false;
+        }
+        if let Some(window) = self.regular_window.borrow().as_ref() {
+            window.present();
+        }
+        true
     }
 
     /// Emergency/reduced-motion path and completion of the reversible
@@ -352,12 +394,21 @@ impl CalendarOverlay {
         self.revealed.set(false);
         self.paint_pending.set(false);
         self.open_started.take();
+        // A detached view returns to its inert popup host only when its
+        // regular Niri window is closed. No second Svelte mount is needed.
+        let regular = self.regular_window.borrow_mut().take();
+        if let Some(normal) = regular {
+            normal.set_child(None::<&gtk::Widget>);
+            self.window.set_child(Some(&self.view));
+            normal.close();
+        }
+        self.detached.set(false);
         // Deliver a generation-scoped hide. WebKit evaluates scripts
         // asynchronously: a stale hide must never unmount a newer show.
         if self.host_ready.get() {
             let generation = self.generation.get();
             let script = format!(
-                "window.dispatchEvent(new CustomEvent('kira:overlay:hide', {{ detail: {{ generation: {generation} }} }}));"
+                "delete document.documentElement.dataset.kiraDetached;                  window.dispatchEvent(new CustomEvent('kira:overlay:hide', {{ detail: {{ generation: {generation} }} }}));"
             );
             self.view.evaluate_javascript(
                 &script,
@@ -415,7 +466,7 @@ impl CalendarOverlay {
             },
         );
         let weak = Rc::downgrade(self);
-        gtk::glib::timeout_add_local_once(Duration::from_millis(1100), move || {
+        gtk::glib::timeout_add_local_once(Duration::from_millis(920), move || {
             if let Some(view) = weak.upgrade()
                 && view.requested.get()
                 && view.closing.get()
@@ -452,8 +503,8 @@ impl CalendarOverlay {
     }
 
     fn show(self: &Rc<Self>, kind: Surface) {
-        // Dedicated leased WebView: no preceding Svelte widget is unmounted
-        // and no other Wayland popup is ever unmapped to start this scene.
+        // The previous transient scene has finished its reverse, or was
+        // promoted to an independent ordinary Niri window.
         debug_assert!(!self.requested.get());
         self.position_for(kind);
         self.active.set(Some(kind));
@@ -577,7 +628,7 @@ impl CalendarOverlay {
     // remain invisible solely because the paint acknowledgement was skipped.
     fn schedule_reveal_fallback(self: &Rc<Self>, generation: u32) {
         let weak = Rc::downgrade(self);
-        gtk::glib::timeout_add_local_once(Duration::from_millis(150), move || {
+        gtk::glib::timeout_add_local_once(Duration::from_millis(125), move || {
             let Some(state) = weak.upgrade() else {
                 return;
             };
@@ -703,6 +754,7 @@ impl CalendarOverlay {
                 // Layout-driven dimensions come only from the bounded,
                 // trusted overlay channel. Ignore stale generations and
                 // no-op resizes to avoid feedback from ResizeObserver.
+                if self.detached.get() { return; }
                 let clamped =
                     height.min(crate::native_ui::webview_popup_height_limit(&self.window));
                 if clamped != self.content_height.get() {
@@ -726,6 +778,13 @@ impl CalendarOverlay {
                     && self.generation.get() == generation =>
             {
                 self.reveal();
+            }
+            Some(UiCommand::Detach(generation))
+                if self.requested.get()
+                    && self.generation.get() == generation
+                    && !self.closing.get() =>
+            {
+                self.detach();
             }
             Some(UiCommand::Close(generation))
                 if self.requested.get() && self.generation.get() == generation =>
@@ -981,6 +1040,7 @@ impl CalendarOverlay {
 #[derive(Debug, PartialEq, Eq)]
 enum UiCommand<'a> {
     Close(u32),
+    Detach(u32),
     Closed(u32),
     HostReady,
     Mounted(u32, bool),
@@ -1040,6 +1100,9 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
     }
     if let Some(value) = message.strip_prefix("close:") {
         return parse_ui_generation(value).map(UiCommand::Close);
+    }
+    if let Some(value) = message.strip_prefix("detach:") {
+        return parse_ui_generation(value).map(UiCommand::Detach);
     }
     if let Some(value) = message.strip_prefix("closed:") {
         return parse_ui_generation(value).map(UiCommand::Closed);
@@ -1217,6 +1280,8 @@ fn build(
         pool,
         disposed: Cell::new(false),
         window: window.clone(),
+        regular_window: RefCell::new(None),
+        detached: Cell::new(false),
         view: view.clone(),
         document,
         host_ready: Cell::new(false),
@@ -1332,37 +1397,34 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
 }
 
 pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
-        return;
-    };
-    let Some((view, existing)) = pool.acquire(Surface::Calendar) else {
-        return;
-    };
-    if existing {
-        if view.closing.get() {
-            view.cancel_close();
+    let Some(pool) = ensure(application, html) else { return; };
+    pool.request(Surface::Calendar, true, Box::new(|pool| {
+        let Some((view, existing)) = pool.acquire(Surface::Calendar) else { return; };
+        if existing {
+            if !view.focus_detached() {
+                if view.closing.get() { view.cancel_close(); }
+                else { view.request_close(); }
+            }
         } else {
-            view.request_close();
+            view.show(Surface::Calendar);
         }
-    } else {
-        view.show(Surface::Calendar);
-    }
+    }));
 }
 
 pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
-        return;
-    };
-    let Some((view, existing)) = pool.acquire(Surface::Launcher) else {
-        return;
-    };
-    if existing {
-        view.cancel_close();
-        view.window.present();
-    } else {
-        view.launcher.borrow_mut().take();
-        view.show(Surface::Launcher);
-    }
+    let Some(pool) = ensure(application, html) else { return; };
+    pool.request(Surface::Launcher, false, Box::new(|pool| {
+        let Some((view, existing)) = pool.acquire(Surface::Launcher) else { return; };
+        if existing {
+            if !view.focus_detached() {
+                view.cancel_close();
+                view.window.present();
+            }
+        } else {
+            view.launcher.borrow_mut().take();
+            view.show(Surface::Launcher);
+        }
+    }));
 }
 
 pub fn toggle_system(
@@ -1372,26 +1434,23 @@ pub fn toggle_system(
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(pool) = ensure(application, html) else {
-        return;
-    };
-    let Some((view, existing)) = pool.acquire(Surface::System) else {
-        return;
-    };
-    if existing {
-        if view.closing.get() {
-            view.cancel_close();
-        } else {
-            view.request_close();
+    let Some(pool) = ensure(application, html) else { return; };
+    pool.request(Surface::System, true, Box::new(move |pool| {
+        let Some((view, existing)) = pool.acquire(Surface::System) else { return; };
+        if existing {
+            if !view.focus_detached() {
+                if view.closing.get() { view.cancel_close(); }
+                else { view.request_close(); }
+            }
+            return;
         }
-        return;
-    }
-    *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
-    if let Some(model) = view.system.borrow().as_ref() {
-        model.set_pulse_active(true);
-    }
-    view.last_metrics.set(None);
-    view.show(Surface::System);
+        *view.system.borrow_mut() = Some(crate::system_panel::Model::new(metrics, core, niri));
+        if let Some(model) = view.system.borrow().as_ref() {
+            model.set_pulse_active(true);
+        }
+        view.last_metrics.set(None);
+        view.show(Surface::System);
+    }));
 }
 
 #[cfg(test)]
@@ -1409,6 +1468,11 @@ mod tests {
             "close:-2",
             "close:4294967296",
             "closed:",
+            "detach:",
+            "detach:0",
+            "detach:-1",
+            "detach:4294967296",
+            "detach:12:13",
             "closed:0",
             "closed:-1",
             "closed:4294967296",
@@ -1468,6 +1532,7 @@ mod tests {
             assert_eq!(calendar_command(invalid), None, "{invalid:?}");
         }
         assert_eq!(calendar_command("close:12"), Some(UiCommand::Close(12)));
+        assert_eq!(calendar_command("detach:12"), Some(UiCommand::Detach(12)));
         assert_eq!(calendar_command("closed:12"), Some(UiCommand::Closed(12)));
         assert_eq!(calendar_command("host-ready"), Some(UiCommand::HostReady));
         assert_eq!(
@@ -1520,9 +1585,9 @@ mod tests {
     #[test]
     fn native_fade_is_monotone_and_settles_exactly() {
         assert_eq!(native_fade_progress(Duration::ZERO), 0.0);
-        let half = native_fade_progress(Duration::from_millis(66));
+        let half = native_fade_progress(Duration::from_millis(55));
         assert!(half > 0.5 && half < 1.0);
-        assert_eq!(native_fade_progress(Duration::from_millis(133)), 1.0);
+        assert_eq!(native_fade_progress(Duration::from_millis(111)), 1.0);
         assert_eq!(native_fade_progress(Duration::from_millis(500)), 1.0);
     }
 

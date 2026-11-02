@@ -316,6 +316,12 @@ export function closeCalendarOverlay(generation: number): void {
   if (validOverlayGeneration(generation)) sendCalendarUi('close:' + generation);
 }
 
+/** Promote the current popup to an ordinary Niri window, preserving the
+ * existing live WebView and Svelte component instead of remounting it. */
+export function detachOverlay(generation: number): boolean {
+  return validOverlayGeneration(generation) && sendCalendarUi('detach:' + generation);
+}
+
 export function copyCalendarDate(generation: number, date: string): void {
   // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
   // revalidates the exact date, including month lengths and leap years.

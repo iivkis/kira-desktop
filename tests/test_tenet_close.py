@@ -16,7 +16,7 @@ class TenetReverseDismissalTests(unittest.TestCase):
         self.assertIn("self.closing.replace(true)", request)
         self.assertIn("kira:overlay:close", request)
         self.assertIn("self.window.set_opacity(1.0)", request)
-        self.assertIn("Duration::from_millis(1100)", request)
+        self.assertIn("Duration::from_millis(920)", request)
         self.assertNotIn("self.window.set_visible(false)", request)
         self.assertNotIn("pool.release(self.id)", request)
         self.assertIn("Some(UiCommand::Closed(generation))", RUST)
@@ -89,14 +89,14 @@ class TenetReverseDismissalTests(unittest.TestCase):
         self.assertNotIn("window.resizeTo(", scene)
         self.assertNotIn("set_margin(", scene)
 
-    def test_open_and_reverse_share_exactly_twenty_percent_faster_tempo(self):
+    def test_open_and_reverse_are_another_twenty_percent_faster(self):
         # GSAP timeScale applies to every constituent track in both
         # directions. Native opacity must follow the same rate.
-        self.assertIn("master.timeScale(1.2)", MOTION)
-        self.assertIn("const OVERLAY_FADE_MS: u64 = 133;", RUST)
+        self.assertIn("master.timeScale(1.44)", MOTION)
+        self.assertIn("const OVERLAY_FADE_MS: u64 = 111;", RUST)
         self.assertIn("master.reverse()", MOTION)
         self.assertIn("onReverseComplete: acknowledgeClose", MOTION)
-        self.assertAlmostEqual(540 / 1.2, 450)
+        self.assertAlmostEqual(540 / 1.44, 375)
 
     def test_reduced_motion_and_renderer_stall_have_finite_exit(self):
         self.assertIn("self.native_reduced_motion.get()", RUST)

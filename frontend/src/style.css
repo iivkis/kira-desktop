@@ -73,6 +73,21 @@
      * keep their own list scrollers inside a constrained flex column. */
   }
 
+  /* A promoted WebView keeps its DOM, but now fills a normal, resizable
+   * Niri xdg-toplevel rather than constraining a layer-shell popup. */
+  html[data-kira-detached="true"],
+  html[data-kira-detached="true"] body,
+  html[data-kira-detached="true"] #app {
+    height: 100%;
+    overflow: hidden;
+    background: var(--kira-color-background);
+  }
+
+  html[data-kira-detached="true"] main[data-kira-ui-root] {
+    height: 100%;
+    max-height: 100vh;
+  }
+
   /* Calendar preserves all six ISO weeks within a height-capped native
    * overlay. Hide only the scrollbar chrome, never the scroll behavior. */
   .kira-calendar-scroll {

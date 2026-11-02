@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import WindowControls from './WindowControls.svelte';
   import { tenetFlowIndicator, tenetReflow, tenetReflowScope, tenetScrollIntoView, tenetScrollScope, tenetWidgetReveal } from '../motion';
   import {
     launchDesktopApp, onLauncherCatalog, onLauncherError, onLauncherIcons,
@@ -7,7 +8,11 @@
   } from '../sdk/core';
   import { filterLauncherApps, nextLauncherSelection } from '../launcher-model';
 
-  let { onClose, generation }: { onClose: () => void; generation: number } = $props();
+  let { onClose, onPopout, generation }: {
+    onClose: () => void;
+    onPopout: () => void;
+    generation: number;
+  } = $props();
 
   let apps = $state<LauncherApp[]>([]);
   let icons = $state<Record<number, string>>({});
@@ -134,9 +139,7 @@
         <p data-kira-contact class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
         <h1 class="mt-2 text-[30px] font-extrabold leading-none tracking-tight">Launch</h1>
       </div>
-      <button type="button" onclick={onClose} title="Close (Esc)" aria-label="Close launcher"
-        class="rounded-sm px-2 py-1 text-xl leading-none text-kira-muted hover:text-kira-accent
-          focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+      <WindowControls {onClose} {onPopout} {generation} label="launcher" />
     </div>
   </header>
 

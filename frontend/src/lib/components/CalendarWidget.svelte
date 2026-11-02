@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import WindowControls from './WindowControls.svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import { tenetFlowIndicator } from '../motion';
   import {
@@ -10,11 +11,15 @@
   // The GTK/WebKit host manages window lifecycle and native clipboard.
   let {
     onClose,
+    onPopout,
     onCopy,
+    generation,
     locale,
   }: {
     onClose: () => void;
+    onPopout: () => void;
     onCopy: (isoDate: string) => void;
+    generation: number;
     locale?: string;
   } = $props();
 
@@ -115,10 +120,7 @@
         <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / CHRONOLOGY</p>
         <p class="mt-1 text-[9px] font-semibold tracking-[0.12em] text-kira-muted">01 / LOCAL TIME</p>
       </div>
-      <button type="button" onclick={onClose}
-        class="rounded-sm px-2 py-1 text-xl leading-none text-kira-muted transition-colors
-          hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"
-        title="Close calendar" aria-label="Close calendar">×</button>
+      <WindowControls {onClose} {onPopout} {generation} label="calendar" />
     </div>
     <button type="button" use:tenetClockJuggle data-calendar-clock-play
       aria-label="Make the clock digits fly and return"

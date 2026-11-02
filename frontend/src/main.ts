@@ -3,7 +3,7 @@ import App from './App.svelte';
 import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
-import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
+import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, detachOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
 import { startUi, whenDocumentReady } from './lib/bootstrap';
@@ -50,6 +50,8 @@ whenDocumentReady(document, () => {
                 target,
                 props: {
                   onClose: () => closeCalendarOverlay(lease),
+                  onPopout: () => detachOverlay(lease),
+                  generation: lease,
                   onCopy: (date: string) => copyCalendarDate(lease, date),
                 },
               })
@@ -58,11 +60,17 @@ whenDocumentReady(document, () => {
                   target,
                   props: {
                     onClose: () => closeSystemOverlay(lease),
+                    onPopout: () => detachOverlay(lease),
+                    generation: lease,
                     onCopy: () => copySystemReport(lease),
                     onTab: (tab: 'overview' | 'processes') => setSystemMonitorTab(lease, tab),
                   },
                 })
-                : mount(LauncherWidget, { target, props: { onClose: () => closeLauncherOverlay(lease), generation: lease } });
+                : mount(LauncherWidget, { target, props: {
+                    onClose: () => closeLauncherOverlay(lease),
+                    onPopout: () => detachOverlay(lease),
+                    generation: lease,
+                  } });
             flushSync();
             const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {

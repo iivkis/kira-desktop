@@ -172,10 +172,10 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
       }, 0);
     node.dataset.tenetReveal = 'started';
     node.dataset.tenetSurface = 'materializing';
-    // 20% faster BOTH ways. Retiming the whole recorded timeline, rather
-    // than individual tracks, preserves TENET ordering, spring, seam and
-    // exact reversal; 540ms of choreography now plays in 450ms.
-    master.timeScale(1.2);
+    // An additional 20% faster in both directions than the former 1.2x
+    // sequence. The SAME recorded timeline and reversed history are kept.
+    // 540ms of choreography now plays in 375ms (1.44x).
+    master.timeScale(1.44);
     master.play(0);
     // WebKitGTK can throttle frames. Settle the exact ending geometry but
     // preserve the timeline and fragments as temporal memory for closing.
@@ -187,7 +187,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
         node.dataset.tenetSurface = 'settled';
         gsap.set(node, { willChange: 'auto' });
       }
-    }, 1200);
+    }, 1000);
   }
 
   function isCurrentGeneration(event: Event): boolean {
@@ -227,7 +227,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
         master.progress(0).pause();
         acknowledgeClose();
       }
-    }, 850);
+    }, 710);
   }
   function onReopen(event: Event) {
     if (!isCurrentGeneration(event) || !closing) return;
@@ -250,7 +250,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
           node.dataset.tenetSurface = 'settled';
           gsap.set(node, { willChange: 'auto' });
         }
-      }, 750);
+      }, 625);
     }
   }
   function onHide(event: Event) {
@@ -301,7 +301,7 @@ export function tenetWidgetReveal(node: HTMLElement, options: TenetEntrance) {
     awaitVisible = window.setTimeout(() => {
       started = true;
       settle();
-    }, 550);
+    }, 460);
   }
 
   window.addEventListener('kira:overlay:visible', onVisible);
