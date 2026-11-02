@@ -33,6 +33,7 @@ thread_local! {
 type OpenRequest = Box<dyn FnOnce(&Rc<OverlayPool>)>;
 struct OverlayPool {
     application: gtk::Application,
+    context: webkit6::WebContext,
     document: String,
     scheduler: RefCell<WebviewScheduler>,
     windows: RefCell<HashMap<u32, Rc<CalendarOverlay>>>,
@@ -42,12 +43,17 @@ struct OverlayPool {
 }
 
 impl OverlayPool {
-    fn new(application: &gtk::Application, document: String) -> Rc<Self> {
+    fn new(
+        application: &gtk::Application,
+        document: String,
+        context: &webkit6::WebContext,
+    ) -> Rc<Self> {
         // Install once per popup pool, before any warm GtkApplicationWindow
         // is constructed. The selector never touches the permanent Top Bar.
         crate::native_ui::install_transparent_popup_style();
         let pool = Rc::new(Self {
             application: application.clone(),
+            context: context.clone(),
             document,
             scheduler: RefCell::new(WebviewScheduler::default()),
             windows: RefCell::new(HashMap::new()),
@@ -58,6 +64,7 @@ impl OverlayPool {
         if let Some(id) = pool.scheduler.borrow_mut().prewarm_one(Instant::now()) {
             let view = build(
                 &pool.application,
+                &pool.context,
                 pool.document.clone(),
                 id,
                 Rc::downgrade(&pool),
@@ -83,6 +90,7 @@ impl OverlayPool {
             Reservation::Created(id) => {
                 let view = build(
                     &self.application,
+                    &self.context,
                     self.document.clone(),
                     id,
                     Rc::downgrade(self),
@@ -1446,6 +1454,7 @@ fn calendar_document(html: &str) -> Option<String> {
 
 fn build(
     application: &gtk::Application,
+    context: &webkit6::WebContext,
     document: String,
     id: u32,
     pool: std::rc::Weak<OverlayPool>,
@@ -1469,10 +1478,10 @@ fn build(
     crate::native_ui::configure_webview_popup(&window, 420, 1);
 
     // The calendar has no general Core RPC bridge, only its own messages.
-    let context = webkit6::WebContext::new();
+    // Share only the WebKit context; script-message registrations are per host.
     let manager = webkit6::UserContentManager::new();
     let view = webkit6::WebView::builder()
-        .web_context(&context)
+        .web_context(context)
         .user_content_manager(&manager)
         .build();
     // A black WebKit backing layer would flash as a full rectangle before
@@ -1559,21 +1568,25 @@ fn build(
     overlay
 }
 
-fn ensure(application: &gtk::Application, html: &str) -> Option<Rc<OverlayPool>> {
+fn ensure(
+    application: &gtk::Application,
+    html: &str,
+    context: &webkit6::WebContext,
+) -> Option<Rc<OverlayPool>> {
     POOL.with(|cache| {
         if let Some(pool) = cache.borrow().as_ref() {
             return Some(pool.clone());
         }
         let document = calendar_document(html)?;
-        let pool = OverlayPool::new(application, document);
+        let pool = OverlayPool::new(application, document, context);
         *cache.borrow_mut() = Some(pool.clone());
         Some(pool)
     })
 }
 
 /// One inert, bounded warm popup WebView, no speculative widget DOM or ECharts.
-pub fn prewarm(application: &gtk::Application, html: &str) {
-    if ensure(application, html).is_none() {
+pub fn prewarm(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    if ensure(application, html, context).is_none() {
         eprintln!("kira-shell: Overlay HTML root not found");
     }
 }
@@ -1604,8 +1617,8 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
     })
 }
 
-pub fn toggle(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
+pub fn toggle(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(
@@ -1630,8 +1643,8 @@ pub fn toggle(application: &gtk::Application, html: &str) {
     );
 }
 
-pub fn open_launcher(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
+pub fn open_launcher(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(
@@ -1656,8 +1669,8 @@ pub fn open_launcher(application: &gtk::Application, html: &str) {
 
 /// Open the same Settings surface in popup mode; pop-out retains the exact
 /// WebView and its in-memory navigation state.
-pub fn toggle_settings(application: &gtk::Application, html: &str) {
-    let Some(pool) = ensure(application, html) else {
+pub fn toggle_settings(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(
@@ -1687,11 +1700,12 @@ pub fn toggle_settings(application: &gtk::Application, html: &str) {
 pub fn toggle_system(
     application: &gtk::Application,
     html: &str,
+    context: &webkit6::WebContext,
     metrics: Rc<RefCell<crate::system_metrics::Snapshot>>,
     core: Rc<Cell<bool>>,
     niri: Rc<Cell<bool>>,
 ) {
-    let Some(pool) = ensure(application, html) else {
+    let Some(pool) = ensure(application, html, context) else {
         return;
     };
     pool.request(

@@ -121,7 +121,9 @@ fn main() {
         window.set_anchor(Edge::Right, true);
         window.set_exclusive_zone(BAR_HEIGHT);
 
-        // Keep a dedicated context for the locked-down, self-contained UI.
+        // One WebKit context for the trusted Top Bar and every pooled overlay.
+        // Each WebView still has its own UserContentManager and fixed IPC handlers.
+        // Sharing a context does not force WebKit to share renderer processes.
         let context = webkit6::WebContext::new();
         let manager = webkit6::UserContentManager::new();
         let view = webkit6::WebView::builder()
@@ -215,9 +217,10 @@ fn main() {
         // local UI. Never forward launcher requests to Core or execute JS text.
         let launcher_application = app.clone();
         let launcher_html = html.clone();
+        let launcher_context = context.clone();
         manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
             if value.to_string() == "open" {
-                calendar::open_launcher(&launcher_application, &launcher_html);
+                calendar::open_launcher(&launcher_application, &launcher_html, &launcher_context);
             }
         });
         assert!(manager.register_script_message_handler("kiraLauncher", None));
@@ -226,9 +229,10 @@ fn main() {
         // messages or expand the Core JSON-RPC method allowlist.
         let calendar_application = app.clone();
         let calendar_html = html.clone();
+        let calendar_context = context.clone();
         manager.connect_script_message_received(Some("kiraCalendar"), move |_, value| {
             if value.to_string() == "toggle" {
-                calendar::toggle(&calendar_application, &calendar_html);
+                calendar::toggle(&calendar_application, &calendar_html, &calendar_context);
             }
         });
         assert!(manager.register_script_message_handler("kiraCalendar", None));
@@ -236,6 +240,7 @@ fn main() {
         // Fixed-purpose system diagnostics toggle. GTK samples the kernel
         // read-only; the page can neither supply metric values nor commands.
         let system_app = app.clone();
+        let system_context = context.clone();
         let system_stats = latest_metrics.clone();
         let system_core = core_online.clone();
         let system_niri = niri_online.clone();
@@ -245,6 +250,7 @@ fn main() {
                 calendar::toggle_system(
                     &system_app,
                     &system_html,
+                    &system_context,
                     system_stats.clone(),
                     system_core.clone(),
                     system_niri.clone(),
@@ -257,9 +263,10 @@ fn main() {
         // is accepted; the renderer cannot request arbitrary system queries.
         let settings_app = app.clone();
         let settings_html = html.clone();
+        let settings_context = context.clone();
         manager.connect_script_message_received(Some("kiraSettings"), move |_, value| {
             if value.to_string() == "toggle" {
-                calendar::toggle_settings(&settings_app, &settings_html);
+                calendar::toggle_settings(&settings_app, &settings_html, &settings_context);
             }
         });
         assert!(manager.register_script_message_handler("kiraSettings", None));
@@ -384,13 +391,14 @@ fn main() {
         window.set_child(Some(&view));
         window.present();
 
-        // Warm the isolated Calendar WebKit process after the Top Bar starts.
+        // Warm the inert Calendar WebView with the SAME WebContext as Top Bar.
         // The popup stays unmapped until requested; initial startup is not
         // blocked by the Calendar's JS initialization.
         let calendar_app = app.clone();
         let calendar_source = html.clone();
+        let warm_context = context.clone();
         gtk::glib::timeout_add_local_once(Duration::from_millis(200), move || {
-            calendar::prewarm(&calendar_app, &calendar_source);
+            calendar::prewarm(&calendar_app, &calendar_source, &warm_context);
         });
     });
     app.run();

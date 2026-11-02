@@ -10,6 +10,22 @@ An **ordinary window** is requested explicitly through the pop-out control in ev
 
 The pool makes **multiple ordinary windows** possible without pretending layer-shell widgets are desktop application windows. Detached xdg-toplevels do **not** consume popup dock geometry or shrink the width of a future transient widget.
 
+## Shared WebKit context
+
+At GTK activation, **exactly one** `webkit6::WebContext` is created by the
+Shell and passed explicitly to the permanent Top Bar and the popup pool. Every
+warm, reused, newly allocated, or promoted WebView uses this same context.
+The pool retains a strong GObject reference for later lazy allocations.
+Each WebView still creates its **own** `UserContentManager` with the original,
+fixed-purpose script message handlers and locked-down navigation. No generic
+bridge, shared JS global, new web origin, or new privilege is introduced.
+
+The context is shared to avoid duplicate context-level state, not to demand
+one WebKit renderer process for every WebView. WebKitGTK 6 still chooses
+renderer processes independently for security and stability. Measure RSS/PSS
+for the entire Kira/WebKit process tree before and after; savings are
+workload-dependent and must not be advertised as a fixed amount.
+
 ## Pool lifecycle
 
 - **Startup:** exactly one inert warm host and one permanent Top Bar host. No idle Svelte widget DOM, telemetry graph, app catalog or per-window poll loop.

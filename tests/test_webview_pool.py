@@ -11,7 +11,30 @@ NATIVE = (ROOT / "crates/kira-shell/src/native_ui.rs").read_text()
 CONTROLS = (ROOT / "frontend/src/lib/components/WindowControls.svelte").read_text()
 
 
+SHELL = (ROOT / "crates/kira-shell/src/main.rs").read_text()
+
+
 class WebviewPoolContracts(unittest.TestCase):
+    def test_one_shared_context_for_bar_and_all_popup_leases(self):
+        self.assertEqual(SHELL.count("webkit6::WebContext::new()"), 1)
+        self.assertNotIn("webkit6::WebContext::new()", HOST)
+        self.assertIn("context: webkit6::WebContext,", HOST)
+        self.assertIn("context: context.clone(),", HOST)
+        self.assertIn("&pool.context,", HOST)
+        self.assertIn("&self.context,", HOST)
+        self.assertIn(".web_context(&context)", SHELL)
+        self.assertIn(".web_context(context)", HOST)
+        self.assertIn("UserContentManager::new()", SHELL)
+        self.assertIn("UserContentManager::new()", HOST)
+        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source, &warm_context)", SHELL)
+        for call in (
+            "calendar::toggle(&calendar_application, &calendar_html, &calendar_context)",
+            "calendar::toggle_settings(&settings_app, &settings_html, &settings_context)",
+            "calendar::open_launcher(&launcher_application, &launcher_html, &launcher_context)",
+        ):
+            self.assertIn(call, SHELL)
+
+
     def test_bounded_warm_pool_never_steals_promoted_views(self):
         self.assertIn("pub const MAX_POPUP_VIEWS: usize = 4", POOL)
         self.assertIn("pub const HOT_IDLE_TARGET: usize = 1", POOL)

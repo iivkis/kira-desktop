@@ -54,13 +54,13 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("pub fn configure_webview_popup", NATIVE)
 
     def test_calendar_is_preloaded_and_reused_without_a_blank_surface(self):
-        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source)", SHELL)
+        self.assertIn("calendar::prewarm(&calendar_app, &calendar_source, &warm_context)", SHELL)
         self.assertIn("static POOL: RefCell<Option<Rc<OverlayPool>>>", RUST)
         self.assertIn("scheduler: RefCell<WebviewScheduler>", RUST)
         self.assertIn("pool.scheduler.borrow_mut().prewarm_one(Instant::now())", RUST)
         self.assertIn("Reservation::Reused(id)", RUST)
         self.assertIn("Reservation::Created(id)", RUST)
-        self.assertIn("fn ensure(application: &gtk::Application, html: &str)", RUST)
+        self.assertIn("fn ensure(", RUST)
         self.assertIn("self.window.set_visible(false)", RUST)
         self.assertIn("self.window.set_opacity(0.0)", RUST)
         self.assertIn("self.window.set_opacity(1.0)", RUST)
