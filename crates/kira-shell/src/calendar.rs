@@ -225,7 +225,8 @@ impl OverlayPool {
         // different widget. This accounts for legacy sessions which may still
         // have multiple active windows when the new policy is introduced.
         if let Some(current) = self.active_window() {
-            if self.pending.borrow().is_some() {
+            let waiting = self.pending.borrow().is_some();
+            if waiting {
                 current.request_close();
             }
             return;

@@ -10,7 +10,7 @@
 
   let detached = $state(false);
   let popoutFailed = $state(false);
-  let responseTimer: ReturnType<typeof setTimeout> | null = null;
+  let responseTimer: number | null = null;
 
   function requestPopout() {
     popoutFailed = false;
