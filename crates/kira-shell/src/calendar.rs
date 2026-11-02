@@ -89,6 +89,7 @@ impl OverlayPool {
         };
         let view = self.windows.borrow().get(&id).cloned()?;
         self.ensure_polling();
+        self.update_launcher_keyboard_mode();
         Some((view, existing))
     }
 
@@ -140,6 +141,20 @@ impl OverlayPool {
 
     fn release(&self, id: u32) {
         self.scheduler.borrow_mut().release(id, Instant::now());
+        self.update_launcher_keyboard_mode();
+    }
+
+    fn update_launcher_keyboard_mode(&self) {
+        // Exclusive is useful for an isolated type-to-search Launcher but
+        // blocks interaction with other simultaneously visible windows.
+        // Keep its solo behavior; use OnDemand with multiple popup leases.
+        if let Some(launcher) = self.active(Surface::Launcher) {
+            launcher.window.set_keyboard_mode(if self.concurrent() {
+                KeyboardMode::OnDemand
+            } else {
+                KeyboardMode::Exclusive
+            });
+        }
     }
 
     fn concurrent(&self) -> bool {
@@ -269,7 +284,9 @@ impl CalendarOverlay {
         self.active.set(Some(kind));
         // The launcher needs reliable keyboard focus for type-to-search;
         // other popups preserve their former on-demand keyboard behavior.
-        self.window.set_keyboard_mode(if kind == Surface::Launcher {
+        self.window.set_keyboard_mode(if kind == Surface::Launcher
+            && self.pool.upgrade().is_some_and(|pool| !pool.concurrent())
+        {
             KeyboardMode::Exclusive
         } else {
             KeyboardMode::OnDemand
