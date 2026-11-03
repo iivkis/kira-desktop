@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	1a6f1d3b43cb31f046a652cac7b166dfc3006393
+C	388f2981b6a7c6f7c6f6ed7b50ca12a53f926c6a
 F	.cargo/config.toml	98	147	3
 F	.github/workflows/ci.yml	4355	152	112
 F	.github/workflows/frontend-nix.yml	1398	266	43
@@ -52,89 +52,89 @@ F	crates/kira-shell/src/system_panel.rs	11356	8973	318
 F	crates/kira-shell/src/webview_pool.rs	9530	9293	281
 F	docs/CONFIG.md	5801	9576	125
 F	docs/CONFIG_OWNERSHIP.md	7257	9703	135
-F	docs/DESIGN_SYSTEM.md	36465	9840	587
-F	docs/DEVELOPMENT.md	30675	10429	605
-F	docs/QA_VISUAL.md	12652	11036	152
-F	docs/SKY_MAP.md	6776	11190	105
-F	docs/SPECIFICATION.md	28960	11297	421
-F	docs/TENET_MOTION.md	40785	11720	204
-F	docs/UI_ARCHITECTURE.md	6668	11926	105
-F	docs/VISUAL_REVIEW.md	9754	12033	84
-F	docs/WEBVIEW_POOL.md	11431	12119	97
-F	flake.nix	3181	12218	91
-F	frontend/index.html	2737	12311	66
-F	frontend/package.json	720	12379	27
-F	frontend/scripts/inline-assets.mjs	4457	12408	103
-F	frontend/scripts/inline-assets.test.mjs	4645	12513	106
-F	frontend/scripts/smoke-overlays.mjs	51186	12621	714
-F	frontend/src/App.svelte	10529	13337	237
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13576	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13594	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	13655	69
-F	frontend/src/lib/bootstrap.test.ts	3408	13726	84
-F	frontend/src/lib/bootstrap.ts	2613	13812	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13884	65
-F	frontend/src/lib/calendar-model.ts	4648	13951	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14058	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	14120	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	14151	287
-F	frontend/src/lib/clock-flight.test.ts	2404	14440	50
-F	frontend/src/lib/clock-flight.ts	1977	14492	50
-F	frontend/src/lib/components/CalendarWidget.svelte	12672	14544	267
-F	frontend/src/lib/components/DisplaySettings.svelte	23821	14813	451
-F	frontend/src/lib/components/LauncherWidget.svelte	11594	15266	253
-F	frontend/src/lib/components/SettingsWidget.svelte	9899	15521	172
-F	frontend/src/lib/components/SkyMap.svelte	13008	15695	274
-F	frontend/src/lib/components/SystemCharts.svelte	10517	15971	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	16199	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	16247	339
-F	frontend/src/lib/components/WindowControls.svelte	2826	16588	71
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16661	119
-F	frontend/src/lib/launcher-model.test.ts	2266	16782	46
-F	frontend/src/lib/launcher-model.ts	1403	16830	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	16861	89
-F	frontend/src/lib/lazy-widget.ts	1984	16952	63
-F	frontend/src/lib/motion-contract.test.ts	11241	17017	198
-F	frontend/src/lib/motion.ts	24039	17217	657
-F	frontend/src/lib/overlay-size.test.ts	2115	17876	53
-F	frontend/src/lib/overlay-size.ts	1478	17931	35
-F	frontend/src/lib/sdk/core.test.ts	27884	17968	564
-F	frontend/src/lib/sdk/core.ts	25417	18534	645
-F	frontend/src/lib/settings-model.test.ts	1064	19181	21
-F	frontend/src/lib/settings-model.ts	1262	19204	26
-F	frontend/src/lib/system-charts.test.ts	6312	19232	141
-F	frontend/src/lib/system-charts.ts	5514	19375	149
-F	frontend/src/lib/system-health.test.ts	2385	19526	42
-F	frontend/src/lib/system-health.ts	2831	19570	60
-F	frontend/src/lib/system-model.test.ts	4455	19632	84
-F	frontend/src/lib/system-model.ts	5457	19718	125
-F	frontend/src/lib/themes/kira-default.css	2150	19845	58
-F	frontend/src/lib/themes/kira-default.test.ts	4698	19905	105
-F	frontend/src/lib/themes/kira-default.ts	777	20012	22
-F	frontend/src/lib/themes/shell-composition.test.ts	6649	20036	114
-F	frontend/src/lib/time.test.ts	263	20152	8
-F	frontend/src/lib/time.ts	320	20162	9
-F	frontend/src/lib/workspace-window.test.ts	2298	20173	52
-F	frontend/src/lib/workspace-window.ts	1063	20227	32
-F	frontend/src/main.ts	7783	20261	161
-F	frontend/src/style.css	7850	20424	224
-F	frontend/tsconfig.json	403	20650	16
-F	frontend/vite.config.ts	224	20668	8
-F	nix/package.nix	3132	20678	117
-F	scripts/dev_preview.py	18147	20797	403	x
-F	scripts/qa_visual.py	12052	21202	299
-F	tests/test_calendar_design.py	9935	21503	171
-F	tests/test_detailed_health.py	5481	21676	105
-F	tests/test_dev_preview.py	9339	21783	219
-F	tests/test_displays.py	4741	22004	82
-F	tests/test_launcher_design.py	10521	22088	191
-F	tests/test_native_theme.py	2098	22281	44
-F	tests/test_popup_geometry.py	3805	22327	66
-F	tests/test_qa_visual.py	10549	22395	217
-F	tests/test_settings.py	4908	22614	87
-F	tests/test_tenet_close.py	6297	22703	115
-F	tests/test_ui_bootstrap_contract.py	1103	22820	29
-F	tests/test_webview_pool.py	11704	22851	200
+F	docs/DESIGN_SYSTEM.md	36400	9840	586
+F	docs/DEVELOPMENT.md	30675	10428	605
+F	docs/QA_VISUAL.md	12652	11035	152
+F	docs/SKY_MAP.md	6776	11189	105
+F	docs/SPECIFICATION.md	28960	11296	421
+F	docs/TENET_MOTION.md	40785	11719	204
+F	docs/UI_ARCHITECTURE.md	6668	11925	105
+F	docs/VISUAL_REVIEW.md	9754	12032	84
+F	docs/WEBVIEW_POOL.md	11431	12118	97
+F	flake.nix	3181	12217	91
+F	frontend/index.html	2737	12310	66
+F	frontend/package.json	720	12378	27
+F	frontend/scripts/inline-assets.mjs	4457	12407	103
+F	frontend/scripts/inline-assets.test.mjs	4645	12512	106
+F	frontend/scripts/smoke-overlays.mjs	51180	12620	714
+F	frontend/src/App.svelte	10529	13336	237
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13575	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13593	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	13654	69
+F	frontend/src/lib/bootstrap.test.ts	3408	13725	84
+F	frontend/src/lib/bootstrap.ts	2613	13811	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13883	65
+F	frontend/src/lib/calendar-model.ts	4648	13950	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14057	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	14119	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	14150	287
+F	frontend/src/lib/clock-flight.test.ts	2404	14439	50
+F	frontend/src/lib/clock-flight.ts	1977	14491	50
+F	frontend/src/lib/components/CalendarWidget.svelte	12672	14543	267
+F	frontend/src/lib/components/DisplaySettings.svelte	23821	14812	451
+F	frontend/src/lib/components/LauncherWidget.svelte	11594	15265	253
+F	frontend/src/lib/components/SettingsWidget.svelte	9899	15520	172
+F	frontend/src/lib/components/SkyMap.svelte	13008	15694	274
+F	frontend/src/lib/components/SystemCharts.svelte	10517	15970	226
+F	frontend/src/lib/components/SystemHealth.svelte	1743	16198	46
+F	frontend/src/lib/components/SystemWidget.svelte	19102	16246	339
+F	frontend/src/lib/components/WindowControls.svelte	2826	16587	71
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16660	119
+F	frontend/src/lib/launcher-model.test.ts	2266	16781	46
+F	frontend/src/lib/launcher-model.ts	1403	16829	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	16860	89
+F	frontend/src/lib/lazy-widget.ts	1984	16951	63
+F	frontend/src/lib/motion-contract.test.ts	11241	17016	198
+F	frontend/src/lib/motion.ts	24039	17216	657
+F	frontend/src/lib/overlay-size.test.ts	2115	17875	53
+F	frontend/src/lib/overlay-size.ts	1478	17930	35
+F	frontend/src/lib/sdk/core.test.ts	27884	17967	564
+F	frontend/src/lib/sdk/core.ts	25417	18533	645
+F	frontend/src/lib/settings-model.test.ts	1064	19180	21
+F	frontend/src/lib/settings-model.ts	1262	19203	26
+F	frontend/src/lib/system-charts.test.ts	6312	19231	141
+F	frontend/src/lib/system-charts.ts	5514	19374	149
+F	frontend/src/lib/system-health.test.ts	2385	19525	42
+F	frontend/src/lib/system-health.ts	2831	19569	60
+F	frontend/src/lib/system-model.test.ts	4455	19631	84
+F	frontend/src/lib/system-model.ts	5457	19717	125
+F	frontend/src/lib/themes/kira-default.css	2072	19844	57
+F	frontend/src/lib/themes/kira-default.test.ts	4666	19903	105
+F	frontend/src/lib/themes/kira-default.ts	777	20010	22
+F	frontend/src/lib/themes/shell-composition.test.ts	6649	20034	114
+F	frontend/src/lib/time.test.ts	263	20150	8
+F	frontend/src/lib/time.ts	320	20160	9
+F	frontend/src/lib/workspace-window.test.ts	2298	20171	52
+F	frontend/src/lib/workspace-window.ts	1063	20225	32
+F	frontend/src/main.ts	7783	20259	161
+F	frontend/src/style.css	7771	20422	223
+F	frontend/tsconfig.json	403	20647	16
+F	frontend/vite.config.ts	224	20665	8
+F	nix/package.nix	3132	20675	117
+F	scripts/dev_preview.py	18147	20794	403	x
+F	scripts/qa_visual.py	12052	21199	299
+F	tests/test_calendar_design.py	9935	21500	171
+F	tests/test_detailed_health.py	5481	21673	105
+F	tests/test_dev_preview.py	9339	21780	219
+F	tests/test_displays.py	4741	22001	82
+F	tests/test_launcher_design.py	10521	22085	191
+F	tests/test_native_theme.py	2098	22278	44
+F	tests/test_popup_geometry.py	3805	22324	66
+F	tests/test_qa_visual.py	10549	22392	217
+F	tests/test_settings.py	4908	22611	87
+F	tests/test_tenet_close.py	6297	22700	115
+F	tests/test_ui_bootstrap_contract.py	1103	22817	29
+F	tests/test_webview_pool.py	11704	22848	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -10272,14 +10272,13 @@ overlays; Top Bar still reserves 42px.
 Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
 controls, and **one deliberate surface contrast per functional region**.
 An orange line can anchor a section, but offset shadows and nested borders
-are not a shortcut to depth. Transient popup silhouettes alone use a 4px
-hard **alabaster/Prussian Blue** shadow, plus a 1px lighter neutral outline.
-Both shades are opaque mixes of the existing canonical colors: a translucent
-black offset was invisible against other black Niri windows. The hard shadow
-is rendered from the transparent WebKit wrapper; the pointer-transparent
-outline sits on the TENET-clipped root and follows its reversible reveal.
-The native popup includes the 4px right/bottom shadow gutter, while detached
-windows leave shadows to Niri and keep their full client viewport. Use short 120–180 ms micro-transitions without positional jumps;
+are not a shortcut to depth. Transient popups use one subdued 1px blue-grey
+keyline and a 2px hard offset of a slightly darker blue-grey, both derived
+from the five canonical colors. A brighter 4px frame was visually too heavy;
+black-on-black shadows alone were invisible. The shadow is rendered from
+the transparent WebKit wrapper, and the pointer-transparent keyline sits on
+the TENET-clipped root. The native popup includes a 2px right/bottom shadow
+gutter; detached windows leave shadows to Niri and keep their full viewport. Use short 120–180 ms micro-transitions without positional jumps;
 shared selection markers and widget entrances use the measured, interruptible
 TENET motion profiles (about 300–440 ms) with restrained spring settling. Keep interaction functional without motion. Niri's reserved 42 px
 height is unchanged, including the bottom accent rule.
@@ -12829,11 +12828,11 @@ function scriptFor(steps, observationMs = 1150) {
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
       // A real popup reserves transparent right/bottom pixels outside its
-      // TENET-clipped main, so the 4px hard shadow can survive WebKit bounds.
+      // TENET-clipped main, so its 2px hard shadow survives WebKit bounds.
       'const outer=roots[0]?.parentElement;const outerStyle=outer?getComputedStyle(outer):null;' +
       'const edge=roots[0]?getComputedStyle(roots[0],"::after"):null;' +
       'document.documentElement.dataset.smokeWidgetShadow=!!outerStyle && ' +
-        'outerStyle.filter.includes("drop-shadow(") && outerStyle.paddingBottom==="4px" && outerStyle.paddingRight==="4px" && ' +
+        'outerStyle.filter.includes("drop-shadow(") && outerStyle.paddingBottom==="2px" && outerStyle.paddingRight==="2px" && ' +
         '!!edge && edge.content!=="none" && edge.borderTopWidth==="1px" && edge.borderTopStyle==="solid" && ' +
         'edge.borderTopColor!=="rgb(0, 0, 0)" && edge.pointerEvents==="none";' +
       'document.documentElement.dataset.smokeDetachedShadow=!!outerStyle && outerStyle.filter==="none" && outerStyle.paddingBottom==="0px" && ' +
@@ -12998,13 +12997,13 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     }
   }
   if (heightMode !== 'settings-window' && !output.includes('data-smoke-widget-shadow="true"')) {
-    throw new Error(name + ': popup must show contrasting 1px outline and 4px hard outer shadow');
+    throw new Error(name + ': popup must show a subtle 1px keyline and 2px hard outer shadow');
   }
   if (heightMode === 'settings-window' && !output.includes('data-smoke-detached-shadow="true"')) {
     throw new Error(name + ': detached Niri window must not retain the popup shadow gutter');
   }
   if (heightMode === 'scroll') {
-    if (size !== 416 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
+    if (size !== 418 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
         !output.includes('data-smoke-scrolled="true"') ||
         !output.includes('data-smoke-row-square="true"')) {
@@ -17885,14 +17884,14 @@ beforeEach(() => vi.mocked(notifyOverlayHeight).mockReset());
 describe('native popup sizing with outer neo-brutalist shadow', () => {
   it('includes the transparent shadow gutter in the first, synchronous size report', () => {
     vi.stubGlobal('ResizeObserver', undefined);
-    vi.stubGlobal('getComputedStyle', () => ({ paddingBottom: '4px' }));
+    vi.stubGlobal('getComputedStyle', () => ({ paddingBottom: '2px' }));
     const root = {
       isConnected: true,
       parentElement: {},
       getBoundingClientRect: () => ({ height: 320.5 }),
     } as unknown as HTMLElement;
     const stop = observeOverlaySize(root, 7);
-    expect(notifyOverlayHeight).toHaveBeenCalledExactlyOnceWith(7, 325);
+    expect(notifyOverlayHeight).toHaveBeenCalledExactlyOnceWith(7, 323);
     stop();
   });
 
@@ -19882,12 +19881,11 @@ FILE	frontend/src/lib/themes/kira-default.css
   --kira-border-strong: 2px;
   --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
   --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
-  /* High-contrast popup silhouette on Black AND Prussian Blue surfaces.
-   * The prior translucent black shadow disappeared over dark Niri windows.
-   * These opaque blue/grey mixes are derived from the five canonical colors. */
-  --kira-widget-shadow-offset: 4px;
-  --kira-widget-outline: color-mix(in srgb, var(--alabaster-grey) 68%, var(--prussian-blue));
-  --kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--alabaster-grey) 45%, var(--prussian-blue));
+  /* Restrained popup separation: one subdued keyline and a short, hard
+   * blue-grey offset. Both derive from the canonical palette, without glow. */
+  --kira-widget-shadow-offset: 2px;
+  --kira-widget-outline: color-mix(in srgb, var(--alabaster-grey) 26%, var(--prussian-blue));
+  --kira-widget-shadow: 2px 2px 0 color-mix(in srgb, var(--alabaster-grey) 19%, var(--prussian-blue));
 
   --kira-motion-fast: 120ms;
   --kira-motion-standard: 180ms;
@@ -19999,10 +19997,10 @@ describe('Kira Default Black / Prussian Blue / Orange design tokens', () => {
     expect(css).toContain('--kira-border-strong: 2px;');
     expect(css).toContain('--kira-shadow-brutal:');
     expect(css).toContain('--kira-shadow-panel:');
-    expect(css).toContain('--kira-widget-shadow-offset: 4px;');
-    expect(css).toContain('--kira-widget-outline: color-mix(in srgb, var(--alabaster-grey) 68%, var(--prussian-blue));');
-    expect(css).toContain('--kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--alabaster-grey) 45%, var(--prussian-blue));');
-    expect(css).not.toContain('--kira-widget-shadow: 4px 4px 0 color-mix(in srgb, var(--black)');
+    expect(css).toContain('--kira-widget-shadow-offset: 2px;');
+    expect(css).toContain('--kira-widget-outline: color-mix(in srgb, var(--alabaster-grey) 26%, var(--prussian-blue));');
+    expect(css).toContain('--kira-widget-shadow: 2px 2px 0 color-mix(in srgb, var(--alabaster-grey) 19%, var(--prussian-blue));');
+    expect(css).not.toContain('--kira-widget-shadow: 4px 4px 0');
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
     expect(css).toContain('--kira-motion-fast: 0ms;');
   });
@@ -20500,10 +20498,9 @@ FILE	frontend/src/style.css
     filter: drop-shadow(var(--kira-widget-shadow));
   }
 
-  /* A 1px high-contrast silhouette keeps black Launcher/Calendar/Monitor
-   * headers legible against other black windows even where the offset shadow
-   * is hidden by overlap. The border is paint-only: no layout shift or extra
-   * pointer hit area, and it reveals/reverses with the root's TENET clip. */
+  /* A subdued 1px keyline defines the popup's black header against another
+   * black window without creating a bright second frame. The paint-only
+   * outline follows TENET's clip; it never changes geometry or hit targets. */
   html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) main[data-kira-ui-root]::after {
     content: "";
     position: absolute;
