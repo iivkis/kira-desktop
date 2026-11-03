@@ -208,15 +208,18 @@ function scriptFor(steps, observationMs = 1150) {
         'Array.from(roots[0].querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
-      // Both 2px shadows compose to a 4px black/orange silhouette;
-      // keep the full gutter clear of the native WebKit clipping boundary.
+      // Three layered shadows: hard black, dark orange, and a feathered
+      // black ambient silhouette. All four sides must have WebKit gutter.
       'const outer=roots[0]?.parentElement;const outerStyle=outer?getComputedStyle(outer):null;' +
       'const edge=roots[0]?getComputedStyle(roots[0],"::after"):null;' +
       'const shadows=outerStyle?.filter.match(/drop-shadow\\(/g) || [];' +
       'document.documentElement.dataset.smokeWidgetShadow=!!outerStyle && ' +
-        'shadows.length===2 && outerStyle.paddingBottom==="4px" && outerStyle.paddingRight==="4px" && ' +
+        'shadows.length===3 && outerStyle.paddingTop==="8px" && outerStyle.paddingBottom==="8px" && ' +
+        'outerStyle.paddingLeft==="8px" && outerStyle.paddingRight==="8px" && ' +
         '!!edge && edge.content==="none";' +
-      'document.documentElement.dataset.smokeDetachedShadow=!!outerStyle && outerStyle.filter==="none" && outerStyle.paddingBottom==="0px" && ' +
+      'document.documentElement.dataset.smokeDetachedShadow=!!outerStyle && outerStyle.filter==="none" && ' +
+        'outerStyle.paddingTop==="0px" && outerStyle.paddingBottom==="0px" && ' +
+        'outerStyle.paddingLeft==="0px" && outerStyle.paddingRight==="0px" && ' +
         '!!edge && edge.content==="none";' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
       'const list = document.querySelector("[role=listbox]");' +
@@ -378,13 +381,13 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     }
   }
   if (heightMode !== 'settings-window' && !output.includes('data-smoke-widget-shadow="true"')) {
-    throw new Error(name + ': popup must show black/orange 2-layer hard shadow without an outline');
+    throw new Error(name + ': popup must show black/dark-orange depth with soft all-side shadow');
   }
   if (heightMode === 'settings-window' && !output.includes('data-smoke-detached-shadow="true"')) {
     throw new Error(name + ': detached Niri window must not retain the popup shadow gutter');
   }
   if (heightMode === 'scroll') {
-    if (size !== 416 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
+    if (size !== 404 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
         !output.includes('data-smoke-scrolled="true"') ||
         !output.includes('data-smoke-row-square="true"')) {

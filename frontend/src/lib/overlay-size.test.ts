@@ -10,14 +10,14 @@ beforeEach(() => vi.mocked(notifyOverlayHeight).mockReset());
 describe('native popup sizing with outer neo-brutalist shadow', () => {
   it('includes the transparent shadow gutter in the first, synchronous size report', () => {
     vi.stubGlobal('ResizeObserver', undefined);
-    vi.stubGlobal('getComputedStyle', () => ({ paddingBottom: '4px' }));
+    vi.stubGlobal('getComputedStyle', () => ({ paddingTop: '8px', paddingBottom: '8px' }));
     const root = {
       isConnected: true,
       parentElement: {},
       getBoundingClientRect: () => ({ height: 320.5 }),
     } as unknown as HTMLElement;
     const stop = observeOverlaySize(root, 7);
-    expect(notifyOverlayHeight).toHaveBeenCalledExactlyOnceWith(7, 325);
+    expect(notifyOverlayHeight).toHaveBeenCalledExactlyOnceWith(7, 337);
     stop();
   });
 
@@ -30,7 +30,7 @@ describe('native popup sizing with outer neo-brutalist shadow', () => {
       disconnect() { disconnect(); }
     }
     vi.stubGlobal('ResizeObserver', Observer);
-    vi.stubGlobal('getComputedStyle', () => ({ paddingBottom: '0px' }));
+    vi.stubGlobal('getComputedStyle', () => ({ paddingTop: '0px', paddingBottom: '0px' }));
     let contentHeight = 410;
     const root = {
       isConnected: true,

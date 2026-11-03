@@ -9,13 +9,13 @@ const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), '
 const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
 describe('Tailwind v4 frontend and Top Bar architecture', () => {
-  it('renders black then orange popup depth without an extra outline or detached-window shadow', () => {
+  it('renders subdued orange depth and a soft black shadow on every popup edge', () => {
     expect(css).toContain('html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) #app');
-    expect(css).toMatch(/filter:\s*drop-shadow\(var\(--kira-widget-shadow-black\)\)\s*drop-shadow\(var\(--kira-widget-shadow-accent\)\)/);
+    expect(css).toMatch(/filter:\s*drop-shadow\(var\(--kira-widget-shadow-black\)\)\s*drop-shadow\(var\(--kira-widget-shadow-accent\)\)\s*drop-shadow\(var\(--kira-widget-shadow-soft\)\)/);
     expect(css).not.toContain('main[data-kira-ui-root]::after');
     expect(css).not.toContain('kira-widget-outline');
-    expect(css).toContain('padding: 0 var(--kira-widget-shadow-offset) var(--kira-widget-shadow-offset) 0;');
-    expect(css).toContain('max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset));');
+    expect(css).toContain('padding: var(--kira-widget-shadow-offset);');
+    expect(css).toContain('max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset) - var(--kira-widget-shadow-offset));');
     expect(css).toContain('html[data-kira-detached="true"] #app {');
     expect(css).toContain('filter: none;');
     expect(markup).not.toContain('kira-widget-shadow');

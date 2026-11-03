@@ -38,12 +38,14 @@
   --kira-border-strong: 2px;
   --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
   --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
-  /* Two sequential hard shadows: black at +2px, orange at +4px.
-   * CSS drop-shadow filters compose, so the second offset builds on the
-   * first. The total 4px is the required transparent WebKit gutter. */
-  --kira-widget-shadow-offset: 4px;
+  /* Popup depth: black nearest the surface, a darker orange behind it,
+   * and a compact soft black shadow around all four edges. All colors
+   * derive from the five canonical Kira colors. The 8px transparent inset
+   * keeps the filtered silhouette inside the native WebKit surface. */
+  --kira-widget-shadow-offset: 8px;
   --kira-widget-shadow-black: 2px 2px 0 var(--black);
-  --kira-widget-shadow-accent: 2px 2px 0 var(--orange);
+  --kira-widget-shadow-accent: 2px 2px 0 color-mix(in srgb, var(--orange) 64%, var(--black));
+  --kira-widget-shadow-soft: 0 0 3px color-mix(in srgb, var(--black) 78%, transparent);
 
   --kira-motion-fast: 120ms;
   --kira-motion-standard: 180ms;

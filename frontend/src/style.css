@@ -67,22 +67,20 @@
     background: transparent;
   }
 
-  /* A hard neo-brutalist silhouette shadow must live OUTSIDE <main>:
-   * TENET clips <main> during its reversible reveal. Leave exactly enough
-   * transparent WebKit pixels for the right/bottom offset; otherwise the
-   * native window clips the shadow. The GTK size handshake includes this
-   * bottom inset. No extra margin or shadow is applied to the Top Bar. */
+  /* TENET clips <main>, so silhouette shadows belong to its transparent
+   * wrapper. Reserve room on ALL edges for the soft black falloff, plus
+   * the short black/dark-orange offsets at the right and bottom. Only
+   * transient popups get these insets; the Top Bar stays untouched. */
   html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) #app {
-    padding: 0 var(--kira-widget-shadow-offset) var(--kira-widget-shadow-offset) 0;
-    /* First cast a hard black shadow, then cast the orange accent from
-     * that silhouette. The composed outer edge is 4px from the widget. */
+    padding: var(--kira-widget-shadow-offset);
     filter:
       drop-shadow(var(--kira-widget-shadow-black))
-      drop-shadow(var(--kira-widget-shadow-accent));
+      drop-shadow(var(--kira-widget-shadow-accent))
+      drop-shadow(var(--kira-widget-shadow-soft));
   }
 
   html[data-kira-surface="calendar"] main[data-kira-ui-root] {
-    max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset));
+    max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset) - var(--kira-widget-shadow-offset));
     /* Calendar/Overview use page scrolling; Launcher and Processes
      * keep their own list scrollers inside a constrained flex column. */
   }
@@ -97,8 +95,8 @@
     background: var(--kira-color-background);
   }
 
-  /* Niri owns decorated/tiling-window shadows. Never put the popup's
-   * two-layer shadow or transparent gutter inside a detached window. */
+  /* Niri owns decorated/tiling-window shadows. Never add the popup's
+   * layered shadows or transparent gutter inside a detached window. */
   html[data-kira-detached="true"] #app {
     padding: 0;
     filter: none;
@@ -170,7 +168,7 @@
 /* Settings is intentionally wider than other widgets but has a stable
  * size. After promotion to Niri it occupies the full resizable WebView. */
 .kira-settings {
-  height: min(560px, calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset)));
+  height: min(560px, calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset) - var(--kira-widget-shadow-offset)));
 }
 html[data-kira-detached="true"] .kira-settings {
   height: 100%;
