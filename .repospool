@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	b9e06fcfdd6803be91834b0462c3873131dd373c
+C	3862a02e8badded754885b7be4aa8ad243bb1643
 F	.cargo/config.toml	98	148	3
 F	.github/workflows/ci.yml	4355	153	112
 F	.github/workflows/frontend-nix.yml	1398	267	43
@@ -52,7 +52,7 @@ F	crates/kira-shell/src/system_panel.rs	11356	8974	318
 F	crates/kira-shell/src/webview_pool.rs	9530	9294	281
 F	docs/CONFIG.md	5801	9577	125
 F	docs/CONFIG_OWNERSHIP.md	7257	9704	135
-F	docs/DESIGN_SYSTEM.md	37297	9841	598
+F	docs/DESIGN_SYSTEM.md	37266	9841	598
 F	docs/DEVELOPMENT.md	30675	10441	605
 F	docs/QA_VISUAL.md	12652	11048	152
 F	docs/SKY_MAP.md	6776	11202	105
@@ -125,7 +125,7 @@ F	nix/package.nix	3132	20623	117
 F	scripts/dev_preview.py	18147	20742	403	x
 F	scripts/qa_visual.py	12052	21147	299
 F	tests/test_calendar_design.py	10149	21448	175
-F	tests/test_detailed_health.py	5702	21625	109
+F	tests/test_detailed_health.py	5712	21625	109
 F	tests/test_dev_preview.py	9339	21736	219
 F	tests/test_displays.py	4741	21957	82
 F	tests/test_launcher_design.py	10784	22041	195
@@ -10039,9 +10039,9 @@ below 720px it uses the **same semantic section selector as the popup**,
 with full-width content and no sideways scrolling. This is one live WebView,
 not different settings pages. The About workbench gives the actual OS name
 the primary Prussian Blue material, then displays eight native facts as
-quiet editorial rows with honest unavailable/loading states. The footer
-explicitly says that About is read-only; sidebar copy must **never**
-describe all Settings as read-only, because Displays can modify the session.
+quiet editorial rows with honest unavailable/loading states, without
+redundant "read only" captions. Displays remains editable through explicit
+Apply → Confirm/Revert → Save actions.
 
 The Displays workbench remains authoritative Niri data. Its layout map
 derives scale from the actual available width via `ResizeObserver`; screen
@@ -21696,8 +21696,8 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('message.strip_prefix("tab:")', OVERLAY)
         self.assertIn('"overview" => false', OVERLAY)
         self.assertIn("setSystemMonitorTab", ENTRY)
-        self.assertIn(">OVERVIEW", WIDGET)
-        self.assertIn(">PROCESSES", WIDGET)
+        self.assertIn("      OVERVIEW", WIDGET)
+        self.assertIn("      PROCESSES", WIDGET)
         self.assertIn("health !== 'ALL SYSTEMS NOMINAL'", WIDGET)
         self.assertNotIn("CURRENT SAMPLE", WIDGET)
         self.assertNotIn("NATIVE FEED", WIDGET)
