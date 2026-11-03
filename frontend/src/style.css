@@ -74,19 +74,11 @@
    * bottom inset. No extra margin or shadow is applied to the Top Bar. */
   html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) #app {
     padding: 0 var(--kira-widget-shadow-offset) var(--kira-widget-shadow-offset) 0;
-    filter: drop-shadow(var(--kira-widget-shadow));
-  }
-
-  /* A subdued 1px keyline defines the popup's black header against another
-   * black window without creating a bright second frame. The paint-only
-   * outline follows TENET's clip; it never changes geometry or hit targets. */
-  html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) main[data-kira-ui-root]::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 50;
-    pointer-events: none;
-    border: 1px solid var(--kira-widget-outline);
+    /* First cast a hard black shadow, then cast the orange accent from
+     * that silhouette. The composed outer edge is 4px from the widget. */
+    filter:
+      drop-shadow(var(--kira-widget-shadow-black))
+      drop-shadow(var(--kira-widget-shadow-accent));
   }
 
   html[data-kira-surface="calendar"] main[data-kira-ui-root] {
@@ -105,8 +97,8 @@
     background: var(--kira-color-background);
   }
 
-  /* Niri owns decorated/tiling-window shadows. Never put an artificial
-   * inset shadow or a 4px dead strip inside a detached window. */
+  /* Niri owns decorated/tiling-window shadows. Never put the popup's
+   * two-layer shadow or transparent gutter inside a detached window. */
   html[data-kira-detached="true"] #app {
     padding: 0;
     filter: none;

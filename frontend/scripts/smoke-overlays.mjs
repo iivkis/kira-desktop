@@ -208,14 +208,14 @@ function scriptFor(steps, observationMs = 1150) {
         'Array.from(roots[0].querySelectorAll("[data-tenet-fragment]")).every(el => Number(getComputedStyle(el).opacity) < 0.02));' +
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
-      // A real popup reserves transparent right/bottom pixels outside its
-      // TENET-clipped main, so its 2px hard shadow survives WebKit bounds.
+      // Both 2px shadows compose to a 4px black/orange silhouette;
+      // keep the full gutter clear of the native WebKit clipping boundary.
       'const outer=roots[0]?.parentElement;const outerStyle=outer?getComputedStyle(outer):null;' +
       'const edge=roots[0]?getComputedStyle(roots[0],"::after"):null;' +
+      'const shadows=outerStyle?.filter.match(/drop-shadow\\(/g) || [];' +
       'document.documentElement.dataset.smokeWidgetShadow=!!outerStyle && ' +
-        'outerStyle.filter.includes("drop-shadow(") && outerStyle.paddingBottom==="2px" && outerStyle.paddingRight==="2px" && ' +
-        '!!edge && edge.content!=="none" && edge.borderTopWidth==="1px" && edge.borderTopStyle==="solid" && ' +
-        'edge.borderTopColor!=="rgb(0, 0, 0)" && edge.pointerEvents==="none";' +
+        'shadows.length===2 && outerStyle.paddingBottom==="4px" && outerStyle.paddingRight==="4px" && ' +
+        '!!edge && edge.content==="none";' +
       'document.documentElement.dataset.smokeDetachedShadow=!!outerStyle && outerStyle.filter==="none" && outerStyle.paddingBottom==="0px" && ' +
         '!!edge && edge.content==="none";' +
       'document.documentElement.setAttribute("data-smoke-overflow", roots.length === 1 && roots[0].scrollHeight > roots[0].clientHeight);' +
@@ -378,13 +378,13 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     }
   }
   if (heightMode !== 'settings-window' && !output.includes('data-smoke-widget-shadow="true"')) {
-    throw new Error(name + ': popup must show a subtle 1px keyline and 2px hard outer shadow');
+    throw new Error(name + ': popup must show black/orange 2-layer hard shadow without an outline');
   }
   if (heightMode === 'settings-window' && !output.includes('data-smoke-detached-shadow="true"')) {
     throw new Error(name + ': detached Niri window must not retain the popup shadow gutter');
   }
   if (heightMode === 'scroll') {
-    if (size !== 418 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
+    if (size !== 416 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
         !output.includes('data-smoke-scrolled="true"') ||
         !output.includes('data-smoke-row-square="true"')) {

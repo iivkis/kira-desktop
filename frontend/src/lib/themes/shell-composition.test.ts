@@ -9,12 +9,11 @@ const vite = readFileSync(new URL('../../../vite.config.ts', import.meta.url), '
 const bootstrap = readFileSync(new URL('../bootstrap.ts', import.meta.url), 'utf8');
 
 describe('Tailwind v4 frontend and Top Bar architecture', () => {
-  it('adds a clipped-safe hard popup shadow but not one inside detached windows', () => {
+  it('renders black then orange popup depth without an extra outline or detached-window shadow', () => {
     expect(css).toContain('html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) #app');
-    expect(css).toContain('filter: drop-shadow(var(--kira-widget-shadow));');
-    expect(css).toContain('html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) main[data-kira-ui-root]::after');
-    expect(css).toContain('border: 1px solid var(--kira-widget-outline);');
-    expect(css).toContain('pointer-events: none;');
+    expect(css).toMatch(/filter:\s*drop-shadow\(var\(--kira-widget-shadow-black\)\)\s*drop-shadow\(var\(--kira-widget-shadow-accent\)\)/);
+    expect(css).not.toContain('main[data-kira-ui-root]::after');
+    expect(css).not.toContain('kira-widget-outline');
     expect(css).toContain('padding: 0 var(--kira-widget-shadow-offset) var(--kira-widget-shadow-offset) 0;');
     expect(css).toContain('max-height: calc(var(--kira-overlay-max-height, 560px) - var(--kira-widget-shadow-offset));');
     expect(css).toContain('html[data-kira-detached="true"] #app {');

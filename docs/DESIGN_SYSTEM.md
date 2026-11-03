@@ -433,13 +433,13 @@ overlays; Top Bar still reserves 42px.
 Use a 4 px rhythm (prefer 8 px), compact 4–10 px radii, mostly borderless
 controls, and **one deliberate surface contrast per functional region**.
 An orange line can anchor a section, but offset shadows and nested borders
-are not a shortcut to depth. Transient popups use one subdued 1px blue-grey
-keyline and a 2px hard offset of a slightly darker blue-grey, both derived
-from the five canonical colors. A brighter 4px frame was visually too heavy;
-black-on-black shadows alone were invisible. The shadow is rendered from
-the transparent WebKit wrapper, and the pointer-transparent keyline sits on
-the TENET-clipped root. The native popup includes a 2px right/bottom shadow
-gutter; detached windows leave shadows to Niri and keep their full viewport. Use short 120–180 ms micro-transitions without positional jumps;
+are not a shortcut to depth. Transient popups use two composited 2px hard
+shadows in canonical palette order: **Black first, Orange behind it**. There is
+no additional outline, blur or glow. The two CSS drop-shadow filters accumulate
+to a 4px bottom/right silhouette, rendered from the transparent WebKit wrapper
+outside the TENET-clipped widget root. The native popup therefore reserves a
+4px transparent gutter; detached windows leave shadows to Niri and keep
+their full viewport. Use short 120–180 ms micro-transitions without positional jumps;
 shared selection markers and widget entrances use the measured, interruptible
 TENET motion profiles (about 300–440 ms) with restrained spring settling. Keep interaction functional without motion. Niri's reserved 42 px
 height is unchanged, including the bottom accent rule.

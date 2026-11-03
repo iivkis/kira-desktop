@@ -38,11 +38,12 @@
   --kira-border-strong: 2px;
   --kira-shadow-brutal: 3px 3px 0 color-mix(in srgb, var(--prussian-blue) 50%, var(--alabaster-grey));
   --kira-shadow-panel: 8px 8px 0 color-mix(in srgb, var(--prussian-blue) 60%, var(--alabaster-grey));
-  /* Restrained popup separation: one subdued keyline and a short, hard
-   * blue-grey offset. Both derive from the canonical palette, without glow. */
-  --kira-widget-shadow-offset: 2px;
-  --kira-widget-outline: color-mix(in srgb, var(--alabaster-grey) 26%, var(--prussian-blue));
-  --kira-widget-shadow: 2px 2px 0 color-mix(in srgb, var(--alabaster-grey) 19%, var(--prussian-blue));
+  /* Two sequential hard shadows: black at +2px, orange at +4px.
+   * CSS drop-shadow filters compose, so the second offset builds on the
+   * first. The total 4px is the required transparent WebKit gutter. */
+  --kira-widget-shadow-offset: 4px;
+  --kira-widget-shadow-black: 2px 2px 0 var(--black);
+  --kira-widget-shadow-accent: 2px 2px 0 var(--orange);
 
   --kira-motion-fast: 120ms;
   --kira-motion-standard: 180ms;
