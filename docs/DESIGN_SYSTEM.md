@@ -199,9 +199,9 @@ below 720px it uses the **same semantic section selector as the popup**,
 with full-width content and no sideways scrolling. This is one live WebView,
 not different settings pages. The About workbench gives the actual OS name
 the primary Prussian Blue material, then displays eight native facts as
-quiet editorial rows with honest unavailable/loading states. The footer
-explicitly says that About is read-only; sidebar copy must **never**
-describe all Settings as read-only, because Displays can modify the session.
+quiet editorial rows with honest unavailable/loading states, without
+redundant "read only" captions. Displays remains editable through explicit
+Apply → Confirm/Revert → Save actions.
 
 The Displays workbench remains authoritative Niri data. Its layout map
 derives scale from the actual available width via `ResizeObserver`; screen
