@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=5923
+index_bytes=5963
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,126 +15,127 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	6d006d30a1c06ccde22245652f021aa960fad0d6
-F	.cargo/config.toml	98	147	3
-F	.github/workflows/ci.yml	4355	152	112
-F	.github/workflows/frontend-nix.yml	1398	266	43
-F	.github/workflows/nix.yml	1258	311	38
-F	.github/workflows/overlay-smoke.yml	1064	351	40
-F	.github/workflows/publish-repospool.yml	3048	393	83
-F	.gitignore	178	478	11
-F	.repospoolignore	1028	491	47
-F	AGENTS.md	6275	540	103
-F	Cargo.toml	494	645	22
-F	README.md	12486	669	256
-F	Taskfile.yml	5957	927	185
-F	config/kira.kdl.example	358	1114	8
-F	crates/kira-core/Cargo.toml	207	1124	10
-F	crates/kira-core/src/config.rs	15217	1136	399
-F	crates/kira-core/src/main.rs	32080	1537	839
-F	crates/kira-core/src/niri.rs	16767	2378	453
-F	crates/kira-ipc/Cargo.toml	170	2833	9
-F	crates/kira-ipc/src/client.rs	17794	2844	458
-F	crates/kira-ipc/src/lib.rs	10460	3304	336
-F	crates/kira-shell/Cargo.toml	297	3642	12
-F	crates/kira-shell/src/calendar.rs	75415	3656	1981
-F	crates/kira-shell/src/config_layers.rs	19239	5639	496
-F	crates/kira-shell/src/display_manager.rs	20641	6137	546
-F	crates/kira-shell/src/launcher.rs	14114	6685	392
-F	crates/kira-shell/src/main.rs	22631	7079	517
-F	crates/kira-shell/src/native_ui.rs	4711	7598	109
-F	crates/kira-shell/src/popup_layout.rs	2659	7709	72
-F	crates/kira-shell/src/process_monitor.rs	13067	7783	394
-F	crates/kira-shell/src/renderer_recovery.rs	3634	8179	116
-F	crates/kira-shell/src/system_info.rs	3951	8297	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8412	559
-F	crates/kira-shell/src/system_panel.rs	11356	8973	318
-F	crates/kira-shell/src/webview_pool.rs	9530	9293	281
-F	docs/CONFIG.md	5801	9576	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9703	135
-F	docs/DESIGN_SYSTEM.md	36455	9840	587
-F	docs/DEVELOPMENT.md	30675	10429	605
-F	docs/QA_VISUAL.md	12652	11036	152
-F	docs/SKY_MAP.md	6776	11190	105
-F	docs/SPECIFICATION.md	28960	11297	421
-F	docs/TENET_MOTION.md	40785	11720	204
-F	docs/UI_ARCHITECTURE.md	6668	11926	105
-F	docs/VISUAL_REVIEW.md	9754	12033	84
-F	docs/WEBVIEW_POOL.md	11431	12119	97
-F	flake.nix	3181	12218	91
-F	frontend/index.html	2737	12311	66
-F	frontend/package.json	720	12379	27
-F	frontend/scripts/inline-assets.mjs	4457	12408	103
-F	frontend/scripts/inline-assets.test.mjs	4645	12513	106
-F	frontend/scripts/smoke-overlays.mjs	51291	12621	717
-F	frontend/src/App.svelte	10529	13340	237
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13579	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13597	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	13658	69
-F	frontend/src/lib/bootstrap.test.ts	3408	13729	84
-F	frontend/src/lib/bootstrap.ts	2613	13815	70
-F	frontend/src/lib/calendar-model.test.ts	3571	13887	65
-F	frontend/src/lib/calendar-model.ts	4648	13954	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14061	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	14123	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	14154	287
-F	frontend/src/lib/clock-flight.test.ts	2404	14443	50
-F	frontend/src/lib/clock-flight.ts	1977	14495	50
-F	frontend/src/lib/components/CalendarWidget.svelte	12672	14547	267
-F	frontend/src/lib/components/DisplaySettings.svelte	23821	14816	451
-F	frontend/src/lib/components/LauncherWidget.svelte	11594	15269	253
-F	frontend/src/lib/components/SettingsWidget.svelte	9899	15524	172
-F	frontend/src/lib/components/SkyMap.svelte	13008	15698	274
-F	frontend/src/lib/components/SystemCharts.svelte	10517	15974	226
-F	frontend/src/lib/components/SystemHealth.svelte	1743	16202	46
-F	frontend/src/lib/components/SystemWidget.svelte	19102	16250	339
-F	frontend/src/lib/components/WindowControls.svelte	2826	16591	71
-F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16664	119
-F	frontend/src/lib/launcher-model.test.ts	2266	16785	46
-F	frontend/src/lib/launcher-model.ts	1403	16833	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	16864	89
-F	frontend/src/lib/lazy-widget.ts	1984	16955	63
-F	frontend/src/lib/motion-contract.test.ts	11241	17020	198
-F	frontend/src/lib/motion.ts	24039	17220	657
-F	frontend/src/lib/overlay-size.test.ts	2153	17879	53
-F	frontend/src/lib/overlay-size.ts	1601	17934	36
-F	frontend/src/lib/sdk/core.test.ts	27884	17972	564
-F	frontend/src/lib/sdk/core.ts	25417	18538	645
-F	frontend/src/lib/settings-model.test.ts	1064	19185	21
-F	frontend/src/lib/settings-model.ts	1262	19208	26
-F	frontend/src/lib/system-charts.test.ts	6312	19236	141
-F	frontend/src/lib/system-charts.ts	5514	19379	149
-F	frontend/src/lib/system-health.test.ts	2385	19530	42
-F	frontend/src/lib/system-health.ts	2831	19574	60
-F	frontend/src/lib/system-model.test.ts	4455	19636	84
-F	frontend/src/lib/system-model.ts	5457	19722	125
-F	frontend/src/lib/themes/kira-default.css	2249	19849	60
-F	frontend/src/lib/themes/kira-default.test.ts	4772	19911	107
-F	frontend/src/lib/themes/kira-default.ts	777	20020	22
-F	frontend/src/lib/themes/shell-composition.test.ts	6619	20044	113
-F	frontend/src/lib/time.test.ts	263	20159	8
-F	frontend/src/lib/time.ts	320	20169	9
-F	frontend/src/lib/workspace-window.test.ts	2298	20180	52
-F	frontend/src/lib/workspace-window.ts	1063	20234	32
-F	frontend/src/main.ts	7783	20268	161
-F	frontend/src/style.css	7357	20431	213
-F	frontend/tsconfig.json	403	20646	16
-F	frontend/vite.config.ts	224	20664	8
-F	nix/package.nix	3132	20674	117
-F	scripts/dev_preview.py	18147	20793	403	x
-F	scripts/qa_visual.py	12052	21198	299
-F	tests/test_calendar_design.py	9935	21499	171
-F	tests/test_detailed_health.py	5481	21672	105
-F	tests/test_dev_preview.py	9339	21779	219
-F	tests/test_displays.py	4741	22000	82
-F	tests/test_launcher_design.py	10521	22084	191
-F	tests/test_native_theme.py	2098	22277	44
-F	tests/test_popup_geometry.py	3805	22323	66
-F	tests/test_qa_visual.py	10549	22391	217
-F	tests/test_settings.py	4943	22610	87
-F	tests/test_tenet_close.py	6297	22699	115
-F	tests/test_ui_bootstrap_contract.py	1103	22816	29
-F	tests/test_webview_pool.py	11704	22847	200
+C	b9e06fcfdd6803be91834b0462c3873131dd373c
+F	.cargo/config.toml	98	148	3
+F	.github/workflows/ci.yml	4355	153	112
+F	.github/workflows/frontend-nix.yml	1398	267	43
+F	.github/workflows/nix.yml	1258	312	38
+F	.github/workflows/overlay-smoke.yml	1064	352	40
+F	.github/workflows/publish-repospool.yml	3048	394	83
+F	.gitignore	178	479	11
+F	.repospoolignore	1028	492	47
+F	AGENTS.md	6275	541	103
+F	Cargo.toml	494	646	22
+F	README.md	12486	670	256
+F	Taskfile.yml	5957	928	185
+F	config/kira.kdl.example	358	1115	8
+F	crates/kira-core/Cargo.toml	207	1125	10
+F	crates/kira-core/src/config.rs	15217	1137	399
+F	crates/kira-core/src/main.rs	32080	1538	839
+F	crates/kira-core/src/niri.rs	16767	2379	453
+F	crates/kira-ipc/Cargo.toml	170	2834	9
+F	crates/kira-ipc/src/client.rs	17794	2845	458
+F	crates/kira-ipc/src/lib.rs	10460	3305	336
+F	crates/kira-shell/Cargo.toml	297	3643	12
+F	crates/kira-shell/src/calendar.rs	75415	3657	1981
+F	crates/kira-shell/src/config_layers.rs	19239	5640	496
+F	crates/kira-shell/src/display_manager.rs	20641	6138	546
+F	crates/kira-shell/src/launcher.rs	14114	6686	392
+F	crates/kira-shell/src/main.rs	22631	7080	517
+F	crates/kira-shell/src/native_ui.rs	4711	7599	109
+F	crates/kira-shell/src/popup_layout.rs	2659	7710	72
+F	crates/kira-shell/src/process_monitor.rs	13067	7784	394
+F	crates/kira-shell/src/renderer_recovery.rs	3634	8180	116
+F	crates/kira-shell/src/system_info.rs	3951	8298	113
+F	crates/kira-shell/src/system_metrics.rs	19842	8413	559
+F	crates/kira-shell/src/system_panel.rs	11356	8974	318
+F	crates/kira-shell/src/webview_pool.rs	9530	9294	281
+F	docs/CONFIG.md	5801	9577	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9704	135
+F	docs/DESIGN_SYSTEM.md	37297	9841	598
+F	docs/DEVELOPMENT.md	30675	10441	605
+F	docs/QA_VISUAL.md	12652	11048	152
+F	docs/SKY_MAP.md	6776	11202	105
+F	docs/SPECIFICATION.md	28960	11309	421
+F	docs/TENET_MOTION.md	40785	11732	204
+F	docs/UI_ARCHITECTURE.md	6668	11938	105
+F	docs/UI_NOISE_REVIEW.md	5382	12045	53
+F	docs/VISUAL_REVIEW.md	9754	12100	84
+F	docs/WEBVIEW_POOL.md	11431	12186	97
+F	flake.nix	3181	12285	91
+F	frontend/index.html	2737	12378	66
+F	frontend/package.json	720	12446	27
+F	frontend/scripts/inline-assets.mjs	4457	12475	103
+F	frontend/scripts/inline-assets.test.mjs	4645	12580	106
+F	frontend/scripts/smoke-overlays.mjs	51290	12688	717
+F	frontend/src/App.svelte	10444	13407	236
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13645	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13663	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	13724	69
+F	frontend/src/lib/bootstrap.test.ts	3408	13795	84
+F	frontend/src/lib/bootstrap.ts	2613	13881	70
+F	frontend/src/lib/calendar-model.test.ts	3571	13953	65
+F	frontend/src/lib/calendar-model.ts	4648	14020	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14127	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	14189	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	14220	287
+F	frontend/src/lib/clock-flight.test.ts	2404	14509	50
+F	frontend/src/lib/clock-flight.ts	1977	14561	50
+F	frontend/src/lib/components/CalendarWidget.svelte	11617	14613	249
+F	frontend/src/lib/components/DisplaySettings.svelte	23024	14864	444
+F	frontend/src/lib/components/LauncherWidget.svelte	10465	15310	238
+F	frontend/src/lib/components/SettingsWidget.svelte	7529	15550	141
+F	frontend/src/lib/components/SkyMap.svelte	12548	15693	274
+F	frontend/src/lib/components/SystemCharts.svelte	9466	15969	214
+F	frontend/src/lib/components/SystemHealth.svelte	1731	16185	46
+F	frontend/src/lib/components/SystemWidget.svelte	16564	16233	305
+F	frontend/src/lib/components/WindowControls.svelte	2826	16540	71
+F	frontend/src/lib/components/WorkspacePreview.svelte	6055	16613	119
+F	frontend/src/lib/launcher-model.test.ts	2266	16734	46
+F	frontend/src/lib/launcher-model.ts	1403	16782	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	16813	89
+F	frontend/src/lib/lazy-widget.ts	1984	16904	63
+F	frontend/src/lib/motion-contract.test.ts	11241	16969	198
+F	frontend/src/lib/motion.ts	24039	17169	657
+F	frontend/src/lib/overlay-size.test.ts	2153	17828	53
+F	frontend/src/lib/overlay-size.ts	1601	17883	36
+F	frontend/src/lib/sdk/core.test.ts	27884	17921	564
+F	frontend/src/lib/sdk/core.ts	25417	18487	645
+F	frontend/src/lib/settings-model.test.ts	1064	19134	21
+F	frontend/src/lib/settings-model.ts	1262	19157	26
+F	frontend/src/lib/system-charts.test.ts	6312	19185	141
+F	frontend/src/lib/system-charts.ts	5514	19328	149
+F	frontend/src/lib/system-health.test.ts	2385	19479	42
+F	frontend/src/lib/system-health.ts	2831	19523	60
+F	frontend/src/lib/system-model.test.ts	4455	19585	84
+F	frontend/src/lib/system-model.ts	5457	19671	125
+F	frontend/src/lib/themes/kira-default.css	2249	19798	60
+F	frontend/src/lib/themes/kira-default.test.ts	4772	19860	107
+F	frontend/src/lib/themes/kira-default.ts	777	19969	22
+F	frontend/src/lib/themes/shell-composition.test.ts	6641	19993	113
+F	frontend/src/lib/time.test.ts	263	20108	8
+F	frontend/src/lib/time.ts	320	20118	9
+F	frontend/src/lib/workspace-window.test.ts	2298	20129	52
+F	frontend/src/lib/workspace-window.ts	1063	20183	32
+F	frontend/src/main.ts	7783	20217	161
+F	frontend/src/style.css	7357	20380	213
+F	frontend/tsconfig.json	403	20595	16
+F	frontend/vite.config.ts	224	20613	8
+F	nix/package.nix	3132	20623	117
+F	scripts/dev_preview.py	18147	20742	403	x
+F	scripts/qa_visual.py	12052	21147	299
+F	tests/test_calendar_design.py	10149	21448	175
+F	tests/test_detailed_health.py	5702	21625	109
+F	tests/test_dev_preview.py	9339	21736	219
+F	tests/test_displays.py	4741	21957	82
+F	tests/test_launcher_design.py	10784	22041	195
+F	tests/test_native_theme.py	2098	22238	44
+F	tests/test_popup_geometry.py	3805	22284	66
+F	tests/test_qa_visual.py	10549	22352	217
+F	tests/test_settings.py	5439	22571	94
+F	tests/test_tenet_close.py	6297	22667	115
+F	tests/test_ui_bootstrap_contract.py	1103	22784	29
+F	tests/test_webview_pool.py	11704	22815	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -9851,10 +9852,11 @@ official visual language of Kira Desktop.
 - **Neo-Brutalism:** deliberate geometry, high-contrast states and visible
   structure where it carries meaning. It does **not** mean borders and offset
   shadows on every element.
-- **Editorial Design:** a strong type hierarchy (eyebrow, heading,
-  description, metadata), measured spacing and deliberate grouping.
+- **Editorial Design:** one strong heading, useful context only where the
+  value cannot explain itself, measured spacing and deliberate grouping.
 - **Expressive Minimalism:** one canonical accent, every element functional,
-  short quiet motion rather than decoration.
+  short quiet motion rather than decoration. A number is more useful than a
+  permanent 'LIVE' caption or an editorial chapter number.
 - **KISS:** keep each UI feature and interaction easy to trace. Prefer a small
   direct function over an abstract component framework; new layers must solve
   a demonstrated problem.
@@ -9880,6 +9882,17 @@ official visual language of Kira Desktop.
    application; the catalog retains descriptive text and system icons.
 7. Preserve visible keyboard focus, urgent/offline states, reduced-motion,
    and readable contrast. Decoration must not disguise function.
+8. Every visible label must identify a control, explain non-obvious data,
+   warn of a real issue or prevent a consequential error. If it repeats
+   a heading, placeholder, data value or ordinary healthy state, remove it.
+9. Do not number decorative sections (01 /, 02 /). Numbers are reserved for
+   actual data: workspace indexes, week numbers, PIDs and values.
+10. One strong title per surface, a restrained accent rail and minimal
+    separators. No border around each row just to simulate hierarchy.
+11. Technical persistence details can be disclosed on request; safety
+    warnings, rollback countdowns, validation and errors stay visible.
+12. Keep ARIA semantics, keyboard focus, real telemetry and honest unknown
+    values while removing visual captions.
 
 ### Implementation rules: KISS + DRY
 
@@ -9915,33 +9928,33 @@ official visual language of Kira Desktop.
   limit and reports how many earlier/later workspaces are omitted.
   Only explicitly customized KDL titles appear, and they yield space on
   narrow screens. System status reflects real Core/Niri/host measurements
-  and becomes quieter when READY; its button still opens System Monitor.
+  hides visible READY text when healthy; warnings remain visible, and the
+   same indicator opens System Monitor.
   The local clock opens the existing Calendar. Additional trusted popup
   WebKit hosts are leased **on demand** from a bounded pool, never spawned
   speculatively per hypothetical widget. No extra native services, polling
   loops, shortcuts, fake app activity or Dock.
   Keyboard focus and reduced-motion semantics are preserved.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
-  zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
-  compact Black local-time hero, a Prussian Blue calendar workbench, and a
-  Black factual selection footer. The clock is actual local time; the date
+  zone. Its live clock and date identify the Black header directly, followed by a
+  Prussian Blue month grid and a small Black selection/action footer. The clock is actual local time; the date
   grid is a custom Svelte Monday-first 6×7 composition of accessible buttons
   with a distinct ISO week-number rail, month/year navigation and adjacent
   month dates. Selected state, today's civil date and outside-month identity
   are independent, pure Gregorian model states. Keyboard support includes
   arrow/PageUp/PageDown/Home navigation with focus following selection; the
   selected button is the sole tab stop in the grid, and today's date uses
-  `aria-current="date"`. The footer keeps the selected ISO date, week number
-  and day of year plainly visible without pretending to provide events.
+  `aria-current="date"`. The footer keeps the selected ISO date without repeating the week already
+  visible on the grid or showing trivia such as day-of-year.
   The native overlay remains height-capped and scrollable, with hidden
   WebKit scrollbar chrome but usable wheel/touch/keyboard navigation.
   Today and Copy Date are both flat orange typographic commands, without
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
   to the clipboard only on click.
-  Clicking time again or pressing Escape closes. Merely losing GTK focus,
-  including when the user clicks a different Top Bar button, NEVER closes
-  a widget. Calendar, Launcher and System Monitor may stay open independently.
+  Escape and explicit controls close the current popup. Opening another
+  transient widget replaces only the transient popup; promoted Niri windows
+  stay open and independent of that switching.
   Calendar motion now uses **TENET dual-time GSAP scenes**:
   when sections appear or month/day selection changes, actual content moves
   FORWARD while four recorded decorative fragments replay their original
@@ -9972,8 +9985,9 @@ official visual language of Kira Desktop.
   Search relevance prioritizes exact and prefix name matches ahead of
   description-only matches, retaining native GIO identity and stable order
   among ties. The active application uses a restrained orange rail and
-  title, not an orange-filled row; a single search-clear action and concise
-  keyboard legend prioritize function over decorative copy. A capped
+  title, not an orange-filled row. The search field needs no extra FIND / OPEN
+  or CATALOG caption and standard keyboard actions need no footer legend.
+  Match counts appear only while filtering; absent app descriptions are blank. A capped
   80-result list, bounded icon batches, honest empty/error states and native
   GIO launching preserve performance, accessibility and system boundaries.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
@@ -10041,9 +10055,8 @@ device fields, runtime network access or background WebView.
 
 ### Detached Calendar · responsive editorial observatory (2026-11)
 
-Promoted Calendar is a real, resizable Niri window. The compact popup
-remains the original Chronology / Date Index / Selected Date widget with
-unchanged height, keyboard grid and TENET entrance. The detached window
+Promoted Calendar is a real, resizable Niri window. The compact popup keeps the same clock, month grid, selected date and
+TENET entrance, with no decorative chapter captions. The detached window
 preserves the same live WebView and selected date, and adds an **offline
 celestial atlas** on the right. Calendar rail is 370px at comfortable
 desktop widths. Below a 760px viewport width the two columns **stack**
@@ -10168,13 +10181,12 @@ diagnostic bars. The visual hierarchy is intentional:
 Bar keeps its separate permanent WebView; the popup pool starts one inert warm
 WebKit host and allocates others only as needed. A bounded four-host cap,
 one hot spare and 45-second surplus-idle grace prevent runaway renderer
-growth. **One active widget exists across popup and promoted Niri windows.**
-New Top Bar requests run the current widget's generation-scoped TENET reverse,
-wait for unmount/release (or watchdog), then open the latest requested kind.
-The same-kind icon raises an already detached window. All transient widgets
-share the original top-right anchor; no left/center dock columns or transient
-side-by-side windows are used. Ordinary Niri windows remain resizable and
-retain their live WebView while shown, but a different widget closes them.
+growth. **Only one transient popup is shown at once.** Promoted Niri windows
+retain independent WebView leases, state and input. Requests for another kind
+reverse and replace only the transient popup. A request for an already
+detached kind raises that Niri window without cloning it. Calendar/System/
+Settings keep the top-right dock; Launcher is top-centered at 20% of logical
+output height. Opening other widgets never closes detached windows.
 
 ### Shared TENET widget reverse dismissal · 2026-11
 
@@ -12029,6 +12041,61 @@ over it, Calendar/Overview scroll vertically, while Launcher/Processes scroll
 their result lists. `ResizeObserver` is disconnected when Svelte unmounts,
 and the original single warm WebView and safe center/corner relocation remain.
 
+FILE	docs/UI_NOISE_REVIEW.md
+# Kira Desktop — visual noise review
+
+Date: 2026-11-03  
+Scope: Top Bar, Launcher, Calendar, detached sky atlas, System Monitor, Settings, display configuration.  
+Method: audit of the live Svelte surface hierarchy, UI copy, visual treatments and keyboard/ARIA contracts against KISS, DRY and the Kira Default neo-brutalist palette. Screenshots provided in design review illustrate the baseline; nested-Niri visual acceptance remains outstanding.
+
+## Design decision
+
+Every visible element must do at least one job:
+
+1. Identify a control or clearly name a distinct section.
+2. Explain a value that cannot reasonably explain itself.
+3. Report an actual condition, error, selection, or unavailable value.
+4. Prevent user harm or irreversible changes.
+
+Anything that only announces the product name again, numbers an editorial section, repeats a heading/placeholder, describes an ordinary default state or draws attention to a technical implementation detail does not pass. The absence of clutter must **not** imply the absence of data.
+
+## Changes by surface
+
+| Surface | Removed or reduced | Preserved |
+| --- | --- | --- |
+| Top Bar | The always-visible READY word and redundant separator | Health indicator, visible warnings, workspace focus/urgency, clock and Settings access |
+| Launcher | APPLICATION INDEX, FIND / OPEN, CATALOG heading, unfiltered count, generic Installed application fallback, keyboard legend, per-row separators | Search, meaningful descriptions, icons, selected-item rail, filtered result count, empty/errors, arrows/Enter/Escape and visible focus |
+| Calendar | CHRONOLOGY / LOCAL TIME / DATE INDEX / SELECTED DATE chapter captions, duplicate live marker, redundant week/day-of-year footer facts | Local clock, current date, month/year and ISO week grid, selected date and ISO for copy, Today/Copy actions, keyboard grid and clock TENET effects |
+| System Monitor | HOST INSTRUMENTS, LOCAL TELEMETRY, normal-state NOMINAL / CURRENT SAMPLE / CORE ONLINE / NIRI ONLINE / NATIVE FEED captions, editorial numbering, duplicate CPU/RAM captions, chart methodology taglines, repeated process counts | Real gauges, activity history and axis labels, storage/swap and GPU readings, error/stale states, sortable process data, on-demand details and Copy Report |
+| Settings | Branding repeated inside header, generic read-only notices, SYSTEM IDENTITY, LOCAL HOST, FACTS count, redundant selector label, constant side note, borders between every About fact | Actual OS/device facts with honest missing values, selected section, accessible navigation and disabled destinations |
+| Display configuration | Redundant DISPLAY TOPOLOGY / NIRI tag and introductory description, duplicate confirmation countdown text, verbose map caption, VRR definition when already available | Connected/enabled counts, display geometry, apply/confirm/revert/save behavior, countdown, validation and persistent-config ownership rules (technical details on demand) |
+| Detached sky atlas | CELESTIAL ATLAS chapter number, duplicate date, manually entered coordinates label, repeated compass legend | Actual astronomical rendering, coordinate/time controls and timezone, honest demo state, magnitude limit, source attribution and non-navigation caveat |
+
+## Hierarchy and repetition
+
+- A single primary title per surface is stronger than a tiny all-caps eyebrow followed by a second title.
+- Black and Prussian Blue separate major zones. Orange is for selections, actions and material meaning, not decoration on every metadata line.
+- A border should separate genuinely distinct interfaces (header/body, selected rail, field input), not every process, application or factual row.
+- A normal state can be quiet. Warnings and stale/unknown data must never disappear.
+- An empty description is preferable to the fabricated generic phrase "Installed application".
+- Technical meanings such as RSS and PSS are available in the column tooltips/accessible names rather than a permanently visible footer.
+- Reuse existing WindowControls, palette tokens and TENET actions. Do not create a UI abstraction that makes three small headings harder to maintain (DRY does not require universal components).
+
+## Explicit guardrails
+
+- No new core/native IPC, no change to native layer-shell docking or detached window leases.
+- No change to telemetry sampling, calendar arithmetic, stored display settings or rollback semantics.
+- Preserve labels for inputs and controls via ARIA even when a visual caption is removed.
+- Keep animation selectors (e.g. `data-kira-contact`, `data-kira-enter`) and stateful TENET actions intact.
+- Settings display Apply is **not** persistent Save. The explicit confirmation/rollback and config ownership details are not optional.
+- Use existing Kira Default palette and popup shadow contract; no additional cards, colors or decorative animations.
+
+## Acceptance
+
+Automated: Svelte/TypeScript and Python contracts, offline self-contained bundle, browser overlay smoke for calendar/launcher/system/settings, chart rendering and keyboard focus.
+
+Manual outstanding: inspect at 100/125/150/200% scales in nested Niri, with a detached window behind a popup. Pay particular attention to long launcher names, calendar clock + controls, locale-dependent dates, low-contrast text, custom display confirmation and the preserved shadow. Automated tests cannot prove aesthetic quality.
+
 FILE	docs/VISUAL_REVIEW.md
 # Kira Desktop — visual design review
 
@@ -12887,7 +12954,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
-      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && roots[0].textContent.includes("LIVE · 500MS"));' +
+      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && !roots[0].textContent.includes("PULSE STALE"));' +
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
       'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
@@ -13554,7 +13621,6 @@ FILE	frontend/src/App.svelte
         {settingsShellOutdated ? 'RESTART KIRA SHELL' : 'SETTINGS OFFLINE'}
       </span>
     {/if}
-    <span class="mx-1 h-4 w-px shrink-0 bg-kira-muted/20" aria-hidden="true"></span>
     {#if calendarUnavailable}
       <span class="shrink-0 px-1 text-[10px] font-bold text-kira-accent"
         role="status">CALENDAR OFFLINE</span>
@@ -14551,7 +14617,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import { tenetFlowIndicator } from '../motion';
   import {
-    calendarDayState, clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
+    calendarDayState, clockGlyphs, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
   } from '../calendar-model';
 
@@ -14580,8 +14646,6 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   const clockParts = $derived(clockGlyphs(clockText));
   const weeks = $derived(monthGrid(visible.year, visible.month));
   const selectedIso = $derived(isoDate(selected));
-  const todayIso = $derived(isoDate(today));
-  const week = $derived(isoWeek(selected));
   const title = $derived(localDateLabel({ year: visible.year, month: visible.month, day: 1 }, locale, { month: 'long' }));
   const selectedLabel = $derived(localDateLabel(selected, locale, {
     weekday: 'long', day: 'numeric', month: 'long',
@@ -14676,37 +14740,32 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   <div data-calendar-rail class={detached
     ? 'flex h-full w-[370px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20 max-[760px]:h-auto max-[760px]:w-full max-[760px]:overflow-visible max-[760px]:border-r-0 max-[760px]:border-b'
     : 'flex w-full min-h-0 flex-col'}>
-  <!-- Clock is the identity anchor; native host remains the only window owner. -->
+  <!-- The live clock and date are enough context; no editorial chapter labels. -->
   <header data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-3 pt-4">
     <div class="flex items-start justify-between gap-3">
-      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / CHRONOLOGY</p>
-        <p class="mt-1 text-[9px] font-semibold tracking-[0.12em] text-kira-muted">01 / LOCAL TIME</p>
+      <div class="min-w-0">
+        <button type="button" use:tenetClockJuggle data-calendar-clock-play
+          aria-label="Make the clock digits fly and return"
+          title="Animate clock digits"
+          class="block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
+          <time class="flex items-center text-[36px] font-extrabold leading-none tabular-nums tracking-[-0.055em]"
+            datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
+          {#each clockParts as part, index (index)}
+            {#if part.digit}
+              <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
+                aria-hidden="true" data-clock-cell>
+                <span class="flex h-full w-full items-center justify-center"
+                  data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
+              </span>
+            {:else}
+              <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
+            {/if}
+          {/each}
+          </time>
+        </button>
+        <p class="mt-1 truncate text-[11px] font-semibold text-kira-muted">{currentDateLabel}</p>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="calendar" />
-    </div>
-    <button type="button" use:tenetClockJuggle data-calendar-clock-play
-      aria-label="Make the clock digits fly and return"
-      title="Animate clock digits"
-      class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
-      <time class="flex items-center text-[36px] font-extrabold leading-none tabular-nums tracking-[-0.055em]"
-        datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
-      {#each clockParts as part, index (index)}
-        {#if part.digit}
-          <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
-            aria-hidden="true" data-clock-cell>
-            <span class="flex h-full w-full items-center justify-center"
-              data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
-          </span>
-        {:else}
-          <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
-        {/if}
-      {/each}
-      </time>
-    </button>
-    <div class="mt-2 flex items-center justify-between gap-2 border-t border-kira-muted/15 pt-2">
-      <p class="min-w-0 truncate text-[11px] font-semibold text-kira-text">{currentDateLabel}</p>
-      <span class="shrink-0 text-[9px] font-bold tracking-[0.12em] text-kira-muted">LIVE / LOCAL</span>
     </div>
   </header>
 
@@ -14714,8 +14773,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
   <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 pb-3 pt-3" aria-label="Date picker">
     <div class="mb-3 flex items-center justify-between gap-2">
       <div class="min-w-0">
-        <p class="text-[9px] font-bold tracking-[0.14em] text-kira-muted">02 / DATE INDEX</p>
-        <h2 class="mt-1 truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
+        <h2 class="truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
           {title}<span class="ml-2 text-sm font-semibold text-kira-muted">{visible.year}</span>
         </h2>
       </div>
@@ -14780,21 +14838,11 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 
   <!-- Selected date is a factual summary, not a fictitious event agenda. -->
   <footer data-kira-enter class="shrink-0 border-t border-kira-muted/15 bg-kira-bg px-5 pb-3 pt-3">
-    <div class="flex items-start justify-between gap-3" aria-live="polite">
-      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p class="text-[9px] font-bold tracking-[0.13em] text-kira-muted">
-          03 / {selectedIso === todayIso ? 'TODAY' : 'SELECTED DATE'}
-        </p>
-        <p class="mt-1 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale)}>
-          {selectedLabel}
-        </p>
-      </div>
-      <div class="shrink-0 text-right">
-        <p class="text-[10px] font-bold tabular-nums text-kira-accent">{selectedIso}</p>
-        <p class="mt-1 text-[9px] font-semibold tracking-wide text-kira-muted">
-          WK {String(week.week).padStart(2, '0')} · D{String(dayOfYear(selected)).padStart(3, '0')}
-        </p>
-      </div>
+    <div class="flex items-center justify-between gap-3" aria-live="polite">
+      <p class="min-w-0 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale)}>
+        {selectedLabel}
+      </p>
+      <p class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
     </div>
     <div class="mt-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
       <button type="button" onclick={goToday}
@@ -15052,16 +15100,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
 </script>
 
 <section class="space-y-5" aria-label="Настройки дисплеев">
-  <div class="border-b border-kira-muted/20 pb-5">
-    <div class="mb-3 flex items-center justify-between gap-2">
-      <span class="text-[10px] font-extrabold tracking-[0.16em] text-kira-accent">02 / DISPLAY TOPOLOGY</span>
-      <span class="border border-kira-muted/30 px-2 py-1 text-[9px] font-semibold tracking-wide text-kira-muted">NIRI / WAYLAND</span>
-    </div>
-    <h2 class="text-[30px] font-black tracking-tight">Дисплеи</h2>
-    <p class="mt-2 text-[12px] leading-relaxed text-kira-muted">
-      Настройка расположения, разрешения и параметров нескольких экранов.
-    </p>
-  </div>
+  <h2 class="text-[26px] font-extrabold tracking-tight">Дисплеи</h2>
 
   {#if pendingId !== null}
     <div role="alertdialog" aria-label="Подтвердите параметры дисплеев"
@@ -15071,10 +15110,10 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
         <div>
           <p class="text-[13px] font-extrabold">Сохранить конфигурацию?</p>
           <p id="kira-display-confirmation-warning" class="mt-1 text-[12px] leading-relaxed text-kira-muted">
-            Если изображение пропало, подождите. Автоматический откат через {remaining} с.
+            Если изображение пропало, настройки откатятся автоматически.
           </p>
         </div>
-        <strong class="text-[23px] font-black tabular-nums text-kira-accent">{remaining}</strong>
+        <strong class="text-[23px] font-black tabular-nums text-kira-accent" aria-label={'Осталось ' + remaining + ' секунд'}>{remaining}</strong>
       </div>
       <div class="mt-4 flex flex-wrap gap-2">
         <button type="button" bind:this={confirmButton} onclick={confirm} disabled={busy}
@@ -15112,7 +15151,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
     </div>
   {:else if outputs.length > 0}
     <div class="border border-kira-muted/20 bg-kira-surface-soft p-4">
-      <p class="mb-3 text-[10px] font-extrabold tracking-widest text-kira-muted">РАСПОЛОЖЕНИЕ ЭКРАНОВ / ПЕРЕТАЩИТЕ</p>
+      <p class="mb-3 text-[12px] font-bold text-kira-text">Расположение <span class="font-normal text-kira-muted">· перетащите экран</span></p>
       <div bind:this={mapViewport} class="kira-displays-map relative h-[230px] overflow-hidden bg-kira-bg"
         aria-label="Схема расположения мониторов">
         {#each rectangles as rect (rect.connector)}
@@ -15139,7 +15178,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
         {/if}
       </div>
       <p class="mt-3 text-[10px] leading-relaxed text-kira-muted">
-        Перемещение меняет логические координаты дисплеев. Niri может скорректировать пересекающиеся экраны автоматически.
+        Niri может скорректировать пересекающиеся экраны.
       </p>
     </div>
 
@@ -15225,8 +15264,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
         </div>
         {#if selectedOutput.vrr_supported}
           <label class="flex items-center justify-between gap-3 border-t border-kira-muted/15 py-3 text-[11px]">
-            <span><strong class="block">Адаптивная частота (VRR)</strong>
-              <span class="mt-1 block text-kira-muted">FreeSync / Adaptive-Sync, если поддерживается</span></span>
+            <span><strong class="block">Адаптивная частота (VRR)</strong></span>
             <input type="checkbox" checked={selectedDraft.vrr} disabled={busy || isPending}
               onchange={event => change({ vrr: event.currentTarget.checked })} class="size-4 accent-kira-accent" />
           </label>
@@ -15250,18 +15288,21 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
       </button>
     </div>
   {/if}
-  <div class="border-t border-kira-muted/15 pt-4 text-[10px] leading-relaxed text-kira-muted">
-    <p>Источник конфигурации:
-      <strong class="text-kira-accent">{persistence === 'managed' ? 'Kira управляет KDL'
-        : persistence === 'uninitialized' ? 'Подключён пустой слой Kira'
-        : persistence === 'conflict' ? 'Конфликт файла KDL'
-        : 'Пользовательская декларативная конфигурация'}</strong>.
-      Сначала примените настройки и подтвердите их, затем нажмите «Сохранить в конфиг».</p>
-    <p class="mt-2">Kira создаёт отдельный <code>kira-managed-outputs.kdl</code> и включает его в
-      доступный для записи <code>config.kdl</code>. При Nix-managed файле, чужих
-      блоках <code>output</code> или ручных правках Kira не перезаписывает их:
-      нужное подключение выполняется владельцем декларативной конфигурации.</p>
-    <p class="mt-2">Зеркалирование экранов Niri не поддерживает.</p>
+  <div class="border-t border-kira-muted/15 pt-4 text-[11px] leading-relaxed text-kira-muted">
+    <p>Источник: <strong class="text-kira-text">{persistence === 'managed' ? 'Kira KDL'
+      : persistence === 'uninitialized' ? 'Пустой слой Kira'
+      : persistence === 'conflict' ? 'Конфликт KDL'
+      : 'Декларативная конфигурация'}</strong>.
+      Сначала примените и подтвердите настройки, затем сохраните их в конфиг.</p>
+    <details class="mt-2">
+      <summary class="cursor-pointer py-1 font-semibold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">Как сохраняются настройки</summary>
+      <div class="mt-2 space-y-2">
+        <p>Kira создаёт отдельный <code>kira-managed-outputs.kdl</code> и включает его в
+          доступный для записи <code>config.kdl</code>. Nix-managed файлы,
+          чужие блоки <code>output</code> и ручные правки не перезаписываются.</p>
+        <p>Зеркалирование экранов Niri не поддерживает.</p>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -15401,18 +15442,16 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
 <main data-kira-ui-root aria-label="Kira Launcher"
   use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
   class="relative flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
-  <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
+  <header data-kira-enter class="shrink-0 px-5 pb-3 pt-4">
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p data-kira-contact class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
-        <h1 class="mt-2 text-[30px] font-extrabold leading-none tracking-tight">Launch</h1>
+        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">Applications</h1>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="launcher" />
     </div>
   </header>
 
   <section data-kira-enter class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
-    <label for="kira-launcher-query" class="mb-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">FIND / OPEN</label>
     <div class="relative shrink-0 border border-kira-muted/30 bg-kira-bg
       focus-within:border-kira-accent focus-within:ring-1 focus-within:ring-kira-accent">
       <svg class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-kira-muted"
@@ -15437,16 +15476,15 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       {/if}
     </div>
 
-    <div class="mb-2 mt-4 flex items-center justify-between gap-3 border-b border-kira-muted/20 pb-2">
-      <h2 class="text-[10px] font-extrabold tracking-[0.12em] text-kira-accent">APPLICATION CATALOG</h2>
-      <span class="shrink-0 text-[10px] font-bold tabular-nums text-kira-muted">
-        {loaded ? matches.length + ' / ' + apps.length : '— / —'}
-      </span>
-    </div>
+    {#if loaded && query.trim()}
+      <p class="mt-3 mb-1 text-[11px] text-kira-muted" role="status">
+        {matches.length} {matches.length === 1 ? 'result' : 'results'}
+      </p>
+    {/if}
     <div id="kira-launcher-results" bind:this={results}
       use:tenetFlowIndicator={{ active: displayed[activeIndex] ? String(displayed[activeIndex].id) : '', axis: 'both' }}
       use:tenetReflowScope use:tenetScrollScope
-      class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"
+      class="kira-launcher-scroll relative mt-3 min-h-0 flex-1 overflow-y-auto pr-1"
       role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
       <span data-kira-flow-indicator aria-hidden="true"
         class="pointer-events-none absolute left-0 top-0 z-0 border-l-[3px] border-kira-accent bg-kira-bg/80"></span>
@@ -15455,8 +15493,8 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
           data-kira-tab={String(app.id)} data-kira-reflow
           role="option" aria-selected={index === activeIndex} tabindex={-1}
           onclick={() => choose(index)}
-          title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'group relative z-10 my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
+          title={app.description ? app.name + ' / ' + app.description : app.name}
+          class={'group relative z-10 my-0.5 flex min-h-[58px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? '' : 'hover:bg-kira-bg/30')}>
           <span class="h-10 w-[3px] shrink-0" aria-hidden="true"></span>
           <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
@@ -15479,9 +15517,9 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
           <span class="min-w-0 flex-1">
             <span class={'block truncate text-sm font-semibold ' +
               (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
-            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">
-              {app.description.trim() || 'Installed application'}
-            </span>
+            {#if app.description.trim()}
+              <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim()}</span>
+            {/if}
           </span>
         </button>
       {:else}
@@ -15506,18 +15544,6 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       </p>
     {/if}
   </section>
-  <footer data-kira-enter class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
-    px-5 py-2.5 text-[10px] text-kira-muted">
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">↑ ↓</kbd> MOVE
-    </span>
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ENTER</kbd> OPEN
-    </span>
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ESC</kbd> CLOSE
-    </span>
-  </footer>
 </main>
 
 FILE	frontend/src/lib/components/SettingsWidget.svelte
@@ -15585,12 +15611,8 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
   use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1, sections: 2 }}
   class="kira-settings relative flex min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header data-kira-enter class="flex shrink-0 items-center justify-between gap-3 border-b border-kira-muted/20 bg-kira-bg px-5 py-4">
-    <div class="flex min-w-0 items-center gap-3 border-l-2 border-kira-accent pl-3">
-      <span data-kira-contact class="text-[19px] font-black leading-none text-kira-accent" aria-hidden="true">K</span>
-      <div class="min-w-0">
-        <p class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">KIRA / CONFIGURATION</p>
-        <h1 class="mt-1 truncate text-[20px] font-extrabold leading-tight tracking-tight">Настройки системы</h1>
-      </div>
+    <div class="min-w-0 border-l-2 border-kira-accent pl-3">
+      <h1 data-kira-contact class="truncate text-[22px] font-extrabold leading-tight tracking-tight">Настройки</h1>
     </div>
     <WindowControls {onClose} {onPopout} {generation} label="settings" />
   </header>
@@ -15599,10 +15621,6 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
     {#if detached}
       <aside class="flex w-[220px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20 bg-kira-surface px-3 py-6 max-[720px]:hidden"
         aria-label="Разделы настроек">
-        <div class="mb-6 px-3">
-          <p class="text-[10px] font-extrabold tracking-[0.15em] text-kira-muted">РАЗДЕЛЫ</p>
-          <p class="mt-2 text-[14px] font-extrabold text-kira-text">Управление</p>
-        </div>
         <!-- One physical selection rail moves between real destinations.
              The current page and focus update before GSAP motion. -->
         <nav class="relative flex flex-col gap-1" aria-label="Разделы настроек"
@@ -15624,17 +15642,11 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
             </button>
           {/each}
         </nav>
-        <div class="mt-auto border-t border-kira-muted/20 px-3 pt-4 text-[11px] leading-relaxed text-kira-muted">
-          Сведения локальны. Изменения дисплеев применяются и сохраняются отдельно.
-        </div>
       </aside>
     {/if}
 
     <section class={['kira-settings-scroll min-w-0 flex-1 overflow-y-auto pb-7 pt-5', detached ? 'px-8 max-[720px]:px-5' : 'px-5'].join(' ')} aria-label="Содержимое настроек">
       <div class={detached ? 'mb-5 hidden max-[720px]:block' : 'mb-5'}>
-          <label for="kira-settings-section" class="mb-2 block text-[10px] font-bold tracking-[0.16em] text-kira-muted">
-            РАЗДЕЛ НАСТРОЕК
-          </label>
           <div class="relative">
             <select id="kira-settings-section" aria-label="Раздел настроек" value={section} onchange={onSelect}
               class="w-full appearance-none rounded-none border border-kira-muted/40 bg-kira-surface px-3 py-3 pr-10 text-[13px] font-bold text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">
@@ -15649,33 +15661,20 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
       </div>
 
       {#if section === 'about'}
-        <div class="mb-6 border-b border-kira-muted/20 pb-5">
-          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <span class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">01 / SYSTEM IDENTITY</span>
-            <span class="text-[10px] font-semibold tracking-wide text-kira-muted">ТОЛЬКО ЧТЕНИЕ</span>
-          </div>
-          <h2 class="text-[30px] font-black leading-tight tracking-tight">О системе</h2>
-          <p class="mt-2 max-w-xl text-[12px] leading-relaxed text-kira-muted">
-            Информация об операционной системе, устройстве и среде выполнения Kira Desktop.
-          </p>
-        </div>
+        <h2 class="mb-5 text-[26px] font-extrabold leading-tight tracking-tight">О системе</h2>
 
         <!-- A single elevated fact, not a stack of ornamental cards. -->
         <div class="border-l-[3px] border-kira-accent bg-kira-surface px-5 py-5">
-          <p class="text-[10px] font-bold tracking-[0.14em] text-kira-muted">ОПЕРАЦИОННАЯ СИСТЕМА</p>
+          <p class="text-[11px] font-semibold text-kira-muted">Операционная система</p>
           <p class="mt-2 break-words text-[23px] font-extrabold leading-snug tracking-tight text-kira-text">
             {about ? systemValue(about.os_name) : 'Получение данных…'}
           </p>
-          <p class="mt-3 text-[10px] font-semibold tracking-[0.12em] text-kira-accent">LOCAL HOST / LINUX</p>
         </div>
 
-        <div class="mb-2 mt-7 flex items-center justify-between gap-2">
-          <h3 class="text-[14px] font-extrabold tracking-wide">Характеристики устройства</h3>
-          <span class="text-[10px] font-bold tracking-widest text-kira-muted">08 / ФАКТОВ</span>
-        </div>
+        <h3 class="mb-2 mt-7 text-[14px] font-extrabold">Характеристики устройства</h3>
         <dl class="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
           {#each fields as field (field.key)}
-            <div class="min-w-0 border-b border-kira-muted/20 py-3">
+            <div class="min-w-0 py-3">
               <dt class="text-[11px] font-semibold tracking-wide text-kira-muted">{field.label}</dt>
               <dd class="mt-1.5 break-words text-[13px] font-bold leading-relaxed text-kira-text">
                 {about ? field.value : 'Получение данных…'}
@@ -15683,10 +15682,6 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
             </div>
           {/each}
         </dl>
-        <p class="mt-5 border-l-2 border-kira-muted/30 pl-3 text-[11px] leading-relaxed text-kira-muted">
-          Данные из локальной системы. Недоступные значения не подменяются приблизительными.
-          Этот раздел не изменяет конфигурацию устройства.
-        </p>
       {:else if section === 'displays'}
         <DisplaySettings {generation} />
       {/if}
@@ -15911,9 +15906,7 @@ FILE	frontend/src/lib/components/SkyMap.svelte
   <!-- Editorial Black hero, Prussian Blue workbench, Black factual footer. -->
   <header class="shrink-0 bg-kira-bg px-6 pb-4 pt-5">
     <div class="border-l-2 border-kira-accent pl-3">
-      <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">04 / CELESTIAL ATLAS</p>
-      <h2 class="mt-1 text-[24px] font-extrabold leading-tight tracking-tight">Звёздное небо</h2>
-      <p class="mt-1 text-[12px] text-kira-muted">{isoDate(date)} · карта над горизонтом</p>
+      <h2 class="text-[22px] font-extrabold leading-tight tracking-tight">Звёздное небо</h2>
     </div>
   </header>
 
@@ -15921,7 +15914,9 @@ FILE	frontend/src/lib/components/SkyMap.svelte
     <div class="shrink-0 border-b border-kira-muted/20 pb-4">
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <p class="text-[10px] font-bold tracking-[0.12em] text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
-        <p class="text-[10px] font-semibold text-kira-accent">{exampleLocation ? 'ДЕМО / ГРИНВИЧ' : 'КООРДИНАТЫ / ВВОД'}</p>
+        {#if exampleLocation}
+          <p class="text-[10px] font-semibold text-kira-accent">ДЕМО · ГРИНВИЧ</p>
+        {/if}
       </div>
       <div class="mt-3 flex flex-wrap items-end gap-x-3 gap-y-3">
         <label class="flex min-w-[100px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
@@ -15946,7 +15941,7 @@ FILE	frontend/src/lib/components/SkyMap.svelte
         </button>
       </div>
       <p class="mt-3 text-[11px] leading-relaxed text-kira-muted">
-        {exampleLocation ? 'Координаты Гринвича для примера.' : 'Координаты заданы вручную.'} Время пояса компьютера: <span class="font-semibold text-kira-text">{timeZone}</span>. Восток и север: +.
+        Часовой пояс: <span class="font-semibold text-kira-text">{timeZone}</span> · Север и восток: +.
       </p>
     </div>
 
@@ -15962,7 +15957,7 @@ FILE	frontend/src/lib/components/SkyMap.svelte
         </div>
       {/if}
     </div>
-    <p class="mt-3 text-[11px] font-medium text-kira-muted">N ↑ · E → · S ↓ · W ← <span class="ml-2">· Звёзды до 5,35 mag</span></p>
+    <p class="mt-3 text-[11px] text-kira-muted">Звёзды до 5,35 mag</p>
   </div>
 
   <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[10px] leading-relaxed text-kira-muted">
@@ -16143,43 +16138,32 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
 
 <div class="space-y-5">
   <section aria-label="CPU and memory utilization">
-    <div class="flex items-center justify-between gap-3">
-      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">01 / PRIMARY LOAD</h2>
-      <span class="text-right text-[9px] font-semibold tracking-wider"
-        class:text-kira-text={pulseFresh} class:text-kira-muted={!pulseFresh}
-        aria-live="off">
-        {pulse === null ? 'AWAITING FAST FEED' : pulseFresh ? 'LIVE · 500MS' : 'PULSE STALE / LAST READING'}
-      </span>
-    </div>
-    <div class="relative mt-3 h-[182px] border-y border-kira-muted/20 bg-kira-bg">
+    {#if pulse !== null && !pulseFresh}
+      <p class="mb-2 text-[10px] font-semibold text-kira-muted" role="status">PULSE STALE</p>
+    {/if}
+    <div class="relative h-[182px] bg-kira-bg">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
         <div class="relative flex min-w-0 flex-col items-center justify-center">
-          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">01 / CPU</span>
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-accent"
             aria-label={'CPU utilization ' + (cpu === null ? 'unavailable' : cpu + ' percent')}>
             {dialLabel(cpu)}
           </div>
-          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
+          <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">CPU</div>
         </div>
         <div class="relative flex min-w-0 flex-col items-center justify-center">
-          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">02 / RAM</span>
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-text"
             aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
             {dialLabel(ram, true)}
           </div>
-          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
+          <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">RAM</div>
         </div>
       </div>
     </div>
-    <p class="mt-2 text-[9px] font-medium tracking-wide text-kira-muted">HOST UTILIZATION / LAST MEASURED VALUES</p>
   </section>
 
   <section aria-label="Live resource activity">
-    <div class="flex items-center justify-between gap-3">
-      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">02 / ACTIVITY HISTORY</h2>
-      <span class="text-right text-[9px] font-semibold tracking-wide text-kira-muted">UP TO 60S / REAL SAMPLES</span>
-    </div>
+    <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ACTIVITY</h2>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
         role="img" aria-label={'Measured history with independently labelled adaptive percentage scales. ' +
@@ -16194,7 +16178,6 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
         {/if}
       </div>
     </div>
-    <p class="mt-1 text-[9px] font-medium tracking-wide text-kira-muted">ADAPTIVE SCALES / NO SYNTHETIC MEASUREMENTS</p>
   </section>
 </div>
 
@@ -16242,7 +16225,7 @@ FILE	frontend/src/lib/components/SystemHealth.svelte
     class={['text-[10px] leading-none font-bold tracking-[0.04em]',
       health.phase === 'error' || health.phase === 'warning'
         ? 'text-kira-accent' : 'text-kira-text',
-      health.phase === 'ready' ? 'max-[620px]:sr-only' : ''].join(' ')}
+      health.phase === 'ready' ? 'sr-only' : ''].join(' ')}
   >{health.label}</span>
 </button>
 
@@ -16348,26 +16331,13 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div class="border-l-2 border-kira-accent pl-3">
-        <div data-kira-contact class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">KIRA / HOST INSTRUMENTS</div>
-        <h1 class="mt-2 text-[25px] font-extrabold leading-none tracking-tight">System monitor</h1>
-        <p class="mt-2 text-[10px] font-medium tracking-wide text-kira-muted">LOCAL TELEMETRY / READ ONLY</p>
+        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">System monitor</h1>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="system monitor" />
     </div>
-    <div class="mt-4 flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-3"
-      role="status" aria-live="polite">
-      <div class="flex min-w-0 items-center gap-2">
-        <span class="h-1.5 w-1.5 shrink-0 rounded-full"
-          class:bg-kira-accent={status !== null && sampleFresh && health === 'ALL SYSTEMS NOMINAL'}
-          class:bg-kira-muted={status === null || !sampleFresh || health !== 'ALL SYSTEMS NOMINAL'}></span>
-        <span class="truncate text-[10px] font-bold tracking-wide"
-          class:text-kira-accent={health === 'ALL SYSTEMS NOMINAL'}
-          class:text-kira-muted={health !== 'ALL SYSTEMS NOMINAL'}>{health}</span>
-      </div>
-      <span class="shrink-0 text-right text-[9px] font-semibold tracking-wide text-kira-muted">
-        {status === null ? 'NO SAMPLE' : sampleFresh ? 'CURRENT SAMPLE' : 'LAST SAMPLE / STALE'}
-      </span>
-    </div>
+    {#if health !== 'ALL SYSTEMS NOMINAL'}
+      <p class="mt-3 text-[11px] font-semibold text-kira-accent" role="status" aria-live="polite">{health}</p>
+    {/if}
   </header>
 
   <nav data-kira-enter use:tenetFlowIndicator={{ active }} class="relative grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
@@ -16375,45 +16345,25 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
     <button data-kira-tab="overview" type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'overview' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
-      01 / OVERVIEW
+      OVERVIEW
     </button>
     <button data-kira-tab="processes" type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
       class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'processes' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
-      02 / PROCESSES
+      PROCESSES
     </button>
   </nav>
 
   {#if active === 'overview'}
     <div use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col">
       <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
-        <div class="mb-4 flex items-center justify-between gap-2 border-b border-kira-muted/15 pb-3">
-          <div class="flex items-center gap-2">
-            <span class="text-[9px] font-bold tracking-wider text-kira-muted">CORE</span>
-            <span class="text-[9px] font-bold tracking-wide"
-              class:text-kira-accent={status?.core} class:text-kira-muted={!status?.core}>
-              {status === null ? 'UNKNOWN' : status.core ? 'ONLINE' : 'OFFLINE'}
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[9px] font-bold tracking-wider text-kira-muted">NIRI</span>
-            <span class="text-[9px] font-bold tracking-wide"
-              class:text-kira-accent={status?.niri} class:text-kira-muted={!status?.niri}>
-              {status === null ? 'UNKNOWN' : status.niri ? 'ONLINE' : 'OFFLINE'}
-            </span>
-          </div>
-          <span class="text-[9px] font-semibold tracking-wide text-kira-muted">NATIVE FEED</span>
-        </div>
         <SystemCharts {metrics} {now} />
       </section>
 
       <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Secondary resource metrics">
-        <div class="mb-3 flex items-center justify-between gap-2">
-          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">03 / CAPACITY</h2>
-          <span class="text-[9px] font-semibold tracking-wide text-kira-muted">USED / TOTAL</span>
-        </div>
+        <h2 class="mb-3 text-[11px] font-bold tracking-wide text-kira-accent">CAPACITY</h2>
         <div class="grid grid-cols-2 gap-3">
-          <article class="min-w-0 border border-kira-muted/15 bg-kira-surface-soft px-3 py-3">
+          <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
             <h3 class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">ROOT STORAGE</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
@@ -16431,7 +16381,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
               {fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
             </p>
           </article>
-          <article class="min-w-0 border border-kira-muted/15 bg-kira-surface-soft px-3 py-3">
+          <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
             <h3 class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">SWAP MEMORY</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
@@ -16455,7 +16405,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       <section data-kira-enter class="bg-kira-surface-soft px-5 py-4"
         aria-label="Hardware temperatures and graphics">
         <div class="flex items-center justify-between gap-3">
-          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">04 / HARDWARE</h2>
+          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">HARDWARE</h2>
           <div class="flex items-baseline gap-2">
             <span class="text-[9px] font-bold tracking-wider text-kira-muted">CPU TEMP</span>
             <span class="text-[14px] font-extrabold tabular-nums"
@@ -16489,9 +16439,9 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
           text-[10px] font-extrabold tracking-[0.12em] text-kira-accent
           focus-visible:outline-2 focus-visible:outline-kira-accent">
-          <span>05 / HOST DETAILS</span>
-          <span class="text-[9px] font-semibold text-kira-muted group-open:hidden">EXPAND +</span>
-          <span class="hidden text-[9px] font-semibold text-kira-muted group-open:inline">COLLAPSE −</span>
+          <span>HOST DETAILS</span>
+          <span aria-hidden="true" class="text-sm text-kira-muted group-open:hidden">+</span>
+          <span aria-hidden="true" class="hidden text-sm text-kira-muted group-open:inline">−</span>
         </summary>
         <div data-kira-disclosure-content class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
           <div class="min-w-0">
@@ -16518,9 +16468,9 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       </details>
 
       <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-3">
-        <span class="text-[9px] font-semibold tracking-wider text-kira-muted">
-          {status === null ? 'WAITING FOR DATA' : sampleFresh ? 'UPDATED / ' + refreshed : 'LAST UPDATE / ' + refreshed + ' / STALE'}
-        </span>
+        {#if status !== null && !sampleFresh}
+          <span role="status" class="text-[10px] font-medium text-kira-muted">LAST UPDATE · {refreshed}</span>
+        {/if}
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[10px] font-bold tracking-wide text-kira-accent
             focus-visible:outline-2 focus-visible:outline-kira-accent">COPY REPORT</button>
@@ -16529,10 +16479,6 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   {:else}
     <section use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
       aria-label="Processes">
-      <div data-kira-enter class="mb-3 flex items-center justify-between gap-2">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
-        <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>
-      </div>
       <input data-kira-enter type="search" aria-label="Filter by process name or PID"
         placeholder="Filter by process name or PID" value={query}
         oninput={filterProcesses}
@@ -16548,7 +16494,9 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
-            aria-label={'Sort by ' + column.label}>
+            aria-label={'Sort by ' + column.label}
+             title={column.field === 'memory' ? 'Resident memory (RSS)' :
+               column.field === 'pss' ? 'Proportional memory (PSS)' : 'Sort by ' + column.label}>
             {column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}
           </button>
         {/each}
@@ -16573,16 +16521,17 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           <button type="button" onclick={() => { visibleCount = Math.min(180, visibleCount + 36); }}
             class="mt-3 w-full border border-kira-muted/20 px-3 py-2 text-[10px] font-bold tracking-wider
               text-kira-accent hover:bg-kira-bg focus-visible:outline-2 focus-visible:outline-kira-accent">
-            SHOW 36 MORE / {matching.length - visible.length} REMAINING
+            SHOW MORE
           </button>
         {/if}
       </div>
-      <footer data-kira-enter class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
-        <p>SHOWING {visible.length} OF {matching.length} MATCHES / {processes?.total ?? 0} SCANNED
-          {processes?.truncated ? ' / SCAN LIMIT REACHED' : ''}
-          {visible.length === 180 && matching.length > 180 ? ' / REFINE FILTER FOR MORE' : ''}</p>
-        <p>CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
-      </footer>
+      {#if query.trim() || processes?.truncated || visible.length < matching.length}
+        <p data-kira-enter class="shrink-0 pt-3 text-[10px] font-medium text-kira-muted" role="status">
+          {visible.length} of {matching.length}
+          {processes?.truncated ? ' · SCAN LIMIT REACHED' : ''}
+          {visible.length === 180 && matching.length > 180 ? ' · REFINE FILTER FOR MORE' : ''}
+        </p>
+      {/if}
     </section>
   {/if}
 </main>
@@ -20148,7 +20097,7 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
     expect(core).not.toContain('min-h-7');
-    expect(core).toContain("max-[620px]:sr-only");
+    expect(core).toContain("health.phase === 'ready' ? 'sr-only' : ''");
     expect(markup).toContain('title="Open calendar and date details"');
     expect(markup).toContain('items-center justify-end');
     expect(markup).not.toContain('bar__system-item');
@@ -21523,7 +21472,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("max-[760px]:flex-none", sky)
         self.assertIn("bg-kira-surface", sky)
         self.assertIn("bg-kira-bg", sky)
-        self.assertIn("exampleLocation ?", sky)
+        self.assertIn("{#if exampleLocation}", sky)
         self.assertIn("prefers-reduced-motion", sky)
         self.assertIn("motion.addEventListener('change', settleForReducedMotion)", sky)
         self.assertIn("1536 / Math.max(width, height)", sky)
@@ -21559,11 +21508,15 @@ class CalendarDesignTests(unittest.TestCase):
             "focus-visible:outline-kira-on-accent",
         ):
             self.assertIn(token, CALENDAR)
-        for token in ("KIRA / CHRONOLOGY", "02 / DATE INDEX", "03 / ",
-                      "role=\"group\" aria-label=\"Calendar dates\"",
+        for token in ("role=\"group\" aria-label=\"Calendar dates\"",
                       "data-calendar-clock-play", "use:tenetCalendarGrid",
                       "kira-calendar-scroll", "aria-label=\"Navigate calendar\""):
             self.assertIn(token, CALENDAR)
+        self.assertIn("{currentDateLabel}", CALENDAR)
+        self.assertIn("{selectedIso}", CALENDAR)
+        for filler in ("KIRA / CHRONOLOGY", "02 / DATE INDEX", "03 / ",
+                       "LIVE / LOCAL", "01 / LOCAL TIME"):
+            self.assertNotIn(filler, CALENDAR)
         self.assertIn("calendarDayState(", CALENDAR)
         self.assertIn("calendarDayState(", TS_MODEL)
         for token in ("monthGrid(", "shiftMonth(", "isoWeek(", "dayOfYear("):
@@ -21743,8 +21696,12 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn('message.strip_prefix("tab:")', OVERLAY)
         self.assertIn('"overview" => false', OVERLAY)
         self.assertIn("setSystemMonitorTab", ENTRY)
-        self.assertIn("01 / OVERVIEW", WIDGET)
-        self.assertIn("02 / PROCESSES", WIDGET)
+        self.assertIn(">OVERVIEW", WIDGET)
+        self.assertIn(">PROCESSES", WIDGET)
+        self.assertIn("health !== 'ALL SYSTEMS NOMINAL'", WIDGET)
+        self.assertNotIn("CURRENT SAMPLE", WIDGET)
+        self.assertNotIn("NATIVE FEED", WIDGET)
+        self.assertNotIn("LOCAL TELEMETRY / READ ONLY", WIDGET)
         self.assertIn("Filter by process name or PID", WIDGET)
         self.assertIn("sortedProcesses(", WIDGET)
         self.assertIn("matching.slice(0, visibleCount)", WIDGET)
@@ -22100,8 +22057,7 @@ class LauncherDesignTests(unittest.TestCase):
     def test_svelte_owns_presentation_and_keyboard_navigation(self):
         for value in (
             'aria-label="Kira Launcher"', 'data-kira-ui-root',
-            'KIRA / APPLICATION INDEX', 'Search applications…',
-            'APPLICATION CATALOG', 'role="listbox"',
+            'Applications', 'Search applications…', 'role="listbox"',
             'aria-selected={index === activeIndex}',
             "event.key === 'ArrowDown'", "event.key === 'ArrowUp'",
             "event.key === 'Escape'", "event.key === 'Enter'",
@@ -22121,6 +22077,11 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn(".sort((a, b) => a.rank - b.rank || a.index - b.index)", MODEL)
         self.assertIn('nextLauncherSelection(', WIDGET)
         self.assertNotIn("↵", WIDGET)
+        for filler in ("KIRA / APPLICATION INDEX", "APPLICATION CATALOG",
+                       "FIND / OPEN", "Installed application", " MOVE",
+                       "ESC</kbd>"):
+            self.assertNotIn(filler, WIDGET)
+        self.assertIn("matches.length === 1 ? 'result' : 'results'", WIDGET)
         self.assertIn('matches.slice(0, 80)', WIDGET)
         self.assertIn('app.id', WIDGET)
         self.assertIn('toLocaleLowerCase()', MODEL)
@@ -22168,7 +22129,7 @@ class LauncherDesignTests(unittest.TestCase):
 
     def test_scrollbar_does_not_cover_selected_row(self):
         style = (ROOT / "frontend/src/style.css").read_text()
-        self.assertIn('class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
+        self.assertIn('class="kira-launcher-scroll relative mt-3 min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
         self.assertIn(".kira-launcher-scroll {", style)
         self.assertIn("scrollbar-width: none;", style)
         self.assertIn(".kira-launcher-scroll::-webkit-scrollbar", style)
@@ -22618,6 +22579,7 @@ INFO = (ROOT / "crates/kira-shell/src/system_info.rs").read_text()
 POOL = (ROOT / "crates/kira-shell/src/webview_pool.rs").read_text()
 GEOMETRY = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
 UI = (ROOT / "frontend/src/lib/components/SettingsWidget.svelte").read_text()
+DISPLAYS = (ROOT / "frontend/src/lib/components/DisplaySettings.svelte").read_text()
 ENTRY = (ROOT / "frontend/src/main.ts").read_text()
 APP = (ROOT / "frontend/src/App.svelte").read_text()
 SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
@@ -22667,15 +22629,21 @@ class SettingsContracts(unittest.TestCase):
         self.assertIn("max-[720px]:px-5", UI)
         self.assertIn("aria-current={section === item.id ? 'page' : undefined}", UI)
         self.assertIn("focus-visible:outline-kira-accent", UI)
-        self.assertIn("Изменения дисплеев применяются и сохраняются отдельно", UI)
+        self.assertIn("Сначала примените и подтвердите настройки, затем сохраните их в конфиг.", DISPLAYS)
+        self.assertIn("Как сохраняются настройки", DISPLAYS)
+        self.assertNotIn("РАЗДЕЛ НАСТРОЕК", UI)
         self.assertNotIn("Данные устройства. Локально и только для чтения.", UI)
 
     def test_about_preserves_truthful_readonly_facts_without_repetitive_cards(self):
-        self.assertIn("ТОЛЬКО ЧТЕНИЕ", UI)
         self.assertIn("border-l-[3px] border-kira-accent bg-kira-surface", UI)
         self.assertIn("grid grid-cols-1 gap-x-8 sm:grid-cols-2", UI)
-        self.assertIn("Недоступные значения не подменяются приблизительными", UI)
         self.assertIn("sectionIsAvailable(id)", UI)
+        self.assertIn("systemValue(about?.kernel)", UI)
+        for filler in ("ТОЛЬКО ЧТЕНИЕ", "01 / SYSTEM IDENTITY",
+                       "08 / ФАКТОВ", "LOCAL HOST / LINUX",
+                       "Недоступные значения не подменяются приблизительными",
+                       "KIRA / CONFIGURATION"):
+            self.assertNotIn(filler, UI)
 
     def test_no_arbitrary_executables_or_fake_system_values(self):
         self.assertIn('read_text("/etc/os-release"', INFO)
