@@ -25,7 +25,7 @@ class CalendarDesignTests(unittest.TestCase):
         self.assertIn("max-[760px]:flex-none", sky)
         self.assertIn("bg-kira-surface", sky)
         self.assertIn("bg-kira-bg", sky)
-        self.assertIn("exampleLocation ?", sky)
+        self.assertIn("{#if exampleLocation}", sky)
         self.assertIn("prefers-reduced-motion", sky)
         self.assertIn("motion.addEventListener('change', settleForReducedMotion)", sky)
         self.assertIn("1536 / Math.max(width, height)", sky)
@@ -61,11 +61,15 @@ class CalendarDesignTests(unittest.TestCase):
             "focus-visible:outline-kira-on-accent",
         ):
             self.assertIn(token, CALENDAR)
-        for token in ("KIRA / CHRONOLOGY", "02 / DATE INDEX", "03 / ",
-                      "role=\"group\" aria-label=\"Calendar dates\"",
+        for token in ("role=\"group\" aria-label=\"Calendar dates\"",
                       "data-calendar-clock-play", "use:tenetCalendarGrid",
                       "kira-calendar-scroll", "aria-label=\"Navigate calendar\""):
             self.assertIn(token, CALENDAR)
+        self.assertIn("{currentDateLabel}", CALENDAR)
+        self.assertIn("{selectedIso}", CALENDAR)
+        for filler in ("KIRA / CHRONOLOGY", "02 / DATE INDEX", "03 / ",
+                       "LIVE / LOCAL", "01 / LOCAL TIME"):
+            self.assertNotIn(filler, CALENDAR)
         self.assertIn("calendarDayState(", CALENDAR)
         self.assertIn("calendarDayState(", TS_MODEL)
         for token in ("monthGrid(", "shiftMonth(", "isoWeek(", "dayOfYear("):

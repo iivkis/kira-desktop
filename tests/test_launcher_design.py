@@ -17,8 +17,7 @@ class LauncherDesignTests(unittest.TestCase):
     def test_svelte_owns_presentation_and_keyboard_navigation(self):
         for value in (
             'aria-label="Kira Launcher"', 'data-kira-ui-root',
-            'KIRA / APPLICATION INDEX', 'Search applications…',
-            'APPLICATION CATALOG', 'role="listbox"',
+            'Applications', 'Search applications…', 'role="listbox"',
             'aria-selected={index === activeIndex}',
             "event.key === 'ArrowDown'", "event.key === 'ArrowUp'",
             "event.key === 'Escape'", "event.key === 'Enter'",
@@ -38,6 +37,11 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn(".sort((a, b) => a.rank - b.rank || a.index - b.index)", MODEL)
         self.assertIn('nextLauncherSelection(', WIDGET)
         self.assertNotIn("↵", WIDGET)
+        for filler in ("KIRA / APPLICATION INDEX", "APPLICATION CATALOG",
+                       "FIND / OPEN", "Installed application", " MOVE",
+                       "ESC</kbd>"):
+            self.assertNotIn(filler, WIDGET)
+        self.assertIn("matches.length === 1 ? 'result' : 'results'", WIDGET)
         self.assertIn('matches.slice(0, 80)', WIDGET)
         self.assertIn('app.id', WIDGET)
         self.assertIn('toLocaleLowerCase()', MODEL)
@@ -85,7 +89,7 @@ class LauncherDesignTests(unittest.TestCase):
 
     def test_scrollbar_does_not_cover_selected_row(self):
         style = (ROOT / "frontend/src/style.css").read_text()
-        self.assertIn('class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
+        self.assertIn('class="kira-launcher-scroll relative mt-3 min-h-0 flex-1 overflow-y-auto pr-1"', WIDGET)
         self.assertIn(".kira-launcher-scroll {", style)
         self.assertIn("scrollbar-width: none;", style)
         self.assertIn(".kira-launcher-scroll::-webkit-scrollbar", style)

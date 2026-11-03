@@ -5,7 +5,7 @@
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import { tenetFlowIndicator } from '../motion';
   import {
-    calendarDayState, clockGlyphs, dayOfYear, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
+    calendarDayState, clockGlyphs, isoDate, isoWeek, localClockText, localDateLabel, monthGrid,
     shiftDays, shiftMonth, todayCivilDate, type CivilDate,
   } from '../calendar-model';
 
@@ -34,8 +34,6 @@
   const clockParts = $derived(clockGlyphs(clockText));
   const weeks = $derived(monthGrid(visible.year, visible.month));
   const selectedIso = $derived(isoDate(selected));
-  const todayIso = $derived(isoDate(today));
-  const week = $derived(isoWeek(selected));
   const title = $derived(localDateLabel({ year: visible.year, month: visible.month, day: 1 }, locale, { month: 'long' }));
   const selectedLabel = $derived(localDateLabel(selected, locale, {
     weekday: 'long', day: 'numeric', month: 'long',
@@ -130,37 +128,32 @@
   <div data-calendar-rail class={detached
     ? 'flex h-full w-[370px] shrink-0 flex-col overflow-y-auto border-r border-kira-muted/20 max-[760px]:h-auto max-[760px]:w-full max-[760px]:overflow-visible max-[760px]:border-r-0 max-[760px]:border-b'
     : 'flex w-full min-h-0 flex-col'}>
-  <!-- Clock is the identity anchor; native host remains the only window owner. -->
+  <!-- The live clock and date are enough context; no editorial chapter labels. -->
   <header data-kira-enter class="shrink-0 bg-kira-bg px-5 pb-3 pt-4">
     <div class="flex items-start justify-between gap-3">
-      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / CHRONOLOGY</p>
-        <p class="mt-1 text-[9px] font-semibold tracking-[0.12em] text-kira-muted">01 / LOCAL TIME</p>
+      <div class="min-w-0">
+        <button type="button" use:tenetClockJuggle data-calendar-clock-play
+          aria-label="Make the clock digits fly and return"
+          title="Animate clock digits"
+          class="block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
+          <time class="flex items-center text-[36px] font-extrabold leading-none tabular-nums tracking-[-0.055em]"
+            datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
+          {#each clockParts as part, index (index)}
+            {#if part.digit}
+              <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
+                aria-hidden="true" data-clock-cell>
+                <span class="flex h-full w-full items-center justify-center"
+                  data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
+              </span>
+            {:else}
+              <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
+            {/if}
+          {/each}
+          </time>
+        </button>
+        <p class="mt-1 truncate text-[11px] font-semibold text-kira-muted">{currentDateLabel}</p>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="calendar" />
-    </div>
-    <button type="button" use:tenetClockJuggle data-calendar-clock-play
-      aria-label="Make the clock digits fly and return"
-      title="Animate clock digits"
-      class="mt-1 block cursor-pointer rounded-sm text-left focus-visible:outline-2 focus-visible:outline-kira-accent">
-      <time class="flex items-center text-[36px] font-extrabold leading-none tabular-nums tracking-[-0.055em]"
-        datetime={now.toISOString()} aria-label={clockText} data-calendar-clock>
-      {#each clockParts as part, index (index)}
-        {#if part.digit}
-          <span class="relative inline-flex h-[1.15em] w-[0.64em] shrink-0 items-center justify-center overflow-hidden"
-            aria-hidden="true" data-clock-cell>
-            <span class="flex h-full w-full items-center justify-center"
-              data-clock-digit use:tenetClockDigit={part.char}>{part.char}</span>
-          </span>
-        {:else}
-          <span aria-hidden="true" class="inline-block shrink-0 px-[0.025em] text-kira-muted">{part.char}</span>
-        {/if}
-      {/each}
-      </time>
-    </button>
-    <div class="mt-2 flex items-center justify-between gap-2 border-t border-kira-muted/15 pt-2">
-      <p class="min-w-0 truncate text-[11px] font-semibold text-kira-text">{currentDateLabel}</p>
-      <span class="shrink-0 text-[9px] font-bold tracking-[0.12em] text-kira-muted">LIVE / LOCAL</span>
     </div>
   </header>
 
@@ -168,8 +161,7 @@
   <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 pb-3 pt-3" aria-label="Date picker">
     <div class="mb-3 flex items-center justify-between gap-2">
       <div class="min-w-0">
-        <p class="text-[9px] font-bold tracking-[0.14em] text-kira-muted">02 / DATE INDEX</p>
-        <h2 class="mt-1 truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
+        <h2 class="truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
           {title}<span class="ml-2 text-sm font-semibold text-kira-muted">{visible.year}</span>
         </h2>
       </div>
@@ -234,21 +226,11 @@
 
   <!-- Selected date is a factual summary, not a fictitious event agenda. -->
   <footer data-kira-enter class="shrink-0 border-t border-kira-muted/15 bg-kira-bg px-5 pb-3 pt-3">
-    <div class="flex items-start justify-between gap-3" aria-live="polite">
-      <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p class="text-[9px] font-bold tracking-[0.13em] text-kira-muted">
-          03 / {selectedIso === todayIso ? 'TODAY' : 'SELECTED DATE'}
-        </p>
-        <p class="mt-1 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale)}>
-          {selectedLabel}
-        </p>
-      </div>
-      <div class="shrink-0 text-right">
-        <p class="text-[10px] font-bold tabular-nums text-kira-accent">{selectedIso}</p>
-        <p class="mt-1 text-[9px] font-semibold tracking-wide text-kira-muted">
-          WK {String(week.week).padStart(2, '0')} · D{String(dayOfYear(selected)).padStart(3, '0')}
-        </p>
-      </div>
+    <div class="flex items-center justify-between gap-3" aria-live="polite">
+      <p class="min-w-0 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale)}>
+        {selectedLabel}
+      </p>
+      <p class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
     </div>
     <div class="mt-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
       <button type="button" onclick={goToday}

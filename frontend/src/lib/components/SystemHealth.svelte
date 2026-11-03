@@ -41,6 +41,6 @@
     class={['text-[10px] leading-none font-bold tracking-[0.04em]',
       health.phase === 'error' || health.phase === 'warning'
         ? 'text-kira-accent' : 'text-kira-text',
-      health.phase === 'ready' ? 'max-[620px]:sr-only' : ''].join(' ')}
+      health.phase === 'ready' ? 'sr-only' : ''].join(' ')}
   >{health.label}</span>
 </button>

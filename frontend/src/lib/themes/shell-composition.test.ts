@@ -105,7 +105,7 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
     expect(core).not.toContain('min-h-7');
-    expect(core).toContain("max-[620px]:sr-only");
+    expect(core).toContain("health.phase === 'ready' ? 'sr-only' : ''");
     expect(markup).toContain('title="Open calendar and date details"');
     expect(markup).toContain('items-center justify-end');
     expect(markup).not.toContain('bar__system-item');

@@ -215,7 +215,6 @@
         {settingsShellOutdated ? 'RESTART KIRA SHELL' : 'SETTINGS OFFLINE'}
       </span>
     {/if}
-    <span class="mx-1 h-4 w-px shrink-0 bg-kira-muted/20" aria-hidden="true"></span>
     {#if calendarUnavailable}
       <span class="shrink-0 px-1 text-[10px] font-bold text-kira-accent"
         role="status">CALENDAR OFFLINE</span>

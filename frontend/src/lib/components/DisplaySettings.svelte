@@ -237,16 +237,7 @@
 </script>
 
 <section class="space-y-5" aria-label="Настройки дисплеев">
-  <div class="border-b border-kira-muted/20 pb-5">
-    <div class="mb-3 flex items-center justify-between gap-2">
-      <span class="text-[10px] font-extrabold tracking-[0.16em] text-kira-accent">02 / DISPLAY TOPOLOGY</span>
-      <span class="border border-kira-muted/30 px-2 py-1 text-[9px] font-semibold tracking-wide text-kira-muted">NIRI / WAYLAND</span>
-    </div>
-    <h2 class="text-[30px] font-black tracking-tight">Дисплеи</h2>
-    <p class="mt-2 text-[12px] leading-relaxed text-kira-muted">
-      Настройка расположения, разрешения и параметров нескольких экранов.
-    </p>
-  </div>
+  <h2 class="text-[26px] font-extrabold tracking-tight">Дисплеи</h2>
 
   {#if pendingId !== null}
     <div role="alertdialog" aria-label="Подтвердите параметры дисплеев"
@@ -256,10 +247,10 @@
         <div>
           <p class="text-[13px] font-extrabold">Сохранить конфигурацию?</p>
           <p id="kira-display-confirmation-warning" class="mt-1 text-[12px] leading-relaxed text-kira-muted">
-            Если изображение пропало, подождите. Автоматический откат через {remaining} с.
+            Если изображение пропало, настройки откатятся автоматически.
           </p>
         </div>
-        <strong class="text-[23px] font-black tabular-nums text-kira-accent">{remaining}</strong>
+        <strong class="text-[23px] font-black tabular-nums text-kira-accent" aria-label={'Осталось ' + remaining + ' секунд'}>{remaining}</strong>
       </div>
       <div class="mt-4 flex flex-wrap gap-2">
         <button type="button" bind:this={confirmButton} onclick={confirm} disabled={busy}
@@ -297,7 +288,7 @@
     </div>
   {:else if outputs.length > 0}
     <div class="border border-kira-muted/20 bg-kira-surface-soft p-4">
-      <p class="mb-3 text-[10px] font-extrabold tracking-widest text-kira-muted">РАСПОЛОЖЕНИЕ ЭКРАНОВ / ПЕРЕТАЩИТЕ</p>
+      <p class="mb-3 text-[12px] font-bold text-kira-text">Расположение <span class="font-normal text-kira-muted">· перетащите экран</span></p>
       <div bind:this={mapViewport} class="kira-displays-map relative h-[230px] overflow-hidden bg-kira-bg"
         aria-label="Схема расположения мониторов">
         {#each rectangles as rect (rect.connector)}
@@ -324,7 +315,7 @@
         {/if}
       </div>
       <p class="mt-3 text-[10px] leading-relaxed text-kira-muted">
-        Перемещение меняет логические координаты дисплеев. Niri может скорректировать пересекающиеся экраны автоматически.
+        Niri может скорректировать пересекающиеся экраны.
       </p>
     </div>
 
@@ -410,8 +401,7 @@
         </div>
         {#if selectedOutput.vrr_supported}
           <label class="flex items-center justify-between gap-3 border-t border-kira-muted/15 py-3 text-[11px]">
-            <span><strong class="block">Адаптивная частота (VRR)</strong>
-              <span class="mt-1 block text-kira-muted">FreeSync / Adaptive-Sync, если поддерживается</span></span>
+            <span><strong class="block">Адаптивная частота (VRR)</strong></span>
             <input type="checkbox" checked={selectedDraft.vrr} disabled={busy || isPending}
               onchange={event => change({ vrr: event.currentTarget.checked })} class="size-4 accent-kira-accent" />
           </label>
@@ -435,17 +425,20 @@
       </button>
     </div>
   {/if}
-  <div class="border-t border-kira-muted/15 pt-4 text-[10px] leading-relaxed text-kira-muted">
-    <p>Источник конфигурации:
-      <strong class="text-kira-accent">{persistence === 'managed' ? 'Kira управляет KDL'
-        : persistence === 'uninitialized' ? 'Подключён пустой слой Kira'
-        : persistence === 'conflict' ? 'Конфликт файла KDL'
-        : 'Пользовательская декларативная конфигурация'}</strong>.
-      Сначала примените настройки и подтвердите их, затем нажмите «Сохранить в конфиг».</p>
-    <p class="mt-2">Kira создаёт отдельный <code>kira-managed-outputs.kdl</code> и включает его в
-      доступный для записи <code>config.kdl</code>. При Nix-managed файле, чужих
-      блоках <code>output</code> или ручных правках Kira не перезаписывает их:
-      нужное подключение выполняется владельцем декларативной конфигурации.</p>
-    <p class="mt-2">Зеркалирование экранов Niri не поддерживает.</p>
+  <div class="border-t border-kira-muted/15 pt-4 text-[11px] leading-relaxed text-kira-muted">
+    <p>Источник: <strong class="text-kira-text">{persistence === 'managed' ? 'Kira KDL'
+      : persistence === 'uninitialized' ? 'Пустой слой Kira'
+      : persistence === 'conflict' ? 'Конфликт KDL'
+      : 'Декларативная конфигурация'}</strong>.
+      Сначала примените и подтвердите настройки, затем сохраните их в конфиг.</p>
+    <details class="mt-2">
+      <summary class="cursor-pointer py-1 font-semibold text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">Как сохраняются настройки</summary>
+      <div class="mt-2 space-y-2">
+        <p>Kira создаёт отдельный <code>kira-managed-outputs.kdl</code> и включает его в
+          доступный для записи <code>config.kdl</code>. Nix-managed файлы,
+          чужие блоки <code>output</code> и ручные правки не перезаписываются.</p>
+        <p>Зеркалирование экранов Niri не поддерживает.</p>
+      </div>
+    </details>
   </div>
 </section>

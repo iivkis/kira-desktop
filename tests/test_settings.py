@@ -9,6 +9,7 @@ INFO = (ROOT / "crates/kira-shell/src/system_info.rs").read_text()
 POOL = (ROOT / "crates/kira-shell/src/webview_pool.rs").read_text()
 GEOMETRY = (ROOT / "crates/kira-shell/src/popup_layout.rs").read_text()
 UI = (ROOT / "frontend/src/lib/components/SettingsWidget.svelte").read_text()
+DISPLAYS = (ROOT / "frontend/src/lib/components/DisplaySettings.svelte").read_text()
 ENTRY = (ROOT / "frontend/src/main.ts").read_text()
 APP = (ROOT / "frontend/src/App.svelte").read_text()
 SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
@@ -58,15 +59,21 @@ class SettingsContracts(unittest.TestCase):
         self.assertIn("max-[720px]:px-5", UI)
         self.assertIn("aria-current={section === item.id ? 'page' : undefined}", UI)
         self.assertIn("focus-visible:outline-kira-accent", UI)
-        self.assertIn("Изменения дисплеев применяются и сохраняются отдельно", UI)
+        self.assertIn("Сначала примените и подтвердите настройки, затем сохраните их в конфиг.", DISPLAYS)
+        self.assertIn("Как сохраняются настройки", DISPLAYS)
+        self.assertNotIn("РАЗДЕЛ НАСТРОЕК", UI)
         self.assertNotIn("Данные устройства. Локально и только для чтения.", UI)
 
     def test_about_preserves_truthful_readonly_facts_without_repetitive_cards(self):
-        self.assertIn("ТОЛЬКО ЧТЕНИЕ", UI)
         self.assertIn("border-l-[3px] border-kira-accent bg-kira-surface", UI)
         self.assertIn("grid grid-cols-1 gap-x-8 sm:grid-cols-2", UI)
-        self.assertIn("Недоступные значения не подменяются приблизительными", UI)
         self.assertIn("sectionIsAvailable(id)", UI)
+        self.assertIn("systemValue(about?.kernel)", UI)
+        for filler in ("ТОЛЬКО ЧТЕНИЕ", "01 / SYSTEM IDENTITY",
+                       "08 / ФАКТОВ", "LOCAL HOST / LINUX",
+                       "Недоступные значения не подменяются приблизительными",
+                       "KIRA / CONFIGURATION"):
+            self.assertNotIn(filler, UI)
 
     def test_no_arbitrary_executables_or_fake_system_values(self):
         self.assertIn('read_text("/etc/os-release"', INFO)

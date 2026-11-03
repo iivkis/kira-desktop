@@ -214,9 +214,7 @@
   <!-- Editorial Black hero, Prussian Blue workbench, Black factual footer. -->
   <header class="shrink-0 bg-kira-bg px-6 pb-4 pt-5">
     <div class="border-l-2 border-kira-accent pl-3">
-      <p class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">04 / CELESTIAL ATLAS</p>
-      <h2 class="mt-1 text-[24px] font-extrabold leading-tight tracking-tight">Звёздное небо</h2>
-      <p class="mt-1 text-[12px] text-kira-muted">{isoDate(date)} · карта над горизонтом</p>
+      <h2 class="text-[22px] font-extrabold leading-tight tracking-tight">Звёздное небо</h2>
     </div>
   </header>
 
@@ -224,7 +222,9 @@
     <div class="shrink-0 border-b border-kira-muted/20 pb-4">
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <p class="text-[10px] font-bold tracking-[0.12em] text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
-        <p class="text-[10px] font-semibold text-kira-accent">{exampleLocation ? 'ДЕМО / ГРИНВИЧ' : 'КООРДИНАТЫ / ВВОД'}</p>
+        {#if exampleLocation}
+          <p class="text-[10px] font-semibold text-kira-accent">ДЕМО · ГРИНВИЧ</p>
+        {/if}
       </div>
       <div class="mt-3 flex flex-wrap items-end gap-x-3 gap-y-3">
         <label class="flex min-w-[100px] flex-1 flex-col gap-1.5 text-[11px] font-semibold text-kira-muted">
@@ -249,7 +249,7 @@
         </button>
       </div>
       <p class="mt-3 text-[11px] leading-relaxed text-kira-muted">
-        {exampleLocation ? 'Координаты Гринвича для примера.' : 'Координаты заданы вручную.'} Время пояса компьютера: <span class="font-semibold text-kira-text">{timeZone}</span>. Восток и север: +.
+        Часовой пояс: <span class="font-semibold text-kira-text">{timeZone}</span> · Север и восток: +.
       </p>
     </div>
 
@@ -265,7 +265,7 @@
         </div>
       {/if}
     </div>
-    <p class="mt-3 text-[11px] font-medium text-kira-muted">N ↑ · E → · S ↓ · W ← <span class="ml-2">· Звёзды до 5,35 mag</span></p>
+    <p class="mt-3 text-[11px] text-kira-muted">Звёзды до 5,35 mag</p>
   </div>
 
   <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[10px] leading-relaxed text-kira-muted">

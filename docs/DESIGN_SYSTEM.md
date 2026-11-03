@@ -12,10 +12,11 @@ official visual language of Kira Desktop.
 - **Neo-Brutalism:** deliberate geometry, high-contrast states and visible
   structure where it carries meaning. It does **not** mean borders and offset
   shadows on every element.
-- **Editorial Design:** a strong type hierarchy (eyebrow, heading,
-  description, metadata), measured spacing and deliberate grouping.
+- **Editorial Design:** one strong heading, useful context only where the
+  value cannot explain itself, measured spacing and deliberate grouping.
 - **Expressive Minimalism:** one canonical accent, every element functional,
-  short quiet motion rather than decoration.
+  short quiet motion rather than decoration. A number is more useful than a
+  permanent 'LIVE' caption or an editorial chapter number.
 - **KISS:** keep each UI feature and interaction easy to trace. Prefer a small
   direct function over an abstract component framework; new layers must solve
   a demonstrated problem.
@@ -41,6 +42,17 @@ official visual language of Kira Desktop.
    application; the catalog retains descriptive text and system icons.
 7. Preserve visible keyboard focus, urgent/offline states, reduced-motion,
    and readable contrast. Decoration must not disguise function.
+8. Every visible label must identify a control, explain non-obvious data,
+   warn of a real issue or prevent a consequential error. If it repeats
+   a heading, placeholder, data value or ordinary healthy state, remove it.
+9. Do not number decorative sections (01 /, 02 /). Numbers are reserved for
+   actual data: workspace indexes, week numbers, PIDs and values.
+10. One strong title per surface, a restrained accent rail and minimal
+    separators. No border around each row just to simulate hierarchy.
+11. Technical persistence details can be disclosed on request; safety
+    warnings, rollback countdowns, validation and errors stay visible.
+12. Keep ARIA semantics, keyboard focus, real telemetry and honest unknown
+    values while removing visual captions.
 
 ### Implementation rules: KISS + DRY
 
@@ -76,33 +88,33 @@ official visual language of Kira Desktop.
   limit and reports how many earlier/later workspaces are omitted.
   Only explicitly customized KDL titles appear, and they yield space on
   narrow screens. System status reflects real Core/Niri/host measurements
-  and becomes quieter when READY; its button still opens System Monitor.
+  hides visible READY text when healthy; warnings remain visible, and the
+   same indicator opens System Monitor.
   The local clock opens the existing Calendar. Additional trusted popup
   WebKit hosts are leased **on demand** from a bounded pool, never spawned
   speculatively per hypothetical widget. No extra native services, polling
   loops, shortcuts, fake app activity or Dock.
   Keyboard focus and reduced-motion semantics are preserved.
 - **Calendar overlay:** top-right native GTK layer surface with no exclusive
-  zone. Its **Chronology / Date Index / Selected Date** hierarchy uses a
-  compact Black local-time hero, a Prussian Blue calendar workbench, and a
-  Black factual selection footer. The clock is actual local time; the date
+  zone. Its live clock and date identify the Black header directly, followed by a
+  Prussian Blue month grid and a small Black selection/action footer. The clock is actual local time; the date
   grid is a custom Svelte Monday-first 6×7 composition of accessible buttons
   with a distinct ISO week-number rail, month/year navigation and adjacent
   month dates. Selected state, today's civil date and outside-month identity
   are independent, pure Gregorian model states. Keyboard support includes
   arrow/PageUp/PageDown/Home navigation with focus following selection; the
   selected button is the sole tab stop in the grid, and today's date uses
-  `aria-current="date"`. The footer keeps the selected ISO date, week number
-  and day of year plainly visible without pretending to provide events.
+  `aria-current="date"`. The footer keeps the selected ISO date without repeating the week already
+  visible on the grid or showing trivia such as day-of-year.
   The native overlay remains height-capped and scrollable, with hidden
   WebKit scrollbar chrome but usable wheel/touch/keyboard navigation.
   Today and Copy Date are both flat orange typographic commands, without
   background fills, framed chips or active-tab underlines. Copy Date keeps
   hover/pressed text feedback and a keyboard-only focus outline, and writes
   to the clipboard only on click.
-  Clicking time again or pressing Escape closes. Merely losing GTK focus,
-  including when the user clicks a different Top Bar button, NEVER closes
-  a widget. Calendar, Launcher and System Monitor may stay open independently.
+  Escape and explicit controls close the current popup. Opening another
+  transient widget replaces only the transient popup; promoted Niri windows
+  stay open and independent of that switching.
   Calendar motion now uses **TENET dual-time GSAP scenes**:
   when sections appear or month/day selection changes, actual content moves
   FORWARD while four recorded decorative fragments replay their original
@@ -133,8 +145,9 @@ official visual language of Kira Desktop.
   Search relevance prioritizes exact and prefix name matches ahead of
   description-only matches, retaining native GIO identity and stable order
   among ties. The active application uses a restrained orange rail and
-  title, not an orange-filled row; a single search-clear action and concise
-  keyboard legend prioritize function over decorative copy. A capped
+  title, not an orange-filled row. The search field needs no extra FIND / OPEN
+  or CATALOG caption and standard keyboard actions need no footer legend.
+  Match counts appear only while filtering; absent app descriptions are blank. A capped
   80-result list, bounded icon batches, honest empty/error states and native
   GIO launching preserve performance, accessibility and system boundaries.
 - **Workspace controls:** orange filled selection only; hover/active/urgent
@@ -202,9 +215,8 @@ device fields, runtime network access or background WebView.
 
 ### Detached Calendar · responsive editorial observatory (2026-11)
 
-Promoted Calendar is a real, resizable Niri window. The compact popup
-remains the original Chronology / Date Index / Selected Date widget with
-unchanged height, keyboard grid and TENET entrance. The detached window
+Promoted Calendar is a real, resizable Niri window. The compact popup keeps the same clock, month grid, selected date and
+TENET entrance, with no decorative chapter captions. The detached window
 preserves the same live WebView and selected date, and adds an **offline
 celestial atlas** on the right. Calendar rail is 370px at comfortable
 desktop widths. Below a 760px viewport width the two columns **stack**
@@ -329,13 +341,12 @@ diagnostic bars. The visual hierarchy is intentional:
 Bar keeps its separate permanent WebView; the popup pool starts one inert warm
 WebKit host and allocates others only as needed. A bounded four-host cap,
 one hot spare and 45-second surplus-idle grace prevent runaway renderer
-growth. **One active widget exists across popup and promoted Niri windows.**
-New Top Bar requests run the current widget's generation-scoped TENET reverse,
-wait for unmount/release (or watchdog), then open the latest requested kind.
-The same-kind icon raises an already detached window. All transient widgets
-share the original top-right anchor; no left/center dock columns or transient
-side-by-side windows are used. Ordinary Niri windows remain resizable and
-retain their live WebView while shown, but a different widget closes them.
+growth. **Only one transient popup is shown at once.** Promoted Niri windows
+retain independent WebView leases, state and input. Requests for another kind
+reverse and replace only the transient popup. A request for an already
+detached kind raises that Niri window without cloning it. Calendar/System/
+Settings keep the top-right dock; Launcher is top-centered at 20% of logical
+output height. Opening other widgets never closes detached windows.
 
 ### Shared TENET widget reverse dismissal · 2026-11
 

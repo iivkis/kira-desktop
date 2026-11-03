@@ -170,43 +170,32 @@
 
 <div class="space-y-5">
   <section aria-label="CPU and memory utilization">
-    <div class="flex items-center justify-between gap-3">
-      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">01 / PRIMARY LOAD</h2>
-      <span class="text-right text-[9px] font-semibold tracking-wider"
-        class:text-kira-text={pulseFresh} class:text-kira-muted={!pulseFresh}
-        aria-live="off">
-        {pulse === null ? 'AWAITING FAST FEED' : pulseFresh ? 'LIVE · 500MS' : 'PULSE STALE / LAST READING'}
-      </span>
-    </div>
-    <div class="relative mt-3 h-[182px] border-y border-kira-muted/20 bg-kira-bg">
+    {#if pulse !== null && !pulseFresh}
+      <p class="mb-2 text-[10px] font-semibold text-kira-muted" role="status">PULSE STALE</p>
+    {/if}
+    <div class="relative h-[182px] bg-kira-bg">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
         <div class="relative flex min-w-0 flex-col items-center justify-center">
-          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">01 / CPU</span>
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-accent"
             aria-label={'CPU utilization ' + (cpu === null ? 'unavailable' : cpu + ' percent')}>
             {dialLabel(cpu)}
           </div>
-          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">PROCESSOR</div>
+          <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">CPU</div>
         </div>
         <div class="relative flex min-w-0 flex-col items-center justify-center">
-          <span class="absolute left-3 top-3 text-[9px] font-bold tracking-[0.12em] text-kira-muted">02 / RAM</span>
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-text"
             aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
             {dialLabel(ram, true)}
           </div>
-          <div class="mt-2 text-[9px] font-bold tracking-[0.14em] text-kira-muted">MEMORY</div>
+          <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">RAM</div>
         </div>
       </div>
     </div>
-    <p class="mt-2 text-[9px] font-medium tracking-wide text-kira-muted">HOST UTILIZATION / LAST MEASURED VALUES</p>
   </section>
 
   <section aria-label="Live resource activity">
-    <div class="flex items-center justify-between gap-3">
-      <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">02 / ACTIVITY HISTORY</h2>
-      <span class="text-right text-[9px] font-semibold tracking-wide text-kira-muted">UP TO 60S / REAL SAMPLES</span>
-    </div>
+    <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ACTIVITY</h2>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
         role="img" aria-label={'Measured history with independently labelled adaptive percentage scales. ' +
@@ -221,6 +210,5 @@
         {/if}
       </div>
     </div>
-    <p class="mt-1 text-[9px] font-medium tracking-wide text-kira-muted">ADAPTIVE SCALES / NO SYNTHETIC MEASUREMENTS</p>
   </section>
 </div>

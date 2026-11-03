@@ -133,18 +133,16 @@
 <main data-kira-ui-root aria-label="Kira Launcher"
   use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
   class="relative flex h-auto min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
-  <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 px-5 pb-4 pt-4">
+  <header data-kira-enter class="shrink-0 px-5 pb-3 pt-4">
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <p data-kira-contact class="text-[10px] font-extrabold tracking-[0.14em] text-kira-accent">KIRA / APPLICATION INDEX</p>
-        <h1 class="mt-2 text-[30px] font-extrabold leading-none tracking-tight">Launch</h1>
+        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">Applications</h1>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="launcher" />
     </div>
   </header>
 
   <section data-kira-enter class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 pb-3 pt-4">
-    <label for="kira-launcher-query" class="mb-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">FIND / OPEN</label>
     <div class="relative shrink-0 border border-kira-muted/30 bg-kira-bg
       focus-within:border-kira-accent focus-within:ring-1 focus-within:ring-kira-accent">
       <svg class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-kira-muted"
@@ -169,16 +167,15 @@
       {/if}
     </div>
 
-    <div class="mb-2 mt-4 flex items-center justify-between gap-3 border-b border-kira-muted/20 pb-2">
-      <h2 class="text-[10px] font-extrabold tracking-[0.12em] text-kira-accent">APPLICATION CATALOG</h2>
-      <span class="shrink-0 text-[10px] font-bold tabular-nums text-kira-muted">
-        {loaded ? matches.length + ' / ' + apps.length : '— / —'}
-      </span>
-    </div>
+    {#if loaded && query.trim()}
+      <p class="mt-3 mb-1 text-[11px] text-kira-muted" role="status">
+        {matches.length} {matches.length === 1 ? 'result' : 'results'}
+      </p>
+    {/if}
     <div id="kira-launcher-results" bind:this={results}
       use:tenetFlowIndicator={{ active: displayed[activeIndex] ? String(displayed[activeIndex].id) : '', axis: 'both' }}
       use:tenetReflowScope use:tenetScrollScope
-      class="kira-launcher-scroll relative min-h-0 flex-1 overflow-y-auto pr-1"
+      class="kira-launcher-scroll relative mt-3 min-h-0 flex-1 overflow-y-auto pr-1"
       role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
       <span data-kira-flow-indicator aria-hidden="true"
         class="pointer-events-none absolute left-0 top-0 z-0 border-l-[3px] border-kira-accent bg-kira-bg/80"></span>
@@ -187,8 +184,8 @@
           data-kira-tab={String(app.id)} data-kira-reflow
           role="option" aria-selected={index === activeIndex} tabindex={-1}
           onclick={() => choose(index)}
-          title={app.name + ' / ' + (app.description || 'Installed application')}
-          class={'group relative z-10 my-0.5 flex min-h-[58px] w-full items-center gap-3 border-b border-kira-muted/10 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
+          title={app.description ? app.name + ' / ' + app.description : app.name}
+          class={'group relative z-10 my-0.5 flex min-h-[58px] w-full items-center gap-3 py-2 pr-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
             (index === activeIndex ? '' : 'hover:bg-kira-bg/30')}>
           <span class="h-10 w-[3px] shrink-0" aria-hidden="true"></span>
           <span class={'flex size-9 shrink-0 items-center justify-center overflow-hidden ' +
@@ -211,9 +208,9 @@
           <span class="min-w-0 flex-1">
             <span class={'block truncate text-sm font-semibold ' +
               (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
-            <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">
-              {app.description.trim() || 'Installed application'}
-            </span>
+            {#if app.description.trim()}
+              <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim()}</span>
+            {/if}
           </span>
         </button>
       {:else}
@@ -238,16 +235,4 @@
       </p>
     {/if}
   </section>
-  <footer data-kira-enter class="flex shrink-0 items-center justify-between gap-2 border-t border-kira-muted/15
-    px-5 py-2.5 text-[10px] text-kira-muted">
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">↑ ↓</kbd> MOVE
-    </span>
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ENTER</kbd> OPEN
-    </span>
-    <span class="flex items-center gap-1.5">
-      <kbd class="border border-kira-muted/30 px-1 py-0.5 font-semibold text-kira-text">ESC</kbd> CLOSE
-    </span>
-  </footer>
 </main>

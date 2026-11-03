@@ -267,7 +267,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
       'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
-      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && roots[0].textContent.includes("LIVE · 500MS"));' +
+      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && !roots[0].textContent.includes("PULSE STALE"));' +
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
       'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +

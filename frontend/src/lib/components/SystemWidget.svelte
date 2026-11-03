@@ -99,26 +99,13 @@
   <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div class="border-l-2 border-kira-accent pl-3">
-        <div data-kira-contact class="text-[10px] font-bold tracking-[0.15em] text-kira-accent">KIRA / HOST INSTRUMENTS</div>
-        <h1 class="mt-2 text-[25px] font-extrabold leading-none tracking-tight">System monitor</h1>
-        <p class="mt-2 text-[10px] font-medium tracking-wide text-kira-muted">LOCAL TELEMETRY / READ ONLY</p>
+        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">System monitor</h1>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="system monitor" />
     </div>
-    <div class="mt-4 flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-3"
-      role="status" aria-live="polite">
-      <div class="flex min-w-0 items-center gap-2">
-        <span class="h-1.5 w-1.5 shrink-0 rounded-full"
-          class:bg-kira-accent={status !== null && sampleFresh && health === 'ALL SYSTEMS NOMINAL'}
-          class:bg-kira-muted={status === null || !sampleFresh || health !== 'ALL SYSTEMS NOMINAL'}></span>
-        <span class="truncate text-[10px] font-bold tracking-wide"
-          class:text-kira-accent={health === 'ALL SYSTEMS NOMINAL'}
-          class:text-kira-muted={health !== 'ALL SYSTEMS NOMINAL'}>{health}</span>
-      </div>
-      <span class="shrink-0 text-right text-[9px] font-semibold tracking-wide text-kira-muted">
-        {status === null ? 'NO SAMPLE' : sampleFresh ? 'CURRENT SAMPLE' : 'LAST SAMPLE / STALE'}
-      </span>
-    </div>
+    {#if health !== 'ALL SYSTEMS NOMINAL'}
+      <p class="mt-3 text-[11px] font-semibold text-kira-accent" role="status" aria-live="polite">{health}</p>
+    {/if}
   </header>
 
   <nav data-kira-enter use:tenetFlowIndicator={{ active }} class="relative grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
@@ -126,45 +113,25 @@
     <button data-kira-tab="overview" type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'overview' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
-      01 / OVERVIEW
+      OVERVIEW
     </button>
     <button data-kira-tab="processes" type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
       class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'processes' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
-      02 / PROCESSES
+      PROCESSES
     </button>
   </nav>
 
   {#if active === 'overview'}
     <div use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col">
       <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
-        <div class="mb-4 flex items-center justify-between gap-2 border-b border-kira-muted/15 pb-3">
-          <div class="flex items-center gap-2">
-            <span class="text-[9px] font-bold tracking-wider text-kira-muted">CORE</span>
-            <span class="text-[9px] font-bold tracking-wide"
-              class:text-kira-accent={status?.core} class:text-kira-muted={!status?.core}>
-              {status === null ? 'UNKNOWN' : status.core ? 'ONLINE' : 'OFFLINE'}
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[9px] font-bold tracking-wider text-kira-muted">NIRI</span>
-            <span class="text-[9px] font-bold tracking-wide"
-              class:text-kira-accent={status?.niri} class:text-kira-muted={!status?.niri}>
-              {status === null ? 'UNKNOWN' : status.niri ? 'ONLINE' : 'OFFLINE'}
-            </span>
-          </div>
-          <span class="text-[9px] font-semibold tracking-wide text-kira-muted">NATIVE FEED</span>
-        </div>
         <SystemCharts {metrics} {now} />
       </section>
 
       <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Secondary resource metrics">
-        <div class="mb-3 flex items-center justify-between gap-2">
-          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">03 / CAPACITY</h2>
-          <span class="text-[9px] font-semibold tracking-wide text-kira-muted">USED / TOTAL</span>
-        </div>
+        <h2 class="mb-3 text-[11px] font-bold tracking-wide text-kira-accent">CAPACITY</h2>
         <div class="grid grid-cols-2 gap-3">
-          <article class="min-w-0 border border-kira-muted/15 bg-kira-surface-soft px-3 py-3">
+          <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
             <h3 class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">ROOT STORAGE</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
@@ -182,7 +149,7 @@
               {fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
             </p>
           </article>
-          <article class="min-w-0 border border-kira-muted/15 bg-kira-surface-soft px-3 py-3">
+          <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
             <h3 class="text-[9px] font-bold tracking-[0.12em] text-kira-muted">SWAP MEMORY</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
@@ -206,7 +173,7 @@
       <section data-kira-enter class="bg-kira-surface-soft px-5 py-4"
         aria-label="Hardware temperatures and graphics">
         <div class="flex items-center justify-between gap-3">
-          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">04 / HARDWARE</h2>
+          <h2 class="text-[10px] font-extrabold tracking-[0.15em] text-kira-accent">HARDWARE</h2>
           <div class="flex items-baseline gap-2">
             <span class="text-[9px] font-bold tracking-wider text-kira-muted">CPU TEMP</span>
             <span class="text-[14px] font-extrabold tabular-nums"
@@ -240,9 +207,9 @@
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
           text-[10px] font-extrabold tracking-[0.12em] text-kira-accent
           focus-visible:outline-2 focus-visible:outline-kira-accent">
-          <span>05 / HOST DETAILS</span>
-          <span class="text-[9px] font-semibold text-kira-muted group-open:hidden">EXPAND +</span>
-          <span class="hidden text-[9px] font-semibold text-kira-muted group-open:inline">COLLAPSE −</span>
+          <span>HOST DETAILS</span>
+          <span aria-hidden="true" class="text-sm text-kira-muted group-open:hidden">+</span>
+          <span aria-hidden="true" class="hidden text-sm text-kira-muted group-open:inline">−</span>
         </summary>
         <div data-kira-disclosure-content class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
           <div class="min-w-0">
@@ -269,9 +236,9 @@
       </details>
 
       <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-3">
-        <span class="text-[9px] font-semibold tracking-wider text-kira-muted">
-          {status === null ? 'WAITING FOR DATA' : sampleFresh ? 'UPDATED / ' + refreshed : 'LAST UPDATE / ' + refreshed + ' / STALE'}
-        </span>
+        {#if status !== null && !sampleFresh}
+          <span role="status" class="text-[10px] font-medium text-kira-muted">LAST UPDATE · {refreshed}</span>
+        {/if}
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[10px] font-bold tracking-wide text-kira-accent
             focus-visible:outline-2 focus-visible:outline-kira-accent">COPY REPORT</button>
@@ -280,10 +247,6 @@
   {:else}
     <section use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
       aria-label="Processes">
-      <div data-kira-enter class="mb-3 flex items-center justify-between gap-2">
-        <h2 class="text-[10px] font-bold tracking-[0.12em] text-kira-accent">PROCESSES / HOST</h2>
-        <span class="text-[9px] font-semibold tracking-wide text-kira-muted">READ ONLY</span>
-      </div>
       <input data-kira-enter type="search" aria-label="Filter by process name or PID"
         placeholder="Filter by process name or PID" value={query}
         oninput={filterProcesses}
@@ -299,7 +262,9 @@
             class={'truncate text-right text-[10px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
-            aria-label={'Sort by ' + column.label}>
+            aria-label={'Sort by ' + column.label}
+             title={column.field === 'memory' ? 'Resident memory (RSS)' :
+               column.field === 'pss' ? 'Proportional memory (PSS)' : 'Sort by ' + column.label}>
             {column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}
           </button>
         {/each}
@@ -324,16 +289,17 @@
           <button type="button" onclick={() => { visibleCount = Math.min(180, visibleCount + 36); }}
             class="mt-3 w-full border border-kira-muted/20 px-3 py-2 text-[10px] font-bold tracking-wider
               text-kira-accent hover:bg-kira-bg focus-visible:outline-2 focus-visible:outline-kira-accent">
-            SHOW 36 MORE / {matching.length - visible.length} REMAINING
+            SHOW MORE
           </button>
         {/if}
       </div>
-      <footer data-kira-enter class="shrink-0 space-y-2 pt-3 text-[10px] font-semibold text-kira-muted">
-        <p>SHOWING {visible.length} OF {matching.length} MATCHES / {processes?.total ?? 0} SCANNED
-          {processes?.truncated ? ' / SCAN LIMIT REACHED' : ''}
-          {visible.length === 180 && matching.length > 180 ? ' / REFINE FILTER FOR MORE' : ''}</p>
-        <p>CPU % OF ENTIRE HOST / RSS RESIDENT / PSS PROPORTIONAL SHARE</p>
-      </footer>
+      {#if query.trim() || processes?.truncated || visible.length < matching.length}
+        <p data-kira-enter class="shrink-0 pt-3 text-[10px] font-medium text-kira-muted" role="status">
+          {visible.length} of {matching.length}
+          {processes?.truncated ? ' · SCAN LIMIT REACHED' : ''}
+          {visible.length === 180 && matching.length > 180 ? ' · REFINE FILTER FOR MORE' : ''}
+        </p>
+      {/if}
     </section>
   {/if}
 </main>
