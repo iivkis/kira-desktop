@@ -209,11 +209,11 @@ function scriptFor(steps, observationMs = 1150) {
       'const height = roots.length === 1 ? roots[0].getBoundingClientRect().height : 0;' +
       'document.documentElement.setAttribute("data-smoke-height", Math.ceil(height));' +
       // A real popup reserves transparent right/bottom pixels outside its
-      // TENET-clipped main, so the 4px hard shadow can survive WebKit bounds.
+      // TENET-clipped main, so its 2px hard shadow survives WebKit bounds.
       'const outer=roots[0]?.parentElement;const outerStyle=outer?getComputedStyle(outer):null;' +
       'const edge=roots[0]?getComputedStyle(roots[0],"::after"):null;' +
       'document.documentElement.dataset.smokeWidgetShadow=!!outerStyle && ' +
-        'outerStyle.filter.includes("drop-shadow(") && outerStyle.paddingBottom==="4px" && outerStyle.paddingRight==="4px" && ' +
+        'outerStyle.filter.includes("drop-shadow(") && outerStyle.paddingBottom==="2px" && outerStyle.paddingRight==="2px" && ' +
         '!!edge && edge.content!=="none" && edge.borderTopWidth==="1px" && edge.borderTopStyle==="solid" && ' +
         'edge.borderTopColor!=="rgb(0, 0, 0)" && edge.pointerEvents==="none";' +
       'document.documentElement.dataset.smokeDetachedShadow=!!outerStyle && outerStyle.filter==="none" && outerStyle.paddingBottom==="0px" && ' +
@@ -378,13 +378,13 @@ async function smoke(name, steps, expected, heightMode = 'any') {
     }
   }
   if (heightMode !== 'settings-window' && !output.includes('data-smoke-widget-shadow="true"')) {
-    throw new Error(name + ': popup must show contrasting 1px outline and 4px hard outer shadow');
+    throw new Error(name + ': popup must show a subtle 1px keyline and 2px hard outer shadow');
   }
   if (heightMode === 'settings-window' && !output.includes('data-smoke-detached-shadow="true"')) {
     throw new Error(name + ': detached Niri window must not retain the popup shadow gutter');
   }
   if (heightMode === 'scroll') {
-    if (size !== 416 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
+    if (size !== 418 || Number(nativeMessage[2]) !== 420 || !output.includes('data-smoke-list-scroll="true"') ||
         !output.includes('data-smoke-scrollbar-hidden="true"') ||
         !output.includes('data-smoke-scrolled="true"') ||
         !output.includes('data-smoke-row-square="true"')) {

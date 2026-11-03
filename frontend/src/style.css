@@ -77,10 +77,9 @@
     filter: drop-shadow(var(--kira-widget-shadow));
   }
 
-  /* A 1px high-contrast silhouette keeps black Launcher/Calendar/Monitor
-   * headers legible against other black windows even where the offset shadow
-   * is hidden by overlap. The border is paint-only: no layout shift or extra
-   * pointer hit area, and it reveals/reverses with the root's TENET clip. */
+  /* A subdued 1px keyline defines the popup's black header against another
+   * black window without creating a bright second frame. The paint-only
+   * outline follows TENET's clip; it never changes geometry or hit targets. */
   html[data-kira-surface="calendar"]:not([data-kira-detached="true"]) main[data-kira-ui-root]::after {
     content: "";
     position: absolute;
