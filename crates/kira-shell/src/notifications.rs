@@ -114,7 +114,9 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
         },
         move |connection, _| {
             if let Some(service) = name_acquired.upgrade() {
-                if service.owner_id.borrow().is_none() { return; }
+                if service.owner_id.borrow().is_none() {
+                    return;
+                }
                 *service.bus.borrow_mut() = Some(connection);
                 service.owned.set(true);
                 service.sync();
