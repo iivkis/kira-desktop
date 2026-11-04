@@ -12,6 +12,8 @@ pub const DEFAULT_DWELL: Duration = Duration::from_millis(5000);
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Notice {
     pub id: u32,
+    /// Unique session-bus sender. Not forwarded to the WebView.
+    pub owner: String,
     pub app: String,
     pub summary: String,
     pub body: String,
@@ -46,8 +48,16 @@ pub struct NotificationQueue {
 
 impl NotificationQueue {
     pub fn contains_active(&self, id: u32) -> bool {
-        self.waiting.iter().any(|entry| entry.notice.id == id)
-            || self.showing.iter().any(|entry| entry.notice.id == id)
+        self.active_owner(id).is_some()
+    }
+
+    /// An arbitrary D-Bus application must not overwrite or close another
+    /// application's active notification by guessing the integer ID.
+    pub fn active_owner(&self, id: u32) -> Option<&str> {
+        self.waiting.iter().map(|entry| &entry.notice)
+            .chain(self.showing.iter().map(|entry| &entry.notice))
+            .find(|notice| notice.id == id)
+            .map(|notice| notice.owner.as_str())
     }
 
     pub fn allocate_id(&mut self) -> u32 {
@@ -223,6 +233,7 @@ mod tests {
     fn notice(id: u32) -> Notice {
         Notice {
             id,
+            owner: ":1.101".into(),
             app: "Test".into(),
             summary: format!("{id}"),
             body: String::new(),
@@ -331,6 +342,18 @@ mod tests {
         assert!(!q.contains_active(1));
         assert!(q.history().any(|item| item.id == 1));
         assert!(!q.close(1));
+    }
+
+    #[test]
+    fn d_bus_sender_ownership_is_active_only() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        assert_eq!(q.active_owner(1), Some(":1.101"));
+        assert_ne!(q.active_owner(1), Some(":1.999"));
+        assert!(q.close(1));
+        assert_eq!(q.active_owner(1), None);
+        assert!(q.history().any(|item| item.id == 1));
     }
 
     #[test]
