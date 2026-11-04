@@ -92,9 +92,9 @@ describe('Kira Default Black / Prussian Blue / Orange design tokens', () => {
   it('defines compact spacing, consistent radii and reduced motion', () => {
     expect(css).toContain('--kira-space-1: 4px;');
     expect(css).toContain('--kira-radius-md: 10px;');
-    expect(css).toContain('--kira-border-strong: 2px;');
-    expect(css).toContain('--kira-shadow-brutal:');
-    expect(css).toContain('--kira-shadow-panel:');
+    expect(css).not.toContain('--kira-border-strong:');
+    expect(css).not.toContain('--kira-shadow-brutal:');
+    expect(css).not.toContain('--kira-shadow-panel:');
     expect(css).toContain('--kira-widget-shadow-offset: 8px;');
     expect(css).toContain('--kira-widget-shadow-black: 2px 2px 0 var(--black);');
     expect(css).toContain('--kira-widget-shadow-accent: 2px 2px 0 color-mix(in srgb, var(--orange) 64%, var(--black));');
