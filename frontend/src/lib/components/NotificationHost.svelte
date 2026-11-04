@@ -56,6 +56,7 @@
           next.revision <= lastRevision ||
           !Array.isArray(next.visible) || next.visible.length > 3 ||
           !next.visible.every(validNotice) ||
+          new Set(next.visible.map((notice) => notice.id)).size !== next.visible.length ||
           !Number.isSafeInteger(next.height) || next.height < 1 || next.height > 20000 ||
           !Number.isSafeInteger(next.cardHeight) || next.cardHeight < 1 ||
           next.cardHeight > Math.floor(next.height / 3)) return;
