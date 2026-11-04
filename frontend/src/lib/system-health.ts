@@ -23,6 +23,7 @@ export function systemHealth(
   version: string,
   niriConnected: boolean | null,
   metrics: SystemMetrics | null = null,
+  freshness: 'fresh' | 'stale' = 'fresh',
 ): HealthSummary {
   const coreDetail = core === 'connected'
     ? 'Online' + (version ? ' (v' + version + ')' : '')
@@ -45,6 +46,9 @@ export function systemHealth(
   if (core === 'connecting') return { label: 'STARTING', phase: 'pending', details };
   if (niriConnected === false) return { label: 'NIRI OFF', phase: 'error', details };
   if (niriConnected === null) return { label: 'WAITING', phase: 'pending', details };
+  if (freshness === 'stale') {
+    return { label: 'STALE', phase: 'warning', details: details + '\nTelemetry: last sample expired' };
+  }
   if (!metrics || mem === null || metrics.cpu_percent === null) {
     return { label: 'CHECKING', phase: 'pending', details };
   }
