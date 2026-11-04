@@ -12,6 +12,7 @@
 
   const hasDefaultAction = $derived(notice.actions.some((action) => action.key === 'default'));
   const extraActions = $derived(notice.actions.filter((action) => action.key !== 'default').slice(0, 2));
+  const showBody = $derived(height >= (extraActions.length > 0 ? 94 : 74));
 
   function enter(node: HTMLElement) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -33,9 +34,10 @@
 <article
   use:enter
   data-kira-notification-card={notice.id}
-  class="relative flex w-full shrink-0 flex-col overflow-hidden border-l-[3px] border-kira-accent bg-kira-surface px-3 py-2 text-kira-text"
+  class="relative flex w-full shrink-0 flex-col overflow-hidden border-l-[3px] border-kira-accent bg-kira-surface px-3 py-1.5 text-kira-text"
   style:height={height + 'px'}
   aria-label={'Уведомление от ' + notice.app}
+  title={notice.body}
 >
   <div class="flex min-w-0 items-center gap-2">
     <span class="min-w-0 flex-1 truncate text-[12px] font-bold">{notice.app}</span>
@@ -50,11 +52,11 @@
       aria-label={'Открыть уведомление ' + notice.summary + ' от ' + notice.app}
       onclick={() => onAction(notice.id, 'default')}>
       <div class="mt-0.5 line-clamp-1 text-[12px] font-semibold">{notice.summary}</div>
-      {#if notice.body}<p class="mt-0.5 line-clamp-2 text-[11px] text-kira-muted">{notice.body}</p>{/if}
+      {#if notice.body && showBody}<p class="mt-0.5 line-clamp-2 text-[11px] text-kira-muted">{notice.body}</p>{/if}
     </button>
   {:else}
     <div class="mt-0.5 line-clamp-1 text-[12px] font-semibold">{notice.summary}</div>
-    {#if notice.body}<p class="mt-0.5 line-clamp-2 min-h-0 overflow-hidden text-[11px] text-kira-muted">{notice.body}</p>{/if}
+    {#if notice.body && showBody}<p class="mt-0.5 line-clamp-2 min-h-0 overflow-hidden text-[11px] text-kira-muted">{notice.body}</p>{/if}
   {/if}
   {#if extraActions.length}
     <div class="mt-auto flex gap-3 overflow-hidden pt-1">
