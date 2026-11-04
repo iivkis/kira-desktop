@@ -565,34 +565,27 @@ impl Service {
         let now = Instant::now();
         let can_shape =
             gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes());
-        let (width, height) = if let Some(host) = self.host.borrow().as_ref() {
-            let display = gtk::prelude::WidgetExt::display(&host.window);
-            let monitor = host
-                .window
-                .surface()
-                .and_then(|surface| display.monitor_at_surface(&surface))
-                .or_else(|| {
-                    display
-                        .monitors()
-                        .item(0)
-                        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
-                });
-            monitor
-                .map(|m| (m.geometry().width(), m.geometry().height()))
-                .unwrap_or((800, 800))
-        } else {
-            let display = gtk::gdk::Display::default();
-            display
-                .and_then(|d| {
-                    d.monitors()
-                        .item(0)
-                        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
-                })
-                .map(|m| (m.geometry().width(), m.geometry().height()))
-                .unwrap_or((800, 800))
-        };
-        let clearance = crate::calendar::notification_bottom_clearance(width, height);
-        let layout = notification_layout::plan(width, height, clearance);
+        // Fail closed on disconnected/headless outputs. The previous
+        // synthetic 800x800 fallback could map a Wayland toast with incorrect
+        // dimensions immediately after a monitor was unplugged.
+        let display = self.host.borrow().as_ref()
+            .map(|host| gtk::prelude::WidgetExt::display(&host.window))
+            .or_else(gtk::gdk::Display::default);
+        let output = display.and_then(|display| {
+            let monitor = self.host.borrow().as_ref()
+                .and_then(|host| host.window.surface()
+                    .and_then(|surface| display.monitor_at_surface(&surface)))
+                .or_else(|| display.monitors().item(0)
+                    .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok()));
+            monitor.map(|monitor| {
+                let rect = monitor.geometry();
+                (rect.width(), rect.height())
+            }).filter(|(width, height)| *width > 0 && *height > 0)
+        });
+        let layout = output.and_then(|(width, height)| {
+            let clearance = crate::calendar::notification_bottom_clearance(width, height);
+            notification_layout::plan(width, height, clearance)
+        });
         let possible = self.owned.get()
             && can_shape
             && layout.is_some()
