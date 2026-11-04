@@ -20,10 +20,18 @@ pub fn plan(output_width: i32, output_height: i32, bottom_clearance: i32) -> Opt
         return None;
     }
     let width = PREFERRED_WIDTH.min(output_width - OUTER_MARGIN * 2);
-    let height = (output_height / 2).min(bottom_clearance - OUTER_MARGIN).max(0);
+    let height = (output_height / 2)
+        .min(bottom_clearance - OUTER_MARGIN)
+        .max(0);
     let card_height = (height - INNER_MARGIN * 2 - GAP * 2) / 3;
-    if card_height < MIN_CARD_HEIGHT { return None; }
-    Some(Layout { width, height, card_height })
+    if card_height < MIN_CARD_HEIGHT {
+        return None;
+    }
+    Some(Layout {
+        width,
+        height,
+        card_height,
+    })
 }
 
 /// Region contains exactly the actually visible card bounds, never the
@@ -31,10 +39,15 @@ pub fn plan(output_width: i32, output_height: i32, bottom_clearance: i32) -> Opt
 pub fn hit_region(layout: Layout, visible_count: usize) -> Region {
     let region = Region::create();
     for index in 0..visible_count.min(3) {
-        let y = layout.height - INNER_MARGIN - layout.card_height
+        let y = layout.height
+            - INNER_MARGIN
+            - layout.card_height
             - index as i32 * (layout.card_height + GAP);
         let rect = RectangleInt::new(
-            INNER_MARGIN, y, layout.width - INNER_MARGIN * 2, layout.card_height,
+            INNER_MARGIN,
+            y,
+            layout.width - INNER_MARGIN * 2,
+            layout.card_height,
         );
         let _ = region.union_rectangle(&rect);
     }

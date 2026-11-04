@@ -54,9 +54,17 @@ impl NotificationQueue {
 
     /// Preserve the FIFO position and the original visible_since on replace.
     pub fn push(&mut self, notice: Notice, now: Instant) {
-        if let Some(entry) = self.waiting.iter_mut().find(|item| item.notice.id == notice.id) {
+        if let Some(entry) = self
+            .waiting
+            .iter_mut()
+            .find(|item| item.notice.id == notice.id)
+        {
             entry.notice = notice.clone();
-        } else if let Some(entry) = self.showing.iter_mut().find(|item| item.notice.id == notice.id) {
+        } else if let Some(entry) = self
+            .showing
+            .iter_mut()
+            .find(|item| item.notice.id == notice.id)
+        {
             entry.notice = notice.clone();
         } else {
             // The caller receives a D-Bus ID even if UI storage is at capacity.
@@ -65,7 +73,11 @@ impl NotificationQueue {
                 self.waiting.pop_front();
             }
             self.waiting.push_back(Waiting {
-                eligible_at: if self.showing.is_empty() { now } else { now + ADMISSION_GAP },
+                eligible_at: if self.showing.is_empty() {
+                    now
+                } else {
+                    now + ADMISSION_GAP
+                },
                 notice: notice.clone(),
             });
         }
@@ -95,7 +107,10 @@ impl NotificationQueue {
             if !self.showing.is_empty() {
                 let items: Vec<_> = self.showing.drain(..).collect();
                 for item in items.into_iter().rev() {
-                    self.waiting.push_front(Waiting { notice: item.notice, eligible_at: now });
+                    self.waiting.push_front(Waiting {
+                        notice: item.notice,
+                        eligible_at: now,
+                    });
                 }
                 self.last_admission = None;
                 changed = true;
@@ -104,15 +119,22 @@ impl NotificationQueue {
         }
 
         let before = self.showing.len();
-        self.showing.retain(|entry| now.saturating_duration_since(entry.since) < entry.notice.dwell.max(MIN_DWELL));
+        self.showing.retain(|entry| {
+            now.saturating_duration_since(entry.since) < entry.notice.dwell.max(MIN_DWELL)
+        });
         changed |= before != self.showing.len();
         if self.showing.len() < MAX_VISIBLE {
             if let Some(head) = self.waiting.front() {
                 let interval_ok = self.showing.is_empty()
-                    || self.last_admission.is_none_or(|time| now.saturating_duration_since(time) >= ADMISSION_GAP);
+                    || self
+                        .last_admission
+                        .is_none_or(|time| now.saturating_duration_since(time) >= ADMISSION_GAP);
                 if now >= head.eligible_at && interval_ok {
                     let entry = self.waiting.pop_front().expect("FIFO head");
-                    self.showing.push(Showing { notice: entry.notice, since: now });
+                    self.showing.push(Showing {
+                        notice: entry.notice,
+                        since: now,
+                    });
                     self.last_admission = Some(now);
                     changed = true;
                 }
@@ -129,22 +151,34 @@ impl NotificationQueue {
         self.history.iter()
     }
 
-    pub fn has_pending(&self) -> bool { !self.waiting.is_empty() }
-    pub fn visible_count(&self) -> usize { self.showing.len() }
+    pub fn has_pending(&self) -> bool {
+        !self.waiting.is_empty()
+    }
+    pub fn visible_count(&self) -> usize {
+        self.showing.len()
+    }
 
     /// Exact next wakeup, never a permanent UI poll.
     pub fn next_deadline(&self, now: Instant) -> Option<Instant> {
-        let expiry = self.showing.iter()
+        let expiry = self
+            .showing
+            .iter()
             .map(|item| item.since + item.notice.dwell.max(MIN_DWELL))
             .min();
         let admission = if self.showing.len() < MAX_VISIBLE {
             self.waiting.front().map(|entry| {
-                let interval = if self.showing.is_empty() { now } else {
-                    self.last_admission.map(|at| at + ADMISSION_GAP).unwrap_or(now)
+                let interval = if self.showing.is_empty() {
+                    now
+                } else {
+                    self.last_admission
+                        .map(|at| at + ADMISSION_GAP)
+                        .unwrap_or(now)
                 };
                 entry.eligible_at.max(interval)
             })
-        } else { None };
+        } else {
+            None
+        };
         expiry.into_iter().chain(admission).min()
     }
 }
@@ -154,8 +188,15 @@ mod tests {
     use super::*;
 
     fn notice(id: u32) -> Notice {
-        Notice { id, app: "Test".into(), summary: format!("{id}"), body: String::new(),
-            actions: vec![], critical: false, dwell: DEFAULT_DWELL }
+        Notice {
+            id,
+            app: "Test".into(),
+            summary: format!("{id}"),
+            body: String::new(),
+            actions: vec![],
+            critical: false,
+            dwell: DEFAULT_DWELL,
+        }
     }
 
     #[test]

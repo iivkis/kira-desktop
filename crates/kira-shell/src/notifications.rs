@@ -2,7 +2,7 @@
 //! This deliberately uses the already-linked GIO session D-Bus API. GTK owns
 //! the Wayland surface; no arbitrary D-Bus or OS commands are exposed to JS.
 use crate::notification_layout::{self, Layout};
-use crate::notification_queue::{DEFAULT_DWELL, NotificationQueue, Notice};
+use crate::notification_queue::{DEFAULT_DWELL, Notice, NotificationQueue};
 use std::cell::{Cell, RefCell};
 use std::rc::{Rc, Weak};
 use std::time::{Duration, Instant};
@@ -123,22 +123,39 @@ fn bounded(value: String, max_chars: usize) -> String {
 }
 
 fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> Notice {
-    let app = bounded(params.child_value(0).get::<String>().unwrap_or_default(), 128);
+    let app = bounded(
+        params.child_value(0).get::<String>().unwrap_or_default(),
+        128,
+    );
     let replace = params.child_value(1).get::<u32>().unwrap_or(0);
-    let summary = bounded(params.child_value(3).get::<String>().unwrap_or_default(), 256);
+    let summary = bounded(
+        params.child_value(3).get::<String>().unwrap_or_default(),
+        256,
+    );
     // Clients may send minimal HTML. No raw body markup ever reaches WebKit.
-    let body = bounded(params.child_value(4).get::<String>().unwrap_or_default(), 2048);
-    let raw_actions = params.child_value(5).get::<Vec<String>>().unwrap_or_default();
-    let actions = raw_actions.chunks_exact(2).take(8)
+    let body = bounded(
+        params.child_value(4).get::<String>().unwrap_or_default(),
+        2048,
+    );
+    let raw_actions = params
+        .child_value(5)
+        .get::<Vec<String>>()
+        .unwrap_or_default();
+    let actions = raw_actions
+        .chunks_exact(2)
+        .take(8)
         .map(|pair| (bounded(pair[0].clone(), 128), bounded(pair[1].clone(), 128)))
         .collect();
     let hints = glib::VariantDict::new(Some(&params.child_value(6)));
-    let critical = hints.lookup_value("urgency", None)
+    let critical = hints
+        .lookup_value("urgency", None)
         .and_then(|value| value.get::<u8>())
         .is_some_and(|urgency| urgency == 2);
     let timeout = params.child_value(7).get::<i32>().unwrap_or(-1);
     // 0 means logically persistent, but visual stack still yields after 5 s.
-    let dwell = if timeout <= 0 { DEFAULT_DWELL } else {
+    let dwell = if timeout <= 0 {
+        DEFAULT_DWELL
+    } else {
         Duration::from_millis(u64::try_from(timeout.max(3000).min(30000)).unwrap_or(5000))
     };
     let id = if replace != 0 && queue.history().any(|item| item.id == replace) {
@@ -146,7 +163,15 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
     } else {
         queue.allocate_id()
     };
-    Notice { id, app, summary, body, actions, critical, dwell }
+    Notice {
+        id,
+        app,
+        summary,
+        body,
+        actions,
+        critical,
+        dwell,
+    }
 }
 
 impl Service {
@@ -155,73 +180,101 @@ impl Service {
             eprintln!("kira-shell: failed to parse notification D-Bus introspection");
             return;
         };
-        let Some(info) = xml.lookup_interface(INTERFACE) else { return };
+        let Some(info) = xml.lookup_interface(INTERFACE) else {
+            return;
+        };
         let weak = Rc::downgrade(self);
-        let registered = connection.register_object(OBJECT_PATH, &info)
-            .method_call(move |_connection, _sender, _path, _interface, method, params, invocation| {
-                let Some(service) = weak.upgrade() else {
-                    invocation.return_dbus_error("org.freedesktop.DBus.Error.Failed", "Notification host stopped");
-                    return;
-                };
-                match method {
-                    "GetCapabilities" => {
-                        let caps = vec!["body".to_string(), "actions".to_string()];
-                        invocation.return_value(Some(&(caps,).to_variant()));
+        let registered = connection
+            .register_object(OBJECT_PATH, &info)
+            .method_call(
+                move |_connection, _sender, _path, _interface, method, params, invocation| {
+                    let Some(service) = weak.upgrade() else {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "Notification host stopped",
+                        );
+                        return;
+                    };
+                    match method {
+                        "GetCapabilities" => {
+                            let caps = vec!["body".to_string(), "actions".to_string()];
+                            invocation.return_value(Some(&(caps,).to_variant()));
+                        }
+                        "GetServerInformation" => {
+                            invocation.return_value(Some(
+                                &("Kira Desktop", "Kira", env!("CARGO_PKG_VERSION"), "1.3")
+                                    .to_variant(),
+                            ));
+                        }
+                        "Notify" => {
+                            let id = {
+                                let mut queue = service.queue.borrow_mut();
+                                let notice = notice_from_params(&mut queue, &params);
+                                let id = notice.id;
+                                queue.push(notice, Instant::now());
+                                id
+                            };
+                            invocation.return_value(Some(&(id,).to_variant()));
+                            service.sync();
+                        }
+                        "CloseNotification" => {
+                            let id = params.child_value(0).get::<u32>().unwrap_or(0);
+                            let existed = service.queue.borrow_mut().close(id);
+                            invocation.return_value(None);
+                            if existed {
+                                service.signal_closed(id, 3);
+                            }
+                            service.sync();
+                        }
+                        _ => invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.UnknownMethod",
+                            "Unknown notification method",
+                        ),
                     }
-                    "GetServerInformation" => {
-                        invocation.return_value(Some(&(
-                            "Kira Desktop", "Kira", env!("CARGO_PKG_VERSION"), "1.3",
-                        ).to_variant()));
-                    }
-                    "Notify" => {
-                        let id = {
-                            let mut queue = service.queue.borrow_mut();
-                            let notice = notice_from_params(&mut queue, &params);
-                            let id = notice.id;
-                            queue.push(notice, Instant::now());
-                            id
-                        };
-                        invocation.return_value(Some(&(id,).to_variant()));
-                        service.sync();
-                    }
-                    "CloseNotification" => {
-                        let id = params.child_value(0).get::<u32>().unwrap_or(0);
-                        let existed = service.queue.borrow_mut().close(id);
-                        invocation.return_value(None);
-                        if existed { service.signal_closed(id, 3); }
-                        service.sync();
-                    }
-                    _ => invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.UnknownMethod", "Unknown notification method"
-                    ),
-                }
-            }).build();
+                },
+            )
+            .build();
         if let Err(error) = registered {
             eprintln!("kira-shell: cannot register D-Bus Notifications object: {error}");
         }
     }
 
     fn signal_closed(&self, id: u32, reason: u32) {
-        if !self.owned.get() { return; }
+        if !self.owned.get() {
+            return;
+        }
         if let Some(connection) = self.bus.borrow().as_ref() {
             let _ = connection.emit_signal(
-                None, OBJECT_PATH, INTERFACE, "NotificationClosed",
+                None,
+                OBJECT_PATH,
+                INTERFACE,
+                "NotificationClosed",
                 Some(&(id, reason).to_variant()),
             );
         }
     }
 
     fn action(self: &Rc<Self>, id: u32, key: &str) {
-        let allowed = self.queue.borrow().history().any(|item| item.id == id &&
-            item.actions.iter().any(|(action, _)| action == key));
-        if !allowed || !self.owned.get() { return; }
+        let allowed = self
+            .queue
+            .borrow()
+            .history()
+            .any(|item| item.id == id && item.actions.iter().any(|(action, _)| action == key));
+        if !allowed || !self.owned.get() {
+            return;
+        }
         if let Some(connection) = self.bus.borrow().as_ref() {
             let _ = connection.emit_signal(
-                None, OBJECT_PATH, INTERFACE, "ActionInvoked",
+                None,
+                OBJECT_PATH,
+                INTERFACE,
+                "ActionInvoked",
                 Some(&(id, key).to_variant()),
             );
         }
-        if self.queue.borrow_mut().close(id) { self.signal_closed(id, 2); }
+        if self.queue.borrow_mut().close(id) {
+            self.signal_closed(id, 2);
+        }
         self.sync();
     }
 
@@ -231,7 +284,10 @@ impl Service {
                 host.ready.set(true);
             }
             self.sync();
-        } else if let Some(id) = message.strip_prefix("close:").and_then(|s| s.parse::<u32>().ok()) {
+        } else if let Some(id) = message
+            .strip_prefix("close:")
+            .and_then(|s| s.parse::<u32>().ok())
+        {
             if self.queue.borrow_mut().close(id) {
                 self.signal_closed(id, 2);
                 self.sync();
@@ -269,7 +325,9 @@ impl Service {
         manager.connect_script_message_received(Some("kiraNotificationUi"), move |_, value| {
             if let Some(service) = weak.upgrade() {
                 let message = value.to_string().to_string();
-                if message.len() <= 512 { service.handle_ui(&message); }
+                if message.len() <= 512 {
+                    service.handle_ui(&message);
+                }
             }
         });
         assert!(manager.register_script_message_handler("kiraNotificationUi", None));
@@ -300,25 +358,33 @@ impl Service {
         let document = notification_html(&self.html);
         view.load_html(&document, None);
         let host = Rc::new(Host {
-            window, view, ready: Cell::new(false), layout: Cell::new(None),
+            window,
+            view,
+            ready: Cell::new(false),
+            layout: Cell::new(None),
         });
         gtk::prelude::WidgetExt::realize(&host.window);
         host
     }
 
     fn render(&self, host: &Host, layout: Layout) {
-        let showing: Vec<_> = self.queue.borrow().visible().map(|notice| {
-            serde_json::json!({
-                "id": notice.id,
-                "app": notice.app,
-                "summary": notice.summary,
-                "body": notice.body,
-                "critical": notice.critical,
-                "actions": notice.actions.iter().map(|(key,label)| serde_json::json!({
-                    "key": key, "label": label
-                })).collect::<Vec<_>>(),
+        let showing: Vec<_> = self
+            .queue
+            .borrow()
+            .visible()
+            .map(|notice| {
+                serde_json::json!({
+                    "id": notice.id,
+                    "app": notice.app,
+                    "summary": notice.summary,
+                    "body": notice.body,
+                    "critical": notice.critical,
+                    "actions": notice.actions.iter().map(|(key,label)| serde_json::json!({
+                        "key": key, "label": label
+                    })).collect::<Vec<_>>(),
+                })
             })
-        }).collect();
+            .collect();
         let payload = serde_json::json!({
             "height": layout.height, "cardHeight": layout.card_height, "visible": showing
         });
@@ -328,32 +394,50 @@ impl Service {
                 "window.dispatchEvent(new CustomEvent('kira:notifications:update', {{ detail: JSON.parse({encoded}) }}));"
             );
             host.view.evaluate_javascript(
-                &script, None, None, None::<&gtk::gio::Cancellable>, |_| {},
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
+                |_| {},
             );
         }
     }
 
     fn sync(self: &Rc<Self>) {
         let now = Instant::now();
-        let can_shape = gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes());
+        let can_shape =
+            gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes());
         let (width, height) = if let Some(host) = self.host.borrow().as_ref() {
             let display = gtk::prelude::WidgetExt::display(&host.window);
-            let monitor = host.window.surface()
+            let monitor = host
+                .window
+                .surface()
                 .and_then(|surface| display.monitor_at_surface(&surface))
-                .or_else(|| display.monitors().item(0)
-                    .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok()));
-            monitor.map(|m| (m.geometry().width(), m.geometry().height())).unwrap_or((800, 800))
+                .or_else(|| {
+                    display
+                        .monitors()
+                        .item(0)
+                        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+                });
+            monitor
+                .map(|m| (m.geometry().width(), m.geometry().height()))
+                .unwrap_or((800, 800))
         } else {
             let display = gtk::gdk::Display::default();
-            display.and_then(|d| d.monitors().item(0)
-                .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok()))
+            display
+                .and_then(|d| {
+                    d.monitors()
+                        .item(0)
+                        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+                })
                 .map(|m| (m.geometry().width(), m.geometry().height()))
                 .unwrap_or((800, 800))
         };
         let clearance = crate::calendar::notification_bottom_clearance(width, height);
         let layout = notification_layout::plan(width, height, clearance);
         let possible = self.owned.get() && can_shape && layout.is_some();
-        if possible && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
+        if possible
+            && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
             && self.host.borrow().is_none()
         {
             let host = self.create_host();
@@ -370,7 +454,8 @@ impl Service {
                 host.layout.set(Some(layout));
                 host.window.set_default_size(layout.width, layout.height);
                 // Restrict the GTK input shape BEFORE the layer surface maps.
-                let region = notification_layout::hit_region(layout, self.queue.borrow().visible_count());
+                let region =
+                    notification_layout::hit_region(layout, self.queue.borrow().visible_count());
                 if let Some(surface) = host.window.surface() {
                     surface.set_input_region(Some(&region));
                 }
@@ -381,9 +466,12 @@ impl Service {
                     if let Some(service) = weak.upgrade() {
                         if let Some(host) = service.host.borrow().as_ref() {
                             if host.window.is_visible() {
-                                if let (Some(layout), Some(surface)) = (host.layout.get(), host.window.surface()) {
+                                if let (Some(layout), Some(surface)) =
+                                    (host.layout.get(), host.window.surface())
+                                {
                                     let region = notification_layout::hit_region(
-                                        layout, service.queue.borrow().visible_count(),
+                                        layout,
+                                        service.queue.borrow().visible_count(),
                                     );
                                     surface.set_input_region(Some(&region));
                                 }
@@ -407,9 +495,15 @@ impl Service {
     fn schedule(self: &Rc<Self>, now: Instant, usable: bool) {
         let generation = self.timer_epoch.get().wrapping_add(1);
         self.timer_epoch.set(generation);
-        if !usable { return; }
-        let Some(deadline) = self.queue.borrow().next_deadline(now) else { return };
-        let delay = deadline.saturating_duration_since(now).max(Duration::from_millis(1));
+        if !usable {
+            return;
+        }
+        let Some(deadline) = self.queue.borrow().next_deadline(now) else {
+            return;
+        };
+        let delay = deadline
+            .saturating_duration_since(now)
+            .max(Duration::from_millis(1));
         let weak = Rc::downgrade(self);
         glib::timeout_add_local_once(delay, move || {
             if let Some(service) = weak.upgrade() {
@@ -436,7 +530,9 @@ mod tests {
     #[test]
     fn data_is_bounded_and_renderer_is_a_distinct_surface() {
         assert_eq!(bounded("привет".into(), 3), "при");
-        assert!(notification_html("<html lang=\"ru\">").contains("data-kira-surface=\"notifications\""));
+        assert!(
+            notification_html("<html lang=\"ru\">").contains("data-kira-surface=\"notifications\"")
+        );
         assert!(XML.contains("org.freedesktop.Notifications"));
     }
 }

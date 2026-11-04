@@ -1553,9 +1553,13 @@ fn calendar_document(html: &str) -> Option<String> {
         // The packaged root is localized to Russian. Keep existing English
         // test fixtures compatible without silently disabling real widgets.
         let marker = "<html lang=\"ru\">";
-        html.contains(marker).then(|| html.replacen(
-            marker, "<html lang=\"ru\" data-kira-surface=\"calendar\">", 1,
-        ))
+        html.contains(marker).then(|| {
+            html.replacen(
+                marker,
+                "<html lang=\"ru\" data-kira-surface=\"calendar\">",
+                1,
+            )
+        })
     }
 }
 
@@ -1720,13 +1724,20 @@ fn ensure(
 pub fn notification_bottom_clearance(output_width: i32, output_height: i32) -> i32 {
     POOL.with(|cache| {
         let pool = cache.borrow();
-        let Some(pool) = pool.as_ref() else { return output_height };
-        if pool.windows.borrow().values().any(|view| {
-            view.requested.get() && view.detached.get()
-        }) {
+        let Some(pool) = pool.as_ref() else {
+            return output_height;
+        };
+        if pool
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.detached.get())
+        {
             return 0;
         }
-        let Some(view) = pool.popup() else { return output_height };
+        let Some(view) = pool.popup() else {
+            return output_height;
+        };
         let overlay_width = pool.width_for(&view);
         let overlaps_right_lane = match view.dock.get() {
             PopupDock::Right => true,
@@ -1739,14 +1750,18 @@ pub fn notification_bottom_clearance(output_width: i32, output_height: i32) -> i
                 center_right + 12 > toast_left
             }
         };
-        if !overlaps_right_lane { return output_height }
+        if !overlaps_right_lane {
+            return output_height;
+        }
         let top = match view.dock.get() {
             PopupDock::Right => crate::native_ui::POPUP_TOP_MARGIN,
             PopupDock::Center => popup_layout::launcher_top_margin(output_height),
         };
         // The Svelte-reported natural height can precede GTK's map/configure;
         // use the larger of the last actual allocation and reported content.
-        let widget_height = view.content_height.get()
+        let widget_height = view
+            .content_height
+            .get()
             .max(view.window.height())
             .min((output_height * 7 / 10).max(1));
         (output_height - top - widget_height - 16).max(0)
