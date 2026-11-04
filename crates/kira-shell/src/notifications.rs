@@ -131,7 +131,11 @@ fn bounded(value: String, max_chars: usize) -> String {
     value.chars().take(max_chars).collect()
 }
 
-fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant, sender: &str) -> Notice {
+fn notice_from_params(
+    queue: &mut NotificationQueue,
+    params: &glib::Variant,
+    sender: &str,
+) -> Notice {
     let app = bounded(
         params.child_value(0).get::<String>().unwrap_or_default(),
         128,
