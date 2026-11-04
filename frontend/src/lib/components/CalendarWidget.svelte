@@ -26,11 +26,15 @@
     locale?: string;
   } = $props();
 
+  // These values intentionally snapshot a single mount-time civil date.
+  // Current time can advance without unexpectedly moving the user's selection.
+  const initialNow = new Date();
+  const initialToday = todayCivilDate(initialNow);
   let detached = $state(false);
-  let now = $state(new Date());
-  let today = $state<CivilDate>(todayCivilDate(now));
-  let selected = $state<CivilDate>(today);
-  let visible = $state({ year: today.year, month: today.month });
+  let now = $state(initialNow);
+  let today = $state<CivilDate>(initialToday);
+  let selected = $state<CivilDate>(initialToday);
+  let visible = $state({ year: initialToday.year, month: initialToday.month });
   let copyState = $state<'idle' | 'pending' | 'copied' | 'failed'>('idle');
   let copyTimeout: number | null = null;
 
