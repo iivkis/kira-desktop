@@ -109,7 +109,7 @@
     {/if}
   </header>
 
-  <nav data-kira-enter use:tenetFlowIndicator={{ active }} class="relative grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="System monitor sections">
+  <nav data-kira-enter use:tenetFlowIndicator={{ active }} class="relative grid shrink-0 grid-cols-2 bg-kira-surface-soft" aria-label="Разделы монитора системы">
     <span data-kira-flow-indicator aria-hidden="true" class="pointer-events-none absolute bottom-0 left-0 z-10 h-0.5 bg-kira-accent"></span>
     <button data-kira-tab="overview" type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
