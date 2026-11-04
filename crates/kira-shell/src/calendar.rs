@@ -252,6 +252,7 @@ impl OverlayPool {
                 view.content_height.get().max(1),
             );
         }
+        crate::notifications::layout_changed();
     }
 
     fn release(self: &Rc<Self>, id: u32) {
@@ -393,6 +394,7 @@ impl CalendarOverlay {
         };
         let kind = self.active.get().expect("requested view has a surface");
         self.detached.set(true);
+        crate::notifications::layout_changed();
         let normal = gtk::ApplicationWindow::new(&pool.application);
         let title = match kind {
             Surface::Calendar => "Kira Calendar",
@@ -830,6 +832,9 @@ impl CalendarOverlay {
                 start.elapsed().as_millis()
             );
         }
+        // A notification may only re-enter the bottom-right lane once the
+        // widget has its final measured size and a painted native surface.
+        crate::notifications::layout_changed();
     }
 
     fn on_message(self: &Rc<Self>, message: &str) {
@@ -890,6 +895,7 @@ impl CalendarOverlay {
                         .map(|pool| pool.width_for(self))
                         .unwrap_or(popup_layout::PREFERRED_POPUP_WIDTH);
                     crate::native_ui::resize_webview_popup(&self.window, width, clamped);
+                    crate::notifications::layout_changed();
                 }
                 if self.widget_ready.get() && !self.paint_pending.get() && !self.revealed.get() {
                     self.request_paint();
@@ -1544,8 +1550,20 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
 }
 
 fn calendar_document(html: &str) -> Option<String> {
-    html.contains(CALENDAR_MARKER)
-        .then(|| html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
+    if html.contains(CALENDAR_MARKER) {
+        Some(html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
+    } else {
+        // The packaged root is localized to Russian. Keep existing English
+        // test fixtures compatible without silently disabling real widgets.
+        let marker = "<html lang=\"ru\">";
+        html.contains(marker).then(|| {
+            html.replacen(
+                marker,
+                "<html lang=\"ru\" data-kira-surface=\"calendar\">",
+                1,
+            )
+        })
+    }
 }
 
 fn build(
@@ -1699,6 +1717,68 @@ fn ensure(
         let pool = OverlayPool::new(application, document, context);
         *cache.borrow_mut() = Some(pool.clone());
         Some(pool)
+    })
+}
+
+/// The notifications stay bottom-right, so their only safe adjustment is
+/// reducing the upper bound of the bottom-anchored WebView. Never move widgets.
+/// A detached Niri-managed window has no known compositor rect in this module;
+/// conservatively suspend automatic toast presentation until it closes.
+pub fn notification_bottom_clearance(output_width: i32, output_height: i32) -> i32 {
+    POOL.with(|cache| {
+        let pool = cache.borrow();
+        let Some(pool) = pool.as_ref() else {
+            return output_height;
+        };
+        if pool
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.detached.get())
+        {
+            return 0;
+        }
+        let Some(view) = pool.popup() else {
+            return output_height;
+        };
+        // Before the WebKit content-size/paint handshake, GTK's old
+        // allocation can still be 1px or belong to the previous widget.
+        // Suppress toasts instead of briefly covering the incoming popup.
+        if !view.revealed.get() || view.content_height.get() <= 0 {
+            return 0;
+        }
+        let overlay_width = pool.width_for(&view);
+        let overlaps_right_lane = match view.dock.get() {
+            PopupDock::Right => true,
+            PopupDock::Center => {
+                let center_right = (output_width + overlay_width) / 2;
+                let toast_left = output_width
+                    - crate::notification_layout::PREFERRED_WIDTH
+                        .min(output_width.saturating_sub(24))
+                    - crate::notification_layout::OUTER_MARGIN;
+                center_right + 12 > toast_left
+            }
+        };
+        if !overlaps_right_lane {
+            return output_height;
+        }
+        // Some layer-shell implementations account for the 42px bar's
+        // exclusive zone while others position the Overlay from the output
+        // origin. Use the larger possible widget bottom, never a guess
+        // that could let a toast overlap a right-docked widget.
+        let top = crate::BAR_HEIGHT
+            + match view.dock.get() {
+                PopupDock::Right => crate::native_ui::POPUP_TOP_MARGIN,
+                PopupDock::Center => popup_layout::launcher_top_margin(output_height),
+            };
+        // The Svelte-reported natural height can precede GTK's map/configure;
+        // use the larger of the last actual allocation and reported content.
+        let widget_height = view
+            .content_height
+            .get()
+            .max(view.window.height())
+            .min((output_height * 7 / 10).max(1));
+        (output_height - top - widget_height - 16).max(0)
     })
 }
 
