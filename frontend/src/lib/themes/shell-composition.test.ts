@@ -128,7 +128,8 @@ describe('Kira editorial polish', () => {
     expect(markup).toContain('Открыть полный текст предупреждения');
     expect(markup).toContain('role="dialog" aria-modal="true" aria-label="Подробности предупреждения"');
     expect(markup).toContain('inert={inspectingWarnings}');
-    expect(markup).toContain('overflow-y-auto break-words');
+    expect(markup).toContain('resize-none overflow-y-auto');
+    expect(markup).toContain('readonly rows="2" wrap="soft"');
     expect(markup).toContain('aria-label="Следующее предупреждение"');
     expect(markup).toContain('onkeydown={onWarningKeydown}');
     expect(markup).toContain('role="status" aria-live="polite"');
