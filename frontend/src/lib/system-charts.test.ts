@@ -75,6 +75,15 @@ describe('System Monitor ECharts telemetry model', () => {
     expect(missing[0]).toEqual({ time: 500, cpu: null, ram: null, gpu: null });
   });
 
+  it('expires samples by real elapsed time even when the native feed slows down', () => {
+    const sample = { cpu_percent: 42, memory_total_kib: 100, memory_available_kib: 60 };
+    let history = appendPulse([], sample, 1_000);
+    history = appendPulse(history, sample, 31_000);
+    history = appendPulse(history, sample, 62_000);
+    expect(history.map(point => point.time)).toEqual([31_000, 62_000]);
+    expect(activityTimeDomain(history)).toEqual({ min: 31_000, max: 62_000 });
+  });
+
   it('charts only real samples and caps history at thirty points', () => {
     let samples = [] as ReturnType<typeof appendTelemetry>;
     for (let i = 0; i < 50; i++) {
