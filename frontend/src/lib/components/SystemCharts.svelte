@@ -6,6 +6,7 @@
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
+  import { surfaceColors } from '../surface-colors';
   import { isSampleFresh, percentUsedPrecise } from '../system-model';
   import {
     activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak,
@@ -28,11 +29,6 @@
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
 
-  const accent = '#fca311';
-  const white = '#ffffff';
-  const muted = '#e5e5e5';
-  const prussian = '#14213d';
-
   const cpu = $derived(pulse ? pulse.cpu_percent : metrics?.cpu_percent ?? null);
   const ram = $derived(pulse
     ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
@@ -45,6 +41,10 @@
     value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
 
   function draw(): void {
+    const palette = surfaceColors(gaugeNode);
+    const { accent, muted } = palette;
+    const white = palette.text;
+    const prussian = palette.surface;
     const dial = (name: string, value: number | null, center: string, color: string) => ({
       name, type: 'gauge' as const, center: [center, '50%'],
       radius: '73%', min: 0, max: 100, startAngle: 90, endAngle: -270,
