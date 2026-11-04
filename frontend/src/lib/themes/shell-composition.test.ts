@@ -120,14 +120,17 @@ const settings = readFileSync(new URL('../components/SettingsWidget.svelte', imp
 const html = readFileSync(new URL('../../../index.html', import.meta.url), 'utf8');
 
 describe('Kira editorial polish', () => {
-  it('makes each Top Bar warning inspectable without a mouse hover', () => {
+  it('exposes full warning text on-demand without changing the 42px Wayland surface', () => {
+    expect(markup).toContain('onclick={showWarningDetails}');
     expect(markup).toContain('onclick={inspectWarnings}');
     expect(markup).toContain('const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId))');
     expect(markup).toContain('nextWarningId(warnings, activeWarningId)');
-    expect(markup).toContain('{#if warnings.length > 1}');
-    expect(markup).toContain('Показать следующее предупреждение');
-    expect(markup).not.toContain('let warningDetails =');
-    expect(markup).toContain('shownWarning.text');
+    expect(markup).toContain('Открыть полный текст предупреждения');
+    expect(markup).toContain('role="dialog" aria-modal="true" aria-label="Подробности предупреждения"');
+    expect(markup).toContain('inert={inspectingWarnings}');
+    expect(markup).toContain('overflow-y-auto break-words');
+    expect(markup).toContain('aria-label="Следующее предупреждение"');
+    expect(markup).toContain('onkeydown={onWarningKeydown}');
     expect(markup).toContain('role="status" aria-live="polite"');
     expect(markup).toContain('focus-visible:outline-2');
     expect(markup).not.toContain("warnings[0]}{warnings.length > 1");
