@@ -48,12 +48,13 @@ window.addEventListener('load',()=>{
     const dialog=document.querySelector('[role="dialog"][aria-label="Подробности предупреждения"]');
     const page=dialog?.querySelector('textarea[readonly][aria-label^="Полный текст"]');
     const full=page?.value ?? '';
+    const expected='КОНФИГ: ' + msg;
     const scrolled=page && page.scrollHeight>page.clientHeight;
     if(page)page.scrollTop=page.scrollHeight;
-    document.documentElement.dataset.smokeWarningLongExact=full===msg;
+    document.documentElement.dataset.smokeWarningLongExact=full===expected;
     document.documentElement.dataset.smokeWarningLongScrollable=!!scrolled;
     document.documentElement.dataset.smokeWarningLongScrolled=!!page && page.scrollTop>0;
-    document.documentElement.dataset.smokeWarningLong=full===msg && scrolled && page.scrollTop>0;
+    document.documentElement.dataset.smokeWarningLong=full===expected && scrolled && page.scrollTop>0;
     // Test the keyboard dismissal and subsequent focus restoration.
     window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
   },335);
