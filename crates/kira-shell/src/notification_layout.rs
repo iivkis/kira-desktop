@@ -3,6 +3,7 @@
 use gtk::cairo::{RectangleInt, Region};
 
 pub const PREFERRED_WIDTH: i32 = 360;
+pub const MIN_HOST_WIDTH: i32 = 240;
 pub const OUTER_MARGIN: i32 = 12;
 pub const INNER_MARGIN: i32 = 8;
 pub const GAP: i32 = 8;
@@ -20,6 +21,9 @@ pub fn plan(output_width: i32, output_height: i32, bottom_clearance: i32) -> Opt
         return None;
     }
     let width = PREFERRED_WIDTH.min(output_width - OUTER_MARGIN * 2);
+    // A 1..15px host makes a zero/negative Cairo input rectangle; keep
+    // notifications queued instead of creating an unclickable Wayland pane.
+    if width < MIN_HOST_WIDTH { return None; }
     let height = (output_height / 2)
         .min(bottom_clearance - OUTER_MARGIN)
         .max(0);
@@ -67,6 +71,29 @@ mod tests {
             assert!(layout.width <= width - 24);
             assert!(hit_region(layout, 3).num_rectangles() >= 1);
         }
+    }
+
+    #[test]
+    fn tiny_outputs_do_not_create_negative_input_rectangles() {
+        for width in 1..(MIN_HOST_WIDTH + OUTER_MARGIN * 2) {
+            assert!(plan(width, 600, 600).is_none(), "width={width}");
+        }
+        assert!(plan(MIN_HOST_WIDTH + OUTER_MARGIN * 2, 600, 600).is_some());
+    }
+
+    #[test]
+    fn all_three_click_regions_are_bounded_and_separated() {
+        let layout = plan(900, 700, 700).unwrap();
+        assert!(layout.height * 2 <= 700);
+        assert!(layout.card_height * 3 <= layout.height);
+        let region = hit_region(layout, 3);
+        for i in 0..3 {
+            let y = layout.height - INNER_MARGIN - layout.card_height
+                - i * (layout.card_height + GAP);
+            assert!(region.contains_point(layout.width / 2, y + layout.card_height / 2));
+            if i < 2 { assert!(!region.contains_point(layout.width / 2, y - GAP / 2)); }
+        }
+        assert!(!region.contains_point(0, layout.height / 2));
     }
 
     #[test]
