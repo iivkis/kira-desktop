@@ -131,7 +131,7 @@ fn bounded(value: String, max_chars: usize) -> String {
     value.chars().take(max_chars).collect()
 }
 
-fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> Notice {
+fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant, sender: &str) -> Notice {
     let app = bounded(
         params.child_value(0).get::<String>().unwrap_or_default(),
         128,
@@ -168,13 +168,14 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
     } else {
         Duration::from_millis(u64::try_from(timeout.max(3000).min(30000)).unwrap_or(5000))
     };
-    let id = if replace != 0 && queue.contains_active(replace) {
+    let id = if replace != 0 && queue.active_owner(replace) == Some(sender) {
         replace
     } else {
         queue.allocate_id()
     };
     Notice {
         id,
+        owner: bounded(sender.to_owned(), 256),
         app,
         summary,
         body,
@@ -198,7 +199,7 @@ impl Service {
         let registered = connection
             .register_object(OBJECT_PATH, &info)
             .method_call(
-                move |_connection, _sender, _path, _interface, method, params, invocation| {
+                move |_connection, sender, _path, _interface, method, params, invocation| {
                     let Some(service) = weak.upgrade() else {
                         invocation.return_dbus_error(
                             "org.freedesktop.DBus.Error.Failed",
@@ -229,7 +230,7 @@ impl Service {
                             }
                             let (id, accepted) = {
                                 let mut queue = service.queue.borrow_mut();
-                                let notice = notice_from_params(&mut queue, &params);
+                                let notice = notice_from_params(&mut queue, &params, sender);
                                 let id = notice.id;
                                 (id, queue.push(notice, Instant::now()))
                             };
@@ -245,7 +246,10 @@ impl Service {
                         }
                         "CloseNotification" => {
                             let id = params.child_value(0).get::<u32>().unwrap_or(0);
-                            let existed = service.queue.borrow_mut().close(id);
+                            // The numeric ID is public; only the original
+                            // unique session-bus sender may close its notice.
+                            let allowed = service.queue.borrow().active_owner(id) == Some(sender);
+                            let existed = allowed && service.queue.borrow_mut().close(id);
                             if existed {
                                 invocation.return_value(None);
                                 service.signal_closed(id, 3);
