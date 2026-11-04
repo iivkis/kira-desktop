@@ -55,6 +55,18 @@ export function appendTelemetry(
   return next.slice(-MAX_TELEMETRY_POINTS);
 }
 
+/** Expire points on a sliding elapsed-time window even if no new event
+ * arrives. Without this, a stopped stream leaves an apparently live chart.
+ * This uses the same monotonic time domain as each native pulse point.
+ */
+export function recentPulseHistory(
+  history: readonly TelemetryPoint[], now: number,
+): TelemetryPoint[] {
+  if (!Number.isFinite(now)) return [];
+  return history.filter(point => Number.isFinite(point.time) &&
+    now >= point.time && now - point.time <= MAX_PULSE_HISTORY_MS);
+}
+
 /** One real sample per native 500ms pulse. GPU is populated only on the
  * next pulse after a genuine two-second GPU reading, never interpolated or
  * multiplied into twenty fictitious 500ms measurements.
@@ -74,8 +86,7 @@ export function appendPulse(
   // A slow or interrupted 500ms stream can accumulate 120 points across
   // more than one minute. Keep a true one-minute measured history as well
   // as an absolute memory bound; never fabricate intermediate points.
-  return next.filter(point => point.time <= time && time - point.time <= MAX_PULSE_HISTORY_MS)
-    .slice(-MAX_PULSE_POINTS);
+  return recentPulseHistory(next, time).slice(-MAX_PULSE_POINTS);
 }
 
 /** Both panels must plot the SAME real timestamps and start on the
