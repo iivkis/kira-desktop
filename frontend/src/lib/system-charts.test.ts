@@ -119,7 +119,7 @@ describe('System Monitor ECharts telemetry model', () => {
     expect(activityHistoryCaption(measured.slice(0, 2)))
       .toBe('1 реальный замер · ожидание истории');
     expect(activityHistoryCaption(measured))
-      .toBe('3 реальных замеров · 1,5 с истории');
+      .toBe('3 реальных замера · 1,5 с истории');
     expect(activityHistoryCaption(recentPulseHistory(measured, 75_000)))
       .toBe('Нет доступных замеров за последнюю минуту');
   });
