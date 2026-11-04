@@ -1,6 +1,7 @@
 <script lang="ts">
   import { systemHealth, type CoreConnectionStatus } from '../system-health';
   import { healthLabel } from '../ui-locale';
+  import { isSampleFresh } from '../system-model';
   import type { SystemMetrics } from '../sdk/core';
 
   let {
@@ -21,9 +22,10 @@
     onOpen: () => void;
   } = $props();
 
-  const age = $derived(metricsLastReceivedAt === null ? null : now.getTime() - metricsLastReceivedAt);
-  // The native sampler runs every 2 seconds; match the monitor's 6-second expiry.
-  const freshness = $derived(age !== null && (age < 0 || age > 6_000) ? 'stale' : 'fresh');
+  // The native sampler runs every 2 seconds. A previously received sample
+  // without a valid timestamp is not eligible to become a READY state.
+  const freshness = $derived(metrics !== null &&
+    !isSampleFresh(metricsLastReceivedAt, now.getTime()) ? 'stale' : 'fresh');
   const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected, metrics, freshness));
   const label = $derived(healthLabel(health.label));
 </script>
