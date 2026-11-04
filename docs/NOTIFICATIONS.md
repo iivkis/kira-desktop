@@ -19,6 +19,7 @@
 - Widget opening is treated as unknown geometry until native/Svelte paint is acknowledged; no toast may overlap an unmeasured transient widget. Clearance conservatively includes the Top Bar's 42px reserved height.
 - Repeated GTK geometry callbacks do **not** regenerate an unchanged Svelte snapshot or restart pending paint acknowledgements.
 - Tiny outputs that cannot fit a 240 logical-pixel card column keep events queued. Even the invisible bootstrap WebView is initially sized below the 50% output-height cap.
+- GTK monitor geometry, scale-factor and output-list changes trigger layout re-evaluation, so hotplug and resolution changes do not leave a stale 50%-height window.
 
 ## Transport and security
 
