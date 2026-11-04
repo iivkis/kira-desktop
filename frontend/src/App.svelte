@@ -217,6 +217,9 @@
       {now}
       onOpen={activateSystemPanel}
     />
+    {#if warnings.length}
+      <span class="sr-only" role="status" aria-live="polite">{warnings.map(warning => warning.text).join('; ')}</span>
+    {/if}
     {#if shownWarning}
       <button type="button" onclick={inspectWarnings}
         aria-label={'Предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.text +
