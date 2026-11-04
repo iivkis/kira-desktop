@@ -27,6 +27,11 @@ const notices = [
    critical:true,actions:[]},
 ];
 window.addEventListener("load",()=>{
+  // Corrupt snapshots from a transport or stale renderer must not poison
+  // keyed Svelte state or consume a future valid revision.
+  setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:notifications:update",{
+    detail:{revision:2,height:320,cardHeight:96,visible:[notices[0],notices[0]]}
+  })),40);
   setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:notifications:update",{
     detail:{revision:1,height:320,cardHeight:96,visible:notices}
   })),75);
