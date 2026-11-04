@@ -207,13 +207,28 @@ impl Service {
                             ));
                         }
                         "Notify" => {
-                            let id = {
+                            // A single D-Bus invocation must never allocate an
+                            // unbounded payload or silently drop an older FIFO item.
+                            if params.size() > 64 * 1024 {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.ExcessData",
+                                    "Notification payload exceeds 64 KiB",
+                                );
+                                return;
+                            }
+                            let (id, accepted) = {
                                 let mut queue = service.queue.borrow_mut();
                                 let notice = notice_from_params(&mut queue, &params);
                                 let id = notice.id;
-                                queue.push(notice, Instant::now());
-                                id
+                                (id, queue.push(notice, Instant::now()))
                             };
+                            if !accepted {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.QueueFull",
+                                    "Notification FIFO queue is full",
+                                );
+                                return;
+                            }
                             invocation.return_value(Some(&(id,).to_variant()));
                             service.sync();
                         }
@@ -258,7 +273,7 @@ impl Service {
         let allowed = self
             .queue
             .borrow()
-            .history()
+            .visible()
             .any(|item| item.id == id && item.actions.iter().any(|(action, _)| action == key));
         if !allowed || !self.owned.get() {
             return;
@@ -447,7 +462,22 @@ impl Service {
         let host = self.host.borrow().clone();
         let ready = host.as_ref().is_some_and(|host| host.ready.get());
         let usable = possible && ready;
+        let previously_visible: Vec<u32> = if usable {
+            self.queue.borrow().visible().map(|item| item.id).collect()
+        } else {
+            Vec::new()
+        };
         let changed = self.queue.borrow_mut().step(now, usable);
+        if usable {
+            // Automatic expiry is a D-Bus close event (reason 1). Replacements
+            // keep the same ID, so they never produce a false close signal.
+            let current: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
+            for id in previously_visible {
+                if !current.contains(&id) {
+                    self.signal_closed(id, 1);
+                }
+            }
+        }
         if let Some(host) = host {
             if usable && self.queue.borrow().visible_count() > 0 {
                 let layout = layout.expect("checked layout");
