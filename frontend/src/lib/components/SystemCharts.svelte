@@ -133,7 +133,9 @@
       lastMetrics = current;
     }
     if (sample && sample !== lastPulse) {
-      history = appendPulse(history, sample, Date.now(), pendingGpu ?? null);
+      // The chart axis is elapsed-time only; monotonic time keeps the
+      // recorded trajectory stable when the wall clock is adjusted.
+      history = appendPulse(history, sample, performance.now(), pendingGpu ?? null);
       pendingGpu = undefined;
       lastPulse = sample;
     }
