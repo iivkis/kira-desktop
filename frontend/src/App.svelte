@@ -3,7 +3,6 @@
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
-  import { UI_LOCALE } from './lib/ui-locale';
   import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
@@ -222,13 +221,13 @@
       type="button"
       class="shrink-0 cursor-pointer rounded-[2px] border-0 bg-transparent px-2 py-2 leading-none text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
       title="Открыть календарь"
-      aria-label={'Открыть календарь, местное время ' + formatClock(now, UI_LOCALE, configState.config.show_seconds)}
+      aria-label={'Открыть календарь, местное время ' + formatClock(now, undefined, configState.config.show_seconds)}
       aria-haspopup="dialog"
       onclick={activateCalendar}
     >
       <time class="whitespace-nowrap text-[13px] font-extrabold tracking-[0.05em] tabular-nums max-[540px]:text-xs"
         datetime={now.toISOString()}>
-        {formatClock(now, UI_LOCALE, configState.config.show_seconds)}
+        {formatClock(now, undefined, configState.config.show_seconds)}
       </time>
     </button>
   </section>
