@@ -7,16 +7,23 @@
     coreVersion,
     niriConnected,
     metrics,
+    metricsLastReceivedAt,
+    now,
     onOpen,
   }: {
     coreStatus: CoreConnectionStatus;
     coreVersion: string;
     niriConnected: boolean | null;
     metrics: SystemMetrics | null;
+    metricsLastReceivedAt: number | null;
+    now: Date;
     onOpen: () => void;
   } = $props();
 
-  const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected, metrics));
+  const age = $derived(metricsLastReceivedAt === null ? null : now.getTime() - metricsLastReceivedAt);
+  // The native sampler runs every 2 seconds; match the monitor's 6-second expiry.
+  const freshness = $derived(age !== null && (age < 0 || age > 6_000) ? 'stale' : 'fresh');
+  const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected, metrics, freshness));
 </script>
 
 <button
