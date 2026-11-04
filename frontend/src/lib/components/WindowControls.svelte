@@ -8,9 +8,9 @@
     label: string;
   } = $props();
 
-  const localizedName = label === 'launcher' ? 'приложения'
+  const localizedName = $derived(label === 'launcher' ? 'приложения'
     : label === 'calendar' ? 'календарь'
-      : label === 'settings' ? 'настройки' : 'монитор системы';
+      : label === 'settings' ? 'настройки' : 'монитор системы');
   let detached = $state(false);
   let popoutFailed = $state(false);
   let responseTimer: number | null = null;
