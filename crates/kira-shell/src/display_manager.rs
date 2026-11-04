@@ -127,7 +127,9 @@ fn report_pending(events: &Sender<Event>, id: u64, deadline: Instant) {
 /// validated against Niri's own snapshot, without an interpolated shell.
 fn read_capped(reader: impl Read, max_bytes: usize) -> std::io::Result<Vec<u8>> {
     let mut bytes = Vec::new();
-    reader.take((max_bytes + 1) as u64).read_to_end(&mut bytes)?;
+    reader
+        .take((max_bytes + 1) as u64)
+        .read_to_end(&mut bytes)?;
     Ok(bytes)
 }
 
@@ -422,9 +424,10 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             }
             None => requests.recv().map_err(|_| RecvTimeoutError::Disconnected),
         };
-        if pending.as_ref().is_some_and(|(_, _, deadline)| {
-            deadline_expired(*deadline, Instant::now())
-        }) {
+        if pending
+            .as_ref()
+            .is_some_and(|(_, _, deadline)| deadline_expired(*deadline, Instant::now()))
+        {
             if let Some((_, before, _)) = pending.take() {
                 staged = None;
                 revert(&before, &events);
@@ -590,9 +593,15 @@ mod tests {
         let now = Instant::now();
         let deadline = now + Duration::from_secs(CONFIRM_SECS);
         assert!(!deadline_expired(deadline, now));
-        assert!(!deadline_expired(deadline, deadline - Duration::from_nanos(1)));
+        assert!(!deadline_expired(
+            deadline,
+            deadline - Duration::from_nanos(1)
+        ));
         assert!(deadline_expired(deadline, deadline));
-        assert!(deadline_expired(deadline, deadline + Duration::from_secs(1)));
+        assert!(deadline_expired(
+            deadline,
+            deadline + Duration::from_secs(1)
+        ));
     }
     use serde_json::json;
 
