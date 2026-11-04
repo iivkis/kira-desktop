@@ -87,6 +87,7 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
         last_rendered: RefCell::new(None),
     });
     ACTIVE.with(|active| *active.borrow_mut() = Some(service.clone()));
+    observe_outputs(&service);
 
     let acquired = Rc::downgrade(&service);
     let name_acquired = Rc::downgrade(&service);
@@ -117,6 +118,45 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
             }
         },
     );
+}
+
+/// Monitor geometry is in GTK logical pixels. When Niri changes a mode,
+/// scale or output topology, resize/hide the toast without waiting for
+/// another D-Bus notification; otherwise the 50% cap can become stale.
+fn observe_monitor(monitor: &gtk::gdk::Monitor, service: &Rc<Service>) {
+    let weak = Rc::downgrade(service);
+    monitor.connect_notify_local(Some("geometry"), move |_, _| {
+        if let Some(service) = weak.upgrade() { service.sync(); }
+    });
+    let weak = Rc::downgrade(service);
+    monitor.connect_notify_local(Some("scale-factor"), move |_, _| {
+        if let Some(service) = weak.upgrade() { service.sync(); }
+    });
+}
+
+fn observe_outputs(service: &Rc<Service>) {
+    let Some(display) = gtk::gdk::Display::default() else { return; };
+    let monitors = display.monitors();
+    for index in 0..monitors.n_items() {
+        if let Some(monitor) = monitors.item(index)
+            .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+        {
+            observe_monitor(&monitor, service);
+        }
+    }
+    let weak = Rc::downgrade(service);
+    monitors.connect_items_changed(move |model, position, _, added| {
+        if let Some(service) = weak.upgrade() {
+            for index in position..position.saturating_add(added) {
+                if let Some(monitor) = model.item(index)
+                    .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+                {
+                    observe_monitor(&monitor, &service);
+                }
+            }
+            service.sync();
+        }
+    });
 }
 
 pub fn layout_changed() {
