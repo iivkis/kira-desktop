@@ -3,7 +3,7 @@
 use std::process::Command;
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 const CONFIRM_SECS: u64 = 15;
 const MAX_OUTPUTS: usize = 8;
@@ -35,6 +35,7 @@ pub struct Event {
     pub state: &'static str,
     pub outputs: Option<serde_json::Value>,
     pub pending_id: Option<u64>,
+    pub deadline_unix_ms: Option<u64>,
     pub error: Option<String>,
     pub persistence: &'static str,
 }
@@ -91,7 +92,27 @@ fn report(
         state,
         outputs: snapshot,
         pending_id,
+        deadline_unix_ms: None,
         error: error.map(|value| value.chars().take(240).collect()),
+        persistence: crate::config_layers::status(),
+    });
+}
+
+/// A pending confirmation reports the same deadline as the native watchdog.
+/// Absolute time avoids restarting a 15-second timer when WebKit receives a
+/// delayed event. Instant remains authoritative for the rollback itself.
+fn report_pending(events: &Sender<Event>, id: u64, deadline: Instant) {
+    let remaining = deadline.saturating_duration_since(Instant::now());
+    let deadline_unix_ms = SystemTime::now()
+        .checked_add(remaining)
+        .and_then(|time| time.duration_since(UNIX_EPOCH).ok())
+        .and_then(|time| u64::try_from(time.as_millis()).ok());
+    let _ = events.send(Event {
+        state: "pending",
+        outputs: query().ok(),
+        pending_id: Some(id),
+        deadline_unix_ms,
+        error: None,
         persistence: crate::config_layers::status(),
     });
 }
@@ -370,6 +391,7 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                                 state: "ready",
                                 outputs: Some(outputs),
                                 pending_id: None,
+                                deadline_unix_ms: None,
                                 error: None,
                                 persistence: crate::config_layers::status(),
                             });
@@ -410,7 +432,9 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                                 before,
                                 Instant::now() + Duration::from_secs(CONFIRM_SECS),
                             ));
-                            report(&events, "pending", Some(id), None);
+                            if let Some((_, _, deadline)) = pending.as_ref() {
+                                report_pending(&events, id, *deadline);
+                            }
                         }
                     }
                 }
