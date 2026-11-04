@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel, isSampleFresh } from './system-model';
-import type { ProcessRow, SystemMetrics } from './sdk/core';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel, isSampleFresh, liveUtilization } from './system-model';
+import type { ProcessRow, SystemMetrics, SystemPulse } from './sdk/core';
 
 const processes: ProcessRow[] = [
   { pid: 3, name: 'zebra', state: 'R', cpu_percent: 20, rss_kib: 4000, pss_kib: 1200 },
@@ -19,6 +19,25 @@ describe('Svelte System Monitor model', () => {
     expect(isSampleFresh(9_000, Number.NaN)).toBe(false);
     expect(isSampleFresh(7_500, 10_000, 2_500)).toBe(true);
     expect(isSampleFresh(7_499, 10_000, 2_500)).toBe(false);
+  });
+
+  it('never renders an expired high-frequency pulse as a live gauge', () => {
+    const pulse: SystemPulse = {
+      cpu_percent: 96,
+      memory_total_kib: 1_000,
+      memory_available_kib: 30,
+    };
+    const current: SystemMetrics = {
+      cpu_percent: 12, cpu_temperature_c: null, gpus: [],
+      memory_total_kib: 1_000, memory_available_kib: 400,
+      swap_total_kib: 0, swap_free_kib: 0,
+      root_total_kib: null, root_available_kib: null, uptime_seconds: null,
+      load: null, battery_percent: null, battery_charging: null,
+    };
+    expect(liveUtilization(pulse, true, current)).toEqual({ cpu: 96, ram: 97 });
+    expect(liveUtilization(pulse, false, current)).toEqual({ cpu: 12, ram: 60 });
+    expect(liveUtilization(pulse, false, null)).toEqual({ cpu: null, ram: null });
+    expect(liveUtilization(null, false, current)).toEqual({ cpu: 12, ram: 60 });
   });
 
   it('sorts each column in both directions and keeps missing metrics last', () => {
