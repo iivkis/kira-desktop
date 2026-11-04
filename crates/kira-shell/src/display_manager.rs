@@ -353,6 +353,13 @@ fn revert(before: &[Desired], events: &Sender<Event>) {
     );
 }
 
+// Messages already queued in the channel must not extend or bypass the
+// rollback deadline. recv_timeout can return Ok even when the deadline has
+// elapsed while the worker was executing a Niri IPC request.
+fn deadline_expired(deadline: Instant, now: Instant) -> bool {
+    now >= deadline
+}
+
 fn run(requests: Receiver<Request>, events: Sender<Event>) {
     let mut next_id = 0_u64;
     let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
@@ -365,6 +372,17 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             }
             None => requests.recv().map_err(|_| RecvTimeoutError::Disconnected),
         };
+        if pending.as_ref().is_some_and(|(_, _, deadline)| {
+            deadline_expired(*deadline, Instant::now())
+        }) {
+            if let Some((_, before, _)) = pending.take() {
+                staged = None;
+                revert(&before, &events);
+            }
+            // An expired confirmation cannot commit the pending preview,
+            // even when the command was queued before recv_timeout returned.
+            continue;
+        }
         let message = match received {
             Ok(message) => message,
             Err(RecvTimeoutError::Timeout) => {
@@ -509,6 +527,16 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_queued_confirmation_does_not_extend_the_rollback_deadline() {
+        let now = Instant::now();
+        let deadline = now + Duration::from_secs(CONFIRM_SECS);
+        assert!(!deadline_expired(deadline, now));
+        assert!(!deadline_expired(deadline, deadline - Duration::from_nanos(1)));
+        assert!(deadline_expired(deadline, deadline));
+        assert!(deadline_expired(deadline, deadline + Duration::from_secs(1)));
+    }
     use serde_json::json;
 
     fn outputs() -> serde_json::Value {
