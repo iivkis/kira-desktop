@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import { confirmationDeadlineMonotonic, confirmationSecondsRemaining } from '../display-confirmation';
   import {
     onDisplayStatus, requestDisplays, applyDisplays, confirmDisplays, revertDisplays,
     displayModeId, displayTransformId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
@@ -18,9 +19,8 @@
   let persistence = $state<DisplayStatus['persistence']>('manual');
   let pendingId = $state<number | null>(null);
   let deadlineMs = $state<number | null>(null);
-  let clockNow = $state(Date.now());
-  const remaining = $derived(deadlineMs === null ? null :
-    Math.max(0, Math.ceil((deadlineMs - clockNow) / 1_000)));
+  let clockNow = $state(0);
+  const remaining = $derived(confirmationSecondsRemaining(deadlineMs, clockNow));
   let drag = $state<{ connector: string; px: number; py: number; x: number; y: number; zoom: number } | null>(null);
 
   let mapViewport = $state<HTMLDivElement | null>(null);
@@ -82,8 +82,10 @@
     persistence = message.persistence;
     if (message.state === 'pending' && message.pending_id !== null) {
       pendingId = message.pending_id;
-      deadlineMs = message.deadline_unix_ms ?? null;
-      clockNow = Date.now();
+      const receivedMonotonicMs = performance.now();
+      deadlineMs = confirmationDeadlineMonotonic(message.deadline_unix_ms ?? null,
+        Date.now(), receivedMonotonicMs);
+      clockNow = receivedMonotonicMs;
       error = null;
       statusText = 'Новая конфигурация активна. Подтвердите изменения.';
       return;
@@ -233,7 +235,7 @@
     const stop = onDisplayStatus(generation, receive);
     refresh();
     const clock = window.setInterval(() => {
-      if (pendingId !== null) clockNow = Date.now();
+      if (pendingId !== null) clockNow = performance.now();
     }, 250);
     return () => {
       stop();
