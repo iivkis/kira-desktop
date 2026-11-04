@@ -100,7 +100,7 @@
           min: axis.min, max: axis.max, interval: (axis.max - axis.min) / 2,
           axisLine: { show: false }, axisTick: { show: false },
           axisLabel: {
-            color: muted, fontSize: 9, margin: 7,
+            color: muted, fontSize: 11, margin: 7,
             formatter: (v: number) => Number(v.toFixed(1)) + '%',
           },
           splitLine: { lineStyle: { color: prussian, width: 1 } },
