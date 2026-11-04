@@ -4,6 +4,7 @@ import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
 import SettingsWidget from './lib/components/SettingsWidget.svelte';
+import NotificationHost from './lib/components/NotificationHost.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, detachOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
@@ -26,6 +27,15 @@ report('Svelte entrypoint evaluating; document.readyState=' + document.readyStat
 whenDocumentReady(document, () => {
   report('Svelte bootstrap after DOMContentLoaded; readyState=' + document.readyState);
   const target = document.getElementById('app');
+  if (document.documentElement.dataset.kiraSurface === 'notifications') {
+    if (!target) { report('Notification bootstrap: missing #app'); return; }
+    mount(NotificationHost, { target });
+    flushSync();
+    target.querySelector('#kira-loading')?.remove();
+    Reflect.set(window, '__kiraMountReturned', true);
+    report('Shared notification Svelte host mounted');
+    return;
+  }
   if (document.documentElement.dataset.kiraSurface === 'calendar') {
     if (!target) {
       report('Calendar bootstrap failure: #app missing');
