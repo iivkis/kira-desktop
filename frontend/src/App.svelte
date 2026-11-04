@@ -3,6 +3,7 @@
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
+  import { russianCountLabel } from './lib/ui-locale';
   import { nextWarningId, visibleWarningIndex, type UiWarning } from './lib/warning-model';
   import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
@@ -86,9 +87,11 @@
     warningMessage?.focus();
   }
 
-  function inspectWarnings() {
+  async function inspectWarnings() {
     activeWarningId = nextWarningId(warnings, activeWarningId);
-    if (warningMessage) warningMessage.scrollTop = 0;
+    // Reset after the textarea receives the new reactive value.
+    await tick();
+    if (warningDetailsOpen && warningMessage) warningMessage.scrollTop = 0;
   }
 
   async function closeWarningDetails() {
@@ -98,10 +101,29 @@
   }
 
   function onWarningKeydown(event: KeyboardEvent) {
-    if (inspectingWarnings && event.key === 'Escape') {
+    if (!inspectingWarnings) return;
+    if (event.key === 'Escape') {
       event.preventDefault();
       event.stopPropagation();
       void closeWarningDetails();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    // aria-modal alone does not trap keyboard focus. Cycling the boundary
+    // prevents Tab from escaping into browser chrome or native controls.
+    const controls = Array.from(document.querySelectorAll<HTMLElement>(
+      '#kira-warning-inspector textarea, #kira-warning-inspector button',
+    ));
+    if (controls.length === 0) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !controls.includes(active as HTMLElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !controls.includes(active as HTMLElement))) {
+      event.preventDefault();
+      first.focus();
     }
   }
 
@@ -247,12 +269,14 @@
       onOpen={activateSystemPanel}
     />
     {#if warnings.length}
-      <span class="sr-only" role="status" aria-live="polite">{warnings.map(warning => warning.text).join('; ')}</span>
+      <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {russianCountLabel(warnings.length, 'предупреждение', 'предупреждения', 'предупреждений')}. Подробности доступны в верхней панели.
+      </span>
     {/if}
     {#if shownWarning}
       <button bind:this={warningButton} type="button" onclick={showWarningDetails}
-        aria-label={'Открыть полный текст предупреждения ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.text}
-        aria-haspopup="dialog" aria-controls="kira-warning-inspector" aria-expanded={inspectingWarnings}
+        aria-label={'Открыть предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.short}
+        aria-haspopup="dialog" aria-controls={inspectingWarnings ? 'kira-warning-inspector' : undefined} aria-expanded={inspectingWarnings}
         title={shownWarning.text + '\nНажмите для просмотра полного текста'}
         class="min-w-0 max-w-[105px] shrink-0 cursor-pointer truncate px-1 text-center text-[11px] font-extrabold text-kira-accent transition-colors hover:text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent motion-reduce:transition-none min-[900px]:max-w-[180px]">
         <span class="min-[900px]:hidden">{shownWarning.short}</span>
@@ -289,6 +313,9 @@
     <!-- Temporary inspection mode; the underlying Top Bar zones are inert. -->
     <div id="kira-warning-inspector" role="dialog" aria-modal="true" aria-label="Подробности предупреждения"
       class="absolute inset-0 z-30 flex h-[42px] items-center gap-2 border-b border-kira-muted/15 bg-kira-bg px-2 text-kira-text">
+      <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        Предупреждение {warningPosition + 1} из {warnings.length}: {shownWarning.short}. Полный текст доступен в поле.
+      </span>
       <span class="shrink-0 text-[11px] font-bold tabular-nums text-kira-accent" aria-hidden="true">
         !{warningPosition + 1}/{warnings.length}
       </span>
