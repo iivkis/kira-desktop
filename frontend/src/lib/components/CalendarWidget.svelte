@@ -271,12 +271,16 @@
         class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">СЕГОДНЯ</button>
       <button type="button" onclick={copySelectedDate}
-        aria-label={'Скопировать дату ' + selectedIso}
+        aria-label={copyState === 'copied' ? 'Дата ' + selectedIso + ' скопирована' :
+          copyState === 'pending' ? 'Копирование даты ' + selectedIso : 'Скопировать дату ' + selectedIso}
         class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">{copyState === 'copied' ? 'СКОПИРОВАНО' : copyState === 'pending' ? 'КОПИРОВАНИЕ…' : 'КОПИРОВАТЬ'}</button>
-      {#if copyState === 'failed'}
-        <span role="status" class="text-[11px] font-semibold text-kira-accent">НЕ УДАЛОСЬ СКОПИРОВАТЬ</span>
-      {/if}
+      <span role="status" aria-live="polite" aria-atomic="true"
+        class={copyState === 'failed' ? 'text-[11px] font-semibold text-kira-accent' : 'sr-only'}>
+        {copyState === 'copied' ? 'Дата ' + selectedIso + ' скопирована' :
+          copyState === 'failed' ? 'НЕ УДАЛОСЬ СКОПИРОВАТЬ' :
+            copyState === 'pending' ? 'Копирование даты' : ''}
+      </span>
     </div>
   </footer>
   </div>
