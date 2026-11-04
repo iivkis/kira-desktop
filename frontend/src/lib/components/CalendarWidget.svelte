@@ -220,14 +220,14 @@
       <span data-kira-flow-indicator aria-hidden="true"
         class="pointer-events-none absolute left-0 top-0 z-0 bg-kira-accent"></span>
       <span class="flex min-h-7 items-center justify-center border-b border-r border-kira-muted/15 bg-kira-bg/20
-        text-[9px] font-bold tracking-wide text-kira-muted" aria-label="Week number">WK</span>
+        text-[11px] font-bold tracking-wide text-kira-muted" aria-label="Week number">WK</span>
       {#each weekdayLabels as label}
         <span class="flex min-h-7 items-center justify-center border-b border-kira-muted/15
-          text-[10px] font-bold uppercase text-kira-muted">{label}</span>
+          text-[11px] font-bold uppercase text-kira-muted">{label}</span>
       {/each}
       {#each weeks as days}
         <span class="flex min-h-8 items-center justify-center border-r border-kira-muted/15
-          bg-kira-bg/15 text-[9px] font-semibold tabular-nums text-kira-muted"
+          bg-kira-bg/15 text-[11px] font-semibold tabular-nums text-kira-muted"
           aria-label={'ISO week ' + (days[0] ? isoWeek(days[0]).week : '')}>
           {days[0] ? String(isoWeek(days[0]).week).padStart(2, '0') : ''}
         </span>
@@ -263,7 +263,7 @@
       <p class="min-w-0 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale)}>
         {selectedLabel}
       </p>
-      <p class="shrink-0 text-[10px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
+      <p class="shrink-0 text-[11px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
     </div>
     <div class="mt-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
       <button type="button" onclick={goToday}
