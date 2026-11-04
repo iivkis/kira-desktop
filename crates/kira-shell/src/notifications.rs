@@ -57,6 +57,9 @@ struct Service {
     host: RefCell<Option<Rc<Host>>>,
     timer_epoch: Cell<u64>,
     render_revision: Cell<u32>,
+    // Idempotent snapshots: unrelated GTK layout notifications must not
+    // cancel the Svelte paint ACK and indefinitely postpone FIFO admission.
+    last_rendered: RefCell<Option<String>>,
 }
 
 pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) {
@@ -78,6 +81,7 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
         host: RefCell::new(None),
         timer_epoch: Cell::new(0),
         render_revision: Cell::new(0),
+        last_rendered: RefCell::new(None),
     });
     ACTIVE.with(|active| *active.borrow_mut() = Some(service.clone()));
 
@@ -309,6 +313,9 @@ impl Service {
             if let Some(host) = self.host.borrow().as_ref() {
                 host.ready.set(true);
             }
+            // Renderer restart means its JS event listeners are new even
+            // when the current toast payload hasn't changed.
+            self.last_rendered.borrow_mut().take();
             self.sync();
         } else if let Some(id) = message
             .strip_prefix("close:")
@@ -389,9 +396,11 @@ impl Service {
             if let Some(service) = weak.upgrade() {
                 if let Some(host) = service.host.borrow().as_ref() {
                     host.ready.set(false);
+                    host.window.set_opacity(0.0);
                     host.window.set_visible(false);
                 }
                 service.queue.borrow_mut().step(Instant::now(), false);
+                service.last_rendered.borrow_mut().take();
                 // A fresh Svelte instance will request a full snapshot.
                 let document = notification_html(&service.html);
                 let webview = webview.clone();
@@ -430,12 +439,20 @@ impl Service {
                 })
             })
             .collect();
+        // Only notify Svelte for changed content or geometry. Calling render
+        // for every GTK layout event used to invalidate in-flight rAF/paint
+        // acknowledgements, potentially freezing the FIFO forever.
+        let content = serde_json::json!({
+            "height": layout.height, "cardHeight": layout.card_height, "visible": showing
+        }).to_string();
+        if self.last_rendered.borrow().as_deref() == Some(content.as_str()) {
+            return;
+        }
+        self.last_rendered.replace(Some(content.clone()));
         let revision = self.render_revision.get().wrapping_add(1).max(1);
         self.render_revision.set(revision);
-        let payload = serde_json::json!({
-            "revision": revision,
-            "height": layout.height, "cardHeight": layout.card_height, "visible": showing
-        });
+        let payload = serde_json::json!({ "revision": revision, "height": layout.height,
+            "cardHeight": layout.card_height, "visible": showing });
         // Serialize twice: sender-controlled notification text is never JS.
         if let Ok(encoded) = serde_json::to_string(&payload.to_string()) {
             let script = format!(
@@ -544,12 +561,14 @@ impl Service {
                 });
             } else {
                 host.window.set_visible(false);
+                self.last_rendered.borrow_mut().take();
             }
         }
         if changed && self.queue.borrow().visible_count() == 0 {
             // No empty mapped WebView with a half-screen hit target.
             if let Some(host) = self.host.borrow().as_ref() {
                 host.window.set_visible(false);
+                self.last_rendered.borrow_mut().take();
             }
         }
         self.schedule(now, usable);
