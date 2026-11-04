@@ -30,6 +30,16 @@ class NativeThemeContractTests(unittest.TestCase):
         self.assertNotIn("gtk::CssProvider", SHELL)
         self.assertNotIn("gtk::CssProvider", OVERLAY)
 
+    def test_nixos_shell_uses_scoped_cyrillic_font_config(self):
+        style = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn('--font-sans: "Noto Sans", "DejaVu Sans"', style)
+        self.assertIn("makeFontsConf,", NIX)
+        self.assertIn("noto-fonts,", NIX)
+        self.assertIn("fontDirectories = [ noto-fonts ];", NIX)
+        self.assertIn('gappsWrapperArgs+=(--set-default FONTCONFIG_FILE "${uiFontsConf}")', NIX)
+        # Keep system/host font settings untouched; this is a package wrapper.
+        self.assertNotIn("fonts.packages", NIX)
+
     def test_native_code_is_only_webkit_layer_shell_and_gio(self):
         self.assertIn("webkit6::WebView::builder()", OVERLAY)
         self.assertIn("pub fn restrict_webview_navigation", HELPERS)
