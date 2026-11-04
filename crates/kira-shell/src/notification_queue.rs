@@ -214,7 +214,10 @@ impl NotificationQueue {
     /// True only after the trusted Svelte renderer acknowledges a visual
     /// frame. Prevents exposing an outdated DOM when the host was blank.
     pub fn painted_count(&self) -> usize {
-        self.showing.iter().filter(|entry| entry.since.is_some()).count()
+        self.showing
+            .iter()
+            .filter(|entry| entry.since.is_some())
+            .count()
     }
 
     pub fn has_painted(&self) -> bool {
