@@ -119,6 +119,8 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("lastPulseAt = performance.now()", CHARTS)
         self.assertIn("history = appendPulse(history, sample, performance.now()", CHARTS)
         self.assertNotIn("pulseClock", CHARTS)
+        self.assertIn("const refreshTick = now;", CHARTS)
+        self.assertIn("recentPulseHistory(history, performance.now())", CHARTS)
         self.assertNotIn("now < lastPulseAt ||", CHARTS)
 
     def test_native_views_and_styles_are_removed(self):
