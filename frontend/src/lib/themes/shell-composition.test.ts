@@ -72,7 +72,7 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('onclick={activateLauncher}');
     expect(markup).toContain('configState.config.title');
     expect(markup).toContain('configState.config.show_seconds');
-    expect(markup).toContain('formatClock(now, UI_LOCALE, configState.config.show_seconds)');
+    expect(markup).toContain('formatClock(now, undefined, configState.config.show_seconds)');
     expect(markup).toContain('focus-visible:outline-kira-accent');
     expect(markup).toContain('onclick={activateCalendar}');
     expect(markup).toContain('onOpen={activateSystemPanel}');
