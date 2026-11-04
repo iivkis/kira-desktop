@@ -65,7 +65,7 @@
   let activeWarningId = $state<string | null>(null);
   let warningDetailsOpen = $state(false);
   let warningButton = $state<HTMLButtonElement | undefined>(undefined);
-  let warningMessage = $state<HTMLDivElement | undefined>(undefined);
+  let warningMessage = $state<HTMLTextAreaElement | undefined>(undefined);
   let settingsButton = $state<HTMLButtonElement | undefined>(undefined);
   const warnings = $derived([
     launcherUnavailable ? { id: 'launcher', text: 'ЛАУНЧЕР НЕДОСТУПЕН', short: 'ЛАУНЧЕР' } : null,
@@ -284,16 +284,14 @@
   </section>
   {#if inspectingWarnings && shownWarning}
     <!-- Temporary inspection mode; the underlying Top Bar zones are inert. -->
-    <section role="dialog" aria-modal="true" aria-label="Подробности предупреждения"
+    <div role="dialog" aria-modal="true" aria-label="Подробности предупреждения"
       class="absolute inset-0 z-30 flex h-[42px] items-center gap-2 border-b border-kira-muted/15 bg-kira-bg px-2 text-kira-text">
       <span class="shrink-0 text-[11px] font-bold tabular-nums text-kira-accent" aria-hidden="true">
         !{warningPosition + 1}/{warnings.length}
       </span>
-      <div bind:this={warningMessage} tabindex="0" role="document"
-        aria-label={'Полный текст предупреждения: ' + shownWarning.text}
-        class="min-w-0 h-[34px] flex-1 overflow-y-auto break-words py-0.5 text-[12px] font-semibold leading-[15px] text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent">
-        {shownWarning.text}
-      </div>
+      <textarea bind:this={warningMessage} readonly rows="2" wrap="soft" value={shownWarning.text}
+        aria-label="Полный текст предупреждения, можно выделить и скопировать"
+        class="min-w-0 h-[34px] flex-1 resize-none overflow-y-auto border-0 bg-transparent px-0 py-0.5 text-[12px] font-semibold leading-[15px] text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent"></textarea>
       {#if warnings.length > 1}
         <button type="button" onclick={inspectWarnings} aria-label="Следующее предупреждение" title="Следующее предупреждение"
           class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] border border-kira-muted/20 text-[18px] font-semibold text-kira-accent hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent">
@@ -304,6 +302,6 @@
         class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] border border-kira-muted/20 text-[18px] font-semibold text-kira-text hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent">
         <span aria-hidden="true">×</span>
       </button>
-    </section>
+    </div>
   {/if}
 </main>
