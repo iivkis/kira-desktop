@@ -15,6 +15,10 @@
 - Full waiting + visible queue is bounded to 100 events. New events beyond capacity return a D-Bus error without evicting older FIFO messages. The separate in-memory history is bounded to 100.
 - When a right-side Kira widget leaves insufficient space, or a detached widget's actual compositor rect is unavailable, hide the toast host and requeue without charging display dwell time.
 - The input region is limited to the cards, not the whole transparent host. Auto-show never requests keyboard focus; keyboard focus on click is OnDemand.
+- First-start deadlock prevention: bootstrap the single WebKit host already mapped but **opacity=0 with an empty native input region**. Only once Svelte says ready does GTK size, install card-only hit rectangles, and reveal the page; the bootstrap surface is therefore never interactive.
+- Widget opening is treated as unknown geometry until native/Svelte paint is acknowledged; no toast may overlap an unmeasured transient widget. Clearance conservatively includes the Top Bar's 42px reserved height.
+- Repeated GTK geometry callbacks do **not** regenerate an unchanged Svelte snapshot or restart pending paint acknowledgements.
+- Tiny outputs that cannot fit a 240 logical-pixel card column keep events queued. Even the invisible bootstrap WebView is initially sized below the 50% output-height cap.
 
 ## Transport and security
 
