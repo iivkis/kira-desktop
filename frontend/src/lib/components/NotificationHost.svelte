@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import NotificationCard from './NotificationCard.svelte';
   import type { Notice } from '../notification-model';
 
-  type Snapshot = { height: number; cardHeight: number; visible: Notice[] };
+  type Snapshot = { revision: number; height: number; cardHeight: number; visible: Notice[] };
   let visible = $state<Notice[]>([]);
   let cardHeight = $state(90);
 
@@ -29,23 +29,42 @@
   }
 
   onMount(() => {
+    let lastRevision = 0;
+    let disposed = false;
     const update = (event: Event) => {
       const next = (event as CustomEvent<unknown>).detail as Snapshot | undefined;
-      if (!next || !Array.isArray(next.visible) || next.visible.length > 3 ||
+      if (!next || !Number.isSafeInteger(next.revision) || next.revision < 1 ||
+          next.revision <= lastRevision ||
+          !Array.isArray(next.visible) || next.visible.length > 3 ||
           !next.visible.every(validNotice) ||
           !Number.isSafeInteger(next.height) || next.height < 1 || next.height > 20000 ||
           !Number.isSafeInteger(next.cardHeight) || next.cardHeight < 1 ||
           next.cardHeight > Math.floor(next.height / 3)) return;
+      lastRevision = next.revision;
       cardHeight = next.cardHeight;
       visible = next.visible;
+      if (next.visible.length > 0) {
+        // A native admission is not a painted frame. Confirm after Svelte's
+        // DOM commit and compositor-bound rAFs so dwell >= 3s is real.
+        const revision = next.revision;
+        void tick().then(() => {
+          if (disposed) return;
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            if (!disposed && lastRevision === revision) send('painted:' + revision);
+          }));
+        });
+      }
     };
     window.addEventListener('kira:notifications:update', update);
     send('ready');
-    return () => window.removeEventListener('kira:notifications:update', update);
+    return () => {
+      disposed = true;
+      window.removeEventListener('kira:notifications:update', update);
+    };
   });
 </script>
 
-<main class="flex h-full w-full flex-col justify-end gap-2 bg-transparent p-2 text-kira-text"
+<main class="flex h-full w-full flex-col-reverse justify-start gap-2 bg-transparent p-2 text-kira-text"
   data-kira-ui-root aria-label="Уведомления Kira Desktop">
   {#each visible as notice (notice.id)}
     <NotificationCard {notice} height={cardHeight}
