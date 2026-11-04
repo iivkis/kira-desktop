@@ -63,7 +63,7 @@
     gauges?.setOption({
       animation: !reduced,
       animationDuration: reduced ? 0 : 350,
-      animationDurationUpdate: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 180,
       animationEasingUpdate: 'cubicOut',
       series: [
         dial('CPU', cpu, '25%', accent),
@@ -83,7 +83,7 @@
     trend?.setOption({
       animation: !reduced,
       animationDuration: reduced ? 0 : 350,
-      animationDurationUpdate: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 180,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
       grid: panels.map((panel, i) => ({
