@@ -20,8 +20,17 @@ export function surfaceColors(element?: Element | null) {
 /** Canvas alpha derives from a semantic color, never a duplicated palette. */
 export function withOpacity(color: string, opacity: number): string {
   const hex = /^#([0-9a-f]{6})(?:[0-9a-f]{2})?$/i.exec(color);
-  if (!hex) return color;
-  const value = hex[1];
-  const channels = [0, 2, 4].map(offset => parseInt(value.slice(offset, offset + 2), 16));
-  return 'rgba(' + channels.join(',') + ',' + Math.max(0, Math.min(1, opacity)) + ')';
+  const alpha = Math.max(0, Math.min(1, opacity));
+  if (hex) {
+    const value = hex[1];
+    const channels = [0, 2, 4].map(offset => parseInt(value.slice(offset, offset + 2), 16));
+    return 'rgba(' + channels.join(',') + ',' + alpha + ')';
+  }
+  // CSS variables can also resolve to rgb()/rgba() in an alternate theme.
+  // Keep the requested opacity rather than accidentally drawing opaque lines.
+  const rgb = /^rgba?\(\s*(\d{1,3})\s*(?:,|\s)\s*(\d{1,3})\s*(?:,|\s)\s*(\d{1,3})(?:\s*[,/]\s*[\d.]+)?\s*\)$/i.exec(color);
+  if (rgb && rgb.slice(1).every(channel => Number(channel) <= 255)) {
+    return 'rgba(' + rgb.slice(1).join(',') + ',' + alpha + ')';
+  }
+  return color;
 }
