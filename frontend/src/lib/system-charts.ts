@@ -3,6 +3,7 @@
  */
 import type { SystemMetrics, SystemPulse } from './sdk/core';
 import { percentUsedPrecise } from './system-model';
+import { russianCountLabel } from './ui-locale';
 
 export interface Meter {
   title: string;
@@ -134,7 +135,8 @@ export function activityHistoryCaption(history: readonly TelemetryPoint[]): stri
   if (measured.length === 1) return '1 реальный замер · ожидание истории';
   const elapsedSeconds = Math.max(0, (measured[measured.length - 1].time - measured[0].time) / 1000);
   const elapsedLabel = elapsedSeconds.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
-  return measured.length + ' реальных замеров · ' + elapsedLabel + ' с истории';
+  return russianCountLabel(measured.length, 'реальный замер', 'реальных замера', 'реальных замеров') +
+    ' · ' + elapsedLabel + ' с истории';
 }
 
 /** CPU and RAM use the SAME bounded adaptive-window rule.
