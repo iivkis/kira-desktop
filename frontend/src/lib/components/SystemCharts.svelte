@@ -185,7 +185,7 @@
         </div>
         <div class="relative flex min-w-0 flex-col items-center justify-center">
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-text"
-            aria-label={'Использование RAM: ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
+            aria-label={'Использование RAM: ' + (ram === null ? 'нет данных' : ram.toFixed(1) + ' процентов')}>
             {dialLabel(ram, true)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">RAM</div>
@@ -199,8 +199,8 @@
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
         role="img" aria-label={'Измеренная история нагрузки с адаптивными шкалами. ' +
-          'CPU ' + (cpu === null ? 'unavailable' : cpu + '%') +
-          ', RAM ' + (ram === null ? 'unavailable' : ram + '%') +
+          'CPU ' + (cpu === null ? 'нет данных' : cpu + '%') +
+          ', RAM ' + (ram === null ? 'нет данных' : ram + '%') +
           (pulse !== null && !pulseFresh ? '. Последний импульс устарел.' : '')}></div>
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
