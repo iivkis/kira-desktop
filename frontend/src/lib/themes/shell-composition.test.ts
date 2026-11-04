@@ -125,7 +125,13 @@ describe('Kira editorial polish', () => {
     expect(markup).toContain('onclick={inspectWarnings}');
     expect(markup).toContain('const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId))');
     expect(markup).toContain('nextWarningId(warnings, activeWarningId)');
-    expect(markup).toContain('Открыть полный текст предупреждения');
+    expect(markup).toContain('Открыть предупреждение ');
+    expect(markup).toContain('russianCountLabel(warnings.length');
+    expect(markup).toContain('event.key !== \'Tab\'');
+    expect(markup).toContain('last.focus()');
+    expect(markup).toContain('first.focus()');
+    expect(markup).toContain('aria-controls={inspectingWarnings ?');
+    expect(markup).not.toContain('join(\'; \')');
     expect(markup).toContain('role="dialog" aria-modal="true" aria-label="Подробности предупреждения"');
     expect(markup).toContain('inert={inspectingWarnings}');
     expect(markup).toContain('resize-none overflow-y-auto');
