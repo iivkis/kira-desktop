@@ -47,7 +47,7 @@ window.addEventListener("load",()=>{
     const actions=["action:1:default","action:2:reply","close:3"].every(
       message=>window.__kiraSmokeMessages.includes(message));
     const ready=window.__kiraSmokeMessages.includes("ready");
-    const painted=window.__kiraSmokeMessages.includes("painted:1");
+    const painted=window.__kiraSmokeMessages.includes("painted:1:1,2,3");
     document.documentElement.dataset.smokeNotifications=String(
       !!root && ordered && capped && escaped && actions && ready && painted);
     document.documentElement.dataset.smokeNotes=JSON.stringify({
@@ -72,7 +72,7 @@ try {
     const flags=output.match(/data-smoke-(?:notifications|notes)="[^"]*"/g) || [];
     throw Error('NotificationHost DOM/paint/action smoke failed: '+flags.join(', '));
   }
-  console.log('NotificationHost: bottom-up cards, size caps, escaped body, D-Bus commands, painted ACK OK');
+  console.log('NotificationHost: bottom-up cards, size caps, escaped body, actions and exact ordered-ID paint ACK OK');
 } finally {
   await rm(dir,{recursive:true,force:true});
 }
