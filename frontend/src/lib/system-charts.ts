@@ -123,6 +123,20 @@ export function activitySeries(
   return history.map(point => [point.time, point[field]]);
 }
 
+/** Describes only measured points in the visible time window.
+ * A newly opened monitor, stale stream or unsupported sensors must not
+ * display imaginary minute-long history or a fictitious "last sample".
+ */
+export function activityHistoryCaption(history: readonly TelemetryPoint[]): string {
+  const measured = history.filter(point => Number.isFinite(point.time) &&
+    [point.cpu, point.ram, point.gpu].some(value => value !== null && Number.isFinite(value)));
+  if (measured.length === 0) return 'Нет доступных замеров за последнюю минуту';
+  if (measured.length === 1) return '1 реальный замер · ожидание истории';
+  const elapsedSeconds = Math.max(0, (measured[measured.length - 1].time - measured[0].time) / 1000);
+  const elapsedLabel = elapsedSeconds.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
+  return measured.length + ' реальных замеров · ' + elapsedLabel + ' с истории';
+}
+
 /** CPU and RAM use the SAME bounded adaptive-window rule.
  * CPU was previously zero-anchored while RAM was zoomed; that made the
  * plots behave differently despite identical 500ms pulse events.
