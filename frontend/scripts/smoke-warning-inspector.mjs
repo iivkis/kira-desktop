@@ -34,7 +34,7 @@ window.addEventListener('load',()=>{
   setTimeout(()=>{
     const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
     const dialog=root?.querySelector('[role="dialog"][aria-label="Подробности предупреждения"]');
-    const page=dialog?.querySelector('[role="document"]');
+    const page=dialog?.querySelector('textarea[readonly][aria-label^="Полный текст"]');
     const under=root?.querySelector('section[aria-label="Рабочие пространства Niri"]');
     const rect=dialog?.getBoundingClientRect();
     document.documentElement.dataset.smokeWarningOpen=!!root && !!dialog && !!page &&
@@ -46,10 +46,13 @@ window.addEventListener('load',()=>{
   },260);
   setTimeout(()=>{
     const dialog=document.querySelector('[role="dialog"][aria-label="Подробности предупреждения"]');
-    const page=dialog?.querySelector('[role="document"]');
-    const full=page?.textContent.trim() ?? '';
+    const page=dialog?.querySelector('textarea[readonly][aria-label^="Полный текст"]');
+    const full=page?.value ?? '';
     const scrolled=page && page.scrollHeight>page.clientHeight;
     if(page)page.scrollTop=page.scrollHeight;
+    document.documentElement.dataset.smokeWarningLongExact=full===msg;
+    document.documentElement.dataset.smokeWarningLongScrollable=!!scrolled;
+    document.documentElement.dataset.smokeWarningLongScrolled=!!page && page.scrollTop>0;
     document.documentElement.dataset.smokeWarningLong=full===msg && scrolled && page.scrollTop>0;
     // Test the keyboard dismissal and subsequent focus restoration.
     window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
@@ -87,8 +90,8 @@ try {
       `--force-device-scale-factor=${scale}`, '--virtual-time-budget=1100',
       '--dump-dom','file://' + filename,
     ], { encoding:'utf8',timeout:15000,stdio:['ignore','pipe','ignore'] });
-    const flags = ['Trigger','Open','Long','Closed','ButtonClose'];
-    const failures = flags.filter(flag => !output.includes('data-smoke-warning' + flag + '="true"'));
+    const flags = ['trigger','open','long','closed','button-close'];
+    const failures = flags.filter(flag => !output.includes('data-smoke-warning-' + flag + '="true"'));
     if(failures.length){
       const diagnostics=output.match(/data-smoke-warning[a-z-]+="[^"]*"/gi) ?? [];
       throw new Error(`Warning inspector at ${width}px/${scale}x failed ${failures.join(', ')}: ${diagnostics.join(' ')}`);
