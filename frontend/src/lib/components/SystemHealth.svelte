@@ -47,7 +47,7 @@
     aria-hidden="true"
   ></span>
   <span role="status" aria-live="polite" aria-atomic="true"
-    class={['text-[10px] leading-none font-bold tracking-[0.04em]',
+    class={['text-[10px] leading-none font-bold tracking-[0.04em] max-[540px]:sr-only',
       health.phase === 'error' || health.phase === 'warning'
         ? 'text-kira-accent' : 'text-kira-text',
       health.phase === 'ready' ? 'sr-only' : ''].join(' ')}
