@@ -13,8 +13,9 @@
   craneLib,
   pkg-config,
   wrapGAppsHook4,
-  makeFontsConf,
+  writeText,
   noto-fonts,
+  noto-fonts-emoji,
   gtk4,
   gtk4-layer-shell,
   webkitgtk_6_0,
@@ -23,11 +24,19 @@
 }:
 let
   version = "0.1.0";
-  # NixOS normally resolves fonts from the host Fontconfig profile. A
-  # standalone Kira package must not silently change glyph widths with the
-  # user's font install state. Scope the open-licensed Noto Sans font to the
-  # GTK/WebKit wrapper, not to the entire desktop session.
-  uiFontsConf = makeFontsConf { fontDirectories = [ noto-fonts ]; };
+  # Preserve the NixOS host font profile and users' installed glyph fallbacks.
+  # A Fontconfig profile containing ONLY Noto Sans would make CJK/emoji and
+  # other installed fonts disappear inside GTK/WebKit. Add the bundled families
+  # after including host configuration, scoped to this binary's wrapper.
+  uiFontsConf = writeText "kira-fonts.conf" ''
+    <?xml version="1.0"?>
+    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+    <fontconfig>
+      <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
+      <dir>${noto-fonts}/share/fonts</dir>
+      <dir>${noto-fonts-emoji}/share/fonts</dir>
+    </fontconfig>
+  '';
 
   frontend = buildNpmPackage {
     pname = "kira-desktop-frontend";
