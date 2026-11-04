@@ -87,7 +87,7 @@
               <span class="truncate">{item.label}</span>
             </button>
           {/each}
-          <div class="mt-5 border-t border-kira-muted/15 px-4 pt-4" aria-label="Разделы в разработке">
+          <div class="mt-5 border-t border-kira-muted/15 px-4 pt-4">
             <p class="mb-2 text-[11px] font-semibold text-kira-muted">В ПЛАНАХ</p>
             {#each SETTINGS_SECTIONS.filter(item => !item.available) as item (item.id)}
               <span class="block py-1.5 text-[12px] text-kira-muted/70">{item.label}</span>
