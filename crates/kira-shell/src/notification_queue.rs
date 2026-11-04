@@ -41,7 +41,6 @@ pub struct NotificationQueue {
     waiting: VecDeque<Waiting>,
     showing: Vec<Showing>, // first element is the bottom card
     history: VecDeque<Notice>,
-    last_admission: Option<Instant>,
     next_id: u32,
 }
 
@@ -122,7 +121,6 @@ impl NotificationQueue {
                         eligible_at: now,
                     });
                 }
-                self.last_admission = None;
                 changed = true;
             }
             return changed;
@@ -136,17 +134,17 @@ impl NotificationQueue {
         changed |= before != self.showing.len();
         if self.showing.len() < MAX_VISIBLE {
             if let Some(head) = self.waiting.front() {
-                let interval_ok = self.showing.is_empty()
-                    || self
-                        .last_admission
-                        .is_none_or(|time| now.saturating_duration_since(time) >= ADMISSION_GAP);
+                // The 1.5s gap begins when the previous card actually paints,
+                // not when an invisible GTK/WebKit host admits it.
+                let interval_ok = self.showing.last().is_none_or(|item|
+                    item.since.is_some_and(|since|
+                        now.saturating_duration_since(since) >= ADMISSION_GAP));
                 if now >= head.eligible_at && interval_ok {
                     let entry = self.waiting.pop_front().expect("FIFO head");
                     self.showing.push(Showing {
                         notice: entry.notice,
                         since: None,
                     });
-                    self.last_admission = Some(now);
                     changed = true;
                 }
             }
@@ -195,15 +193,12 @@ impl NotificationQueue {
             })
             .min();
         let admission = if self.showing.len() < MAX_VISIBLE {
-            self.waiting.front().map(|entry| {
-                let interval = if self.showing.is_empty() {
-                    now
-                } else {
-                    self.last_admission
-                        .map(|at| at + ADMISSION_GAP)
-                        .unwrap_or(now)
-                };
-                entry.eligible_at.max(interval)
+            self.waiting.front().and_then(|entry| {
+                // No retry timer until WebKit confirms a frame, otherwise
+                // delayed painting could admit all three at once.
+                let interval = self.showing.last().map_or(Some(now), |item|
+                    item.since.map(|since| since + ADMISSION_GAP));
+                interval.map(|at| entry.eligible_at.max(at))
             })
         } else {
             None
@@ -286,6 +281,24 @@ mod tests {
         assert_eq!(q.visible_count(), 1);
         q.step(t + Duration::from_secs(35), true);
         assert_eq!(q.visible_count(), 0);
+    }
+
+    #[test]
+    fn incoming_cards_wait_for_previous_real_paint() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        q.step(t, true);
+        q.push(notice(2), t);
+        assert_eq!(q.next_deadline(t), None);
+        assert!(!q.step(t + Duration::from_secs(4), true));
+        assert_eq!(q.visible_count(), 1);
+        assert!(q.mark_painted(t + Duration::from_secs(4), &[1]));
+        assert_eq!(q.next_deadline(t + Duration::from_secs(4)),
+                   Some(t + Duration::from_millis(5500)));
+        assert!(!q.step(t + Duration::from_millis(5499), true));
+        assert!(q.step(t + Duration::from_millis(5500), true));
+        assert_eq!(q.visible().map(|item| item.id).collect::<Vec<_>>(), vec![1, 2]);
     }
 
     #[test]
