@@ -29,8 +29,11 @@
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
 
-  const cpu = $derived(pulse ? pulse.cpu_percent : metrics?.cpu_percent ?? null);
-  const ram = $derived(pulse
+  // Never render an expired 500ms pulse as a current CPU reading.
+  // The slower native metrics stream remains a valid fallback while fresh.
+  const cpu = $derived(pulseFresh ? pulse?.cpu_percent ?? metrics?.cpu_percent ?? null
+    : metrics?.cpu_percent ?? null);
+  const ram = $derived(pulseFresh && pulse
     ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
     : metrics ? percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib) : null);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
