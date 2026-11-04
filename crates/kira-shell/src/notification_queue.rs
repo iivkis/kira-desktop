@@ -53,7 +53,8 @@ impl NotificationQueue {
     }
 
     /// Preserve the FIFO position and the original visible_since on replace.
-    pub fn push(&mut self, notice: Notice, now: Instant) {
+    /// Returns false on overload, without discarding earlier FIFO entries.
+    pub fn push(&mut self, notice: Notice, now: Instant) -> bool {
         if let Some(entry) = self
             .waiting
             .iter_mut()
@@ -67,10 +68,10 @@ impl NotificationQueue {
         {
             entry.notice = notice.clone();
         } else {
-            // The caller receives a D-Bus ID even if UI storage is at capacity.
-            // Older queued items have priority; evict historical records first.
+            // Reject the newest event when full. Evicting the oldest waiting
+            // entry would silently violate FIFO and lose an acknowledged notice.
             if self.waiting.len() + self.showing.len() >= MAX_STORED {
-                self.waiting.pop_front();
+                return false;
             }
             self.waiting.push_back(Waiting {
                 eligible_at: if self.showing.is_empty() {
@@ -89,14 +90,15 @@ impl NotificationQueue {
             }
             self.history.push_back(notice);
         }
+        true
     }
 
     pub fn close(&mut self, id: u32) -> bool {
-        let before = self.waiting.len() + self.showing.len() + self.history.len();
+        let before = self.waiting.len() + self.showing.len();
         self.waiting.retain(|item| item.notice.id != id);
         self.showing.retain(|item| item.notice.id != id);
         self.history.retain(|item| item.id != id);
-        before != self.waiting.len() + self.showing.len() + self.history.len()
+        before != self.waiting.len() + self.showing.len()
     }
 
     /// Only the host may start the visual clock. A covered/unmapped window must
@@ -235,6 +237,20 @@ mod tests {
         assert_eq!(q.visible().next().unwrap().id, 1);
         q.step(t + Duration::from_secs(7), true);
         assert!(q.visible().all(|n| n.id != 1));
+    }
+
+    #[test]
+    fn overloaded_queue_rejects_newest_without_eviction() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        for id in 1..=MAX_STORED as u32 {
+            assert!(q.push(notice(id), t));
+        }
+        assert!(!q.push(notice(101), t));
+        q.step(t, true);
+        assert_eq!(q.visible().next().unwrap().id, 1);
+        assert_eq!(q.history().count(), MAX_STORED);
+        assert!(!q.history().any(|n| n.id == 101));
     }
 
     #[test]
