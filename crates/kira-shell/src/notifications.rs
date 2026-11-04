@@ -399,7 +399,10 @@ impl Service {
                 let ids: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
                 let now = Instant::now();
                 if self.queue.borrow_mut().mark_painted(now, &ids) {
-                    self.schedule(now, true);
+                    // The first painted acknowledgement is the point at
+                    // which native GTK makes an empty host truly visible.
+                    // Resync also calculates the next dwell/FIFO deadline.
+                    self.sync();
                 }
             }
         } else if let Some(value) = message.strip_prefix("action:") {
@@ -629,7 +632,7 @@ impl Service {
         } else {
             Vec::new()
         };
-        let changed = self.queue.borrow_mut().step(now, usable);
+        self.queue.borrow_mut().step(now, usable);
         if usable {
             // Automatic expiry is a D-Bus close event (reason 1). Replacements
             // keep the same ID, so they never produce a false close signal.
@@ -647,55 +650,51 @@ impl Service {
                 let layout = layout.expect("checked layout");
                 host.layout.set(Some(layout));
                 host.window.set_default_size(layout.width, layout.height);
-                // Restrict the GTK input shape BEFORE the layer surface maps.
-                let region =
-                    notification_layout::hit_region(layout, self.queue.borrow().visible_count());
+                // A first/admitted card must not reveal the previous WebKit
+                // DOM or gain a clickable region until it has actually
+                // rendered. Existing painted cards stay visible while a new
+                // card joins above them.
+                let painted = self.queue.borrow().has_painted();
+                let region = if painted {
+                    notification_layout::hit_region(layout, self.queue.borrow().visible_count())
+                } else {
+                    gtk::cairo::Region::create()
+                };
                 if let Some(surface) = host.window.surface() {
                     surface.set_input_region(Some(&region));
                 }
-                self.render(&host, layout);
+                host.window.set_opacity(if painted { 1.0 } else { 0.0 });
                 host.window.set_visible(true);
-                host.window.set_opacity(1.0);
+                self.render(&host, layout);
                 let weak: Weak<Self> = Rc::downgrade(self);
                 glib::idle_add_local_once(move || {
                     if let Some(service) = weak.upgrade() {
                         if let Some(host) = service.host.borrow().as_ref() {
-                            if host.window.is_visible() {
-                                if let (Some(layout), Some(surface)) =
-                                    (host.layout.get(), host.window.surface())
-                                {
-                                    let region = notification_layout::hit_region(
+                            if let (Some(layout), Some(surface)) =
+                                (host.layout.get(), host.window.surface())
+                            {
+                                let region = if service.queue.borrow().has_painted() {
+                                    notification_layout::hit_region(
                                         layout,
                                         service.queue.borrow().visible_count(),
-                                    );
-                                    surface.set_input_region(Some(&region));
-                                }
+                                    )
+                                } else {
+                                    gtk::cairo::Region::create()
+                                };
+                                surface.set_input_region(Some(&region));
                             }
                         }
                     }
                 });
-            } else if possible
-                && !host.ready.get()
-                && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
-            {
-                // Retain a mapped *invisible and non-interactive* host until
-                // WebKit mounts; never wait for "ready" behind an unmapped view.
+            } else {
+                // Keep the already-allocated WebKit page mapped but invisible,
+                // with NO input region. Otherwise a later toast can race
+                // WebKit's suspended DOM and briefly flash stale content.
                 host.window.set_opacity(0.0);
                 if let Some(surface) = host.window.surface() {
                     surface.set_input_region(Some(&gtk::cairo::Region::create()));
                 }
-                host.window.set_visible(true);
-                self.last_rendered.borrow_mut().take();
-            } else {
-                host.window.set_opacity(0.0);
-                host.window.set_visible(false);
-                self.last_rendered.borrow_mut().take();
-            }
-        }
-        if changed && self.queue.borrow().visible_count() == 0 {
-            // No empty mapped WebView with a half-screen hit target.
-            if let Some(host) = self.host.borrow().as_ref() {
-                host.window.set_visible(false);
+                host.window.set_visible(possible);
                 self.last_rendered.borrow_mut().take();
             }
         }
