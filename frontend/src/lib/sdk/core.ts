@@ -558,6 +558,25 @@ export function onDisplayStatus(
     (value) => callback(value));
 }
 
+/** Niri's JSON uses capitalized Flipped90/180/270, while its CLI
+ * accepts flipped-90/180/270. Keep this adapter explicit: string replacement
+ * used to turn Flipped90 into invalid `flipped90`.
+ * Unknown orientations require an explicit user choice before applying.
+ */
+const niriTransforms: Record<string, string> = {
+  Normal: 'normal', normal: 'normal',
+  '90': '90', '180': '180', '270': '270',
+  Flipped: 'flipped', flipped: 'flipped',
+  Flipped90: 'flipped-90', Flipped180: 'flipped-180',
+  Flipped270: 'flipped-270',
+  'flipped-90': 'flipped-90', 'flipped-180': 'flipped-180',
+  'flipped-270': 'flipped-270',
+};
+
+export function displayTransformId(value: string): string {
+  return niriTransforms[value] ?? '';
+}
+
 export function displayModeId(mode: DisplayMode): string {
   return mode.width + 'x' + mode.height + '@' +
     Math.floor(mode.refresh_rate / 1000) + '.' +
