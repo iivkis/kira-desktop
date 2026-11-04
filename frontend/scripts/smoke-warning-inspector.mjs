@@ -27,7 +27,7 @@ window.addEventListener('load',()=>{
     document.querySelector('[aria-label="Открыть меню приложений"]')?.click();
   },125);
   setTimeout(()=>{
-    const trigger=document.querySelector('button[aria-label^="Открыть полный текст предупреждения"]');
+    const trigger=document.querySelector('button[aria-label^="Открыть предупреждение"]');
     document.documentElement.dataset.smokeWarningTrigger=!!trigger && trigger.getAttribute('aria-haspopup')==='dialog';
     trigger?.click();
   },190);
@@ -42,6 +42,16 @@ window.addEventListener('load',()=>{
       Math.abs(rect.width-root.getBoundingClientRect().width)<1 &&
       under.inert && page===document.activeElement &&
       !dialog.textContent.includes(msg);
+    const controls=Array.from(dialog?.querySelectorAll('textarea, button') ?? []);
+    const last=controls[controls.length-1];
+    last?.focus();
+    const tab=new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});
+    last?.dispatchEvent(tab);
+    const forward=tab.defaultPrevented && document.activeElement===page;
+    const shift=new KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true});
+    page?.dispatchEvent(shift);
+    document.documentElement.dataset.smokeWarningFocusTrap=forward &&
+      shift.defaultPrevented && document.activeElement===last;
     dialog?.querySelector('[aria-label="Следующее предупреждение"]')?.click();
   },260);
   setTimeout(()=>{
@@ -60,11 +70,12 @@ window.addEventListener('load',()=>{
   },335);
   setTimeout(()=>{
     const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
-    const trigger=root?.querySelector('button[aria-label^="Открыть полный текст предупреждения"]');
+    const trigger=root?.querySelector('button[aria-label^="Открыть предупреждение"]');
     const clock=root?.querySelector('button[title="Открыть календарь"]');
     document.documentElement.dataset.smokeWarningClosed=!!root && !!trigger && !!clock &&
       !root.querySelector('[role="dialog"]') && trigger===document.activeElement &&
       !root.querySelector('section[aria-label="Рабочие пространства Niri"]').inert &&
+      trigger.getAttribute('aria-label').length<140 && trigger.title.includes(msg) &&
       clock.getBoundingClientRect().right<=root.getBoundingClientRect().right+1;
     trigger?.click();
   },430);
@@ -75,7 +86,7 @@ window.addEventListener('load',()=>{
     const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
     document.documentElement.dataset.smokeWarningButtonClose=!!root &&
       !root.querySelector('[role="dialog"]') &&
-      !!root.querySelector('button[aria-label^="Открыть полный текст предупреждения"]');
+      !!root.querySelector('button[aria-label^="Открыть предупреждение"]');
   },565);
 });
 </script>`;
@@ -91,7 +102,7 @@ try {
       `--force-device-scale-factor=${scale}`, '--virtual-time-budget=1100',
       '--dump-dom','file://' + filename,
     ], { encoding:'utf8',timeout:15000,stdio:['ignore','pipe','ignore'] });
-    const flags = ['trigger','open','long','closed','button-close'];
+    const flags = ['trigger','open','focus-trap','long','closed','button-close'];
     const failures = flags.filter(flag => !output.includes('data-smoke-warning-' + flag + '="true"'));
     if(failures.length){
       const diagnostics=output.match(/data-smoke-warning[a-z-]+="[^"]*"/gi) ?? [];
