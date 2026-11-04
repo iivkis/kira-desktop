@@ -215,7 +215,7 @@
         <button type="button" onclick={inspectWarnings}
           aria-label={'Предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.text + '. Показать следующее предупреждение'}
           title={shownWarning.text + '\nНажмите для следующего предупреждения'}
-          class="min-w-0 max-w-[105px] shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent min-[900px]:max-w-[180px]">
+          class="min-w-0 max-w-[105px] shrink-0 cursor-pointer truncate px-1 text-center text-[11px] font-extrabold text-kira-accent transition-colors hover:text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent motion-reduce:transition-none min-[900px]:max-w-[180px]">
           <span class="min-[900px]:hidden">{shownWarning.short}</span>
           <span class="hidden min-[900px]:inline">{shownWarning.text}</span>
           <span class="ml-1 whitespace-nowrap" aria-hidden="true">{warningPosition + 1}/{warnings.length}</span>
