@@ -179,6 +179,10 @@ fn bounded(value: String, max_chars: usize) -> String {
     value.chars().take(max_chars).collect()
 }
 
+fn notification_id(queue: &mut NotificationQueue, replaces_id: u32) -> u32 {
+    if replaces_id != 0 { replaces_id } else { queue.allocate_id() }
+}
+
 fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> Notice {
     let app = bounded(
         params.child_value(0).get::<String>().unwrap_or_default(),
@@ -218,7 +222,7 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
     };
     // The spec defines nonzero replaces_id as an ID, not a D-Bus sender
     // capability. CLI tools may replace the same ID from fresh connections.
-    let id = if replace != 0 { replace } else { queue.allocate_id() };
+    let id = notification_id(queue, replace);
     Notice {
         id,
         app,
@@ -720,6 +724,28 @@ fn notification_html(html: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn freedesktop_replaces_id_survives_new_connection_and_closed_notice() {
+        let mut queue = NotificationQueue::default();
+        let now = Instant::now();
+        // Fresh connections may not share a unique D-Bus sender name.
+        assert_eq!(notification_id(&mut queue, 4321), 4321);
+        let mut notice = Notice {
+            id: 4321, app: "A".into(), summary: "old".into(),
+            body: String::new(), actions: Vec::new(), critical: false,
+            persistent: false, dwell: DEFAULT_DWELL,
+        };
+        assert!(queue.push(notice.clone(), now));
+        notice.summary = "replaced".into();
+        assert_eq!(notification_id(&mut queue, 4321), 4321);
+        assert!(queue.push(notice, now));
+        assert!(queue.close(4321));
+        // The spec still requires returning an explicitly requested
+        // nonzero ID even if the earlier notification was closed.
+        assert_eq!(notification_id(&mut queue, 4321), 4321);
+        assert_eq!(notification_id(&mut queue, 0), 1);
+    }
 
     #[test]
     fn data_is_bounded_and_renderer_is_a_distinct_surface() {
