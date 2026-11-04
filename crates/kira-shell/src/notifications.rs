@@ -56,6 +56,9 @@ struct Service {
     context: webkit6::WebContext,
     owned: Cell<bool>,
     bus: RefCell<Option<gtk::gio::DBusConnection>>,
+    // Required to relinquish the Freedesktop name if WebKit recovery is
+    // exhausted; otherwise successful D-Bus replies swallow every toast.
+    owner_id: RefCell<Option<gtk::gio::OwnerId>>,
     queue: RefCell<NotificationQueue>,
     host: RefCell<Option<Rc<Host>>>,
     timer_epoch: Cell<u64>,
@@ -87,6 +90,7 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
         context: context.clone(),
         owned: Cell::new(false),
         bus: RefCell::new(None),
+        owner_id: RefCell::new(None),
         queue: RefCell::new(NotificationQueue::default()),
         host: RefCell::new(None),
         timer_epoch: Cell::new(0),
@@ -99,7 +103,7 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
     let acquired = Rc::downgrade(&service);
     let name_acquired = Rc::downgrade(&service);
     let name_lost = Rc::downgrade(&service);
-    let _id = gtk::gio::bus_own_name(
+    let id = gtk::gio::bus_own_name(
         gtk::gio::BusType::Session,
         NAME,
         gtk::gio::BusNameOwnerFlags::DO_NOT_QUEUE,
@@ -110,6 +114,7 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
         },
         move |connection, _| {
             if let Some(service) = name_acquired.upgrade() {
+                if service.owner_id.borrow().is_none() { return; }
                 *service.bus.borrow_mut() = Some(connection);
                 service.owned.set(true);
                 service.sync();
@@ -125,6 +130,7 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
             }
         },
     );
+    service.owner_id.replace(Some(id));
 }
 
 /// Monitor geometry is in GTK logical pixels. When Niri changes a mode,
@@ -270,6 +276,16 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
 }
 
 impl Service {
+    fn relinquish_notification_name(&self) {
+        self.owned.set(false);
+        self.bus.borrow_mut().take();
+        let owner_id = self.owner_id.borrow_mut().take();
+        if let Some(owner_id) = owner_id {
+            gtk::gio::bus_unown_name(owner_id);
+            eprintln!("kira-shell: released org.freedesktop.Notifications after renderer failure");
+        }
+    }
+
     fn register_dbus(self: &Rc<Self>, connection: &gtk::gio::DBusConnection) {
         let Ok(xml) = gtk::gio::DBusNodeInfo::for_xml(XML) else {
             eprintln!("kira-shell: failed to parse notification D-Bus introspection");
@@ -353,6 +369,14 @@ impl Service {
             .build();
         if let Err(error) = registered {
             eprintln!("kira-shell: cannot register D-Bus Notifications object: {error}");
+            // bus_acquired may run before owner_id was stored. Defer release
+            // until after the current main-loop callback.
+            let weak = Rc::downgrade(self);
+            glib::idle_add_local_once(move || {
+                if let Some(service) = weak.upgrade() {
+                    service.relinquish_notification_name();
+                }
+            });
         }
     }
 
@@ -517,6 +541,11 @@ impl Service {
             service.queue.borrow_mut().step(Instant::now(), false);
             service.last_rendered.borrow_mut().take();
             eprintln!("kira-shell: toast renderer terminated ({reason:?}): {decision:?}");
+            if decision == RetryDecision::Exhausted {
+                // Other notification daemons can now claim the name. Never
+                // continue returning success for events we cannot show.
+                service.relinquish_notification_name();
+            }
             // Keep the empty, click-through host mapped while retrying, but
             // never burn CPU in an unlimited WebKit crash/reload loop.
             service.sync();
