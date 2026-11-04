@@ -14,7 +14,7 @@
 
   const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
   const focusedId = $derived(windowed.items.find(item => item.is_focused)?.id ?? null);
-  let list: HTMLOListElement;
+  let list = $state<HTMLOListElement | undefined>(undefined);
   let previousFocus: string | null = null;
 
   // The model guarantees inclusion; WebKit's fixed-width horizontal
