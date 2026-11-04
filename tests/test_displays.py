@@ -88,6 +88,8 @@ class DisplayContract(unittest.TestCase):
         self.assertIn("displayTransformId(logical.transform)", DISPLAY)
         self.assertIn("draft.some(out => out.enabled && !out.transform)", DISPLAY)
         self.assertIn("Откат выполнен не полностью", DISPLAY)
+        self.assertIn("confirmationDeadlineMonotonic(message.deadline_unix_ms", DISPLAY)
+        self.assertIn("clockNow = performance.now()", DISPLAY)
         self.assertIn('onchange={event => change({ mode:', DISPLAY)
         self.assertIn('onchange={event => change({ scale:', DISPLAY)
         self.assertIn('onchange={event => change({ transform:', DISPLAY)
