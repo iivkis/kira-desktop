@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=6459
+index_bytes=6928
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,136 +15,144 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	7698672af4be7c96944056b1d72d35239df8be27
-F	.cargo/config.toml	98	157	3
-F	.github/workflows/ci.yml	4419	162	114
-F	.github/workflows/frontend-nix.yml	1535	278	45
-F	.github/workflows/nix.yml	1258	325	38
-F	.github/workflows/overlay-smoke.yml	1200	365	42
-F	.github/workflows/publish-repospool.yml	3048	409	83
-F	.gitignore	178	494	11
-F	.repospoolignore	1028	507	47
-F	AGENTS.md	6275	556	103
-F	Cargo.toml	494	661	22
-F	README.md	12752	685	259
-F	Taskfile.yml	5957	946	185
-F	config/kira.kdl.example	358	1133	8
-F	crates/kira-core/Cargo.toml	207	1143	10
-F	crates/kira-core/src/config.rs	15217	1155	399
-F	crates/kira-core/src/main.rs	32080	1556	839
-F	crates/kira-core/src/niri.rs	16767	2397	453
-F	crates/kira-ipc/Cargo.toml	170	2852	9
-F	crates/kira-ipc/src/client.rs	17794	2863	458
-F	crates/kira-ipc/src/lib.rs	10460	3323	336
-F	crates/kira-shell/Cargo.toml	297	3661	12
-F	crates/kira-shell/src/calendar.rs	76305	3675	2002
-F	crates/kira-shell/src/config_layers.rs	19239	5679	496
-F	crates/kira-shell/src/display_manager.rs	26497	6177	681
-F	crates/kira-shell/src/launcher.rs	14114	6860	392
-F	crates/kira-shell/src/main.rs	22631	7254	517
-F	crates/kira-shell/src/native_ui.rs	4711	7773	109
-F	crates/kira-shell/src/popup_layout.rs	2659	7884	72
-F	crates/kira-shell/src/process_monitor.rs	13067	7958	394
-F	crates/kira-shell/src/renderer_recovery.rs	3634	8354	116
-F	crates/kira-shell/src/system_info.rs	3951	8472	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8587	559
-F	crates/kira-shell/src/system_panel.rs	11356	9148	318
-F	crates/kira-shell/src/webview_pool.rs	9530	9468	281
-F	docs/CONFIG.md	5801	9751	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9878	135
-F	docs/DESIGN_SYSTEM.md	38195	10015	615
-F	docs/DEVELOPMENT.md	30675	10632	605
-F	docs/QA_VISUAL.md	16349	11239	184
-F	docs/SKY_MAP.md	6776	11425	105
-F	docs/SPECIFICATION.md	29309	11532	427
-F	docs/TENET_MOTION.md	40785	11961	204
-F	docs/UI_ARCHITECTURE.md	6794	12167	107
-F	docs/UI_NOISE_REVIEW.md	5382	12276	53
-F	docs/VISUAL_REVIEW.md	10204	12331	91
-F	docs/WEBVIEW_POOL.md	11431	12424	97
-F	flake.nix	3181	12523	91
-F	frontend/index.html	2846	12616	66
-F	frontend/package.json	720	12684	27
-F	frontend/scripts/inline-assets.mjs	4457	12713	103
-F	frontend/scripts/inline-assets.test.mjs	4645	12818	106
-F	frontend/scripts/smoke-overlays.mjs	51590	12926	717
-F	frontend/scripts/smoke-warning-inspector.mjs	8998	13645	151
-F	frontend/src/App.svelte	16964	13798	337
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	14137	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	14155	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	14216	69
-F	frontend/src/lib/bootstrap.test.ts	3408	14287	84
-F	frontend/src/lib/bootstrap.ts	2613	14373	70
-F	frontend/src/lib/calendar-model.test.ts	3571	14445	65
-F	frontend/src/lib/calendar-model.ts	4648	14512	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14619	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	14681	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	14712	287
-F	frontend/src/lib/clock-flight.test.ts	2404	15001	50
-F	frontend/src/lib/clock-flight.ts	1977	15053	50
-F	frontend/src/lib/components/CalendarWidget.svelte	14160	15105	294
-F	frontend/src/lib/components/DisplaySettings.svelte	24155	15401	457
-F	frontend/src/lib/components/LauncherWidget.svelte	10725	15860	239
-F	frontend/src/lib/components/SettingsWidget.svelte	7674	16101	142
-F	frontend/src/lib/components/SkyMap.svelte	13085	16245	284
-F	frontend/src/lib/components/SystemCharts.svelte	11535	16531	249
-F	frontend/src/lib/components/SystemHealth.svelte	2315	16782	57
-F	frontend/src/lib/components/SystemWidget.svelte	18509	16841	319
-F	frontend/src/lib/components/WindowControls.svelte	3178	17162	74
-F	frontend/src/lib/components/WorkspacePreview.svelte	6658	17238	119
-F	frontend/src/lib/display-confirmation.test.ts	1789	17359	34
-F	frontend/src/lib/display-confirmation.ts	1262	17395	28
-F	frontend/src/lib/launcher-model.test.ts	2266	17425	46
-F	frontend/src/lib/launcher-model.ts	1403	17473	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	17504	89
-F	frontend/src/lib/lazy-widget.ts	1984	17595	63
-F	frontend/src/lib/motion-contract.test.ts	11241	17660	198
-F	frontend/src/lib/motion.ts	24039	17860	657
-F	frontend/src/lib/overlay-size.test.ts	2153	18519	53
-F	frontend/src/lib/overlay-size.ts	1601	18574	36
-F	frontend/src/lib/sdk/core.test.ts	29911	18612	605
-F	frontend/src/lib/sdk/core.ts	27230	19219	684
-F	frontend/src/lib/settings-model.test.ts	1064	19905	21
-F	frontend/src/lib/settings-model.ts	1262	19928	26
-F	frontend/src/lib/surface-colors.test.ts	1092	19956	23
-F	frontend/src/lib/surface-colors.ts	1834	19981	36
-F	frontend/src/lib/system-charts.test.ts	8934	20019	190
-F	frontend/src/lib/system-charts.ts	7498	20211	181
-F	frontend/src/lib/system-health.test.ts	3328	20394	58
-F	frontend/src/lib/system-health.ts	3594	20454	72
-F	frontend/src/lib/system-model.test.ts	5412	20528	103
-F	frontend/src/lib/system-model.ts	6298	20633	144
-F	frontend/src/lib/themes/kira-default.css	1941	20779	56
-F	frontend/src/lib/themes/kira-default.test.ts	4779	20837	107
-F	frontend/src/lib/themes/kira-default.ts	777	20946	22
-F	frontend/src/lib/themes/shell-composition.test.ts	10502	20970	172
-F	frontend/src/lib/time.test.ts	545	21144	14
-F	frontend/src/lib/time.ts	320	21160	9
-F	frontend/src/lib/ui-locale.test.ts	1821	21171	35
-F	frontend/src/lib/ui-locale.ts	1841	21208	48
-F	frontend/src/lib/warning-model.test.ts	1633	21258	34
-F	frontend/src/lib/warning-model.ts	749	21294	18
-F	frontend/src/lib/workspace-window.test.ts	2298	21314	52
-F	frontend/src/lib/workspace-window.ts	1063	21368	32
-F	frontend/src/main.ts	7783	21402	161
-F	frontend/src/style.css	7483	21565	215
-F	frontend/tsconfig.json	403	21782	16
-F	frontend/vite.config.ts	224	21800	8
-F	nix/package.nix	3904	21810	134
-F	scripts/dev_preview.py	18147	21946	403	x
-F	scripts/qa_visual.py	12052	22351	299
-F	tests/test_calendar_design.py	10187	22652	175
-F	tests/test_detailed_health.py	7668	22829	136
-F	tests/test_dev_preview.py	9339	22967	219
-F	tests/test_displays.py	6263	23188	103
-F	tests/test_launcher_design.py	10825	23293	195
-F	tests/test_native_theme.py	2897	23490	57
-F	tests/test_popup_geometry.py	3805	23549	66
-F	tests/test_qa_visual.py	10549	23617	217
-F	tests/test_settings.py	5486	23836	94
-F	tests/test_tenet_close.py	6297	23932	115
-F	tests/test_ui_bootstrap_contract.py	1103	24049	29
-F	tests/test_webview_pool.py	11723	24080	200
+C	60308802e23899741a4af5f261142a45b5418d6e
+F	.cargo/config.toml	98	165	3
+F	.github/workflows/ci.yml	4419	170	114
+F	.github/workflows/frontend-nix.yml	1535	286	45
+F	.github/workflows/nix.yml	1258	333	38
+F	.github/workflows/overlay-smoke.yml	1321	373	44
+F	.github/workflows/publish-repospool.yml	3048	419	83
+F	.gitignore	178	504	11
+F	.repospoolignore	1028	517	47
+F	AGENTS.md	6275	566	103
+F	Cargo.toml	494	671	22
+F	README.md	12752	695	259
+F	Taskfile.yml	5957	956	185
+F	config/kira.kdl.example	358	1143	8
+F	crates/kira-core/Cargo.toml	207	1153	10
+F	crates/kira-core/src/config.rs	15217	1165	399
+F	crates/kira-core/src/main.rs	32080	1566	839
+F	crates/kira-core/src/niri.rs	16767	2407	453
+F	crates/kira-ipc/Cargo.toml	170	2862	9
+F	crates/kira-ipc/src/client.rs	17794	2873	458
+F	crates/kira-ipc/src/lib.rs	10460	3333	336
+F	crates/kira-shell/Cargo.toml	297	3671	12
+F	crates/kira-shell/src/calendar.rs	79790	3685	2082
+F	crates/kira-shell/src/config_layers.rs	19239	5769	496
+F	crates/kira-shell/src/display_manager.rs	26497	6267	681
+F	crates/kira-shell/src/launcher.rs	14114	6950	392
+F	crates/kira-shell/src/main.rs	22905	7344	523
+F	crates/kira-shell/src/native_ui.rs	4711	7869	109
+F	crates/kira-shell/src/notification_layout.rs	4130	7980	118
+F	crates/kira-shell/src/notification_queue.rs	17506	8100	486
+F	crates/kira-shell/src/notifications.rs	36242	8588	890
+F	crates/kira-shell/src/popup_layout.rs	2659	9480	72
+F	crates/kira-shell/src/process_monitor.rs	13067	9554	394
+F	crates/kira-shell/src/renderer_recovery.rs	3634	9950	116
+F	crates/kira-shell/src/system_info.rs	3951	10068	113
+F	crates/kira-shell/src/system_metrics.rs	19842	10183	559
+F	crates/kira-shell/src/system_panel.rs	11356	10744	318
+F	crates/kira-shell/src/webview_pool.rs	9530	11064	281
+F	docs/CONFIG.md	5801	11347	125
+F	docs/CONFIG_OWNERSHIP.md	7257	11474	135
+F	docs/DESIGN_SYSTEM.md	38195	11611	615
+F	docs/DEVELOPMENT.md	30675	12228	605
+F	docs/NOTIFICATIONS.md	9522	12835	53
+F	docs/QA_VISUAL.md	16349	12890	184
+F	docs/SKY_MAP.md	6776	13076	105
+F	docs/SPECIFICATION.md	29309	13183	427
+F	docs/TENET_MOTION.md	40785	13612	204
+F	docs/UI_ARCHITECTURE.md	6794	13818	107
+F	docs/UI_NOISE_REVIEW.md	5382	13927	53
+F	docs/VISUAL_REVIEW.md	10204	13982	91
+F	docs/WEBVIEW_POOL.md	11431	14075	97
+F	flake.nix	3181	14174	91
+F	frontend/index.html	2846	14267	66
+F	frontend/package.json	720	14335	27
+F	frontend/scripts/inline-assets.mjs	4457	14364	103
+F	frontend/scripts/inline-assets.test.mjs	4645	14469	106
+F	frontend/scripts/smoke-notifications.mjs	4593	14577	83
+F	frontend/scripts/smoke-overlays.mjs	51590	14662	717
+F	frontend/scripts/smoke-warning-inspector.mjs	8998	15381	151
+F	frontend/src/App.svelte	16964	15534	337
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	15873	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	15891	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	15952	69
+F	frontend/src/lib/bootstrap.test.ts	3408	16023	84
+F	frontend/src/lib/bootstrap.ts	2613	16109	70
+F	frontend/src/lib/calendar-model.test.ts	3571	16181	65
+F	frontend/src/lib/calendar-model.ts	4648	16248	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	16355	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	16417	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	16448	287
+F	frontend/src/lib/clock-flight.test.ts	2404	16737	50
+F	frontend/src/lib/clock-flight.ts	1977	16789	50
+F	frontend/src/lib/components/CalendarWidget.svelte	14160	16841	294
+F	frontend/src/lib/components/DisplaySettings.svelte	24155	17137	457
+F	frontend/src/lib/components/LauncherWidget.svelte	10725	17596	239
+F	frontend/src/lib/components/NotificationCard.svelte	3191	17837	69
+F	frontend/src/lib/components/NotificationHost.svelte	5000	17908	106
+F	frontend/src/lib/components/SettingsWidget.svelte	7674	18016	142
+F	frontend/src/lib/components/SkyMap.svelte	13085	18160	284
+F	frontend/src/lib/components/SystemCharts.svelte	11535	18446	249
+F	frontend/src/lib/components/SystemHealth.svelte	2315	18697	57
+F	frontend/src/lib/components/SystemWidget.svelte	18509	18756	319
+F	frontend/src/lib/components/WindowControls.svelte	3178	19077	74
+F	frontend/src/lib/components/WorkspacePreview.svelte	6658	19153	119
+F	frontend/src/lib/display-confirmation.test.ts	1789	19274	34
+F	frontend/src/lib/display-confirmation.ts	1262	19310	28
+F	frontend/src/lib/launcher-model.test.ts	2266	19340	46
+F	frontend/src/lib/launcher-model.ts	1403	19388	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	19419	89
+F	frontend/src/lib/lazy-widget.ts	1984	19510	63
+F	frontend/src/lib/motion-contract.test.ts	11241	19575	198
+F	frontend/src/lib/motion.ts	24039	19775	657
+F	frontend/src/lib/notification-model.ts	237	20434	9
+F	frontend/src/lib/overlay-size.test.ts	2153	20445	53
+F	frontend/src/lib/overlay-size.ts	1601	20500	36
+F	frontend/src/lib/sdk/core.test.ts	29911	20538	605
+F	frontend/src/lib/sdk/core.ts	27259	21145	684
+F	frontend/src/lib/settings-model.test.ts	1064	21831	21
+F	frontend/src/lib/settings-model.ts	1262	21854	26
+F	frontend/src/lib/surface-colors.test.ts	1092	21882	23
+F	frontend/src/lib/surface-colors.ts	1834	21907	36
+F	frontend/src/lib/system-charts.test.ts	8934	21945	190
+F	frontend/src/lib/system-charts.ts	7498	22137	181
+F	frontend/src/lib/system-health.test.ts	3328	22320	58
+F	frontend/src/lib/system-health.ts	3594	22380	72
+F	frontend/src/lib/system-model.test.ts	5412	22454	103
+F	frontend/src/lib/system-model.ts	6298	22559	144
+F	frontend/src/lib/themes/kira-default.css	1941	22705	56
+F	frontend/src/lib/themes/kira-default.test.ts	4779	22763	107
+F	frontend/src/lib/themes/kira-default.ts	777	22872	22
+F	frontend/src/lib/themes/shell-composition.test.ts	10502	22896	172
+F	frontend/src/lib/time.test.ts	545	23070	14
+F	frontend/src/lib/time.ts	320	23086	9
+F	frontend/src/lib/ui-locale.test.ts	1821	23097	35
+F	frontend/src/lib/ui-locale.ts	1841	23134	48
+F	frontend/src/lib/warning-model.test.ts	1633	23184	34
+F	frontend/src/lib/warning-model.ts	749	23220	18
+F	frontend/src/lib/workspace-window.test.ts	2298	23240	52
+F	frontend/src/lib/workspace-window.ts	1063	23294	32
+F	frontend/src/main.ts	8243	23328	171
+F	frontend/src/style.css	8044	23501	234
+F	frontend/tsconfig.json	403	23737	16
+F	frontend/vite.config.ts	224	23755	8
+F	nix/package.nix	3904	23765	134
+F	scripts/dev_preview.py	18147	23901	403	x
+F	scripts/qa_visual.py	12052	24306	299
+F	tests/test_calendar_design.py	10187	24607	175
+F	tests/test_detailed_health.py	7668	24784	136
+F	tests/test_dev_preview.py	9339	24922	219
+F	tests/test_displays.py	6263	25143	103
+F	tests/test_launcher_design.py	10825	25248	195
+F	tests/test_native_theme.py	2897	25445	57
+F	tests/test_popup_geometry.py	3805	25504	66
+F	tests/test_qa_visual.py	10549	25572	217
+F	tests/test_settings.py	5486	25791	94
+F	tests/test_tenet_close.py	6297	25887	115
+F	tests/test_ui_bootstrap_contract.py	1103	26004	29
+F	tests/test_webview_pool.py	11723	26035	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -402,6 +410,8 @@ jobs:
         run: npm run build --prefix frontend
       - name: Validate real Calendar and System mounts
         run: node frontend/scripts/smoke-overlays.mjs
+      - name: Validate notification WebView FIFO presentation
+        run: node frontend/scripts/smoke-notifications.mjs
       - name: Validate warning inspector at responsive widths and scales
         run: node frontend/scripts/smoke-warning-inspector.mjs
 
@@ -3926,6 +3936,7 @@ impl OverlayPool {
                 view.content_height.get().max(1),
             );
         }
+        crate::notifications::layout_changed();
     }
 
     fn release(self: &Rc<Self>, id: u32) {
@@ -4067,6 +4078,7 @@ impl CalendarOverlay {
         };
         let kind = self.active.get().expect("requested view has a surface");
         self.detached.set(true);
+        crate::notifications::layout_changed();
         let normal = gtk::ApplicationWindow::new(&pool.application);
         let title = match kind {
             Surface::Calendar => "Kira Calendar",
@@ -4504,6 +4516,9 @@ impl CalendarOverlay {
                 start.elapsed().as_millis()
             );
         }
+        // A notification may only re-enter the bottom-right lane once the
+        // widget has its final measured size and a painted native surface.
+        crate::notifications::layout_changed();
     }
 
     fn on_message(self: &Rc<Self>, message: &str) {
@@ -4564,6 +4579,7 @@ impl CalendarOverlay {
                         .map(|pool| pool.width_for(self))
                         .unwrap_or(popup_layout::PREFERRED_POPUP_WIDTH);
                     crate::native_ui::resize_webview_popup(&self.window, width, clamped);
+                    crate::notifications::layout_changed();
                 }
                 if self.widget_ready.get() && !self.paint_pending.get() && !self.revealed.get() {
                     self.request_paint();
@@ -5218,8 +5234,20 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
 }
 
 fn calendar_document(html: &str) -> Option<String> {
-    html.contains(CALENDAR_MARKER)
-        .then(|| html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
+    if html.contains(CALENDAR_MARKER) {
+        Some(html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
+    } else {
+        // The packaged root is localized to Russian. Keep existing English
+        // test fixtures compatible without silently disabling real widgets.
+        let marker = "<html lang=\"ru\">";
+        html.contains(marker).then(|| {
+            html.replacen(
+                marker,
+                "<html lang=\"ru\" data-kira-surface=\"calendar\">",
+                1,
+            )
+        })
+    }
 }
 
 fn build(
@@ -5373,6 +5401,68 @@ fn ensure(
         let pool = OverlayPool::new(application, document, context);
         *cache.borrow_mut() = Some(pool.clone());
         Some(pool)
+    })
+}
+
+/// The notifications stay bottom-right, so their only safe adjustment is
+/// reducing the upper bound of the bottom-anchored WebView. Never move widgets.
+/// A detached Niri-managed window has no known compositor rect in this module;
+/// conservatively suspend automatic toast presentation until it closes.
+pub fn notification_bottom_clearance(output_width: i32, output_height: i32) -> i32 {
+    POOL.with(|cache| {
+        let pool = cache.borrow();
+        let Some(pool) = pool.as_ref() else {
+            return output_height;
+        };
+        if pool
+            .windows
+            .borrow()
+            .values()
+            .any(|view| view.requested.get() && view.detached.get())
+        {
+            return 0;
+        }
+        let Some(view) = pool.popup() else {
+            return output_height;
+        };
+        // Before the WebKit content-size/paint handshake, GTK's old
+        // allocation can still be 1px or belong to the previous widget.
+        // Suppress toasts instead of briefly covering the incoming popup.
+        if !view.revealed.get() || view.content_height.get() <= 0 {
+            return 0;
+        }
+        let overlay_width = pool.width_for(&view);
+        let overlaps_right_lane = match view.dock.get() {
+            PopupDock::Right => true,
+            PopupDock::Center => {
+                let center_right = (output_width + overlay_width) / 2;
+                let toast_left = output_width
+                    - crate::notification_layout::PREFERRED_WIDTH
+                        .min(output_width.saturating_sub(24))
+                    - crate::notification_layout::OUTER_MARGIN;
+                center_right + 12 > toast_left
+            }
+        };
+        if !overlaps_right_lane {
+            return output_height;
+        }
+        // Some layer-shell implementations account for the 42px bar's
+        // exclusive zone while others position the Overlay from the output
+        // origin. Use the larger possible widget bottom, never a guess
+        // that could let a toast overlap a right-docked widget.
+        let top = crate::BAR_HEIGHT
+            + match view.dock.get() {
+                PopupDock::Right => crate::native_ui::POPUP_TOP_MARGIN,
+                PopupDock::Center => popup_layout::launcher_top_margin(output_height),
+            };
+        // The Svelte-reported natural height can precede GTK's map/configure;
+        // use the larger of the last actual allocation and reported content.
+        let widget_height = view
+            .content_height
+            .get()
+            .max(view.window.height())
+            .min((output_height * 7 / 10).max(1));
+        (output_height - top - widget_height - 16).max(0)
     })
 }
 
@@ -7258,6 +7348,9 @@ mod config_layers;
 mod display_manager;
 mod launcher;
 mod native_ui;
+mod notification_layout;
+mod notification_queue;
+mod notifications;
 mod popup_layout;
 mod process_monitor;
 mod renderer_recovery;
@@ -7689,6 +7782,9 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
+        // Own the user's session notification bus without replacing another
+        // daemon. The toast WebView is allocated on the first actual event.
+        notifications::start(app, &html, &context);
 
         // Warm the inert Calendar WebView with the SAME WebContext as Top Bar.
         // The popup stays unmapped until requested; initial startup is not
@@ -7879,6 +7975,1506 @@ pub const POPUP_TOP_MARGIN: i32 = 25;
 /// A prewarmed, active or closed peer must NEVER reserve layout space for
 /// another popup. The WebView pool owns resource leases, not geometry.
 pub const POPUP_RIGHT_MARGIN: i32 = 12;
+
+FILE	crates/kira-shell/src/notification_layout.rs
+//! Output-local logical-pixel geometry of the one bottom-right toast WebView.
+//! The renderer does not make GTK resize itself based on its own viewport.
+use gtk::cairo::{RectangleInt, Region};
+
+pub const PREFERRED_WIDTH: i32 = 360;
+pub const MIN_HOST_WIDTH: i32 = 240;
+pub const OUTER_MARGIN: i32 = 12;
+pub const INNER_MARGIN: i32 = 8;
+pub const GAP: i32 = 8;
+pub const MIN_CARD_HEIGHT: i32 = 58;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Layout {
+    pub width: i32,
+    pub height: i32,
+    pub card_height: i32,
+}
+
+pub fn plan(output_width: i32, output_height: i32, bottom_clearance: i32) -> Option<Layout> {
+    if output_width <= OUTER_MARGIN * 2 || output_height <= OUTER_MARGIN * 2 {
+        return None;
+    }
+    let width = PREFERRED_WIDTH.min(output_width - OUTER_MARGIN * 2);
+    // A 1..15px host makes a zero/negative Cairo input rectangle; keep
+    // notifications queued instead of creating an unclickable Wayland pane.
+    if width < MIN_HOST_WIDTH {
+        return None;
+    }
+    let height = (output_height / 2)
+        .min(bottom_clearance - OUTER_MARGIN)
+        .max(0);
+    let card_height = (height - INNER_MARGIN * 2 - GAP * 2) / 3;
+    if card_height < MIN_CARD_HEIGHT {
+        return None;
+    }
+    Some(Layout {
+        width,
+        height,
+        card_height,
+    })
+}
+
+/// Region contains exactly the actually visible card bounds, never the
+/// transparent remainder of the half-screen WebView or spacing between cards.
+pub fn hit_region(layout: Layout, visible_count: usize) -> Region {
+    let region = Region::create();
+    for index in 0..visible_count.min(3) {
+        let y = layout.height
+            - INNER_MARGIN
+            - layout.card_height
+            - index as i32 * (layout.card_height + GAP);
+        let rect = RectangleInt::new(
+            INNER_MARGIN,
+            y,
+            layout.width - INNER_MARGIN * 2,
+            layout.card_height,
+        );
+        let _ = region.union_rectangle(&rect);
+    }
+    region
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn caps_height_and_card_at_exactly_one_third() {
+        for (width, height) in [(360, 640), (600, 480), (1920, 1080), (3840, 2160)] {
+            let layout = plan(width, height, height).expect("full screen has free space");
+            assert!(layout.height * 2 <= height);
+            assert!(layout.card_height * 3 <= layout.height);
+            assert!(layout.width <= width - 24);
+            assert!(hit_region(layout, 3).num_rectangles() >= 1);
+        }
+    }
+
+    #[test]
+    fn tiny_outputs_do_not_create_negative_input_rectangles() {
+        for width in 1..(MIN_HOST_WIDTH + OUTER_MARGIN * 2) {
+            assert!(plan(width, 600, 600).is_none(), "width={width}");
+        }
+        assert!(plan(MIN_HOST_WIDTH + OUTER_MARGIN * 2, 600, 600).is_some());
+    }
+
+    #[test]
+    fn all_three_click_regions_are_bounded_and_separated() {
+        let layout = plan(900, 700, 700).unwrap();
+        assert!(layout.height * 2 <= 700);
+        assert!(layout.card_height * 3 <= layout.height);
+        let region = hit_region(layout, 3);
+        for i in 0..3 {
+            let y =
+                layout.height - INNER_MARGIN - layout.card_height - i * (layout.card_height + GAP);
+            assert!(region.contains_point(layout.width / 2, y + layout.card_height / 2));
+            if i < 2 {
+                assert!(!region.contains_point(layout.width / 2, y - GAP / 2));
+            }
+        }
+        assert!(!region.contains_point(0, layout.height / 2));
+    }
+
+    #[test]
+    fn refuses_to_cover_widget_in_bottom_right() {
+        assert!(plan(600, 480, 95).is_none());
+        assert!(plan(600, 480, 240).is_some());
+    }
+
+    #[test]
+    fn empty_transparent_area_is_not_clickable() {
+        let layout = plan(1920, 1080, 1080).unwrap();
+        let region = hit_region(layout, 1);
+        assert!(region.contains_point(100, layout.height - 20));
+        assert!(!region.contains_point(100, 20));
+        assert!(!region.contains_point(1, layout.height - 20));
+        assert!(!hit_region(layout, 0).contains_point(100, layout.height - 20));
+    }
+}
+
+FILE	crates/kira-shell/src/notification_queue.rs
+//! Bounded, deterministic FIFO admission and toast lifetime policy.
+//! These rules are independent from GTK, D-Bus, Niri and wall-clock changes.
+use std::collections::VecDeque;
+use std::time::{Duration, Instant};
+
+pub const MAX_VISIBLE: usize = 3;
+pub const MAX_STORED: usize = 100;
+pub const ADMISSION_GAP: Duration = Duration::from_millis(1500);
+pub const MIN_DWELL: Duration = Duration::from_millis(3000);
+pub const DEFAULT_DWELL: Duration = Duration::from_millis(5000);
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Notice {
+    pub id: u32,
+    pub app: String,
+    pub summary: String,
+    pub body: String,
+    pub actions: Vec<(String, String)>,
+    pub critical: bool,
+    /// D-Bus timeout=0 and critical hints must never auto-close.
+    pub persistent: bool,
+    /// Visual dwell, not the D-Bus logical lifetime.
+    pub dwell: Duration,
+}
+
+#[derive(Clone, Debug)]
+struct Waiting {
+    notice: Notice,
+    eligible_at: Instant,
+}
+
+#[derive(Clone, Debug)]
+struct Showing {
+    notice: Notice,
+    /// Starts only after the Svelte host confirms a painted frame.
+    since: Option<Instant>,
+}
+
+#[derive(Default)]
+pub struct NotificationQueue {
+    waiting: VecDeque<Waiting>,
+    showing: Vec<Showing>, // first element is the bottom card
+    // Persistent events can leave the toast without closing their D-Bus ID.
+    // CloseNotification or a future replacement can still address them.
+    parked: VecDeque<Notice>,
+    history: VecDeque<Notice>,
+    next_id: u32,
+}
+
+impl NotificationQueue {
+    pub fn contains_active(&self, id: u32) -> bool {
+        self.waiting.iter().any(|item| item.notice.id == id)
+            || self.showing.iter().any(|item| item.notice.id == id)
+            || self.parked.iter().any(|item| item.id == id)
+    }
+
+    pub fn allocate_id(&mut self) -> u32 {
+        loop {
+            self.next_id = self.next_id.wrapping_add(1).max(1);
+            if !self.contains_active(self.next_id)
+                && !self.history.iter().any(|n| n.id == self.next_id)
+            {
+                return self.next_id;
+            }
+        }
+    }
+
+    /// Preserve the FIFO position and the original visible_since on replace.
+    /// Returns false on overload, without discarding earlier FIFO entries.
+    pub fn push(&mut self, notice: Notice, now: Instant) -> bool {
+        if let Some(entry) = self
+            .waiting
+            .iter_mut()
+            .find(|item| item.notice.id == notice.id)
+        {
+            entry.notice = notice.clone();
+        } else if let Some(entry) = self
+            .showing
+            .iter_mut()
+            .find(|item| item.notice.id == notice.id)
+        {
+            entry.notice = notice.clone();
+        } else {
+            // Replacing a parked persistent ID creates a fresh toast request
+            // at the tail of FIFO, without closing/reallocating that D-Bus ID.
+            let parked_position = self.parked.iter().position(|item| item.id == notice.id);
+            if parked_position.is_none() && self.active_count() >= MAX_STORED {
+                return false;
+            }
+            if let Some(index) = parked_position {
+                self.parked.remove(index);
+            }
+            self.waiting.push_back(Waiting {
+                eligible_at: if self.showing.is_empty() {
+                    now
+                } else {
+                    now + ADMISSION_GAP
+                },
+                notice: notice.clone(),
+            });
+        }
+        if let Some(item) = self.history.iter_mut().find(|item| item.id == notice.id) {
+            *item = notice;
+        } else {
+            if self.history.len() >= MAX_STORED {
+                self.history.pop_front();
+            }
+            self.history.push_back(notice);
+        }
+        true
+    }
+
+    pub fn close(&mut self, id: u32) -> bool {
+        let before = self.active_count();
+        self.waiting.retain(|item| item.notice.id != id);
+        self.showing.retain(|item| item.notice.id != id);
+        self.parked.retain(|item| item.id != id);
+        // Session history is a separate, bounded audit of past notifications.
+        // Closing a toast must not erase it from history or make its ID active
+        // again for Freedesktop's replaces_id semantics.
+        before != self.active_count()
+    }
+
+    pub fn active_count(&self) -> usize {
+        self.waiting.len() + self.showing.len() + self.parked.len()
+    }
+
+    /// Only the host may start the visual clock. A covered/unmapped window must
+    /// not count as having displayed anything.
+    pub fn step(&mut self, now: Instant, can_show: bool) -> bool {
+        let mut changed = false;
+        if !can_show {
+            if !self.showing.is_empty() {
+                let items: Vec<_> = self.showing.drain(..).collect();
+                for item in items.into_iter().rev() {
+                    self.waiting.push_front(Waiting {
+                        notice: item.notice,
+                        eligible_at: now,
+                    });
+                }
+                changed = true;
+            }
+            return changed;
+        }
+
+        // Separate visual dwell from logical Freedesktop lifetime: a
+        // timeout=0 or critical toast still vacates its slot after dwell,
+        // but stays logically active until CloseNotification/replace.
+        let mut kept = Vec::with_capacity(self.showing.len());
+        for entry in self.showing.drain(..) {
+            let elapsed = entry.since.is_some_and(|since| {
+                now.saturating_duration_since(since) >= entry.notice.dwell.max(MIN_DWELL)
+            });
+            if elapsed {
+                if entry.notice.persistent {
+                    self.parked.push_back(entry.notice);
+                }
+                changed = true;
+            } else {
+                kept.push(entry);
+            }
+        }
+        self.showing = kept;
+        if self.showing.len() < MAX_VISIBLE {
+            if let Some(head) = self.waiting.front() {
+                // The 1.5s gap begins when the previous card actually paints,
+                // not when an invisible GTK/WebKit host admits it.
+                let interval_ok = self.showing.last().is_none_or(|item| {
+                    item.since
+                        .is_some_and(|since| now.saturating_duration_since(since) >= ADMISSION_GAP)
+                });
+                if now >= head.eligible_at && interval_ok {
+                    let entry = self.waiting.pop_front().expect("FIFO head");
+                    self.showing.push(Showing {
+                        notice: entry.notice,
+                        since: None,
+                    });
+                    changed = true;
+                }
+            }
+        }
+        changed
+    }
+
+    /// A notification is not considered displayed until the trusted renderer
+    /// has applied the snapshot and a frame was presented. A stale ID or a
+    /// repeated acknowledgement never resets the minimum dwell time.
+    pub fn mark_painted(&mut self, now: Instant, ids: &[u32]) -> bool {
+        let mut changed = false;
+        for item in &mut self.showing {
+            if item.since.is_none() && ids.contains(&item.notice.id) {
+                item.since = Some(now);
+                changed = true;
+            }
+        }
+        changed
+    }
+
+    pub fn visible(&self) -> impl Iterator<Item = &Notice> {
+        self.showing.iter().map(|entry| &entry.notice)
+    }
+
+    pub fn history(&self) -> impl Iterator<Item = &Notice> {
+        self.history.iter()
+    }
+
+    pub fn has_pending(&self) -> bool {
+        !self.waiting.is_empty()
+    }
+    pub fn visible_count(&self) -> usize {
+        self.showing.len()
+    }
+
+    /// True only after the trusted Svelte renderer acknowledges a visual
+    /// frame. Prevents exposing an outdated DOM when the host was blank.
+    pub fn painted_count(&self) -> usize {
+        self.showing
+            .iter()
+            .filter(|entry| entry.since.is_some())
+            .count()
+    }
+
+    pub fn has_painted(&self) -> bool {
+        self.painted_count() != 0
+    }
+
+    /// Exact next wakeup, never a permanent UI poll.
+    pub fn next_deadline(&self, now: Instant) -> Option<Instant> {
+        let expiry = self
+            .showing
+            .iter()
+            .filter_map(|item| {
+                item.since
+                    .map(|since| since + item.notice.dwell.max(MIN_DWELL))
+            })
+            .min();
+        let admission = if self.showing.len() < MAX_VISIBLE {
+            self.waiting.front().and_then(|entry| {
+                // No retry timer until WebKit confirms a frame, otherwise
+                // delayed painting could admit all three at once.
+                let interval = self.showing.last().map_or(Some(now), |item| {
+                    item.since.map(|since| since + ADMISSION_GAP)
+                });
+                interval.map(|at| entry.eligible_at.max(at))
+            })
+        } else {
+            None
+        };
+        expiry.into_iter().chain(admission).min()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn notice(id: u32) -> Notice {
+        Notice {
+            id,
+            app: "Test".into(),
+            summary: format!("{id}"),
+            body: String::new(),
+            actions: vec![],
+            critical: false,
+            persistent: false,
+            dwell: DEFAULT_DWELL,
+        }
+    }
+
+    #[test]
+    fn fifo_three_cards_and_one_point_five_second_spacing() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        assert!(q.step(t, true));
+        assert!(q.mark_painted(t, &[1]));
+        q.push(notice(2), t);
+        q.push(notice(3), t);
+        q.push(notice(4), t);
+        assert!(!q.step(t + Duration::from_millis(1499), true));
+        q.step(t + ADMISSION_GAP, true);
+        q.mark_painted(t + ADMISSION_GAP, &[2]);
+        assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![1, 2]);
+        q.step(t + ADMISSION_GAP * 2, true);
+        q.mark_painted(t + ADMISSION_GAP * 2, &[3]);
+        assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![1, 2, 3]);
+        q.step(t + Duration::from_secs(5), true);
+        assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![2, 3, 4]);
+        assert_eq!(q.visible_count(), MAX_VISIBLE);
+    }
+
+    #[test]
+    fn dwell_is_at_least_three_seconds_and_visual_pause_preserves_fifo() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        let mut a = notice(1);
+        a.dwell = Duration::from_millis(100);
+        q.push(a, t);
+        q.step(t, true);
+        q.mark_painted(t, &[1]);
+        q.push(notice(2), t);
+        assert!(q.step(t + Duration::from_millis(2999), false));
+        assert_eq!(q.visible_count(), 0);
+        q.step(t + Duration::from_secs(4), true);
+        q.mark_painted(t + Duration::from_secs(4), &[1]);
+        assert_eq!(q.visible().next().unwrap().id, 1);
+        q.step(t + Duration::from_secs(6), true);
+        assert_eq!(q.visible().next().unwrap().id, 1);
+        q.step(t + Duration::from_secs(7), true);
+        assert!(q.visible().all(|n| n.id != 1));
+    }
+
+    #[test]
+    fn input_region_grows_only_after_each_painted_ack() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        q.step(t, true);
+        assert_eq!(q.painted_count(), 0);
+        q.mark_painted(t, &[1]);
+        assert_eq!(q.painted_count(), 1);
+        q.push(notice(2), t);
+        q.step(t + ADMISSION_GAP, true);
+        assert_eq!(q.visible_count(), 2);
+        assert_eq!(q.painted_count(), 1);
+        q.mark_painted(t + ADMISSION_GAP, &[2]);
+        assert_eq!(q.painted_count(), 2);
+    }
+
+    #[test]
+    fn no_expiry_before_render_ack_even_when_renderer_is_delayed() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        q.step(t, true);
+        q.step(t + Duration::from_secs(30), true);
+        assert_eq!(q.visible_count(), 1);
+        assert!(q.mark_painted(t + Duration::from_secs(30), &[1]));
+        assert!(!q.mark_painted(t + Duration::from_secs(32), &[1]));
+        q.step(t + Duration::from_secs(34), true);
+        assert_eq!(q.visible_count(), 1);
+        q.step(t + Duration::from_secs(35), true);
+        assert_eq!(q.visible_count(), 0);
+    }
+
+    #[test]
+    fn incoming_cards_wait_for_previous_real_paint() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        q.step(t, true);
+        q.push(notice(2), t);
+        assert_eq!(q.next_deadline(t), None);
+        assert!(!q.step(t + Duration::from_secs(4), true));
+        assert_eq!(q.visible_count(), 1);
+        assert!(q.mark_painted(t + Duration::from_secs(4), &[1]));
+        assert_eq!(
+            q.next_deadline(t + Duration::from_secs(4)),
+            Some(t + Duration::from_millis(5500))
+        );
+        assert!(!q.step(t + Duration::from_millis(5499), true));
+        assert!(q.step(t + Duration::from_millis(5500), true));
+        assert_eq!(
+            q.visible().map(|item| item.id).collect::<Vec<_>>(),
+            vec![1, 2]
+        );
+    }
+
+    #[test]
+    fn persistent_toast_rotates_out_but_dbus_id_remains_live() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        let mut persistent = notice(1);
+        persistent.persistent = true;
+        assert!(q.push(persistent, t));
+        assert!(q.step(t, true));
+        assert!(q.mark_painted(t, &[1]));
+        assert_eq!(q.next_deadline(t), Some(t + DEFAULT_DWELL));
+        q.push(notice(2), t);
+        q.step(t + ADMISSION_GAP, true);
+        q.mark_painted(t + ADMISSION_GAP, &[2]);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![2]);
+        assert!(q.contains_active(1));
+        assert_eq!(q.parked.len(), 1);
+        q.step(t + DEFAULT_DWELL + ADMISSION_GAP, true);
+        assert!(!q.contains_active(2));
+        assert!(q.contains_active(1));
+        assert!(q.close(1));
+        assert!(!q.contains_active(1));
+        assert!(q.history().any(|item| item.id == 1));
+        assert!(!q.close(1));
+    }
+
+    #[test]
+    fn three_persistent_toasts_do_not_block_the_next_fifo_event() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        for index in 0..3 {
+            let mut n = notice(index + 1);
+            n.persistent = true;
+            q.push(n, t);
+            let now = t + ADMISSION_GAP * index;
+            q.step(now, true);
+            q.mark_painted(now, &[index + 1]);
+        }
+        q.push(notice(4), t + ADMISSION_GAP * 2);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![2, 3, 4]);
+        assert!(q.contains_active(1)); // logically active, no toast slot
+        assert!(q.contains_active(4));
+        assert_eq!(q.parked.len(), 1);
+    }
+
+    #[test]
+    fn replacement_of_parked_persistent_id_reenters_fifo_with_same_id() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        let mut n = notice(77);
+        n.persistent = true;
+        q.push(n.clone(), t);
+        q.step(t, true);
+        q.mark_painted(t, &[77]);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible_count(), 0);
+        assert!(q.contains_active(77));
+        n.summary = "updated".into();
+        assert!(q.push(n, t + DEFAULT_DWELL));
+        assert_eq!(q.parked.len(), 0);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible().next().unwrap().summary, "updated");
+        assert!(q.contains_active(77));
+        assert_eq!(q.history().filter(|n| n.id == 77).count(), 1);
+    }
+
+    #[test]
+    fn allocator_skips_known_ids_even_after_history_overflows() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.next_id = 41;
+        let mut n = notice(42);
+        n.persistent = true;
+        q.push(n, t);
+        q.step(t, true);
+        q.mark_painted(t, &[42]);
+        q.step(t + DEFAULT_DWELL, true);
+        for id in 100..201 {
+            q.push(notice(id), t);
+            q.close(id);
+        }
+        assert!(!q.history().any(|n| n.id == 42));
+        assert_eq!(q.allocate_id(), 43);
+        q.next_id = 41;
+        assert_eq!(q.allocate_id(), 43);
+    }
+
+    #[test]
+    fn overloaded_queue_rejects_newest_without_eviction() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        for id in 1..=MAX_STORED as u32 {
+            assert!(q.push(notice(id), t));
+        }
+        assert!(!q.push(notice(101), t));
+        q.step(t, true);
+        assert_eq!(q.visible().next().unwrap().id, 1);
+        assert_eq!(q.history().count(), MAX_STORED);
+        assert!(!q.history().any(|n| n.id == 101));
+    }
+
+    #[test]
+    fn replace_keeps_position_and_close_is_immediate() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        q.step(t, true);
+        q.push(notice(2), t);
+        let mut replacement = notice(1);
+        replacement.summary = "changed".into();
+        q.push(replacement, t + Duration::from_secs(1));
+        assert_eq!(q.visible().next().unwrap().summary, "changed");
+        assert!(q.close(1));
+        q.step(t + ADMISSION_GAP, true);
+        assert_eq!(q.visible().next().unwrap().id, 2);
+    }
+}
+
+FILE	crates/kira-shell/src/notifications.rs
+//! The freedesktop notification server and its single bottom-right Svelte host.
+//! This deliberately uses the already-linked GIO session D-Bus API. GTK owns
+//! the Wayland surface; no arbitrary D-Bus or OS commands are exposed to JS.
+use crate::notification_layout::{self, Layout};
+use crate::notification_queue::{DEFAULT_DWELL, Notice, NotificationQueue};
+use crate::renderer_recovery::{RendererRecovery, RetryDecision};
+use std::cell::{Cell, RefCell};
+use std::rc::{Rc, Weak};
+use std::time::{Duration, Instant};
+
+use gtk::glib::{self, variant::ToVariant};
+use gtk::prelude::*;
+use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+use webkit6::prelude::*;
+
+const OBJECT_PATH: &str = "/org/freedesktop/Notifications";
+const INTERFACE: &str = "org.freedesktop.Notifications";
+const NAME: &str = "org.freedesktop.Notifications";
+const XML: &str = r#"<node>
+  <interface name="org.freedesktop.Notifications">
+    <method name="GetCapabilities"><arg type="as" direction="out"/></method>
+    <method name="GetServerInformation">
+      <arg type="s" direction="out"/><arg type="s" direction="out"/>
+      <arg type="s" direction="out"/><arg type="s" direction="out"/>
+    </method>
+    <method name="Notify">
+      <arg type="s" direction="in"/><arg type="u" direction="in"/>
+      <arg type="s" direction="in"/><arg type="s" direction="in"/>
+      <arg type="s" direction="in"/><arg type="as" direction="in"/>
+      <arg type="a{sv}" direction="in"/><arg type="i" direction="in"/>
+      <arg type="u" direction="out"/>
+    </method>
+    <method name="CloseNotification"><arg type="u" direction="in"/></method>
+    <signal name="NotificationClosed"><arg type="u"/><arg type="u"/></signal>
+    <signal name="ActionInvoked"><arg type="u"/><arg type="s"/></signal>
+  </interface>
+</node>"#;
+
+thread_local! {
+    // One notification service per running Shell, never per widget or toast.
+    static ACTIVE: RefCell<Option<Rc<Service>>> = const { RefCell::new(None) };
+}
+
+struct Host {
+    window: gtk::ApplicationWindow,
+    view: webkit6::WebView,
+    ready: Cell<bool>,
+    layout: Cell<Option<Layout>>,
+    recovery: RefCell<RendererRecovery>,
+    unavailable: Cell<bool>,
+}
+
+struct Service {
+    app: gtk::Application,
+    html: String,
+    context: webkit6::WebContext,
+    owned: Cell<bool>,
+    bus: RefCell<Option<gtk::gio::DBusConnection>>,
+    // Required to relinquish the Freedesktop name if WebKit recovery is
+    // exhausted; otherwise successful D-Bus replies swallow every toast.
+    owner_id: RefCell<Option<gtk::gio::OwnerId>>,
+    queue: RefCell<NotificationQueue>,
+    host: RefCell<Option<Rc<Host>>>,
+    timer_epoch: Cell<u64>,
+    render_revision: Cell<u32>,
+    // Idempotent snapshots: unrelated GTK layout notifications must not
+    // cancel the Svelte paint ACK and indefinitely postpone FIFO admission.
+    last_rendered: RefCell<Option<String>>,
+}
+
+pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    // A nested preview inherits the user's *real* session bus. Never seize
+    // their live notification daemon while testing a child Niri compositor.
+    if std::env::var_os("KIRA_PREVIEW").is_some()
+        && std::env::var_os("KIRA_NOTIFICATIONS_PREVIEW").is_none()
+    {
+        eprintln!("kira-shell: notification D-Bus ownership disabled in isolated preview");
+        return;
+    }
+    // Claiming the Freedesktop name while unable to provide card-sized
+    // pointer input regions silently swallows every desktop notification.
+    // Leave the name unowned so another notification daemon can serve it.
+    if !gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes()) {
+        eprintln!("kira-shell: notification server disabled (GDK input shapes unsupported)");
+        return;
+    }
+    let service = Rc::new(Service {
+        app: app.clone(),
+        html: html.to_owned(),
+        context: context.clone(),
+        owned: Cell::new(false),
+        bus: RefCell::new(None),
+        owner_id: RefCell::new(None),
+        queue: RefCell::new(NotificationQueue::default()),
+        host: RefCell::new(None),
+        timer_epoch: Cell::new(0),
+        render_revision: Cell::new(0),
+        last_rendered: RefCell::new(None),
+    });
+    ACTIVE.with(|active| *active.borrow_mut() = Some(service.clone()));
+    observe_outputs(&service);
+
+    let acquired = Rc::downgrade(&service);
+    let name_acquired = Rc::downgrade(&service);
+    let name_lost = Rc::downgrade(&service);
+    let id = gtk::gio::bus_own_name(
+        gtk::gio::BusType::Session,
+        NAME,
+        gtk::gio::BusNameOwnerFlags::DO_NOT_QUEUE,
+        move |connection, _| {
+            if let Some(service) = acquired.upgrade() {
+                service.register_dbus(&connection);
+            }
+        },
+        move |connection, _| {
+            if let Some(service) = name_acquired.upgrade() {
+                if service.owner_id.borrow().is_none() {
+                    return;
+                }
+                *service.bus.borrow_mut() = Some(connection);
+                service.owned.set(true);
+                service.sync();
+                eprintln!("kira-shell: acquired org.freedesktop.Notifications");
+            }
+        },
+        move |_, _| {
+            if let Some(service) = name_lost.upgrade() {
+                service.owned.set(false);
+                service.bus.borrow_mut().take();
+                service.sync();
+                eprintln!("kira-shell: notification D-Bus name unavailable (another daemon?)");
+            }
+        },
+    );
+    service.owner_id.replace(Some(id));
+}
+
+/// Monitor geometry is in GTK logical pixels. When Niri changes a mode,
+/// scale or output topology, resize/hide the toast without waiting for
+/// another D-Bus notification; otherwise the 50% cap can become stale.
+fn observe_monitor(monitor: &gtk::gdk::Monitor, service: &Rc<Service>) {
+    let weak = Rc::downgrade(service);
+    monitor.connect_notify_local(Some("geometry"), move |_, _| {
+        if let Some(service) = weak.upgrade() {
+            service.sync();
+        }
+    });
+    let weak = Rc::downgrade(service);
+    monitor.connect_notify_local(Some("scale-factor"), move |_, _| {
+        if let Some(service) = weak.upgrade() {
+            service.sync();
+        }
+    });
+}
+
+fn observe_outputs(service: &Rc<Service>) {
+    let Some(display) = gtk::gdk::Display::default() else {
+        return;
+    };
+    let monitors = display.monitors();
+    for index in 0..monitors.n_items() {
+        if let Some(monitor) = monitors
+            .item(index)
+            .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+        {
+            observe_monitor(&monitor, service);
+        }
+    }
+    let weak = Rc::downgrade(service);
+    monitors.connect_items_changed(move |model, position, _, added| {
+        if let Some(service) = weak.upgrade() {
+            for index in position..position.saturating_add(added) {
+                if let Some(monitor) = model
+                    .item(index)
+                    .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+                {
+                    observe_monitor(&monitor, &service);
+                }
+            }
+            service.sync();
+        }
+    });
+}
+
+pub fn layout_changed() {
+    ACTIVE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.sync();
+        }
+    });
+}
+
+fn bounded(value: String, max_chars: usize) -> String {
+    value.chars().take(max_chars).collect()
+}
+
+/// Only accept an ACK for the exact revision and the exact list of
+/// rendered notification IDs. IDs are ordered oldest-first by the Svelte
+/// host, not inferred from whatever happens to be in the queue now.
+fn parse_paint_ack(value: &str) -> Option<(u32, Vec<u32>)> {
+    let (revision, raw_ids) = value.split_once(':')?;
+    let revision = revision.parse::<u32>().ok()?;
+    if revision == 0 {
+        return None;
+    }
+    let ids = raw_ids
+        .split(',')
+        .map(str::parse::<u32>)
+        .collect::<Result<Vec<_>, _>>()
+        .ok()?;
+    if ids.is_empty() || ids.len() > 3 || ids.contains(&0) {
+        return None;
+    }
+    if ids.iter().enumerate().any(|(i, id)| ids[..i].contains(id)) {
+        return None;
+    }
+    Some((revision, ids))
+}
+
+fn notification_id(queue: &mut NotificationQueue, replaces_id: u32) -> u32 {
+    if replaces_id != 0 {
+        replaces_id
+    } else {
+        queue.allocate_id()
+    }
+}
+
+fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> Notice {
+    let app = bounded(
+        params.child_value(0).get::<String>().unwrap_or_default(),
+        128,
+    );
+    let replace = params.child_value(1).get::<u32>().unwrap_or(0);
+    let summary = bounded(
+        params.child_value(3).get::<String>().unwrap_or_default(),
+        256,
+    );
+    // Clients may send minimal HTML. No raw body markup ever reaches WebKit.
+    let body = bounded(
+        params.child_value(4).get::<String>().unwrap_or_default(),
+        2048,
+    );
+    let raw_actions = params
+        .child_value(5)
+        .get::<Vec<String>>()
+        .unwrap_or_default();
+    let actions = raw_actions
+        .chunks_exact(2)
+        .take(8)
+        .map(|pair| (bounded(pair[0].clone(), 128), bounded(pair[1].clone(), 128)))
+        .collect();
+    let hints = glib::VariantDict::new(Some(&params.child_value(6)));
+    let critical = hints
+        .lookup_value("urgency", None)
+        .and_then(|value| value.get::<u8>())
+        .is_some_and(|urgency| urgency == 2);
+    let timeout = params.child_value(7).get::<i32>().unwrap_or(-1);
+    // Freedesktop timeout=0 and urgency=critical must never expire automatically.
+    let persistent = timeout == 0 || critical;
+    let dwell = if timeout <= 0 {
+        DEFAULT_DWELL
+    } else {
+        Duration::from_millis(u64::try_from(timeout.max(3000).min(30000)).unwrap_or(5000))
+    };
+    // The spec defines nonzero replaces_id as an ID, not a D-Bus sender
+    // capability. CLI tools may replace the same ID from fresh connections.
+    let id = notification_id(queue, replace);
+    Notice {
+        id,
+        app,
+        summary,
+        body,
+        actions,
+        critical,
+        persistent,
+        dwell,
+    }
+}
+
+impl Service {
+    fn relinquish_notification_name(&self) {
+        self.owned.set(false);
+        self.bus.borrow_mut().take();
+        let owner_id = self.owner_id.borrow_mut().take();
+        if let Some(owner_id) = owner_id {
+            gtk::gio::bus_unown_name(owner_id);
+            eprintln!("kira-shell: released org.freedesktop.Notifications after renderer failure");
+        }
+    }
+
+    fn register_dbus(self: &Rc<Self>, connection: &gtk::gio::DBusConnection) {
+        let Ok(xml) = gtk::gio::DBusNodeInfo::for_xml(XML) else {
+            eprintln!("kira-shell: failed to parse notification D-Bus introspection");
+            return;
+        };
+        let Some(info) = xml.lookup_interface(INTERFACE) else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let registered = connection
+            .register_object(OBJECT_PATH, &info)
+            .method_call(
+                move |_connection, _sender, _path, _interface, method, params, invocation| {
+                    let Some(service) = weak.upgrade() else {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "Notification host stopped",
+                        );
+                        return;
+                    };
+                    match method {
+                        "GetCapabilities" => {
+                            let caps = vec!["body".to_string(), "actions".to_string()];
+                            invocation.return_value(Some(&(caps,).to_variant()));
+                        }
+                        "GetServerInformation" => {
+                            invocation.return_value(Some(
+                                &("Kira Desktop", "Kira", env!("CARGO_PKG_VERSION"), "1.3")
+                                    .to_variant(),
+                            ));
+                        }
+                        "Notify" => {
+                            // A single D-Bus invocation must never allocate an
+                            // unbounded payload or silently drop an older FIFO item.
+                            if params.size() > 64 * 1024 {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.ExcessData",
+                                    "Notification payload exceeds 64 KiB",
+                                );
+                                return;
+                            }
+                            let (id, accepted) = {
+                                let mut queue = service.queue.borrow_mut();
+                                let notice = notice_from_params(&mut queue, &params);
+                                let id = notice.id;
+                                (id, queue.push(notice, Instant::now()))
+                            };
+                            if !accepted {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.QueueFull",
+                                    "Notification FIFO queue is full",
+                                );
+                                return;
+                            }
+                            invocation.return_value(Some(&(id,).to_variant()));
+                            service.sync();
+                        }
+                        "CloseNotification" => {
+                            let id = params.child_value(0).get::<u32>().unwrap_or(0);
+                            let existed = service.queue.borrow_mut().close(id);
+                            if existed {
+                                invocation.return_value(None);
+                                service.signal_closed(id, 3);
+                                service.sync();
+                            } else {
+                                // Per freedesktop Notifications, closing an
+                                // unknown ID must report a D-Bus error.
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.InvalidId",
+                                    "",
+                                );
+                            }
+                        }
+                        _ => invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.UnknownMethod",
+                            "Unknown notification method",
+                        ),
+                    }
+                },
+            )
+            .build();
+        if let Err(error) = registered {
+            eprintln!("kira-shell: cannot register D-Bus Notifications object: {error}");
+            // bus_acquired may run before owner_id was stored. Defer release
+            // until after the current main-loop callback.
+            let weak = Rc::downgrade(self);
+            glib::idle_add_local_once(move || {
+                if let Some(service) = weak.upgrade() {
+                    service.relinquish_notification_name();
+                }
+            });
+        }
+    }
+
+    fn signal_closed(&self, id: u32, reason: u32) {
+        if !self.owned.get() {
+            return;
+        }
+        if let Some(connection) = self.bus.borrow().as_ref() {
+            let _ = connection.emit_signal(
+                None,
+                OBJECT_PATH,
+                INTERFACE,
+                "NotificationClosed",
+                Some(&(id, reason).to_variant()),
+            );
+        }
+    }
+
+    fn action(self: &Rc<Self>, id: u32, key: &str) {
+        let allowed = self
+            .queue
+            .borrow()
+            .visible()
+            .any(|item| item.id == id && item.actions.iter().any(|(action, _)| action == key));
+        if !allowed || !self.owned.get() {
+            return;
+        }
+        if let Some(connection) = self.bus.borrow().as_ref() {
+            let _ = connection.emit_signal(
+                None,
+                OBJECT_PATH,
+                INTERFACE,
+                "ActionInvoked",
+                Some(&(id, key).to_variant()),
+            );
+        }
+        let closed = self.queue.borrow_mut().close(id);
+        if closed {
+            self.signal_closed(id, 2);
+        }
+        self.sync();
+    }
+
+    fn handle_ui(self: &Rc<Self>, message: &str) {
+        if message == "ready" {
+            let Some(host) = self.host.borrow().clone() else {
+                return;
+            };
+            if host.unavailable.get() {
+                return;
+            }
+            host.ready.set(true);
+            // Renderer restart means its JS event listeners are new even
+            // when the current toast payload hasn't changed.
+            self.last_rendered.borrow_mut().take();
+            self.sync();
+        } else if let Some(id) = message
+            .strip_prefix("close:")
+            .and_then(|s| s.parse::<u32>().ok())
+        {
+            let closed = self.queue.borrow_mut().close(id);
+            if closed {
+                self.signal_closed(id, 2);
+                self.sync();
+            }
+        } else if let Some((revision, ids)) =
+            message.strip_prefix("painted:").and_then(parse_paint_ack)
+        {
+            if revision == self.render_revision.get()
+                && self
+                    .host
+                    .borrow()
+                    .as_ref()
+                    .is_some_and(|host| host.ready.get() && host.window.is_visible())
+            {
+                let matches_snapshot = self
+                    .queue
+                    .borrow()
+                    .visible()
+                    .map(|item| item.id)
+                    .eq(ids.iter().copied());
+                if matches_snapshot {
+                    let now = Instant::now();
+                    let just_painted = self.queue.borrow_mut().mark_painted(now, &ids);
+                    if just_painted {
+                        // Do not reveal a card until its exact Svelte DOM has
+                        // been acknowledged. Resync sets the native input mask
+                        // and the dwell/admission deadlines.
+                        self.sync();
+                    }
+                }
+            }
+        } else if let Some(value) = message.strip_prefix("action:") {
+            if let Some((id, key)) = value.split_once(':') {
+                if let Ok(id) = id.parse::<u32>() {
+                    self.action(id, key);
+                }
+            }
+        }
+    }
+
+    fn create_host(self: &Rc<Self>, layout: Layout) -> Rc<Host> {
+        crate::native_ui::install_transparent_popup_style();
+        let window = gtk::ApplicationWindow::new(&self.app);
+        window.set_title(Some("Kira Notifications"));
+        window.set_decorated(false);
+        window.add_css_class("kira-popup-transparent");
+        window.init_layer_shell();
+        window.set_namespace(Some("kira-notifications"));
+        window.set_layer(Layer::Overlay);
+        window.set_anchor(Edge::Top, false);
+        window.set_anchor(Edge::Left, false);
+        window.set_anchor(Edge::Right, true);
+        window.set_anchor(Edge::Bottom, true);
+        window.set_margin(Edge::Right, notification_layout::OUTER_MARGIN);
+        window.set_margin(Edge::Bottom, notification_layout::OUTER_MARGIN);
+        window.set_exclusive_zone(0);
+        // OnDemand permits keyboard access after an explicit click, but
+        // automatic toast appearance never takes focus from Launcher.
+        window.set_keyboard_mode(KeyboardMode::OnDemand);
+        // Even the invisible bootstrap surface must respect the output cap.
+        window.set_default_size(layout.width, layout.height);
+
+        let manager = webkit6::UserContentManager::new();
+        let weak = Rc::downgrade(self);
+        manager.connect_script_message_received(Some("kiraNotificationUi"), move |_, value| {
+            if let Some(service) = weak.upgrade() {
+                let message = value.to_string().to_string();
+                if message.len() <= 512 {
+                    service.handle_ui(&message);
+                }
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraNotificationUi", None));
+        // Unlike ordinary widget WebViews this bridge exposes no Core RPC.
+        let view = webkit6::WebView::builder()
+            .web_context(&self.context)
+            .user_content_manager(&manager)
+            .build();
+        view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
+        crate::native_ui::restrict_webview_navigation(&view);
+        window.set_child(Some(&view));
+        let weak = Rc::downgrade(self);
+        view.connect_web_process_terminated(move |webview, reason| {
+            let Some(service) = weak.upgrade() else {
+                return;
+            };
+            let decision = {
+                let hosts = service.host.borrow();
+                let Some(host) = hosts.as_ref() else {
+                    return;
+                };
+                host.ready.set(false);
+                host.window.set_opacity(0.0);
+                host.window.set_visible(false);
+                let decision = host.recovery.borrow_mut().on_terminated(Instant::now());
+                if decision == RetryDecision::Exhausted {
+                    host.unavailable.set(true);
+                }
+                decision
+            };
+            service.queue.borrow_mut().step(Instant::now(), false);
+            service.last_rendered.borrow_mut().take();
+            eprintln!("kira-shell: toast renderer terminated ({reason:?}): {decision:?}");
+            if decision == RetryDecision::Exhausted {
+                // Other notification daemons can now claim the name. Never
+                // continue returning success for events we cannot show.
+                service.relinquish_notification_name();
+            }
+            // Keep the empty, click-through host mapped while retrying, but
+            // never burn CPU in an unlimited WebKit crash/reload loop.
+            service.sync();
+            if let RetryDecision::After(delay) = decision {
+                let document = notification_html(&service.html);
+                let webview = webview.clone();
+                let weak = Rc::downgrade(&service);
+                glib::timeout_add_local_once(delay, move || {
+                    if let Some(service) = weak.upgrade() {
+                        if let Some(host) = service.host.borrow().as_ref() {
+                            if host.unavailable.get() {
+                                return;
+                            }
+                            host.recovery.borrow_mut().retry_started();
+                            webview.load_html(&document, None);
+                        }
+                    }
+                });
+            }
+        });
+        let document = notification_html(&self.html);
+        view.load_html(&document, None);
+        let host = Rc::new(Host {
+            window,
+            view,
+            ready: Cell::new(false),
+            layout: Cell::new(None),
+            recovery: RefCell::new(RendererRecovery::default()),
+            unavailable: Cell::new(false),
+        });
+        gtk::prelude::WidgetExt::realize(&host.window);
+        // A realized but unmapped WebKit child may postpone its onMount script.
+        // Pre-map invisibly with an EMPTY native input region so the trusted
+        // Svelte host can report ready without a full-screen click interceptor.
+        // set_visible(), unlike present(), does not ask to steal focus.
+        if let Some(surface) = host.window.surface() {
+            surface.set_input_region(Some(&gtk::cairo::Region::create()));
+        }
+        host.window.set_opacity(0.0);
+        host.window.set_visible(true);
+        host
+    }
+
+    fn render(&self, host: &Host, layout: Layout) {
+        let showing: Vec<_> = self
+            .queue
+            .borrow()
+            .visible()
+            .map(|notice| {
+                serde_json::json!({
+                    "id": notice.id,
+                    "app": notice.app,
+                    "summary": notice.summary,
+                    "body": notice.body,
+                    "critical": notice.critical,
+                    "actions": notice.actions.iter().map(|(key,label)| serde_json::json!({
+                        "key": key, "label": label
+                    })).collect::<Vec<_>>(),
+                })
+            })
+            .collect();
+        // Only notify Svelte for changed content or geometry. Calling render
+        // for every GTK layout event used to invalidate in-flight rAF/paint
+        // acknowledgements, potentially freezing the FIFO forever.
+        let content = serde_json::json!({
+            "height": layout.height, "cardHeight": layout.card_height, "visible": showing
+        })
+        .to_string();
+        if self.last_rendered.borrow().as_deref() == Some(content.as_str()) {
+            return;
+        }
+        self.last_rendered.replace(Some(content.clone()));
+        let revision = self.render_revision.get().wrapping_add(1).max(1);
+        self.render_revision.set(revision);
+        let payload = serde_json::json!({ "revision": revision, "height": layout.height,
+            "cardHeight": layout.card_height, "visible": showing });
+        // Serialize twice: sender-controlled notification text is never JS.
+        if let Ok(encoded) = serde_json::to_string(&payload.to_string()) {
+            let script = format!(
+                "window.dispatchEvent(new CustomEvent('kira:notifications:update', {{ detail: JSON.parse({encoded}) }}));"
+            );
+            host.view.evaluate_javascript(
+                &script,
+                None,
+                None,
+                None::<&gtk::gio::Cancellable>,
+                |_| {},
+            );
+        }
+    }
+
+    fn sync(self: &Rc<Self>) {
+        let now = Instant::now();
+        let can_shape =
+            gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes());
+        // Fail closed on disconnected/headless outputs. The previous
+        // synthetic 800x800 fallback could map a Wayland toast with incorrect
+        // dimensions immediately after a monitor was unplugged.
+        let display = self
+            .host
+            .borrow()
+            .as_ref()
+            .map(|host| gtk::prelude::WidgetExt::display(&host.window))
+            .or_else(gtk::gdk::Display::default);
+        let output = display.and_then(|display| {
+            let monitor = self
+                .host
+                .borrow()
+                .as_ref()
+                .and_then(|host| {
+                    host.window
+                        .surface()
+                        .and_then(|surface| display.monitor_at_surface(&surface))
+                })
+                .or_else(|| {
+                    display
+                        .monitors()
+                        .item(0)
+                        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+                });
+            monitor
+                .map(|monitor| {
+                    let rect = monitor.geometry();
+                    (rect.width(), rect.height())
+                })
+                .filter(|(width, height)| *width > 0 && *height > 0)
+        });
+        let layout = output.and_then(|(width, height)| {
+            let clearance = crate::calendar::notification_bottom_clearance(width, height);
+            notification_layout::plan(width, height, clearance)
+        });
+        let possible = self.owned.get()
+            && can_shape
+            && layout.is_some()
+            && !self
+                .host
+                .borrow()
+                .as_ref()
+                .is_some_and(|host| host.unavailable.get());
+        // Explicitly release RefCell borrow guards *before* GTK/WebKit
+        // callbacks and host replacement. A temporary in an if condition
+        // must not keep self.host borrowed while create_host maps a window.
+        let has_work = {
+            let queue = self.queue.borrow();
+            queue.has_pending() || queue.visible_count() > 0
+        };
+        let host_missing = self.host.borrow().is_none();
+        if possible && has_work && host_missing {
+            let host = self.create_host(layout.expect("possible requires a valid layout"));
+            self.host.replace(Some(host));
+            // Wait until the Svelte event listener is mounted.
+        }
+        let host = self.host.borrow().clone();
+        let ready = host.as_ref().is_some_and(|host| host.ready.get());
+        let usable = possible && ready;
+        let previously_visible: Vec<u32> = if usable {
+            self.queue.borrow().visible().map(|item| item.id).collect()
+        } else {
+            Vec::new()
+        };
+        self.queue.borrow_mut().step(now, usable);
+        if usable {
+            // Automatic expiry is a D-Bus close event (reason 1). Replacements
+            // keep the same ID, so they never produce a false close signal.
+            let current: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
+            for id in previously_visible {
+                if !current.contains(&id) && !self.queue.borrow().contains_active(id) {
+                    // Persistent toasts rotate out of view but must not close
+                    // their Freedesktop ID or emit NotificationClosed.
+                    self.signal_closed(id, 1);
+                }
+            }
+        }
+        if let Some(host) = host {
+            if usable && self.queue.borrow().visible_count() > 0 {
+                let layout = layout.expect("checked layout");
+                host.layout.set(Some(layout));
+                host.window.set_default_size(layout.width, layout.height);
+                // A first/admitted card must not reveal the previous WebKit
+                // DOM or gain a clickable region until it has actually
+                // rendered. Existing painted cards stay visible while a new
+                // card joins above them.
+                let painted = self.queue.borrow().has_painted();
+                let region = if painted {
+                    notification_layout::hit_region(layout, self.queue.borrow().painted_count())
+                } else {
+                    gtk::cairo::Region::create()
+                };
+                if let Some(surface) = host.window.surface() {
+                    surface.set_input_region(Some(&region));
+                }
+                host.window.set_opacity(if painted { 1.0 } else { 0.0 });
+                host.window.set_visible(true);
+                self.render(&host, layout);
+                let weak: Weak<Self> = Rc::downgrade(self);
+                glib::idle_add_local_once(move || {
+                    if let Some(service) = weak.upgrade() {
+                        if let Some(host) = service.host.borrow().as_ref() {
+                            if let (Some(layout), Some(surface)) =
+                                (host.layout.get(), host.window.surface())
+                            {
+                                let region = if service.queue.borrow().has_painted() {
+                                    notification_layout::hit_region(
+                                        layout,
+                                        service.queue.borrow().painted_count(),
+                                    )
+                                } else {
+                                    gtk::cairo::Region::create()
+                                };
+                                surface.set_input_region(Some(&region));
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Keep the already-allocated WebKit page mapped but invisible,
+                // with NO input region. Otherwise a later toast can race
+                // WebKit's suspended DOM and briefly flash stale content.
+                host.window.set_opacity(0.0);
+                if let Some(surface) = host.window.surface() {
+                    surface.set_input_region(Some(&gtk::cairo::Region::create()));
+                }
+                host.window.set_visible(possible);
+                self.last_rendered.borrow_mut().take();
+            }
+        }
+        self.schedule(now, usable);
+    }
+
+    fn schedule(self: &Rc<Self>, now: Instant, usable: bool) {
+        let generation = self.timer_epoch.get().wrapping_add(1);
+        self.timer_epoch.set(generation);
+        if !usable {
+            return;
+        }
+        let Some(deadline) = self.queue.borrow().next_deadline(now) else {
+            return;
+        };
+        let delay = deadline
+            .saturating_duration_since(now)
+            .max(Duration::from_millis(1));
+        let weak = Rc::downgrade(self);
+        glib::timeout_add_local_once(delay, move || {
+            if let Some(service) = weak.upgrade() {
+                if service.timer_epoch.get() == generation {
+                    service.sync();
+                }
+            }
+        });
+    }
+}
+
+fn notification_html(html: &str) -> String {
+    html.replacen(
+        "<html lang=\"ru\">",
+        "<html lang=\"ru\" data-kira-surface=\"notifications\">",
+        1,
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn freedesktop_replaces_id_survives_new_connection_and_closed_notice() {
+        let mut queue = NotificationQueue::default();
+        let now = Instant::now();
+        // Fresh connections may not share a unique D-Bus sender name.
+        assert_eq!(notification_id(&mut queue, 4321), 4321);
+        let mut notice = Notice {
+            id: 4321,
+            app: "A".into(),
+            summary: "old".into(),
+            body: String::new(),
+            actions: Vec::new(),
+            critical: false,
+            persistent: false,
+            dwell: DEFAULT_DWELL,
+        };
+        assert!(queue.push(notice.clone(), now));
+        notice.summary = "replaced".into();
+        assert_eq!(notification_id(&mut queue, 4321), 4321);
+        assert!(queue.push(notice, now));
+        assert!(queue.close(4321));
+        // The spec still requires returning an explicitly requested
+        // nonzero ID even if the earlier notification was closed.
+        assert_eq!(notification_id(&mut queue, 4321), 4321);
+        assert_eq!(notification_id(&mut queue, 0), 1);
+    }
+
+    #[test]
+    fn painted_ack_requires_exact_ordered_nonzero_ids_and_revision() {
+        assert_eq!(parse_paint_ack("7:10,11,12"), Some((7, vec![10, 11, 12])));
+        for malformed in [
+            "",
+            "0:1",
+            "1:",
+            "1:0",
+            "1:1,2,3,4",
+            "1:1,1",
+            "1:1,,2",
+            "1:banana",
+            "1:1:2",
+            "abc:1",
+            "4294967296:1",
+            "1:4294967296",
+        ] {
+            assert!(parse_paint_ack(malformed).is_none(), "{malformed}");
+        }
+        let t = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let notice = Notice {
+            id: 9,
+            app: "test".into(),
+            summary: "t".into(),
+            body: String::new(),
+            actions: Vec::new(),
+            critical: false,
+            persistent: false,
+            dwell: DEFAULT_DWELL,
+        };
+        assert!(queue.push(notice, t));
+        queue.step(t, true);
+        let stale_ids = parse_paint_ack("4:99").unwrap().1;
+        assert!(!queue.visible().map(|n| n.id).eq(stale_ids.iter().copied()));
+        assert_eq!(queue.painted_count(), 0);
+        assert!(queue.visible().map(|n| n.id).eq([9]));
+        assert!(queue.mark_painted(t, &[9]));
+    }
+
+    #[test]
+    fn data_is_bounded_and_renderer_is_a_distinct_surface() {
+        assert_eq!(bounded("привет".into(), 3), "при");
+        assert!(
+            notification_html("<html lang=\"ru\">").contains("data-kira-surface=\"notifications\"")
+        );
+        assert!(XML.contains("org.freedesktop.Notifications"));
+    }
+}
 
 FILE	crates/kira-shell/src/popup_layout.rs
 //! Transient popups use a per-widget dock. Detached widgets are regular
@@ -11235,6 +12831,61 @@ over it, Calendar/Overview scroll vertically, while Launcher/Processes scroll
 their result lists. `ResizeObserver` is disconnected when Svelte unmounts,
 and the original single warm WebView and safe center/corner relocation remain.
 
+FILE	docs/NOTIFICATIONS.md
+# Kira Desktop: notifications (draft implementation)
+
+**Status:** experimental implementation in PR #66. Not released; nested-Niri visual QA remains mandatory.
+
+## Contract
+
+- One lazy GTK4 / WebKitGTK toast host, separate from the four-slot widget pool.
+- Anchor: bottom right; at most 50% of the **logical** output height.
+- At most three cards; each card's actual height is at most one third of the host height.
+- DOM order is oldest first, flex direction is reversed: oldest sits at the bottom, newer cards stack above.
+- FIFO admission: when another card is visible, wait at least 1.5 seconds **after the last painted card** and respect the new event's own earliest admission time.
+- Minimum exposure: **3 seconds after the Svelte renderer acknowledges a painted frame** (not after GTK allocation). Normal default: 5 seconds; a positive client timeout is clamped to 3–30 seconds.
+- Per Freedesktop, `expire_timeout=0` and urgency=critical keep their **logical D-Bus ID** active until explicitly closed. Their **visual toast** still rotates out after its bounded dwell (normally 5 seconds) into a bounded in-memory parked set, without sending `NotificationClosed`. This keeps FIFO live even after three permanent notifications.
+- Closing by the application (`CloseNotification`) or user is immediate, including for off-screen persistent IDs. Replacement of a waiting or visible ID retains position and visual dwell origin; replacement of an off-screen parked ID re-enters FIFO at the tail. Per protocol, any nonzero `replaces_id` is returned unchanged, even from a fresh D-Bus connection or when the original ID is no longer active.
+- Full waiting + visible + logically-active parked queue is bounded to 100 events. New events beyond capacity return a D-Bus error without evicting older FIFO messages. The separate in-memory history is bounded to 100. Parked events have no UI center in this MVP, so non-expiring messages can currently be closed only through `CloseNotification` (by any session-bus client that knows the ID), or displayed again through `replaces_id`. A future notification center should expose these records.
+- When a right-side Kira widget leaves insufficient space, or a detached widget's actual compositor rect is unavailable, hide the toast host and requeue without charging display dwell time.
+- The input region is limited to **paint-acknowledged cards only**, never the whole transparent host or a newly admitted card that WebKit has not painted. Svelte acknowledges an exact revision **and ordered list of card IDs**; Shell ignores stale, malformed or mismatched ACKs rather than assuming all queue entries were painted. Auto-show never requests keyboard focus; keyboard focus on click is OnDemand.
+- First-start deadlock prevention: bootstrap the single WebKit host already mapped but **opacity=0 with an empty native input region**. The native host remains invisible and non-interactive until the Svelte frame ACK, then installs the acknowledged-card hit rectangles and reveals the page. Since WebKit can report a fully transparent but mapped page as `document.visibilityState="hidden"`, ACK readiness is based on Svelte DOM/layout (with a bounded rAF fallback), while native GTK alone decides whether the window is mapped and safe to show. After the stack empties the allocated WebView stays mapped at opacity=0 with an **empty** input region, preventing suspended/restarted DOM scripts and stale-card flashes when the next notification arrives. It does not take keyboard focus.
+- Widget opening is treated as unknown geometry until native/Svelte paint is acknowledged; no toast may overlap an unmeasured transient widget. Clearance conservatively includes the Top Bar's 42px reserved height.
+- Repeated GTK geometry callbacks do **not** regenerate an unchanged Svelte snapshot or restart pending paint acknowledgements.
+- Tiny outputs that cannot fit a 240 logical-pixel card column keep events queued. Even the invisible bootstrap WebView is initially sized below the 50% output-height cap.
+- GTK monitor geometry, scale-factor and output-list changes trigger layout re-evaluation, so hotplug and resolution changes do not leave a stale 50%-height window. When GTK has no valid current monitor, the host fails closed and queues events rather than guessing a fallback size.
+
+## Transport and security
+
+The draft uses GIO's existing session D-Bus support **inside kira-shell** to own `org.freedesktop.Notifications`. It does not steal an existing daemon's name. The Freedesktop API defines global integer IDs without sender-specific authorization: `replaces_id` and `CloseNotification` work across D-Bus connections (including separate `notify-send` processes). This means the API cannot guarantee that applications are prevented from acting on IDs they know. The server **does not claim the Freedesktop D-Bus name** when the graphical display cannot provide shaped pointer input regions; that prevents falsely acknowledging notifications that the host cannot safely display. If the native D-Bus object cannot register, or the WebKit toast renderer exhausts its five bounded recovery attempts, Shell explicitly calls `bus_unown_name`. This leaves the well-known name available to other daemons instead of silently accepting undeliverable events. The failed service remains disabled until Shell restarts; it does not repeatedly seize the name. The server advertises only `body` and `actions` capabilities. All strings are bounded and passed as escaped JSON data into the trusted, navigation-locked, single-file Svelte UI, not executable HTML or JavaScript. The renderer's native bridge is restricted to notification-specific commands. JavaScript can only acknowledge paint, close an ID or invoke one of its declared action keys. The action invokes the D-Bus `ActionInvoked` signal and closes the notice.
+
+This placement of the D-Bus service in Shell is a deliberate **MVP architecture limitation**: long-term Kira Core should own the notification transport/lifetime and Shell should only own GTK/WebKit geometry. Notifications stop being received when Shell exits. The session history is not yet surfaced as a notification center, and the Top Bar does not yet display unread counts.
+
+A nested `KIRA_PREVIEW` session disables D-Bus ownership by default to avoid taking over the host user's live session bus. For isolated visual testing, start the whole preview **inside a separate `dbus-run-session`** and explicitly set `KIRA_NOTIFICATIONS_PREVIEW=1`. Do not enable this override on the host session bus.
+
+## Manual test matrix before merge
+
+1. Inside isolated nested Niri, send 4 notifications with `notify-send` at once. Verify bottom-up order, at most three cards, no earlier than 1.5-second gaps, and FIFO after the first expires.
+2. Verify minimum 3-second *painted* dwell with slow WebKit startup, hidden/covered WebView and renderer restart. Check for stale-card flashes on re-entry and confirm that the native input region grows only after each new card is paint-acknowledged.
+3. Close and replace an active notification by D-Bus ID **from different `notify-send` processes**. For nonzero `replaces_id`, return that same ID. After expiry/closure, it must create a fresh active notification using the requested ID; newly allocated IDs still remain unique.
+4. Send four `expire_timeout=0`/critical notifications: verify the first three rotate out of the toast after at least 3 seconds, the fourth enters FIFO, the parked IDs remain logically active without `NotificationClosed`, and a subsequent `CloseNotification` for a parked ID succeeds.
+5. Click the default action or a named action; verify one `ActionInvoked` and one `NotificationClosed`. Check keyboard navigation after explicit click.
+6. Open Calendar, System Monitor, Settings and Launcher while toasts are visible; test the fallback when insufficient space remains, and repeat with detached Niri windows.
+7. Capture 360×640, 600×480 and 1920×1080 screens at scale 100%, 125%, 150%, 200%. Confirm actual input-region click-through, shadows, alignment and zero overlap.
+8. Test a second monitor, unplug, rotate, fullscreen and lock screen. Only claim compatibility actually observed on supported Niri/GTK versions.
+9. Test Firefox/Chromium, Discord and Telegram with their own notification permissions enabled. Check that a second notification daemon is never preempted.
+10. Measure WebKit PSS, check native/Core renderer recovery and confirm no window/lease leaks after repeated notifications. After five rapid renderer crashes, verify via `busctl --user status org.freedesktop.Notifications` that Kira relinquishes ownership and an alternative daemon can acquire the name.
+
+## Review regression checks
+
+- Send a paint ACK with a stale revision, missing card IDs, reordered IDs, a duplicate, zero, or a fourth ID. The Shell must ignore it without starting dwell or widening the native input region.
+- With three cards visible, check that the browser sends `painted:REV:ID1,ID2,ID3`, preserving the exact bottom-first order.
+- On a backend lacking `GdkDisplay.supports_input_shapes()`, Kira must leave `org.freedesktop.Notifications` unclaimed so another daemon can accept desktop notifications.
+
+## Automated checks
+
+Run `task check`, `nix develop .#ci --command cargo check --locked -p kira-shell --all-targets`, `nix develop .#ci --command cargo test --locked -p kira-shell --bin kira-shell`, and `task frontend:build`. GitHub CI checks compilation and model tests but does not replace nested-Niri graphic acceptance.
+
 FILE	docs/QA_VISUAL.md
 # Этап 0: Visual QA и проверка Nix-пакета
 
@@ -12921,6 +14572,91 @@ test('refuses to silently accept multiple JS chunks', async () => {
     await assert.rejects(inlineUiAssets(dir), /exactly one external Vite JS entrypoint/);
   });
 });
+
+FILE	frontend/scripts/smoke-notifications.mjs
+#!/usr/bin/env node
+/** Exercise the bundled NotificationHost in a real headless Chromium DOM. */
+import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+
+const raw = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const dir = await mkdtemp(join(tmpdir(), 'kira-notification-smoke-'));
+const chrome = process.env.CHROME_BIN || 'google-chrome';
+const script = `
+<script>
+window.__kiraSmokeMessages = [];
+// The native host is mapped with opacity=0 until ACK. Some WebKit versions
+// classify such a mapped page as hidden; its DOM must still be able to ACK.
+Object.defineProperty(document, 'visibilityState', {value:'hidden', configurable:true});
+window.webkit = {messageHandlers:{
+  kiraNotificationUi:{postMessage(message){window.__kiraSmokeMessages.push(String(message));}},
+  kiraDiagnostics:{postMessage(){}},
+}};
+const notices = [
+  {id:1,app:"Telegram",summary:"First",body:"<img src=x onerror=alert(1)>",
+   critical:false,actions:[{key:"default",label:"Open"}]},
+  {id:2,app:"Discord",summary:"Second",body:"Hello",
+   critical:false,actions:[{key:"reply",label:"Ответить"}]},
+  {id:3,app:"Browser",summary:"Third",body:"",
+   critical:true,actions:[]},
+];
+window.addEventListener("load",()=>{
+  // Corrupt snapshots from a transport or stale renderer must not poison
+  // keyed Svelte state or consume a future valid revision.
+  setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:notifications:update",{
+    detail:{revision:2,height:320,cardHeight:96,visible:[notices[0],notices[0]]}
+  })),40);
+  setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:notifications:update",{
+    detail:{revision:1,height:320,cardHeight:96,visible:notices}
+  })),75);
+  setTimeout(()=>{
+    const cards=Array.from(document.querySelectorAll("[data-kira-notification-card]"));
+    const root=document.querySelector("main[data-kira-ui-root]");
+    const rects=cards.map(card=>card.getBoundingClientRect());
+    const ordered=cards.map(card=>card.getAttribute("data-kira-notification-card")).join(",")==="1,2,3" &&
+      rects.length===3 && rects[0].top>rects[1].top && rects[1].top>rects[2].top &&
+      getComputedStyle(root).flexDirection==="column-reverse";
+    const capped=rects.length===3 && rects.every(rect=>rect.height>0 && rect.height<=320/3);
+    const escaped=cards[0]?.textContent.includes("<img src=x onerror=alert(1)>") &&
+      cards[0]?.querySelector("img")===null;
+    cards[0]?.querySelector("button[aria-label^='Открыть уведомление']")?.click();
+    Array.from(cards[1]?.querySelectorAll("button")||[]).find(
+      button=>button.textContent.includes("Ответить"))?.click();
+    cards[2]?.querySelector("button[aria-label^='Закрыть уведомление']")?.click();
+    const actions=["action:1:default","action:2:reply","close:3"].every(
+      message=>window.__kiraSmokeMessages.includes(message));
+    const ready=window.__kiraSmokeMessages.includes("ready");
+    const painted=window.__kiraSmokeMessages.includes("painted:1:1,2,3");
+    document.documentElement.dataset.smokeNotifications=String(
+      !!root && ordered && capped && escaped && actions && ready && painted);
+    document.documentElement.dataset.smokeNotes=JSON.stringify({
+      ordered,capped,escaped,actions,ready,painted,messages:window.__kiraSmokeMessages,
+      rects:rects.map(rect=>[rect.y,rect.height]),
+    });
+  },850);
+});
+</script>`;
+const document=raw.replace('<html lang="ru">','<html lang="ru" data-kira-surface="notifications">')
+  .replace('</head>',script+'\n</head>');
+if (!document.includes('data-kira-surface="notifications"')) throw Error('Missing notification marker');
+try {
+  const path=join(dir,'notifications.html');
+  await writeFile(path,document);
+  const output=execFileSync(chrome,[
+    '--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
+    '--disable-background-networking','--window-size=480,640',
+    '--virtual-time-budget=2400','--dump-dom','file://'+path,
+  ],{encoding:'utf8',timeout:15000,stdio:['ignore','pipe','ignore']});
+  if (!output.includes('data-smoke-notifications="true"')) {
+    const flags=output.match(/data-smoke-(?:notifications|notes)="[^"]*"/g) || [];
+    throw Error('NotificationHost DOM/paint/action smoke failed: '+flags.join(', '));
+  }
+  console.log('NotificationHost: bottom-up cards, size caps, escaped body, actions and exact ordered-ID paint ACK OK');
+} finally {
+  await rm(dir,{recursive:true,force:true});
+}
 
 FILE	frontend/scripts/smoke-overlays.mjs
 #!/usr/bin/env node
@@ -16097,6 +17833,185 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
   </section>
 </main>
 
+FILE	frontend/src/lib/components/NotificationCard.svelte
+<script lang="ts">
+  import gsap from 'gsap';
+
+  import type { Notice } from '../notification-model';
+
+  let { notice, height, onClose, onAction }: {
+    notice: Notice;
+    height: number;
+    onClose: (id: number) => void;
+    onAction: (id: number, key: string) => void;
+  } = $props();
+
+  const hasDefaultAction = $derived(notice.actions.some((action) => action.key === 'default'));
+  const extraActions = $derived(notice.actions.filter((action) => action.key !== 'default').slice(0, 2));
+  const showBody = $derived(height >= (extraActions.length > 0 ? 94 : 74));
+
+  function enter(node: HTMLElement) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!reduce.matches) {
+      // A real incoming event is the contact point. Never animate a fake
+      // message or defer its content/action availability.
+      gsap.fromTo(node, { y: 12, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.18, ease: 'power2.out',
+        overwrite: 'auto',
+      });
+    }
+    return { destroy: () => {
+      gsap.killTweensOf(node);
+      gsap.set(node, { clearProps: 'transform,opacity' });
+    } };
+  }
+</script>
+
+<article
+  use:enter
+  data-kira-notification-card={notice.id}
+  class="relative flex w-full shrink-0 flex-col overflow-hidden border-l-[3px] border-kira-accent bg-kira-surface px-3 py-1.5 text-kira-text"
+  style:height={height + 'px'}
+  aria-label={'Уведомление от ' + notice.app}
+  title={notice.body}
+>
+  <div class="flex min-w-0 items-center gap-2">
+    <span class="min-w-0 flex-1 truncate text-[12px] font-bold">{notice.app}</span>
+    {#if notice.critical}<span class="shrink-0 text-[10px] font-bold text-kira-accent">ВАЖНО</span>{/if}
+    <button type="button" class="shrink-0 px-1 text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent"
+      aria-label={'Закрыть уведомление от ' + notice.app}
+      onclick={() => onClose(notice.id)}>×</button>
+  </div>
+  {#if hasDefaultAction}
+    <button type="button"
+      class="min-h-0 overflow-hidden text-left focus-visible:outline-2 focus-visible:outline-kira-accent"
+      aria-label={'Открыть уведомление ' + notice.summary + ' от ' + notice.app}
+      onclick={() => onAction(notice.id, 'default')}>
+      <div class="mt-0.5 line-clamp-1 text-[12px] font-semibold">{notice.summary}</div>
+      {#if notice.body && showBody}<p class="mt-0.5 line-clamp-2 text-[11px] text-kira-muted">{notice.body}</p>{/if}
+    </button>
+  {:else}
+    <div class="mt-0.5 line-clamp-1 text-[12px] font-semibold">{notice.summary}</div>
+    {#if notice.body && showBody}<p class="mt-0.5 line-clamp-2 min-h-0 overflow-hidden text-[11px] text-kira-muted">{notice.body}</p>{/if}
+  {/if}
+  {#if extraActions.length}
+    <div class="mt-auto flex gap-3 overflow-hidden pt-1">
+      {#each extraActions as action (action.key)}
+        <button type="button" class="truncate text-[11px] font-semibold text-kira-accent hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+          onclick={() => onAction(notice.id, action.key)}>{action.label}</button>
+      {/each}
+    </div>
+  {/if}
+</article>
+
+FILE	frontend/src/lib/components/NotificationHost.svelte
+<script lang="ts">
+  import { onMount, tick } from 'svelte';
+  import NotificationCard from './NotificationCard.svelte';
+  import type { Notice } from '../notification-model';
+
+  type Snapshot = { revision: number; height: number; cardHeight: number; visible: Notice[] };
+  let visible = $state<Notice[]>([]);
+  let cardHeight = $state(90);
+
+  function validNotice(value: unknown): value is Notice {
+    if (!value || typeof value !== 'object') return false;
+    const item = value as Record<string, unknown>;
+    return Number.isSafeInteger(item.id) && Number(item.id) > 0 &&
+      typeof item.app === 'string' && item.app.length <= 256 &&
+      typeof item.summary === 'string' && item.summary.length <= 1024 &&
+      typeof item.body === 'string' && item.body.length <= 4096 &&
+      typeof item.critical === 'boolean' && Array.isArray(item.actions) &&
+      item.actions.length <= 8 && item.actions.every(action => {
+        if (!action || typeof action !== 'object') return false;
+        const pair = action as Record<string, unknown>;
+        return typeof pair.key === 'string' && pair.key.length <= 256 &&
+          typeof pair.label === 'string' && pair.label.length <= 256;
+      });
+  }
+
+  function send(message: string) {
+    try { window.webkit?.messageHandlers?.kiraNotificationUi?.postMessage(message); }
+    catch { /* A dead renderer must not invent a successful close/action. */ }
+  }
+
+  onMount(() => {
+    let lastRevision = 0;
+    let acknowledgedRevision = 0;
+    let disposed = false;
+    let fallbackTimer: number | null = null;
+    const acknowledge = (revision: number, ids: number[]): boolean => {
+      // A transparent GTK host can report document.visibilityState="hidden".
+      // Verify the ENTIRE keyed Svelte snapshot (including its actual layout)
+      // before informing native GTK. One old card is not proof that a newly
+      // admitted second or third card was rendered.
+      if (disposed || lastRevision !== revision || acknowledgedRevision === revision ||
+          ids.length === 0 || ids.length > 3) return false;
+      const cards = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-kira-notification-card]')
+      );
+      if (cards.length !== ids.length || !cards.every((card, index) =>
+          card.dataset.kiraNotificationCard === String(ids[index]) &&
+          card.getBoundingClientRect().height > 0)) return false;
+      acknowledgedRevision = revision;
+      send('painted:' + revision + ':' + ids.join(','));
+      return true;
+    };
+    const update = (event: Event) => {
+      const next = (event as CustomEvent<unknown>).detail as Snapshot | undefined;
+      if (!next || !Number.isSafeInteger(next.revision) || next.revision < 1 ||
+          next.revision <= lastRevision ||
+          !Array.isArray(next.visible) || next.visible.length > 3 ||
+          !next.visible.every(validNotice) ||
+          new Set(next.visible.map((notice) => notice.id)).size !== next.visible.length ||
+          !Number.isSafeInteger(next.height) || next.height < 1 || next.height > 20000 ||
+          !Number.isSafeInteger(next.cardHeight) || next.cardHeight < 1 ||
+          next.cardHeight > Math.floor(next.height / 3)) return;
+      lastRevision = next.revision;
+      cardHeight = next.cardHeight;
+      visible = next.visible;
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+      fallbackTimer = null;
+      if (next.visible.length > 0) {
+        const revision = next.revision;
+        const ids = next.visible.map((notice) => notice.id);
+        // Prefer two compositor-bound frames; a bounded fallback is needed
+        // for WebKit/headless when requestAnimationFrame is throttled.
+        // Native still rejects acknowledgements for an unmapped host.
+        void tick().then(() => {
+          if (disposed || lastRevision !== revision) return;
+          fallbackTimer = window.setTimeout(() => {
+            fallbackTimer = null;
+            acknowledge(revision, ids);
+          }, 650);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            if (acknowledge(revision, ids) && fallbackTimer !== null) {
+              window.clearTimeout(fallbackTimer);
+              fallbackTimer = null;
+            }
+          }));
+        });
+      }
+    };
+    window.addEventListener('kira:notifications:update', update);
+    send('ready');
+    return () => {
+      disposed = true;
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+      window.removeEventListener('kira:notifications:update', update);
+    };
+  });
+</script>
+
+<main class="flex h-full w-full flex-col-reverse justify-start gap-2 bg-transparent p-2 text-kira-text"
+  data-kira-ui-root aria-label="Уведомления Kira Desktop" aria-live="polite" aria-relevant="additions">
+  {#each visible as notice (notice.id)}
+    <NotificationCard {notice} height={cardHeight}
+      onClose={(id) => send('close:' + id)}
+      onAction={(id, key) => send('action:' + id + ':' + key)} />
+  {/each}
+</main>
+
 FILE	frontend/src/lib/components/SettingsWidget.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
@@ -18515,6 +20430,17 @@ export function pulseReading(node: HTMLElement, initial: string) {
   };
 }
 
+FILE	frontend/src/lib/notification-model.ts
+/** A bounded, presentation-only snapshot from the trusted notification host. */
+export type Notice = {
+  id: number;
+  app: string;
+  summary: string;
+  body: string;
+  critical: boolean;
+  actions: { key: string; label: string }[];
+};
+
 FILE	frontend/src/lib/overlay-size.test.ts
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { observeOverlaySize } from './overlay-size';
@@ -19447,7 +21373,7 @@ type Bridge = {
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge; kiraNotificationUi?: Bridge } };
   }
 }
 
@@ -21405,6 +23331,7 @@ import CalendarWidget from './lib/components/CalendarWidget.svelte';
 import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
 import SettingsWidget from './lib/components/SettingsWidget.svelte';
+import NotificationHost from './lib/components/NotificationHost.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, detachOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
@@ -21427,6 +23354,15 @@ report('Svelte entrypoint evaluating; document.readyState=' + document.readyStat
 whenDocumentReady(document, () => {
   report('Svelte bootstrap after DOMContentLoaded; readyState=' + document.readyState);
   const target = document.getElementById('app');
+  if (document.documentElement.dataset.kiraSurface === 'notifications') {
+    if (!target) { report('Notification bootstrap: missing #app'); return; }
+    mount(NotificationHost, { target });
+    flushSync();
+    target.querySelector('#kira-loading')?.remove();
+    Reflect.set(window, '__kiraMountReturned', true);
+    report('Shared notification Svelte host mounted');
+    return;
+  }
   if (document.documentElement.dataset.kiraSurface === 'calendar') {
     if (!target) {
       report('Calendar bootstrap failure: #app missing');
@@ -21776,6 +23712,25 @@ html[data-kira-detached="true"] .kira-settings {
     var(--kira-color-accent) 78%,
     transparent 100%);
   transform-origin: center center;
+}
+
+
+/* The single bottom-right notification host has a fixed native size:
+ * never let the transparent WebKit page claim extra pointer geometry.
+ * The GDK input region contains only the actual cards. */
+html[data-kira-surface="notifications"],
+html[data-kira-surface="notifications"] body,
+html[data-kira-surface="notifications"] #app {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+}
+html[data-kira-surface="notifications"] main[data-kira-ui-root] {
+  box-sizing: border-box;
+  height: 100%;
 }
 
 FILE	frontend/tsconfig.json
