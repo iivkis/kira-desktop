@@ -2,7 +2,7 @@
   import { onMount, tick } from 'svelte';
   import {
     onDisplayStatus, requestDisplays, applyDisplays, confirmDisplays, revertDisplays,
-    displayModeId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
+    displayModeId, displayTransformId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
   } from '../sdk/core';
 
   let { generation }: { generation: number } = $props();
@@ -65,8 +65,7 @@
         enabled: logical !== null,
         mode: mode ? displayModeId(mode) : '',
         scale: logical?.scale ?? 1,
-        transform: logical?.transform === 'Normal' ? 'normal'
-          : logical?.transform?.replace('Flipped', 'flipped-').replace('-90', '90') ?? 'normal',
+        transform: logical === null ? 'normal' : displayTransformId(logical.transform),
         x: logical?.x ?? nextX,
         y: logical?.y ?? 0,
         vrr: output.vrr_enabled,
@@ -106,7 +105,9 @@
     }
     if (message.error) error = message.error;
     else error = null;
-    statusText = message.state === 'reverted' ? 'Предыдущая конфигурация восстановлена.'
+    statusText = message.state === 'reverted' ? (message.error
+      ? 'Откат выполнен не полностью. Проверьте подключение и настройки дисплеев вручную.'
+      : 'Предыдущая конфигурация восстановлена.')
       : message.state === 'confirmed' ? 'Изменения действуют в сеансе. Можно сохранить декларативно.'
       : message.state === 'saved' ? 'Конфигурация сохранена в KDL и будет загружена при следующем запуске Niri.'
         : '';
@@ -380,6 +381,7 @@
             <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
               value={selectedDraft.transform} disabled={busy || isPending}
               onchange={event => change({ transform: event.currentTarget.value })}>
+              <option value="" disabled>Неизвестная ориентация: выберите новую</option>
               <option value="normal">Альбомная · 0°</option>
               <option value="90">Портретная · 90°</option>
               <option value="180">Альбомная · 180°</option>
@@ -419,7 +421,7 @@
     {/if}
 
     <div class="flex flex-wrap gap-2 border-t border-kira-muted/20 pt-4">
-      <button type="button" onclick={apply} disabled={loading || busy || isPending || activeCount < 1}
+      <button type="button" onclick={apply} disabled={loading || busy || isPending || activeCount < 1 || draft.some(out => out.enabled && !out.transform)}
         class="bg-kira-accent px-5 py-3 text-[11px] font-extrabold text-kira-on-accent focus-visible:outline-2 focus-visible:outline-kira-text disabled:opacity-40">
         {busy ? 'Применение…' : 'Применить'}
       </button>
