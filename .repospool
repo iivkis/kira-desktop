@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=6292
+index_bytes=6459
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,133 +15,136 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	ab8fe75c22aa282d9f9669e3821089c095a4a989
-F	.cargo/config.toml	98	154	3
-F	.github/workflows/ci.yml	4355	159	112
-F	.github/workflows/frontend-nix.yml	1398	273	43
-F	.github/workflows/nix.yml	1258	318	38
-F	.github/workflows/overlay-smoke.yml	1064	358	40
-F	.github/workflows/publish-repospool.yml	3048	400	83
-F	.gitignore	178	485	11
-F	.repospoolignore	1028	498	47
-F	AGENTS.md	6275	547	103
-F	Cargo.toml	494	652	22
-F	README.md	12752	676	259
-F	Taskfile.yml	5957	937	185
-F	config/kira.kdl.example	358	1124	8
-F	crates/kira-core/Cargo.toml	207	1134	10
-F	crates/kira-core/src/config.rs	15217	1146	399
-F	crates/kira-core/src/main.rs	32080	1547	839
-F	crates/kira-core/src/niri.rs	16767	2388	453
-F	crates/kira-ipc/Cargo.toml	170	2843	9
-F	crates/kira-ipc/src/client.rs	17794	2854	458
-F	crates/kira-ipc/src/lib.rs	10460	3314	336
-F	crates/kira-shell/Cargo.toml	297	3652	12
-F	crates/kira-shell/src/calendar.rs	76305	3666	2002
-F	crates/kira-shell/src/config_layers.rs	19239	5670	496
-F	crates/kira-shell/src/display_manager.rs	26497	6168	681
-F	crates/kira-shell/src/launcher.rs	14114	6851	392
-F	crates/kira-shell/src/main.rs	22631	7245	517
-F	crates/kira-shell/src/native_ui.rs	4711	7764	109
-F	crates/kira-shell/src/popup_layout.rs	2659	7875	72
-F	crates/kira-shell/src/process_monitor.rs	13067	7949	394
-F	crates/kira-shell/src/renderer_recovery.rs	3634	8345	116
-F	crates/kira-shell/src/system_info.rs	3951	8463	113
-F	crates/kira-shell/src/system_metrics.rs	19842	8578	559
-F	crates/kira-shell/src/system_panel.rs	11356	9139	318
-F	crates/kira-shell/src/webview_pool.rs	9530	9459	281
-F	docs/CONFIG.md	5801	9742	125
-F	docs/CONFIG_OWNERSHIP.md	7257	9869	135
-F	docs/DESIGN_SYSTEM.md	37705	10006	608
-F	docs/DEVELOPMENT.md	30675	10616	605
-F	docs/QA_VISUAL.md	13214	11223	155
-F	docs/SKY_MAP.md	6776	11380	105
-F	docs/SPECIFICATION.md	29309	11487	427
-F	docs/TENET_MOTION.md	40785	11916	204
-F	docs/UI_ARCHITECTURE.md	6794	12122	107
-F	docs/UI_NOISE_REVIEW.md	5382	12231	53
-F	docs/VISUAL_REVIEW.md	10204	12286	91
-F	docs/WEBVIEW_POOL.md	11431	12379	97
-F	flake.nix	3181	12478	91
-F	frontend/index.html	2737	12571	66
-F	frontend/package.json	720	12639	27
-F	frontend/scripts/inline-assets.mjs	4457	12668	103
-F	frontend/scripts/inline-assets.test.mjs	4645	12773	106
-F	frontend/scripts/smoke-overlays.mjs	51590	12881	717
-F	frontend/src/App.svelte	10667	13600	234
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	13836	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	13854	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	13915	69
-F	frontend/src/lib/bootstrap.test.ts	3408	13986	84
-F	frontend/src/lib/bootstrap.ts	2613	14072	70
-F	frontend/src/lib/calendar-model.test.ts	3571	14144	65
-F	frontend/src/lib/calendar-model.ts	4648	14211	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14318	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	14380	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	14411	287
-F	frontend/src/lib/clock-flight.test.ts	2404	14700	50
-F	frontend/src/lib/clock-flight.ts	1977	14752	50
-F	frontend/src/lib/components/CalendarWidget.svelte	13895	14804	290
-F	frontend/src/lib/components/DisplaySettings.svelte	24155	15096	457
-F	frontend/src/lib/components/LauncherWidget.svelte	10725	15555	239
-F	frontend/src/lib/components/SettingsWidget.svelte	7529	15796	141
-F	frontend/src/lib/components/SkyMap.svelte	13089	15939	284
-F	frontend/src/lib/components/SystemCharts.svelte	11172	16225	245
-F	frontend/src/lib/components/SystemHealth.svelte	2315	16472	57
-F	frontend/src/lib/components/SystemWidget.svelte	18501	16531	319
-F	frontend/src/lib/components/WindowControls.svelte	3178	16852	74
-F	frontend/src/lib/components/WorkspacePreview.svelte	6574	16928	119
-F	frontend/src/lib/display-confirmation.test.ts	1789	17049	34
-F	frontend/src/lib/display-confirmation.ts	1262	17085	28
-F	frontend/src/lib/launcher-model.test.ts	2266	17115	46
-F	frontend/src/lib/launcher-model.ts	1403	17163	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	17194	89
-F	frontend/src/lib/lazy-widget.ts	1984	17285	63
-F	frontend/src/lib/motion-contract.test.ts	11241	17350	198
-F	frontend/src/lib/motion.ts	24039	17550	657
-F	frontend/src/lib/overlay-size.test.ts	2153	18209	53
-F	frontend/src/lib/overlay-size.ts	1601	18264	36
-F	frontend/src/lib/sdk/core.test.ts	29911	18302	605
-F	frontend/src/lib/sdk/core.ts	27230	18909	684
-F	frontend/src/lib/settings-model.test.ts	1064	19595	21
-F	frontend/src/lib/settings-model.ts	1262	19618	26
-F	frontend/src/lib/surface-colors.test.ts	1092	19646	23
-F	frontend/src/lib/surface-colors.ts	1834	19671	36
-F	frontend/src/lib/system-charts.test.ts	7518	19709	164
-F	frontend/src/lib/system-charts.ts	6369	19875	165
-F	frontend/src/lib/system-health.test.ts	3328	20042	58
-F	frontend/src/lib/system-health.ts	3594	20102	72
-F	frontend/src/lib/system-model.test.ts	5412	20176	103
-F	frontend/src/lib/system-model.ts	6298	20281	144
-F	frontend/src/lib/themes/kira-default.css	1941	20427	56
-F	frontend/src/lib/themes/kira-default.test.ts	4779	20485	107
-F	frontend/src/lib/themes/kira-default.ts	777	20594	22
-F	frontend/src/lib/themes/shell-composition.test.ts	6896	20618	115
-F	frontend/src/lib/time.test.ts	545	20735	14
-F	frontend/src/lib/time.ts	320	20751	9
-F	frontend/src/lib/ui-locale.test.ts	1064	20762	22
-F	frontend/src/lib/ui-locale.ts	1647	20786	44
-F	frontend/src/lib/workspace-window.test.ts	2298	20832	52
-F	frontend/src/lib/workspace-window.ts	1063	20886	32
-F	frontend/src/main.ts	7783	20920	161
-F	frontend/src/style.css	7357	21083	213
-F	frontend/tsconfig.json	403	21298	16
-F	frontend/vite.config.ts	224	21316	8
-F	nix/package.nix	3132	21326	117
-F	scripts/dev_preview.py	18147	21445	403	x
-F	scripts/qa_visual.py	12052	21850	299
-F	tests/test_calendar_design.py	10187	22151	175
-F	tests/test_detailed_health.py	7668	22328	136
-F	tests/test_dev_preview.py	9339	22466	219
-F	tests/test_displays.py	6263	22687	103
-F	tests/test_launcher_design.py	10825	22792	195
-F	tests/test_native_theme.py	2098	22989	44
-F	tests/test_popup_geometry.py	3805	23035	66
-F	tests/test_qa_visual.py	10549	23103	217
-F	tests/test_settings.py	5486	23322	94
-F	tests/test_tenet_close.py	6297	23418	115
-F	tests/test_ui_bootstrap_contract.py	1103	23535	29
-F	tests/test_webview_pool.py	11723	23566	200
+C	7698672af4be7c96944056b1d72d35239df8be27
+F	.cargo/config.toml	98	157	3
+F	.github/workflows/ci.yml	4419	162	114
+F	.github/workflows/frontend-nix.yml	1535	278	45
+F	.github/workflows/nix.yml	1258	325	38
+F	.github/workflows/overlay-smoke.yml	1200	365	42
+F	.github/workflows/publish-repospool.yml	3048	409	83
+F	.gitignore	178	494	11
+F	.repospoolignore	1028	507	47
+F	AGENTS.md	6275	556	103
+F	Cargo.toml	494	661	22
+F	README.md	12752	685	259
+F	Taskfile.yml	5957	946	185
+F	config/kira.kdl.example	358	1133	8
+F	crates/kira-core/Cargo.toml	207	1143	10
+F	crates/kira-core/src/config.rs	15217	1155	399
+F	crates/kira-core/src/main.rs	32080	1556	839
+F	crates/kira-core/src/niri.rs	16767	2397	453
+F	crates/kira-ipc/Cargo.toml	170	2852	9
+F	crates/kira-ipc/src/client.rs	17794	2863	458
+F	crates/kira-ipc/src/lib.rs	10460	3323	336
+F	crates/kira-shell/Cargo.toml	297	3661	12
+F	crates/kira-shell/src/calendar.rs	76305	3675	2002
+F	crates/kira-shell/src/config_layers.rs	19239	5679	496
+F	crates/kira-shell/src/display_manager.rs	26497	6177	681
+F	crates/kira-shell/src/launcher.rs	14114	6860	392
+F	crates/kira-shell/src/main.rs	22631	7254	517
+F	crates/kira-shell/src/native_ui.rs	4711	7773	109
+F	crates/kira-shell/src/popup_layout.rs	2659	7884	72
+F	crates/kira-shell/src/process_monitor.rs	13067	7958	394
+F	crates/kira-shell/src/renderer_recovery.rs	3634	8354	116
+F	crates/kira-shell/src/system_info.rs	3951	8472	113
+F	crates/kira-shell/src/system_metrics.rs	19842	8587	559
+F	crates/kira-shell/src/system_panel.rs	11356	9148	318
+F	crates/kira-shell/src/webview_pool.rs	9530	9468	281
+F	docs/CONFIG.md	5801	9751	125
+F	docs/CONFIG_OWNERSHIP.md	7257	9878	135
+F	docs/DESIGN_SYSTEM.md	38195	10015	615
+F	docs/DEVELOPMENT.md	30675	10632	605
+F	docs/QA_VISUAL.md	16349	11239	184
+F	docs/SKY_MAP.md	6776	11425	105
+F	docs/SPECIFICATION.md	29309	11532	427
+F	docs/TENET_MOTION.md	40785	11961	204
+F	docs/UI_ARCHITECTURE.md	6794	12167	107
+F	docs/UI_NOISE_REVIEW.md	5382	12276	53
+F	docs/VISUAL_REVIEW.md	10204	12331	91
+F	docs/WEBVIEW_POOL.md	11431	12424	97
+F	flake.nix	3181	12523	91
+F	frontend/index.html	2846	12616	66
+F	frontend/package.json	720	12684	27
+F	frontend/scripts/inline-assets.mjs	4457	12713	103
+F	frontend/scripts/inline-assets.test.mjs	4645	12818	106
+F	frontend/scripts/smoke-overlays.mjs	51590	12926	717
+F	frontend/scripts/smoke-warning-inspector.mjs	8998	13645	151
+F	frontend/src/App.svelte	16964	13798	337
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	14137	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	14155	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	14216	69
+F	frontend/src/lib/bootstrap.test.ts	3408	14287	84
+F	frontend/src/lib/bootstrap.ts	2613	14373	70
+F	frontend/src/lib/calendar-model.test.ts	3571	14445	65
+F	frontend/src/lib/calendar-model.ts	4648	14512	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	14619	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	14681	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	14712	287
+F	frontend/src/lib/clock-flight.test.ts	2404	15001	50
+F	frontend/src/lib/clock-flight.ts	1977	15053	50
+F	frontend/src/lib/components/CalendarWidget.svelte	14160	15105	294
+F	frontend/src/lib/components/DisplaySettings.svelte	24155	15401	457
+F	frontend/src/lib/components/LauncherWidget.svelte	10725	15860	239
+F	frontend/src/lib/components/SettingsWidget.svelte	7674	16101	142
+F	frontend/src/lib/components/SkyMap.svelte	13085	16245	284
+F	frontend/src/lib/components/SystemCharts.svelte	11535	16531	249
+F	frontend/src/lib/components/SystemHealth.svelte	2315	16782	57
+F	frontend/src/lib/components/SystemWidget.svelte	18509	16841	319
+F	frontend/src/lib/components/WindowControls.svelte	3178	17162	74
+F	frontend/src/lib/components/WorkspacePreview.svelte	6658	17238	119
+F	frontend/src/lib/display-confirmation.test.ts	1789	17359	34
+F	frontend/src/lib/display-confirmation.ts	1262	17395	28
+F	frontend/src/lib/launcher-model.test.ts	2266	17425	46
+F	frontend/src/lib/launcher-model.ts	1403	17473	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	17504	89
+F	frontend/src/lib/lazy-widget.ts	1984	17595	63
+F	frontend/src/lib/motion-contract.test.ts	11241	17660	198
+F	frontend/src/lib/motion.ts	24039	17860	657
+F	frontend/src/lib/overlay-size.test.ts	2153	18519	53
+F	frontend/src/lib/overlay-size.ts	1601	18574	36
+F	frontend/src/lib/sdk/core.test.ts	29911	18612	605
+F	frontend/src/lib/sdk/core.ts	27230	19219	684
+F	frontend/src/lib/settings-model.test.ts	1064	19905	21
+F	frontend/src/lib/settings-model.ts	1262	19928	26
+F	frontend/src/lib/surface-colors.test.ts	1092	19956	23
+F	frontend/src/lib/surface-colors.ts	1834	19981	36
+F	frontend/src/lib/system-charts.test.ts	8934	20019	190
+F	frontend/src/lib/system-charts.ts	7498	20211	181
+F	frontend/src/lib/system-health.test.ts	3328	20394	58
+F	frontend/src/lib/system-health.ts	3594	20454	72
+F	frontend/src/lib/system-model.test.ts	5412	20528	103
+F	frontend/src/lib/system-model.ts	6298	20633	144
+F	frontend/src/lib/themes/kira-default.css	1941	20779	56
+F	frontend/src/lib/themes/kira-default.test.ts	4779	20837	107
+F	frontend/src/lib/themes/kira-default.ts	777	20946	22
+F	frontend/src/lib/themes/shell-composition.test.ts	10502	20970	172
+F	frontend/src/lib/time.test.ts	545	21144	14
+F	frontend/src/lib/time.ts	320	21160	9
+F	frontend/src/lib/ui-locale.test.ts	1821	21171	35
+F	frontend/src/lib/ui-locale.ts	1841	21208	48
+F	frontend/src/lib/warning-model.test.ts	1633	21258	34
+F	frontend/src/lib/warning-model.ts	749	21294	18
+F	frontend/src/lib/workspace-window.test.ts	2298	21314	52
+F	frontend/src/lib/workspace-window.ts	1063	21368	32
+F	frontend/src/main.ts	7783	21402	161
+F	frontend/src/style.css	7483	21565	215
+F	frontend/tsconfig.json	403	21782	16
+F	frontend/vite.config.ts	224	21800	8
+F	nix/package.nix	3904	21810	134
+F	scripts/dev_preview.py	18147	21946	403	x
+F	scripts/qa_visual.py	12052	22351	299
+F	tests/test_calendar_design.py	10187	22652	175
+F	tests/test_detailed_health.py	7668	22829	136
+F	tests/test_dev_preview.py	9339	22967	219
+F	tests/test_displays.py	6263	23188	103
+F	tests/test_launcher_design.py	10825	23293	195
+F	tests/test_native_theme.py	2897	23490	57
+F	tests/test_popup_geometry.py	3805	23549	66
+F	tests/test_qa_visual.py	10549	23617	217
+F	tests/test_settings.py	5486	23836	94
+F	tests/test_tenet_close.py	6297	23932	115
+F	tests/test_ui_bootstrap_contract.py	1103	24049	29
+F	tests/test_webview_pool.py	11723	24080	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -181,6 +184,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Task
         uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -313,6 +318,8 @@ jobs:
           git diff --exit-code -- frontend/package-lock.json
       - name: Validate locked offline UI package
         run: nix build .#frontend --no-link --print-build-logs
+      - name: Evaluate assembled GTK/WebKit package and font wrapper
+        run: nix eval --raw .#packages.x86_64-linux.default.drvPath
 
 FILE	.github/workflows/nix.yml
 name: Nix package (nightly / manual)
@@ -395,6 +402,8 @@ jobs:
         run: npm run build --prefix frontend
       - name: Validate real Calendar and System mounts
         run: node frontend/scripts/smoke-overlays.mjs
+      - name: Validate warning inspector at responsive widths and scales
+        run: node frontend/scripts/smoke-warning-inspector.mjs
 
 FILE	.github/workflows/publish-repospool.yml
 name: Publish RepoSpool context
@@ -10096,9 +10105,16 @@ official visual language of Kira Desktop.
   ensures the focused workspace stays visible under KDL's workspace
   limit and reports how many earlier/later workspaces are omitted.
   Only explicitly customized KDL titles appear, and they yield space on
-  narrow screens. System status reflects real Core/Niri/host measurements
-  hides visible READY text when healthy; warnings remain visible, and the
-   same indicator opens System Monitor.
+  narrow screens. System status reflects real Core/Niri/host measurements,
+  hides visible READY text when healthy. A compact warning button opens
+  an explicit, scrollable 42px inspection mode with the complete message;
+  additional warnings advance by stable identity and Escape or Close restores
+  the normal three-zone layout and keyboard focus. The modal's Tab and
+  Shift+Tab wrap inside its controls; short accessible announcements disclose
+  the type/count, while the readonly scrollable field retains the full text.
+  While inspecting, underlying controls are inert, never merely covered by
+  clickable content.
+  The same system-health indicator opens System Monitor.
   The local clock opens the existing Calendar. Additional trusted popup
   WebKit hosts are leased **on demand** from a bounded pool, never spawned
   speculatively per hypothetical widget. No extra native services, polling
@@ -11330,7 +11346,36 @@ SHA-256, `captured_review_pending`). Скриншоты **не выгружаю�
   Подсказка Top Bar содержит реальные текущие данные, а не только Core.
   Подсказка часов содержит полную дату.
 - При ширине до 540 px здоровая подпись скрыта, метка здоровья и часы
-  остаются, а все ошибки представлены в компактной доступной сводке.
+  остаются, а ошибки представлены одной компактной кнопкой.
+  Проверить, что **первое** нажатие открывает полное сообщение в
+  42px режиме инспекции, включая длинный KDL/IPC текст, доступный
+  двухстрочной вертикальной прокруткой даже при узкой ширине.
+  Поле «только чтение» допускает выделение/копирование ошибки через
+  стандартные клавиатурные команды без отдельного native Clipboard API.
+  У Nix-сборки проверить кириллицу в Noto Sans, имена приложений с
+  латиницей/иероглифами и эмодзи: они не должны терять системный fallback
+  после включения пакетного FONTCONFIG_FILE.
+  Проверить Tab и Shift+Tab с удержанием фокуса внутри режима
+  инспекции, Enter, Space, Esc, закрытие кнопкой, возврат фокуса
+  на источник, блокировку underlying элементов через inert, исчезновение
+  текущей ошибки, повторное возникновение ошибки после закрытия.
+  Компактные ARIA-объявления должны сообщать номер и вид ошибки,
+  а не озвучивать тысячи символов при каждом Tab; полный текст
+  доступен в прокручиваемом поле.
+  При нескольких ошибках кнопка «Следующее» перебирает стабильные ID,
+  возвращается к началу и сбрасывает прокрутку текста.
+  При одной ошибке вход в инспекцию всё равно функционален.
+  Часы и workspace navigation не должны пропадать после закрытия.
+  Дополняющий Chromium smoke проверяет 540/680/1280 CSS px и 1/1.25/1.5x;
+  он **не заменяет** проверку Wayland/Niri на физических выходах.
+- В System Monitor проверить динамический текст диапазона **только реальных**
+  замеров: ни одного, один, несколько, устаревший поток и GPU-only.
+  На новом/пустом графике не должно быть фиктивных «60 секунд» или
+  «последнего замера». Статические заголовки не конкурируют с оранжевыми
+  тревогами и выбором.
+- В Settings проверить иерархию заголовка окна/страницы, пассивную группу
+  недоступных направлений «В ПЛАНАХ» и читабельность фактов.
+  Календарь проверить с 36px кнопками месяца/года и более крупными датами.
 - В таб-навигации видно фокус как на выбранном workspace, так и на обычном;
   active/urgent и отключённый Core остаются различимыми.
 - На дробных масштабах нет заметного размытия или дробных щелей.
@@ -12617,8 +12662,8 @@ FILE	frontend/index.html
               mountReturned: window.__kiraMountReturned === true,
             });
             pending.textContent = window.__kiraBoot.bootstrapError
-              ? 'Kira UI error: ' + String(window.__kiraBoot.bootstrapError).slice(0,220)
-              : 'Kira UI did not start (' + stage + '). Check terminal logs.';
+              ? 'Ошибка интерфейса Kira: ' + String(window.__kiraBoot.bootstrapError).slice(0,220)
+              : 'Интерфейс Kira не запустился (' + stage + '). Подробности в логах терминала.';
             report('Svelte not mounted: ' + stage);
           }
         }, 2500);
@@ -12628,7 +12673,7 @@ FILE	frontend/index.html
   <body>
     <div id="app">
       <div id="kira-loading" style="height:42px; display:flex; align-items:center; padding:0 14px; font:12px system-ui; background:#000000ff; color:#ffffffff;">
-        Kira Desktop · Loading interface…
+        Kira Desktop · Загрузка интерфейса…
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
@@ -13596,12 +13641,167 @@ try {
   await rm(dir, { recursive: true, force: true });
 }
 
+FILE	frontend/scripts/smoke-warning-inspector.mjs
+#!/usr/bin/env node
+/**
+ * Exercise the real compiled Top Bar in Chromium at different CSS widths and
+ * device scales. Geometry/keyboard checks complement, never replace, Niri QA.
+ * No external resources, Playwright dependency or mock rendering of Svelte.
+ */
+import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+
+const chrome = process.env.CHROME_BIN || 'google-chrome';
+const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const dir = await mkdtemp(join(tmpdir(), 'kira-topbar-warning-'));
+const longError = 'НЕ УДАЛОСЬ ЗАГРУЗИТЬ КОНФИГУРАЦИЮ. ' +
+  'ПРОВЕРЬТЕ СИНТАКСИС KDL И ПРАВА ДОСТУПА. '.repeat(35);
+const setup = `<script>
+window.webkit={messageHandlers:{kiraDiagnostics:{postMessage(){}},kiraCore:{postMessage(){}}}};
+window.addEventListener('load',()=>{
+  const msg=${JSON.stringify(longError)};
+  const config={compact:false,title:'KIRA DESKTOP',show_seconds:false,show_names:false,max_workspaces:8};
+  setTimeout(()=>{
+    window.dispatchEvent(new CustomEvent('kira:config',{detail:{config,error:msg}}));
+  },50);
+  setTimeout(()=>{
+    // Missing launcher native handler yields a second, real UI warning.
+    document.querySelector('[aria-label="Открыть меню приложений"]')?.click();
+  },125);
+  setTimeout(()=>{
+    const trigger=document.querySelector('button[aria-label^="Открыть предупреждение"]');
+    document.documentElement.dataset.smokeWarningTrigger=!!trigger && trigger.getAttribute('aria-haspopup')==='dialog';
+    trigger?.click();
+  },190);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    const dialog=root?.querySelector('[role="dialog"][aria-label="Подробности предупреждения"]');
+    const page=dialog?.querySelector('textarea[readonly][aria-label^="Полный текст"]');
+    const under=root?.querySelector('section[aria-label="Рабочие пространства Niri"]');
+    const rect=dialog?.getBoundingClientRect();
+    document.documentElement.dataset.smokeWarningOpen=!!root && !!dialog && !!page &&
+      root.getBoundingClientRect().height===42 && rect.height===42 &&
+      Math.abs(rect.width-root.getBoundingClientRect().width)<1 &&
+      under.inert && page===document.activeElement &&
+      !dialog.textContent.includes(msg);
+    const controls=Array.from(dialog?.querySelectorAll('textarea, button') ?? []);
+    const last=controls[controls.length-1];
+    last?.focus();
+    const tab=new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});
+    last?.dispatchEvent(tab);
+    const forward=tab.defaultPrevented && document.activeElement===page;
+    const shift=new KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true});
+    page?.dispatchEvent(shift);
+    document.documentElement.dataset.smokeWarningFocusTrap=forward &&
+      shift.defaultPrevented && document.activeElement===last;
+    dialog?.querySelector('[aria-label="Следующее предупреждение"]')?.click();
+  },260);
+  setTimeout(()=>{
+    const dialog=document.querySelector('[role="dialog"][aria-label="Подробности предупреждения"]');
+    const page=dialog?.querySelector('textarea[readonly][aria-label^="Полный текст"]');
+    const full=page?.value ?? '';
+    const expected='КОНФИГ: ' + msg;
+    const scrolled=page && page.scrollHeight>page.clientHeight;
+    if(page)page.scrollTop=page.scrollHeight;
+    document.documentElement.dataset.smokeWarningLongExact=full===expected;
+    document.documentElement.dataset.smokeWarningLongScrollable=!!scrolled;
+    document.documentElement.dataset.smokeWarningLongScrolled=!!page && page.scrollTop>0;
+    document.documentElement.dataset.smokeWarningLong=full===expected && scrolled && page.scrollTop>0;
+    // Test the keyboard dismissal and subsequent focus restoration.
+    window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+  },335);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    const trigger=root?.querySelector('button[aria-label^="Открыть предупреждение"]');
+    const clock=root?.querySelector('button[title="Открыть календарь"]');
+    document.documentElement.dataset.smokeWarningClosed=!!root && !!trigger && !!clock &&
+      !root.querySelector('[role="dialog"]') && trigger===document.activeElement &&
+      !root.querySelector('section[aria-label="Рабочие пространства Niri"]').inert &&
+      trigger.getAttribute('aria-label').length<140 && trigger.title.includes(msg) &&
+      clock.getBoundingClientRect().right<=root.getBoundingClientRect().right+1;
+    trigger?.click();
+  },430);
+  setTimeout(()=>{
+    document.querySelector('[aria-label="Закрыть подробности"]')?.click();
+  },480);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    document.documentElement.dataset.smokeWarningButtonClose=!!root &&
+      !root.querySelector('[role="dialog"]') &&
+      !!root.querySelector('button[aria-label^="Открыть предупреждение"]');
+  },565);
+  // A recovered launcher leaves exactly one real config error.
+  setTimeout(()=>{
+    window.webkit.messageHandlers.kiraLauncher={postMessage(){}};
+    document.querySelector('[aria-label="Открыть меню приложений"]')?.click();
+  },610);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    root?.querySelector('button[aria-label^="Открыть предупреждение"]')?.click();
+  },660);
+  setTimeout(()=>{
+    const dialog=document.querySelector('[role="dialog"][aria-label="Подробности предупреждения"]');
+    const box=dialog?.querySelector('textarea[readonly]');
+    document.documentElement.dataset.smokeWarningSingle=!!dialog && !!box &&
+      box.value==='КОНФИГ: '+msg &&
+      !dialog.querySelector('[aria-label="Следующее предупреждение"]');
+    // The live config event removes the final warning while the inspector is open.
+    window.dispatchEvent(new CustomEvent('kira:config',{detail:{config,error:null}}));
+  },715);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    const settings=root?.querySelector('button[aria-label="Открыть настройки системы"]');
+    document.documentElement.dataset.smokeWarningCleared=!!root && !!settings &&
+      !root.querySelector('[role="dialog"]') &&
+      !root.querySelector('button[aria-label^="Открыть предупреждение"]') &&
+      settings===document.activeElement &&
+      !root.querySelector('section[aria-label="Система и местное время"]').inert;
+    // A later incident must NOT bring back the previously opened modal.
+    window.dispatchEvent(new CustomEvent('kira:config',{detail:{config,error:msg}}));
+  },780);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    const trigger=root?.querySelector('button[aria-label^="Открыть предупреждение"]');
+    document.documentElement.dataset.smokeWarningRecovered=!!root && !!trigger &&
+      !root.querySelector('[role="dialog"]') &&
+      trigger.getAttribute('aria-expanded')==='false';
+  },870);
+});
+</script>`;
+
+try {
+  const page = html.replace('</head>', setup + '</head>');
+  const filename = join(dir, 'warnings.html');
+  await writeFile(filename, page);
+  for (const [width, scale] of [[540,1],[540,1.25],[680,1.5],[1280,1]]) {
+    const output = execFileSync(chrome, [
+      '--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
+      '--disable-background-networking',`--window-size=${width},440`,
+      `--force-device-scale-factor=${scale}`, '--virtual-time-budget=1100',
+      '--dump-dom','file://' + filename,
+    ], { encoding:'utf8',timeout:15000,stdio:['ignore','pipe','ignore'] });
+    const flags = ['trigger','open','focus-trap','long','closed','button-close','single','cleared','recovered'];
+    const failures = flags.filter(flag => !output.includes('data-smoke-warning-' + flag + '="true"'));
+    if(failures.length){
+      const diagnostics=output.match(/data-smoke-warning[a-z-]+="[^"]*"/gi) ?? [];
+      throw new Error(`Warning inspector at ${width}px/${scale}x failed ${failures.join(', ')}: ${diagnostics.join(' ')}`);
+    }
+    console.log(`OK: Top Bar warning inspector at ${width}px / ${scale}x`);
+  }
+} finally {
+  await rm(dir,{recursive:true,force:true});
+}
+
 FILE	frontend/src/App.svelte
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
+  import { russianCountLabel } from './lib/ui-locale';
+  import { nextWarningId, visibleWarningIndex, type UiWarning } from './lib/warning-model';
   import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
@@ -13658,17 +13858,79 @@ FILE	frontend/src/App.svelte
 
   let configState = $state<ConfigState>({ config: defaultUiConfig, error: null });
 
-  // A 42px Wayland bar cannot fit six independent shrink-0 error labels
-  // alongside a launcher and clock on a small output. Keep every warning in
-  // one accessible summary; never let overflow clip the primary controls.
+  // An in-bar inspector reveals long errors without a new GTK window.
+  // The native exclusive zone and normal three-zone layout remain 42px.
+  let activeWarningId = $state<string | null>(null);
+  let warningDetailsOpen = $state(false);
+  let warningButton = $state<HTMLButtonElement | undefined>(undefined);
+  let warningMessage = $state<HTMLTextAreaElement | undefined>(undefined);
+  let settingsButton = $state<HTMLButtonElement | undefined>(undefined);
   const warnings = $derived([
-    launcherUnavailable ? 'ЛАУНЧЕР НЕДОСТУПЕН' : null,
-    workspaceActionError ? 'РАБОЧИЙ СТОЛ: ' + workspaceActionError : null,
-    configState.error ? 'КОНФИГ: ' + configState.error : null,
-    systemUnavailable ? 'МОНИТОР НЕДОСТУПЕН' : null,
-    settingsUnavailable ? (settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ') : null,
-    calendarUnavailable ? 'КАЛЕНДАРЬ НЕДОСТУПЕН' : null,
-  ].filter((value): value is string => value !== null));
+    launcherUnavailable ? { id: 'launcher', text: 'ЛАУНЧЕР НЕДОСТУПЕН', short: 'ЛАУНЧЕР' } : null,
+    workspaceActionError ? { id: 'workspace', text: 'РАБОЧИЙ СТОЛ: ' + workspaceActionError, short: 'РАБОЧИЙ СТОЛ' } : null,
+    configState.error ? { id: 'config', text: 'КОНФИГ: ' + configState.error, short: 'КОНФИГ' } : null,
+    systemUnavailable ? { id: 'system', text: 'МОНИТОР НЕДОСТУПЕН', short: 'МОНИТОР' } : null,
+    settingsUnavailable ? { id: 'settings', text: settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ', short: 'НАСТРОЙКИ' } : null,
+    calendarUnavailable ? { id: 'calendar', text: 'КАЛЕНДАРЬ НЕДОСТУПЕН', short: 'КАЛЕНДАРЬ' } : null,
+  ].filter((value): value is UiWarning => value !== null));
+  const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId));
+  const shownWarning = $derived(warningPosition === -1 ? null : warnings[warningPosition]);
+  const inspectingWarnings = $derived(warningDetailsOpen && shownWarning !== null);
+
+  async function showWarningDetails() {
+    if (!shownWarning) return;
+    warningDetailsOpen = true;
+    await tick();
+    warningMessage?.focus();
+  }
+
+  async function inspectWarnings() {
+    activeWarningId = nextWarningId(warnings, activeWarningId);
+    // Reset after the textarea receives the new reactive value.
+    await tick();
+    if (warningDetailsOpen && warningMessage) warningMessage.scrollTop = 0;
+  }
+
+  async function closeWarningDetails() {
+    warningDetailsOpen = false;
+    await tick();
+    (warningButton ?? settingsButton)?.focus();
+  }
+
+  function onWarningKeydown(event: KeyboardEvent) {
+    if (!inspectingWarnings) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      void closeWarningDetails();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    // aria-modal alone does not trap keyboard focus. Cycling the boundary
+    // prevents Tab from escaping into browser chrome or native controls.
+    const controls = Array.from(document.querySelectorAll<HTMLElement>(
+      '#kira-warning-inspector textarea, #kira-warning-inspector button',
+    ));
+    if (controls.length === 0) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !controls.includes(active as HTMLElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !controls.includes(active as HTMLElement))) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  // A cleared error must not leave keyboard focus in a vanished textarea,
+  // or reopen the inspector when the next incident arrives.
+  $effect(() => {
+    if (warnings.length === 0 && warningDetailsOpen) {
+      void closeWarningDetails();
+    }
+  });
 
   onMount(() => {
     const clock = window.setInterval(() => {
@@ -13742,6 +14004,8 @@ FILE	frontend/src/App.svelte
   });
 </script>
 
+<svelte:window onkeydown={onWarningKeydown} />
+
 <main
   class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden border-b border-kira-muted/15 bg-kira-bg text-kira-text"
   aria-label="Верхняя панель Kira Desktop"
@@ -13749,7 +14013,7 @@ FILE	frontend/src/App.svelte
   data-compact={configState.config.compact}
 >
   <!-- KIRA opens the application index; it never claims to switch windows. -->
-  <section
+  <section inert={inspectingWarnings}
     class={['relative z-10 flex shrink-0 items-center border-r border-kira-muted/15 bg-kira-surface',
       configState.config.compact ? 'w-[78px]' : 'w-[96px] max-[540px]:w-[76px]'].join(' ')}
     aria-label="Запуск приложений Kira"
@@ -13770,6 +14034,7 @@ FILE	frontend/src/App.svelte
     class={['flex min-w-0 flex-1 items-center bg-kira-bg',
       configState.config.compact ? 'gap-2 px-2' : 'gap-3 px-3 max-[540px]:gap-1.5 max-[540px]:px-2'].join(' ')}
     aria-label="Рабочие пространства Niri"
+    inert={inspectingWarnings}
   >
     <WorkspacePreview
       state={workspaceState}
@@ -13789,6 +14054,7 @@ FILE	frontend/src/App.svelte
     class={['flex shrink-0 items-center justify-end gap-1 border-l border-kira-muted/15 bg-kira-surface-soft px-3',
       configState.config.compact ? 'px-2' : 'max-[540px]:px-2'].join(' ')}
     aria-label="Система и местное время"
+    inert={inspectingWarnings}
   >
     <SystemHealth
       coreStatus={coreStatus}
@@ -13800,14 +14066,24 @@ FILE	frontend/src/App.svelte
       onOpen={activateSystemPanel}
     />
     {#if warnings.length}
-      <span role="status" aria-live="polite" aria-label={warnings.join('; ')}
-        title={warnings.join('\n')}
-        class="block min-w-0 max-w-[44px] shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent min-[900px]:max-w-[180px]">
-        <span class="min-[900px]:hidden">!{warnings.length}</span>
-        <span class="hidden min-[900px]:inline">{warnings[0]}{warnings.length > 1 ? ' +' + (warnings.length - 1) : ''}</span>
+      <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {russianCountLabel(warnings.length, 'предупреждение', 'предупреждения', 'предупреждений')}. Подробности доступны в верхней панели.
       </span>
     {/if}
-    <button type="button" onclick={activateSettings}
+    {#if shownWarning}
+      <button bind:this={warningButton} type="button" onclick={showWarningDetails}
+        aria-label={'Открыть предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.short}
+        aria-haspopup="dialog" aria-controls={inspectingWarnings ? 'kira-warning-inspector' : undefined} aria-expanded={inspectingWarnings}
+        title={shownWarning.text + '\nНажмите для просмотра полного текста'}
+        class="min-w-0 max-w-[105px] shrink-0 cursor-pointer truncate px-1 text-center text-[11px] font-extrabold text-kira-accent transition-colors hover:text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent motion-reduce:transition-none min-[900px]:max-w-[180px]">
+        <span class="min-[900px]:hidden">{shownWarning.short}</span>
+        <span class="hidden min-[900px]:inline">{shownWarning.text}</span>
+        {#if warnings.length > 1}
+          <span class="ml-1 whitespace-nowrap" aria-hidden="true">{warningPosition + 1}/{warnings.length}</span>
+        {/if}
+      </button>
+    {/if}
+    <button bind:this={settingsButton} type="button" onclick={activateSettings}
       aria-label="Открыть настройки системы" title="Настройки системы" aria-haspopup="dialog"
       class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none">
       <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none"
@@ -13830,6 +14106,31 @@ FILE	frontend/src/App.svelte
       </time>
     </button>
   </section>
+  {#if inspectingWarnings && shownWarning}
+    <!-- Temporary inspection mode; the underlying Top Bar zones are inert. -->
+    <div id="kira-warning-inspector" role="dialog" aria-modal="true" aria-label="Подробности предупреждения"
+      class="absolute inset-0 z-30 flex h-[42px] items-center gap-2 border-b border-kira-muted/15 bg-kira-bg px-2 text-kira-text">
+      <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        Предупреждение {warningPosition + 1} из {warnings.length}: {shownWarning.short}. Полный текст доступен в поле.
+      </span>
+      <span class="shrink-0 text-[11px] font-bold tabular-nums text-kira-accent" aria-hidden="true">
+        !{warningPosition + 1}/{warnings.length}
+      </span>
+      <textarea bind:this={warningMessage} readonly rows="2" wrap="soft" value={shownWarning.text}
+        aria-label="Полный текст предупреждения, можно выделить и скопировать"
+        class="min-w-0 h-[34px] flex-1 resize-none overflow-y-auto border-0 bg-transparent px-0 py-0.5 text-[12px] font-semibold leading-[15px] text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent"></textarea>
+      {#if warnings.length > 1}
+        <button type="button" onclick={inspectWarnings} aria-label="Следующее предупреждение" title="Следующее предупреждение"
+          class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] border border-kira-muted/20 text-[18px] font-semibold text-kira-accent hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent">
+          <span aria-hidden="true">›</span>
+        </button>
+      {/if}
+      <button type="button" onclick={() => { void closeWarningDetails(); }} aria-label="Закрыть подробности" title="Закрыть подробности"
+        class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] border border-kira-muted/20 text-[18px] font-semibold text-kira-text hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  {/if}
 </main>
 
 FILE	frontend/src/lib/astronomy/sky-catalog.ts
@@ -14829,11 +15130,15 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
     locale?: string;
   } = $props();
 
+  // These values intentionally snapshot a single mount-time civil date.
+  // Current time can advance without unexpectedly moving the user's selection.
+  const initialNow = new Date();
+  const initialToday = todayCivilDate(initialNow);
   let detached = $state(false);
-  let now = $state(new Date());
-  let today = $state<CivilDate>(todayCivilDate(now));
-  let selected = $state<CivilDate>(today);
-  let visible = $state({ year: today.year, month: today.month });
+  let now = $state(initialNow);
+  let today = $state<CivilDate>(initialToday);
+  let selected = $state<CivilDate>(initialToday);
+  let visible = $state({ year: initialToday.year, month: initialToday.month });
   let copyState = $state<'idle' | 'pending' | 'copied' | 'failed'>('idle');
   let copyTimeout: number | null = null;
 
@@ -14988,7 +15293,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
           {/each}
           </time>
         </button>
-        <p class="mt-1 truncate text-[11px] font-semibold text-kira-muted">{currentDateLabel}</p>
+        <p class="mt-1 truncate text-[12px] font-semibold text-kira-muted">{currentDateLabel}</p>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="calendar" />
     </div>
@@ -14996,7 +15301,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
 
   <!-- Each date has three independent semantics: current, selected, adjacent. -->
   <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 pb-3 pt-3" aria-label="Выбор даты">
-    <div class="mb-3 flex items-center justify-between gap-2">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <div class="min-w-0">
         <h2 class="truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
           {title}<span class="ml-2 text-sm font-semibold text-kira-muted">{visible.year}</span>
@@ -15005,7 +15310,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
       <div class="flex shrink-0 items-center gap-1" role="group" aria-label="Навигация по календарю">
         {#each [-12, -1, 1, 12] as step}
           <button type="button"
-            class="flex h-8 w-8 items-center justify-center border border-kira-muted/15 bg-kira-bg/20
+            class="flex h-9 w-9 items-center justify-center border border-kira-muted/15 bg-kira-bg/20
               text-[17px] font-semibold text-kira-text transition-colors
               hover:border-kira-accent hover:text-kira-accent
               focus-visible:outline-2 focus-visible:outline-kira-accent disabled:cursor-default disabled:opacity-30"
@@ -15024,14 +15329,14 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
       <span data-kira-flow-indicator aria-hidden="true"
         class="pointer-events-none absolute left-0 top-0 z-0 bg-kira-accent"></span>
       <span class="flex min-h-7 items-center justify-center border-b border-r border-kira-muted/15 bg-kira-bg/20
-        text-[11px] font-bold tracking-wide text-kira-muted" aria-label="Номер недели">НЕД</span>
+        text-[12px] font-bold tracking-wide text-kira-muted" aria-label="Номер недели">НЕД</span>
       {#each weekdayLabels as label}
         <span class="flex min-h-7 items-center justify-center border-b border-kira-muted/15
-          text-[11px] font-bold uppercase text-kira-muted">{label}</span>
+          text-[12px] font-bold uppercase text-kira-muted">{label}</span>
       {/each}
       {#each weeks as days}
         <span class="flex min-h-8 items-center justify-center border-r border-kira-muted/15
-          bg-kira-bg/15 text-[11px] font-semibold tabular-nums text-kira-muted"
+          bg-kira-bg/15 text-[12px] font-semibold tabular-nums text-kira-muted"
           aria-label={'ISO-неделя ' + (days[0] ? isoWeek(days[0]).week : '')}>
           {days[0] ? String(isoWeek(days[0]).week).padStart(2, '0') : ''}
         </span>
@@ -15039,7 +15344,7 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
           {#if date}
             {@const marker = calendarDayState(date, selected, today, visible)}
             <button type="button"
-              class={'relative z-10 flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+              class={'relative z-10 flex min-h-8 items-center justify-center text-[13px] font-semibold tabular-nums focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
                 (marker.outside ? 'text-kira-muted/60 ' : 'text-kira-text ') +
                 (marker.selected ? 'font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
                   'hover:bg-kira-bg/35 hover:text-kira-accent ') +
@@ -15067,16 +15372,16 @@ FILE	frontend/src/lib/components/CalendarWidget.svelte
       <p class="min-w-0 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale ?? UI_LOCALE)}>
         {selectedLabel}
       </p>
-      <p class="shrink-0 text-[11px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
+      <p class="shrink-0 text-[12px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
     </div>
     <div class="mt-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
       <button type="button" onclick={goToday}
-        class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
+        class="px-1 py-1.5 text-[12px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">СЕГОДНЯ</button>
       <button type="button" onclick={copySelectedDate}
         aria-label={copyState === 'copied' ? 'Дата ' + selectedIso + ' скопирована' :
           copyState === 'pending' ? 'Копирование даты ' + selectedIso : 'Скопировать дату ' + selectedIso}
-        class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
+        class="px-1 py-1.5 text-[12px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">{copyState === 'copied' ? 'СКОПИРОВАНО' : copyState === 'pending' ? 'КОПИРОВАНИЕ…' : 'КОПИРОВАТЬ'}</button>
     </div>
     <span role="status" aria-live="polite" aria-atomic="true"
@@ -15340,7 +15645,7 @@ FILE	frontend/src/lib/components/DisplaySettings.svelte
 </script>
 
 <section class="space-y-5" aria-label="Настройки дисплеев">
-  <h2 class="text-[26px] font-extrabold tracking-tight">Дисплеи</h2>
+  <h2 class="text-[21px] font-extrabold tracking-tight">Дисплеи</h2>
 
   {#if pendingId !== null}
     <div role="alertdialog" aria-label="Подтвердите параметры дисплеев"
@@ -15723,7 +16028,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
     </div>
 
     {#if loaded && query.trim()}
-      <p class="mt-3 mb-1 text-[11px] text-kira-muted" role="status">
+      <p class="mt-3 mb-1 text-[12px] text-kira-muted" role="status">
         {matchingAppsLabel(matches.length)}
       </p>
     {/if}
@@ -15775,7 +16080,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
           </p>
           {#if loaded && !error && query.trim()}
             <button type="button" onclick={clearSearch}
-              class="mt-3 text-[11px] font-bold text-kira-accent
+              class="mt-3 text-[12px] font-bold text-kira-accent
                 focus-visible:outline-2 focus-visible:outline-kira-accent">ОЧИСТИТЬ ПОИСК</button>
           {/if}
         </div>
@@ -15785,7 +16090,7 @@ FILE	frontend/src/lib/components/LauncherWidget.svelte
       <p class="shrink-0 py-2 text-xs font-medium text-kira-accent" role="alert">{error}</p>
     {/if}
     {#if matches.length > displayed.length}
-      <p class="shrink-0 pt-2 text-[10px] text-kira-muted">
+      <p class="shrink-0 pt-2 text-[11px] text-kira-muted">
         Показаны первые {displayed.length} приложений. Уточните поиск для остальных.
       </p>
     {/if}
@@ -15858,7 +16163,7 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
   class="kira-settings relative flex min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header data-kira-enter class="flex shrink-0 items-center justify-between gap-3 border-b border-kira-muted/20 bg-kira-bg px-5 py-4">
     <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-      <h1 data-kira-contact class="truncate text-[22px] font-extrabold leading-tight tracking-tight">Настройки</h1>
+      <h1 data-kira-contact class="truncate text-[26px] font-extrabold leading-tight tracking-tight">Настройки</h1>
     </div>
     <WindowControls {onClose} {onPopout} {generation} label="settings" />
   </header>
@@ -15873,20 +16178,21 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
           use:tenetFlowIndicator={{ active: section, axis: 'both' }}>
           <span data-kira-flow-indicator aria-hidden="true"
             class="pointer-events-none absolute left-0 top-0 z-0 border-l-[3px] border-kira-accent bg-kira-bg/35"></span>
-          {#each SETTINGS_SECTIONS as item (item.id)}
-            <button type="button" disabled={!item.available}
-              data-kira-tab={item.id}
+          {#each SETTINGS_SECTIONS.filter(item => item.available) as item (item.id)}
+            <button type="button" data-kira-tab={item.id}
               onclick={() => navigate(item.id)}
               aria-current={section === item.id ? 'page' : undefined}
               class={['relative z-10 flex min-h-11 w-full items-center justify-between gap-2 px-4 text-left text-[13px] font-semibold focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent',
-                section === item.id ? 'text-kira-text' : 'text-kira-muted',
-                item.available ? 'hover:text-kira-text' : 'cursor-not-allowed opacity-50'].join(' ')}>
+                section === item.id ? 'text-kira-text' : 'text-kira-muted hover:text-kira-text'].join(' ')}>
               <span class="truncate">{item.label}</span>
-              {#if !item.available}
-                <span class="shrink-0 text-[10px] font-semibold text-kira-muted">Скоро</span>
-              {/if}
             </button>
           {/each}
+          <div class="mt-5 border-t border-kira-muted/15 px-4 pt-4">
+            <p class="mb-2 text-[11px] font-semibold text-kira-muted">В ПЛАНАХ</p>
+            {#each SETTINGS_SECTIONS.filter(item => !item.available) as item (item.id)}
+              <span class="block py-1.5 text-[12px] text-kira-muted/70">{item.label}</span>
+            {/each}
+          </div>
         </nav>
       </aside>
     {/if}
@@ -15907,11 +16213,11 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
       </div>
 
       {#if section === 'about'}
-        <h2 class="mb-5 text-[26px] font-extrabold leading-tight tracking-tight">О системе</h2>
+        <h2 class="mb-5 text-[21px] font-extrabold leading-tight tracking-tight">О системе</h2>
 
         <!-- A single elevated fact, not a stack of ornamental cards. -->
         <div class="border-l-[3px] border-kira-accent bg-kira-surface px-5 py-5">
-          <p class="text-[11px] font-semibold text-kira-muted">Операционная система</p>
+          <p class="text-[12px] font-semibold text-kira-muted">Операционная система</p>
           <p class="mt-2 break-words text-[23px] font-extrabold leading-snug tracking-tight text-kira-text">
             {about ? systemValue(about.os_name) : 'Получение данных…'}
           </p>
@@ -15921,8 +16227,8 @@ FILE	frontend/src/lib/components/SettingsWidget.svelte
         <dl class="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
           {#each fields as field (field.key)}
             <div class="min-w-0 py-3">
-              <dt class="text-[11px] font-semibold tracking-wide text-kira-muted">{field.label}</dt>
-              <dd class="mt-1.5 break-words text-[13px] font-bold leading-relaxed text-kira-text">
+              <dt class="text-[12px] font-semibold tracking-wide text-kira-muted">{field.label}</dt>
+              <dd class="mt-1.5 break-words text-[14px] font-semibold leading-relaxed text-kira-text">
                 {about ? field.value : 'Получение данных…'}
               </dd>
             </div>
@@ -16169,9 +16475,9 @@ FILE	frontend/src/lib/components/SkyMap.svelte
   <div class="flex min-h-[395px] flex-1 flex-col bg-kira-surface px-5 pb-4 pt-4">
     <div class="shrink-0 border-b border-kira-muted/20 pb-4">
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-        <p class="text-[10px] font-bold tracking-[0.12em] text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
+        <p class="text-[11px] font-bold tracking-wide text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
         {#if exampleLocation}
-          <p class="text-[10px] font-semibold text-kira-accent">ДЕМО · ГРИНВИЧ</p>
+          <p class="text-[11px] font-semibold text-kira-accent">ДЕМО · ГРИНВИЧ</p>
         {/if}
       </div>
       <div class="mt-3 flex flex-wrap items-end gap-x-3 gap-y-3">
@@ -16216,7 +16522,7 @@ FILE	frontend/src/lib/components/SkyMap.svelte
     <p class="mt-3 text-[11px] text-kira-muted">Звёзды до 5,35 mag</p>
   </div>
 
-  <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[10px] leading-relaxed text-kira-muted">
+  <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[11px] leading-relaxed text-kira-muted">
     XHIP / Hipparcos · схемы созвездий d3-celestial · J2000. Приближённая карта, не для навигации.
   </footer>
 </section>
@@ -16233,7 +16539,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   import { surfaceColors } from '../surface-colors';
   import { isSampleFresh, liveUtilization } from '../system-model';
   import {
-    activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak, recentPulseHistory,
+    activityAxis, activityHistoryCaption, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak, recentPulseHistory,
     type TelemetryPoint,
   } from '../system-charts';
 
@@ -16248,6 +16554,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   let reduced = false;
   let palette = surfaceColors();
   let history: TelemetryPoint[] = [];
+  let historyCaption = $state('Нет доступных замеров за последнюю минуту');
   let pulse = $state<SystemPulse | null>(null);
   let lastPulseAt = $state<number | null>(null);
   let lastPulse: SystemPulse | null = null;
@@ -16287,7 +16594,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
     gauges?.setOption({
       animation: !reduced,
       animationDuration: reduced ? 0 : 350,
-      animationDurationUpdate: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 180,
       animationEasingUpdate: 'cubicOut',
       series: [
         dial('CPU', cpu, '25%', accent),
@@ -16297,6 +16604,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
 
     // Old readings leave the chart even if the native stream has stopped.
     const syncedHistory = alignedActivity(recentPulseHistory(history, performance.now()));
+    historyCaption = activityHistoryCaption(syncedHistory);
     const timeDomain = activityTimeDomain(syncedHistory);
     const panels: { field: 'cpu' | 'ram' | 'gpu'; name: string; color: string }[] = [
       { field: 'cpu', name: 'АКТИВНОСТЬ CPU', color: accent },
@@ -16307,7 +16615,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
     trend?.setOption({
       animation: !reduced,
       animationDuration: reduced ? 0 : 350,
-      animationDurationUpdate: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 180,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
       grid: panels.map((panel, i) => ({
@@ -16450,10 +16758,10 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
   </section>
 
   <section aria-label="История нагрузки ресурсов">
-    <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ИСТОРИЯ НАГРУЗКИ</h2>
+    <h2 class="text-[12px] font-bold tracking-wide text-kira-text">ИСТОРИЯ НАГРУЗКИ</h2>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
-        role="img" aria-label={'Измеренная история нагрузки с адаптивными шкалами. ' +
+        role="img" aria-label={'История нагрузки с адаптивными шкалами. ' + historyCaption + '. ' +
           'CPU ' + (cpu === null ? 'нет данных' : cpu + '%') +
           ', RAM ' + (ram === null ? 'нет данных' : ram + '%') +
           (pulse !== null && !pulseFresh ? '. Последний импульс устарел.' : '')}></div>
@@ -16465,6 +16773,8 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
         {/if}
       </div>
     </div>
+    <!-- Actual measured interval, never an assumed 60 seconds or a fake sample. -->
+    <p class="mt-1 text-[11px] font-medium text-kira-muted">{historyCaption}</p>
   </section>
 </div>
 
@@ -16561,7 +16871,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   let processesLastReceivedAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
-  let processList: HTMLDivElement;
+  let processList = $state<HTMLDivElement | undefined>(undefined);
   const metrics = $derived(status?.metrics ?? null);
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
   // Keep expired metrics out of every numeric widget, not just the headline.
@@ -16672,10 +16982,10 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       </section>
 
       <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Дополнительные показатели ресурсов">
-        <h2 class="mb-3 text-[11px] font-bold tracking-wide text-kira-accent">ЁМКОСТЬ</h2>
+        <h2 class="mb-3 text-[12px] font-bold tracking-wide text-kira-text">ЁМКОСТЬ</h2>
         <div class="grid grid-cols-2 gap-3">
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
-            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ОСНОВНОЙ ДИСК</h3>
+            <h3 class="text-[12px] font-bold tracking-wide text-kira-muted">ОСНОВНОЙ ДИСК</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null)}
             </div>
@@ -16693,7 +17003,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
             </p>
           </article>
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
-            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ПАМЯТЬ SWAP</h3>
+            <h3 class="text-[12px] font-bold tracking-wide text-kira-muted">ПАМЯТЬ SWAP</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null)}
             </div>
@@ -16716,7 +17026,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       <section data-kira-enter class="bg-kira-surface-soft px-5 py-4"
         aria-label="Температуры оборудования и графика">
         <div class="flex items-center justify-between gap-3">
-          <h2 class="text-[11px] font-extrabold tracking-[0.15em] text-kira-accent">ОБОРУДОВАНИЕ</h2>
+          <h2 class="text-[12px] font-bold tracking-[0.08em] text-kira-text">ОБОРУДОВАНИЕ</h2>
           <div class="flex items-baseline gap-2">
             <span class="text-[11px] font-bold tracking-wider text-kira-muted">CPU · ТЕМП</span>
             <span class="text-[14px] font-extrabold tabular-nums"
@@ -16748,7 +17058,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       <details data-kira-enter use:tenetDisclosure class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
         aria-label="Дополнительные сведения о системе">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
-          text-[11px] font-extrabold tracking-[0.12em] text-kira-accent
+          text-[12px] font-bold tracking-[0.08em] text-kira-text
           focus-visible:outline-2 focus-visible:outline-kira-accent">
           <span>СВЕДЕНИЯ О СИСТЕМЕ</span>
           <span aria-hidden="true" class="text-sm text-kira-muted group-open:hidden">+</span>
@@ -16931,7 +17241,7 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
   import { visibleWorkspaceWindow } from '../workspace-window';
   import { tenetFlowIndicator, tenetScrollIntoView, tenetScrollScope } from '../motion';
 
-  let { state, showNames, limit, onFocus, pending }: {
+  let { state: workspaceState, showNames, limit, onFocus, pending }: {
     state: WorkspaceState | null;
     showNames: boolean;
     limit: number;
@@ -16939,9 +17249,9 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
     pending: boolean;
   } = $props();
 
-  const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
+  const windowed = $derived(visibleWorkspaceWindow(workspaceState?.workspaces ?? [], limit));
   const focusedId = $derived(windowed.items.find(item => item.is_focused)?.id ?? null);
-  let list: HTMLOListElement;
+  let list = $state<HTMLOListElement | undefined>(undefined);
   let previousFocus: string | null = null;
 
   // The model guarantees inclusion; WebKit's fixed-width horizontal
@@ -16963,13 +17273,13 @@ FILE	frontend/src/lib/components/WorkspacePreview.svelte
 
 </script>
 
-{#if !state}
+{#if !workspaceState}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
     role="status" aria-live="polite">NIRI: ПОДКЛЮЧЕНИЕ…</span>
-{:else if !state.connected}
+{:else if !workspaceState.connected}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
     role="status" aria-live="polite" title="Нет соединения с Niri IPC">NIRI НЕДОСТУПЕН</span>
-{:else if state.workspaces.length === 0}
+{:else if workspaceState.workspaces.length === 0}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
     role="status" aria-live="polite">НЕТ РАБОЧИХ СТОЛОВ</span>
 {:else}
@@ -19709,7 +20019,7 @@ FILE	frontend/src/lib/system-charts.test.ts
 import { describe, expect, it } from 'vitest';
 import type { SystemMetrics } from './sdk/core';
 import {
-  activityAxis, activitySeries, activityTimeDomain, alignedActivity,
+  activityAxis, activityHistoryCaption, activitySeries, activityTimeDomain, alignedActivity,
   appendPulse, appendTelemetry, chartMeters, gpuPeak, recentPulseHistory,
   MAX_PULSE_POINTS, MAX_TELEMETRY_POINTS, telemetrySummary,
 } from './system-charts';
@@ -19806,6 +20116,32 @@ describe('System Monitor ECharts telemetry model', () => {
     expect(recentPulseHistory(history, Number.NaN)).toEqual([]);
   });
 
+  it('never labels an empty or expired graph as a full minute of history', () => {
+    expect(activityHistoryCaption([])).toBe('Нет доступных замеров за последнюю минуту');
+    const empty = [
+      { time: 500, cpu: null, ram: null, gpu: null },
+      { time: 1_000, cpu: null, ram: null, gpu: null },
+    ];
+    expect(activityHistoryCaption(empty)).toBe('Нет доступных замеров за последнюю минуту');
+    expect(activityHistoryCaption(recentPulseHistory(empty, 62_000)))
+      .toBe('Нет доступных замеров за последнюю минуту');
+  });
+
+  it('reports only the time spanned by measured values', () => {
+    const measured = [
+      { time: 10_000, cpu: null, ram: null, gpu: null },
+      { time: 10_500, cpu: null, ram: 36, gpu: null },
+      { time: 11_000, cpu: 9, ram: 36.1, gpu: null },
+      { time: 12_000, cpu: 10, ram: 36.2, gpu: null },
+    ];
+    expect(activityHistoryCaption(measured.slice(0, 2)))
+      .toBe('1 реальный замер · ожидание истории');
+    expect(activityHistoryCaption(measured))
+      .toBe('3 реальных замера · 1,5 с истории');
+    expect(activityHistoryCaption(recentPulseHistory(measured, 75_000)))
+      .toBe('Нет доступных замеров за последнюю минуту');
+  });
+
   it('charts only real samples and caps history at thirty points', () => {
     let samples = [] as ReturnType<typeof appendTelemetry>;
     for (let i = 0; i < 50; i++) {
@@ -19877,6 +20213,7 @@ FILE	frontend/src/lib/system-charts.ts
  */
 import type { SystemMetrics, SystemPulse } from './sdk/core';
 import { percentUsedPrecise } from './system-model';
+import { russianCountLabel } from './ui-locale';
 
 export interface Meter {
   title: string;
@@ -19995,6 +20332,21 @@ export function activitySeries(
   field: 'cpu' | 'ram' | 'gpu',
 ): [number, number | null][] {
   return history.map(point => [point.time, point[field]]);
+}
+
+/** Describes only measured points in the visible time window.
+ * A newly opened monitor, stale stream or unsupported sensors must not
+ * display imaginary minute-long history or a fictitious "last sample".
+ */
+export function activityHistoryCaption(history: readonly TelemetryPoint[]): string {
+  const measured = history.filter(point => Number.isFinite(point.time) &&
+    [point.cpu, point.ram, point.gpu].some(value => value !== null && Number.isFinite(value)));
+  if (measured.length === 0) return 'Нет доступных замеров за последнюю минуту';
+  if (measured.length === 1) return '1 реальный замер · ожидание истории';
+  const elapsedSeconds = Math.max(0, (measured[measured.length - 1].time - measured[0].time) / 1000);
+  const elapsedLabel = elapsedSeconds.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
+  return russianCountLabel(measured.length, 'реальный замер', 'реальных замера', 'реальных замеров') +
+    ' · ' + elapsedLabel + ' с истории';
 }
 
 /** CPU and RAM use the SAME bounded adaptive-window rule.
@@ -20731,6 +21083,63 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
   });
 });
 
+const monitor = readFileSync(new URL('../components/SystemWidget.svelte', import.meta.url), 'utf8');
+const charts = readFileSync(new URL('../components/SystemCharts.svelte', import.meta.url), 'utf8');
+const settings = readFileSync(new URL('../components/SettingsWidget.svelte', import.meta.url), 'utf8');
+const html = readFileSync(new URL('../../../index.html', import.meta.url), 'utf8');
+
+describe('Kira editorial polish', () => {
+  it('exposes full warning text on-demand without changing the 42px Wayland surface', () => {
+    expect(markup).toContain('onclick={showWarningDetails}');
+    expect(markup).toContain('onclick={inspectWarnings}');
+    expect(markup).toContain('const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId))');
+    expect(markup).toContain('nextWarningId(warnings, activeWarningId)');
+    expect(markup).toContain('Открыть предупреждение ');
+    expect(markup).toContain('russianCountLabel(warnings.length');
+    expect(markup).toContain('event.key !== \'Tab\'');
+    expect(markup).toContain('last.focus()');
+    expect(markup).toContain('first.focus()');
+    expect(markup).toContain('aria-controls={inspectingWarnings ?');
+    expect(markup).not.toContain('join(\'; \')');
+    expect(markup).toContain('role="dialog" aria-modal="true" aria-label="Подробности предупреждения"');
+    expect(markup).toContain('inert={inspectingWarnings}');
+    expect(markup).toContain('resize-none overflow-y-auto');
+    expect(markup).toContain('readonly rows="2" wrap="soft"');
+    expect(markup).toContain('aria-label="Следующее предупреждение"');
+    expect(markup).toContain('onkeydown={onWarningKeydown}');
+    expect(markup).toContain('role="status" aria-live="polite"');
+    expect(markup).toContain('focus-visible:outline-2');
+    expect(markup).not.toContain("warnings[0]}{warnings.length > 1");
+  });
+
+  it('reserves orange for meaningful monitor states instead of static sections', () => {
+    expect(monitor).toContain('text-kira-text">ЁМКОСТЬ</h2>');
+    expect(monitor).toContain('text-kira-text">ОБОРУДОВАНИЕ</h2>');
+    expect(charts).toContain('text-kira-text">ИСТОРИЯ НАГРУЗКИ</h2>');
+    expect(charts).toContain('historyCaption = activityHistoryCaption(syncedHistory)');
+    expect(charts).toContain('{historyCaption}</p>');
+    expect(charts).not.toContain('До 60 с назад');
+    expect(charts).not.toContain('Последний замер');
+    expect(charts).toContain('animationDurationUpdate: reduced ? 0 : 180');
+  });
+
+  it('keeps unfinished settings passive and the current-page hierarchy secondary', () => {
+    expect(settings).toContain('SETTINGS_SECTIONS.filter(item => item.available)');
+    expect(settings).toContain('SETTINGS_SECTIONS.filter(item => !item.available)');
+    expect(settings).toContain('В ПЛАНАХ');
+    expect(settings).toContain('text-[26px] font-extrabold leading-tight tracking-tight">Настройки');
+    expect(settings).toContain('text-[21px] font-extrabold leading-tight tracking-tight">О системе');
+    expect(settings).toContain('use:tenetFlowIndicator={{ active: section, axis: \'both\' }}');
+  });
+
+  it('localizes visible bootstrap fallback states, preserving diagnostics', () => {
+    expect(html).toContain('Загрузка интерфейса…');
+    expect(html).toContain('Ошибка интерфейса Kira:');
+    expect(html).toContain('Интерфейс Kira не запустился');
+    expect(html).toContain("report('Svelte not mounted:");
+  });
+});
+
 FILE	frontend/src/lib/time.test.ts
 import { describe, expect, it } from 'vitest';
 import { formatClock } from './time';
@@ -20760,7 +21169,7 @@ export function formatClock(date: Date, timeZone?: string, showSeconds = false):
 
 FILE	frontend/src/lib/ui-locale.test.ts
 import { describe, expect, it } from 'vitest';
-import { UI_LOCALE, healthLabel, monitorLabel, matchingAppsLabel } from './ui-locale';
+import { UI_LOCALE, healthLabel, monitorLabel, matchingAppsLabel, russianCountLabel } from './ui-locale';
 
 describe('one built-in user-facing locale', () => {
   it('retains machine status codes but localizes their presentation', () => {
@@ -20769,6 +21178,19 @@ describe('one built-in user-facing locale', () => {
     expect(healthLabel('READY')).toBe('ГОТОВО');
     expect(monitorLabel('ALL SYSTEMS NOMINAL')).toBe('ВСЁ В НОРМЕ');
     expect(monitorLabel('NIRI DISCONNECTED')).toBe('NIRI ОТКЛЮЧЁН');
+  });
+
+  it('reuses Russian declension for measured counts', () => {
+    for (const [count, expected] of [
+      [0, '0 реальных замеров'], [1, '1 реальный замер'],
+      [2, '2 реальных замера'], [3, '3 реальных замера'],
+      [4, '4 реальных замера'], [5, '5 реальных замеров'],
+      [11, '11 реальных замеров'], [21, '21 реальный замер'],
+      [23, '23 реальных замера'], [114, '114 реальных замеров'],
+    ] as const) {
+      expect(russianCountLabel(count, 'реальный замер', 'реальных замера', 'реальных замеров'))
+        .toBe(expected);
+    }
   });
 
   it('counts launcher matches with Russian plural forms', () => {
@@ -20818,14 +21240,74 @@ const monitor: Record<string, string> = {
 export const healthLabel = (code: string): string => health[code] ?? code;
 export const monitorLabel = (code: string): string => monitor[code] ?? code;
 
-export function matchingAppsLabel(n: number): string {
+/** Shared Russian noun agreement for real quantities, not UI decoration. */
+export function russianCountLabel(n: number, one: string, few: string, many: string): string {
   const ends = Math.abs(n) % 100;
   const digit = ends % 10;
-  const noun = ends >= 11 && ends <= 14 ? 'результатов'
-    : digit === 1 ? 'результат'
-      : digit >= 2 && digit <= 4 ? 'результата'
-        : 'результатов';
+  const noun = ends >= 11 && ends <= 14 ? many
+    : digit === 1 ? one
+      : digit >= 2 && digit <= 4 ? few : many;
   return n + ' ' + noun;
+}
+
+export function matchingAppsLabel(n: number): string {
+  return russianCountLabel(n, 'результат', 'результата', 'результатов');
+}
+
+FILE	frontend/src/lib/warning-model.test.ts
+import { describe, expect, it } from 'vitest';
+import { nextWarningId, visibleWarningIndex, type UiWarning } from './warning-model';
+
+const warnings: UiWarning[] = [
+  { id: 'config', text: 'Ошибка конфигурации', short: 'КОНФИГ' },
+  { id: 'launcher', text: 'Лаунчер недоступен', short: 'ЛАУНЧЕР' },
+  { id: 'calendar', text: 'Календарь недоступен', short: 'КАЛЕНДАРЬ' },
+];
+
+describe('Top Bar warning selection', () => {
+  it('does not invent a selection when there are no warnings', () => {
+    expect(visibleWarningIndex([], 'config')).toBe(-1);
+    expect(nextWarningId([], 'config')).toBeNull();
+  });
+
+  it('advances on the first click and wraps after the last warning', () => {
+    expect(visibleWarningIndex(warnings, null)).toBe(0);
+    expect(nextWarningId(warnings, null)).toBe('launcher');
+    expect(nextWarningId(warnings, 'launcher')).toBe('calendar');
+    expect(nextWarningId(warnings, 'calendar')).toBe('config');
+  });
+
+  it('preserves the displayed warning when other errors are added or removed', () => {
+    expect(visibleWarningIndex(warnings.slice(1), 'calendar')).toBe(1);
+    expect(visibleWarningIndex(warnings, 'calendar')).toBe(2);
+    expect(visibleWarningIndex(warnings.slice(0, 2), 'calendar')).toBe(0);
+    expect(nextWarningId(warnings.slice(0, 2), 'calendar')).toBe('launcher');
+  });
+
+  it('keeps a single warning selected without promising an empty next action', () => {
+    expect(visibleWarningIndex(warnings.slice(0, 1), null)).toBe(0);
+    expect(nextWarningId(warnings.slice(0, 1), null)).toBe('config');
+  });
+});
+
+FILE	frontend/src/lib/warning-model.ts
+/** Keep a stable warning identity while errors appear or disappear. */
+export interface UiWarning {
+  id: string;
+  text: string;
+  short: string;
+}
+
+export function visibleWarningIndex(warnings: readonly UiWarning[], selectedId: string | null): number {
+  if (warnings.length === 0) return -1;
+  const position = warnings.findIndex(warning => warning.id === selectedId);
+  return position === -1 ? 0 : position;
+}
+
+/** Advance by one with a single action. Never insert a no-op "expand" click. */
+export function nextWarningId(warnings: readonly UiWarning[], selectedId: string | null): string | null {
+  const position = visibleWarningIndex(warnings, selectedId);
+  return position === -1 ? null : warnings[(position + 1) % warnings.length].id;
 }
 
 FILE	frontend/src/lib/workspace-window.test.ts
@@ -21093,7 +21575,9 @@ FILE	frontend/src/style.css
   --color-kira-text: var(--kira-color-text);
   --color-kira-accent: var(--kira-color-accent);
   --color-kira-on-accent: var(--kira-color-on-accent);
-  --font-sans: Inter, "Segoe UI Variable", "Noto Sans", system-ui, sans-serif;
+  /* The Nix wrapper ships a scoped Noto Sans Fontconfig profile.
+   * Prefer the same Cyrillic-capable family in browser/dev previews. */
+  --font-sans: "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
 }
 
 @layer base {
@@ -21338,6 +21822,9 @@ FILE	nix/package.nix
   craneLib,
   pkg-config,
   wrapGAppsHook4,
+  writeText,
+  noto-fonts,
+  noto-fonts-color-emoji,
   gtk4,
   gtk4-layer-shell,
   webkitgtk_6_0,
@@ -21346,6 +21833,19 @@ FILE	nix/package.nix
 }:
 let
   version = "0.1.0";
+  # Preserve the NixOS host font profile and users' installed glyph fallbacks.
+  # A Fontconfig profile containing ONLY Noto Sans would make CJK/emoji and
+  # other installed fonts disappear inside GTK/WebKit. Add the bundled families
+  # after including host configuration, scoped to this binary's wrapper.
+  uiFontsConf = writeText "kira-fonts.conf" ''
+    <?xml version="1.0"?>
+    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+    <fontconfig>
+      <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
+      <dir>${noto-fonts}/share/fonts</dir>
+      <dir>${noto-fonts-color-emoji}/share/fonts</dir>
+    </fontconfig>
+  '';
 
   frontend = buildNpmPackage {
     pname = "kira-desktop-frontend";
@@ -21429,6 +21929,7 @@ stdenv.mkDerivation {
   # copied into the final package.
   preFixup = ''
     gappsWrapperArgs+=(--set KIRA_UI_DIR "$out/share/kira-desktop/ui")
+    gappsWrapperArgs+=(--set-default FONTCONFIG_FILE "${uiFontsConf}")
   '';
 
   passthru = {
@@ -23017,6 +23518,19 @@ class NativeThemeContractTests(unittest.TestCase):
         self.assertIn("box-shadow: none;", HELPERS)
         self.assertNotIn("gtk::CssProvider", SHELL)
         self.assertNotIn("gtk::CssProvider", OVERLAY)
+
+    def test_nixos_shell_uses_scoped_cyrillic_font_config(self):
+        style = (ROOT / "frontend/src/style.css").read_text()
+        self.assertIn('--font-sans: "Noto Sans", "DejaVu Sans"', style)
+        self.assertIn("writeText,", NIX)
+        self.assertIn("noto-fonts,", NIX)
+        self.assertIn("noto-fonts-color-emoji,", NIX)
+        self.assertIn('<include ignore_missing="yes">/etc/fonts/fonts.conf</include>', NIX)
+        self.assertIn("<dir>${noto-fonts}/share/fonts</dir>", NIX)
+        self.assertIn("<dir>${noto-fonts-color-emoji}/share/fonts</dir>", NIX)
+        self.assertIn('gappsWrapperArgs+=(--set-default FONTCONFIG_FILE "${uiFontsConf}")', NIX)
+        # Keep system/host font settings untouched; this is a package wrapper.
+        self.assertNotIn("fonts.packages", NIX)
 
     def test_native_code_is_only_webkit_layer_shell_and_gio(self):
         self.assertIn("webkit6::WebView::builder()", OVERLAY)
