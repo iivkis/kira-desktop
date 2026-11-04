@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { monitorLabel } from '../ui-locale';
   import WindowControls from './WindowControls.svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetReflowScope, tenetWidgetReveal } from '../motion';
@@ -32,8 +33,8 @@
   let processList: HTMLDivElement;
   const metrics = $derived(status?.metrics ?? null);
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
-  const health = $derived(status === null ? 'AWAITING TELEMETRY' :
-    !sampleFresh ? 'TELEMETRY STALE' : systemHeadline(metrics, status.core, status.niri));
+  const health = $derived(status === null ? 'ОЖИДАНИЕ ТЕЛЕМЕТРИИ' :
+    !sampleFresh ? 'ДАННЫЕ УСТАРЕЛИ' : systemHeadline(metrics, status.core, status.niri));
   const swapPercent = $derived(percentUsedPrecise(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null));
   const storagePercent = $derived(percentUsedPrecise(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null));
   const matching = $derived(sortedProcesses(processes?.rows ?? [], query, sort));
@@ -99,12 +100,12 @@
   <header data-kira-enter class="shrink-0 border-b border-kira-muted/15 bg-kira-bg px-5 pb-4 pt-5">
     <div class="flex items-start justify-between gap-3">
       <div class="border-l-2 border-kira-accent pl-3">
-        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">System monitor</h1>
+        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">Монитор системы</h1>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="system monitor" />
     </div>
     {#if health !== 'ALL SYSTEMS NOMINAL'}
-      <p class="mt-3 text-[11px] font-semibold text-kira-accent" role="status" aria-live="polite">{health}</p>
+      <p class="mt-3 text-[11px] font-semibold text-kira-accent" role="status" aria-live="polite">{monitorLabel(health)}</p>
     {/if}
   </header>
 
@@ -113,12 +114,12 @@
     <button data-kira-tab="overview" type="button" onclick={() => switchTab('overview')} aria-current={active === 'overview' ? 'page' : undefined}
       class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'overview' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
-      OVERVIEW
+      ОБЗОР
     </button>
     <button data-kira-tab="processes" type="button" onclick={() => switchTab('processes')} aria-current={active === 'processes' ? 'page' : undefined}
       class={'border-b-2 border-transparent px-4 py-3 text-left text-[11px] font-bold tracking-wide focus-visible:outline-2 focus-visible:outline-kira-accent ' +
         (active === 'processes' ? 'text-kira-accent' : 'text-kira-muted hover:text-kira-text')}>
-      PROCESSES
+      ПРОЦЕССЫ
     </button>
   </nav>
 
@@ -129,20 +130,20 @@
       </section>
 
       <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Secondary resource metrics">
-        <h2 class="mb-3 text-[11px] font-bold tracking-wide text-kira-accent">CAPACITY</h2>
+        <h2 class="mb-3 text-[11px] font-bold tracking-wide text-kira-accent">ЁМКОСТЬ</h2>
         <div class="grid grid-cols-2 gap-3">
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
-            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ROOT STORAGE</h3>
+            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ОСНОВНОЙ ДИСК</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
             </div>
             {#if storagePercent !== null}
-              <div role="progressbar" aria-label="Root storage used" aria-valuemin={0} aria-valuemax={100}
+              <div role="progressbar" aria-label="Занято на основном диске" aria-valuemin={0} aria-valuemax={100}
                 aria-valuenow={storagePercent} class="mt-3 h-1 bg-kira-muted/15">
                 <div class="h-full bg-kira-accent" style:width={storagePercent + '%'}></div>
               </div>
             {:else}
-              <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Root storage usage unavailable"></div>
+              <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Нет данных об использовании диска"></div>
             {/if}
             <p class="mt-2 truncate text-[11px] text-kira-muted"
               title={fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}>
@@ -150,17 +151,17 @@
             </p>
           </article>
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
-            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">SWAP MEMORY</h3>
+            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ПАМЯТЬ SWAP</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
             </div>
             {#if swapPercent !== null}
-              <div role="progressbar" aria-label="Swap memory used" aria-valuemin={0} aria-valuemax={100}
+              <div role="progressbar" aria-label="Использование swap" aria-valuemin={0} aria-valuemax={100}
                 aria-valuenow={swapPercent} class="mt-3 h-1 bg-kira-muted/15">
                 <div class="h-full bg-kira-accent" style:width={swapPercent + '%'}></div>
               </div>
             {:else}
-              <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Swap memory usage unavailable"></div>
+              <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Нет данных об использовании swap"></div>
             {/if}
             <p class="mt-2 truncate text-[11px] text-kira-muted"
               title={fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}>
@@ -173,9 +174,9 @@
       <section data-kira-enter class="bg-kira-surface-soft px-5 py-4"
         aria-label="Hardware temperatures and graphics">
         <div class="flex items-center justify-between gap-3">
-          <h2 class="text-[11px] font-extrabold tracking-[0.15em] text-kira-accent">HARDWARE</h2>
+          <h2 class="text-[11px] font-extrabold tracking-[0.15em] text-kira-accent">ОБОРУДОВАНИЕ</h2>
           <div class="flex items-baseline gap-2">
-            <span class="text-[11px] font-bold tracking-wider text-kira-muted">CPU TEMP</span>
+            <span class="text-[11px] font-bold tracking-wider text-kira-muted">CPU · ТЕМП</span>
             <span class="text-[14px] font-extrabold tabular-nums"
               use:pulseReading={temperatureLabel(metrics?.cpu_temperature_c ?? null)}>
               {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
@@ -187,49 +188,49 @@
             <div class="flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-2 text-[11px]">
               <span class="min-w-0 flex-1 truncate font-semibold" title={gpu.label}>{gpu.label}</span>
               <div class="flex shrink-0 items-center gap-3">
-                <span class="tabular-nums text-kira-muted" title="GPU utilization">
-                  {gpu.utilization_percent === null ? 'LOAD N/A' : gpu.utilization_percent + '%'}
+                <span class="tabular-nums text-kira-muted" title="Загрузка GPU">
+                  {gpu.utilization_percent === null ? 'НАГРУЗКА Н/Д' : gpu.utilization_percent + '%'}
                 </span>
-                <span class="font-bold tabular-nums" title="GPU temperature"
+                <span class="font-bold tabular-nums" title="Температура GPU"
                   use:pulseReading={temperatureLabel(gpu.temperature_c)}>
-                  {gpu.temperature_c === null ? 'TEMP N/A' : temperatureLabel(gpu.temperature_c)}
+                  {gpu.temperature_c === null ? 'ТЕМП Н/Д' : temperatureLabel(gpu.temperature_c)}
                 </span>
               </div>
             </div>
           {:else}
-            <p class="text-[11px] text-kira-muted">NO GPU DETECTED</p>
+            <p class="text-[11px] text-kira-muted">GPU НЕ ОБНАРУЖЕН</p>
           {/each}
         </div>
       </section>
 
       <details data-kira-enter use:tenetDisclosure class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
-        aria-label="Additional host diagnostics">
+        aria-label="Дополнительные сведения о системе">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
           text-[11px] font-extrabold tracking-[0.12em] text-kira-accent
           focus-visible:outline-2 focus-visible:outline-kira-accent">
-          <span>HOST DETAILS</span>
+          <span>СВЕДЕНИЯ О СИСТЕМЕ</span>
           <span aria-hidden="true" class="text-sm text-kira-muted group-open:hidden">+</span>
           <span aria-hidden="true" class="hidden text-sm text-kira-muted group-open:inline">−</span>
         </summary>
         <div data-kira-disclosure-content class="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-kira-muted/15 pt-3">
           <div class="min-w-0">
-            <div class="text-[11px] font-bold tracking-wider text-kira-muted">UPTIME</div>
+            <div class="text-[11px] font-bold tracking-wider text-kira-muted">ВРЕМЯ РАБОТЫ</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
               {uptimeLabel(metrics?.uptime_seconds ?? null)}
             </div>
           </div>
           <div class="min-w-0">
-            <div class="text-[11px] font-bold tracking-wider text-kira-muted">LOAD / 1 5 15</div>
+            <div class="text-[11px] font-bold tracking-wider text-kira-muted">НАГРУЗКА / 1 5 15</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
               {metrics?.load?.map(n => n.toFixed(2)).join(' / ') ?? 'UNAVAILABLE'}
             </div>
           </div>
           <div class="col-span-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
-            <span class="text-[11px] font-bold tracking-wider text-kira-muted">POWER</span>
+            <span class="text-[11px] font-bold tracking-wider text-kira-muted">ПИТАНИЕ</span>
             <span class="text-right text-[11px] font-bold">
-              {metrics?.battery_percent == null ? 'NOT DETECTED' :
-                metrics.battery_percent + '%' + (metrics.battery_charging === true ? ' / CHARGING' :
-                  metrics.battery_charging === false ? ' / DISCHARGING' : '')}
+              {metrics?.battery_percent == null ? 'НЕ ОБНАРУЖЕНО' :
+                metrics.battery_percent + '%' + (metrics.battery_charging === true ? ' / ЗАРЯДКА' :
+                  metrics.battery_charging === false ? ' / РАЗРЯДКА' : '')}
             </span>
           </div>
         </div>
@@ -237,18 +238,18 @@
 
       <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-3">
         {#if status !== null && !sampleFresh}
-          <span role="status" class="text-[11px] font-medium text-kira-muted">LAST UPDATE · {refreshed}</span>
+          <span role="status" class="text-[11px] font-medium text-kira-muted">ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ · {refreshed}</span>
         {/if}
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[11px] font-bold tracking-wide text-kira-accent
-            focus-visible:outline-2 focus-visible:outline-kira-accent">COPY REPORT</button>
+            focus-visible:outline-2 focus-visible:outline-kira-accent">КОПИРОВАТЬ ОТЧЁТ</button>
       </footer>
     </div>
   {:else}
     <section use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col bg-kira-surface px-4 py-4"
-      aria-label="Processes">
-      <input data-kira-enter type="search" aria-label="Filter by process name or PID"
-        placeholder="Filter by process name or PID" value={query}
+      aria-label="Процессы">
+      <input data-kira-enter type="search" aria-label="Фильтр по названию процесса или PID"
+        placeholder="Фильтр по имени или PID" value={query}
         oninput={filterProcesses}
         class="mb-3 min-h-9 w-full rounded bg-kira-bg px-3 py-2 text-xs text-kira-text outline-none
           placeholder:text-kira-muted focus-visible:outline-2 focus-visible:outline-kira-accent"/>
@@ -256,13 +257,13 @@
         class="relative grid grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] gap-1 border-b border-kira-muted/20 pb-2">
         <span data-kira-flow-indicator aria-hidden="true"
           class="pointer-events-none absolute bottom-0 left-0 z-0 h-0.5 bg-kira-accent"></span>
-        {#each [{field:'name',label:'PROCESS'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
+        {#each [{field:'name',label:'ПРОЦЕСС'}, {field:'pid',label:'PID'}, {field:'cpu',label:'CPU'}, {field:'memory',label:'RSS'}, {field:'pss',label:'PSS'}] as column}
           <button data-kira-tab={column.field} type="button" onclick={() => changeSort(column.field as SortField)}
             aria-pressed={sort.field === column.field}
             class={'truncate text-right text-[11px] font-bold tracking-wide hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent ' +
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
-            aria-label={'Sort by ' + column.label}
+            aria-label={'Сортировать по ' + column.label}
              title={column.field === 'memory' ? 'Resident memory (RSS)' :
                column.field === 'pss' ? 'Proportional memory (PSS)' : 'Sort by ' + column.label}>
             {column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}
@@ -282,22 +283,22 @@
           </div>
         {:else}
           <p class="py-9 text-center text-xs text-kira-muted">{processes?.error ?
-            'PROCESS DATA UNAVAILABLE: ' + processes.error :
-            processes && processes.rows.length ? 'NO MATCHING PROCESSES' : 'SAMPLING / PLEASE WAIT'}</p>
+            'ДАННЫЕ ПРОЦЕССОВ НЕДОСТУПНЫ: ' + processes.error :
+            processes && processes.rows.length ? 'ПРОЦЕССЫ НЕ НАЙДЕНЫ' : 'СБОР ДАННЫХ…'}</p>
         {/each}
         {#if visible.length < matching.length && visible.length < 180}
           <button type="button" onclick={() => { visibleCount = Math.min(180, visibleCount + 36); }}
             class="mt-3 w-full border border-kira-muted/20 px-3 py-2 text-[11px] font-bold tracking-wider
               text-kira-accent hover:bg-kira-bg focus-visible:outline-2 focus-visible:outline-kira-accent">
-            SHOW MORE
+            ПОКАЗАТЬ ЕЩЁ
           </button>
         {/if}
       </div>
       {#if query.trim() || processes?.truncated || visible.length < matching.length}
         <p data-kira-enter class="shrink-0 pt-3 text-[11px] font-medium text-kira-muted" role="status">
           {visible.length} of {matching.length}
-          {processes?.truncated ? ' · SCAN LIMIT REACHED' : ''}
-          {visible.length === 180 && matching.length > 180 ? ' · REFINE FILTER FOR MORE' : ''}
+          {processes?.truncated ? ' · ДОСТИГНУТ ЛИМИТ СКАНИРОВАНИЯ' : ''}
+          {visible.length === 180 && matching.length > 180 ? ' · УТОЧНИТЕ ФИЛЬТР' : ''}
         </p>
       {/if}
     </section>
