@@ -8,6 +8,9 @@
     label: string;
   } = $props();
 
+  const localizedName = label === 'launcher' ? 'приложения'
+    : label === 'calendar' ? 'календарь'
+      : label === 'settings' ? 'настройки' : 'монитор системы';
   let detached = $state(false);
   let popoutFailed = $state(false);
   let responseTimer: number | null = null;
@@ -46,11 +49,11 @@
   });
 </script>
 
-<div class="flex shrink-0 items-center gap-1" role="group" aria-label={label + ' window actions'}>
+<div class="flex shrink-0 items-center gap-1" role="group" aria-label={'Управление окном: ' + localizedName}>
   {#if !detached}
     <button type="button" onclick={requestPopout}
-      title={'Open ' + label + ' as a Niri window'}
-      aria-label={'Open ' + label + ' as a separate window'}
+      title={'Открыть ' + localizedName + ' отдельным окном Niri'}
+      aria-label={'Вынести ' + localizedName + ' в отдельное окно'}
       class="rounded-sm p-2 text-kira-muted transition-colors hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"
         fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -62,10 +65,10 @@
   {#if popoutFailed}
     <span role="status" class="max-w-28 text-[10px] font-bold leading-tight text-kira-accent"
       title="Нативный Shell не подтвердил вынос окна. Обновите и полностью перезапустите kira-shell.">
-      RESTART SHELL
+      ПЕРЕЗАПУСТИТЬ SHELL
     </span>
   {/if}
-  <button type="button" onclick={onClose} aria-label={'Close ' + label} title="Close (Esc)"
+  <button type="button" onclick={onClose} aria-label={'Закрыть ' + localizedName} title="Закрыть (Esc)"
     class="rounded-sm px-2 py-1 text-xl leading-none text-kira-muted transition-colors
       hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
 </div>
