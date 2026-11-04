@@ -83,7 +83,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("matching.slice(0, visibleCount)", WIDGET)
         self.assertIn("visibleCount = 36", WIDGET)
         self.assertIn("Math.min(180, visibleCount + 36)", WIDGET)
-        self.assertIn("REFINE FILTER FOR MORE", WIDGET)
+        self.assertIn("УТОЧНИТЕ ФИЛЬТР", WIDGET)
         self.assertIn("aria-live=\"off\"", WIDGET)
         self.assertIn("function nextSort(", MODEL)
         self.assertIn("function sortedProcesses(", MODEL)
