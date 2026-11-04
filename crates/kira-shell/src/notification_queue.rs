@@ -12,8 +12,6 @@ pub const DEFAULT_DWELL: Duration = Duration::from_millis(5000);
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Notice {
     pub id: u32,
-    /// Unique session-bus sender. Not forwarded to the WebView.
-    pub owner: String,
     pub app: String,
     pub summary: String,
     pub body: String,
@@ -42,30 +40,26 @@ struct Showing {
 pub struct NotificationQueue {
     waiting: VecDeque<Waiting>,
     showing: Vec<Showing>, // first element is the bottom card
+    // Persistent events can leave the toast without closing their D-Bus ID.
+    // CloseNotification or a future replacement can still address them.
+    parked: VecDeque<Notice>,
     history: VecDeque<Notice>,
     next_id: u32,
 }
 
 impl NotificationQueue {
     pub fn contains_active(&self, id: u32) -> bool {
-        self.active_owner(id).is_some()
-    }
-
-    /// An arbitrary D-Bus application must not overwrite or close another
-    /// application's active notification by guessing the integer ID.
-    pub fn active_owner(&self, id: u32) -> Option<&str> {
-        self.waiting
-            .iter()
-            .map(|entry| &entry.notice)
-            .chain(self.showing.iter().map(|entry| &entry.notice))
-            .find(|notice| notice.id == id)
-            .map(|notice| notice.owner.as_str())
+        self.waiting.iter().any(|item| item.notice.id == id)
+            || self.showing.iter().any(|item| item.notice.id == id)
+            || self.parked.iter().any(|item| item.id == id)
     }
 
     pub fn allocate_id(&mut self) -> u32 {
         loop {
             self.next_id = self.next_id.wrapping_add(1).max(1);
-            if !self.history.iter().any(|n| n.id == self.next_id) {
+            if !self.contains_active(self.next_id)
+                && !self.history.iter().any(|n| n.id == self.next_id)
+            {
                 return self.next_id;
             }
         }
@@ -87,10 +81,14 @@ impl NotificationQueue {
         {
             entry.notice = notice.clone();
         } else {
-            // Reject the newest event when full. Evicting the oldest waiting
-            // entry would silently violate FIFO and lose an acknowledged notice.
-            if self.waiting.len() + self.showing.len() >= MAX_STORED {
+            // Replacing a parked persistent ID creates a fresh toast request
+            // at the tail of FIFO, without closing/reallocating that D-Bus ID.
+            let parked_position = self.parked.iter().position(|item| item.id == notice.id);
+            if parked_position.is_none() && self.active_count() >= MAX_STORED {
                 return false;
+            }
+            if let Some(index) = parked_position {
+                self.parked.remove(index);
             }
             self.waiting.push_back(Waiting {
                 eligible_at: if self.showing.is_empty() {
@@ -113,13 +111,18 @@ impl NotificationQueue {
     }
 
     pub fn close(&mut self, id: u32) -> bool {
-        let before = self.waiting.len() + self.showing.len();
+        let before = self.active_count();
         self.waiting.retain(|item| item.notice.id != id);
         self.showing.retain(|item| item.notice.id != id);
+        self.parked.retain(|item| item.id != id);
         // Session history is a separate, bounded audit of past notifications.
         // Closing a toast must not erase it from history or make its ID active
         // again for Freedesktop's replaces_id semantics.
-        before != self.waiting.len() + self.showing.len()
+        before != self.active_count()
+    }
+
+    pub fn active_count(&self) -> usize {
+        self.waiting.len() + self.showing.len() + self.parked.len()
     }
 
     /// Only the host may start the visual clock. A covered/unmapped window must
@@ -140,14 +143,23 @@ impl NotificationQueue {
             return changed;
         }
 
-        let before = self.showing.len();
-        self.showing.retain(|entry| {
-            entry.notice.persistent
-                || entry.since.is_none_or(|since| {
-                    now.saturating_duration_since(since) < entry.notice.dwell.max(MIN_DWELL)
-                })
-        });
-        changed |= before != self.showing.len();
+        // Separate visual dwell from logical Freedesktop lifetime: a
+        // timeout=0 or critical toast still vacates its slot after dwell,
+        // but stays logically active until CloseNotification/replace.
+        let mut kept = Vec::with_capacity(self.showing.len());
+        for entry in self.showing.drain(..) {
+            let elapsed = entry.since.is_some_and(|since|
+                now.saturating_duration_since(since) >= entry.notice.dwell.max(MIN_DWELL));
+            if elapsed {
+                if entry.notice.persistent {
+                    self.parked.push_back(entry.notice);
+                }
+                changed = true;
+            } else {
+                kept.push(entry);
+            }
+        }
+        self.showing = kept;
         if self.showing.len() < MAX_VISIBLE {
             if let Some(head) = self.waiting.front() {
                 // The 1.5s gap begins when the previous card actually paints,
@@ -200,17 +212,8 @@ impl NotificationQueue {
 
     /// Exact next wakeup, never a permanent UI poll.
     pub fn next_deadline(&self, now: Instant) -> Option<Instant> {
-        let expiry = self
-            .showing
-            .iter()
-            .filter_map(|item| {
-                if item.notice.persistent {
-                    None
-                } else {
-                    item.since
-                        .map(|since| since + item.notice.dwell.max(MIN_DWELL))
-                }
-            })
+        let expiry = self.showing.iter()
+            .filter_map(|item| item.since.map(|since| since + item.notice.dwell.max(MIN_DWELL)))
             .min();
         let admission = if self.showing.len() < MAX_VISIBLE {
             self.waiting.front().and_then(|entry| {
@@ -235,7 +238,6 @@ mod tests {
     fn notice(id: u32) -> Notice {
         Notice {
             id,
-            owner: ":1.101".into(),
             app: "Test".into(),
             summary: format!("{id}"),
             body: String::new(),
