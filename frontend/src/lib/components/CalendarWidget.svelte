@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import WindowControls from './WindowControls.svelte';
+  import { onCalendarCopyResult } from '../sdk/core';
   import SkyMap from './SkyMap.svelte';
   import { tenetCalendarGrid, tenetCalendarReveal, tenetClockDigit, tenetClockJuggle } from '../calendar-tenet-motion';
   import { tenetFlowIndicator } from '../motion';
@@ -19,7 +20,7 @@
   }: {
     onClose: () => void;
     onPopout: () => void;
-    onCopy: (isoDate: string) => void;
+    onCopy: (isoDate: string) => boolean;
     generation: number;
     locale?: string;
   } = $props();
@@ -29,6 +30,8 @@
   let today = $state<CivilDate>(todayCivilDate(now));
   let selected = $state<CivilDate>(today);
   let visible = $state({ year: today.year, month: today.month });
+  let copyState = $state<'idle' | 'pending' | 'copied' | 'failed'>('idle');
+  let copyTimeout: number | null = null;
 
   const clockText = $derived(localClockText(now, locale));
   const clockParts = $derived(clockGlyphs(clockText));
@@ -54,27 +57,57 @@
       if (current === generation) detached = true;
     };
     window.addEventListener('kira:overlay:detached', onDetached);
+    const stopCopy = onCalendarCopyResult(generation, result => {
+      if (result.date !== selectedIso || copyState !== 'pending') return;
+      copyState = result.ok ? 'copied' : 'failed';
+      scheduleCopyReset(1800);
+    });
     return () => {
+      stopCopy();
+      if (copyTimeout !== null) window.clearTimeout(copyTimeout);
       window.clearInterval(interval);
       window.removeEventListener('kira:overlay:detached', onDetached);
     };
   });
 
+  function scheduleCopyReset(ms: number) {
+    if (copyTimeout !== null) window.clearTimeout(copyTimeout);
+    copyTimeout = window.setTimeout(() => {
+      copyTimeout = null;
+      copyState = copyState === 'pending' ? 'failed' : 'idle';
+      if (copyState === 'failed') scheduleCopyReset(1800);
+    }, ms);
+  }
+
+  function copySelectedDate() {
+    copyState = 'pending';
+    if (!onCopy(selectedIso)) {
+      copyState = 'failed';
+      scheduleCopyReset(1800);
+    } else {
+      // The event may be dropped by an outdated Shell: never imply success.
+      scheduleCopyReset(2500);
+    }
+  }
+
   function navigate(months: number) {
     const next = shiftMonth(selected, months);
     if (next) {
       selected = next;
+      copyState = 'idle';
       visible = { year: next.year, month: next.month };
     }
   }
 
   function choose(date: CivilDate) {
     selected = date;
+    copyState = 'idle';
     visible = { year: date.year, month: date.month };
   }
 
   function goToday() {
     selected = todayCivilDate();
+    copyState = 'idle';
     visible = { year: selected.year, month: selected.month };
   }
 
@@ -236,10 +269,13 @@
       <button type="button" onclick={goToday}
         class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">TODAY</button>
-      <button type="button" onclick={() => onCopy(selectedIso)}
+      <button type="button" onclick={copySelectedDate}
         aria-label={'Copy date ' + selectedIso}
         class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
-          hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">COPY DATE</button>
+          hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">{copyState === 'copied' ? 'COPIED' : copyState === 'pending' ? 'COPYING…' : 'COPY DATE'}</button>
+      {#if copyState === 'failed'}
+        <span role="status" class="text-[11px] font-semibold text-kira-accent">COPY FAILED</span>
+      {/if}
     </div>
   </footer>
   </div>
