@@ -211,6 +211,12 @@ impl NotificationQueue {
         self.showing.len()
     }
 
+    /// True only after the trusted Svelte renderer acknowledges a visual
+    /// frame. Prevents exposing an outdated DOM when the host was blank.
+    pub fn has_painted(&self) -> bool {
+        self.showing.iter().any(|entry| entry.since.is_some())
+    }
+
     /// Exact next wakeup, never a permanent UI poll.
     pub fn next_deadline(&self, now: Instant) -> Option<Instant> {
         let expiry = self
