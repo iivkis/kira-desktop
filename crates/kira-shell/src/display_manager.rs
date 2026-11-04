@@ -1,11 +1,17 @@
 //! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
 //! Persistent changes require explicit ownership and native confirmation.
-use std::process::Command;
+use std::io::Read;
+use std::process::{Command, Stdio};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 const CONFIRM_SECS: u64 = 15;
+// Bound each Niri IPC invocation. An unresponsive compositor must not leave
+// the display preview's rollback worker blocked in Child::wait forever.
+const NIRI_IPC_TIMEOUT: Duration = Duration::from_secs(2);
+const NIRI_MAX_OUTPUT_BYTES: usize = 256 * 1024;
+const NIRI_MAX_ERROR_BYTES: usize = 8 * 1024;
 const MAX_OUTPUTS: usize = 8;
 const MAX_MODES: usize = 80;
 
@@ -119,25 +125,69 @@ fn report_pending(events: &Sender<Event>, id: u64, deadline: Instant) {
 
 /// The only executable is the fixed Niri CLI; all arguments are bounded and
 /// validated against Niri's own snapshot, without an interpolated shell.
+fn read_capped(reader: impl Read, max_bytes: usize) -> std::io::Result<Vec<u8>> {
+    let mut bytes = Vec::new();
+    reader.take((max_bytes + 1) as u64).read_to_end(&mut bytes)?;
+    Ok(bytes)
+}
+
 fn niri(args: &[&str]) -> Result<String, String> {
-    let output = Command::new("niri")
+    // Drain stdout and stderr concurrently: a large Niri outputs response
+    // must not fill an OS pipe and deadlock a blocking wait.
+    let mut child = Command::new("niri")
         .arg("msg")
         .args(args)
-        .output()
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
         .map_err(|error| format!("Niri IPC недоступен: {error}"))?;
-    if !output.status.success() {
+    let stdout = child.stdout.take().ok_or("Нет канала вывода Niri")?;
+    let stderr = child.stderr.take().ok_or("Нет канала ошибок Niri")?;
+    let output_reader = thread::spawn(move || read_capped(stdout, NIRI_MAX_OUTPUT_BYTES));
+    let error_reader = thread::spawn(move || read_capped(stderr, NIRI_MAX_ERROR_BYTES));
+    let deadline = Instant::now() + NIRI_IPC_TIMEOUT;
+    let mut timed_out = false;
+    let status = loop {
+        match child.try_wait() {
+            Ok(Some(status)) => break Ok(status),
+            Ok(None) if Instant::now() >= deadline => {
+                timed_out = true;
+                let _ = child.kill();
+                break child.wait().map_err(|error| format!("Niri IPC: {error}"));
+            }
+            Ok(None) => thread::sleep(Duration::from_millis(10)),
+            Err(error) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                break Err(format!("Niri IPC: {error}"));
+            }
+        }
+    };
+    let output = output_reader
+        .join()
+        .map_err(|_| "Ошибка чтения ответа Niri".to_string())?
+        .map_err(|error| format!("Ошибка чтения ответа Niri: {error}"))?;
+    let errors = error_reader
+        .join()
+        .map_err(|_| "Ошибка чтения ошибки Niri".to_string())?
+        .map_err(|error| format!("Ошибка чтения ошибки Niri: {error}"))?;
+    if timed_out {
+        return Err("Превышено время ожидания ответа Niri".into());
+    }
+    if !status?.success() {
         return Err(format!(
             "Niri отклонил команду: {}",
-            String::from_utf8_lossy(&output.stderr)
+            String::from_utf8_lossy(&errors)
                 .chars()
                 .take(180)
                 .collect::<String>()
         ));
     }
-    if output.stdout.len() > 256 * 1024 {
+    if output.len() > NIRI_MAX_OUTPUT_BYTES {
         return Err("Ответ Niri слишком большой".into());
     }
-    String::from_utf8(output.stdout).map_err(|_| "Некорректный ответ Niri".into())
+    String::from_utf8(output).map_err(|_| "Некорректный ответ Niri".into())
 }
 
 fn query() -> Result<serde_json::Value, String> {
@@ -527,6 +577,13 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn oversized_niri_output_is_bounded_before_parsing() {
+        let input = std::io::Cursor::new(vec![b'x'; NIRI_MAX_ERROR_BYTES + 2]);
+        let actual = read_capped(input, NIRI_MAX_ERROR_BYTES).unwrap();
+        assert_eq!(actual.len(), NIRI_MAX_ERROR_BYTES + 1);
+    }
 
     #[test]
     fn a_queued_confirmation_does_not_extend_the_rollback_deadline() {
