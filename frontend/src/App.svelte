@@ -228,7 +228,7 @@
     >
       <time class="whitespace-nowrap text-[13px] font-extrabold tracking-[0.05em] tabular-nums max-[540px]:text-xs"
         datetime={now.toISOString()}>
-        {formatClock(now, undefined, configState.config.show_seconds)}
+        {formatClock(now, UI_LOCALE, configState.config.show_seconds)}
       </time>
     </button>
   </section>
