@@ -35,14 +35,14 @@ describe('read-only system health status', () => {
 
   it('never calls an expired sample READY, while preserving service failure priority', () => {
     expect(systemHealth('connected', '', true, normal, 'stale')).toMatchObject({ label: 'STALE', phase: 'warning' });
-    expect(systemHealth('connected', '', true, normal, 'stale').details).toContain('last sample expired');
+    expect(systemHealth('connected', '', true, normal, 'stale').details).toContain('последняя проба устарела');
     expect(systemHealth('unavailable', '', true, normal, 'stale').label).toBe('CORE OFF');
   });
 
   it('never renders an unknown metric as zero', () => {
     const value = systemHealth('connected', '0.1.0', true, { ...normal, cpu_percent: null });
     expect(value.label).toBe('CHECKING');
-    expect(value.details).toContain('CPU: Measuring');
-    expect(value.details).toContain('Kira Core: Online (v0.1.0)');
+    expect(value.details).toContain('CPU: Измеряется');
+    expect(value.details).toContain('Kira Core: Доступен (v0.1.0)');
   });
 });
