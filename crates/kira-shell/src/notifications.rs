@@ -458,7 +458,8 @@ impl Service {
         // acknowledgements, potentially freezing the FIFO forever.
         let content = serde_json::json!({
             "height": layout.height, "cardHeight": layout.card_height, "visible": showing
-        }).to_string();
+        })
+        .to_string();
         if self.last_rendered.borrow().as_deref() == Some(content.as_str()) {
             return;
         }
@@ -574,8 +575,9 @@ impl Service {
                         }
                     }
                 });
-            } else if possible && !host.ready.get() &&
-                (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
+            } else if possible
+                && !host.ready.get()
+                && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
             {
                 // Retain a mapped *invisible and non-interactive* host until
                 // WebKit mounts; never wait for "ready" behind an unmapped view.

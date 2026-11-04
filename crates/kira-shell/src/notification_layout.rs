@@ -23,7 +23,9 @@ pub fn plan(output_width: i32, output_height: i32, bottom_clearance: i32) -> Opt
     let width = PREFERRED_WIDTH.min(output_width - OUTER_MARGIN * 2);
     // A 1..15px host makes a zero/negative Cairo input rectangle; keep
     // notifications queued instead of creating an unclickable Wayland pane.
-    if width < MIN_HOST_WIDTH { return None; }
+    if width < MIN_HOST_WIDTH {
+        return None;
+    }
     let height = (output_height / 2)
         .min(bottom_clearance - OUTER_MARGIN)
         .max(0);
@@ -88,10 +90,12 @@ mod tests {
         assert!(layout.card_height * 3 <= layout.height);
         let region = hit_region(layout, 3);
         for i in 0..3 {
-            let y = layout.height - INNER_MARGIN - layout.card_height
-                - i * (layout.card_height + GAP);
+            let y =
+                layout.height - INNER_MARGIN - layout.card_height - i * (layout.card_height + GAP);
             assert!(region.contains_point(layout.width / 2, y + layout.card_height / 2));
-            if i < 2 { assert!(!region.contains_point(layout.width / 2, y - GAP / 2)); }
+            if i < 2 {
+                assert!(!region.contains_point(layout.width / 2, y - GAP / 2));
+            }
         }
         assert!(!region.contains_point(0, layout.height / 2));
     }

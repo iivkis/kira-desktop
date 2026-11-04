@@ -1766,10 +1766,11 @@ pub fn notification_bottom_clearance(output_width: i32, output_height: i32) -> i
         // exclusive zone while others position the Overlay from the output
         // origin. Use the larger possible widget bottom, never a guess
         // that could let a toast overlap a right-docked widget.
-        let top = crate::BAR_HEIGHT + match view.dock.get() {
-            PopupDock::Right => crate::native_ui::POPUP_TOP_MARGIN,
-            PopupDock::Center => popup_layout::launcher_top_margin(output_height),
-        };
+        let top = crate::BAR_HEIGHT
+            + match view.dock.get() {
+                PopupDock::Right => crate::native_ui::POPUP_TOP_MARGIN,
+                PopupDock::Center => popup_layout::launcher_top_margin(output_height),
+            };
         // The Svelte-reported natural height can precede GTK's map/configure;
         // use the larger of the last actual allocation and reported content.
         let widget_height = view
