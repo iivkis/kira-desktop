@@ -360,14 +360,20 @@ impl Service {
             );
         }
         let closed = self.queue.borrow_mut().close(id);
-        if closed { self.signal_closed(id, 2); }
+        if closed {
+            self.signal_closed(id, 2);
+        }
         self.sync();
     }
 
     fn handle_ui(self: &Rc<Self>, message: &str) {
         if message == "ready" {
-            let Some(host) = self.host.borrow().clone() else { return; };
-            if host.unavailable.get() { return; }
+            let Some(host) = self.host.borrow().clone() else {
+                return;
+            };
+            if host.unavailable.get() {
+                return;
+            }
             host.ready.set(true);
             // Renderer restart means its JS event listeners are new even
             // when the current toast payload hasn't changed.
