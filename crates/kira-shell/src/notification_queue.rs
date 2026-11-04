@@ -331,16 +331,24 @@ mod tests {
     }
 
     #[test]
-    fn timeout_zero_is_persistent_and_replacement_requires_active_id() {
+    fn persistent_toast_rotates_out_but_dbus_id_remains_live() {
         let t = Instant::now();
         let mut q = NotificationQueue::default();
-        let mut n = notice(1);
-        n.persistent = true;
-        assert!(q.push(n, t));
-        q.step(t, true);
-        q.mark_painted(t, &[1]);
-        assert_eq!(q.next_deadline(t), None);
-        q.step(t + Duration::from_secs(500), true);
+        let mut persistent = notice(1);
+        persistent.persistent = true;
+        assert!(q.push(persistent, t));
+        assert!(q.step(t, true));
+        assert!(q.mark_painted(t, &[1]));
+        assert_eq!(q.next_deadline(t), Some(t + DEFAULT_DWELL));
+        q.push(notice(2), t);
+        q.step(t + ADMISSION_GAP, true);
+        q.mark_painted(t + ADMISSION_GAP, &[2]);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![2]);
+        assert!(q.contains_active(1));
+        assert_eq!(q.parked.len(), 1);
+        q.step(t + DEFAULT_DWELL + ADMISSION_GAP, true);
+        assert!(!q.contains_active(2));
         assert!(q.contains_active(1));
         assert!(q.close(1));
         assert!(!q.contains_active(1));
@@ -349,15 +357,65 @@ mod tests {
     }
 
     #[test]
-    fn d_bus_sender_ownership_is_active_only() {
+    fn three_persistent_toasts_do_not_block_the_next_fifo_event() {
         let t = Instant::now();
         let mut q = NotificationQueue::default();
-        q.push(notice(1), t);
-        assert_eq!(q.active_owner(1), Some(":1.101"));
-        assert_ne!(q.active_owner(1), Some(":1.999"));
-        assert!(q.close(1));
-        assert_eq!(q.active_owner(1), None);
-        assert!(q.history().any(|item| item.id == 1));
+        for index in 0..3 {
+            let mut n = notice(index + 1);
+            n.persistent = true;
+            q.push(n, t);
+            let now = t + ADMISSION_GAP * index;
+            q.step(now, true);
+            q.mark_painted(now, &[index + 1]);
+        }
+        q.push(notice(4), t + ADMISSION_GAP * 2);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![2, 3, 4]);
+        assert!(q.contains_active(1)); // logically active, no toast slot
+        assert!(q.contains_active(4));
+        assert_eq!(q.parked.len(), 1);
+    }
+
+    #[test]
+    fn replacement_of_parked_persistent_id_reenters_fifo_with_same_id() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        let mut n = notice(77);
+        n.persistent = true;
+        q.push(n.clone(), t);
+        q.step(t, true);
+        q.mark_painted(t, &[77]);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible_count(), 0);
+        assert!(q.contains_active(77));
+        n.summary = "updated".into();
+        assert!(q.push(n, t + DEFAULT_DWELL));
+        assert_eq!(q.parked.len(), 0);
+        q.step(t + DEFAULT_DWELL, true);
+        assert_eq!(q.visible().next().unwrap().summary, "updated");
+        assert!(q.contains_active(77));
+        assert_eq!(q.history().filter(|n| n.id == 77).count(), 1);
+    }
+
+    #[test]
+    fn allocator_skips_known_ids_even_after_history_overflows() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.next_id = 41;
+        let mut n = notice(42);
+        n.persistent = true;
+        q.push(n, t);
+        q.step(t, true);
+        q.mark_painted(t, &[42]);
+        q.step(t + DEFAULT_DWELL, true);
+        for id in 100..201 {
+            q.push(notice(id), t);
+            q.close(id);
+        }
+        assert!(!q.history().any(|n| n.id == 42));
+        assert_eq!(q.allocate_id(), 43);
+        q.next_id = 41;
+        assert_eq!(q.allocate_id(), 43);
     }
 
     #[test]
