@@ -10,6 +10,9 @@
     onAction: (id: number, key: string) => void;
   } = $props();
 
+  const hasDefaultAction = $derived(notice.actions.some((action) => action.key === 'default'));
+  const extraActions = $derived(notice.actions.filter((action) => action.key !== 'default').slice(0, 2));
+
   function enter(node: HTMLElement) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (!reduce.matches) {
@@ -41,13 +44,21 @@
       aria-label={'Закрыть уведомление от ' + notice.app}
       onclick={() => onClose(notice.id)}>×</button>
   </div>
-  <div class="mt-0.5 line-clamp-1 text-[12px] font-semibold">{notice.summary}</div>
-  {#if notice.body}
-    <p class="mt-0.5 line-clamp-2 min-h-0 overflow-hidden text-[11px] text-kira-muted">{notice.body}</p>
+  {#if hasDefaultAction}
+    <button type="button"
+      class="min-h-0 overflow-hidden text-left focus-visible:outline-2 focus-visible:outline-kira-accent"
+      aria-label={'Открыть уведомление ' + notice.summary + ' от ' + notice.app}
+      onclick={() => onAction(notice.id, 'default')}>
+      <div class="mt-0.5 line-clamp-1 text-[12px] font-semibold">{notice.summary}</div>
+      {#if notice.body}<p class="mt-0.5 line-clamp-2 text-[11px] text-kira-muted">{notice.body}</p>{/if}
+    </button>
+  {:else}
+    <div class="mt-0.5 line-clamp-1 text-[12px] font-semibold">{notice.summary}</div>
+    {#if notice.body}<p class="mt-0.5 line-clamp-2 min-h-0 overflow-hidden text-[11px] text-kira-muted">{notice.body}</p>{/if}
   {/if}
-  {#if notice.actions.length}
+  {#if extraActions.length}
     <div class="mt-auto flex gap-3 overflow-hidden pt-1">
-      {#each notice.actions.slice(0, 2) as action (action.key)}
+      {#each extraActions as action (action.key)}
         <button type="button" class="truncate text-[11px] font-semibold text-kira-accent hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
           onclick={() => onAction(notice.id, action.key)}>{action.label}</button>
       {/each}
