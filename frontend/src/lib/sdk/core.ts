@@ -322,11 +322,23 @@ export function detachOverlay(generation: number): boolean {
   return validOverlayGeneration(generation) && sendCalendarUi('detach:' + generation);
 }
 
-export function copyCalendarDate(generation: number, date: string): void {
+export function copyCalendarDate(generation: number, date: string): boolean {
   // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
   // revalidates the exact date, including month lengths and leap years.
-  if (!validOverlayGeneration(generation) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
-  sendCalendarUi('copy:' + generation + ':' + date);
+  if (!validOverlayGeneration(generation) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+  return sendCalendarUi('copy:' + generation + ':' + date);
+}
+
+/** Clipboard success is a native acknowledgement, not a click animation. */
+export function onCalendarCopyResult(
+  generation: number, callback: (result: { date: string; ok: boolean }) => void,
+): () => void {
+  return onNativeEvent('kira:calendar:copy-result',
+    (value): value is { generation: number; date: string; ok: boolean } =>
+      isRecord(value) && value.generation === generation &&
+      typeof value.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.date) &&
+      typeof value.ok === 'boolean',
+    callback);
 }
 
 /** The shared overlay accepts only fixed read-only tab and copy actions. */
