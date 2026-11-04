@@ -197,7 +197,7 @@
 
   <!-- Each date has three independent semantics: current, selected, adjacent. -->
   <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 pb-3 pt-3" aria-label="Выбор даты">
-    <div class="mb-3 flex items-center justify-between gap-2">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <div class="min-w-0">
         <h2 class="truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
           {title}<span class="ml-2 text-sm font-semibold text-kira-muted">{visible.year}</span>
