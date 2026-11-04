@@ -500,6 +500,8 @@ export interface DisplayStatus {
   persistence: 'manual' | 'uninitialized' | 'managed' | 'conflict';
   outputs: DisplayOutput[] | null;
   pending_id: number | null;
+  /** Milliseconds since Unix epoch, emitted by the native rollback watchdog. */
+  deadline_unix_ms?: number | null;
   error: string | null;
 }
 
@@ -535,6 +537,9 @@ export function onDisplayStatus(
       ['manual', 'uninitialized', 'managed', 'conflict'].includes(String(value.persistence)) &&
       (value.pending_id === null || (Number.isSafeInteger(value.pending_id) &&
         typeof value.pending_id === 'number' && value.pending_id > 0)) &&
+      (value.deadline_unix_ms === undefined || value.deadline_unix_ms === null ||
+        (Number.isSafeInteger(value.deadline_unix_ms) &&
+         typeof value.deadline_unix_ms === 'number' && value.deadline_unix_ms > 0)) &&
       (value.error === null || (typeof value.error === 'string' && value.error.length <= 240)) &&
       (value.outputs === null || (Array.isArray(value.outputs) &&
         value.outputs.length <= 8 && value.outputs.every(isDisplayOutput))),
