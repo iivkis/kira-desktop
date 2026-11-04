@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { SystemMetrics } from './sdk/core';
 import {
-  activityAxis, activitySeries, activityTimeDomain, alignedActivity,
+  activityAxis, activityHistoryCaption, activitySeries, activityTimeDomain, alignedActivity,
   appendPulse, appendTelemetry, chartMeters, gpuPeak, recentPulseHistory,
   MAX_PULSE_POINTS, MAX_TELEMETRY_POINTS, telemetrySummary,
 } from './system-charts';
@@ -96,6 +96,32 @@ describe('System Monitor ECharts telemetry model', () => {
     expect(recentPulseHistory(history, 800).map(point => point.time))
       .toEqual([500]);
     expect(recentPulseHistory(history, Number.NaN)).toEqual([]);
+  });
+
+  it('never labels an empty or expired graph as a full minute of history', () => {
+    expect(activityHistoryCaption([])).toBe('Нет доступных замеров за последнюю минуту');
+    const empty = [
+      { time: 500, cpu: null, ram: null, gpu: null },
+      { time: 1_000, cpu: null, ram: null, gpu: null },
+    ];
+    expect(activityHistoryCaption(empty)).toBe('Нет доступных замеров за последнюю минуту');
+    expect(activityHistoryCaption(recentPulseHistory(empty, 62_000)))
+      .toBe('Нет доступных замеров за последнюю минуту');
+  });
+
+  it('reports only the time spanned by measured values', () => {
+    const measured = [
+      { time: 10_000, cpu: null, ram: null, gpu: null },
+      { time: 10_500, cpu: null, ram: 36, gpu: null },
+      { time: 11_000, cpu: 9, ram: 36.1, gpu: null },
+      { time: 12_000, cpu: 10, ram: 36.2, gpu: null },
+    ];
+    expect(activityHistoryCaption(measured.slice(0, 2)))
+      .toBe('1 реальный замер · ожидание истории');
+    expect(activityHistoryCaption(measured))
+      .toBe('3 реальных замеров · 1,5 с истории');
+    expect(activityHistoryCaption(recentPulseHistory(measured, 75_000)))
+      .toBe('Нет доступных замеров за последнюю минуту');
   });
 
   it('charts only real samples and caps history at thirty points', () => {
