@@ -63,12 +63,12 @@
   // alongside a launcher and clock on a small output. Keep every warning in
   // one accessible summary; never let overflow clip the primary controls.
   const warnings = $derived([
-    launcherUnavailable ? 'LAUNCHER OFFLINE' : null,
-    workspaceActionError ? 'WS !: ' + workspaceActionError : null,
-    configState.error ? 'CONFIG !: ' + configState.error : null,
-    systemUnavailable ? 'MONITOR OFFLINE' : null,
-    settingsUnavailable ? (settingsShellOutdated ? 'RESTART KIRA SHELL' : 'SETTINGS OFFLINE') : null,
-    calendarUnavailable ? 'CALENDAR OFFLINE' : null,
+    launcherUnavailable ? 'ЛАУНЧЕР НЕДОСТУПЕН' : null,
+    workspaceActionError ? 'РАБОЧИЙ СТОЛ: ' + workspaceActionError : null,
+    configState.error ? 'КОНФИГ: ' + configState.error : null,
+    systemUnavailable ? 'МОНИТОР НЕДОСТУПЕН' : null,
+    settingsUnavailable ? (settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ') : null,
+    calendarUnavailable ? 'КАЛЕНДАРЬ НЕДОСТУПЕН' : null,
   ].filter((value): value is string => value !== null));
 
   onMount(() => {
@@ -145,7 +145,7 @@
 
 <main
   class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden border-b border-kira-muted/15 bg-kira-bg text-kira-text"
-  aria-label="Kira Desktop top bar"
+  aria-label="Верхняя панель Kira Desktop"
   data-kira-ui-root
   data-compact={configState.config.compact}
 >
@@ -153,13 +153,13 @@
   <section
     class={['relative z-10 flex shrink-0 items-center border-r border-kira-muted/15 bg-kira-surface',
       configState.config.compact ? 'w-[78px]' : 'w-[96px] max-[540px]:w-[76px]'].join(' ')}
-    aria-label="Kira Launcher"
+    aria-label="Запуск приложений Kira"
   >
     <button type="button"
       class={['flex h-full w-full cursor-pointer items-center border-0 bg-transparent text-left text-kira-text transition-colors duration-150 hover:bg-kira-bg/15 focus-visible:-outline-offset-4 focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none',
         configState.config.compact ? 'gap-2 px-3' : 'gap-[9px] px-[13px] max-[540px]:gap-[6px] max-[540px]:px-[9px]'].join(' ')}
-      aria-label="Open applications launcher"
-      title="Open applications" onclick={activateLauncher}
+      aria-label="Открыть меню приложений"
+      title="Открыть приложения" onclick={activateLauncher}
     >
       <span class="h-4 w-[3px] shrink-0 bg-kira-accent" aria-hidden="true"></span>
       <span class="text-[12px] font-extrabold tracking-[0.16em] max-[540px]:text-[11px]">KIRA</span>
@@ -170,7 +170,7 @@
   <section
     class={['flex min-w-0 flex-1 items-center bg-kira-bg',
       configState.config.compact ? 'gap-2 px-2' : 'gap-3 px-3 max-[540px]:gap-1.5 max-[540px]:px-2'].join(' ')}
-    aria-label="Niri workspaces"
+    aria-label="Рабочие пространства Niri"
   >
     <WorkspacePreview
       state={workspaceState}
@@ -189,7 +189,7 @@
   <section
     class={['flex shrink-0 items-center justify-end gap-1 border-l border-kira-muted/15 bg-kira-surface-soft px-3',
       configState.config.compact ? 'px-2' : 'max-[540px]:px-2'].join(' ')}
-    aria-label="System status and local time"
+    aria-label="Система и местное время"
   >
     <SystemHealth
       coreStatus={coreStatus}
@@ -209,7 +209,7 @@
       </span>
     {/if}
     <button type="button" onclick={activateSettings}
-      aria-label="Open system settings" title="System settings" aria-haspopup="dialog"
+      aria-label="Открыть настройки системы" title="Настройки системы" aria-haspopup="dialog"
       class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none">
       <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none"
         stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -220,8 +220,8 @@
     <button
       type="button"
       class="shrink-0 cursor-pointer rounded-[2px] border-0 bg-transparent px-2 py-2 leading-none text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
-      title="Open calendar and date details"
-      aria-label={'Open calendar, local time ' + formatClock(now, undefined, configState.config.show_seconds)}
+      title="Открыть календарь"
+      aria-label={'Открыть календарь, местное время ' + formatClock(now, undefined, configState.config.show_seconds)}
       aria-haspopup="dialog"
       onclick={activateCalendar}
     >
