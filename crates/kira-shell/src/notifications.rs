@@ -239,11 +239,18 @@ impl Service {
                         "CloseNotification" => {
                             let id = params.child_value(0).get::<u32>().unwrap_or(0);
                             let existed = service.queue.borrow_mut().close(id);
-                            invocation.return_value(None);
                             if existed {
+                                invocation.return_value(None);
                                 service.signal_closed(id, 3);
+                                service.sync();
+                            } else {
+                                // Per freedesktop Notifications, closing an
+                                // unknown ID must report a D-Bus error.
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.InvalidId",
+                                    "",
+                                );
                             }
-                            service.sync();
                         }
                         _ => invocation.return_dbus_error(
                             "org.freedesktop.DBus.Error.UnknownMethod",
