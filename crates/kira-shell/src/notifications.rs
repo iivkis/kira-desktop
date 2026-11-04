@@ -351,7 +351,7 @@ impl Service {
         }
     }
 
-    fn create_host(self: &Rc<Self>) -> Rc<Host> {
+    fn create_host(self: &Rc<Self>, layout: Layout) -> Rc<Host> {
         crate::native_ui::install_transparent_popup_style();
         let window = gtk::ApplicationWindow::new(&self.app);
         window.set_title(Some("Kira Notifications"));
@@ -370,7 +370,8 @@ impl Service {
         // OnDemand permits keyboard access after an explicit click, but
         // automatic toast appearance never takes focus from Launcher.
         window.set_keyboard_mode(KeyboardMode::OnDemand);
-        window.set_default_size(360, 240);
+        // Even the invisible bootstrap surface must respect the output cap.
+        window.set_default_size(layout.width, layout.height);
 
         let manager = webkit6::UserContentManager::new();
         let weak = Rc::downgrade(self);
@@ -518,7 +519,7 @@ impl Service {
             && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
             && self.host.borrow().is_none()
         {
-            let host = self.create_host();
+            let host = self.create_host(layout.expect("possible requires a valid layout"));
             self.host.replace(Some(host));
             // Wait until the Svelte event listener is mounted.
         }
