@@ -31,7 +31,7 @@
   let processesLastReceivedAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
-  let processList: HTMLDivElement;
+  let processList = $state<HTMLDivElement | undefined>(undefined);
   const metrics = $derived(status?.metrics ?? null);
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
   // Keep expired metrics out of every numeric widget, not just the headline.
