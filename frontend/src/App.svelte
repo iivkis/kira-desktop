@@ -59,6 +59,18 @@
 
   let configState = $state<ConfigState>({ config: defaultUiConfig, error: null });
 
+  // A 42px Wayland bar cannot fit six independent shrink-0 error labels
+  // alongside a launcher and clock on a small output. Keep every warning in
+  // one accessible summary; never let overflow clip the primary controls.
+  const warnings = $derived([
+    launcherUnavailable ? 'LAUNCHER OFFLINE' : null,
+    workspaceActionError ? 'WS !: ' + workspaceActionError : null,
+    configState.error ? 'CONFIG !: ' + configState.error : null,
+    systemUnavailable ? 'MONITOR OFFLINE' : null,
+    settingsUnavailable ? (settingsShellOutdated ? 'RESTART KIRA SHELL' : 'SETTINGS OFFLINE') : null,
+    calendarUnavailable ? 'CALENDAR OFFLINE' : null,
+  ].filter((value): value is string => value !== null));
+
   onMount(() => {
     const clock = window.setInterval(() => {
       now = new Date();
@@ -171,14 +183,6 @@
       <span class="max-w-36 min-w-0 truncate border-l border-kira-muted/20 pl-3 text-[11px] font-semibold tracking-wide text-kira-muted max-[900px]:hidden"
         title={configState.config.title}>{configState.config.title}</span>
     {/if}
-    {#if launcherUnavailable}
-      <span class="shrink-0 cursor-help whitespace-nowrap text-[11px] font-bold text-kira-accent"
-        role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
-    {/if}
-    {#if workspaceActionError}
-      <span class="shrink-0 cursor-help whitespace-nowrap text-[11px] font-bold text-kira-accent"
-        role="alert" title={workspaceActionError}>WS !</span>
-    {/if}
   </section>
 
   <!-- Native measurements and local time: no fake taskbar activity. -->
@@ -187,11 +191,6 @@
       configState.config.compact ? 'px-2' : 'max-[540px]:px-2'].join(' ')}
     aria-label="System status and local time"
   >
-    {#if configState.error}
-      <span class="shrink-0 cursor-help whitespace-nowrap px-1 text-[11px] font-bold text-kira-accent"
-        title={configState.error}
-        aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
-    {/if}
     <SystemHealth
       coreStatus={coreStatus}
       coreVersion={coreVersion}
@@ -201,8 +200,13 @@
       {now}
       onOpen={activateSystemPanel}
     />
-    {#if systemUnavailable}
-      <span role="status" class="shrink-0 px-1 text-[11px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+    {#if warnings.length}
+      <span role="status" aria-live="polite" aria-label={warnings.join('; ')}
+        title={warnings.join('\n')}
+        class="block min-w-0 max-w-[44px] shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent min-[900px]:max-w-[180px]">
+        <span class="min-[900px]:hidden">!{warnings.length}</span>
+        <span class="hidden min-[900px]:inline">{warnings[0]}{warnings.length > 1 ? ' +' + (warnings.length - 1) : ''}</span>
+      </span>
     {/if}
     <button type="button" onclick={activateSettings}
       aria-label="Open system settings" title="System settings" aria-haspopup="dialog"
@@ -213,18 +217,6 @@
         <circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/>
       </svg>
     </button>
-    {#if settingsUnavailable}
-      <span role="status" class="shrink-0 text-[11px] font-bold text-kira-accent"
-        title={settingsShellOutdated
-          ? 'Frontend новее запущенного Kira Shell. Обновите и полностью перезапустите процесс kira-shell.'
-          : 'Нативный канал настроек недоступен.'}>
-        {settingsShellOutdated ? 'RESTART KIRA SHELL' : 'SETTINGS OFFLINE'}
-      </span>
-    {/if}
-    {#if calendarUnavailable}
-      <span class="shrink-0 px-1 text-[11px] font-bold text-kira-accent"
-        role="status">CALENDAR OFFLINE</span>
-    {/if}
     <button
       type="button"
       class="shrink-0 cursor-pointer rounded-[2px] border-0 bg-transparent px-2 py-2 leading-none text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
