@@ -15,7 +15,7 @@
   wrapGAppsHook4,
   writeText,
   noto-fonts,
-  noto-fonts-emoji,
+  noto-fonts-color-emoji,
   gtk4,
   gtk4-layer-shell,
   webkitgtk_6_0,
@@ -34,7 +34,7 @@ let
     <fontconfig>
       <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
       <dir>${noto-fonts}/share/fonts</dir>
-      <dir>${noto-fonts-emoji}/share/fonts</dir>
+      <dir>${noto-fonts-color-emoji}/share/fonts</dir>
     </fontconfig>
   '';
 
