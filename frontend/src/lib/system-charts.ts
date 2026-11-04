@@ -18,7 +18,8 @@ export interface TelemetryPoint {
 }
 
 export const MAX_TELEMETRY_POINTS = 30; // Legacy 2-second samples.
-export const MAX_PULSE_POINTS = 120; // 500ms * 120 = 60 seconds.
+export const MAX_PULSE_POINTS = 120; // Maximum expected 500ms samples.
+export const MAX_PULSE_HISTORY_MS = 60_000; // Actual elapsed duration, not just a point count.
 
 export function gpuPeak(metrics: SystemMetrics): number | null {
   const values = metrics.gpus
@@ -70,7 +71,11 @@ export function appendPulse(
     ram: percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib),
     gpu: gpuReading,
   }];
-  return next.slice(-MAX_PULSE_POINTS);
+  // A slow or interrupted 500ms stream can accumulate 120 points across
+  // more than one minute. Keep a true one-minute measured history as well
+  // as an absolute memory bound; never fabricate intermediate points.
+  return next.filter(point => point.time <= time && time - point.time <= MAX_PULSE_HISTORY_MS)
+    .slice(-MAX_PULSE_POINTS);
 }
 
 /** Both panels must plot the SAME real timestamps and start on the
