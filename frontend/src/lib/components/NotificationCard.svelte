@@ -1,14 +1,7 @@
 <script lang="ts">
   import gsap from 'gsap';
 
-  export type Notice = {
-    id: number;
-    app: string;
-    summary: string;
-    body: string;
-    critical: boolean;
-    actions: { key: string; label: string }[];
-  };
+  import type { Notice } from '../notification-model';
 
   let { notice, height, onClose, onAction }: {
     notice: Notice;
