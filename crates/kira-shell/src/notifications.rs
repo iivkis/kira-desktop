@@ -56,6 +56,7 @@ struct Service {
     queue: RefCell<NotificationQueue>,
     host: RefCell<Option<Rc<Host>>>,
     timer_epoch: Cell<u64>,
+    render_revision: Cell<u32>,
 }
 
 pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) {
@@ -76,6 +77,7 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
         queue: RefCell::new(NotificationQueue::default()),
         host: RefCell::new(None),
         timer_epoch: Cell::new(0),
+        render_revision: Cell::new(0),
     });
     ACTIVE.with(|active| *active.borrow_mut() = Some(service.clone()));
 
@@ -152,13 +154,14 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
         .and_then(|value| value.get::<u8>())
         .is_some_and(|urgency| urgency == 2);
     let timeout = params.child_value(7).get::<i32>().unwrap_or(-1);
-    // 0 means logically persistent, but visual stack still yields after 5 s.
+    // Freedesktop timeout=0 and urgency=critical must never expire automatically.
+    let persistent = timeout == 0 || critical;
     let dwell = if timeout <= 0 {
         DEFAULT_DWELL
     } else {
         Duration::from_millis(u64::try_from(timeout.max(3000).min(30000)).unwrap_or(5000))
     };
-    let id = if replace != 0 && queue.history().any(|item| item.id == replace) {
+    let id = if replace != 0 && queue.contains_active(replace) {
         replace
     } else {
         queue.allocate_id()
@@ -170,6 +173,7 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
         body,
         actions,
         critical,
+        persistent,
         dwell,
     }
 }
@@ -307,6 +311,21 @@ impl Service {
                 self.signal_closed(id, 2);
                 self.sync();
             }
+        } else if let Some(revision) = message
+            .strip_prefix("painted:")
+            .and_then(|value| value.parse::<u32>().ok())
+        {
+            if revision == self.render_revision.get()
+                && self.host.borrow().as_ref().is_some_and(|host| {
+                    host.ready.get() && host.window.is_visible()
+                })
+            {
+                let ids: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
+                let now = Instant::now();
+                if self.queue.borrow_mut().mark_painted(now, &ids) {
+                    self.schedule(now, true);
+                }
+            }
         } else if let Some(value) = message.strip_prefix("action:") {
             if let Some((id, key)) = value.split_once(':') {
                 if let Ok(id) = id.parse::<u32>() {
@@ -332,7 +351,9 @@ impl Service {
         window.set_margin(Edge::Right, notification_layout::OUTER_MARGIN);
         window.set_margin(Edge::Bottom, notification_layout::OUTER_MARGIN);
         window.set_exclusive_zone(0);
-        window.set_keyboard_mode(KeyboardMode::None);
+        // OnDemand permits keyboard access after an explicit click, but
+        // automatic toast appearance never takes focus from Launcher.
+        window.set_keyboard_mode(KeyboardMode::OnDemand);
         window.set_default_size(360, 240);
 
         let manager = webkit6::UserContentManager::new();
@@ -400,7 +421,10 @@ impl Service {
                 })
             })
             .collect();
+        let revision = self.render_revision.get().wrapping_add(1).max(1);
+        self.render_revision.set(revision);
         let payload = serde_json::json!({
+            "revision": revision,
             "height": layout.height, "cardHeight": layout.card_height, "visible": showing
         });
         // Serialize twice: sender-controlled notification text is never JS.
