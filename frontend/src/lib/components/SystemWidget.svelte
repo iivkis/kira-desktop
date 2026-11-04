@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { monitorLabel } from '../ui-locale';
+  import { monitorLabel, UI_LOCALE } from '../ui-locale';
   import WindowControls from './WindowControls.svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetReflowScope, tenetWidgetReveal } from '../motion';
@@ -50,7 +50,7 @@
       status = data;
       lastSampleAt = receivedAt;
       now = receivedAt;
-      refreshed = new Date(receivedAt).toLocaleTimeString();
+      refreshed = new Date(receivedAt).toLocaleTimeString(UI_LOCALE);
     });
     const stopProcesses = onSystemProcesses(data => { processes = data; });
     return () => {
@@ -224,7 +224,7 @@
           <div class="min-w-0">
             <div class="text-[11px] font-bold tracking-wider text-kira-muted">НАГРУЗКА / 1 5 15</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
-              {liveMetrics?.load?.map(n => n.toFixed(2)).join(' / ') ?? 'UNAVAILABLE'}
+              {liveMetrics?.load?.map(n => n.toFixed(2)).join(' / ') ?? 'НЕДОСТУПНО'}
             </div>
           </div>
           <div class="col-span-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
@@ -267,7 +267,7 @@
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
             aria-label={'Сортировать по ' + column.label}
              title={column.field === 'memory' ? 'Память процесса (RSS)' :
-               column.field === 'pss' ? 'Пропорциональная память процесса (PSS)' : 'Sort by ' + column.label}>
+               column.field === 'pss' ? 'Пропорциональная память процесса (PSS)' : 'Сортировать по ' + column.label}>
             {column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}
           </button>
         {/each}
@@ -298,7 +298,7 @@
       </div>
       {#if query.trim() || processes?.truncated || visible.length < matching.length}
         <p data-kira-enter class="shrink-0 pt-3 text-[11px] font-medium text-kira-muted" role="status">
-          {visible.length} of {matching.length}
+          {visible.length} из {matching.length}
           {processes?.truncated ? ' · ДОСТИГНУТ ЛИМИТ СКАНИРОВАНИЯ' : ''}
           {visible.length === 180 && matching.length > 180 ? ' · УТОЧНИТЕ ФИЛЬТР' : ''}
         </p>
