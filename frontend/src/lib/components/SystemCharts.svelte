@@ -22,6 +22,7 @@
   let gauges: EChartsType | null = null;
   let trend: EChartsType | null = null;
   let reduced = false;
+  let palette = surfaceColors();
   let history: TelemetryPoint[] = [];
   let pulse = $state<SystemPulse | null>(null);
   let lastPulseAt = $state<number | null>(null);
@@ -43,7 +44,6 @@
     value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
 
   function draw(): void {
-    const palette = surfaceColors(gaugeNode);
     const { accent, muted } = palette;
     const white = palette.text;
     const prussian = palette.surface;
@@ -143,6 +143,16 @@
   });
 
   onMount(() => {
+    // CSS role lookup is only necessary when the view or theme changes;
+    // avoid recalculating computed styles for every 500ms native pulse.
+    palette = surfaceColors(gaugeNode);
+    const theme = new MutationObserver(() => {
+      palette = surfaceColors(gaugeNode);
+      draw();
+    });
+    theme.observe(document.documentElement, {
+      attributes: true, attributeFilter: ['class', 'style'],
+    });
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced = motion.matches;
     const stopPulse = onSystemPulse(sample => {
@@ -163,6 +173,7 @@
     return () => {
       stopPulse();
       observer.disconnect();
+      theme.disconnect();
       motion.removeEventListener('change', onMotionChange);
       gauges?.dispose();
       trend?.dispose();
