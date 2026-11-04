@@ -129,6 +129,11 @@
   // One history point per actual native pulse. No 500ms JS timer and no
   // GPU replication between slow readings. The bounded list is one minute.
   $effect(() => {
+    // The parent refresh tick forces expiration redraws when no new native
+    // pulse arrives. A boolean freshness derived value alone may stay false
+    // and would not invalidate an old ECharts history view.
+    const refreshTick = now;
+    if (!Number.isFinite(refreshTick)) return;
     const current = metrics;
     const sample = pulse;
     if (current === null) {
