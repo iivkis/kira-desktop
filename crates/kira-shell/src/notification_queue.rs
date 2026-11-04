@@ -17,6 +17,8 @@ pub struct Notice {
     pub body: String,
     pub actions: Vec<(String, String)>,
     pub critical: bool,
+    /// D-Bus timeout=0 and critical hints must never auto-close.
+    pub persistent: bool,
     /// Visual dwell, not the D-Bus logical lifetime.
     pub dwell: Duration,
 }
@@ -30,7 +32,8 @@ struct Waiting {
 #[derive(Clone, Debug)]
 struct Showing {
     notice: Notice,
-    since: Instant,
+    /// Starts only after the Svelte host confirms a painted frame.
+    since: Option<Instant>,
 }
 
 #[derive(Default)]
@@ -43,6 +46,11 @@ pub struct NotificationQueue {
 }
 
 impl NotificationQueue {
+    pub fn contains_active(&self, id: u32) -> bool {
+        self.waiting.iter().any(|entry| entry.notice.id == id)
+            || self.showing.iter().any(|entry| entry.notice.id == id)
+    }
+
     pub fn allocate_id(&mut self) -> u32 {
         loop {
             self.next_id = self.next_id.wrapping_add(1).max(1);
@@ -122,7 +130,8 @@ impl NotificationQueue {
 
         let before = self.showing.len();
         self.showing.retain(|entry| {
-            now.saturating_duration_since(entry.since) < entry.notice.dwell.max(MIN_DWELL)
+            entry.notice.persistent || entry.since.is_none_or(|since|
+                now.saturating_duration_since(since) < entry.notice.dwell.max(MIN_DWELL))
         });
         changed |= before != self.showing.len();
         if self.showing.len() < MAX_VISIBLE {
@@ -135,11 +144,25 @@ impl NotificationQueue {
                     let entry = self.waiting.pop_front().expect("FIFO head");
                     self.showing.push(Showing {
                         notice: entry.notice,
-                        since: now,
+                        since: None,
                     });
                     self.last_admission = Some(now);
                     changed = true;
                 }
+            }
+        }
+        changed
+    }
+
+    /// A notification is not considered displayed until the trusted renderer
+    /// has applied the snapshot and a frame was presented. A stale ID or a
+    /// repeated acknowledgement never resets the minimum dwell time.
+    pub fn mark_painted(&mut self, now: Instant, ids: &[u32]) -> bool {
+        let mut changed = false;
+        for item in &mut self.showing {
+            if item.since.is_none() && ids.contains(&item.notice.id) {
+                item.since = Some(now);
+                changed = true;
             }
         }
         changed
@@ -165,7 +188,11 @@ impl NotificationQueue {
         let expiry = self
             .showing
             .iter()
-            .map(|item| item.since + item.notice.dwell.max(MIN_DWELL))
+            .filter_map(|item| {
+                if item.notice.persistent { None } else {
+                    item.since.map(|since| since + item.notice.dwell.max(MIN_DWELL))
+                }
+            })
             .min();
         let admission = if self.showing.len() < MAX_VISIBLE {
             self.waiting.front().map(|entry| {
@@ -197,6 +224,7 @@ mod tests {
             body: String::new(),
             actions: vec![],
             critical: false,
+            persistent: false,
             dwell: DEFAULT_DWELL,
         }
     }
@@ -207,13 +235,16 @@ mod tests {
         let mut q = NotificationQueue::default();
         q.push(notice(1), t);
         assert!(q.step(t, true));
+        assert!(q.mark_painted(t, &[1]));
         q.push(notice(2), t);
         q.push(notice(3), t);
         q.push(notice(4), t);
         assert!(!q.step(t + Duration::from_millis(1499), true));
         q.step(t + ADMISSION_GAP, true);
+        q.mark_painted(t + ADMISSION_GAP, &[2]);
         assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![1, 2]);
         q.step(t + ADMISSION_GAP * 2, true);
+        q.mark_painted(t + ADMISSION_GAP * 2, &[3]);
         assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![1, 2, 3]);
         q.step(t + Duration::from_secs(5), true);
         assert_eq!(q.visible().map(|n| n.id).collect::<Vec<_>>(), vec![2, 3, 4]);
@@ -228,15 +259,50 @@ mod tests {
         a.dwell = Duration::from_millis(100);
         q.push(a, t);
         q.step(t, true);
+        q.mark_painted(t, &[1]);
         q.push(notice(2), t);
         assert!(q.step(t + Duration::from_millis(2999), false));
         assert_eq!(q.visible_count(), 0);
         q.step(t + Duration::from_secs(4), true);
+        q.mark_painted(t + Duration::from_secs(4), &[1]);
         assert_eq!(q.visible().next().unwrap().id, 1);
         q.step(t + Duration::from_secs(6), true);
         assert_eq!(q.visible().next().unwrap().id, 1);
         q.step(t + Duration::from_secs(7), true);
         assert!(q.visible().all(|n| n.id != 1));
+    }
+
+    #[test]
+    fn no_expiry_before_render_ack_even_when_renderer_is_delayed() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        q.step(t, true);
+        q.step(t + Duration::from_secs(30), true);
+        assert_eq!(q.visible_count(), 1);
+        assert!(q.mark_painted(t + Duration::from_secs(30), &[1]));
+        assert!(!q.mark_painted(t + Duration::from_secs(32), &[1]));
+        q.step(t + Duration::from_secs(34), true);
+        assert_eq!(q.visible_count(), 1);
+        q.step(t + Duration::from_secs(35), true);
+        assert_eq!(q.visible_count(), 0);
+    }
+
+    #[test]
+    fn timeout_zero_is_persistent_and_replacement_requires_active_id() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        let mut n = notice(1);
+        n.persistent = true;
+        assert!(q.push(n, t));
+        q.step(t, true);
+        q.mark_painted(t, &[1]);
+        assert_eq!(q.next_deadline(t), None);
+        q.step(t + Duration::from_secs(500), true);
+        assert!(q.contains_active(1));
+        assert!(q.close(1));
+        assert!(!q.contains_active(1));
+        assert!(!q.close(1));
     }
 
     #[test]
