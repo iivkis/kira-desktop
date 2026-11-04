@@ -436,8 +436,9 @@ continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 Calendar, System Monitor, Launcher and Settings share the original
 **12 logical pixel** right margin and a **25 logical pixel** top margin.
-There is only one active widget: switching waits for its reversible exit,
-including when it was promoted to an ordinary Niri window.
+Only one **transient** popup is active at a time. Promoted ordinary
+Niri windows retain independent WebView leases and remain open while other
+transient widgets switch through reversible exits.
 A single GTK helper caps each popup's
 scrollable viewport at **70% of the logical height of its monitor**,
 recalculating after the Wayland surface maps. Both remain non-exclusive
@@ -464,6 +465,9 @@ height is unchanged, including the bottom accent rule.
 
 The default dark theme uses exactly five fully opaque RGBA hex colors,
 provided by the project owner. No additional base colors are permitted.
+Legacy brutalist border/offset-shadow tokens have been removed: the current
+design uses functional material contrast and the dedicated transient
+popup shadow only.
 
 | Name | CSS variable | RGBA HEX | Intended role |
 | --- | --- | --- | --- |
