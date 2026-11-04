@@ -656,7 +656,7 @@ impl Service {
                 // card joins above them.
                 let painted = self.queue.borrow().has_painted();
                 let region = if painted {
-                    notification_layout::hit_region(layout, self.queue.borrow().visible_count())
+                    notification_layout::hit_region(layout, self.queue.borrow().painted_count())
                 } else {
                     gtk::cairo::Region::create()
                 };
@@ -676,7 +676,7 @@ impl Service {
                                 let region = if service.queue.borrow().has_painted() {
                                     notification_layout::hit_region(
                                         layout,
-                                        service.queue.borrow().visible_count(),
+                                        service.queue.borrow().painted_count(),
                                     )
                                 } else {
                                     gtk::cairo::Region::create()
