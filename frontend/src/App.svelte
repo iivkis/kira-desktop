@@ -3,6 +3,7 @@
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
+  import { nextWarningId, visibleWarningIndex, type UiWarning } from './lib/warning-model';
   import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
@@ -59,33 +60,22 @@
 
   let configState = $state<ConfigState>({ config: defaultUiConfig, error: null });
 
-  // A 42px Wayland bar cannot fit six independent shrink-0 error labels
-  // alongside a launcher and clock on a small output. Keep every warning in
-  // one accessible summary; never let overflow clip the primary controls.
-  // The 42px native surface cannot host a full popup. Make every warning
-  // individually reachable with a keyboard/touch button instead of hiding
-  // all but the first warning in an inaccessible title-only summary.
-  let warningIndex = $state(0);
-  let warningDetails = $state(false);
+  // The 42px surface cannot fit six independent errors or host a details
+  // popup. Cycle multiple warnings by stable identity, one click per warning.
+  // A single warning is plain status text, never a button with a no-op action.
+  let activeWarningId = $state<string | null>(null);
   const warnings = $derived([
-    launcherUnavailable ? { text: 'ЛАУНЧЕР НЕДОСТУПЕН', short: 'ЛАУНЧЕР' } : null,
-    workspaceActionError ? { text: 'РАБОЧИЙ СТОЛ: ' + workspaceActionError, short: 'РАБОЧИЙ СТОЛ' } : null,
-    configState.error ? { text: 'КОНФИГ: ' + configState.error, short: 'КОНФИГ' } : null,
-    systemUnavailable ? { text: 'МОНИТОР НЕДОСТУПЕН', short: 'МОНИТОР' } : null,
-    settingsUnavailable ? { text: settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ', short: 'НАСТРОЙКИ' } : null,
-    calendarUnavailable ? { text: 'КАЛЕНДАРЬ НЕДОСТУПЕН', short: 'КАЛЕНДАРЬ' } : null,
-  ].filter((value): value is { text: string; short: string } => value !== null));
-  const warningPosition = $derived(warnings.length ? warningIndex % warnings.length : 0);
-  const shownWarning = $derived(warnings[warningPosition] ?? null);
+    launcherUnavailable ? { id: 'launcher', text: 'ЛАУНЧЕР НЕДОСТУПЕН', short: 'ЛАУНЧЕР' } : null,
+    workspaceActionError ? { id: 'workspace', text: 'РАБОЧИЙ СТОЛ: ' + workspaceActionError, short: 'РАБОЧИЙ СТОЛ' } : null,
+    configState.error ? { id: 'config', text: 'КОНФИГ: ' + configState.error, short: 'КОНФИГ' } : null,
+    systemUnavailable ? { id: 'system', text: 'МОНИТОР НЕДОСТУПЕН', short: 'МОНИТОР' } : null,
+    settingsUnavailable ? { id: 'settings', text: settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ', short: 'НАСТРОЙКИ' } : null,
+    calendarUnavailable ? { id: 'calendar', text: 'КАЛЕНДАРЬ НЕДОСТУПЕН', short: 'КАЛЕНДАРЬ' } : null,
+  ].filter((value): value is UiWarning => value !== null));
+  const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId));
+  const shownWarning = $derived(warningPosition === -1 ? null : warnings[warningPosition]);
   function inspectWarnings() {
-    if (!warningDetails) {
-      warningDetails = true;
-    } else if (warningPosition + 1 < warnings.length) {
-      warningIndex = warningPosition + 1;
-    } else {
-      warningIndex = 0;
-      warningDetails = false;
-    }
+    activeWarningId = nextWarningId(warnings, activeWarningId);
   }
 
   onMount(() => {
@@ -221,19 +211,22 @@
       <span class="sr-only" role="status" aria-live="polite">{warnings.map(warning => warning.text).join('; ')}</span>
     {/if}
     {#if shownWarning}
-      <button type="button" onclick={inspectWarnings}
-        aria-label={'Предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.text +
-          '. ' + (warningDetails ? 'Следующее предупреждение или свернуть' : 'Раскрыть и просмотреть предупреждения')}
-        title={shownWarning.text + (warnings.length > 1 ? '\nНажмите для просмотра остальных предупреждений' : '\nНажмите для подробностей')}
-        class={'min-w-0 shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
-          (warningDetails ? 'max-w-[100px] min-[540px]:max-w-[180px] min-[900px]:max-w-[240px]' :
-            'max-w-[82px] min-[900px]:max-w-[180px]')}>
-        <span class="min-[900px]:hidden">{warningDetails ? shownWarning.text : shownWarning.short}</span>
-        <span class="hidden min-[900px]:inline">{shownWarning.text}</span>
-        {#if warnings.length > 1}
+      {#if warnings.length > 1}
+        <button type="button" onclick={inspectWarnings}
+          aria-label={'Предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.text + '. Показать следующее предупреждение'}
+          title={shownWarning.text + '\nНажмите для следующего предупреждения'}
+          class="min-w-0 max-w-[105px] shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent min-[900px]:max-w-[180px]">
+          <span class="min-[900px]:hidden">{shownWarning.short}</span>
+          <span class="hidden min-[900px]:inline">{shownWarning.text}</span>
           <span class="ml-1 whitespace-nowrap" aria-hidden="true">{warningPosition + 1}/{warnings.length}</span>
-        {/if}
-      </button>
+        </button>
+      {:else}
+        <span title={shownWarning.text} aria-label={shownWarning.text}
+          class="min-w-0 max-w-[105px] shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent min-[900px]:max-w-[180px]">
+          <span class="min-[900px]:hidden">{shownWarning.short}</span>
+          <span class="hidden min-[900px]:inline">{shownWarning.text}</span>
+        </span>
+      {/if}
     {/if}
     <button type="button" onclick={activateSettings}
       aria-label="Открыть настройки системы" title="Настройки системы" aria-haspopup="dialog"
