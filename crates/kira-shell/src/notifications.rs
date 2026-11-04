@@ -314,7 +314,9 @@ impl Service {
     fn handle_ui(self: &Rc<Self>, message: &str) {
         if message == "ready" {
             if let Some(host) = self.host.borrow().as_ref() {
-                if host.unavailable.get() { return; }
+                if host.unavailable.get() {
+                    return;
+                }
                 host.ready.set(true);
             }
             // Renderer restart means its JS event listeners are new even
@@ -398,10 +400,14 @@ impl Service {
         window.set_child(Some(&view));
         let weak = Rc::downgrade(self);
         view.connect_web_process_terminated(move |webview, reason| {
-            let Some(service) = weak.upgrade() else { return; };
+            let Some(service) = weak.upgrade() else {
+                return;
+            };
             let decision = {
                 let hosts = service.host.borrow();
-                let Some(host) = hosts.as_ref() else { return; };
+                let Some(host) = hosts.as_ref() else {
+                    return;
+                };
                 host.ready.set(false);
                 host.window.set_opacity(0.0);
                 host.window.set_visible(false);
@@ -424,7 +430,9 @@ impl Service {
                 glib::timeout_add_local_once(delay, move || {
                     if let Some(service) = weak.upgrade() {
                         if let Some(host) = service.host.borrow().as_ref() {
-                            if host.unavailable.get() { return; }
+                            if host.unavailable.get() {
+                                return;
+                            }
                             host.recovery.borrow_mut().retry_started();
                             webview.load_html(&document, None);
                         }
@@ -535,8 +543,14 @@ impl Service {
         };
         let clearance = crate::calendar::notification_bottom_clearance(width, height);
         let layout = notification_layout::plan(width, height, clearance);
-        let possible = self.owned.get() && can_shape && layout.is_some()
-            && !self.host.borrow().as_ref().is_some_and(|host| host.unavailable.get());
+        let possible = self.owned.get()
+            && can_shape
+            && layout.is_some()
+            && !self
+                .host
+                .borrow()
+                .as_ref()
+                .is_some_and(|host| host.unavailable.get());
         if possible
             && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
             && self.host.borrow().is_none()
