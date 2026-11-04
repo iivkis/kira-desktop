@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, saveDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, onCalendarCopyResult, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, saveDisplays, onDisplayStatus, displayModeId, displayTransformId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, onCalendarCopyResult, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -83,6 +83,21 @@ describe('Core SDK JSON-RPC bridge', () => {
       'display-confirm:7:14',
       'display-revert:7:14',
     ]);
+  });
+
+  it('normalizes every Niri JSON rotation into the native command spelling', () => {
+    for (const [received, expected] of [
+      ['Normal', 'normal'], ['normal', 'normal'],
+      ['90', '90'], ['180', '180'], ['270', '270'],
+      ['Flipped', 'flipped'], ['flipped', 'flipped'],
+      ['Flipped90', 'flipped-90'], ['Flipped180', 'flipped-180'],
+      ['Flipped270', 'flipped-270'], ['flipped-90', 'flipped-90'],
+      ['flipped-180', 'flipped-180'], ['flipped-270', 'flipped-270'],
+    ]) {
+      expect(displayTransformId(received)).toBe(expected);
+    }
+    // Never silently rotate a newer, unsupported Niri transform to normal.
+    expect(displayTransformId('NewTransform')).toBe('');
   });
 
   it('validates native display response and rejects stale generations', () => {
