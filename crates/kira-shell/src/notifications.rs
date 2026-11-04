@@ -401,6 +401,10 @@ impl Service {
                 }
                 service.queue.borrow_mut().step(Instant::now(), false);
                 service.last_rendered.borrow_mut().take();
+                // Keep the empty, click-through host mapped while WebKit reloads.
+                // Unmapping it here can suspend the renderer and prevent the
+                // fresh Svelte onMount/ready handshake from running.
+                service.sync();
                 // A fresh Svelte instance will request a full snapshot.
                 let document = notification_html(&service.html);
                 let webview = webview.clone();
@@ -418,6 +422,15 @@ impl Service {
             layout: Cell::new(None),
         });
         gtk::prelude::WidgetExt::realize(&host.window);
+        // A realized but unmapped WebKit child may postpone its onMount script.
+        // Pre-map invisibly with an EMPTY native input region so the trusted
+        // Svelte host can report ready without a full-screen click interceptor.
+        // set_visible(), unlike present(), does not ask to steal focus.
+        if let Some(surface) = host.window.surface() {
+            surface.set_input_region(Some(&gtk::cairo::Region::create()));
+        }
+        host.window.set_opacity(0.0);
+        host.window.set_visible(true);
         host
     }
 
@@ -541,6 +554,7 @@ impl Service {
                 }
                 self.render(&host, layout);
                 host.window.set_visible(true);
+                host.window.set_opacity(1.0);
                 let weak: Weak<Self> = Rc::downgrade(self);
                 glib::idle_add_local_once(move || {
                     if let Some(service) = weak.upgrade() {
@@ -559,7 +573,19 @@ impl Service {
                         }
                     }
                 });
+            } else if possible && !host.ready.get() &&
+                (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
+            {
+                // Retain a mapped *invisible and non-interactive* host until
+                // WebKit mounts; never wait for "ready" behind an unmapped view.
+                host.window.set_opacity(0.0);
+                if let Some(surface) = host.window.surface() {
+                    surface.set_input_region(Some(&gtk::cairo::Region::create()));
+                }
+                host.window.set_visible(true);
+                self.last_rendered.borrow_mut().take();
             } else {
+                host.window.set_opacity(0.0);
                 host.window.set_visible(false);
                 self.last_rendered.borrow_mut().take();
             }
