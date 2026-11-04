@@ -41,3 +41,5 @@ jobs:
           git diff --exit-code -- frontend/package-lock.json
       - name: Validate locked offline UI package
         run: nix build .#frontend --no-link --print-build-logs
+      - name: Evaluate assembled GTK/WebKit package and font wrapper
+        run: nix eval --raw .#packages.x86_64-linux.default.drvPath

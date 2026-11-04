@@ -245,7 +245,7 @@
 </script>
 
 <section class="space-y-5" aria-label="Настройки дисплеев">
-  <h2 class="text-[26px] font-extrabold tracking-tight">Дисплеи</h2>
+  <h2 class="text-[21px] font-extrabold tracking-tight">Дисплеи</h2>
 
   {#if pendingId !== null}
     <div role="alertdialog" aria-label="Подтвердите параметры дисплеев"

@@ -47,8 +47,8 @@
               mountReturned: window.__kiraMountReturned === true,
             });
             pending.textContent = window.__kiraBoot.bootstrapError
-              ? 'Kira UI error: ' + String(window.__kiraBoot.bootstrapError).slice(0,220)
-              : 'Kira UI did not start (' + stage + '). Check terminal logs.';
+              ? 'Ошибка интерфейса Kira: ' + String(window.__kiraBoot.bootstrapError).slice(0,220)
+              : 'Интерфейс Kira не запустился (' + stage + '). Подробности в логах терминала.';
             report('Svelte not mounted: ' + stage);
           }
         }, 2500);
@@ -58,7 +58,7 @@
   <body>
     <div id="app">
       <div id="kira-loading" style="height:42px; display:flex; align-items:center; padding:0 14px; font:12px system-ui; background:#000000ff; color:#ffffffff;">
-        Kira Desktop · Loading interface…
+        Kira Desktop · Загрузка интерфейса…
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>

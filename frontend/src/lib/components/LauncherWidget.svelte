@@ -169,7 +169,7 @@
     </div>
 
     {#if loaded && query.trim()}
-      <p class="mt-3 mb-1 text-[11px] text-kira-muted" role="status">
+      <p class="mt-3 mb-1 text-[12px] text-kira-muted" role="status">
         {matchingAppsLabel(matches.length)}
       </p>
     {/if}
@@ -221,7 +221,7 @@
           </p>
           {#if loaded && !error && query.trim()}
             <button type="button" onclick={clearSearch}
-              class="mt-3 text-[11px] font-bold text-kira-accent
+              class="mt-3 text-[12px] font-bold text-kira-accent
                 focus-visible:outline-2 focus-visible:outline-kira-accent">ОЧИСТИТЬ ПОИСК</button>
           {/if}
         </div>
@@ -231,7 +231,7 @@
       <p class="shrink-0 py-2 text-xs font-medium text-kira-accent" role="alert">{error}</p>
     {/if}
     {#if matches.length > displayed.length}
-      <p class="shrink-0 pt-2 text-[10px] text-kira-muted">
+      <p class="shrink-0 pt-2 text-[11px] text-kira-muted">
         Показаны первые {displayed.length} приложений. Уточните поиск для остальных.
       </p>
     {/if}

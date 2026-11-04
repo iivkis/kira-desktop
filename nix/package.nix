@@ -13,6 +13,9 @@
   craneLib,
   pkg-config,
   wrapGAppsHook4,
+  writeText,
+  noto-fonts,
+  noto-fonts-color-emoji,
   gtk4,
   gtk4-layer-shell,
   webkitgtk_6_0,
@@ -21,6 +24,19 @@
 }:
 let
   version = "0.1.0";
+  # Preserve the NixOS host font profile and users' installed glyph fallbacks.
+  # A Fontconfig profile containing ONLY Noto Sans would make CJK/emoji and
+  # other installed fonts disappear inside GTK/WebKit. Add the bundled families
+  # after including host configuration, scoped to this binary's wrapper.
+  uiFontsConf = writeText "kira-fonts.conf" ''
+    <?xml version="1.0"?>
+    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+    <fontconfig>
+      <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
+      <dir>${noto-fonts}/share/fonts</dir>
+      <dir>${noto-fonts-color-emoji}/share/fonts</dir>
+    </fontconfig>
+  '';
 
   frontend = buildNpmPackage {
     pname = "kira-desktop-frontend";
@@ -104,6 +120,7 @@ stdenv.mkDerivation {
   # copied into the final package.
   preFixup = ''
     gappsWrapperArgs+=(--set KIRA_UI_DIR "$out/share/kira-desktop/ui")
+    gappsWrapperArgs+=(--set-default FONTCONFIG_FILE "${uiFontsConf}")
   '';
 
   passthru = {

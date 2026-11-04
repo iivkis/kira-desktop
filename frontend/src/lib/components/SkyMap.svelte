@@ -231,9 +231,9 @@
   <div class="flex min-h-[395px] flex-1 flex-col bg-kira-surface px-5 pb-4 pt-4">
     <div class="shrink-0 border-b border-kira-muted/20 pb-4">
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-        <p class="text-[10px] font-bold tracking-[0.12em] text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
+        <p class="text-[11px] font-bold tracking-wide text-kira-muted">ТОЧКА НАБЛЮДЕНИЯ</p>
         {#if exampleLocation}
-          <p class="text-[10px] font-semibold text-kira-accent">ДЕМО · ГРИНВИЧ</p>
+          <p class="text-[11px] font-semibold text-kira-accent">ДЕМО · ГРИНВИЧ</p>
         {/if}
       </div>
       <div class="mt-3 flex flex-wrap items-end gap-x-3 gap-y-3">
@@ -278,7 +278,7 @@
     <p class="mt-3 text-[11px] text-kira-muted">Звёзды до 5,35 mag</p>
   </div>
 
-  <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[10px] leading-relaxed text-kira-muted">
+  <footer class="shrink-0 bg-kira-bg px-6 pb-4 pt-3 text-[11px] leading-relaxed text-kira-muted">
     XHIP / Hipparcos · схемы созвездий d3-celestial · J2000. Приближённая карта, не для навигации.
   </footer>
 </section>

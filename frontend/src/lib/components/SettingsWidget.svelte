@@ -63,7 +63,7 @@
   class="kira-settings relative flex min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header data-kira-enter class="flex shrink-0 items-center justify-between gap-3 border-b border-kira-muted/20 bg-kira-bg px-5 py-4">
     <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-      <h1 data-kira-contact class="truncate text-[22px] font-extrabold leading-tight tracking-tight">Настройки</h1>
+      <h1 data-kira-contact class="truncate text-[26px] font-extrabold leading-tight tracking-tight">Настройки</h1>
     </div>
     <WindowControls {onClose} {onPopout} {generation} label="settings" />
   </header>
@@ -78,20 +78,21 @@
           use:tenetFlowIndicator={{ active: section, axis: 'both' }}>
           <span data-kira-flow-indicator aria-hidden="true"
             class="pointer-events-none absolute left-0 top-0 z-0 border-l-[3px] border-kira-accent bg-kira-bg/35"></span>
-          {#each SETTINGS_SECTIONS as item (item.id)}
-            <button type="button" disabled={!item.available}
-              data-kira-tab={item.id}
+          {#each SETTINGS_SECTIONS.filter(item => item.available) as item (item.id)}
+            <button type="button" data-kira-tab={item.id}
               onclick={() => navigate(item.id)}
               aria-current={section === item.id ? 'page' : undefined}
               class={['relative z-10 flex min-h-11 w-full items-center justify-between gap-2 px-4 text-left text-[13px] font-semibold focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent',
-                section === item.id ? 'text-kira-text' : 'text-kira-muted',
-                item.available ? 'hover:text-kira-text' : 'cursor-not-allowed opacity-50'].join(' ')}>
+                section === item.id ? 'text-kira-text' : 'text-kira-muted hover:text-kira-text'].join(' ')}>
               <span class="truncate">{item.label}</span>
-              {#if !item.available}
-                <span class="shrink-0 text-[10px] font-semibold text-kira-muted">Скоро</span>
-              {/if}
             </button>
           {/each}
+          <div class="mt-5 border-t border-kira-muted/15 px-4 pt-4">
+            <p class="mb-2 text-[11px] font-semibold text-kira-muted">В ПЛАНАХ</p>
+            {#each SETTINGS_SECTIONS.filter(item => !item.available) as item (item.id)}
+              <span class="block py-1.5 text-[12px] text-kira-muted/70">{item.label}</span>
+            {/each}
+          </div>
         </nav>
       </aside>
     {/if}
@@ -112,11 +113,11 @@
       </div>
 
       {#if section === 'about'}
-        <h2 class="mb-5 text-[26px] font-extrabold leading-tight tracking-tight">О системе</h2>
+        <h2 class="mb-5 text-[21px] font-extrabold leading-tight tracking-tight">О системе</h2>
 
         <!-- A single elevated fact, not a stack of ornamental cards. -->
         <div class="border-l-[3px] border-kira-accent bg-kira-surface px-5 py-5">
-          <p class="text-[11px] font-semibold text-kira-muted">Операционная система</p>
+          <p class="text-[12px] font-semibold text-kira-muted">Операционная система</p>
           <p class="mt-2 break-words text-[23px] font-extrabold leading-snug tracking-tight text-kira-text">
             {about ? systemValue(about.os_name) : 'Получение данных…'}
           </p>
@@ -126,8 +127,8 @@
         <dl class="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
           {#each fields as field (field.key)}
             <div class="min-w-0 py-3">
-              <dt class="text-[11px] font-semibold tracking-wide text-kira-muted">{field.label}</dt>
-              <dd class="mt-1.5 break-words text-[13px] font-bold leading-relaxed text-kira-text">
+              <dt class="text-[12px] font-semibold tracking-wide text-kira-muted">{field.label}</dt>
+              <dd class="mt-1.5 break-words text-[14px] font-semibold leading-relaxed text-kira-text">
                 {about ? field.value : 'Получение данных…'}
               </dd>
             </div>

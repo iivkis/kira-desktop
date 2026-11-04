@@ -9,7 +9,7 @@
   import { surfaceColors } from '../surface-colors';
   import { isSampleFresh, liveUtilization } from '../system-model';
   import {
-    activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak, recentPulseHistory,
+    activityAxis, activityHistoryCaption, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak, recentPulseHistory,
     type TelemetryPoint,
   } from '../system-charts';
 
@@ -24,6 +24,7 @@
   let reduced = false;
   let palette = surfaceColors();
   let history: TelemetryPoint[] = [];
+  let historyCaption = $state('Нет доступных замеров за последнюю минуту');
   let pulse = $state<SystemPulse | null>(null);
   let lastPulseAt = $state<number | null>(null);
   let lastPulse: SystemPulse | null = null;
@@ -63,7 +64,7 @@
     gauges?.setOption({
       animation: !reduced,
       animationDuration: reduced ? 0 : 350,
-      animationDurationUpdate: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 180,
       animationEasingUpdate: 'cubicOut',
       series: [
         dial('CPU', cpu, '25%', accent),
@@ -73,6 +74,7 @@
 
     // Old readings leave the chart even if the native stream has stopped.
     const syncedHistory = alignedActivity(recentPulseHistory(history, performance.now()));
+    historyCaption = activityHistoryCaption(syncedHistory);
     const timeDomain = activityTimeDomain(syncedHistory);
     const panels: { field: 'cpu' | 'ram' | 'gpu'; name: string; color: string }[] = [
       { field: 'cpu', name: 'АКТИВНОСТЬ CPU', color: accent },
@@ -83,7 +85,7 @@
     trend?.setOption({
       animation: !reduced,
       animationDuration: reduced ? 0 : 350,
-      animationDurationUpdate: reduced ? 0 : 350,
+      animationDurationUpdate: reduced ? 0 : 180,
       animationEasingUpdate: 'cubicOut',
       tooltip: { show: false },
       grid: panels.map((panel, i) => ({
@@ -226,10 +228,10 @@
   </section>
 
   <section aria-label="История нагрузки ресурсов">
-    <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ИСТОРИЯ НАГРУЗКИ</h2>
+    <h2 class="text-[12px] font-bold tracking-wide text-kira-text">ИСТОРИЯ НАГРУЗКИ</h2>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
-        role="img" aria-label={'Измеренная история нагрузки с адаптивными шкалами. ' +
+        role="img" aria-label={'История нагрузки с адаптивными шкалами. ' + historyCaption + '. ' +
           'CPU ' + (cpu === null ? 'нет данных' : cpu + '%') +
           ', RAM ' + (ram === null ? 'нет данных' : ram + '%') +
           (pulse !== null && !pulseFresh ? '. Последний импульс устарел.' : '')}></div>
@@ -241,5 +243,7 @@
         {/if}
       </div>
     </div>
+    <!-- Actual measured interval, never an assumed 60 seconds or a fake sample. -->
+    <p class="mt-1 text-[11px] font-medium text-kira-muted">{historyCaption}</p>
   </section>
 </div>

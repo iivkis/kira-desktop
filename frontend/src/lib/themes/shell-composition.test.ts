@@ -113,3 +113,60 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).not.toContain('bar__system-item');
   });
 });
+
+const monitor = readFileSync(new URL('../components/SystemWidget.svelte', import.meta.url), 'utf8');
+const charts = readFileSync(new URL('../components/SystemCharts.svelte', import.meta.url), 'utf8');
+const settings = readFileSync(new URL('../components/SettingsWidget.svelte', import.meta.url), 'utf8');
+const html = readFileSync(new URL('../../../index.html', import.meta.url), 'utf8');
+
+describe('Kira editorial polish', () => {
+  it('exposes full warning text on-demand without changing the 42px Wayland surface', () => {
+    expect(markup).toContain('onclick={showWarningDetails}');
+    expect(markup).toContain('onclick={inspectWarnings}');
+    expect(markup).toContain('const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId))');
+    expect(markup).toContain('nextWarningId(warnings, activeWarningId)');
+    expect(markup).toContain('Открыть предупреждение ');
+    expect(markup).toContain('russianCountLabel(warnings.length');
+    expect(markup).toContain('event.key !== \'Tab\'');
+    expect(markup).toContain('last.focus()');
+    expect(markup).toContain('first.focus()');
+    expect(markup).toContain('aria-controls={inspectingWarnings ?');
+    expect(markup).not.toContain('join(\'; \')');
+    expect(markup).toContain('role="dialog" aria-modal="true" aria-label="Подробности предупреждения"');
+    expect(markup).toContain('inert={inspectingWarnings}');
+    expect(markup).toContain('resize-none overflow-y-auto');
+    expect(markup).toContain('readonly rows="2" wrap="soft"');
+    expect(markup).toContain('aria-label="Следующее предупреждение"');
+    expect(markup).toContain('onkeydown={onWarningKeydown}');
+    expect(markup).toContain('role="status" aria-live="polite"');
+    expect(markup).toContain('focus-visible:outline-2');
+    expect(markup).not.toContain("warnings[0]}{warnings.length > 1");
+  });
+
+  it('reserves orange for meaningful monitor states instead of static sections', () => {
+    expect(monitor).toContain('text-kira-text">ЁМКОСТЬ</h2>');
+    expect(monitor).toContain('text-kira-text">ОБОРУДОВАНИЕ</h2>');
+    expect(charts).toContain('text-kira-text">ИСТОРИЯ НАГРУЗКИ</h2>');
+    expect(charts).toContain('historyCaption = activityHistoryCaption(syncedHistory)');
+    expect(charts).toContain('{historyCaption}</p>');
+    expect(charts).not.toContain('До 60 с назад');
+    expect(charts).not.toContain('Последний замер');
+    expect(charts).toContain('animationDurationUpdate: reduced ? 0 : 180');
+  });
+
+  it('keeps unfinished settings passive and the current-page hierarchy secondary', () => {
+    expect(settings).toContain('SETTINGS_SECTIONS.filter(item => item.available)');
+    expect(settings).toContain('SETTINGS_SECTIONS.filter(item => !item.available)');
+    expect(settings).toContain('В ПЛАНАХ');
+    expect(settings).toContain('text-[26px] font-extrabold leading-tight tracking-tight">Настройки');
+    expect(settings).toContain('text-[21px] font-extrabold leading-tight tracking-tight">О системе');
+    expect(settings).toContain('use:tenetFlowIndicator={{ active: section, axis: \'both\' }}');
+  });
+
+  it('localizes visible bootstrap fallback states, preserving diagnostics', () => {
+    expect(html).toContain('Загрузка интерфейса…');
+    expect(html).toContain('Ошибка интерфейса Kira:');
+    expect(html).toContain('Интерфейс Kira не запустился');
+    expect(html).toContain("report('Svelte not mounted:");
+  });
+});

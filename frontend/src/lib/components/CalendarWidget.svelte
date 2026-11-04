@@ -26,11 +26,15 @@
     locale?: string;
   } = $props();
 
+  // These values intentionally snapshot a single mount-time civil date.
+  // Current time can advance without unexpectedly moving the user's selection.
+  const initialNow = new Date();
+  const initialToday = todayCivilDate(initialNow);
   let detached = $state(false);
-  let now = $state(new Date());
-  let today = $state<CivilDate>(todayCivilDate(now));
-  let selected = $state<CivilDate>(today);
-  let visible = $state({ year: today.year, month: today.month });
+  let now = $state(initialNow);
+  let today = $state<CivilDate>(initialToday);
+  let selected = $state<CivilDate>(initialToday);
+  let visible = $state({ year: initialToday.year, month: initialToday.month });
   let copyState = $state<'idle' | 'pending' | 'copied' | 'failed'>('idle');
   let copyTimeout: number | null = null;
 
@@ -185,7 +189,7 @@
           {/each}
           </time>
         </button>
-        <p class="mt-1 truncate text-[11px] font-semibold text-kira-muted">{currentDateLabel}</p>
+        <p class="mt-1 truncate text-[12px] font-semibold text-kira-muted">{currentDateLabel}</p>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="calendar" />
     </div>
@@ -193,7 +197,7 @@
 
   <!-- Each date has three independent semantics: current, selected, adjacent. -->
   <section data-kira-enter class="min-h-0 flex-1 bg-kira-surface px-4 pb-3 pt-3" aria-label="Выбор даты">
-    <div class="mb-3 flex items-center justify-between gap-2">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <div class="min-w-0">
         <h2 class="truncate text-[21px] font-extrabold leading-tight tracking-tight capitalize">
           {title}<span class="ml-2 text-sm font-semibold text-kira-muted">{visible.year}</span>
@@ -202,7 +206,7 @@
       <div class="flex shrink-0 items-center gap-1" role="group" aria-label="Навигация по календарю">
         {#each [-12, -1, 1, 12] as step}
           <button type="button"
-            class="flex h-8 w-8 items-center justify-center border border-kira-muted/15 bg-kira-bg/20
+            class="flex h-9 w-9 items-center justify-center border border-kira-muted/15 bg-kira-bg/20
               text-[17px] font-semibold text-kira-text transition-colors
               hover:border-kira-accent hover:text-kira-accent
               focus-visible:outline-2 focus-visible:outline-kira-accent disabled:cursor-default disabled:opacity-30"
@@ -221,14 +225,14 @@
       <span data-kira-flow-indicator aria-hidden="true"
         class="pointer-events-none absolute left-0 top-0 z-0 bg-kira-accent"></span>
       <span class="flex min-h-7 items-center justify-center border-b border-r border-kira-muted/15 bg-kira-bg/20
-        text-[11px] font-bold tracking-wide text-kira-muted" aria-label="Номер недели">НЕД</span>
+        text-[12px] font-bold tracking-wide text-kira-muted" aria-label="Номер недели">НЕД</span>
       {#each weekdayLabels as label}
         <span class="flex min-h-7 items-center justify-center border-b border-kira-muted/15
-          text-[11px] font-bold uppercase text-kira-muted">{label}</span>
+          text-[12px] font-bold uppercase text-kira-muted">{label}</span>
       {/each}
       {#each weeks as days}
         <span class="flex min-h-8 items-center justify-center border-r border-kira-muted/15
-          bg-kira-bg/15 text-[11px] font-semibold tabular-nums text-kira-muted"
+          bg-kira-bg/15 text-[12px] font-semibold tabular-nums text-kira-muted"
           aria-label={'ISO-неделя ' + (days[0] ? isoWeek(days[0]).week : '')}>
           {days[0] ? String(isoWeek(days[0]).week).padStart(2, '0') : ''}
         </span>
@@ -236,7 +240,7 @@
           {#if date}
             {@const marker = calendarDayState(date, selected, today, visible)}
             <button type="button"
-              class={'relative z-10 flex min-h-8 items-center justify-center text-xs font-semibold tabular-nums focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+              class={'relative z-10 flex min-h-8 items-center justify-center text-[13px] font-semibold tabular-nums focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-kira-accent ' +
                 (marker.outside ? 'text-kira-muted/60 ' : 'text-kira-text ') +
                 (marker.selected ? 'font-extrabold text-kira-on-accent focus-visible:-outline-offset-2 focus-visible:outline-kira-on-accent ' :
                   'hover:bg-kira-bg/35 hover:text-kira-accent ') +
@@ -264,16 +268,16 @@
       <p class="min-w-0 truncate text-[15px] font-extrabold capitalize" title={localDateLabel(selected, locale ?? UI_LOCALE)}>
         {selectedLabel}
       </p>
-      <p class="shrink-0 text-[11px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
+      <p class="shrink-0 text-[12px] font-semibold tabular-nums text-kira-muted">{selectedIso}</p>
     </div>
     <div class="mt-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
       <button type="button" onclick={goToday}
-        class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
+        class="px-1 py-1.5 text-[12px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">СЕГОДНЯ</button>
       <button type="button" onclick={copySelectedDate}
         aria-label={copyState === 'copied' ? 'Дата ' + selectedIso + ' скопирована' :
           copyState === 'pending' ? 'Копирование даты ' + selectedIso : 'Скопировать дату ' + selectedIso}
-        class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
+        class="px-1 py-1.5 text-[12px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">{copyState === 'copied' ? 'СКОПИРОВАНО' : copyState === 'pending' ? 'КОПИРОВАНИЕ…' : 'КОПИРОВАТЬ'}</button>
     </div>
     <span role="status" aria-live="polite" aria-atomic="true"

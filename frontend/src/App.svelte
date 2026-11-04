@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import SystemHealth from './lib/components/SystemHealth.svelte';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
+  import { russianCountLabel } from './lib/ui-locale';
+  import { nextWarningId, visibleWarningIndex, type UiWarning } from './lib/warning-model';
   import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
 
   let now = $state(new Date());
@@ -59,17 +61,79 @@
 
   let configState = $state<ConfigState>({ config: defaultUiConfig, error: null });
 
-  // A 42px Wayland bar cannot fit six independent shrink-0 error labels
-  // alongside a launcher and clock on a small output. Keep every warning in
-  // one accessible summary; never let overflow clip the primary controls.
+  // An in-bar inspector reveals long errors without a new GTK window.
+  // The native exclusive zone and normal three-zone layout remain 42px.
+  let activeWarningId = $state<string | null>(null);
+  let warningDetailsOpen = $state(false);
+  let warningButton = $state<HTMLButtonElement | undefined>(undefined);
+  let warningMessage = $state<HTMLTextAreaElement | undefined>(undefined);
+  let settingsButton = $state<HTMLButtonElement | undefined>(undefined);
   const warnings = $derived([
-    launcherUnavailable ? 'ЛАУНЧЕР НЕДОСТУПЕН' : null,
-    workspaceActionError ? 'РАБОЧИЙ СТОЛ: ' + workspaceActionError : null,
-    configState.error ? 'КОНФИГ: ' + configState.error : null,
-    systemUnavailable ? 'МОНИТОР НЕДОСТУПЕН' : null,
-    settingsUnavailable ? (settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ') : null,
-    calendarUnavailable ? 'КАЛЕНДАРЬ НЕДОСТУПЕН' : null,
-  ].filter((value): value is string => value !== null));
+    launcherUnavailable ? { id: 'launcher', text: 'ЛАУНЧЕР НЕДОСТУПЕН', short: 'ЛАУНЧЕР' } : null,
+    workspaceActionError ? { id: 'workspace', text: 'РАБОЧИЙ СТОЛ: ' + workspaceActionError, short: 'РАБОЧИЙ СТОЛ' } : null,
+    configState.error ? { id: 'config', text: 'КОНФИГ: ' + configState.error, short: 'КОНФИГ' } : null,
+    systemUnavailable ? { id: 'system', text: 'МОНИТОР НЕДОСТУПЕН', short: 'МОНИТОР' } : null,
+    settingsUnavailable ? { id: 'settings', text: settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ', short: 'НАСТРОЙКИ' } : null,
+    calendarUnavailable ? { id: 'calendar', text: 'КАЛЕНДАРЬ НЕДОСТУПЕН', short: 'КАЛЕНДАРЬ' } : null,
+  ].filter((value): value is UiWarning => value !== null));
+  const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId));
+  const shownWarning = $derived(warningPosition === -1 ? null : warnings[warningPosition]);
+  const inspectingWarnings = $derived(warningDetailsOpen && shownWarning !== null);
+
+  async function showWarningDetails() {
+    if (!shownWarning) return;
+    warningDetailsOpen = true;
+    await tick();
+    warningMessage?.focus();
+  }
+
+  async function inspectWarnings() {
+    activeWarningId = nextWarningId(warnings, activeWarningId);
+    // Reset after the textarea receives the new reactive value.
+    await tick();
+    if (warningDetailsOpen && warningMessage) warningMessage.scrollTop = 0;
+  }
+
+  async function closeWarningDetails() {
+    warningDetailsOpen = false;
+    await tick();
+    (warningButton ?? settingsButton)?.focus();
+  }
+
+  function onWarningKeydown(event: KeyboardEvent) {
+    if (!inspectingWarnings) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      void closeWarningDetails();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    // aria-modal alone does not trap keyboard focus. Cycling the boundary
+    // prevents Tab from escaping into browser chrome or native controls.
+    const controls = Array.from(document.querySelectorAll<HTMLElement>(
+      '#kira-warning-inspector textarea, #kira-warning-inspector button',
+    ));
+    if (controls.length === 0) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !controls.includes(active as HTMLElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !controls.includes(active as HTMLElement))) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  // A cleared error must not leave keyboard focus in a vanished textarea,
+  // or reopen the inspector when the next incident arrives.
+  $effect(() => {
+    if (warnings.length === 0 && warningDetailsOpen) {
+      void closeWarningDetails();
+    }
+  });
 
   onMount(() => {
     const clock = window.setInterval(() => {
@@ -143,6 +207,8 @@
   });
 </script>
 
+<svelte:window onkeydown={onWarningKeydown} />
+
 <main
   class="relative flex h-[42px] min-h-[42px] w-full items-stretch overflow-hidden border-b border-kira-muted/15 bg-kira-bg text-kira-text"
   aria-label="Верхняя панель Kira Desktop"
@@ -150,7 +216,7 @@
   data-compact={configState.config.compact}
 >
   <!-- KIRA opens the application index; it never claims to switch windows. -->
-  <section
+  <section inert={inspectingWarnings}
     class={['relative z-10 flex shrink-0 items-center border-r border-kira-muted/15 bg-kira-surface',
       configState.config.compact ? 'w-[78px]' : 'w-[96px] max-[540px]:w-[76px]'].join(' ')}
     aria-label="Запуск приложений Kira"
@@ -171,6 +237,7 @@
     class={['flex min-w-0 flex-1 items-center bg-kira-bg',
       configState.config.compact ? 'gap-2 px-2' : 'gap-3 px-3 max-[540px]:gap-1.5 max-[540px]:px-2'].join(' ')}
     aria-label="Рабочие пространства Niri"
+    inert={inspectingWarnings}
   >
     <WorkspacePreview
       state={workspaceState}
@@ -190,6 +257,7 @@
     class={['flex shrink-0 items-center justify-end gap-1 border-l border-kira-muted/15 bg-kira-surface-soft px-3',
       configState.config.compact ? 'px-2' : 'max-[540px]:px-2'].join(' ')}
     aria-label="Система и местное время"
+    inert={inspectingWarnings}
   >
     <SystemHealth
       coreStatus={coreStatus}
@@ -201,14 +269,24 @@
       onOpen={activateSystemPanel}
     />
     {#if warnings.length}
-      <span role="status" aria-live="polite" aria-label={warnings.join('; ')}
-        title={warnings.join('\n')}
-        class="block min-w-0 max-w-[44px] shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent min-[900px]:max-w-[180px]">
-        <span class="min-[900px]:hidden">!{warnings.length}</span>
-        <span class="hidden min-[900px]:inline">{warnings[0]}{warnings.length > 1 ? ' +' + (warnings.length - 1) : ''}</span>
+      <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {russianCountLabel(warnings.length, 'предупреждение', 'предупреждения', 'предупреждений')}. Подробности доступны в верхней панели.
       </span>
     {/if}
-    <button type="button" onclick={activateSettings}
+    {#if shownWarning}
+      <button bind:this={warningButton} type="button" onclick={showWarningDetails}
+        aria-label={'Открыть предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.short}
+        aria-haspopup="dialog" aria-controls={inspectingWarnings ? 'kira-warning-inspector' : undefined} aria-expanded={inspectingWarnings}
+        title={shownWarning.text + '\nНажмите для просмотра полного текста'}
+        class="min-w-0 max-w-[105px] shrink-0 cursor-pointer truncate px-1 text-center text-[11px] font-extrabold text-kira-accent transition-colors hover:text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent motion-reduce:transition-none min-[900px]:max-w-[180px]">
+        <span class="min-[900px]:hidden">{shownWarning.short}</span>
+        <span class="hidden min-[900px]:inline">{shownWarning.text}</span>
+        {#if warnings.length > 1}
+          <span class="ml-1 whitespace-nowrap" aria-hidden="true">{warningPosition + 1}/{warnings.length}</span>
+        {/if}
+      </button>
+    {/if}
+    <button bind:this={settingsButton} type="button" onclick={activateSettings}
       aria-label="Открыть настройки системы" title="Настройки системы" aria-haspopup="dialog"
       class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] text-kira-text transition-colors duration-150 hover:bg-kira-surface hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none">
       <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none"
@@ -231,4 +309,29 @@
       </time>
     </button>
   </section>
+  {#if inspectingWarnings && shownWarning}
+    <!-- Temporary inspection mode; the underlying Top Bar zones are inert. -->
+    <div id="kira-warning-inspector" role="dialog" aria-modal="true" aria-label="Подробности предупреждения"
+      class="absolute inset-0 z-30 flex h-[42px] items-center gap-2 border-b border-kira-muted/15 bg-kira-bg px-2 text-kira-text">
+      <span class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        Предупреждение {warningPosition + 1} из {warnings.length}: {shownWarning.short}. Полный текст доступен в поле.
+      </span>
+      <span class="shrink-0 text-[11px] font-bold tabular-nums text-kira-accent" aria-hidden="true">
+        !{warningPosition + 1}/{warnings.length}
+      </span>
+      <textarea bind:this={warningMessage} readonly rows="2" wrap="soft" value={shownWarning.text}
+        aria-label="Полный текст предупреждения, можно выделить и скопировать"
+        class="min-w-0 h-[34px] flex-1 resize-none overflow-y-auto border-0 bg-transparent px-0 py-0.5 text-[12px] font-semibold leading-[15px] text-kira-text focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent"></textarea>
+      {#if warnings.length > 1}
+        <button type="button" onclick={inspectWarnings} aria-label="Следующее предупреждение" title="Следующее предупреждение"
+          class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] border border-kira-muted/20 text-[18px] font-semibold text-kira-accent hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent">
+          <span aria-hidden="true">›</span>
+        </button>
+      {/if}
+      <button type="button" onclick={() => { void closeWarningDetails(); }} aria-label="Закрыть подробности" title="Закрыть подробности"
+        class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[2px] border border-kira-muted/20 text-[18px] font-semibold text-kira-text hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  {/if}
 </main>

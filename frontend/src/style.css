@@ -11,7 +11,9 @@
   --color-kira-text: var(--kira-color-text);
   --color-kira-accent: var(--kira-color-accent);
   --color-kira-on-accent: var(--kira-color-on-accent);
-  --font-sans: Inter, "Segoe UI Variable", "Noto Sans", system-ui, sans-serif;
+  /* The Nix wrapper ships a scoped Noto Sans Fontconfig profile.
+   * Prefer the same Cyrillic-capable family in browser/dev previews. */
+  --font-sans: "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
 }
 
 @layer base {

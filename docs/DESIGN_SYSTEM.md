@@ -91,9 +91,16 @@ official visual language of Kira Desktop.
   ensures the focused workspace stays visible under KDL's workspace
   limit and reports how many earlier/later workspaces are omitted.
   Only explicitly customized KDL titles appear, and they yield space on
-  narrow screens. System status reflects real Core/Niri/host measurements
-  hides visible READY text when healthy; warnings remain visible, and the
-   same indicator opens System Monitor.
+  narrow screens. System status reflects real Core/Niri/host measurements,
+  hides visible READY text when healthy. A compact warning button opens
+  an explicit, scrollable 42px inspection mode with the complete message;
+  additional warnings advance by stable identity and Escape or Close restores
+  the normal three-zone layout and keyboard focus. The modal's Tab and
+  Shift+Tab wrap inside its controls; short accessible announcements disclose
+  the type/count, while the readonly scrollable field retains the full text.
+  While inspecting, underlying controls are inert, never merely covered by
+  clickable content.
+  The same system-health indicator opens System Monitor.
   The local clock opens the existing Calendar. Additional trusted popup
   WebKit hosts are leased **on demand** from a bounded pool, never spawned
   speculatively per hypothetical widget. No extra native services, polling
