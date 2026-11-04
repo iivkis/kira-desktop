@@ -22,7 +22,7 @@
 
 ## Transport and security
 
-The draft uses GIO's existing session D-Bus support **inside kira-shell** to own `org.freedesktop.Notifications`. It does not steal an existing daemon's name. Its declared capabilities are limited to `body` and `actions`. All strings are bounded and sent into the trusted, navigation-locked, single-file Svelte UI as JSON data, not script or HTML. JavaScript can only acknowledge paint, close an ID or invoke one of its declared action keys. The action invokes the D-Bus `ActionInvoked` signal and closes the notice.
+The draft uses GIO's existing session D-Bus support **inside kira-shell** to own `org.freedesktop.Notifications`. It does not steal an existing daemon's name. Each active notification is bound to its original unique D-Bus sender: another app cannot overwrite it through `replaces_id` or call `CloseNotification` on its ID. Sender identity is internal and never forwarded to the WebView. Its declared capabilities are limited to `body` and `actions`. All strings are bounded and sent into the trusted, navigation-locked, single-file Svelte UI as JSON data, not script or HTML. JavaScript can only acknowledge paint, close an ID or invoke one of its declared action keys. The action invokes the D-Bus `ActionInvoked` signal and closes the notice.
 
 This placement of the D-Bus service in Shell is a deliberate **MVP architecture limitation**: long-term Kira Core should own the notification transport/lifetime and Shell should only own GTK/WebKit geometry. Notifications stop being received when Shell exits. The session history is not yet surfaced as a notification center, and the Top Bar does not yet display unread counts.
 
