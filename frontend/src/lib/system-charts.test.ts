@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { SystemMetrics } from './sdk/core';
 import {
   activityAxis, activitySeries, activityTimeDomain, alignedActivity,
-  appendPulse, appendTelemetry, chartMeters, gpuPeak,
+  appendPulse, appendTelemetry, chartMeters, gpuPeak, recentPulseHistory,
   MAX_PULSE_POINTS, MAX_TELEMETRY_POINTS, telemetrySummary,
 } from './system-charts';
 
@@ -82,6 +82,20 @@ describe('System Monitor ECharts telemetry model', () => {
     history = appendPulse(history, sample, 62_000);
     expect(history.map(point => point.time)).toEqual([31_000, 62_000]);
     expect(activityTimeDomain(history)).toEqual({ min: 31_000, max: 62_000 });
+  });
+
+  it('expires the one-minute plot when no new measurements arrive', () => {
+    const sample = { cpu_percent: 24, memory_total_kib: 100, memory_available_kib: 50 };
+    let history = appendPulse([], sample, 500, 77);
+    history = appendPulse(history, sample, 1_000);
+    expect(recentPulseHistory(history, 60_500).map(point => point.time))
+      .toEqual([500, 1_000]);
+    expect(recentPulseHistory(history, 60_501).map(point => point.time))
+      .toEqual([1_000]);
+    expect(recentPulseHistory(history, 62_000)).toEqual([]);
+    expect(recentPulseHistory(history, 800).map(point => point.time))
+      .toEqual([500]);
+    expect(recentPulseHistory(history, Number.NaN)).toEqual([]);
   });
 
   it('charts only real samples and caps history at thirty points', () => {
