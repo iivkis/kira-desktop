@@ -33,10 +33,12 @@
   let processList: HTMLDivElement;
   const metrics = $derived(status?.metrics ?? null);
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
+  // Keep expired metrics out of every numeric widget, not just the headline.
+  const liveMetrics = $derived(sampleFresh ? metrics : null);
   const health = $derived(status === null ? 'ОЖИДАНИЕ ТЕЛЕМЕТРИИ' :
     !sampleFresh ? 'ДАННЫЕ УСТАРЕЛИ' : systemHeadline(metrics, status.core, status.niri));
-  const swapPercent = $derived(percentUsedPrecise(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null));
-  const storagePercent = $derived(percentUsedPrecise(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null));
+  const swapPercent = $derived(percentUsedPrecise(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null));
+  const storagePercent = $derived(percentUsedPrecise(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null));
   const matching = $derived(sortedProcesses(processes?.rows ?? [], query, sort));
   const visible = $derived(matching.slice(0, visibleCount));
 
@@ -126,7 +128,7 @@
   {#if active === 'overview'}
     <div use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col">
       <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Телеметрия системы">
-        <SystemCharts {metrics} {now} />
+        <SystemCharts metrics={liveMetrics} {now} />
       </section>
 
       <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Дополнительные показатели ресурсов">
@@ -178,13 +180,13 @@
           <div class="flex items-baseline gap-2">
             <span class="text-[11px] font-bold tracking-wider text-kira-muted">CPU · ТЕМП</span>
             <span class="text-[14px] font-extrabold tabular-nums"
-              use:pulseReading={temperatureLabel(metrics?.cpu_temperature_c ?? null)}>
+              use:pulseReading={temperatureLabel(liveMetrics?.cpu_temperature_c ?? null)}>
               {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
             </span>
           </div>
         </div>
         <div class="mt-3 space-y-2">
-          {#each metrics?.gpus ?? [] as gpu (gpu.label)}
+          {#each liveMetrics?.gpus ?? [] as gpu (gpu.label)}
             <div class="flex min-w-0 items-center justify-between gap-3 border-t border-kira-muted/15 pt-2 text-[11px]">
               <span class="min-w-0 flex-1 truncate font-semibold" title={gpu.label}>{gpu.label}</span>
               <div class="flex shrink-0 items-center gap-3">
@@ -216,20 +218,20 @@
           <div class="min-w-0">
             <div class="text-[11px] font-bold tracking-wider text-kira-muted">ВРЕМЯ РАБОТЫ</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
-              {uptimeLabel(metrics?.uptime_seconds ?? null)}
+              {uptimeLabel(liveMetrics?.uptime_seconds ?? null)}
             </div>
           </div>
           <div class="min-w-0">
             <div class="text-[11px] font-bold tracking-wider text-kira-muted">НАГРУЗКА / 1 5 15</div>
             <div class="mt-1 truncate text-[11px] font-bold tabular-nums">
-              {metrics?.load?.map(n => n.toFixed(2)).join(' / ') ?? 'UNAVAILABLE'}
+              {liveMetrics?.load?.map(n => n.toFixed(2)).join(' / ') ?? 'UNAVAILABLE'}
             </div>
           </div>
           <div class="col-span-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
             <span class="text-[11px] font-bold tracking-wider text-kira-muted">ПИТАНИЕ</span>
             <span class="text-right text-[11px] font-bold">
-              {metrics?.battery_percent == null ? 'НЕ ОБНАРУЖЕНО' :
-                metrics.battery_percent + '%' + (metrics.battery_charging === true ? ' / ЗАРЯДКА' :
+              {liveMetrics?.battery_percent == null ? 'НЕ ОБНАРУЖЕНО' :
+                liveMetrics.battery_percent + '%' + (liveMetrics.battery_charging === true ? ' / ЗАРЯДКА' :
                   metrics.battery_charging === false ? ' / РАЗРЯДКА' : '')}
             </span>
           </div>
