@@ -62,14 +62,31 @@
   // A 42px Wayland bar cannot fit six independent shrink-0 error labels
   // alongside a launcher and clock on a small output. Keep every warning in
   // one accessible summary; never let overflow clip the primary controls.
+  // The 42px native surface cannot host a full popup. Make every warning
+  // individually reachable with a keyboard/touch button instead of hiding
+  // all but the first warning in an inaccessible title-only summary.
+  let warningIndex = $state(0);
+  let warningDetails = $state(false);
   const warnings = $derived([
-    launcherUnavailable ? 'ЛАУНЧЕР НЕДОСТУПЕН' : null,
-    workspaceActionError ? 'РАБОЧИЙ СТОЛ: ' + workspaceActionError : null,
-    configState.error ? 'КОНФИГ: ' + configState.error : null,
-    systemUnavailable ? 'МОНИТОР НЕДОСТУПЕН' : null,
-    settingsUnavailable ? (settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ') : null,
-    calendarUnavailable ? 'КАЛЕНДАРЬ НЕДОСТУПЕН' : null,
-  ].filter((value): value is string => value !== null));
+    launcherUnavailable ? { text: 'ЛАУНЧЕР НЕДОСТУПЕН', short: 'ЛАУНЧЕР' } : null,
+    workspaceActionError ? { text: 'РАБОЧИЙ СТОЛ: ' + workspaceActionError, short: 'РАБОЧИЙ СТОЛ' } : null,
+    configState.error ? { text: 'КОНФИГ: ' + configState.error, short: 'КОНФИГ' } : null,
+    systemUnavailable ? { text: 'МОНИТОР НЕДОСТУПЕН', short: 'МОНИТОР' } : null,
+    settingsUnavailable ? { text: settingsShellOutdated ? 'ПЕРЕЗАПУСТИТЬ KIRA SHELL' : 'НАСТРОЙКИ НЕДОСТУПНЫ', short: 'НАСТРОЙКИ' } : null,
+    calendarUnavailable ? { text: 'КАЛЕНДАРЬ НЕДОСТУПЕН', short: 'КАЛЕНДАРЬ' } : null,
+  ].filter((value): value is { text: string; short: string } => value !== null));
+  const warningPosition = $derived(warnings.length ? warningIndex % warnings.length : 0);
+  const shownWarning = $derived(warnings[warningPosition] ?? null);
+  function inspectWarnings() {
+    if (!warningDetails) {
+      warningDetails = true;
+    } else if (warningPosition + 1 < warnings.length) {
+      warningIndex = warningPosition + 1;
+    } else {
+      warningIndex = 0;
+      warningDetails = false;
+    }
+  }
 
   onMount(() => {
     const clock = window.setInterval(() => {
@@ -200,13 +217,20 @@
       {now}
       onOpen={activateSystemPanel}
     />
-    {#if warnings.length}
-      <span role="status" aria-live="polite" aria-label={warnings.join('; ')}
-        title={warnings.join('\n')}
-        class="block min-w-0 max-w-[44px] shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent min-[900px]:max-w-[180px]">
-        <span class="min-[900px]:hidden">!{warnings.length}</span>
-        <span class="hidden min-[900px]:inline">{warnings[0]}{warnings.length > 1 ? ' +' + (warnings.length - 1) : ''}</span>
-      </span>
+    {#if shownWarning}
+      <button type="button" onclick={inspectWarnings}
+        aria-label={'Предупреждение ' + (warningPosition + 1) + ' из ' + warnings.length + ': ' + shownWarning.text +
+          '. ' + (warningDetails ? 'Следующее предупреждение или свернуть' : 'Раскрыть и просмотреть предупреждения')}
+        title={shownWarning.text + (warnings.length > 1 ? '\nНажмите для просмотра остальных предупреждений' : '\nНажмите для подробностей')}
+        class={'min-w-0 shrink-0 truncate px-1 text-center text-[11px] font-extrabold text-kira-accent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-kira-accent ' +
+          (warningDetails ? 'max-w-[100px] min-[540px]:max-w-[180px] min-[900px]:max-w-[240px]' :
+            'max-w-[82px] min-[900px]:max-w-[180px]')}>
+        <span class="min-[900px]:hidden">{warningDetails ? shownWarning.text : shownWarning.short}</span>
+        <span class="hidden min-[900px]:inline">{shownWarning.text}</span>
+        {#if warnings.length > 1}
+          <span class="ml-1 whitespace-nowrap" aria-hidden="true">{warningPosition + 1}/{warnings.length}</span>
+        {/if}
+      </button>
     {/if}
     <button type="button" onclick={activateSettings}
       aria-label="Открыть настройки системы" title="Настройки системы" aria-haspopup="dialog"
