@@ -97,7 +97,9 @@ describe('Core SDK JSON-RPC bridge', () => {
       expect(displayTransformId(received)).toBe(expected);
     }
     // Never silently rotate a newer, unsupported Niri transform to normal.
-    expect(displayTransformId('NewTransform')).toBe('');
+    for (const invalid of ['NewTransform', '__proto__', 'constructor', 'toString']) {
+      expect(displayTransformId(invalid)).toBe('');
+    }
   });
 
   it('validates native display response and rejects stale generations', () => {
