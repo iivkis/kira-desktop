@@ -33,6 +33,15 @@ class DisplayContract(unittest.TestCase):
         self.assertIn('Some(UiCommand::DisplayConfirm(generation, id))', SHELL)
         self.assertIn('Some(UiCommand::DisplayRevert(generation, id))', SHELL)
 
+    def test_watchdog_remains_bounded_when_niri_ipc_stalls(self):
+        self.assertIn('const NIRI_IPC_TIMEOUT: Duration = Duration::from_secs(2)', MANAGER)
+        self.assertIn('child.try_wait()', MANAGER)
+        self.assertIn('child.kill()', MANAGER)
+        self.assertIn('read_capped(stdout, NIRI_MAX_OUTPUT_BYTES)', MANAGER)
+        self.assertIn('read_capped(stderr, NIRI_MAX_ERROR_BYTES)', MANAGER)
+        self.assertIn('deadline_expired(*deadline, Instant::now())', MANAGER)
+        self.assertIn('fn a_queued_confirmation_does_not_extend_the_rollback_deadline()', MANAGER)
+
     def test_session_and_declarative_settings_are_separate_transactions(self):
         self.assertIn('Request::Save => {', MANAGER)
         self.assertIn('crate::config_layers::save(target)', MANAGER)
