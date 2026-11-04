@@ -294,7 +294,7 @@ function scriptFor(steps, observationMs = 1150) {
 
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('<html lang="ru">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : heightMode.startsWith('reverse') ? 1750 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
@@ -531,7 +531,7 @@ async function smokeCalendarSky(windowSize, expectStacked) {
       '!!atlas?.textContent?.includes("Звёздное небо");' +
   '},2150));</script>';
   const document = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('<html lang="ru">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + check + '</head>');
   const path = join(dir, 'calendar-sky-' + windowSize.split(',')[0] + '.html');
   await writeFile(path, document);
@@ -587,7 +587,7 @@ async function smokeSettingsResponsive(width, narrow) {
     'document.documentElement.dataset.smokeSettingsWidths=(normal?.width||0)+"/"+(bounds?.width||0);' +
   '},2050));</script>';
   const page = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('<html lang="ru">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + checks + '</head>');
   const filename = join(dir, 'settings-responsive-' + width + '.html');
   await writeFile(filename, page);
