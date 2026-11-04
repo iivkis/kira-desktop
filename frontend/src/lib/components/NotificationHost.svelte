@@ -33,15 +33,21 @@
     let acknowledgedRevision = 0;
     let disposed = false;
     let fallbackTimer: number | null = null;
-    const acknowledge = (revision: number): boolean => {
-      // A fully transparent native GTK window can report a "hidden" page.
-      // The ACK means Svelte DOM/layout is ready; GTK alone decides whether
-      // the mapped, click-through host may actually be revealed.
-      if (disposed || lastRevision !== revision || acknowledgedRevision === revision) return false;
-      const first = document.querySelector<HTMLElement>('[data-kira-notification-card]');
-      if (!first || first.getBoundingClientRect().height <= 0) return false;
+    const acknowledge = (revision: number, ids: number[]): boolean => {
+      // A transparent GTK host can report document.visibilityState="hidden".
+      // Verify the ENTIRE keyed Svelte snapshot (including its actual layout)
+      // before informing native GTK. One old card is not proof that a newly
+      // admitted second or third card was rendered.
+      if (disposed || lastRevision !== revision || acknowledgedRevision === revision ||
+          ids.length === 0 || ids.length > 3) return false;
+      const cards = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-kira-notification-card]')
+      );
+      if (cards.length !== ids.length || !cards.every((card, index) =>
+          card.dataset.kiraNotificationCard === String(ids[index]) &&
+          card.getBoundingClientRect().height > 0)) return false;
       acknowledgedRevision = revision;
-      send('painted:' + revision);
+      send('painted:' + revision + ':' + ids.join(','));
       return true;
     };
     const update = (event: Event) => {
@@ -60,6 +66,7 @@
       fallbackTimer = null;
       if (next.visible.length > 0) {
         const revision = next.revision;
+        const ids = next.visible.map((notice) => notice.id);
         // Prefer two compositor-bound frames; a bounded fallback is needed
         // for WebKit/headless when requestAnimationFrame is throttled.
         // Native still rejects acknowledgements for an unmapped host.
@@ -67,10 +74,10 @@
           if (disposed || lastRevision !== revision) return;
           fallbackTimer = window.setTimeout(() => {
             fallbackTimer = null;
-            acknowledge(revision);
+            acknowledge(revision, ids);
           }, 650);
           requestAnimationFrame(() => requestAnimationFrame(() => {
-            if (acknowledge(revision) && fallbackTimer !== null) {
+            if (acknowledge(revision, ids) && fallbackTimer !== null) {
               window.clearTimeout(fallbackTimer);
               fallbackTimer = null;
             }
