@@ -34,9 +34,19 @@ describe('read-only system health status', () => {
   });
 
   it('never calls an expired sample READY, while preserving service failure priority', () => {
-    expect(systemHealth('connected', '', true, normal, 'stale')).toMatchObject({ label: 'STALE', phase: 'warning' });
-    expect(systemHealth('connected', '', true, normal, 'stale').details).toContain('последняя проба устарела');
-    expect(systemHealth('unavailable', '', true, normal, 'stale').label).toBe('CORE OFF');
+    const stale = systemHealth('connected', '', true, normal, 'stale');
+    expect(stale).toMatchObject({ label: 'STALE', phase: 'warning' });
+    expect(stale.details).toContain('последняя проба устарела');
+    // The tooltip must not contradict the stale badge with old percentages.
+    for (const label of ['CPU:', 'Память:', 'Диск:', 'Батарея:']) {
+      expect(stale.details).toContain(label + ' Данные устарели');
+    }
+    expect(stale.details).not.toContain('24%');
+    expect(stale.details).not.toContain('42%');
+    expect(stale.details).not.toContain('50%');
+    const offline = systemHealth('unavailable', '', true, normal, 'stale');
+    expect(offline.label).toBe('CORE OFF');
+    expect(offline.details).toContain('CPU: Данные устарели');
   });
 
   it('never renders an unknown metric as zero', () => {
