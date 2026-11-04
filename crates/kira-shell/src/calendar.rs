@@ -252,6 +252,7 @@ impl OverlayPool {
                 view.content_height.get().max(1),
             );
         }
+        crate::notifications::layout_changed();
     }
 
     fn release(self: &Rc<Self>, id: u32) {
@@ -393,6 +394,7 @@ impl CalendarOverlay {
         };
         let kind = self.active.get().expect("requested view has a surface");
         self.detached.set(true);
+        crate::notifications::layout_changed();
         let normal = gtk::ApplicationWindow::new(&pool.application);
         let title = match kind {
             Surface::Calendar => "Kira Calendar",
@@ -890,6 +892,7 @@ impl CalendarOverlay {
                         .map(|pool| pool.width_for(self))
                         .unwrap_or(popup_layout::PREFERRED_POPUP_WIDTH);
                     crate::native_ui::resize_webview_popup(&self.window, width, clamped);
+                    crate::notifications::layout_changed();
                 }
                 if self.widget_ready.get() && !self.paint_pending.get() && !self.revealed.get() {
                     self.request_paint();
@@ -1699,6 +1702,46 @@ fn ensure(
         let pool = OverlayPool::new(application, document, context);
         *cache.borrow_mut() = Some(pool.clone());
         Some(pool)
+    })
+}
+
+/// The notifications stay bottom-right, so their only safe adjustment is
+/// reducing the upper bound of the bottom-anchored WebView. Never move widgets.
+/// A detached Niri-managed window has no known compositor rect in this module;
+/// conservatively suspend automatic toast presentation until it closes.
+pub fn notification_bottom_clearance(output_width: i32, output_height: i32) -> i32 {
+    POOL.with(|cache| {
+        let pool = cache.borrow();
+        let Some(pool) = pool.as_ref() else { return output_height };
+        if pool.windows.borrow().values().any(|view| {
+            view.requested.get() && view.detached.get()
+        }) {
+            return 0;
+        }
+        let Some(view) = pool.popup() else { return output_height };
+        let overlay_width = pool.width_for(&view);
+        let overlaps_right_lane = match view.dock.get() {
+            PopupDock::Right => true,
+            PopupDock::Center => {
+                let center_right = (output_width + overlay_width) / 2;
+                let toast_left = output_width
+                    - crate::notification_layout::PREFERRED_WIDTH
+                        .min(output_width.saturating_sub(24))
+                    - crate::notification_layout::OUTER_MARGIN;
+                center_right + 12 > toast_left
+            }
+        };
+        if !overlaps_right_lane { return output_height }
+        let top = match view.dock.get() {
+            PopupDock::Right => crate::native_ui::POPUP_TOP_MARGIN,
+            PopupDock::Center => popup_layout::launcher_top_margin(output_height),
+        };
+        // The Svelte-reported natural height can precede GTK's map/configure;
+        // use the larger of the last actual allocation and reported content.
+        let widget_height = view.content_height.get()
+            .max(view.window.height())
+            .min((output_height * 7 / 10).max(1));
+        (output_height - top - widget_height - 16).max(0)
     })
 }
 
