@@ -280,11 +280,17 @@ fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
             .ok_or("Невозможно определить режим дисплея")?;
         let enabled = !logical.is_null();
         let scale = logical["scale"].as_f64().unwrap_or(1.0);
-        let transform = logical["transform"]
-            .as_str()
-            .and_then(normalized_transform)
-            .unwrap_or("normal")
-            .to_string();
+        // Unknown rotations cannot be silently restored as "normal":
+        // rollback must preserve the original orientation or refuse to apply.
+        let transform = if enabled {
+            logical["transform"]
+                .as_str()
+                .and_then(normalized_transform)
+                .ok_or("Неподдерживаемая ориентация подключённого дисплея")?
+        } else {
+            "normal"
+        }
+        .to_string();
         result.push(Desired {
             name: name.to_string(),
             enabled,
@@ -472,8 +478,6 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 }
             }
             Request::Apply(value) => {
-                confirmed = None;
-                staged = None;
                 if pending.is_some() {
                     report(
                         &events,
@@ -483,6 +487,10 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                     );
                     continue;
                 }
+                // A rejected overlapping Apply must not discard the pending
+                // target. Otherwise the next Confirm succeeds but Save cannot.
+                confirmed = None;
+                staged = None;
                 let result = query().and_then(|outputs| {
                     let target = validate(&value, &outputs)?;
                     let before = baseline(&outputs)?;
@@ -652,6 +660,15 @@ mod tests {
         let mut injection = plan();
         injection[1]["transform"] = json!("normal; rm -rf /");
         assert!(validate(&injection, &outputs()).is_err());
+    }
+
+    #[test]
+    fn rejects_unknown_current_rotation_instead_of_corrupting_rollback() {
+        let mut current = outputs();
+        current[0]["logical"]["transform"] = json!("FutureRotation");
+        assert!(baseline(&current).is_err());
+        current[0]["logical"]["transform"] = json!("Flipped90");
+        assert_eq!(baseline(&current).unwrap()[0].transform, "flipped-90");
     }
 
     #[test]
