@@ -74,6 +74,13 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
         eprintln!("kira-shell: notification D-Bus ownership disabled in isolated preview");
         return;
     }
+    // Claiming the Freedesktop name while unable to provide card-sized
+    // pointer input regions silently swallows every desktop notification.
+    // Leave the name unowned so another notification daemon can serve it.
+    if !gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes()) {
+        eprintln!("kira-shell: notification server disabled (GDK input shapes unsupported)");
+        return;
+    }
     let service = Rc::new(Service {
         app: app.clone(),
         html: html.to_owned(),
@@ -177,6 +184,20 @@ pub fn layout_changed() {
 
 fn bounded(value: String, max_chars: usize) -> String {
     value.chars().take(max_chars).collect()
+}
+
+/// Only accept an ACK for the exact revision and the exact list of
+/// rendered notification IDs. IDs are ordered oldest-first by the Svelte
+/// host, not inferred from whatever happens to be in the queue now.
+fn parse_paint_ack(value: &str) -> Option<(u32, Vec<u32>)> {
+    let (revision, raw_ids) = value.split_once(':')?;
+    let revision = revision.parse::<u32>().ok()?;
+    if revision == 0 { return None; }
+    let ids = raw_ids.split(',').map(str::parse::<u32>)
+        .collect::<Result<Vec<_>, _>>().ok()?;
+    if ids.is_empty() || ids.len() > 3 || ids.contains(&0) { return None; }
+    if ids.iter().enumerate().any(|(i, id)| ids[..i].contains(id)) { return None; }
+    Some((revision, ids))
 }
 
 fn notification_id(queue: &mut NotificationQueue, replaces_id: u32) -> u32 {
@@ -388,9 +409,9 @@ impl Service {
                 self.signal_closed(id, 2);
                 self.sync();
             }
-        } else if let Some(revision) = message
+        } else if let Some((revision, ids)) = message
             .strip_prefix("painted:")
-            .and_then(|value| value.parse::<u32>().ok())
+            .and_then(parse_paint_ack)
         {
             if revision == self.render_revision.get()
                 && self
@@ -399,14 +420,17 @@ impl Service {
                     .as_ref()
                     .is_some_and(|host| host.ready.get() && host.window.is_visible())
             {
-                let ids: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
-                let now = Instant::now();
-                let just_painted = self.queue.borrow_mut().mark_painted(now, &ids);
-                if just_painted {
-                    // The first painted acknowledgement is the point at
-                    // which native GTK makes an empty host truly visible.
-                    // Resync also calculates the next dwell/FIFO deadline.
-                    self.sync();
+                let matches_snapshot = self.queue.borrow().visible()
+                    .map(|item| item.id).eq(ids.iter().copied());
+                if matches_snapshot {
+                    let now = Instant::now();
+                    let just_painted = self.queue.borrow_mut().mark_painted(now, &ids);
+                    if just_painted {
+                        // Do not reveal a card until its exact Svelte DOM has
+                        // been acknowledged. Resync sets the native input mask
+                        // and the dwell/admission deadlines.
+                        self.sync();
+                    }
                 }
             }
         } else if let Some(value) = message.strip_prefix("action:") {
@@ -770,6 +794,32 @@ mod tests {
         // nonzero ID even if the earlier notification was closed.
         assert_eq!(notification_id(&mut queue, 4321), 4321);
         assert_eq!(notification_id(&mut queue, 0), 1);
+    }
+
+    #[test]
+    fn painted_ack_requires_exact_ordered_nonzero_ids_and_revision() {
+        assert_eq!(parse_paint_ack("7:10,11,12"), Some((7, vec![10, 11, 12])));
+        for malformed in [
+            "", "0:1", "1:", "1:0", "1:1,2,3,4", "1:1,1",
+            "1:1,,2", "1:banana", "1:1:2", "abc:1",
+            "4294967296:1", "1:4294967296",
+        ] {
+            assert!(parse_paint_ack(malformed).is_none(), "{malformed}");
+        }
+        let t = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let notice = Notice {
+            id: 9, app: "test".into(), summary: "t".into(), body: String::new(),
+            actions: Vec::new(), critical: false, persistent: false,
+            dwell: DEFAULT_DWELL,
+        };
+        assert!(queue.push(notice, t));
+        queue.step(t, true);
+        let stale_ids = parse_paint_ack("4:99").unwrap().1;
+        assert!(!queue.visible().map(|n| n.id).eq(stale_ids.iter().copied()));
+        assert_eq!(queue.painted_count(), 0);
+        assert!(queue.visible().map(|n| n.id).eq([9]));
+        assert!(queue.mark_painted(t, &[9]));
     }
 
     #[test]
