@@ -104,7 +104,9 @@ impl NotificationQueue {
         let before = self.waiting.len() + self.showing.len();
         self.waiting.retain(|item| item.notice.id != id);
         self.showing.retain(|item| item.notice.id != id);
-        self.history.retain(|item| item.id != id);
+        // Session history is a separate, bounded audit of past notifications.
+        // Closing a toast must not erase it from history or make its ID active
+        // again for Freedesktop's replaces_id semantics.
         before != self.waiting.len() + self.showing.len()
     }
 
@@ -327,6 +329,7 @@ mod tests {
         assert!(q.contains_active(1));
         assert!(q.close(1));
         assert!(!q.contains_active(1));
+        assert!(q.history().any(|item| item.id == 1));
         assert!(!q.close(1));
     }
 
