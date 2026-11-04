@@ -25,6 +25,7 @@
   let painted = false;
   let tween: gsap.core.Tween | null = null;
   let latestTarget: { latitude: number; sidereal: number } | null = null;
+  let palette = surfaceColors();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'локальный';
 
   function paint() {
@@ -32,7 +33,6 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const { width, height } = dimensions;
-    const palette = surfaceColors(viewport);
     // Keep the backing bitmap bounded on HiDPI and ultrawide monitors.
     const pixelRatio = Math.min(window.devicePixelRatio || 1, 2, 1536 / Math.max(width, height));
     const bufferWidth = Math.round(width * pixelRatio);
@@ -158,6 +158,13 @@
   }
 
   onMount(() => {
+    // Resolve CSS roles only at mount/theme changes, not on every GSAP paint frame.
+    palette = surfaceColors(viewport);
+    const theme = new MutationObserver(() => {
+      palette = surfaceColors(viewport);
+      paint();
+    });
+    theme.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
     const resize = new ResizeObserver(entries => {
       const box = entries[0]?.contentRect;
       if (box) dimensions = { width: Math.round(box.width), height: Math.round(box.height) };
@@ -174,6 +181,7 @@
     };
     motion.addEventListener('change', settleForReducedMotion);
     return () => {
+      theme.disconnect();
       resize.disconnect();
       motion.removeEventListener('change', settleForReducedMotion);
       tween?.kill();
