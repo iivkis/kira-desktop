@@ -148,8 +148,9 @@ impl NotificationQueue {
         // but stays logically active until CloseNotification/replace.
         let mut kept = Vec::with_capacity(self.showing.len());
         for entry in self.showing.drain(..) {
-            let elapsed = entry.since.is_some_and(|since|
-                now.saturating_duration_since(since) >= entry.notice.dwell.max(MIN_DWELL));
+            let elapsed = entry.since.is_some_and(|since| {
+                now.saturating_duration_since(since) >= entry.notice.dwell.max(MIN_DWELL)
+            });
             if elapsed {
                 if entry.notice.persistent {
                     self.parked.push_back(entry.notice);
@@ -212,8 +213,13 @@ impl NotificationQueue {
 
     /// Exact next wakeup, never a permanent UI poll.
     pub fn next_deadline(&self, now: Instant) -> Option<Instant> {
-        let expiry = self.showing.iter()
-            .filter_map(|item| item.since.map(|since| since + item.notice.dwell.max(MIN_DWELL)))
+        let expiry = self
+            .showing
+            .iter()
+            .filter_map(|item| {
+                item.since
+                    .map(|since| since + item.notice.dwell.max(MIN_DWELL))
+            })
             .min();
         let admission = if self.showing.len() < MAX_VISIBLE {
             self.waiting.front().and_then(|entry| {

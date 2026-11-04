@@ -180,7 +180,11 @@ fn bounded(value: String, max_chars: usize) -> String {
 }
 
 fn notification_id(queue: &mut NotificationQueue, replaces_id: u32) -> u32 {
-    if replaces_id != 0 { replaces_id } else { queue.allocate_id() }
+    if replaces_id != 0 {
+        replaces_id
+    } else {
+        queue.allocate_id()
+    }
 }
 
 fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> Notice {
@@ -568,19 +572,34 @@ impl Service {
         // Fail closed on disconnected/headless outputs. The previous
         // synthetic 800x800 fallback could map a Wayland toast with incorrect
         // dimensions immediately after a monitor was unplugged.
-        let display = self.host.borrow().as_ref()
+        let display = self
+            .host
+            .borrow()
+            .as_ref()
             .map(|host| gtk::prelude::WidgetExt::display(&host.window))
             .or_else(gtk::gdk::Display::default);
         let output = display.and_then(|display| {
-            let monitor = self.host.borrow().as_ref()
-                .and_then(|host| host.window.surface()
-                    .and_then(|surface| display.monitor_at_surface(&surface)))
-                .or_else(|| display.monitors().item(0)
-                    .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok()));
-            monitor.map(|monitor| {
-                let rect = monitor.geometry();
-                (rect.width(), rect.height())
-            }).filter(|(width, height)| *width > 0 && *height > 0)
+            let monitor = self
+                .host
+                .borrow()
+                .as_ref()
+                .and_then(|host| {
+                    host.window
+                        .surface()
+                        .and_then(|surface| display.monitor_at_surface(&surface))
+                })
+                .or_else(|| {
+                    display
+                        .monitors()
+                        .item(0)
+                        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+                });
+            monitor
+                .map(|monitor| {
+                    let rect = monitor.geometry();
+                    (rect.width(), rect.height())
+                })
+                .filter(|(width, height)| *width > 0 && *height > 0)
         });
         let layout = output.and_then(|(width, height)| {
             let clearance = crate::calendar::notification_bottom_clearance(width, height);
@@ -725,9 +744,14 @@ mod tests {
         // Fresh connections may not share a unique D-Bus sender name.
         assert_eq!(notification_id(&mut queue, 4321), 4321);
         let mut notice = Notice {
-            id: 4321, app: "A".into(), summary: "old".into(),
-            body: String::new(), actions: Vec::new(), critical: false,
-            persistent: false, dwell: DEFAULT_DWELL,
+            id: 4321,
+            app: "A".into(),
+            summary: "old".into(),
+            body: String::new(),
+            actions: Vec::new(),
+            critical: false,
+            persistent: false,
+            dwell: DEFAULT_DWELL,
         };
         assert!(queue.push(notice.clone(), now));
         notice.summary = "replaced".into();
