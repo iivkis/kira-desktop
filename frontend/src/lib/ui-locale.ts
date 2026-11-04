@@ -33,12 +33,16 @@ const monitor: Record<string, string> = {
 export const healthLabel = (code: string): string => health[code] ?? code;
 export const monitorLabel = (code: string): string => monitor[code] ?? code;
 
-export function matchingAppsLabel(n: number): string {
+/** Shared Russian noun agreement for real quantities, not UI decoration. */
+export function russianCountLabel(n: number, one: string, few: string, many: string): string {
   const ends = Math.abs(n) % 100;
   const digit = ends % 10;
-  const noun = ends >= 11 && ends <= 14 ? 'результатов'
-    : digit === 1 ? 'результат'
-      : digit >= 2 && digit <= 4 ? 'результата'
-        : 'результатов';
+  const noun = ends >= 11 && ends <= 14 ? many
+    : digit === 1 ? one
+      : digit >= 2 && digit <= 4 ? few : many;
   return n + ' ' + noun;
+}
+
+export function matchingAppsLabel(n: number): string {
+  return russianCountLabel(n, 'результат', 'результата', 'результатов');
 }
