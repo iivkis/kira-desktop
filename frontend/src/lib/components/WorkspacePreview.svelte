@@ -87,7 +87,7 @@
               + (workspace.is_urgent ? ', требует внимания' : '')}
             aria-pressed={workspace.is_focused}
             title={'Пространство ' + (workspace.name || workspace.idx)
-              + (workspace.output ? ' on ' + workspace.output : '')
+              + (workspace.output ? ' на экране ' + workspace.output : '')
               + (workspace.is_focused ? ' (в фокусе)' : workspace.is_active ? ' (активно)' : '')
               + (workspace.is_urgent ? ' (требует внимания)' : '')}
             disabled={pending}
@@ -110,8 +110,8 @@
         class:text-kira-accent={windowed.afterUrgent}
         class:text-kira-muted={!windowed.afterUrgent}
         role={windowed.afterUrgent ? 'status' : undefined}
-        title={windowed.after + ' последующих рабочих пространств скрыто' + (windowed.afterUrgent ? ' / urgent workspace' : '')}
-        aria-label={windowed.after + ' последующих рабочих пространств не показано' + (windowed.afterUrgent ? ', urgent workspace hidden' : '')}>
+        title={windowed.after + ' последующих рабочих пространств скрыто' + (windowed.afterUrgent ? ' / срочный сигнал' : '')}
+        aria-label={windowed.after + ' последующих рабочих пространств не показано' + (windowed.afterUrgent ? ', скрыто срочное пространство' : '')}>
         +{windowed.after}
       </span>
     {/if}
