@@ -61,9 +61,9 @@ class CalendarDesignTests(unittest.TestCase):
             "focus-visible:outline-kira-on-accent",
         ):
             self.assertIn(token, CALENDAR)
-        for token in ("role=\"group\" aria-label=\"Calendar dates\"",
+        for token in ("role=\"group\" aria-label=\"Даты календаря\"",
                       "data-calendar-clock-play", "use:tenetCalendarGrid",
-                      "kira-calendar-scroll", "aria-label=\"Navigate calendar\""):
+                      "kira-calendar-scroll", "aria-label=\"Навигация по календарю\""):
             self.assertIn(token, CALENDAR)
         self.assertIn("{currentDateLabel}", CALENDAR)
         self.assertIn("{selectedIso}", CALENDAR)
