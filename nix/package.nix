@@ -13,6 +13,8 @@
   craneLib,
   pkg-config,
   wrapGAppsHook4,
+  makeFontsConf,
+  noto-fonts,
   gtk4,
   gtk4-layer-shell,
   webkitgtk_6_0,
@@ -21,6 +23,11 @@
 }:
 let
   version = "0.1.0";
+  # NixOS normally resolves fonts from the host Fontconfig profile. A
+  # standalone Kira package must not silently change glyph widths with the
+  # user's font install state. Scope the open-licensed Noto Sans font to the
+  # GTK/WebKit wrapper, not to the entire desktop session.
+  uiFontsConf = makeFontsConf { fontDirectories = [ noto-fonts ]; };
 
   frontend = buildNpmPackage {
     pname = "kira-desktop-frontend";
@@ -104,6 +111,7 @@ stdenv.mkDerivation {
   # copied into the final package.
   preFixup = ''
     gappsWrapperArgs+=(--set KIRA_UI_DIR "$out/share/kira-desktop/ui")
+    gappsWrapperArgs+=(--set-default FONTCONFIG_FILE "${uiFontsConf}")
   '';
 
   passthru = {
