@@ -11,6 +11,9 @@ const chrome = process.env.CHROME_BIN || 'google-chrome';
 const script = `
 <script>
 window.__kiraSmokeMessages = [];
+// The native host is mapped with opacity=0 until ACK. Some WebKit versions
+// classify such a mapped page as hidden; its DOM must still be able to ACK.
+Object.defineProperty(document, 'visibilityState', {value:'hidden', configurable:true});
 window.webkit = {messageHandlers:{
   kiraNotificationUi:{postMessage(message){window.__kiraSmokeMessages.push(String(message));}},
   kiraDiagnostics:{postMessage(){}},
