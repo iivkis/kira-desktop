@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { gsap } from 'gsap';
+  import { surfaceColors, withOpacity } from '../surface-colors';
   import type { CivilDate } from '../calendar-model';
   import { isoDate } from '../calendar-model';
   import { CONSTELLATION_LABELS, CONSTELLATION_LINES, NAMED_STARS, STARS } from '../astronomy/sky-catalog';
@@ -31,6 +32,7 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const { width, height } = dimensions;
+    const palette = surfaceColors(viewport);
     // Keep the backing bitmap bounded on HiDPI and ultrawide monitors.
     const pixelRatio = Math.min(window.devicePixelRatio || 1, 2, 1536 / Math.max(width, height));
     const bufferWidth = Math.round(width * pixelRatio);
@@ -52,16 +54,16 @@
     ctx.beginPath();
     ctx.arc(0, 0, radius, 0, Math.PI * 2);
     ctx.clip();
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = palette.background;
     ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-    ctx.strokeStyle = 'rgba(229,229,229,0.15)';
+    ctx.strokeStyle = withOpacity(palette.muted, 0.15);
     ctx.lineWidth = 1;
     for (const alt of [30, 60]) {
       ctx.beginPath();
       ctx.arc(0, 0, radius * (90 - alt) / 90, 0, Math.PI * 2);
       ctx.stroke();
     }
-    ctx.strokeStyle = 'rgba(229,229,229,0.09)';
+    ctx.strokeStyle = withOpacity(palette.muted, 0.09);
     for (const angle of [0, Math.PI / 2]) {
       ctx.beginPath();
       ctx.moveTo(-radius * Math.cos(angle), -radius * Math.sin(angle));
@@ -72,7 +74,7 @@
     // Illustrated connect-the-dots patterns. Sample along each RA/Dec
     // segment to avoid connecting unrelated visible pieces over the horizon.
     ctx.lineWidth = 0.85;
-    ctx.strokeStyle = 'rgba(252,163,17,0.48)';
+    ctx.strokeStyle = withOpacity(palette.accent, 0.48);
     for (const [, chains] of CONSTELLATION_LINES) {
       for (const chain of chains) {
         ctx.beginPath();
@@ -106,7 +108,7 @@
       const r = magnitude < 1.4 ? 2.6 : magnitude < 2.6 ? 1.8 : magnitude < 4 ? 1.2 : 0.72;
       ctx.beginPath();
       ctx.arc(star.x * radius, star.y * radius, r, 0, 2 * Math.PI);
-      ctx.fillStyle = magnitude < 2 ? '#ffffff' : 'rgba(229,229,229,0.78)';
+      ctx.fillStyle = magnitude < 2 ? palette.text : withOpacity(palette.muted, 0.78);
       ctx.fill();
     }
 
@@ -122,7 +124,7 @@
       const py = pt.y * radius;
       if (occupied.some(other => Math.hypot(other.x - px, other.y - py) < 65)) continue;
       occupied.push({ x: px, y: py });
-      ctx.fillStyle = 'rgba(252,163,17,0.80)';
+      ctx.fillStyle = withOpacity(palette.accent, 0.80);
       ctx.fillText(name, px, py);
     }
     ctx.font = '10px system-ui, sans-serif';
@@ -134,12 +136,12 @@
       const py = pt.y * radius;
       if (occupied.some(other => Math.hypot(other.x - px, other.y - py) < 40)) continue;
       occupied.push({ x: px, y: py });
-      ctx.fillStyle = 'rgba(229,229,229,0.90)';
+      ctx.fillStyle = withOpacity(palette.muted, 0.90);
       ctx.fillText(name, px + 5, py - 6);
     }
     ctx.restore();
 
-    ctx.strokeStyle = 'rgba(229,229,229,0.35)';
+    ctx.strokeStyle = withOpacity(palette.muted, 0.35);
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI);
@@ -147,7 +149,7 @@
     ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#fca311';
+    ctx.fillStyle = palette.accent;
     for (const [label, dx, dy] of [
       ['N', 0, -1], ['E', 1, 0], ['S', 0, 1], ['W', -1, 0],
     ] as const) {
