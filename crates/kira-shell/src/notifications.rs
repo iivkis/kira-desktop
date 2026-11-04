@@ -316,9 +316,11 @@ impl Service {
             .and_then(|value| value.parse::<u32>().ok())
         {
             if revision == self.render_revision.get()
-                && self.host.borrow().as_ref().is_some_and(|host| {
-                    host.ready.get() && host.window.is_visible()
-                })
+                && self
+                    .host
+                    .borrow()
+                    .as_ref()
+                    .is_some_and(|host| host.ready.get() && host.window.is_visible())
             {
                 let ids: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
                 let now = Instant::now();
