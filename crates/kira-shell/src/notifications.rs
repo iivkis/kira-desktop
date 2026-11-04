@@ -3,6 +3,7 @@
 //! the Wayland surface; no arbitrary D-Bus or OS commands are exposed to JS.
 use crate::notification_layout::{self, Layout};
 use crate::notification_queue::{DEFAULT_DWELL, Notice, NotificationQueue};
+use crate::renderer_recovery::{RendererRecovery, RetryDecision};
 use std::cell::{Cell, RefCell};
 use std::rc::{Rc, Weak};
 use std::time::{Duration, Instant};
@@ -45,6 +46,8 @@ struct Host {
     view: webkit6::WebView,
     ready: Cell<bool>,
     layout: Cell<Option<Layout>>,
+    recovery: RefCell<RendererRecovery>,
+    unavailable: Cell<bool>,
 }
 
 struct Service {
@@ -311,6 +314,7 @@ impl Service {
     fn handle_ui(self: &Rc<Self>, message: &str) {
         if message == "ready" {
             if let Some(host) = self.host.borrow().as_ref() {
+                if host.unavailable.get() { return; }
                 host.ready.set(true);
             }
             // Renderer restart means its JS event listeners are new even
@@ -393,24 +397,38 @@ impl Service {
         crate::native_ui::restrict_webview_navigation(&view);
         window.set_child(Some(&view));
         let weak = Rc::downgrade(self);
-        view.connect_web_process_terminated(move |webview, _| {
-            if let Some(service) = weak.upgrade() {
-                if let Some(host) = service.host.borrow().as_ref() {
-                    host.ready.set(false);
-                    host.window.set_opacity(0.0);
-                    host.window.set_visible(false);
+        view.connect_web_process_terminated(move |webview, reason| {
+            let Some(service) = weak.upgrade() else { return; };
+            let decision = {
+                let hosts = service.host.borrow();
+                let Some(host) = hosts.as_ref() else { return; };
+                host.ready.set(false);
+                host.window.set_opacity(0.0);
+                host.window.set_visible(false);
+                let decision = host.recovery.borrow_mut().on_terminated(Instant::now());
+                if decision == RetryDecision::Exhausted {
+                    host.unavailable.set(true);
                 }
-                service.queue.borrow_mut().step(Instant::now(), false);
-                service.last_rendered.borrow_mut().take();
-                // Keep the empty, click-through host mapped while WebKit reloads.
-                // Unmapping it here can suspend the renderer and prevent the
-                // fresh Svelte onMount/ready handshake from running.
-                service.sync();
-                // A fresh Svelte instance will request a full snapshot.
+                decision
+            };
+            service.queue.borrow_mut().step(Instant::now(), false);
+            service.last_rendered.borrow_mut().take();
+            eprintln!("kira-shell: toast renderer terminated ({reason:?}): {decision:?}");
+            // Keep the empty, click-through host mapped while retrying, but
+            // never burn CPU in an unlimited WebKit crash/reload loop.
+            service.sync();
+            if let RetryDecision::After(delay) = decision {
                 let document = notification_html(&service.html);
                 let webview = webview.clone();
-                glib::timeout_add_local_once(Duration::from_millis(350), move || {
-                    webview.load_html(&document, None);
+                let weak = Rc::downgrade(&service);
+                glib::timeout_add_local_once(delay, move || {
+                    if let Some(service) = weak.upgrade() {
+                        if let Some(host) = service.host.borrow().as_ref() {
+                            if host.unavailable.get() { return; }
+                            host.recovery.borrow_mut().retry_started();
+                            webview.load_html(&document, None);
+                        }
+                    }
                 });
             }
         });
@@ -421,6 +439,8 @@ impl Service {
             view,
             ready: Cell::new(false),
             layout: Cell::new(None),
+            recovery: RefCell::new(RendererRecovery::default()),
+            unavailable: Cell::new(false),
         });
         gtk::prelude::WidgetExt::realize(&host.window);
         // A realized but unmapped WebKit child may postpone its onMount script.
@@ -515,7 +535,8 @@ impl Service {
         };
         let clearance = crate::calendar::notification_bottom_clearance(width, height);
         let layout = notification_layout::plan(width, height, clearance);
-        let possible = self.owned.get() && can_shape && layout.is_some();
+        let possible = self.owned.get() && can_shape && layout.is_some()
+            && !self.host.borrow().as_ref().is_some_and(|host| host.unavailable.get());
         if possible
             && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
             && self.host.borrow().is_none()
