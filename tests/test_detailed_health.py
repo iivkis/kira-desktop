@@ -115,8 +115,10 @@ class DetailedHealthContractTests(unittest.TestCase):
 
     def test_pulse_freshness_cannot_accept_a_future_timestamp(self):
         """A clock adjustment must never make an old pulse look fresh."""
-        self.assertIn("Math.max(now, pulseClock ?? now), 2_500", CHARTS)
-        self.assertIn("pulseClock = receivedAt", CHARTS)
+        self.assertIn("isSampleFresh(lastPulseAt, performance.now(), 2_500)", CHARTS)
+        self.assertIn("lastPulseAt = performance.now()", CHARTS)
+        self.assertIn("history = appendPulse(history, sample, performance.now()", CHARTS)
+        self.assertNotIn("pulseClock", CHARTS)
         self.assertNotIn("now < lastPulseAt ||", CHARTS)
 
     def test_native_views_and_styles_are_removed(self):
