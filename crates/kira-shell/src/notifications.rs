@@ -192,11 +192,20 @@ fn bounded(value: String, max_chars: usize) -> String {
 fn parse_paint_ack(value: &str) -> Option<(u32, Vec<u32>)> {
     let (revision, raw_ids) = value.split_once(':')?;
     let revision = revision.parse::<u32>().ok()?;
-    if revision == 0 { return None; }
-    let ids = raw_ids.split(',').map(str::parse::<u32>)
-        .collect::<Result<Vec<_>, _>>().ok()?;
-    if ids.is_empty() || ids.len() > 3 || ids.contains(&0) { return None; }
-    if ids.iter().enumerate().any(|(i, id)| ids[..i].contains(id)) { return None; }
+    if revision == 0 {
+        return None;
+    }
+    let ids = raw_ids
+        .split(',')
+        .map(str::parse::<u32>)
+        .collect::<Result<Vec<_>, _>>()
+        .ok()?;
+    if ids.is_empty() || ids.len() > 3 || ids.contains(&0) {
+        return None;
+    }
+    if ids.iter().enumerate().any(|(i, id)| ids[..i].contains(id)) {
+        return None;
+    }
     Some((revision, ids))
 }
 
@@ -409,9 +418,8 @@ impl Service {
                 self.signal_closed(id, 2);
                 self.sync();
             }
-        } else if let Some((revision, ids)) = message
-            .strip_prefix("painted:")
-            .and_then(parse_paint_ack)
+        } else if let Some((revision, ids)) =
+            message.strip_prefix("painted:").and_then(parse_paint_ack)
         {
             if revision == self.render_revision.get()
                 && self
@@ -420,8 +428,12 @@ impl Service {
                     .as_ref()
                     .is_some_and(|host| host.ready.get() && host.window.is_visible())
             {
-                let matches_snapshot = self.queue.borrow().visible()
-                    .map(|item| item.id).eq(ids.iter().copied());
+                let matches_snapshot = self
+                    .queue
+                    .borrow()
+                    .visible()
+                    .map(|item| item.id)
+                    .eq(ids.iter().copied());
                 if matches_snapshot {
                     let now = Instant::now();
                     let just_painted = self.queue.borrow_mut().mark_painted(now, &ids);
@@ -800,17 +812,31 @@ mod tests {
     fn painted_ack_requires_exact_ordered_nonzero_ids_and_revision() {
         assert_eq!(parse_paint_ack("7:10,11,12"), Some((7, vec![10, 11, 12])));
         for malformed in [
-            "", "0:1", "1:", "1:0", "1:1,2,3,4", "1:1,1",
-            "1:1,,2", "1:banana", "1:1:2", "abc:1",
-            "4294967296:1", "1:4294967296",
+            "",
+            "0:1",
+            "1:",
+            "1:0",
+            "1:1,2,3,4",
+            "1:1,1",
+            "1:1,,2",
+            "1:banana",
+            "1:1:2",
+            "abc:1",
+            "4294967296:1",
+            "1:4294967296",
         ] {
             assert!(parse_paint_ack(malformed).is_none(), "{malformed}");
         }
         let t = Instant::now();
         let mut queue = NotificationQueue::default();
         let notice = Notice {
-            id: 9, app: "test".into(), summary: "t".into(), body: String::new(),
-            actions: Vec::new(), critical: false, persistent: false,
+            id: 9,
+            app: "test".into(),
+            summary: "t".into(),
+            body: String::new(),
+            actions: Vec::new(),
+            critical: false,
+            persistent: false,
             dwell: DEFAULT_DWELL,
         };
         assert!(queue.push(notice, t));
