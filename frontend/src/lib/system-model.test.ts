@@ -50,20 +50,20 @@ describe('Svelte System Monitor model', () => {
     expect(percentUsed(0, 0)).toBeNull();
     expect(percentUsed(100, 150)).toBeNull();
     expect(percentUsed(100, 0)).toBe(100);
-    expect(usageLabel(null, null)).toBe('UNAVAILABLE');
-    expect(usageLabel(0, 0)).toBe('NOT CONFIGURED');
+    expect(usageLabel(null, null)).toBe('НЕДОСТУПНО');
+    expect(usageLabel(0, 0)).toBe('НЕ НАСТРОЕНО');
     expect(usageLabel(100000, 100000)).toBe('0%');
     expect(usageLabel(7700000, 7679000)).toBe('0.3%');
     expect(usageLabel(1000000, 999999)).toBe('<0.1%');
     expect(usageLabel(100, 60)).toBe('40%');
-    expect(usageLabel(100, 120)).toBe('UNAVAILABLE');
+    expect(usageLabel(100, 120)).toBe('НЕДОСТУПНО');
 
-    expect(fractionLabel(null, null)).toBe('UNAVAILABLE');
+    expect(fractionLabel(null, null)).toBe('НЕДОСТУПНО');
     expect(bytesLabel(1_048_576)).toBe('1.0 GiB');
     expect(processMemoryLabel(null)).toBe('—');
     expect(processMemoryLabel(0)).toBe('0 KiB');
     expect(processMemoryLabel(512)).toBe('512 KiB');
-    expect(temperatureLabel(null)).toBe('UNAVAILABLE');
+    expect(temperatureLabel(null)).toBe('НЕДОСТУПНО');
     expect(temperatureLabel(57.125)).toBe('57.1 °C');
   });
 
