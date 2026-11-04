@@ -7,7 +7,7 @@ use std::cell::{Cell, RefCell};
 use std::rc::{Rc, Weak};
 use std::time::{Duration, Instant};
 
-use gtk::glib::{self, ToVariant};
+use gtk::glib::{self, variant::ToVariant};
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 use webkit6::prelude::*;
@@ -291,7 +291,10 @@ impl Service {
                 service.queue.borrow_mut().step(Instant::now(), false);
                 // A fresh Svelte instance will request a full snapshot.
                 let document = notification_html(&service.html);
-                webview.load_html(&document, None);
+                let webview = webview.clone();
+                glib::timeout_add_local_once(Duration::from_millis(350), move || {
+                    webview.load_html(&document, None);
+                });
             }
         });
         let document = notification_html(&self.html);
@@ -299,7 +302,7 @@ impl Service {
         let host = Rc::new(Host {
             window, view, ready: Cell::new(false), layout: Cell::new(None),
         });
-        host.window.realize();
+        gtk::prelude::WidgetExt::realize(&host.window);
         host
     }
 
@@ -334,7 +337,7 @@ impl Service {
         let now = Instant::now();
         let can_shape = gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes());
         let (width, height) = if let Some(host) = self.host.borrow().as_ref() {
-            let display = host.window.display();
+            let display = gtk::prelude::WidgetExt::display(&host.window);
             let monitor = host.window.surface()
                 .and_then(|surface| display.monitor_at_surface(&surface))
                 .or_else(|| display.monitors().item(0)
