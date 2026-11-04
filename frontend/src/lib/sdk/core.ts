@@ -574,7 +574,10 @@ const niriTransforms: Record<string, string> = {
 };
 
 export function displayTransformId(value: string): string {
-  return niriTransforms[value] ?? '';
+  // An unknown string such as "constructor" must not resolve through
+  // Object.prototype into a non-string transform command.
+  return Object.prototype.hasOwnProperty.call(niriTransforms, value)
+    ? niriTransforms[value] : '';
 }
 
 export function displayModeId(mode: DisplayMode): string {
