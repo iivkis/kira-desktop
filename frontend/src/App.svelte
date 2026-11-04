@@ -17,6 +17,7 @@
   let settingsUnavailable = $state(false);
   let settingsShellOutdated = $state(false);
   let systemMetrics = $state<SystemMetrics | null>(null);
+  let metricsLastReceivedAt = $state<number | null>(null);
 
   function activateSettings() {
     settingsUnavailable = !toggleSettings();
@@ -79,7 +80,10 @@
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
     const stopMetrics = onSystemMetrics((value) => {
-      if (!disposed) systemMetrics = value;
+      if (!disposed) {
+        systemMetrics = value;
+        metricsLastReceivedAt = Date.now();
+      }
     });
 
     // Core listens to Niri EventStream. Shell forwards each changed snapshot
@@ -193,6 +197,8 @@
       coreVersion={coreVersion}
       niriConnected={workspaceState?.connected ?? null}
       metrics={systemMetrics}
+      {metricsLastReceivedAt}
+      {now}
       onOpen={activateSystemPanel}
     />
     {#if systemUnavailable}
