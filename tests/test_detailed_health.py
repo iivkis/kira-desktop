@@ -12,6 +12,7 @@ ENTRY = (ROOT / "frontend/src/main.ts").read_text()
 APP = (ROOT / "frontend/src/App.svelte").read_text()
 HEALTH = (ROOT / "frontend/src/lib/components/SystemHealth.svelte").read_text()
 WIDGET = (ROOT / "frontend/src/lib/components/SystemWidget.svelte").read_text()
+CHARTS = (ROOT / "frontend/src/lib/components/SystemCharts.svelte").read_text()
 MODEL = (ROOT / "frontend/src/lib/system-model.ts").read_text()
 SDK = (ROOT / "frontend/src/lib/sdk/core.ts").read_text()
 NIX = (ROOT / "nix/package.nix").read_text()
@@ -111,6 +112,12 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertNotIn("usageLabel(metrics?.swap_total_kib", WIDGET)
         self.assertNotIn("{temperatureLabel(metrics?.cpu_temperature_c", WIDGET)
         self.assertNotIn("{#each processes?.rows", WIDGET)
+
+    def test_pulse_freshness_cannot_accept_a_future_timestamp(self):
+        """A clock adjustment must never make an old pulse look fresh."""
+        self.assertIn("Math.max(now, pulseClock ?? now), 2_500", CHARTS)
+        self.assertIn("pulseClock = receivedAt", CHARTS)
+        self.assertNotIn("now < lastPulseAt ||", CHARTS)
 
     def test_native_views_and_styles_are_removed(self):
         self.assertNotIn("mod process_page;", HOST)
