@@ -29,12 +29,12 @@
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
 
+  const pulseFresh = $derived(lastPulseAt !== null &&
+    (now < lastPulseAt || isSampleFresh(lastPulseAt, now, 2_500)));
   const usage = $derived(liveUtilization(pulse, pulseFresh, metrics));
   const cpu = $derived(usage.cpu);
   const ram = $derived(usage.ram);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
-  const pulseFresh = $derived(lastPulseAt !== null &&
-    (now < lastPulseAt || isSampleFresh(lastPulseAt, now, 2_500)));
   const trendHeight = $derived(gpuAvailable ? 296 : 202);
   const dialLabel = (value: number | null, precise = false) =>
     value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
