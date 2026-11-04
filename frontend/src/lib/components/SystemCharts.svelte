@@ -26,15 +26,17 @@
   let history: TelemetryPoint[] = [];
   let pulse = $state<SystemPulse | null>(null);
   let lastPulseAt = $state<number | null>(null);
-  let pulseClock = $state<number | null>(null);
   let lastPulse: SystemPulse | null = null;
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
 
-  // React immediately when a pulse arrives, even before the slower parent
-  // clock tick. Never treat a future timestamp as proof of freshness.
-  const pulseFresh = $derived(isSampleFresh(lastPulseAt,
-    Math.max(now, pulseClock ?? now), 2_500));
+  // The parent clock tick invalidates this derived value every two seconds,
+  // while a new pulse invalidates it immediately. Use a monotonic timestamp
+  // for both sides so changing the wall clock cannot keep dead data "fresh".
+  const pulseFresh = $derived.by(() => {
+    if (!Number.isFinite(now)) return false;
+    return isSampleFresh(lastPulseAt, performance.now(), 2_500);
+  });
   const usage = $derived(liveUtilization(pulse, pulseFresh, metrics));
   const cpu = $derived(usage.cpu);
   const ram = $derived(usage.ram);
@@ -156,10 +158,8 @@
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced = motion.matches;
     const stopPulse = onSystemPulse(sample => {
-      const receivedAt = Date.now();
+      lastPulseAt = performance.now();
       pulse = sample;
-      lastPulseAt = receivedAt;
-      pulseClock = receivedAt;
     });
     gauges = echarts.init(gaugeNode, undefined, { renderer: 'svg' });
     trend = echarts.init(trendNode, undefined, { renderer: 'svg' });
@@ -182,7 +182,6 @@
       history = [];
       lastPulse = null;
       lastPulseAt = null;
-      pulseClock = null;
       lastMetrics = null;
       pendingGpu = undefined;
     };
