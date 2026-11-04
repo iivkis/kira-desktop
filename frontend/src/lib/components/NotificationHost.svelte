@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import NotificationCard, { type Notice } from './NotificationCard.svelte';
+  import NotificationCard from './NotificationCard.svelte';
+  import type { Notice } from '../notification-model';
 
   type Snapshot = { height: number; cardHeight: number; visible: Notice[] };
   let visible = $state<Notice[]>([]);
