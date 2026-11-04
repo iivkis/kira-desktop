@@ -30,7 +30,18 @@
 
   onMount(() => {
     let lastRevision = 0;
+    let acknowledgedRevision = 0;
     let disposed = false;
+    let fallbackTimer: number | null = null;
+    const acknowledge = (revision: number): boolean => {
+      if (disposed || lastRevision !== revision || acknowledgedRevision === revision ||
+          document.visibilityState !== 'visible') return false;
+      const first = document.querySelector<HTMLElement>('[data-kira-notification-card]');
+      if (!first || first.getBoundingClientRect().height <= 0) return false;
+      acknowledgedRevision = revision;
+      send('painted:' + revision);
+      return true;
+    };
     const update = (event: Event) => {
       const next = (event as CustomEvent<unknown>).detail as Snapshot | undefined;
       if (!next || !Number.isSafeInteger(next.revision) || next.revision < 1 ||
@@ -43,14 +54,24 @@
       lastRevision = next.revision;
       cardHeight = next.cardHeight;
       visible = next.visible;
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+      fallbackTimer = null;
       if (next.visible.length > 0) {
-        // A native admission is not a painted frame. Confirm after Svelte's
-        // DOM commit and compositor-bound rAFs so dwell >= 3s is real.
         const revision = next.revision;
+        // Prefer two compositor-bound frames; a bounded fallback is needed
+        // for WebKit/headless when requestAnimationFrame is throttled.
+        // Native still rejects acknowledgements for an unmapped host.
         void tick().then(() => {
-          if (disposed) return;
+          if (disposed || lastRevision !== revision) return;
+          fallbackTimer = window.setTimeout(() => {
+            fallbackTimer = null;
+            acknowledge(revision);
+          }, 650);
           requestAnimationFrame(() => requestAnimationFrame(() => {
-            if (!disposed && lastRevision === revision) send('painted:' + revision);
+            if (acknowledge(revision) && fallbackTimer !== null) {
+              window.clearTimeout(fallbackTimer);
+              fallbackTimer = null;
+            }
           }));
         });
       }
@@ -59,13 +80,14 @@
     send('ready');
     return () => {
       disposed = true;
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
       window.removeEventListener('kira:notifications:update', update);
     };
   });
 </script>
 
 <main class="flex h-full w-full flex-col-reverse justify-start gap-2 bg-transparent p-2 text-kira-text"
-  data-kira-ui-root aria-label="Уведомления Kira Desktop">
+  data-kira-ui-root aria-label="Уведомления Kira Desktop" aria-live="polite" aria-relevant="additions">
   {#each visible as notice (notice.id)}
     <NotificationCard {notice} height={cardHeight}
       onClose={(id) => send('close:' + id)}
