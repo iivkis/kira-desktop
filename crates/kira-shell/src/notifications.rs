@@ -179,11 +179,7 @@ fn bounded(value: String, max_chars: usize) -> String {
     value.chars().take(max_chars).collect()
 }
 
-fn notice_from_params(
-    queue: &mut NotificationQueue,
-    params: &glib::Variant,
-    sender: &str,
-) -> Notice {
+fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> Notice {
     let app = bounded(
         params.child_value(0).get::<String>().unwrap_or_default(),
         128,
@@ -220,14 +216,11 @@ fn notice_from_params(
     } else {
         Duration::from_millis(u64::try_from(timeout.max(3000).min(30000)).unwrap_or(5000))
     };
-    let id = if replace != 0 && queue.active_owner(replace) == Some(sender) {
-        replace
-    } else {
-        queue.allocate_id()
-    };
+    // The spec defines nonzero replaces_id as an ID, not a D-Bus sender
+    // capability. CLI tools may replace the same ID from fresh connections.
+    let id = if replace != 0 { replace } else { queue.allocate_id() };
     Notice {
         id,
-        owner: bounded(sender.to_owned(), 256),
         app,
         summary,
         body,
@@ -251,7 +244,7 @@ impl Service {
         let registered = connection
             .register_object(OBJECT_PATH, &info)
             .method_call(
-                move |_connection, sender, _path, _interface, method, params, invocation| {
+                move |_connection, _sender, _path, _interface, method, params, invocation| {
                     let Some(service) = weak.upgrade() else {
                         invocation.return_dbus_error(
                             "org.freedesktop.DBus.Error.Failed",
@@ -271,13 +264,6 @@ impl Service {
                             ));
                         }
                         "Notify" => {
-                            let Some(sender) = sender else {
-                                invocation.return_dbus_error(
-                                    "org.freedesktop.DBus.Error.AccessDenied",
-                                    "Notification sender is unavailable",
-                                );
-                                return;
-                            };
                             // A single D-Bus invocation must never allocate an
                             // unbounded payload or silently drop an older FIFO item.
                             if params.size() > 64 * 1024 {
@@ -289,7 +275,7 @@ impl Service {
                             }
                             let (id, accepted) = {
                                 let mut queue = service.queue.borrow_mut();
-                                let notice = notice_from_params(&mut queue, &params, sender);
+                                let notice = notice_from_params(&mut queue, &params);
                                 let id = notice.id;
                                 (id, queue.push(notice, Instant::now()))
                             };
@@ -304,18 +290,8 @@ impl Service {
                             service.sync();
                         }
                         "CloseNotification" => {
-                            let Some(sender) = sender else {
-                                invocation.return_dbus_error(
-                                    "org.freedesktop.DBus.Error.AccessDenied",
-                                    "Notification sender is unavailable",
-                                );
-                                return;
-                            };
                             let id = params.child_value(0).get::<u32>().unwrap_or(0);
-                            // The numeric ID is public; only the original
-                            // unique session-bus sender may close its notice.
-                            let allowed = service.queue.borrow().active_owner(id) == Some(sender);
-                            let existed = allowed && service.queue.borrow_mut().close(id);
+                            let existed = service.queue.borrow_mut().close(id);
                             if existed {
                                 invocation.return_value(None);
                                 service.signal_closed(id, 3);
@@ -643,7 +619,9 @@ impl Service {
             // keep the same ID, so they never produce a false close signal.
             let current: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
             for id in previously_visible {
-                if !current.contains(&id) {
+                if !current.contains(&id) && !self.queue.borrow().contains_active(id) {
+                    // Persistent toasts rotate out of view but must not close
+                    // their Freedesktop ID or emit NotificationClosed.
                     self.signal_closed(id, 1);
                 }
             }
