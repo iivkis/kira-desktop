@@ -126,19 +126,26 @@ pub fn start(app: &gtk::Application, html: &str, context: &webkit6::WebContext) 
 fn observe_monitor(monitor: &gtk::gdk::Monitor, service: &Rc<Service>) {
     let weak = Rc::downgrade(service);
     monitor.connect_notify_local(Some("geometry"), move |_, _| {
-        if let Some(service) = weak.upgrade() { service.sync(); }
+        if let Some(service) = weak.upgrade() {
+            service.sync();
+        }
     });
     let weak = Rc::downgrade(service);
     monitor.connect_notify_local(Some("scale-factor"), move |_, _| {
-        if let Some(service) = weak.upgrade() { service.sync(); }
+        if let Some(service) = weak.upgrade() {
+            service.sync();
+        }
     });
 }
 
 fn observe_outputs(service: &Rc<Service>) {
-    let Some(display) = gtk::gdk::Display::default() else { return; };
+    let Some(display) = gtk::gdk::Display::default() else {
+        return;
+    };
     let monitors = display.monitors();
     for index in 0..monitors.n_items() {
-        if let Some(monitor) = monitors.item(index)
+        if let Some(monitor) = monitors
+            .item(index)
             .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
         {
             observe_monitor(&monitor, service);
@@ -148,7 +155,8 @@ fn observe_outputs(service: &Rc<Service>) {
     monitors.connect_items_changed(move |model, position, _, added| {
         if let Some(service) = weak.upgrade() {
             for index in position..position.saturating_add(added) {
-                if let Some(monitor) = model.item(index)
+                if let Some(monitor) = model
+                    .item(index)
                     .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
                 {
                     observe_monitor(&monitor, &service);
