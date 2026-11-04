@@ -28,6 +28,7 @@
   let sort = $state({ ...defaultSort });
   let refreshed = $state('');
   let lastSampleAt = $state<number | null>(null);
+  let processesLastReceivedAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
   let processList: HTMLDivElement;
@@ -35,11 +36,15 @@
   const sampleFresh = $derived(isSampleFresh(lastSampleAt, now));
   // Keep expired metrics out of every numeric widget, not just the headline.
   const liveMetrics = $derived(sampleFresh ? metrics : null);
+  // The process table has its own two-second native sampler. Expire old rows
+  // independently from the overview telemetry when that worker stops.
+  const processesFresh = $derived(isSampleFresh(processesLastReceivedAt, now, 8_000));
+  const liveProcesses = $derived(processesFresh ? processes : null);
   const health = $derived(status === null ? 'ОЖИДАНИЕ ТЕЛЕМЕТРИИ' :
     !sampleFresh ? 'ДАННЫЕ УСТАРЕЛИ' : systemHeadline(metrics, status.core, status.niri));
   const swapPercent = $derived(percentUsedPrecise(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null));
   const storagePercent = $derived(percentUsedPrecise(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null));
-  const matching = $derived(sortedProcesses(processes?.rows ?? [], query, sort));
+  const matching = $derived(sortedProcesses(liveProcesses?.rows ?? [], query, sort));
   const visible = $derived(matching.slice(0, visibleCount));
 
 
@@ -52,7 +57,11 @@
       now = receivedAt;
       refreshed = new Date(receivedAt).toLocaleTimeString(UI_LOCALE);
     });
-    const stopProcesses = onSystemProcesses(data => { processes = data; });
+    const stopProcesses = onSystemProcesses(data => {
+      processes = data;
+      processesLastReceivedAt = Date.now();
+      now = processesLastReceivedAt;
+    });
     return () => {
       window.clearInterval(clock);
       stopMetrics();
@@ -66,6 +75,7 @@
     active = tab;
     if (tab === 'processes') {
       processes = null;
+      processesLastReceivedAt = null;
       visibleCount = 36;
     }
     onTab(tab);
@@ -137,7 +147,7 @@
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
             <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ОСНОВНОЙ ДИСК</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
-              {usageLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
+              {usageLabel(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null)}
             </div>
             {#if storagePercent !== null}
               <div role="progressbar" aria-label="Занято на основном диске" aria-valuemin={0} aria-valuemax={100}
@@ -148,14 +158,14 @@
               <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Нет данных об использовании диска"></div>
             {/if}
             <p class="mt-2 truncate text-[11px] text-kira-muted"
-              title={fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}>
-              {fractionLabel(metrics?.root_total_kib ?? null, metrics?.root_available_kib ?? null)}
+              title={fractionLabel(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null)}>
+              {fractionLabel(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null)}
             </p>
           </article>
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
             <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ПАМЯТЬ SWAP</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
-              {usageLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
+              {usageLabel(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null)}
             </div>
             {#if swapPercent !== null}
               <div role="progressbar" aria-label="Использование swap" aria-valuemin={0} aria-valuemax={100}
@@ -166,8 +176,8 @@
               <div class="mt-3 h-1 bg-kira-muted/15" aria-label="Нет данных об использовании swap"></div>
             {/if}
             <p class="mt-2 truncate text-[11px] text-kira-muted"
-              title={fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}>
-              {fractionLabel(metrics?.swap_total_kib ?? null, metrics?.swap_free_kib ?? null)}
+              title={fractionLabel(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null)}>
+              {fractionLabel(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null)}
             </p>
           </article>
         </div>
@@ -181,7 +191,7 @@
             <span class="text-[11px] font-bold tracking-wider text-kira-muted">CPU · ТЕМП</span>
             <span class="text-[14px] font-extrabold tabular-nums"
               use:pulseReading={temperatureLabel(liveMetrics?.cpu_temperature_c ?? null)}>
-              {temperatureLabel(metrics?.cpu_temperature_c ?? null)}
+              {temperatureLabel(liveMetrics?.cpu_temperature_c ?? null)}
             </span>
           </div>
         </div>
@@ -200,7 +210,7 @@
               </div>
             </div>
           {:else}
-            <p class="text-[11px] text-kira-muted">GPU НЕ ОБНАРУЖЕН</p>
+            <p class="text-[11px] text-kira-muted">{liveMetrics === null ? 'ДАННЫЕ GPU НЕДОСТУПНЫ' : 'GPU НЕ ОБНАРУЖЕН'}</p>
           {/each}
         </div>
       </section>
@@ -230,9 +240,9 @@
           <div class="col-span-2 flex items-center justify-between border-t border-kira-muted/15 pt-2">
             <span class="text-[11px] font-bold tracking-wider text-kira-muted">ПИТАНИЕ</span>
             <span class="text-right text-[11px] font-bold">
-              {liveMetrics?.battery_percent == null ? 'НЕ ОБНАРУЖЕНО' :
+              {liveMetrics === null ? 'НЕДОСТУПНО' : liveMetrics.battery_percent == null ? 'НЕ ОБНАРУЖЕНО' :
                 liveMetrics.battery_percent + '%' + (liveMetrics.battery_charging === true ? ' / ЗАРЯДКА' :
-                  metrics.battery_charging === false ? ' / РАЗРЯДКА' : '')}
+                  liveMetrics.battery_charging === false ? ' / РАЗРЯДКА' : '')}
             </span>
           </div>
         </div>
@@ -284,9 +294,10 @@
             <span class="text-right tabular-nums">{processMemoryLabel(process.pss_kib)}</span>
           </div>
         {:else}
-          <p class="py-9 text-center text-xs text-kira-muted">{processes?.error ?
-            'ДАННЫЕ ПРОЦЕССОВ НЕДОСТУПНЫ: ' + processes.error :
-            processes && processes.rows.length ? 'ПРОЦЕССЫ НЕ НАЙДЕНЫ' : 'СБОР ДАННЫХ…'}</p>
+          <p class="py-9 text-center text-xs text-kira-muted">{liveProcesses?.error ?
+            'ДАННЫЕ ПРОЦЕССОВ НЕДОСТУПНЫ: ' + liveProcesses.error :
+            processes !== null && !processesFresh ? 'ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ' :
+            liveProcesses && liveProcesses.rows.length ? 'ПРОЦЕССЫ НЕ НАЙДЕНЫ' : 'СБОР ДАННЫХ…'}</p>
         {/each}
         {#if visible.length < matching.length && visible.length < 180}
           <button type="button" onclick={() => { visibleCount = Math.min(180, visibleCount + 36); }}
@@ -296,10 +307,10 @@
           </button>
         {/if}
       </div>
-      {#if query.trim() || processes?.truncated || visible.length < matching.length}
+      {#if query.trim() || liveProcesses?.truncated || visible.length < matching.length || (processes !== null && !processesFresh)}
         <p data-kira-enter class="shrink-0 pt-3 text-[11px] font-medium text-kira-muted" role="status">
           {visible.length} из {matching.length}
-          {processes?.truncated ? ' · ДОСТИГНУТ ЛИМИТ СКАНИРОВАНИЯ' : ''}
+          {liveProcesses?.truncated ? ' · ДОСТИГНУТ ЛИМИТ СКАНИРОВАНИЯ' : ''}
           {visible.length === 180 && matching.length > 180 ? ' · УТОЧНИТЕ ФИЛЬТР' : ''}
         </p>
       {/if}
