@@ -125,11 +125,11 @@
 
   {#if active === 'overview'}
     <div use:tenetPanelArrival class="flex min-h-0 flex-1 flex-col">
-      <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Live system telemetry">
+      <section data-kira-enter class="bg-kira-surface px-5 pb-5 pt-4" aria-label="Телеметрия системы">
         <SystemCharts {metrics} {now} />
       </section>
 
-      <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Secondary resource metrics">
+      <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Дополнительные показатели ресурсов">
         <h2 class="mb-3 text-[11px] font-bold tracking-wide text-kira-accent">ЁМКОСТЬ</h2>
         <div class="grid grid-cols-2 gap-3">
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
@@ -172,7 +172,7 @@
       </section>
 
       <section data-kira-enter class="bg-kira-surface-soft px-5 py-4"
-        aria-label="Hardware temperatures and graphics">
+        aria-label="Температуры оборудования и графика">
         <div class="flex items-center justify-between gap-3">
           <h2 class="text-[11px] font-extrabold tracking-[0.15em] text-kira-accent">ОБОРУДОВАНИЕ</h2>
           <div class="flex items-baseline gap-2">
@@ -264,8 +264,8 @@
               (column.field === 'name' ? 'text-left ' : '') +
               (sort.field === column.field ? 'text-kira-accent' : 'text-kira-muted')}
             aria-label={'Сортировать по ' + column.label}
-             title={column.field === 'memory' ? 'Resident memory (RSS)' :
-               column.field === 'pss' ? 'Proportional memory (PSS)' : 'Sort by ' + column.label}>
+             title={column.field === 'memory' ? 'Память процесса (RSS)' :
+               column.field === 'pss' ? 'Пропорциональная память процесса (PSS)' : 'Sort by ' + column.label}>
             {column.label}{sort.field === column.field ? (sort.descending ? ' ↓' : ' ↑') : ''}
           </button>
         {/each}
@@ -273,7 +273,7 @@
       <div bind:this={processList} data-kira-enter use:tenetReflowScope class="kira-monitor-scroll min-h-0 flex-1 overflow-y-auto" aria-live="off">
         {#each visible as process (process.pid)}
           <div data-kira-reflow class="grid min-h-9 grid-cols-[minmax(0,1fr)_42px_50px_65px_65px] items-center gap-1 border-b border-kira-muted/10 text-[11px]"
-            title={process.name + ' / PID ' + process.pid + ' / STATE ' + process.state +
+            title={process.name + ' / PID ' + process.pid + ' / СОСТОЯНИЕ ' + process.state +
               ' / RSS ' + processMemoryLabel(process.rss_kib) + ' / PSS ' + processMemoryLabel(process.pss_kib)}>
             <span class="truncate font-semibold">{process.name}</span>
             <span class="text-right tabular-nums text-kira-muted">{process.pid}</span>
