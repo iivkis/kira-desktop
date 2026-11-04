@@ -316,14 +316,14 @@
             style:width={Math.max(38, rect.width * zoom) + 'px'}
             style:height={Math.max(32, rect.height * zoom) + 'px'}>
             <strong class="text-[12px] font-black">{outputs.findIndex(o => o.connector === rect.connector) + 1}</strong>
-            <span class="max-w-full truncate px-1 text-[9px] font-semibold">{rect.connector}</span>
+            <span class="max-w-full truncate px-1 text-[11px] font-semibold">{rect.connector}</span>
           </button>
         {/each}
         {#if rectangles.length === 0}
           <div class="p-4 text-[11px] text-kira-muted">Все дисплеи отключены</div>
         {/if}
       </div>
-      <p class="mt-3 text-[10px] leading-relaxed text-kira-muted">
+      <p class="mt-3 text-[11px] leading-relaxed text-kira-muted">
         Niri может скорректировать пересекающиеся экраны.
       </p>
     </div>
@@ -337,7 +337,7 @@
           <span class="grid size-7 shrink-0 place-items-center border border-kira-muted/40 text-[12px] font-black">{i + 1}</span>
           <span class="min-w-0">
             <strong class="block truncate text-[11px]">{output.make} {output.model}</strong>
-            <span class="mt-1 block truncate text-[10px] text-kira-muted">{output.connector} ·
+            <span class="mt-1 block truncate text-[11px] text-kira-muted">{output.connector} ·
               {draft.find(d => d.connector === output.connector)?.enabled ? 'Включён' : 'Выключен'}
             </span>
           </span>
