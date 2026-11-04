@@ -177,14 +177,14 @@
       <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
         <div class="relative flex min-w-0 flex-col items-center justify-center">
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-accent"
-            aria-label={'Загрузка CPU: ' + (cpu === null ? 'нет данных' : cpu + ' процентов')}>
+            aria-label={'Загрузка CPU: ' + (cpu === null ? 'нет данных' : cpu + '%')}>
             {dialLabel(cpu)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">CPU</div>
         </div>
         <div class="relative flex min-w-0 flex-col items-center justify-center">
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-text"
-            aria-label={'Использование RAM: ' + (ram === null ? 'нет данных' : ram.toFixed(1) + ' процентов')}>
+            aria-label={'Использование RAM: ' + (ram === null ? 'нет данных' : ram.toFixed(1) + '%')}>
             {dialLabel(ram, true)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">RAM</div>
