@@ -186,7 +186,7 @@ mod tests {
         q.push(a, t);
         q.step(t, true);
         q.push(notice(2), t);
-        assert!(!q.step(t + Duration::from_millis(2999), false) == false);
+        assert!(q.step(t + Duration::from_millis(2999), false));
         assert_eq!(q.visible_count(), 0);
         q.step(t + Duration::from_secs(4), true);
         assert_eq!(q.visible().next().unwrap().id, 1);
@@ -208,7 +208,7 @@ mod tests {
         q.push(replacement, t + Duration::from_secs(1));
         assert_eq!(q.visible().next().unwrap().summary, "changed");
         assert!(q.close(1));
-        q.step(t + Duration::from_secs(1), true);
+        q.step(t + ADMISSION_GAP, true);
         assert_eq!(q.visible().next().unwrap().id, 2);
     }
 }
