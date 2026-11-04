@@ -79,10 +79,10 @@ function scriptFor(steps, observationMs = 1150) {
               : kind === 'system-overview'
                 ? 'document.querySelector("nav [data-kira-tab=overview]")?.click();'
               : kind === 'calendar-next'
-                ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent;' +
-                  'document.querySelector("button[aria-label=\\\"Next month\\\"]")?.click();'
+                ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Выбор даты\\\"] h2")?.textContent;' +
+                  'document.querySelector("button[aria-label=\\\"Следующий месяц\\\"]")?.click();'
               : kind === 'calendar-pick'
-                ? 'const candidate = document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[data-calendar-day].text-kira-text:not([aria-pressed=\\\"true\\\"])");' +
+                ? 'const candidate = document.querySelector("[aria-label=\\\"Даты календаря\\\"] button[data-calendar-day].text-kira-text:not([aria-pressed=\\\"true\\\"])");' +
                   'window.__kiraCalendarChosen = candidate?.getAttribute("aria-label");candidate?.click();'
               : kind === 'clock-chaos'
                 ? // Clock flights can finish between Chromium virtual-time
@@ -225,7 +225,7 @@ function scriptFor(steps, observationMs = 1150) {
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
       'document.documentElement.setAttribute("data-smoke-option-count", list?.querySelectorAll("[role=option]").length ?? 0);' +
-      'const shared=roots[0]?.querySelector("[aria-label=\\\"Calendar dates\\\"] [data-kira-flow-indicator]") ||' +
+      'const shared=roots[0]?.querySelector("[aria-label=\\\"Даты календаря\\\"] [data-kira-flow-indicator]") ||' +
         'roots[0]?.querySelector("[role=listbox] [data-kira-flow-indicator]") ||' +
         'roots[0]?.querySelector("nav [data-kira-flow-indicator]");' +
       'const area=shared?.parentElement;' +
@@ -251,7 +251,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
       'const clock = document.querySelector("[data-calendar-clock]");' +
       'document.documentElement.setAttribute("data-smoke-calendar-odometer", !!clock && clock.querySelectorAll("[data-clock-digit]").length === 6 && !!clock.getAttribute("aria-label") && !!clock.getAttribute("datetime") && clock.querySelectorAll("[data-clock-cell]").length === 6);' +
-      'const calGrid = document.querySelector("[aria-label=\\\"Calendar dates\\\"]");' +
+      'const calGrid = document.querySelector("[aria-label=\\\"Даты календаря\\\"]");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-events", calGrid?.dataset.tenetScenes || "0");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-contact", !!calGrid?.dataset.tenetContact);' +
       // Four recorded fragments remain DOM-owned but invisible until exit.
@@ -264,8 +264,8 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
-      'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
-      'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
+      'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Выбор даты\\\"] h2")?.textContent);' +
+      'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Даты календаря\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
       'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
       'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"Загрузка CPU: 42 процентов\\\"]") && !roots[0].textContent.includes("ИМПУЛЬС УСТАРЕЛ"));' +
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
@@ -469,8 +469,8 @@ async function smokeTopBar() {
     'name:"Workspace long name "+(i+1),output:"DP-1",is_active:i===8,is_focused:i===8,' +
     'is_urgent:i===0||i===5||i===10}))}})),85);' +
     'setTimeout(()=>{' +
-    'const root=document.querySelector("main[aria-label=\\\"Kira Desktop top bar\\\"]");' +
-    'const list=root?.querySelector("ol[aria-label=\\\"Niri workspaces\\\"]");' +
+    'const root=document.querySelector("main[aria-label=\\\"Верхняя панель Kira Desktop\\\"]");' +
+    'const list=root?.querySelector("ol[aria-label=\\\"Рабочие пространства Niri\\\"]");' +
     'const focused=list?.querySelector("[data-focused=true]");' +
     'const listRect=list?.getBoundingClientRect();const focusRect=focused?.getBoundingClientRect();' +
     'const shared=list?.querySelector("[data-kira-flow-indicator]");' +
@@ -478,8 +478,8 @@ async function smokeTopBar() {
     'const flowAligned=!!selectedRect && !!focusRect &&' +
       'Math.abs(selectedRect.left-focusRect.left)<2 &&' +
       'Math.abs(selectedRect.width-focusRect.width)<2;' +
-    'const urgency=root?.querySelectorAll("[aria-label*=\\\"urgent workspace hidden\\\"]");' +
-    'const visibleUrgent=root?.querySelector("[aria-label*=\\\", urgent\\\"]");' +
+    'const urgency=root?.querySelectorAll("[aria-label*=\\\"скрыто срочное пространство\\\"]");' +
+    'const visibleUrgent=root?.querySelector("[aria-label*=\\\", требует внимания\\\"]");' +
     'document.documentElement.dataset.smokeTopbar=!!root && root.getBoundingClientRect().height===42 &&' +
     '!!list && list.scrollWidth>list.clientWidth && list.scrollLeft>0 && !!focused &&' +
     'focused.dataset.workspaceId==="9" && focusRect.left>=listRect.left-2 &&' +
@@ -494,7 +494,7 @@ async function smokeTopBar() {
     '--virtual-time-budget=1200', '--dump-dom', 'file://' + filename,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-topbar="true"')) {
-    const list = output.match(/<ol[^>]*aria-label="Niri workspaces"[\s\S]{0,800}/)?.[0] ?? 'not mounted';
+    const list = output.match(/<ol[^>]*aria-label="Рабочие пространства Niri"[\s\S]{0,800}/)?.[0] ?? 'not mounted';
     throw new Error('Top Bar focused pixel visibility or urgency regression: ' + list.slice(0, 600));
   }
   console.log('OK: Top Bar focus auto-scroll and urgency on both hidden sides');
@@ -527,7 +527,7 @@ async function smokeCalendarSky(windowSize, expectStacked) {
     'document.documentElement.dataset.smokeSkyMode=root?.dataset.calendarMode||"none";' +
     'document.documentElement.dataset.smokeSkySize=(canvas?.width||0)+"x"+(canvas?.height||0);' +
     'document.documentElement.dataset.smokeSkyDate=!!window.__kiraCalendarBefore && ' +
-      'window.__kiraCalendarBefore!==root?.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent && ' +
+      'window.__kiraCalendarBefore!==root?.querySelector("[aria-label=\\\"Выбор даты\\\"] h2")?.textContent && ' +
       '!!atlas?.textContent?.includes("Звёздное небо");' +
   '},2150));</script>';
   const document = html
