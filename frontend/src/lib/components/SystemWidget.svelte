@@ -142,10 +142,10 @@
       </section>
 
       <section data-kira-enter class="bg-kira-bg px-5 py-4" aria-label="Дополнительные показатели ресурсов">
-        <h2 class="mb-3 text-[11px] font-bold tracking-wide text-kira-accent">ЁМКОСТЬ</h2>
+        <h2 class="mb-3 text-[12px] font-bold tracking-wide text-kira-text">ЁМКОСТЬ</h2>
         <div class="grid grid-cols-2 gap-3">
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
-            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ОСНОВНОЙ ДИСК</h3>
+            <h3 class="text-[12px] font-bold tracking-wide text-kira-muted">ОСНОВНОЙ ДИСК</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null)}
             </div>
@@ -163,7 +163,7 @@
             </p>
           </article>
           <article class="min-w-0 bg-kira-surface-soft px-3 py-3">
-            <h3 class="text-[11px] font-bold tracking-[0.12em] text-kira-muted">ПАМЯТЬ SWAP</h3>
+            <h3 class="text-[12px] font-bold tracking-wide text-kira-muted">ПАМЯТЬ SWAP</h3>
             <div class="mt-2 text-[24px] font-extrabold leading-none tracking-tight tabular-nums">
               {usageLabel(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null)}
             </div>
@@ -186,7 +186,7 @@
       <section data-kira-enter class="bg-kira-surface-soft px-5 py-4"
         aria-label="Температуры оборудования и графика">
         <div class="flex items-center justify-between gap-3">
-          <h2 class="text-[11px] font-extrabold tracking-[0.15em] text-kira-accent">ОБОРУДОВАНИЕ</h2>
+          <h2 class="text-[12px] font-bold tracking-[0.08em] text-kira-text">ОБОРУДОВАНИЕ</h2>
           <div class="flex items-baseline gap-2">
             <span class="text-[11px] font-bold tracking-wider text-kira-muted">CPU · ТЕМП</span>
             <span class="text-[14px] font-extrabold tabular-nums"
@@ -218,7 +218,7 @@
       <details data-kira-enter use:tenetDisclosure class="group border-t border-kira-muted/15 bg-kira-bg px-5 py-3"
         aria-label="Дополнительные сведения о системе">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1
-          text-[11px] font-extrabold tracking-[0.12em] text-kira-accent
+          text-[12px] font-bold tracking-[0.08em] text-kira-text
           focus-visible:outline-2 focus-visible:outline-kira-accent">
           <span>СВЕДЕНИЯ О СИСТЕМЕ</span>
           <span aria-hidden="true" class="text-sm text-kira-muted group-open:hidden">+</span>
