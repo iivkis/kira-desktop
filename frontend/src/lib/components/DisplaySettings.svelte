@@ -17,7 +17,10 @@
   let canSave = $state(false);
   let persistence = $state<DisplayStatus['persistence']>('manual');
   let pendingId = $state<number | null>(null);
-  let remaining = $state(15);
+  let deadlineMs = $state<number | null>(null);
+  let clockNow = $state(Date.now());
+  const remaining = $derived(deadlineMs === null ? null :
+    Math.max(0, Math.ceil((deadlineMs - clockNow) / 1_000)));
   let drag = $state<{ connector: string; px: number; py: number; x: number; y: number; zoom: number } | null>(null);
 
   let mapViewport = $state<HTMLDivElement | null>(null);
@@ -80,7 +83,8 @@
     persistence = message.persistence;
     if (message.state === 'pending' && message.pending_id !== null) {
       pendingId = message.pending_id;
-      remaining = 15;
+      deadlineMs = message.deadline_unix_ms ?? null;
+      clockNow = Date.now();
       error = null;
       statusText = 'Новая конфигурация активна. Подтвердите изменения.';
       return;
@@ -91,6 +95,7 @@
       return;
     }
     pendingId = null;
+    deadlineMs = null;
     if (message.state === 'confirmed') canSave = true;
     if (message.state === 'saved') canSave = false;
     if (message.state === 'reverted') canSave = false;
@@ -227,8 +232,8 @@
     const stop = onDisplayStatus(generation, receive);
     refresh();
     const clock = window.setInterval(() => {
-      if (pendingId !== null && remaining > 0) remaining -= 1;
-    }, 1000);
+      if (pendingId !== null) clockNow = Date.now();
+    }, 250);
     return () => {
       stop();
       window.clearInterval(clock);
@@ -245,12 +250,16 @@
       class="border-l-[3px] border-kira-accent bg-kira-surface p-4">
       <div class="flex justify-between gap-3">
         <div>
-          <p class="text-[13px] font-extrabold">Сохранить конфигурацию?</p>
+          <p class="text-[13px] font-extrabold">Оставить новые параметры экрана?</p>
           <p id="kira-display-confirmation-warning" class="mt-1 text-[12px] leading-relaxed text-kira-muted">
-            Если изображение пропало, настройки откатятся автоматически.
+            Изменения действуют только в этом сеансе. Если изображение пропало, настройки откатятся автоматически. Сохранение в KDL выполняется отдельно.
           </p>
         </div>
-        <strong class="text-[23px] font-black tabular-nums text-kira-accent" aria-label={'Осталось ' + remaining + ' секунд'}>{remaining}</strong>
+        {#if remaining !== null}
+           <strong class="text-[23px] font-black tabular-nums text-kira-accent" aria-label={'До автоматического отката ' + remaining + ' секунд'}>{remaining}</strong>
+         {:else}
+           <span class="text-[12px] font-bold text-kira-accent">Ожидание подтверждения</span>
+         {/if}
       </div>
       <div class="mt-4 flex flex-wrap gap-2">
         <button type="button" bind:this={confirmButton} onclick={confirm} disabled={busy}
