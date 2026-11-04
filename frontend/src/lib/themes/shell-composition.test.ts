@@ -122,7 +122,11 @@ const html = readFileSync(new URL('../../../index.html', import.meta.url), 'utf8
 describe('Kira editorial polish', () => {
   it('makes each Top Bar warning inspectable without a mouse hover', () => {
     expect(markup).toContain('onclick={inspectWarnings}');
-    expect(markup).toContain('const warningPosition = $derived(');
+    expect(markup).toContain('const warningPosition = $derived(visibleWarningIndex(warnings, activeWarningId))');
+    expect(markup).toContain('nextWarningId(warnings, activeWarningId)');
+    expect(markup).toContain('{#if warnings.length > 1}');
+    expect(markup).toContain('Показать следующее предупреждение');
+    expect(markup).not.toContain('let warningDetails =');
     expect(markup).toContain('shownWarning.text');
     expect(markup).toContain('role="status" aria-live="polite"');
     expect(markup).toContain('focus-visible:outline-2');
@@ -133,8 +137,10 @@ describe('Kira editorial polish', () => {
     expect(monitor).toContain('text-kira-text">ЁМКОСТЬ</h2>');
     expect(monitor).toContain('text-kira-text">ОБОРУДОВАНИЕ</h2>');
     expect(charts).toContain('text-kira-text">ИСТОРИЯ НАГРУЗКИ</h2>');
-    expect(charts).toContain('До 60 с назад');
-    expect(charts).toContain('Последний замер');
+    expect(charts).toContain('historyCaption = activityHistoryCaption(syncedHistory)');
+    expect(charts).toContain('{historyCaption}</p>');
+    expect(charts).not.toContain('До 60 с назад');
+    expect(charts).not.toContain('Последний замер');
     expect(charts).toContain('animationDurationUpdate: reduced ? 0 : 180');
   });
 
