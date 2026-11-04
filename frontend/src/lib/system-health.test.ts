@@ -33,6 +33,12 @@ describe('read-only system health status', () => {
     expect(systemHealth('connected', '', true, { ...normal, root_total_kib: null }).label).toBe('PARTIAL');
   });
 
+  it('never calls an expired sample READY, while preserving service failure priority', () => {
+    expect(systemHealth('connected', '', true, normal, 'stale')).toMatchObject({ label: 'STALE', phase: 'warning' });
+    expect(systemHealth('connected', '', true, normal, 'stale').details).toContain('last sample expired');
+    expect(systemHealth('unavailable', '', true, normal, 'stale').label).toBe('CORE OFF');
+  });
+
   it('never renders an unknown metric as zero', () => {
     const value = systemHealth('connected', '0.1.0', true, { ...normal, cpu_percent: null });
     expect(value.label).toBe('CHECKING');
