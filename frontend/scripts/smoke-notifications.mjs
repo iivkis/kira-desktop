@@ -25,7 +25,7 @@ const notices = [
 ];
 window.addEventListener("load",()=>{
   setTimeout(()=>window.dispatchEvent(new CustomEvent("kira:notifications:update",{
-    detail:{revision:1,height:240,cardHeight:69,visible:notices}
+    detail:{revision:1,height:320,cardHeight:96,visible:notices}
   })),75);
   setTimeout(()=>{
     const cards=Array.from(document.querySelectorAll("[data-kira-notification-card]"));
@@ -34,7 +34,7 @@ window.addEventListener("load",()=>{
     const ordered=cards.map(card=>card.getAttribute("data-kira-notification-card")).join(",")==="1,2,3" &&
       rects.length===3 && rects[0].top>rects[1].top && rects[1].top>rects[2].top &&
       getComputedStyle(root).flexDirection==="column-reverse";
-    const capped=rects.length===3 && rects.every(rect=>rect.height>0 && rect.height<=80);
+    const capped=rects.length===3 && rects.every(rect=>rect.height>0 && rect.height<=320/3);
     const escaped=cards[0]?.textContent.includes("<img src=x onerror=alert(1)>") &&
       cards[0]?.querySelector("img")===null;
     cards[0]?.querySelector("button[aria-label^='Открыть уведомление']")?.click();
