@@ -76,8 +76,8 @@ export function percentUsedPrecise(total: number | null, available: number | nul
  */
 export function usageLabel(total: number | null, available: number | null): string {
   if (total === null || available === null || total < 0 || available < 0 ||
-      available > total) return 'UNAVAILABLE';
-  if (total === 0) return 'NOT CONFIGURED';
+      available > total) return 'НЕДОСТУПНО';
+  if (total === 0) return 'НЕ НАСТРОЕНО';
   const used = 100 * (total - available) / total;
   if (used === 0) return '0%';
   if (used < 0.1) return '<0.1%';
@@ -90,7 +90,7 @@ export function bytesLabel(kib: number): string {
 }
 
 export function temperatureLabel(celsius: number | null): string {
-  return celsius === null ? 'UNAVAILABLE' : celsius.toFixed(1) + ' °C';
+  return celsius === null ? 'НЕДОСТУПНО' : celsius.toFixed(1) + ' °C';
 }
 
 export function processMemoryLabel(kib: number | null): string {
@@ -99,7 +99,7 @@ export function processMemoryLabel(kib: number | null): string {
 }
 
 export function fractionLabel(total: number | null, available: number | null): string {
-  return total === null || available === null || available > total ? 'UNAVAILABLE'
+  return total === null || available === null || available > total ? 'НЕДОСТУПНО'
     : bytesLabel(total - available) + ' / ' + bytesLabel(total);
 }
 
@@ -117,7 +117,7 @@ export function systemHeadline(metrics: SystemMetrics | null, core: boolean, nir
 }
 
 export function uptimeLabel(seconds: number | null): string {
-  if (seconds === null) return 'UNAVAILABLE';
+  if (seconds === null) return 'НЕДОСТУПНО';
   const days = Math.floor(seconds / 86400);
   const hours = Math.floor((seconds % 86400) / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
