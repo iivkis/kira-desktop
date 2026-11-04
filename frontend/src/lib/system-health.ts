@@ -32,15 +32,23 @@ export function systemHealth(
     ? 'Ожидание первого снимка'
     : niriConnected ? 'Подключён' : 'Отключён';
 
-  const mem = metrics && percentUsed(metrics.memory_total_kib, metrics.memory_available_kib);
-  const disk = metrics && percentUsed(metrics.root_total_kib, metrics.root_available_kib);
+  // A stale badge is not enough. Never place expired CPU, memory, disk or
+  // battery readings in the tooltip, even if Core/Niri itself is offline.
+  const live = freshness === 'stale' ? null : metrics;
+  const mem = live && percentUsed(live.memory_total_kib, live.memory_available_kib);
+  const disk = live && percentUsed(live.root_total_kib, live.root_available_kib);
+  const staleReading = 'Данные устарели';
   const details = [
     'Kira Core: ' + coreDetail,
     'Niri IPC: ' + niriDetail,
-    'CPU: ' + (metrics?.cpu_percent === null || !metrics ? 'Измеряется' : metrics.cpu_percent + '%'),
-    'Память: ' + (mem === null ? 'Недоступно' : mem + '% занято'),
-    'Диск: ' + (disk === null ? 'Недоступно' : disk + '% занято'),
-    'Батарея: ' + (metrics?.battery_percent == null ? 'Не обнаружена' : metrics.battery_percent + '%'),
+    'CPU: ' + (freshness === 'stale' ? staleReading :
+      live?.cpu_percent === null || !live ? 'Измеряется' : live.cpu_percent + '%'),
+    'Память: ' + (freshness === 'stale' ? staleReading :
+      mem === null ? 'Недоступно' : mem + '% занято'),
+    'Диск: ' + (freshness === 'stale' ? staleReading :
+      disk === null ? 'Недоступно' : disk + '% занято'),
+    'Батарея: ' + (freshness === 'stale' ? staleReading :
+      live?.battery_percent == null ? 'Не обнаружена' : live.battery_percent + '%'),
   ].join('\n');
   if (core === 'unavailable') return { label: 'CORE OFF', phase: 'error', details };
   if (core === 'connecting') return { label: 'STARTING', phase: 'pending', details };
