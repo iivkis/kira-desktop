@@ -19,7 +19,7 @@ Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust
 | `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded Unix socket client, unit tests |
 | `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over a configurable user-owned Unix socket |
 | `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge and a native Gio application Launcher |
-| `frontend/` | Svelte 5, Tailwind CSS v4 via Vite, typed Kira Default design tokens, editorial top bar, native Launcher trigger, Core status and workspace SDK, Vitest |
+| `frontend/` | Svelte 5, Tailwind CSS v4 via Vite, shared Kira Default design tokens, editorial Top Bar and Svelte Launcher/Calendar/System/Settings widgets, typed Core/workspace SDK, Vitest |
 | `Taskfile.yml` | Shared commands for development and CI |
 | `flake.nix`, `nix/package.nix` | Nix development shell and installable packaged Core/Shell/frontend |
 | `Cargo.lock`, `flake.lock`, `frontend/package-lock.json` | Locked dependencies for reproducibility |
@@ -169,13 +169,16 @@ The built-in **Kira Default** dark theme uses five fully opaque colors:
 `#000000ff` Black · `#14213dff` Prussian Blue · `#fca311ff` Orange ·
 `#e5e5e5ff` Alabaster Grey · `#ffffffff` White.
 
-These colors drive the Svelte Top Bar, pre-mount WebKit loading screen and
-native GTK Launcher. Black is the background, Prussian Blue makes structured
+These colors drive the Svelte Top Bar, Launcher, Calendar, System Monitor, Settings,
+offline sky atlas and pre-mount WebKit loading screen. GTK is the native
+Wayland window host, not a second widget design system. Black is the background, Prussian Blue makes structured
 surfaces, Orange marks focus and selection, Alabaster Grey is secondary text,
 and White is primary text. Selected Orange surfaces use **Black** text for
 contrast. Semantic tokens derive from the five canonical palette values;
 custom KDL theme overrides remain a future feature. See the
 [design system](docs/DESIGN_SYSTEM.md) for exact mappings and WCAG checks.
+The current built-in interface uses a single Russian presentation locale;
+internationalization controls remain future work.
 
 ## Validated KDL settings (Stage 2 draft)
 
