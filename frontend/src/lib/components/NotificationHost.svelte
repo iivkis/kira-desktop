@@ -34,8 +34,10 @@
     let disposed = false;
     let fallbackTimer: number | null = null;
     const acknowledge = (revision: number): boolean => {
-      if (disposed || lastRevision !== revision || acknowledgedRevision === revision ||
-          document.visibilityState !== 'visible') return false;
+      // A fully transparent native GTK window can report a "hidden" page.
+      // The ACK means Svelte DOM/layout is ready; GTK alone decides whether
+      // the mapped, click-through host may actually be revealed.
+      if (disposed || lastRevision !== revision || acknowledgedRevision === revision) return false;
       const first = document.querySelector<HTMLElement>('[data-kira-notification-card]');
       if (!first || first.getBoundingClientRect().height <= 0) return false;
       acknowledgedRevision = revision;
