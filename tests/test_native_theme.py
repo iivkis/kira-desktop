@@ -35,10 +35,10 @@ class NativeThemeContractTests(unittest.TestCase):
         self.assertIn('--font-sans: "Noto Sans", "DejaVu Sans"', style)
         self.assertIn("writeText,", NIX)
         self.assertIn("noto-fonts,", NIX)
-        self.assertIn("noto-fonts-emoji,", NIX)
+        self.assertIn("noto-fonts-color-emoji,", NIX)
         self.assertIn('<include ignore_missing="yes">/etc/fonts/fonts.conf</include>', NIX)
         self.assertIn("<dir>${noto-fonts}/share/fonts</dir>", NIX)
-        self.assertIn("<dir>${noto-fonts-emoji}/share/fonts</dir>", NIX)
+        self.assertIn("<dir>${noto-fonts-color-emoji}/share/fonts</dir>", NIX)
         self.assertIn('gappsWrapperArgs+=(--set-default FONTCONFIG_FILE "${uiFontsConf}")', NIX)
         # Keep system/host font settings untouched; this is a package wrapper.
         self.assertNotIn("fonts.packages", NIX)
