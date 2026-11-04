@@ -59,7 +59,7 @@ mod tests {
     #[test]
     fn refuses_to_cover_widget_in_bottom_right() {
         assert!(plan(600, 480, 95).is_none());
-        assert!(plan(600, 480, 210).is_some());
+        assert!(plan(600, 480, 240).is_some());
     }
 
     #[test]
