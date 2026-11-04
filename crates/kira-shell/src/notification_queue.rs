@@ -54,7 +54,9 @@ impl NotificationQueue {
     /// An arbitrary D-Bus application must not overwrite or close another
     /// application's active notification by guessing the integer ID.
     pub fn active_owner(&self, id: u32) -> Option<&str> {
-        self.waiting.iter().map(|entry| &entry.notice)
+        self.waiting
+            .iter()
+            .map(|entry| &entry.notice)
             .chain(self.showing.iter().map(|entry| &entry.notice))
             .find(|notice| notice.id == id)
             .map(|notice| notice.owner.as_str())
