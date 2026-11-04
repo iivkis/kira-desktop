@@ -88,6 +88,42 @@ window.addEventListener('load',()=>{
       !root.querySelector('[role="dialog"]') &&
       !!root.querySelector('button[aria-label^="Открыть предупреждение"]');
   },565);
+  // A recovered launcher leaves exactly one real config error.
+  setTimeout(()=>{
+    window.webkit.messageHandlers.kiraLauncher={postMessage(){}};
+    document.querySelector('[aria-label="Открыть меню приложений"]')?.click();
+  },610);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    root?.querySelector('button[aria-label^="Открыть предупреждение"]')?.click();
+  },660);
+  setTimeout(()=>{
+    const dialog=document.querySelector('[role="dialog"][aria-label="Подробности предупреждения"]');
+    const box=dialog?.querySelector('textarea[readonly]');
+    document.documentElement.dataset.smokeWarningSingle=!!dialog && !!box &&
+      box.value==='КОНФИГ: '+msg &&
+      !dialog.querySelector('[aria-label="Следующее предупреждение"]');
+    // The live config event removes the final warning while the inspector is open.
+    window.dispatchEvent(new CustomEvent('kira:config',{detail:{config,error:null}}));
+  },715);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    const settings=root?.querySelector('button[aria-label="Открыть настройки системы"]');
+    document.documentElement.dataset.smokeWarningCleared=!!root && !!settings &&
+      !root.querySelector('[role="dialog"]') &&
+      !root.querySelector('button[aria-label^="Открыть предупреждение"]') &&
+      settings===document.activeElement &&
+      !root.querySelector('section[aria-label="Система и местное время"]').inert;
+    // A later incident must NOT bring back the previously opened modal.
+    window.dispatchEvent(new CustomEvent('kira:config',{detail:{config,error:msg}}));
+  },780);
+  setTimeout(()=>{
+    const root=document.querySelector('main[aria-label="Верхняя панель Kira Desktop"]');
+    const trigger=root?.querySelector('button[aria-label^="Открыть предупреждение"]');
+    document.documentElement.dataset.smokeWarningRecovered=!!root && !!trigger &&
+      !root.querySelector('[role="dialog"]') &&
+      trigger.getAttribute('aria-expanded')==='false';
+  },870);
 });
 </script>`;
 
@@ -102,7 +138,7 @@ try {
       `--force-device-scale-factor=${scale}`, '--virtual-time-budget=1100',
       '--dump-dom','file://' + filename,
     ], { encoding:'utf8',timeout:15000,stdio:['ignore','pipe','ignore'] });
-    const flags = ['trigger','open','focus-trap','long','closed','button-close'];
+    const flags = ['trigger','open','focus-trap','long','closed','button-close','single','cleared','recovered'];
     const failures = flags.filter(flag => !output.includes('data-smoke-warning-' + flag + '="true"'));
     if(failures.length){
       const diagnostics=output.match(/data-smoke-warning[a-z-]+="[^"]*"/gi) ?? [];
