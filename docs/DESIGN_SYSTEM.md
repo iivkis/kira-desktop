@@ -95,8 +95,11 @@ official visual language of Kira Desktop.
   hides visible READY text when healthy. A compact warning button opens
   an explicit, scrollable 42px inspection mode with the complete message;
   additional warnings advance by stable identity and Escape or Close restores
-  the normal three-zone layout and keyboard focus. While inspecting, the
-  underlying controls are inert, never merely covered by clickable content.
+  the normal three-zone layout and keyboard focus. The modal's Tab and
+  Shift+Tab wrap inside its controls; short accessible announcements disclose
+  the type/count, while the readonly scrollable field retains the full text.
+  While inspecting, underlying controls are inert, never merely covered by
+  clickable content.
   The same system-health indicator opens System Monitor.
   The local clock opens the existing Calendar. Additional trusted popup
   WebKit hosts are leased **on demand** from a bounded pool, never spawned
