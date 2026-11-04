@@ -33,10 +33,26 @@ describe('read-only system health status', () => {
     expect(systemHealth('connected', '', true, { ...normal, root_total_kib: null }).label).toBe('PARTIAL');
   });
 
+  it('never calls an expired sample READY, while preserving service failure priority', () => {
+    const stale = systemHealth('connected', '', true, normal, 'stale');
+    expect(stale).toMatchObject({ label: 'STALE', phase: 'warning' });
+    expect(stale.details).toContain('последняя проба устарела');
+    // The tooltip must not contradict the stale badge with old percentages.
+    for (const label of ['CPU:', 'Память:', 'Диск:', 'Батарея:']) {
+      expect(stale.details).toContain(label + ' Данные устарели');
+    }
+    expect(stale.details).not.toContain('24%');
+    expect(stale.details).not.toContain('42%');
+    expect(stale.details).not.toContain('50%');
+    const offline = systemHealth('unavailable', '', true, normal, 'stale');
+    expect(offline.label).toBe('CORE OFF');
+    expect(offline.details).toContain('CPU: Данные устарели');
+  });
+
   it('never renders an unknown metric as zero', () => {
     const value = systemHealth('connected', '0.1.0', true, { ...normal, cpu_percent: null });
     expect(value.label).toBe('CHECKING');
-    expect(value.details).toContain('CPU: Measuring');
-    expect(value.details).toContain('Kira Core: Online (v0.1.0)');
+    expect(value.details).toContain('CPU: Измеряется');
+    expect(value.details).toContain('Kira Core: Доступен (v0.1.0)');
   });
 });

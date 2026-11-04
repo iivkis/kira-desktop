@@ -980,9 +980,29 @@ impl CalendarOverlay {
                     && self.revealed.get()
                     && self.active.get() == Some(Surface::Calendar) =>
             {
-                if let Some(display) = gtk::gdk::Display::default() {
+                let copied = if let Some(display) = gtk::gdk::Display::default() {
                     display.clipboard().set_text(date);
-                }
+                    true
+                } else {
+                    false
+                };
+                // A validated, generation-bound acknowledgement is sent only
+                // after the native clipboard setter runs; no optimistic COPIED.
+                let result = serde_json::json!({
+                    "generation": generation,
+                    "date": date,
+                    "ok": copied,
+                });
+                let script = format!(
+                    "window.dispatchEvent(new CustomEvent('kira:calendar:copy-result', {{ detail: {result} }}));"
+                );
+                self.view.evaluate_javascript(
+                    &script,
+                    None,
+                    None,
+                    None::<&gtk::gio::Cancellable>,
+                    |_| {},
+                );
             }
             Some(UiCommand::ProcessesTab(generation, active))
                 if self.requested.get()
@@ -1215,6 +1235,7 @@ impl CalendarOverlay {
                 "state": event.state,
                 "outputs": event.outputs,
                 "pending_id": event.pending_id,
+                "deadline_unix_ms": event.deadline_unix_ms,
                 "error": event.error,
                 "persistence": event.persistence,
             });

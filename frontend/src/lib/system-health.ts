@@ -23,28 +23,40 @@ export function systemHealth(
   version: string,
   niriConnected: boolean | null,
   metrics: SystemMetrics | null = null,
+  freshness: 'fresh' | 'stale' = 'fresh',
 ): HealthSummary {
   const coreDetail = core === 'connected'
-    ? 'Online' + (version ? ' (v' + version + ')' : '')
-    : core === 'connecting' ? 'Connecting' : 'Offline';
+    ? 'Доступен' + (version ? ' (v' + version + ')' : '')
+    : core === 'connecting' ? 'Подключение' : 'Недоступен';
   const niriDetail = niriConnected === null
-    ? 'Waiting for first snapshot'
-    : niriConnected ? 'Connected' : 'Disconnected';
+    ? 'Ожидание первого снимка'
+    : niriConnected ? 'Подключён' : 'Отключён';
 
-  const mem = metrics && percentUsed(metrics.memory_total_kib, metrics.memory_available_kib);
-  const disk = metrics && percentUsed(metrics.root_total_kib, metrics.root_available_kib);
+  // A stale badge is not enough. Never place expired CPU, memory, disk or
+  // battery readings in the tooltip, even if Core/Niri itself is offline.
+  const live = freshness === 'stale' ? null : metrics;
+  const mem = live && percentUsed(live.memory_total_kib, live.memory_available_kib);
+  const disk = live && percentUsed(live.root_total_kib, live.root_available_kib);
+  const staleReading = 'Данные устарели';
   const details = [
     'Kira Core: ' + coreDetail,
     'Niri IPC: ' + niriDetail,
-    'CPU: ' + (metrics?.cpu_percent === null || !metrics ? 'Measuring' : metrics.cpu_percent + '%'),
-    'Memory: ' + (mem === null ? 'Unavailable' : mem + '% used'),
-    'Root disk: ' + (disk === null ? 'Unavailable' : disk + '% used'),
-    'Battery: ' + (metrics?.battery_percent == null ? 'Not detected' : metrics.battery_percent + '%'),
+    'CPU: ' + (freshness === 'stale' ? staleReading :
+      live?.cpu_percent === null || !live ? 'Измеряется' : live.cpu_percent + '%'),
+    'Память: ' + (freshness === 'stale' ? staleReading :
+      mem === null ? 'Недоступно' : mem + '% занято'),
+    'Диск: ' + (freshness === 'stale' ? staleReading :
+      disk === null ? 'Недоступно' : disk + '% занято'),
+    'Батарея: ' + (freshness === 'stale' ? staleReading :
+      live?.battery_percent == null ? 'Не обнаружена' : live.battery_percent + '%'),
   ].join('\n');
   if (core === 'unavailable') return { label: 'CORE OFF', phase: 'error', details };
   if (core === 'connecting') return { label: 'STARTING', phase: 'pending', details };
   if (niriConnected === false) return { label: 'NIRI OFF', phase: 'error', details };
   if (niriConnected === null) return { label: 'WAITING', phase: 'pending', details };
+  if (freshness === 'stale') {
+    return { label: 'STALE', phase: 'warning', details: details + '\nТелеметрия: последняя проба устарела' };
+  }
   if (!metrics || mem === null || metrics.cpu_percent === null) {
     return { label: 'CHECKING', phase: 'pending', details };
   }

@@ -1,8 +1,12 @@
 # Kira Desktop · Design System
 
-**Status:** implemented visual system for the Svelte Top Bar, native GTK
-Launcher and custom Calendar. Visual acceptance is still open. This document operationalizes [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
-Dock, notifications and other desktop surfaces remain future milestones.
+**Status:** the Top Bar, Launcher, Calendar, System Monitor, Settings and
+the detached sky atlas are implemented in Svelte 5. Rust/GTK hosts Wayland
+surfaces and system adapters, not widget presentation. Visual acceptance in
+nested Niri is still open. This document operationalizes
+[specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
+Dock, notifications, configurable KDL themes and third-party widgets remain
+future milestones.
 
 ## Kira official visual direction
 
@@ -56,14 +60,14 @@ official visual language of Kira Desktop.
 
 ### Implementation rules: KISS + DRY
 
-1. **Single native palette:** `native-palette.css` declares the five GTK
-   colors for Launcher, Calendar and the System Monitor. `native_ui.rs` assembles it with each
-   overlay stylesheet, and `test_native_theme.py` verifies the values match
-   Svelte's canonical palette. Do not duplicate `@define-color` in widgets.
-2. **Small shared operations:** the common overlay helper only installs style
-   providers, finds windows and dismisses them. Keep Launcher search/launch
-   Calendar date-picker state and read-only System Monitor telemetry in
-   their own modules.
+1. **One palette:** Svelte's `kira-default.css` and typed palette are canonical;
+   charts and the sky atlas read semantic surface colors through
+   `surface-colors.ts`. Native GTK only clears the popup backing surface;
+   it does not duplicate five-color widget styles.
+2. **Small shared operations:** Rust hosts GTK/WebKit windows, bounded IPC and
+   native data/actions. Svelte components independently own Launcher search,
+   Calendar dates, System Monitor presentation and Settings. Extract common
+   layout or motion only when semantics really match.
 3. **No premature abstraction:** two similarly named elements are not
    necessarily the same component. Extract code only when it has the same
    semantics and at least two real callers.
@@ -432,8 +436,9 @@ continues sampling at 10 Hz. Motion respects `prefers-reduced-motion`.
 
 Calendar, System Monitor, Launcher and Settings share the original
 **12 logical pixel** right margin and a **25 logical pixel** top margin.
-There is only one active widget: switching waits for its reversible exit,
-including when it was promoted to an ordinary Niri window.
+Only one **transient** popup is active at a time. Promoted ordinary
+Niri windows retain independent WebView leases and remain open while other
+transient widgets switch through reversible exits.
 A single GTK helper caps each popup's
 scrollable viewport at **70% of the logical height of its monitor**,
 recalculating after the Wayland surface maps. Both remain non-exclusive
@@ -460,6 +465,9 @@ height is unchanged, including the bottom accent rule.
 
 The default dark theme uses exactly five fully opaque RGBA hex colors,
 provided by the project owner. No additional base colors are permitted.
+Legacy brutalist border/offset-shadow tokens have been removed: the current
+design uses functional material contrast and the dedicated transient
+popup shadow only.
 
 | Name | CSS variable | RGBA HEX | Intended role |
 | --- | --- | --- | --- |
@@ -470,15 +478,13 @@ provided by the project owner. No additional base colors are permitted.
 | White | `--white` | `#ffffffff` | Primary text on dark surfaces |
 
 The canonical values are declared in
-[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts).
-The frontend exposes them through
+[`frontend/src/lib/themes/kira-default.ts`](../frontend/src/lib/themes/kira-default.ts)
+and exposed through
 [`kira-default.css`](../frontend/src/lib/themes/kira-default.css).
-Native GTK declares the same five colors **once** in
-[`native-palette.css`](../crates/kira-shell/src/native-palette.css),
-assembled with each overlay stylesheet by
-[`native_ui.rs`](../crates/kira-shell/src/native_ui.rs).
-Contract tests verify the values match; each overlay owns only its
-component selectors, not a second color palette.
+ECharts and Canvas read the same semantic roles through
+[`surface-colors.ts`](../frontend/src/lib/surface-colors.ts).
+Native GTK provides a transparent Wayland window backing, not a second
+widget color palette.
 
 ## Public CSS contract
 
@@ -563,19 +569,23 @@ Provide visible keyboard outlines and honor reduced-motion preferences.
   aliases and minimal global styles. Responsive composition and focus rules
   live in Svelte utility classes; the native 42 px reservation is unchanged.
 - `frontend/index.html`: uses matching fallback colors before Svelte mounts.
-- `crates/kira-shell/src/calendar.rs` and `calendar.css`: native time/date
-  overlay, live timezone-aware clock and fully custom date-picker Grid (no GtkCalendar). The dedicated
-  WebKit `kiraCalendar` bridge accepts exactly the literal `toggle`;
-  it never forwards commands to Core.
-- `crates/kira-shell/src/launcher.rs` and `launcher.css`: GTK layer-shell
-  editorial introduction, Blue workbench, Gio application catalog, orange
-  rail selection, pointer/keyboard activation and canonical five-color theme.
+- `frontend/src/lib/components/CalendarWidget.svelte`: live clock and
+  accessible 6×7 date grid; `SkyMap.svelte` adds a local offline atlas only
+  in the detached window. `calendar.rs` is the trusted GTK/WebKit host.
+- `frontend/src/lib/components/LauncherWidget.svelte`: Svelte editorial
+  search and selection; native `launcher.rs` exposes a bounded GIO catalog
+  and validated launch operations, not a GTK widget UI.
+- `frontend/src/lib/components/SystemWidget.svelte` and
+  `SettingsWidget.svelte`: actual system telemetry, processes and display
+  configuration through restricted native adapters.
+- All built-in user-facing strings currently use Russian presentation text;
+  internal status codes and technical abbreviations retain stable identities.
 
 The KIRA button uses the dedicated `kiraLauncher` WebKit handler, which accepts
 only the literal `open` message. Actual process launch uses registered Gio
-`AppInfo` desktop entries, not interpolated shell commands. The Launcher is
-non-persistent and has no exclusive zone. Esc closes it; Up/Down select and
-Enter launches the selected application.
+`AppInfo` desktop entries, not interpolated shell commands. The Launcher
+has no exclusive zone; Esc closes it, arrow keys select and Enter launches
+the selected application.
 
 ## Verification
 

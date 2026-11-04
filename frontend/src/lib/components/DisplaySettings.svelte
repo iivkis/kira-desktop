@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
+  import { confirmationDeadlineMonotonic, confirmationSecondsRemaining } from '../display-confirmation';
   import {
     onDisplayStatus, requestDisplays, applyDisplays, confirmDisplays, revertDisplays,
-    displayModeId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
+    displayModeId, displayTransformId, saveDisplays, type DisplayOutput, type DisplayDraft, type DisplayStatus,
   } from '../sdk/core';
 
   let { generation }: { generation: number } = $props();
@@ -17,7 +18,9 @@
   let canSave = $state(false);
   let persistence = $state<DisplayStatus['persistence']>('manual');
   let pendingId = $state<number | null>(null);
-  let remaining = $state(15);
+  let deadlineMs = $state<number | null>(null);
+  let clockNow = $state(0);
+  const remaining = $derived(confirmationSecondsRemaining(deadlineMs, clockNow));
   let drag = $state<{ connector: string; px: number; py: number; x: number; y: number; zoom: number } | null>(null);
 
   let mapViewport = $state<HTMLDivElement | null>(null);
@@ -62,8 +65,7 @@
         enabled: logical !== null,
         mode: mode ? displayModeId(mode) : '',
         scale: logical?.scale ?? 1,
-        transform: logical?.transform === 'Normal' ? 'normal'
-          : logical?.transform?.replace('Flipped', 'flipped-').replace('-90', '90') ?? 'normal',
+        transform: logical === null ? 'normal' : displayTransformId(logical.transform),
         x: logical?.x ?? nextX,
         y: logical?.y ?? 0,
         vrr: output.vrr_enabled,
@@ -80,7 +82,10 @@
     persistence = message.persistence;
     if (message.state === 'pending' && message.pending_id !== null) {
       pendingId = message.pending_id;
-      remaining = 15;
+      const receivedMonotonicMs = performance.now();
+      deadlineMs = confirmationDeadlineMonotonic(message.deadline_unix_ms ?? null,
+        Date.now(), receivedMonotonicMs);
+      clockNow = receivedMonotonicMs;
       error = null;
       statusText = 'Новая конфигурация активна. Подтвердите изменения.';
       return;
@@ -91,6 +96,7 @@
       return;
     }
     pendingId = null;
+    deadlineMs = null;
     if (message.state === 'confirmed') canSave = true;
     if (message.state === 'saved') canSave = false;
     if (message.state === 'reverted') canSave = false;
@@ -101,7 +107,9 @@
     }
     if (message.error) error = message.error;
     else error = null;
-    statusText = message.state === 'reverted' ? 'Предыдущая конфигурация восстановлена.'
+    statusText = message.state === 'reverted' ? (message.error
+      ? 'Откат выполнен не полностью. Проверьте подключение и настройки дисплеев вручную.'
+      : 'Предыдущая конфигурация восстановлена.')
       : message.state === 'confirmed' ? 'Изменения действуют в сеансе. Можно сохранить декларативно.'
       : message.state === 'saved' ? 'Конфигурация сохранена в KDL и будет загружена при следующем запуске Niri.'
         : '';
@@ -227,8 +235,8 @@
     const stop = onDisplayStatus(generation, receive);
     refresh();
     const clock = window.setInterval(() => {
-      if (pendingId !== null && remaining > 0) remaining -= 1;
-    }, 1000);
+      if (pendingId !== null) clockNow = performance.now();
+    }, 250);
     return () => {
       stop();
       window.clearInterval(clock);
@@ -245,12 +253,16 @@
       class="border-l-[3px] border-kira-accent bg-kira-surface p-4">
       <div class="flex justify-between gap-3">
         <div>
-          <p class="text-[13px] font-extrabold">Сохранить конфигурацию?</p>
+          <p class="text-[13px] font-extrabold">Оставить новые параметры экрана?</p>
           <p id="kira-display-confirmation-warning" class="mt-1 text-[12px] leading-relaxed text-kira-muted">
-            Если изображение пропало, настройки откатятся автоматически.
+            Изменения действуют только в этом сеансе. Если изображение пропало, настройки откатятся автоматически. Сохранение в KDL выполняется отдельно.
           </p>
         </div>
-        <strong class="text-[23px] font-black tabular-nums text-kira-accent" aria-label={'Осталось ' + remaining + ' секунд'}>{remaining}</strong>
+        {#if remaining !== null}
+           <strong class="text-[23px] font-black tabular-nums text-kira-accent" aria-label={'До автоматического отката ' + remaining + ' секунд'}>{remaining}</strong>
+         {:else}
+           <span class="text-[12px] font-bold text-kira-accent">Ожидание подтверждения</span>
+         {/if}
       </div>
       <div class="mt-4 flex flex-wrap gap-2">
         <button type="button" bind:this={confirmButton} onclick={confirm} disabled={busy}
@@ -307,14 +319,14 @@
             style:width={Math.max(38, rect.width * zoom) + 'px'}
             style:height={Math.max(32, rect.height * zoom) + 'px'}>
             <strong class="text-[12px] font-black">{outputs.findIndex(o => o.connector === rect.connector) + 1}</strong>
-            <span class="max-w-full truncate px-1 text-[9px] font-semibold">{rect.connector}</span>
+            <span class="max-w-full truncate px-1 text-[11px] font-semibold">{rect.connector}</span>
           </button>
         {/each}
         {#if rectangles.length === 0}
           <div class="p-4 text-[11px] text-kira-muted">Все дисплеи отключены</div>
         {/if}
       </div>
-      <p class="mt-3 text-[10px] leading-relaxed text-kira-muted">
+      <p class="mt-3 text-[11px] leading-relaxed text-kira-muted">
         Niri может скорректировать пересекающиеся экраны.
       </p>
     </div>
@@ -328,7 +340,7 @@
           <span class="grid size-7 shrink-0 place-items-center border border-kira-muted/40 text-[12px] font-black">{i + 1}</span>
           <span class="min-w-0">
             <strong class="block truncate text-[11px]">{output.make} {output.model}</strong>
-            <span class="mt-1 block truncate text-[10px] text-kira-muted">{output.connector} ·
+            <span class="mt-1 block truncate text-[11px] text-kira-muted">{output.connector} ·
               {draft.find(d => d.connector === output.connector)?.enabled ? 'Включён' : 'Выключен'}
             </span>
           </span>
@@ -371,6 +383,7 @@
             <select class="mt-2 w-full border border-kira-muted/35 bg-kira-surface px-2 py-3 text-[12px] text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
               value={selectedDraft.transform} disabled={busy || isPending}
               onchange={event => change({ transform: event.currentTarget.value })}>
+              <option value="" disabled>Неизвестная ориентация: выберите новую</option>
               <option value="normal">Альбомная · 0°</option>
               <option value="90">Портретная · 90°</option>
               <option value="180">Альбомная · 180°</option>
@@ -410,7 +423,7 @@
     {/if}
 
     <div class="flex flex-wrap gap-2 border-t border-kira-muted/20 pt-4">
-      <button type="button" onclick={apply} disabled={loading || busy || isPending || activeCount < 1}
+      <button type="button" onclick={apply} disabled={loading || busy || isPending || activeCount < 1 || draft.some(out => out.enabled && !out.transform)}
         class="bg-kira-accent px-5 py-3 text-[11px] font-extrabold text-kira-on-accent focus-visible:outline-2 focus-visible:outline-kira-text disabled:opacity-40">
         {busy ? 'Применение…' : 'Применить'}
       </button>

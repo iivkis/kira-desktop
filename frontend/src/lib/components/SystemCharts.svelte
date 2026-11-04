@@ -6,9 +6,10 @@
   import { SVGRenderer } from 'echarts/renderers';
   import type { EChartsType } from 'echarts/core';
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
-  import { isSampleFresh, percentUsedPrecise } from '../system-model';
+  import { surfaceColors } from '../surface-colors';
+  import { isSampleFresh, liveUtilization } from '../system-model';
   import {
-    activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak,
+    activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak, recentPulseHistory,
     type TelemetryPoint,
   } from '../system-charts';
 
@@ -21,6 +22,7 @@
   let gauges: EChartsType | null = null;
   let trend: EChartsType | null = null;
   let reduced = false;
+  let palette = surfaceColors();
   let history: TelemetryPoint[] = [];
   let pulse = $state<SystemPulse | null>(null);
   let lastPulseAt = $state<number | null>(null);
@@ -28,23 +30,25 @@
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
 
-  const accent = '#fca311';
-  const white = '#ffffff';
-  const muted = '#e5e5e5';
-  const prussian = '#14213d';
-
-  const cpu = $derived(pulse ? pulse.cpu_percent : metrics?.cpu_percent ?? null);
-  const ram = $derived(pulse
-    ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
-    : metrics ? percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib) : null);
+  // The parent clock tick invalidates this derived value every two seconds,
+  // while a new pulse invalidates it immediately. Use a monotonic timestamp
+  // for both sides so changing the wall clock cannot keep dead data "fresh".
+  const pulseFresh = $derived.by(() => {
+    if (!Number.isFinite(now)) return false;
+    return isSampleFresh(lastPulseAt, performance.now(), 2_500);
+  });
+  const usage = $derived(liveUtilization(pulse, pulseFresh, metrics));
+  const cpu = $derived(usage.cpu);
+  const ram = $derived(usage.ram);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
-  const pulseFresh = $derived(lastPulseAt !== null &&
-    (now < lastPulseAt || isSampleFresh(lastPulseAt, now, 2_500)));
   const trendHeight = $derived(gpuAvailable ? 296 : 202);
   const dialLabel = (value: number | null, precise = false) =>
     value === null ? '—' : (precise ? value.toFixed(1) : String(value)) + '%';
 
   function draw(): void {
+    const { accent, muted } = palette;
+    const white = palette.text;
+    const prussian = palette.surface;
     const dial = (name: string, value: number | null, center: string, color: string) => ({
       name, type: 'gauge' as const, center: [center, '50%'],
       radius: '73%', min: 0, max: 100, startAngle: 90, endAngle: -270,
@@ -67,13 +71,14 @@
       ],
     }, { lazyUpdate: true });
 
-    const syncedHistory = alignedActivity(history);
+    // Old readings leave the chart even if the native stream has stopped.
+    const syncedHistory = alignedActivity(recentPulseHistory(history, performance.now()));
     const timeDomain = activityTimeDomain(syncedHistory);
     const panels: { field: 'cpu' | 'ram' | 'gpu'; name: string; color: string }[] = [
-      { field: 'cpu', name: 'CPU ACTIVITY', color: accent },
-      { field: 'ram', name: 'MEMORY ACTIVITY', color: white },
+      { field: 'cpu', name: 'АКТИВНОСТЬ CPU', color: accent },
+      { field: 'ram', name: 'АКТИВНОСТЬ RAM', color: white },
     ];
-    if (gpuAvailable) panels.push({ field: 'gpu', name: 'GPU ACTIVITY', color: muted });
+    if (gpuAvailable) panels.push({ field: 'gpu', name: 'АКТИВНОСТЬ GPU', color: muted });
 
     trend?.setOption({
       animation: !reduced,
@@ -100,7 +105,7 @@
           min: axis.min, max: axis.max, interval: (axis.max - axis.min) / 2,
           axisLine: { show: false }, axisTick: { show: false },
           axisLabel: {
-            color: muted, fontSize: 9, margin: 7,
+            color: muted, fontSize: 11, margin: 7,
             formatter: (v: number) => Number(v.toFixed(1)) + '%',
           },
           splitLine: { lineStyle: { color: prussian, width: 1 } },
@@ -124,14 +129,26 @@
   // One history point per actual native pulse. No 500ms JS timer and no
   // GPU replication between slow readings. The bounded list is one minute.
   $effect(() => {
+    // The parent refresh tick forces expiration redraws when no new native
+    // pulse arrives. A boolean freshness derived value alone may stay false
+    // and would not invalidate an old ECharts history view.
+    const refreshTick = now;
+    if (!Number.isFinite(refreshTick)) return;
     const current = metrics;
     const sample = pulse;
-    if (current && current !== lastMetrics) {
+    if (current === null) {
+      // Drop any slow GPU reading that was awaiting a fast pulse before the
+      // overlay metrics went stale. Never attach it to a later new pulse.
+      pendingGpu = undefined;
+      lastMetrics = null;
+    } else if (current !== lastMetrics) {
       pendingGpu = gpuPeak(current);
       lastMetrics = current;
     }
     if (sample && sample !== lastPulse) {
-      history = appendPulse(history, sample, Date.now(), pendingGpu ?? null);
+      // The chart axis is elapsed-time only; monotonic time keeps the
+      // recorded trajectory stable when the wall clock is adjusted.
+      history = appendPulse(history, sample, performance.now(), pendingGpu ?? null);
       pendingGpu = undefined;
       lastPulse = sample;
     }
@@ -139,9 +156,22 @@
   });
 
   onMount(() => {
+    // CSS role lookup is only necessary when the view or theme changes;
+    // avoid recalculating computed styles for every 500ms native pulse.
+    palette = surfaceColors(gaugeNode);
+    const theme = new MutationObserver(() => {
+      palette = surfaceColors(gaugeNode);
+      draw();
+    });
+    theme.observe(document.documentElement, {
+      attributes: true, attributeFilter: ['class', 'style'],
+    });
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced = motion.matches;
-    const stopPulse = onSystemPulse(sample => { pulse = sample; lastPulseAt = Date.now(); });
+    const stopPulse = onSystemPulse(sample => {
+      lastPulseAt = performance.now();
+      pulse = sample;
+    });
     gauges = echarts.init(gaugeNode, undefined, { renderer: 'svg' });
     trend = echarts.init(trendNode, undefined, { renderer: 'svg' });
     const resize = () => { gauges?.resize(); trend?.resize(); };
@@ -154,6 +184,7 @@
     return () => {
       stopPulse();
       observer.disconnect();
+      theme.disconnect();
       motion.removeEventListener('change', onMotionChange);
       gauges?.dispose();
       trend?.dispose();
@@ -169,23 +200,23 @@
 </script>
 
 <div class="space-y-5">
-  <section aria-label="CPU and memory utilization">
+  <section aria-label="Загрузка процессора и использование памяти">
     {#if pulse !== null && !pulseFresh}
-      <p class="mb-2 text-[10px] font-semibold text-kira-muted" role="status">PULSE STALE</p>
+      <p class="mb-2 text-[10px] font-semibold text-kira-muted" role="status">ИМПУЛЬС УСТАРЕЛ</p>
     {/if}
     <div class="relative h-[182px] bg-kira-bg">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
         <div class="relative flex min-w-0 flex-col items-center justify-center">
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-accent"
-            aria-label={'CPU utilization ' + (cpu === null ? 'unavailable' : cpu + ' percent')}>
+            aria-label={'Загрузка CPU: ' + (cpu === null ? 'нет данных' : cpu + '%')}>
             {dialLabel(cpu)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">CPU</div>
         </div>
         <div class="relative flex min-w-0 flex-col items-center justify-center">
           <div class="text-[36px] font-extrabold leading-none tracking-[-0.06em] tabular-nums text-kira-text"
-            aria-label={'Memory utilization ' + (ram === null ? 'unavailable' : ram.toFixed(1) + ' percent')}>
+            aria-label={'Использование RAM: ' + (ram === null ? 'нет данных' : ram.toFixed(1) + '%')}>
             {dialLabel(ram, true)}
           </div>
           <div class="mt-2 text-[10px] font-bold tracking-[0.12em] text-kira-muted">RAM</div>
@@ -194,14 +225,14 @@
     </div>
   </section>
 
-  <section aria-label="Live resource activity">
-    <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ACTIVITY</h2>
+  <section aria-label="История нагрузки ресурсов">
+    <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ИСТОРИЯ НАГРУЗКИ</h2>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
-        role="img" aria-label={'Measured history with independently labelled adaptive percentage scales. ' +
-          'CPU ' + (cpu === null ? 'unavailable' : cpu + '%') +
-          ', RAM ' + (ram === null ? 'unavailable' : ram + '%') +
-          (pulse !== null && !pulseFresh ? '. Last pulse is stale.' : '')}></div>
+        role="img" aria-label={'Измеренная история нагрузки с адаптивными шкалами. ' +
+          'CPU ' + (cpu === null ? 'нет данных' : cpu + '%') +
+          ', RAM ' + (ram === null ? 'нет данных' : ram + '%') +
+          (pulse !== null && !pulseFresh ? '. Последний импульс устарел.' : '')}></div>
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
         <div class="absolute left-9 top-[96px] text-[10px] font-bold tracking-wide text-kira-text">RAM</div>

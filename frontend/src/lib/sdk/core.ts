@@ -322,11 +322,23 @@ export function detachOverlay(generation: number): boolean {
   return validOverlayGeneration(generation) && sendCalendarUi('detach:' + generation);
 }
 
-export function copyCalendarDate(generation: number, date: string): void {
+export function copyCalendarDate(generation: number, date: string): boolean {
   // Prevent arbitrary data crossing into the OS clipboard API. The Rust host
   // revalidates the exact date, including month lengths and leap years.
-  if (!validOverlayGeneration(generation) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
-  sendCalendarUi('copy:' + generation + ':' + date);
+  if (!validOverlayGeneration(generation) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+  return sendCalendarUi('copy:' + generation + ':' + date);
+}
+
+/** Clipboard success is a native acknowledgement, not a click animation. */
+export function onCalendarCopyResult(
+  generation: number, callback: (result: { date: string; ok: boolean }) => void,
+): () => void {
+  return onNativeEvent('kira:calendar:copy-result',
+    (value): value is { generation: number; date: string; ok: boolean } =>
+      isRecord(value) && value.generation === generation &&
+      typeof value.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.date) &&
+      typeof value.ok === 'boolean',
+    callback);
 }
 
 /** The shared overlay accepts only fixed read-only tab and copy actions. */
@@ -500,6 +512,8 @@ export interface DisplayStatus {
   persistence: 'manual' | 'uninitialized' | 'managed' | 'conflict';
   outputs: DisplayOutput[] | null;
   pending_id: number | null;
+  /** Milliseconds since Unix epoch, emitted by the native rollback watchdog. */
+  deadline_unix_ms?: number | null;
   error: string | null;
 }
 
@@ -535,10 +549,35 @@ export function onDisplayStatus(
       ['manual', 'uninitialized', 'managed', 'conflict'].includes(String(value.persistence)) &&
       (value.pending_id === null || (Number.isSafeInteger(value.pending_id) &&
         typeof value.pending_id === 'number' && value.pending_id > 0)) &&
+      (value.deadline_unix_ms === undefined || value.deadline_unix_ms === null ||
+        (Number.isSafeInteger(value.deadline_unix_ms) &&
+         typeof value.deadline_unix_ms === 'number' && value.deadline_unix_ms > 0)) &&
       (value.error === null || (typeof value.error === 'string' && value.error.length <= 240)) &&
       (value.outputs === null || (Array.isArray(value.outputs) &&
         value.outputs.length <= 8 && value.outputs.every(isDisplayOutput))),
     (value) => callback(value));
+}
+
+/** Niri's JSON uses capitalized Flipped90/180/270, while its CLI
+ * accepts flipped-90/180/270. Keep this adapter explicit: string replacement
+ * used to turn Flipped90 into invalid `flipped90`.
+ * Unknown orientations require an explicit user choice before applying.
+ */
+const niriTransforms: Record<string, string> = {
+  Normal: 'normal', normal: 'normal',
+  '90': '90', '180': '180', '270': '270',
+  Flipped: 'flipped', flipped: 'flipped',
+  Flipped90: 'flipped-90', Flipped180: 'flipped-180',
+  Flipped270: 'flipped-270',
+  'flipped-90': 'flipped-90', 'flipped-180': 'flipped-180',
+  'flipped-270': 'flipped-270',
+};
+
+export function displayTransformId(value: string): string {
+  // An unknown string such as "constructor" must not resolve through
+  // Object.prototype into a non-string transform command.
+  return Object.prototype.hasOwnProperty.call(niriTransforms, value)
+    ? niriTransforms[value] : '';
 }
 
 export function displayModeId(mode: DisplayMode): string {

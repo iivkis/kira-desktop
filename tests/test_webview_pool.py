@@ -168,7 +168,7 @@ class WebviewPoolContracts(unittest.TestCase):
         self.assertIn("function requestPopout()", CONTROLS)
         self.assertIn("if (!window.webkit?.messageHandlers?.kiraCalendarUi)", CONTROLS)
         self.assertIn("if (!detached) popoutFailed = true;", CONTROLS)
-        self.assertIn("RESTART SHELL", CONTROLS)
+        self.assertIn("ПЕРЕЗАПУСТИТЬ SHELL", CONTROLS)
         self.assertIn("gtk::glib::idle_add_local_once(move ||", HOST)
         self.assertIn("kira:overlay:detached", HOST)
         self.assertIn("if (!detached)", CONTROLS.replace("{#if !detached}", "if (!detached)"))

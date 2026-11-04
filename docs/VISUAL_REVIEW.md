@@ -1,4 +1,11 @@
-# Kira Desktop — visual design review
+# Kira Desktop — visual design review (historical, 2026-11-01)
+
+> Historical audit for the earlier GTK Calendar/Launcher design. The current
+> `main` branch uses Svelte 5 widgets and has newer design decisions in
+> [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and [UI_NOISE_REVIEW.md](UI_NOISE_REVIEW.md).
+> Findings about retired native CSS or GTK widget layout must not be treated
+> as current implementation contracts. Nested-Niri visual acceptance remains
+> required for the current version.
 
 **Reviewed:** 2026-11-01  
 **Branch:** `feat/neo-editorial-shell` · PR #18  

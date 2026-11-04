@@ -19,7 +19,7 @@ CSS = (ROOT / "frontend/src/style.css").read_text()
 class SettingsContracts(unittest.TestCase):
     def test_outdated_native_host_is_not_misreported_as_settings_service_failure(self):
         self.assertIn("settingsShellOutdated", APP)
-        self.assertIn("RESTART KIRA SHELL", APP)
+        self.assertIn("ПЕРЕЗАПУСТИТЬ KIRA SHELL", APP)
         self.assertIn("!window.webkit?.messageHandlers?.kiraSettings", APP)
         self.assertIn('manager.register_script_message_handler("kiraSettings", None)', MAIN)
 
@@ -33,7 +33,7 @@ class SettingsContracts(unittest.TestCase):
         self.assertIn('Surface::Settings,', NATIVE)
         self.assertIn('view.show(Surface::Settings)', NATIVE)
         self.assertIn('toggleSettings()', APP)
-        self.assertIn('aria-label="Open system settings"', APP)
+        self.assertIn('aria-label="Открыть настройки системы"', APP)
         self.assertIn('const CALENDAR_SURFACE:', NATIVE)
 
     def test_fixed_widget_and_full_xdg_window_are_one_live_webview(self):

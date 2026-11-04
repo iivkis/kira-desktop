@@ -17,12 +17,12 @@ class LauncherDesignTests(unittest.TestCase):
     def test_svelte_owns_presentation_and_keyboard_navigation(self):
         for value in (
             'aria-label="Kira Launcher"', 'data-kira-ui-root',
-            'Applications', 'Search applications…', 'role="listbox"',
+            'Приложения', 'Поиск приложений…', 'role="listbox"',
             'aria-selected={index === activeIndex}',
             "event.key === 'ArrowDown'", "event.key === 'ArrowUp'",
             "event.key === 'Escape'", "event.key === 'Enter'",
             'search?.focus()', 'onclick={() => choose(index)}',
-            'No matching applications', 'KIRA',
+            'Приложения не найдены', 'KIRA',
         ):
             if value == 'KIRA':
                 continue
@@ -31,7 +31,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn('role="combobox"', WIDGET)
         self.assertIn('aria-autocomplete="list"', WIDGET)
         self.assertIn('aria-activedescendant=', WIDGET)
-        self.assertIn('aria-label="Clear search"', WIDGET)
+        self.assertIn('aria-label="Очистить поиск"', WIDGET)
         self.assertIn("function clearSearch()", WIDGET)
         self.assertIn("event.target.closest('#kira-launcher-results')", WIDGET)
         self.assertIn(".sort((a, b) => a.rank - b.rank || a.index - b.index)", MODEL)
@@ -41,7 +41,7 @@ class LauncherDesignTests(unittest.TestCase):
                        "FIND / OPEN", "Installed application", " MOVE",
                        "ESC</kbd>"):
             self.assertNotIn(filler, WIDGET)
-        self.assertIn("matches.length === 1 ? 'result' : 'results'", WIDGET)
+        self.assertIn("matchingAppsLabel(matches.length)", WIDGET)
         self.assertIn('matches.slice(0, 80)', WIDGET)
         self.assertIn('app.id', WIDGET)
         self.assertIn('toLocaleLowerCase()', MODEL)
@@ -99,7 +99,7 @@ class LauncherDesignTests(unittest.TestCase):
         self.assertIn("focus-visible:-outline-offset-2", WIDGET)
         self.assertIn("size-9 shrink-0 items-center justify-center overflow-hidden", WIDGET)
         self.assertIn("bg-kira-surface-soft", WIDGET)
-        self.assertIn("line-clamp-2 text-[11px] leading-4", WIDGET)
+        self.assertIn("line-clamp-2 text-[12px] leading-4", WIDGET)
 
     def test_global_widget_selection_is_disabled_except_editable_fields(self):
         style = (ROOT / "frontend/src/style.css").read_text()

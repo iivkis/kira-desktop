@@ -33,6 +33,22 @@ class DisplayContract(unittest.TestCase):
         self.assertIn('Some(UiCommand::DisplayConfirm(generation, id))', SHELL)
         self.assertIn('Some(UiCommand::DisplayRevert(generation, id))', SHELL)
 
+    def test_watchdog_remains_bounded_when_niri_ipc_stalls(self):
+        self.assertIn('const NIRI_IPC_TIMEOUT: Duration = Duration::from_secs(2)', MANAGER)
+        self.assertIn('child.try_wait()', MANAGER)
+        self.assertIn('child.kill()', MANAGER)
+        self.assertIn('read_capped(stdout, NIRI_MAX_OUTPUT_BYTES)', MANAGER)
+        self.assertIn('read_capped(stderr, NIRI_MAX_ERROR_BYTES)', MANAGER)
+        self.assertIn('deadline_expired(*deadline, Instant::now())', MANAGER)
+        self.assertIn('fn a_queued_confirmation_does_not_extend_the_rollback_deadline()', MANAGER)
+
+    def test_pending_preview_survives_rejected_overlapping_apply(self):
+        """Rejecting an overlapping Apply must not lose staged Save state."""
+        apply = MANAGER.split('Request::Apply(value) => {', 1)[1].split('Request::Confirm(id) => {', 1)[0]
+        self.assertLess(apply.index('if pending.is_some() {'), apply.index('staged = None;'))
+        self.assertIn('confirmed = staged.take()', MANAGER)
+        self.assertIn('Неподдерживаемая ориентация подключённого дисплея', MANAGER)
+
     def test_session_and_declarative_settings_are_separate_transactions(self):
         self.assertIn('Request::Save => {', MANAGER)
         self.assertIn('crate::config_layers::save(target)', MANAGER)
@@ -69,6 +85,11 @@ class DisplayContract(unittest.TestCase):
         self.assertIn('aria-label="Схема расположения мониторов"', DISPLAY)
         self.assertIn('onpointerdown', DISPLAY)
         self.assertIn('disabled={busy || isPending || (selectedDraft.enabled && activeCount === 1)}', DISPLAY)
+        self.assertIn("displayTransformId(logical.transform)", DISPLAY)
+        self.assertIn("draft.some(out => out.enabled && !out.transform)", DISPLAY)
+        self.assertIn("Откат выполнен не полностью", DISPLAY)
+        self.assertIn("confirmationDeadlineMonotonic(message.deadline_unix_ms", DISPLAY)
+        self.assertIn("clockNow = performance.now()", DISPLAY)
         self.assertIn('onchange={event => change({ mode:', DISPLAY)
         self.assertIn('onchange={event => change({ scale:', DISPLAY)
         self.assertIn('onchange={event => change({ transform:', DISPLAY)

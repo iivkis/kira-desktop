@@ -7,6 +7,7 @@
     requestLauncherCatalog, requestLauncherIcons, type LauncherApp,
   } from '../sdk/core';
   import { filterLauncherApps, nextLauncherSelection } from '../launcher-model';
+  import { matchingAppsLabel } from '../ui-locale';
 
   let { onClose, onPopout, generation }: {
     onClose: () => void;
@@ -47,7 +48,7 @@
       }
     });
     if (!requestLauncherCatalog(generation)) {
-      error = 'Application service unavailable';
+      error = 'Служба приложений недоступна';
     }
     void tick().then(() => search?.focus());
     return () => {
@@ -85,7 +86,7 @@
     selected = index;
     error = '';
     if (!launchDesktopApp(generation, app.id)) {
-      error = 'Cannot contact application service';
+      error = 'Нет связи со службой приложений';
     }
   }
 
@@ -136,7 +137,7 @@
   <header data-kira-enter class="shrink-0 px-5 pb-3 pt-4">
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 border-l-2 border-kira-accent pl-3">
-        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">Applications</h1>
+        <h1 data-kira-contact class="text-[25px] font-extrabold leading-tight tracking-tight">Приложения</h1>
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="launcher" />
     </div>
@@ -156,12 +157,12 @@
         autocomplete="off" spellcheck="false"
         role="combobox" aria-autocomplete="list" aria-expanded={displayed.length > 0}
         aria-activedescendant={displayed[activeIndex] ? 'kira-launcher-option-' + displayed[activeIndex].id : undefined}
-        aria-label="Search applications" aria-controls="kira-launcher-results"
-        placeholder="Search applications…"
+        aria-label="Поиск приложений" aria-controls="kira-launcher-results"
+        placeholder="Поиск приложений…"
         class="h-11 w-full bg-transparent py-2 pl-10 pr-10 text-sm font-semibold text-kira-text
           outline-none placeholder:font-normal placeholder:text-kira-muted/70"/>
       {#if query.length > 0}
-        <button type="button" onclick={clearSearch} title="Clear search" aria-label="Clear search"
+        <button type="button" onclick={clearSearch} title="Очистить поиск" aria-label="Очистить поиск"
           class="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center
             text-base text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
       {/if}
@@ -169,14 +170,14 @@
 
     {#if loaded && query.trim()}
       <p class="mt-3 mb-1 text-[11px] text-kira-muted" role="status">
-        {matches.length} {matches.length === 1 ? 'result' : 'results'}
+        {matchingAppsLabel(matches.length)}
       </p>
     {/if}
     <div id="kira-launcher-results" bind:this={results}
       use:tenetFlowIndicator={{ active: displayed[activeIndex] ? String(displayed[activeIndex].id) : '', axis: 'both' }}
       use:tenetReflowScope use:tenetScrollScope
       class="kira-launcher-scroll relative mt-3 min-h-0 flex-1 overflow-y-auto pr-1"
-      role="listbox" aria-label="Matching applications" aria-busy={!loaded}>
+      role="listbox" aria-label="Найденные приложения" aria-busy={!loaded}>
       <span data-kira-flow-indicator aria-hidden="true"
         class="pointer-events-none absolute left-0 top-0 z-0 border-l-[3px] border-kira-accent bg-kira-bg/80"></span>
       {#each displayed as app, index (app.id)}
@@ -209,19 +210,19 @@
             <span class={'block truncate text-sm font-semibold ' +
               (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
             {#if app.description.trim()}
-              <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim()}</span>
+              <span class="line-clamp-2 text-[12px] leading-4 text-kira-muted">{app.description.trim()}</span>
             {/if}
           </span>
         </button>
       {:else}
         <div class="px-3 py-8 text-center" role="status">
           <p class="text-xs font-semibold text-kira-text">
-            {#if error}{error}{:else if !loaded}LOADING APPLICATIONS…{:else}No matching applications{/if}
+            {#if error}{error}{:else if !loaded}ЗАГРУЗКА ПРИЛОЖЕНИЙ…{:else}Приложения не найдены{/if}
           </p>
           {#if loaded && !error && query.trim()}
             <button type="button" onclick={clearSearch}
               class="mt-3 text-[11px] font-bold text-kira-accent
-                focus-visible:outline-2 focus-visible:outline-kira-accent">CLEAR SEARCH</button>
+                focus-visible:outline-2 focus-visible:outline-kira-accent">ОЧИСТИТЬ ПОИСК</button>
           {/if}
         </div>
       {/each}
@@ -231,7 +232,7 @@
     {/if}
     {#if matches.length > displayed.length}
       <p class="shrink-0 pt-2 text-[10px] text-kira-muted">
-        Showing first {displayed.length} matches. Refine search for more.
+        Показаны первые {displayed.length} приложений. Уточните поиск для остальных.
       </p>
     {/if}
   </section>

@@ -70,7 +70,7 @@ function scriptFor(steps, observationMs = 1150) {
           : kind === 'catalog'
             ? 'window.dispatchEvent(new CustomEvent("kira:launcher:apps", {detail: {apps: Array.from({length: 80}, (_, id) => ({id, name: "Application " + id, description: "Test entry"}))}}));'
             : kind === 'filter'
-              ? 'const input = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
+              ? 'const input = document.querySelector("input[aria-label=\\"Поиск приложений\\"]");' +
                 'if (input) { input.value = "Application 79"; input.dispatchEvent(new Event("input", {bubbles: true})); }'
               : kind === 'launcher-down'
                 ? 'window.dispatchEvent(new KeyboardEvent("keydown", {key:"ArrowDown", bubbles:true}));'
@@ -79,10 +79,10 @@ function scriptFor(steps, observationMs = 1150) {
               : kind === 'system-overview'
                 ? 'document.querySelector("nav [data-kira-tab=overview]")?.click();'
               : kind === 'calendar-next'
-                ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent;' +
-                  'document.querySelector("button[aria-label=\\\"Next month\\\"]")?.click();'
+                ? 'window.__kiraCalendarBefore = document.querySelector("[aria-label=\\\"Выбор даты\\\"] h2")?.textContent;' +
+                  'document.querySelector("button[aria-label=\\\"Следующий месяц\\\"]")?.click();'
               : kind === 'calendar-pick'
-                ? 'const candidate = document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[data-calendar-day].text-kira-text:not([aria-pressed=\\\"true\\\"])");' +
+                ? 'const candidate = document.querySelector("[aria-label=\\\"Даты календаря\\\"] button[data-calendar-day].text-kira-text:not([aria-pressed=\\\"true\\\"])");' +
                   'window.__kiraCalendarChosen = candidate?.getAttribute("aria-label");candidate?.click();'
               : kind === 'clock-chaos'
                 ? // Clock flights can finish between Chromium virtual-time
@@ -225,7 +225,7 @@ function scriptFor(steps, observationMs = 1150) {
       'const list = document.querySelector("[role=listbox]");' +
       'document.documentElement.setAttribute("data-smoke-list-scroll", !!list && list.scrollHeight > list.clientHeight);' +
       'document.documentElement.setAttribute("data-smoke-option-count", list?.querySelectorAll("[role=option]").length ?? 0);' +
-      'const shared=roots[0]?.querySelector("[aria-label=\\\"Calendar dates\\\"] [data-kira-flow-indicator]") ||' +
+      'const shared=roots[0]?.querySelector("[aria-label=\\\"Даты календаря\\\"] [data-kira-flow-indicator]") ||' +
         'roots[0]?.querySelector("[role=listbox] [data-kira-flow-indicator]") ||' +
         'roots[0]?.querySelector("nav [data-kira-flow-indicator]");' +
       'const area=shared?.parentElement;' +
@@ -236,7 +236,7 @@ function scriptFor(steps, observationMs = 1150) {
         '(area?.tagName==="NAV"?Math.abs(sr.bottom-cr.bottom):Math.abs(sr.top-cr.top))<2;' +
       'document.documentElement.dataset.smokeFlowGeometry=sr&&cr?' +
         '[sr.left,sr.top,sr.width,sr.height,cr.left,cr.top,cr.width,cr.height].map(n=>Math.round(n)).join(","):"missing";' +
-      'document.documentElement.setAttribute("data-smoke-query-value", document.querySelector("input[aria-label=\\\"Search applications\\\"]")?.value ?? "absent");' +
+      'document.documentElement.setAttribute("data-smoke-query-value", document.querySelector("input[aria-label=\\\"Поиск приложений\\\"]")?.value ?? "absent");' +
       'document.documentElement.setAttribute("data-smoke-scrollbar-hidden", !!list && getComputedStyle(list).scrollbarWidth === "none");' +
       'if (list && list.scrollHeight > list.clientHeight) list.scrollTop = 80;' +
       'document.documentElement.setAttribute("data-smoke-scrolled", !!list && list.scrollTop > 0);' +
@@ -251,7 +251,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-square", roots.length === 1 && getComputedStyle(roots[0]).borderTopLeftRadius === "0px" && getComputedStyle(roots[0]).borderTopWidth === "0px");' +
       'const clock = document.querySelector("[data-calendar-clock]");' +
       'document.documentElement.setAttribute("data-smoke-calendar-odometer", !!clock && clock.querySelectorAll("[data-clock-digit]").length === 6 && !!clock.getAttribute("aria-label") && !!clock.getAttribute("datetime") && clock.querySelectorAll("[data-clock-cell]").length === 6);' +
-      'const calGrid = document.querySelector("[aria-label=\\\"Calendar dates\\\"]");' +
+      'const calGrid = document.querySelector("[aria-label=\\\"Даты календаря\\\"]");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-events", calGrid?.dataset.tenetScenes || "0");' +
       'document.documentElement.setAttribute("data-smoke-tenet-grid-contact", !!calGrid?.dataset.tenetContact);' +
       // Four recorded fragments remain DOM-owned but invisible until exit.
@@ -264,12 +264,12 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.setAttribute("data-smoke-clock-chaos-flew", !!window.__kiraClockFlew);' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-reset", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).every(cell => getComputedStyle(cell).transform === "none"));' +
       'document.documentElement.setAttribute("data-smoke-clock-chaos-transform", !!clock && Array.from(clock.querySelectorAll("[data-clock-cell]")).slice(0,3).map(cell => getComputedStyle(cell).transform).join("|"));' +
-      'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent);' +
-      'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Calendar dates\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
-      'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Live system telemetry\\\"] svg").length);' +
-      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"CPU utilization 42 percent\\\"]") && !roots[0].textContent.includes("PULSE STALE"));' +
+      'document.documentElement.setAttribute("data-smoke-calendar-navigated", !!window.__kiraCalendarBefore && window.__kiraCalendarBefore !== document.querySelector("[aria-label=\\\"Выбор даты\\\"] h2")?.textContent);' +
+      'document.documentElement.setAttribute("data-smoke-calendar-picked", !!window.__kiraCalendarChosen && window.__kiraCalendarChosen === document.querySelector("[aria-label=\\\"Даты календаря\\\"] button[aria-pressed=\\\"true\\\"]")?.getAttribute("aria-label"));' +
+      'document.documentElement.setAttribute("data-smoke-system-charts", document.querySelectorAll("[aria-label=\\\"Телеметрия системы\\\"] svg").length);' +
+      'document.documentElement.setAttribute("data-smoke-system-pulse", !!roots[0] && !!roots[0].querySelector("[aria-label=\\\"Загрузка CPU: 42%\\\"]") && !roots[0].textContent.includes("ИМПУЛЬС УСТАРЕЛ"));' +
       'document.documentElement.setAttribute("data-smoke-system-swap", !!roots[0] && roots[0].textContent.includes("0.3%"));' +
-      'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("TEMP N/A"));' +
+      'document.documentElement.setAttribute("data-smoke-system-unknown", !!roots[0] && roots[0].textContent.includes("ТЕМП Н/Д"));' +
       'document.documentElement.setAttribute("data-smoke-system-no-scrollbar", !!roots[0] && getComputedStyle(roots[0]).scrollbarWidth === "none");' +
       'const settings=document.querySelector("main[aria-label=\\\"Kira Settings\\\"]");' +
       'document.documentElement.dataset.smokeSettingsMode=settings?.dataset.settingsMode || "none";' +
@@ -282,7 +282,7 @@ function scriptFor(steps, observationMs = 1150) {
       'document.documentElement.dataset.smokeDisplayBoxes=settings?.querySelectorAll("button[aria-label^=\\\"Переместить или выбрать\\\"]").length || 0;' +
       'document.documentElement.setAttribute("data-smoke-no-hover-warp", !document.querySelector("filter[id^=kira-temporal-warp], [data-tenet-warp-state], [data-tenet-warp-pixels], [data-tenet-lens-body]"));' +
       'document.documentElement.setAttribute("data-smoke-unselectable", roots.length === 1 && getComputedStyle(roots[0]).userSelect === "none");' +
-      'const editable = document.querySelector("input[aria-label=\\"Search applications\\"]");' +
+      'const editable = document.querySelector("input[aria-label=\\"Поиск приложений\\"]");' +
       'document.documentElement.setAttribute("data-smoke-editable-selectable", !editable || getComputedStyle(editable).userSelect === "text");' +
       'const painted = document.querySelector("[data-kira-icon-slot]:has(img)");' +
       'document.documentElement.setAttribute("data-smoke-real-icon-transparent", !!painted && getComputedStyle(painted).backgroundColor === "rgba(0, 0, 0, 0)");' +
@@ -294,7 +294,7 @@ function scriptFor(steps, observationMs = 1150) {
 
 async function smoke(name, steps, expected, heightMode = 'any') {
   const document = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('<html lang="ru">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', scriptFor(steps, heightMode === 'clock' ? 1900 : heightMode === 'calendar' ? 2050 : heightMode === 'tenet' ? 2050 : heightMode.startsWith('reverse') ? 1750 : 1150) + '</head>');
   if (!document.includes('data-kira-surface="calendar"')) {
     throw new Error('Overlay marker was not inserted in the production HTML');
@@ -469,8 +469,8 @@ async function smokeTopBar() {
     'name:"Workspace long name "+(i+1),output:"DP-1",is_active:i===8,is_focused:i===8,' +
     'is_urgent:i===0||i===5||i===10}))}})),85);' +
     'setTimeout(()=>{' +
-    'const root=document.querySelector("main[aria-label=\\\"Kira Desktop top bar\\\"]");' +
-    'const list=root?.querySelector("ol[aria-label=\\\"Niri workspaces\\\"]");' +
+    'const root=document.querySelector("main[aria-label=\\\"Верхняя панель Kira Desktop\\\"]");' +
+    'const list=root?.querySelector("ol[aria-label=\\\"Рабочие пространства Niri\\\"]");' +
     'const focused=list?.querySelector("[data-focused=true]");' +
     'const listRect=list?.getBoundingClientRect();const focusRect=focused?.getBoundingClientRect();' +
     'const shared=list?.querySelector("[data-kira-flow-indicator]");' +
@@ -478,8 +478,8 @@ async function smokeTopBar() {
     'const flowAligned=!!selectedRect && !!focusRect &&' +
       'Math.abs(selectedRect.left-focusRect.left)<2 &&' +
       'Math.abs(selectedRect.width-focusRect.width)<2;' +
-    'const urgency=root?.querySelectorAll("[aria-label*=\\\"urgent workspace hidden\\\"]");' +
-    'const visibleUrgent=root?.querySelector("[aria-label*=\\\", urgent\\\"]");' +
+    'const urgency=root?.querySelectorAll("[aria-label*=\\\"скрыто срочное пространство\\\"]");' +
+    'const visibleUrgent=root?.querySelector("[aria-label*=\\\", требует внимания\\\"]");' +
     'document.documentElement.dataset.smokeTopbar=!!root && root.getBoundingClientRect().height===42 &&' +
     '!!list && list.scrollWidth>list.clientWidth && list.scrollLeft>0 && !!focused &&' +
     'focused.dataset.workspaceId==="9" && focusRect.left>=listRect.left-2 &&' +
@@ -494,7 +494,7 @@ async function smokeTopBar() {
     '--virtual-time-budget=1200', '--dump-dom', 'file://' + filename,
   ], { encoding: 'utf8', timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] });
   if (!output.includes('data-smoke-topbar="true"')) {
-    const list = output.match(/<ol[^>]*aria-label="Niri workspaces"[\s\S]{0,800}/)?.[0] ?? 'not mounted';
+    const list = output.match(/<ol[^>]*aria-label="Рабочие пространства Niri"[\s\S]{0,800}/)?.[0] ?? 'not mounted';
     throw new Error('Top Bar focused pixel visibility or urgency regression: ' + list.slice(0, 600));
   }
   console.log('OK: Top Bar focus auto-scroll and urgency on both hidden sides');
@@ -527,11 +527,11 @@ async function smokeCalendarSky(windowSize, expectStacked) {
     'document.documentElement.dataset.smokeSkyMode=root?.dataset.calendarMode||"none";' +
     'document.documentElement.dataset.smokeSkySize=(canvas?.width||0)+"x"+(canvas?.height||0);' +
     'document.documentElement.dataset.smokeSkyDate=!!window.__kiraCalendarBefore && ' +
-      'window.__kiraCalendarBefore!==root?.querySelector("[aria-label=\\\"Date picker\\\"] h2")?.textContent && ' +
+      'window.__kiraCalendarBefore!==root?.querySelector("[aria-label=\\\"Выбор даты\\\"] h2")?.textContent && ' +
       '!!atlas?.textContent?.includes("Звёздное небо");' +
   '},2150));</script>';
   const document = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('<html lang="ru">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + check + '</head>');
   const path = join(dir, 'calendar-sky-' + windowSize.split(',')[0] + '.html');
   await writeFile(path, document);
@@ -587,7 +587,7 @@ async function smokeSettingsResponsive(width, narrow) {
     'document.documentElement.dataset.smokeSettingsWidths=(normal?.width||0)+"/"+(bounds?.width||0);' +
   '},2050));</script>';
   const page = html
-    .replace('<html lang="en">', '<html lang="en" data-kira-surface="calendar">')
+    .replace('<html lang="ru">', '<html lang="en" data-kira-surface="calendar">')
     .replace('</head>', '<style>html,body,#app{height:100%;margin:0}</style>' + scriptFor(steps, 1900) + checks + '</head>');
   const filename = join(dir, 'settings-responsive-' + width + '.html');
   await writeFile(filename, page);

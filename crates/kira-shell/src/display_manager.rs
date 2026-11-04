@@ -1,11 +1,17 @@
 //! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
 //! Persistent changes require explicit ownership and native confirmation.
-use std::process::Command;
+use std::io::Read;
+use std::process::{Command, Stdio};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 const CONFIRM_SECS: u64 = 15;
+// Bound each Niri IPC invocation. An unresponsive compositor must not leave
+// the display preview's rollback worker blocked in Child::wait forever.
+const NIRI_IPC_TIMEOUT: Duration = Duration::from_secs(2);
+const NIRI_MAX_OUTPUT_BYTES: usize = 256 * 1024;
+const NIRI_MAX_ERROR_BYTES: usize = 8 * 1024;
 const MAX_OUTPUTS: usize = 8;
 const MAX_MODES: usize = 80;
 
@@ -35,6 +41,7 @@ pub struct Event {
     pub state: &'static str,
     pub outputs: Option<serde_json::Value>,
     pub pending_id: Option<u64>,
+    pub deadline_unix_ms: Option<u64>,
     pub error: Option<String>,
     pub persistence: &'static str,
 }
@@ -91,32 +98,98 @@ fn report(
         state,
         outputs: snapshot,
         pending_id,
+        deadline_unix_ms: None,
         error: error.map(|value| value.chars().take(240).collect()),
+        persistence: crate::config_layers::status(),
+    });
+}
+
+/// A pending confirmation reports the same deadline as the native watchdog.
+/// Absolute time avoids restarting a 15-second timer when WebKit receives a
+/// delayed event. Instant remains authoritative for the rollback itself.
+fn report_pending(events: &Sender<Event>, id: u64, deadline: Instant) {
+    let remaining = deadline.saturating_duration_since(Instant::now());
+    let deadline_unix_ms = SystemTime::now()
+        .checked_add(remaining)
+        .and_then(|time| time.duration_since(UNIX_EPOCH).ok())
+        .and_then(|time| u64::try_from(time.as_millis()).ok());
+    let _ = events.send(Event {
+        state: "pending",
+        outputs: query().ok(),
+        pending_id: Some(id),
+        deadline_unix_ms,
+        error: None,
         persistence: crate::config_layers::status(),
     });
 }
 
 /// The only executable is the fixed Niri CLI; all arguments are bounded and
 /// validated against Niri's own snapshot, without an interpolated shell.
+fn read_capped(reader: impl Read, max_bytes: usize) -> std::io::Result<Vec<u8>> {
+    let mut bytes = Vec::new();
+    reader
+        .take((max_bytes + 1) as u64)
+        .read_to_end(&mut bytes)?;
+    Ok(bytes)
+}
+
 fn niri(args: &[&str]) -> Result<String, String> {
-    let output = Command::new("niri")
+    // Drain stdout and stderr concurrently: a large Niri outputs response
+    // must not fill an OS pipe and deadlock a blocking wait.
+    let mut child = Command::new("niri")
         .arg("msg")
         .args(args)
-        .output()
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
         .map_err(|error| format!("Niri IPC недоступен: {error}"))?;
-    if !output.status.success() {
+    let stdout = child.stdout.take().ok_or("Нет канала вывода Niri")?;
+    let stderr = child.stderr.take().ok_or("Нет канала ошибок Niri")?;
+    let output_reader = thread::spawn(move || read_capped(stdout, NIRI_MAX_OUTPUT_BYTES));
+    let error_reader = thread::spawn(move || read_capped(stderr, NIRI_MAX_ERROR_BYTES));
+    let deadline = Instant::now() + NIRI_IPC_TIMEOUT;
+    let mut timed_out = false;
+    let status = loop {
+        match child.try_wait() {
+            Ok(Some(status)) => break Ok(status),
+            Ok(None) if Instant::now() >= deadline => {
+                timed_out = true;
+                let _ = child.kill();
+                break child.wait().map_err(|error| format!("Niri IPC: {error}"));
+            }
+            Ok(None) => thread::sleep(Duration::from_millis(10)),
+            Err(error) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                break Err(format!("Niri IPC: {error}"));
+            }
+        }
+    };
+    let output = output_reader
+        .join()
+        .map_err(|_| "Ошибка чтения ответа Niri".to_string())?
+        .map_err(|error| format!("Ошибка чтения ответа Niri: {error}"))?;
+    let errors = error_reader
+        .join()
+        .map_err(|_| "Ошибка чтения ошибки Niri".to_string())?
+        .map_err(|error| format!("Ошибка чтения ошибки Niri: {error}"))?;
+    if timed_out {
+        return Err("Превышено время ожидания ответа Niri".into());
+    }
+    if !status?.success() {
         return Err(format!(
             "Niri отклонил команду: {}",
-            String::from_utf8_lossy(&output.stderr)
+            String::from_utf8_lossy(&errors)
                 .chars()
                 .take(180)
                 .collect::<String>()
         ));
     }
-    if output.stdout.len() > 256 * 1024 {
+    if output.len() > NIRI_MAX_OUTPUT_BYTES {
         return Err("Ответ Niri слишком большой".into());
     }
-    String::from_utf8(output.stdout).map_err(|_| "Некорректный ответ Niri".into())
+    String::from_utf8(output).map_err(|_| "Некорректный ответ Niri".into())
 }
 
 fn query() -> Result<serde_json::Value, String> {
@@ -207,11 +280,17 @@ fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
             .ok_or("Невозможно определить режим дисплея")?;
         let enabled = !logical.is_null();
         let scale = logical["scale"].as_f64().unwrap_or(1.0);
-        let transform = logical["transform"]
-            .as_str()
-            .and_then(normalized_transform)
-            .unwrap_or("normal")
-            .to_string();
+        // Unknown rotations cannot be silently restored as "normal":
+        // rollback must preserve the original orientation or refuse to apply.
+        let transform = if enabled {
+            logical["transform"]
+                .as_str()
+                .and_then(normalized_transform)
+                .ok_or("Неподдерживаемая ориентация подключённого дисплея")?
+        } else {
+            "normal"
+        }
+        .to_string();
         result.push(Desired {
             name: name.to_string(),
             enabled,
@@ -332,6 +411,13 @@ fn revert(before: &[Desired], events: &Sender<Event>) {
     );
 }
 
+// Messages already queued in the channel must not extend or bypass the
+// rollback deadline. recv_timeout can return Ok even when the deadline has
+// elapsed while the worker was executing a Niri IPC request.
+fn deadline_expired(deadline: Instant, now: Instant) -> bool {
+    now >= deadline
+}
+
 fn run(requests: Receiver<Request>, events: Sender<Event>) {
     let mut next_id = 0_u64;
     let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
@@ -344,6 +430,18 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             }
             None => requests.recv().map_err(|_| RecvTimeoutError::Disconnected),
         };
+        if pending
+            .as_ref()
+            .is_some_and(|(_, _, deadline)| deadline_expired(*deadline, Instant::now()))
+        {
+            if let Some((_, before, _)) = pending.take() {
+                staged = None;
+                revert(&before, &events);
+            }
+            // An expired confirmation cannot commit the pending preview,
+            // even when the command was queued before recv_timeout returned.
+            continue;
+        }
         let message = match received {
             Ok(message) => message,
             Err(RecvTimeoutError::Timeout) => {
@@ -370,6 +468,7 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                                 state: "ready",
                                 outputs: Some(outputs),
                                 pending_id: None,
+                                deadline_unix_ms: None,
                                 error: None,
                                 persistence: crate::config_layers::status(),
                             });
@@ -379,8 +478,6 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 }
             }
             Request::Apply(value) => {
-                confirmed = None;
-                staged = None;
                 if pending.is_some() {
                     report(
                         &events,
@@ -390,6 +487,10 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                     );
                     continue;
                 }
+                // A rejected overlapping Apply must not discard the pending
+                // target. Otherwise the next Confirm succeeds but Save cannot.
+                confirmed = None;
+                staged = None;
                 let result = query().and_then(|outputs| {
                     let target = validate(&value, &outputs)?;
                     let before = baseline(&outputs)?;
@@ -410,7 +511,9 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                                 before,
                                 Instant::now() + Duration::from_secs(CONFIRM_SECS),
                             ));
-                            report(&events, "pending", Some(id), None);
+                            if let Some((_, _, deadline)) = pending.as_ref() {
+                                report_pending(&events, id, *deadline);
+                            }
                         }
                     }
                 }
@@ -485,6 +588,29 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn oversized_niri_output_is_bounded_before_parsing() {
+        let input = std::io::Cursor::new(vec![b'x'; NIRI_MAX_ERROR_BYTES + 2]);
+        let actual = read_capped(input, NIRI_MAX_ERROR_BYTES).unwrap();
+        assert_eq!(actual.len(), NIRI_MAX_ERROR_BYTES + 1);
+    }
+
+    #[test]
+    fn a_queued_confirmation_does_not_extend_the_rollback_deadline() {
+        let now = Instant::now();
+        let deadline = now + Duration::from_secs(CONFIRM_SECS);
+        assert!(!deadline_expired(deadline, now));
+        assert!(!deadline_expired(
+            deadline,
+            deadline - Duration::from_nanos(1)
+        ));
+        assert!(deadline_expired(deadline, deadline));
+        assert!(deadline_expired(
+            deadline,
+            deadline + Duration::from_secs(1)
+        ));
+    }
     use serde_json::json;
 
     fn outputs() -> serde_json::Value {
@@ -534,6 +660,15 @@ mod tests {
         let mut injection = plan();
         injection[1]["transform"] = json!("normal; rm -rf /");
         assert!(validate(&injection, &outputs()).is_err());
+    }
+
+    #[test]
+    fn rejects_unknown_current_rotation_instead_of_corrupting_rollback() {
+        let mut current = outputs();
+        current[0]["logical"]["transform"] = json!("FutureRotation");
+        assert!(baseline(&current).is_err());
+        current[0]["logical"]["transform"] = json!("Flipped90");
+        assert_eq!(baseline(&current).unwrap()[0].transform, "flipped-90");
     }
 
     #[test]

@@ -38,13 +38,13 @@
 
 {#if !state}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
-    role="status" aria-live="polite">NIRI…</span>
+    role="status" aria-live="polite">NIRI: ПОДКЛЮЧЕНИЕ…</span>
 {:else if !state.connected}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
-    role="status" aria-live="polite" title="Niri IPC disconnected">NIRI OFFLINE</span>
+    role="status" aria-live="polite" title="Нет соединения с Niri IPC">NIRI НЕДОСТУПЕН</span>
 {:else if state.workspaces.length === 0}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
-    role="status" aria-live="polite">NO WORKSPACES</span>
+    role="status" aria-live="polite">НЕТ РАБОЧИХ СТОЛОВ</span>
 {:else}
   <div class="flex min-w-0 shrink items-center gap-1" data-workspace-strip>
     {#if windowed.before > 0}
@@ -52,15 +52,15 @@
         class:text-kira-accent={windowed.beforeUrgent}
         class:text-kira-muted={!windowed.beforeUrgent}
         role={windowed.beforeUrgent ? 'status' : undefined}
-        title={windowed.before + ' preceding Niri workspaces hidden' + (windowed.beforeUrgent ? ' / urgent workspace' : '')}
-        aria-label={windowed.before + ' preceding workspaces not shown' + (windowed.beforeUrgent ? ', urgent workspace hidden' : '')}>
+        title={windowed.before + ' предыдущих рабочих пространств скрыто' + (windowed.beforeUrgent ? ' / срочный сигнал' : '')}
+        aria-label={windowed.before + ' предыдущих рабочих пространств не показано' + (windowed.beforeUrgent ? ', скрыто срочное пространство' : '')}>
         −{windowed.before}
       </span>
     {/if}
     <ol bind:this={list} use:tenetFlowIndicator={{ active: focusedId ?? '', axis: 'both' }}
       use:tenetScrollScope
       class="relative flex max-w-[min(45vw,416px)] min-w-0 shrink items-center gap-1 overflow-x-auto p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      aria-label="Niri workspaces">
+      aria-label="Рабочие пространства Niri">
       <li data-kira-flow-indicator aria-hidden="true"
         class="pointer-events-none absolute left-0 top-0 z-0 list-none rounded-[2px] bg-kira-accent"></li>
       {#each windowed.items as workspace (workspace.id)}
@@ -82,14 +82,14 @@
               workspace.is_focused
                 ? 'focus-visible:outline-kira-on-accent focus-visible:-outline-offset-2'
                 : 'focus-visible:outline-kira-accent focus-visible:outline-offset-1'].join(' ')}
-            aria-label={'Focus workspace ' + (workspace.name || workspace.idx)
-              + (workspace.output ? ' on ' + workspace.output : '')
-              + (workspace.is_urgent ? ', urgent' : '')}
+            aria-label={'Переключиться на пространство ' + (workspace.name || workspace.idx)
+              + (workspace.output ? ' на экране ' + workspace.output : '')
+              + (workspace.is_urgent ? ', требует внимания' : '')}
             aria-pressed={workspace.is_focused}
-            title={'Workspace ' + (workspace.name || workspace.idx)
-              + (workspace.output ? ' on ' + workspace.output : '')
-              + (workspace.is_focused ? ' (focused)' : workspace.is_active ? ' (active)' : '')
-              + (workspace.is_urgent ? ' (urgent)' : '')}
+            title={'Пространство ' + (workspace.name || workspace.idx)
+              + (workspace.output ? ' на экране ' + workspace.output : '')
+              + (workspace.is_focused ? ' (в фокусе)' : workspace.is_active ? ' (активно)' : '')
+              + (workspace.is_urgent ? ' (требует внимания)' : '')}
             disabled={pending}
             onclick={() => onFocus(workspace.id)}
           >
@@ -110,8 +110,8 @@
         class:text-kira-accent={windowed.afterUrgent}
         class:text-kira-muted={!windowed.afterUrgent}
         role={windowed.afterUrgent ? 'status' : undefined}
-        title={windowed.after + ' following Niri workspaces hidden' + (windowed.afterUrgent ? ' / urgent workspace' : '')}
-        aria-label={windowed.after + ' following workspaces not shown' + (windowed.afterUrgent ? ', urgent workspace hidden' : '')}>
+        title={windowed.after + ' последующих рабочих пространств скрыто' + (windowed.afterUrgent ? ' / срочный сигнал' : '')}
+        aria-label={windowed.after + ' последующих рабочих пространств не показано' + (windowed.afterUrgent ? ', скрыто срочное пространство' : '')}>
         +{windowed.after}
       </span>
     {/if}

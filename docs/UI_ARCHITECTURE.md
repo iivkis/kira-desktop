@@ -71,8 +71,8 @@ Nested Niri graphical QA remains mandatory before release.
 
 ## Lazy widget lifetime and memory ownership
 
-The Calendar layer-shell popup prewarms its **WebKit host** when the bar starts,
-but does not mount a Svelte widget until the user opens it. The trusted GTK
+The transient popup pool prewarms **one inert WebKit host** when the
+bar starts, but does not mount a Svelte widget until the user opens it. The trusted GTK
 host dispatches `kira:calendar:show` with a generation ID, then waits for
 `mounted:<generation>` and a double animation frame before revealing the
 window. On hide it dispatches `kira:calendar:hide`; the Svelte lifecycle
@@ -84,9 +84,11 @@ in the single offline HTML bundle, but the DOM, effects, timers and component
 instance are created only on show. The live instance is unloaded on hide.
 This does **not** unload the prebundled JS bytes or the base WebKit engine. WebKit stays warm for near-instant reopening. RSS/PSS may not
 immediately fall because the JavaScript engine retains allocated pages and
-shared libraries. All three built-in overlays (Calendar, System Monitor,
-Launcher) share the same WebView; the launcher exclusively requests keyboard
-focus while active. The GTK widget view and native CSS have been retired.
+shared libraries. Transient Calendar, System Monitor, Launcher and Settings reuse pooled
+WebViews without concurrent widget instances in a lease. Promoted Niri
+windows retain their own leased WebViews and Svelte state. The launcher
+exclusively requests keyboard focus while active. Native GTK widget
+presentation and its theme CSS have been retired.
 
 
 ### Content-sized popup geometry

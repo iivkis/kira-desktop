@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel, isSampleFresh } from './system-model';
-import type { ProcessRow, SystemMetrics } from './sdk/core';
+import { bytesLabel, defaultSort, fractionLabel, nextSort, percentUsed, processMemoryLabel, sortedProcesses, systemHeadline, temperatureLabel, usageLabel, isSampleFresh, liveUtilization } from './system-model';
+import type { ProcessRow, SystemMetrics, SystemPulse } from './sdk/core';
 
 const processes: ProcessRow[] = [
   { pid: 3, name: 'zebra', state: 'R', cpu_percent: 20, rss_kib: 4000, pss_kib: 1200 },
@@ -19,6 +19,25 @@ describe('Svelte System Monitor model', () => {
     expect(isSampleFresh(9_000, Number.NaN)).toBe(false);
     expect(isSampleFresh(7_500, 10_000, 2_500)).toBe(true);
     expect(isSampleFresh(7_499, 10_000, 2_500)).toBe(false);
+  });
+
+  it('never renders an expired high-frequency pulse as a live gauge', () => {
+    const pulse: SystemPulse = {
+      cpu_percent: 96,
+      memory_total_kib: 1_000,
+      memory_available_kib: 30,
+    };
+    const current: SystemMetrics = {
+      cpu_percent: 12, cpu_temperature_c: null, gpus: [],
+      memory_total_kib: 1_000, memory_available_kib: 400,
+      swap_total_kib: 0, swap_free_kib: 0,
+      root_total_kib: null, root_available_kib: null, uptime_seconds: null,
+      load: null, battery_percent: null, battery_charging: null,
+    };
+    expect(liveUtilization(pulse, true, current)).toEqual({ cpu: 96, ram: 97 });
+    expect(liveUtilization(pulse, false, current)).toEqual({ cpu: 12, ram: 60 });
+    expect(liveUtilization(pulse, false, null)).toEqual({ cpu: null, ram: null });
+    expect(liveUtilization(null, false, current)).toEqual({ cpu: 12, ram: 60 });
   });
 
   it('sorts each column in both directions and keeps missing metrics last', () => {
@@ -50,20 +69,20 @@ describe('Svelte System Monitor model', () => {
     expect(percentUsed(0, 0)).toBeNull();
     expect(percentUsed(100, 150)).toBeNull();
     expect(percentUsed(100, 0)).toBe(100);
-    expect(usageLabel(null, null)).toBe('UNAVAILABLE');
-    expect(usageLabel(0, 0)).toBe('NOT CONFIGURED');
+    expect(usageLabel(null, null)).toBe('НЕДОСТУПНО');
+    expect(usageLabel(0, 0)).toBe('НЕ НАСТРОЕНО');
     expect(usageLabel(100000, 100000)).toBe('0%');
     expect(usageLabel(7700000, 7679000)).toBe('0.3%');
     expect(usageLabel(1000000, 999999)).toBe('<0.1%');
     expect(usageLabel(100, 60)).toBe('40%');
-    expect(usageLabel(100, 120)).toBe('UNAVAILABLE');
+    expect(usageLabel(100, 120)).toBe('НЕДОСТУПНО');
 
-    expect(fractionLabel(null, null)).toBe('UNAVAILABLE');
+    expect(fractionLabel(null, null)).toBe('НЕДОСТУПНО');
     expect(bytesLabel(1_048_576)).toBe('1.0 GiB');
     expect(processMemoryLabel(null)).toBe('—');
     expect(processMemoryLabel(0)).toBe('0 KiB');
     expect(processMemoryLabel(512)).toBe('512 KiB');
-    expect(temperatureLabel(null)).toBe('UNAVAILABLE');
+    expect(temperatureLabel(null)).toBe('НЕДОСТУПНО');
     expect(temperatureLabel(57.125)).toBe('57.1 °C');
   });
 

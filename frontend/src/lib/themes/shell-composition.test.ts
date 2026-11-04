@@ -37,9 +37,9 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('bg-kira-surface-soft');
     expect(markup).toContain('border-b border-kira-muted/15');
     expect(markup).not.toContain('after:bg-kira-accent');
-    expect(markup).toContain('aria-label="Kira Launcher"');
-    expect(markup).toContain('aria-label="Niri workspaces"');
-    expect(markup).toContain('aria-label="System status and local time"');
+    expect(markup).toContain('aria-label="Запуск приложений Kira"');
+    expect(markup).toContain('aria-label="Рабочие пространства Niri"');
+    expect(markup).toContain('aria-label="Система и местное время"');
     expect(markup).toContain('configState.config.compact');
     expect(markup).toContain('items-center justify-end gap-1 border-l');
     expect(markup).not.toContain('WORKSPACE</span>');
@@ -65,7 +65,7 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(workspaces).toContain('data-workspace-id={workspace.id}');
     expect(workspaces).toContain('windowed.beforeUrgent');
     expect(workspaces).toContain('windowed.afterUrgent');
-    expect(workspaces).toContain("workspace.is_urgent ? ', urgent' : ''");
+    expect(workspaces).toContain("workspace.is_urgent ? ', требует внимания' : ''");
   });
 
     it('keeps launcher, KDL settings and live clock functional', () => {
@@ -78,9 +78,11 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(markup).toContain('onOpen={activateSystemPanel}');
     expect(markup).toContain('metrics={systemMetrics}');
     expect(markup).toContain('stopMetrics();');
+    expect(markup).toContain('metricsLastReceivedAt = Date.now()');
+    expect(markup).toContain('warnings.length');
     expect(markup).toContain('aria-haspopup="dialog"');
     expect(markup).toContain('<time class=');
-    expect(markup).toContain('CALENDAR OFFLINE');
+    expect(markup).toContain('КАЛЕНДАРЬ НЕДОСТУПЕН');
   });
 
   it('preserves accessible live workspace and Core states without component CSS', () => {
@@ -100,13 +102,13 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(core).toContain('data-phase={health.phase}');
     expect(core).toContain('aria-haspopup="dialog"');
     expect(core).toContain('onclick={onOpen}');
-    expect(core).toContain("aria-label={'Open system monitor: ' + health.label}");
+    expect(core).toContain("aria-label={'Открыть монитор системы: ' + label}");
     expect(core).toContain('border-kira-accent bg-kira-accent');
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
     expect(core).not.toContain('min-h-7');
     expect(core).toContain("health.phase === 'ready' ? 'sr-only' : ''");
-    expect(markup).toContain('title="Open calendar and date details"');
+    expect(markup).toContain('title="Открыть календарь"');
     expect(markup).toContain('items-center justify-end');
     expect(markup).not.toContain('bar__system-item');
   });

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, saveDisplays, onDisplayStatus, displayModeId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
+import { deliverReply, request, focusWorkspace, onSystemMetrics, onWorkspaceUpdate, onConfigUpdate, toggleCalendar, toggleSystemPanel, toggleSettings, onSettingsAbout, requestDisplays, applyDisplays, confirmDisplays, revertDisplays, saveDisplays, onDisplayStatus, displayModeId, displayTransformId, openLauncher, closeCalendarOverlay, detachOverlay, copyCalendarDate, onCalendarCopyResult, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion, notifyOverlayHeight, notifyOverlayClosed, closeSystemOverlay, copySystemReport, setSystemMonitorTab, onSystemOverlayData, onSystemPulse, onSystemProcesses, requestLauncherCatalog, launchDesktopApp, closeLauncherOverlay, onLauncherCatalog, onLauncherError, onLauncherIcons, requestLauncherIcons } from './core';
 
 const originalWindow = globalThis.window;
 afterEach(() => {
@@ -85,6 +85,23 @@ describe('Core SDK JSON-RPC bridge', () => {
     ]);
   });
 
+  it('normalizes every Niri JSON rotation into the native command spelling', () => {
+    for (const [received, expected] of [
+      ['Normal', 'normal'], ['normal', 'normal'],
+      ['90', '90'], ['180', '180'], ['270', '270'],
+      ['Flipped', 'flipped'], ['flipped', 'flipped'],
+      ['Flipped90', 'flipped-90'], ['Flipped180', 'flipped-180'],
+      ['Flipped270', 'flipped-270'], ['flipped-90', 'flipped-90'],
+      ['flipped-180', 'flipped-180'], ['flipped-270', 'flipped-270'],
+    ]) {
+      expect(displayTransformId(received)).toBe(expected);
+    }
+    // Never silently rotate a newer, unsupported Niri transform to normal.
+    for (const invalid of ['NewTransform', '__proto__', 'constructor', 'toString']) {
+      expect(displayTransformId(invalid)).toBe('');
+    }
+  });
+
   it('validates native display response and rejects stale generations', () => {
     const handlers = new Map<string, EventListener>();
     globalThis.window = {
@@ -107,9 +124,14 @@ describe('Core SDK JSON-RPC bridge', () => {
     } as CustomEvent<unknown>);
     dispatch({ ...good, generation: 41 });
     dispatch({ ...good, persistence: 'invalid' });
+    dispatch({ ...good, deadline_unix_ms: -1 });
+    dispatch({ ...good, deadline_unix_ms: '15s' });
     dispatch({ ...good, outputs: [{ ...good.outputs[0], modes: [{ width: 'oops' }] }] });
     dispatch(good);
-    expect(callback).toHaveBeenCalledExactlyOnceWith(good);
+    const pending = { ...good, state: 'pending', pending_id: 10, deadline_unix_ms: Date.now() + 15_000 };
+    dispatch(pending);
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(callback).toHaveBeenLastCalledWith(pending);
     stop();
   });
 
@@ -271,6 +293,25 @@ describe('Core SDK JSON-RPC bridge', () => {
       copyCalendarDate(12, invalid);
     }
     expect(postMessage.mock.calls.map((call) => call[0])).toEqual(['close:12', 'copy:12:2024-02-29']);
+  });
+
+  it('accepts only generation-scoped native clipboard acknowledgement', () => {
+    const handlers = new Map<string, EventListener>();
+    globalThis.window = {
+      addEventListener(name: string, handler: EventListener) { handlers.set(name, handler); },
+      removeEventListener() {},
+    } as unknown as Window & typeof globalThis;
+    const callback = vi.fn();
+    const stop = onCalendarCopyResult(42, callback);
+    const dispatch = (detail: unknown) => handlers.get('kira:calendar:copy-result')!({
+      detail,
+    } as CustomEvent<unknown>);
+    dispatch({ generation: 41, date: '2024-02-29', ok: true });
+    dispatch({ generation: 42, date: 'oops', ok: true });
+    dispatch({ generation: 42, date: '2024-02-29', ok: 'yes' });
+    dispatch({ generation: 42, date: '2024-02-29', ok: true });
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ generation: 42, date: '2024-02-29', ok: true });
+    stop();
   });
 
   it('reports calendar Svelte mount completion only via the private host channel', () => {
