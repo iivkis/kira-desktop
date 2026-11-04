@@ -213,8 +213,12 @@ impl NotificationQueue {
 
     /// True only after the trusted Svelte renderer acknowledges a visual
     /// frame. Prevents exposing an outdated DOM when the host was blank.
+    pub fn painted_count(&self) -> usize {
+        self.showing.iter().filter(|entry| entry.since.is_some()).count()
+    }
+
     pub fn has_painted(&self) -> bool {
-        self.showing.iter().any(|entry| entry.since.is_some())
+        self.painted_count() != 0
     }
 
     /// Exact next wakeup, never a permanent UI poll.
@@ -301,6 +305,23 @@ mod tests {
         assert_eq!(q.visible().next().unwrap().id, 1);
         q.step(t + Duration::from_secs(7), true);
         assert!(q.visible().all(|n| n.id != 1));
+    }
+
+    #[test]
+    fn input_region_grows_only_after_each_painted_ack() {
+        let t = Instant::now();
+        let mut q = NotificationQueue::default();
+        q.push(notice(1), t);
+        q.step(t, true);
+        assert_eq!(q.painted_count(), 0);
+        q.mark_painted(t, &[1]);
+        assert_eq!(q.painted_count(), 1);
+        q.push(notice(2), t);
+        q.step(t + ADMISSION_GAP, true);
+        assert_eq!(q.visible_count(), 2);
+        assert_eq!(q.painted_count(), 1);
+        q.mark_painted(t + ADMISSION_GAP, &[2]);
+        assert_eq!(q.painted_count(), 2);
     }
 
     #[test]
