@@ -223,6 +223,13 @@ impl Service {
                             ));
                         }
                         "Notify" => {
+                            let Some(sender) = sender else {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.AccessDenied",
+                                    "Notification sender is unavailable",
+                                );
+                                return;
+                            };
                             // A single D-Bus invocation must never allocate an
                             // unbounded payload or silently drop an older FIFO item.
                             if params.size() > 64 * 1024 {
@@ -249,6 +256,13 @@ impl Service {
                             service.sync();
                         }
                         "CloseNotification" => {
+                            let Some(sender) = sender else {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.AccessDenied",
+                                    "Notification sender is unavailable",
+                                );
+                                return;
+                            };
                             let id = params.child_value(0).get::<u32>().unwrap_or(0);
                             // The numeric ID is public; only the original
                             // unique session-bus sender may close its notice.
