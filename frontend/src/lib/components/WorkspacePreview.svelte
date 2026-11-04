@@ -4,7 +4,7 @@
   import { visibleWorkspaceWindow } from '../workspace-window';
   import { tenetFlowIndicator, tenetScrollIntoView, tenetScrollScope } from '../motion';
 
-  let { state, showNames, limit, onFocus, pending }: {
+  let { state: workspaceState, showNames, limit, onFocus, pending }: {
     state: WorkspaceState | null;
     showNames: boolean;
     limit: number;
@@ -12,7 +12,7 @@
     pending: boolean;
   } = $props();
 
-  const windowed = $derived(visibleWorkspaceWindow(state?.workspaces ?? [], limit));
+  const windowed = $derived(visibleWorkspaceWindow(workspaceState?.workspaces ?? [], limit));
   const focusedId = $derived(windowed.items.find(item => item.is_focused)?.id ?? null);
   let list = $state<HTMLOListElement | undefined>(undefined);
   let previousFocus: string | null = null;
@@ -36,13 +36,13 @@
 
 </script>
 
-{#if !state}
+{#if !workspaceState}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
     role="status" aria-live="polite">NIRI: ПОДКЛЮЧЕНИЕ…</span>
-{:else if !state.connected}
+{:else if !workspaceState.connected}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
     role="status" aria-live="polite" title="Нет соединения с Niri IPC">NIRI НЕДОСТУПЕН</span>
-{:else if state.workspaces.length === 0}
+{:else if workspaceState.workspaces.length === 0}
   <span class="flex h-7 items-center whitespace-nowrap text-[10px] font-semibold tracking-wide text-kira-muted"
     role="status" aria-live="polite">НЕТ РАБОЧИХ СТОЛОВ</span>
 {:else}
