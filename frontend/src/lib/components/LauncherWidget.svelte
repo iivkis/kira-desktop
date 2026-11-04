@@ -209,7 +209,7 @@
             <span class={'block truncate text-sm font-semibold ' +
               (index === activeIndex ? 'text-kira-accent' : 'text-kira-text')}>{app.name}</span>
             {#if app.description.trim()}
-              <span class="line-clamp-2 text-[11px] leading-4 text-kira-muted">{app.description.trim()}</span>
+              <span class="line-clamp-2 text-[12px] leading-4 text-kira-muted">{app.description.trim()}</span>
             {/if}
           </span>
         </button>
