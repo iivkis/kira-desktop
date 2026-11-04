@@ -209,7 +209,7 @@
             disabled={!shiftMonth(selected, step)}
             onclick={() => navigate(step)}
             title={step === -12 ? 'Предыдущий год' : step === -1 ? 'Предыдущий месяц' : step === 1 ? 'Следующий месяц' : 'Следующий год'}
-            aria-label={step === -12 ? 'Previous year' : step === -1 ? 'Previous month' : step === 1 ? 'Next month' : 'Next year'}
+            aria-label={step === -12 ? 'Предыдущий год' : step === -1 ? 'Предыдущий месяц' : step === 1 ? 'Следующий месяц' : 'Следующий год'}
           >{step === -12 ? '«' : step === -1 ? '‹' : step === 1 ? '›' : '»'}</button>
         {/each}
       </div>
