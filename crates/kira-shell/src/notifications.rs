@@ -359,20 +359,16 @@ impl Service {
                 Some(&(id, key).to_variant()),
             );
         }
-        if self.queue.borrow_mut().close(id) {
-            self.signal_closed(id, 2);
-        }
+        let closed = self.queue.borrow_mut().close(id);
+        if closed { self.signal_closed(id, 2); }
         self.sync();
     }
 
     fn handle_ui(self: &Rc<Self>, message: &str) {
         if message == "ready" {
-            if let Some(host) = self.host.borrow().as_ref() {
-                if host.unavailable.get() {
-                    return;
-                }
-                host.ready.set(true);
-            }
+            let Some(host) = self.host.borrow().clone() else { return; };
+            if host.unavailable.get() { return; }
+            host.ready.set(true);
             // Renderer restart means its JS event listeners are new even
             // when the current toast payload hasn't changed.
             self.last_rendered.borrow_mut().take();
@@ -381,7 +377,8 @@ impl Service {
             .strip_prefix("close:")
             .and_then(|s| s.parse::<u32>().ok())
         {
-            if self.queue.borrow_mut().close(id) {
+            let closed = self.queue.borrow_mut().close(id);
+            if closed {
                 self.signal_closed(id, 2);
                 self.sync();
             }
@@ -398,7 +395,8 @@ impl Service {
             {
                 let ids: Vec<u32> = self.queue.borrow().visible().map(|item| item.id).collect();
                 let now = Instant::now();
-                if self.queue.borrow_mut().mark_painted(now, &ids) {
+                let just_painted = self.queue.borrow_mut().mark_painted(now, &ids);
+                if just_painted {
                     // The first painted acknowledgement is the point at
                     // which native GTK makes an empty host truly visible.
                     // Resync also calculates the next dwell/FIFO deadline.
@@ -616,10 +614,15 @@ impl Service {
                 .borrow()
                 .as_ref()
                 .is_some_and(|host| host.unavailable.get());
-        if possible
-            && (self.queue.borrow().has_pending() || self.queue.borrow().visible_count() > 0)
-            && self.host.borrow().is_none()
-        {
+        // Explicitly release RefCell borrow guards *before* GTK/WebKit
+        // callbacks and host replacement. A temporary in an if condition
+        // must not keep self.host borrowed while create_host maps a window.
+        let has_work = {
+            let queue = self.queue.borrow();
+            queue.has_pending() || queue.visible_count() > 0
+        };
+        let host_missing = self.host.borrow().is_none();
+        if possible && has_work && host_missing {
             let host = self.create_host(layout.expect("possible requires a valid layout"));
             self.host.replace(Some(host));
             // Wait until the Svelte event listener is mounted.
