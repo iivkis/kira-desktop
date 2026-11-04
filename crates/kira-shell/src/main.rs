@@ -5,6 +5,9 @@ mod config_layers;
 mod display_manager;
 mod launcher;
 mod native_ui;
+mod notification_layout;
+mod notification_queue;
+mod notifications;
 mod popup_layout;
 mod process_monitor;
 mod renderer_recovery;
@@ -436,6 +439,9 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
+        // Own the user's session notification bus without replacing another
+        // daemon. The toast WebView is allocated on the first actual event.
+        notifications::start(app, &html, &context);
 
         // Warm the inert Calendar WebView with the SAME WebContext as Top Bar.
         // The popup stays unmapped until requested; initial startup is not
