@@ -9,7 +9,7 @@
   import { surfaceColors } from '../surface-colors';
   import { isSampleFresh, liveUtilization } from '../system-model';
   import {
-    activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak,
+    activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak, recentPulseHistory,
     type TelemetryPoint,
   } from '../system-charts';
 
@@ -71,7 +71,8 @@
       ],
     }, { lazyUpdate: true });
 
-    const syncedHistory = alignedActivity(history);
+    // Old readings leave the chart even if the native stream has stopped.
+    const syncedHistory = alignedActivity(recentPulseHistory(history, performance.now()));
     const timeDomain = activityTimeDomain(syncedHistory);
     const panels: { field: 'cpu' | 'ram' | 'gpu'; name: string; color: string }[] = [
       { field: 'cpu', name: 'АКТИВНОСТЬ CPU', color: accent },
@@ -130,7 +131,12 @@
   $effect(() => {
     const current = metrics;
     const sample = pulse;
-    if (current && current !== lastMetrics) {
+    if (current === null) {
+      // Drop any slow GPU reading that was awaiting a fast pulse before the
+      // overlay metrics went stale. Never attach it to a later new pulse.
+      pendingGpu = undefined;
+      lastMetrics = null;
+    } else if (current !== lastMetrics) {
       pendingGpu = gpuPeak(current);
       lastMetrics = current;
     }
