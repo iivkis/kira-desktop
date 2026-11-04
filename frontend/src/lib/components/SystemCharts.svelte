@@ -7,7 +7,7 @@
   import type { EChartsType } from 'echarts/core';
   import { onSystemPulse, type SystemMetrics, type SystemPulse } from '../sdk/core';
   import { surfaceColors } from '../surface-colors';
-  import { isSampleFresh, percentUsedPrecise } from '../system-model';
+  import { isSampleFresh, liveUtilization } from '../system-model';
   import {
     activityAxis, activitySeries, activityTimeDomain, alignedActivity, appendPulse, gpuPeak,
     type TelemetryPoint,
@@ -29,13 +29,9 @@
   let lastMetrics: SystemMetrics | null = null;
   let pendingGpu: number | null | undefined;
 
-  // Never render an expired 500ms pulse as a current CPU reading.
-  // The slower native metrics stream remains a valid fallback while fresh.
-  const cpu = $derived(pulseFresh ? pulse?.cpu_percent ?? metrics?.cpu_percent ?? null
-    : metrics?.cpu_percent ?? null);
-  const ram = $derived(pulseFresh && pulse
-    ? percentUsedPrecise(pulse.memory_total_kib, pulse.memory_available_kib)
-    : metrics ? percentUsedPrecise(metrics.memory_total_kib, metrics.memory_available_kib) : null);
+  const usage = $derived(liveUtilization(pulse, pulseFresh, metrics));
+  const cpu = $derived(usage.cpu);
+  const ram = $derived(usage.ram);
   const gpuAvailable = $derived(metrics !== null && gpuPeak(metrics) !== null);
   const pulseFresh = $derived(lastPulseAt !== null &&
     (now < lastPulseAt || isSampleFresh(lastPulseAt, now, 2_500)));
