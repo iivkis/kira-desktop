@@ -832,6 +832,9 @@ impl CalendarOverlay {
                 start.elapsed().as_millis()
             );
         }
+        // A notification may only re-enter the bottom-right lane once the
+        // widget has its final measured size and a painted native surface.
+        crate::notifications::layout_changed();
     }
 
     fn on_message(self: &Rc<Self>, message: &str) {
@@ -1738,6 +1741,12 @@ pub fn notification_bottom_clearance(output_width: i32, output_height: i32) -> i
         let Some(view) = pool.popup() else {
             return output_height;
         };
+        // Before the WebKit content-size/paint handshake, GTK's old
+        // allocation can still be 1px or belong to the previous widget.
+        // Suppress toasts instead of briefly covering the incoming popup.
+        if !view.revealed.get() || view.content_height.get() <= 0 {
+            return 0;
+        }
         let overlay_width = pool.width_for(&view);
         let overlaps_right_lane = match view.dock.get() {
             PopupDock::Right => true,
