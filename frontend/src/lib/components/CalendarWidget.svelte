@@ -275,13 +275,13 @@
           copyState === 'pending' ? 'Копирование даты ' + selectedIso : 'Скопировать дату ' + selectedIso}
         class="px-1 py-1.5 text-[11px] font-bold tracking-wide text-kira-accent
           hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">{copyState === 'copied' ? 'СКОПИРОВАНО' : copyState === 'pending' ? 'КОПИРОВАНИЕ…' : 'КОПИРОВАТЬ'}</button>
-      <span role="status" aria-live="polite" aria-atomic="true"
-        class={copyState === 'failed' ? 'text-[11px] font-semibold text-kira-accent' : 'sr-only'}>
+    </div>
+    <span role="status" aria-live="polite" aria-atomic="true"
+        class={copyState === 'failed' ? 'mt-1 block text-[11px] font-semibold text-kira-accent' : 'sr-only'}>
         {copyState === 'copied' ? 'Дата ' + selectedIso + ' скопирована' :
           copyState === 'failed' ? 'НЕ УДАЛОСЬ СКОПИРОВАТЬ' :
             copyState === 'pending' ? 'Копирование даты' : ''}
-      </span>
-    </div>
+    </span>
   </footer>
   </div>
   {#if detached}
