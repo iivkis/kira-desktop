@@ -1215,6 +1215,7 @@ impl CalendarOverlay {
                 "state": event.state,
                 "outputs": event.outputs,
                 "pending_id": event.pending_id,
+                "deadline_unix_ms": event.deadline_unix_ms,
                 "error": event.error,
                 "persistence": event.persistence,
             });
