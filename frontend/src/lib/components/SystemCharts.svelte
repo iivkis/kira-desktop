@@ -226,7 +226,7 @@
   </section>
 
   <section aria-label="История нагрузки ресурсов">
-    <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ИСТОРИЯ НАГРУЗКИ</h2>
+    <h2 class="text-[12px] font-bold tracking-wide text-kira-text">ИСТОРИЯ НАГРУЗКИ</h2>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
         role="img" aria-label={'Измеренная история нагрузки с адаптивными шкалами. ' +
@@ -240,6 +240,11 @@
           <div class="absolute left-9 top-[192px] text-[10px] font-bold tracking-wide text-kira-muted">GPU</div>
         {/if}
       </div>
+    </div>
+    <!-- The time domain spans real samples only, never synthetic 60-second data. -->
+    <div class="mt-1 flex justify-between text-[11px] font-medium text-kira-muted" aria-hidden="true">
+      <span>До 60 с назад</span>
+      <span>Последний замер</span>
     </div>
   </section>
 </div>
