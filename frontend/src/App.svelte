@@ -168,15 +168,15 @@
       onFocus={(id) => { void activateWorkspace(id); }}
     />
     {#if !configState.config.compact && configState.config.title !== 'KIRA DESKTOP'}
-      <span class="max-w-36 min-w-0 truncate border-l border-kira-muted/20 pl-3 text-[10px] font-semibold tracking-wide text-kira-muted max-[900px]:hidden"
+      <span class="max-w-36 min-w-0 truncate border-l border-kira-muted/20 pl-3 text-[11px] font-semibold tracking-wide text-kira-muted max-[900px]:hidden"
         title={configState.config.title}>{configState.config.title}</span>
     {/if}
     {#if launcherUnavailable}
-      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent"
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[11px] font-bold text-kira-accent"
         role="status" title="Launcher requires the native Shell">LAUNCHER OFFLINE</span>
     {/if}
     {#if workspaceActionError}
-      <span class="shrink-0 cursor-help whitespace-nowrap text-[10px] font-bold text-kira-accent"
+      <span class="shrink-0 cursor-help whitespace-nowrap text-[11px] font-bold text-kira-accent"
         role="alert" title={workspaceActionError}>WS !</span>
     {/if}
   </section>
@@ -188,7 +188,7 @@
     aria-label="System status and local time"
   >
     {#if configState.error}
-      <span class="shrink-0 cursor-help whitespace-nowrap px-1 text-[10px] font-bold text-kira-accent"
+      <span class="shrink-0 cursor-help whitespace-nowrap px-1 text-[11px] font-bold text-kira-accent"
         title={configState.error}
         aria-label={'Configuration error: ' + configState.error}>CONFIG !</span>
     {/if}
@@ -202,7 +202,7 @@
       onOpen={activateSystemPanel}
     />
     {#if systemUnavailable}
-      <span role="status" class="shrink-0 px-1 text-[10px] font-bold text-kira-accent">MONITOR OFFLINE</span>
+      <span role="status" class="shrink-0 px-1 text-[11px] font-bold text-kira-accent">MONITOR OFFLINE</span>
     {/if}
     <button type="button" onclick={activateSettings}
       aria-label="Open system settings" title="System settings" aria-haspopup="dialog"
@@ -214,7 +214,7 @@
       </svg>
     </button>
     {#if settingsUnavailable}
-      <span role="status" class="shrink-0 text-[10px] font-bold text-kira-accent"
+      <span role="status" class="shrink-0 text-[11px] font-bold text-kira-accent"
         title={settingsShellOutdated
           ? 'Frontend новее запущенного Kira Shell. Обновите и полностью перезапустите процесс kira-shell.'
           : 'Нативный канал настроек недоступен.'}>
@@ -222,7 +222,7 @@
       </span>
     {/if}
     {#if calendarUnavailable}
-      <span class="shrink-0 px-1 text-[10px] font-bold text-kira-accent"
+      <span class="shrink-0 px-1 text-[11px] font-bold text-kira-accent"
         role="status">CALENDAR OFFLINE</span>
     {/if}
     <button
