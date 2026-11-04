@@ -169,7 +169,7 @@
 </script>
 
 <div class="space-y-5">
-  <section aria-label="CPU and memory utilization">
+  <section aria-label="Загрузка процессора и использование памяти">
     {#if pulse !== null && !pulseFresh}
       <p class="mb-2 text-[10px] font-semibold text-kira-muted" role="status">ИМПУЛЬС УСТАРЕЛ</p>
     {/if}
@@ -194,7 +194,7 @@
     </div>
   </section>
 
-  <section aria-label="Live resource activity">
+  <section aria-label="История нагрузки ресурсов">
     <h2 class="text-[11px] font-bold tracking-wide text-kira-accent">ИСТОРИЯ НАГРУЗКИ</h2>
     <div class="relative mt-3">
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
