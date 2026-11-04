@@ -1547,8 +1547,16 @@ fn calendar_command(message: &str) -> Option<UiCommand<'_>> {
 }
 
 fn calendar_document(html: &str) -> Option<String> {
-    html.contains(CALENDAR_MARKER)
-        .then(|| html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
+    if html.contains(CALENDAR_MARKER) {
+        Some(html.replacen(CALENDAR_MARKER, CALENDAR_SURFACE, 1))
+    } else {
+        // The packaged root is localized to Russian. Keep existing English
+        // test fixtures compatible without silently disabling real widgets.
+        let marker = "<html lang=\"ru\">";
+        html.contains(marker).then(|| html.replacen(
+            marker, "<html lang=\"ru\" data-kira-surface=\"calendar\">", 1,
+        ))
+    }
 }
 
 fn build(
