@@ -850,9 +850,11 @@ impl CalendarOverlay {
         // transport. A stale/recycled WebView cannot target the live session.
         if let Some(raw) = message.strip_prefix("tray-sync:") {
             if let Ok(generation) = raw.parse::<u32>() {
-                if generation != 0 && self.requested.get()
+                if generation != 0
+                    && self.requested.get()
                     && self.generation.get() == generation
-                    && self.active.get() == Some(Surface::Tray) {
+                    && self.active.get() == Some(Surface::Tray)
+                {
                     crate::tray::snapshot_to(&self.view);
                 }
             }
@@ -861,13 +863,14 @@ impl CalendarOverlay {
         if let Some(raw) = message.strip_prefix("tray:") {
             let fields: Vec<_> = raw.split(':').collect();
             if let [generation, action, id] = fields.as_slice() {
-                if let (Ok(generation), Ok(id)) =
-                    (generation.parse::<u32>(), id.parse::<u32>()) {
-                    if generation != 0 && id != 0
+                if let (Ok(generation), Ok(id)) = (generation.parse::<u32>(), id.parse::<u32>()) {
+                    if generation != 0
+                        && id != 0
                         && self.requested.get()
                         && !self.closing.get()
                         && self.generation.get() == generation
-                        && self.active.get() == Some(Surface::Tray) {
+                        && self.active.get() == Some(Surface::Tray)
+                    {
                         crate::tray::action(id, action);
                     }
                 }
