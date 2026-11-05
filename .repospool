@@ -1,6 +1,6 @@
 REPOSPOOL/1.0
 guide_bytes=1336
-index_bytes=6928
+index_bytes=7289
 --
 # REPOSPOOL/1.0: deterministic source container
 
@@ -15,144 +15,151 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	60308802e23899741a4af5f261142a45b5418d6e
-F	.cargo/config.toml	98	165	3
-F	.github/workflows/ci.yml	4419	170	114
-F	.github/workflows/frontend-nix.yml	1535	286	45
-F	.github/workflows/nix.yml	1258	333	38
-F	.github/workflows/overlay-smoke.yml	1321	373	44
-F	.github/workflows/publish-repospool.yml	3048	419	83
-F	.gitignore	178	504	11
-F	.repospoolignore	1028	517	47
-F	AGENTS.md	6275	566	103
-F	Cargo.toml	494	671	22
-F	README.md	12752	695	259
-F	Taskfile.yml	5957	956	185
-F	config/kira.kdl.example	358	1143	8
-F	crates/kira-core/Cargo.toml	207	1153	10
-F	crates/kira-core/src/config.rs	15217	1165	399
-F	crates/kira-core/src/main.rs	32080	1566	839
-F	crates/kira-core/src/niri.rs	16767	2407	453
-F	crates/kira-ipc/Cargo.toml	170	2862	9
-F	crates/kira-ipc/src/client.rs	17794	2873	458
-F	crates/kira-ipc/src/lib.rs	10460	3333	336
-F	crates/kira-shell/Cargo.toml	297	3671	12
-F	crates/kira-shell/src/calendar.rs	79790	3685	2082
-F	crates/kira-shell/src/config_layers.rs	19239	5769	496
-F	crates/kira-shell/src/display_manager.rs	26497	6267	681
-F	crates/kira-shell/src/launcher.rs	14114	6950	392
-F	crates/kira-shell/src/main.rs	22905	7344	523
-F	crates/kira-shell/src/native_ui.rs	4711	7869	109
-F	crates/kira-shell/src/notification_layout.rs	4130	7980	118
-F	crates/kira-shell/src/notification_queue.rs	17506	8100	486
-F	crates/kira-shell/src/notifications.rs	36242	8588	890
-F	crates/kira-shell/src/popup_layout.rs	2659	9480	72
-F	crates/kira-shell/src/process_monitor.rs	13067	9554	394
-F	crates/kira-shell/src/renderer_recovery.rs	3634	9950	116
-F	crates/kira-shell/src/system_info.rs	3951	10068	113
-F	crates/kira-shell/src/system_metrics.rs	19842	10183	559
-F	crates/kira-shell/src/system_panel.rs	11356	10744	318
-F	crates/kira-shell/src/webview_pool.rs	9530	11064	281
-F	docs/CONFIG.md	5801	11347	125
-F	docs/CONFIG_OWNERSHIP.md	7257	11474	135
-F	docs/DESIGN_SYSTEM.md	38195	11611	615
-F	docs/DEVELOPMENT.md	30675	12228	605
-F	docs/NOTIFICATIONS.md	9522	12835	53
-F	docs/QA_VISUAL.md	16349	12890	184
-F	docs/SKY_MAP.md	6776	13076	105
-F	docs/SPECIFICATION.md	29309	13183	427
-F	docs/TENET_MOTION.md	40785	13612	204
-F	docs/UI_ARCHITECTURE.md	6794	13818	107
-F	docs/UI_NOISE_REVIEW.md	5382	13927	53
-F	docs/VISUAL_REVIEW.md	10204	13982	91
-F	docs/WEBVIEW_POOL.md	11431	14075	97
-F	flake.nix	3181	14174	91
-F	frontend/index.html	2846	14267	66
-F	frontend/package.json	720	14335	27
-F	frontend/scripts/inline-assets.mjs	4457	14364	103
-F	frontend/scripts/inline-assets.test.mjs	4645	14469	106
-F	frontend/scripts/smoke-notifications.mjs	4593	14577	83
-F	frontend/scripts/smoke-overlays.mjs	51590	14662	717
-F	frontend/scripts/smoke-warning-inspector.mjs	8998	15381	151
-F	frontend/src/App.svelte	16964	15534	337
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	15873	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	15891	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	15952	69
-F	frontend/src/lib/bootstrap.test.ts	3408	16023	84
-F	frontend/src/lib/bootstrap.ts	2613	16109	70
-F	frontend/src/lib/calendar-model.test.ts	3571	16181	65
-F	frontend/src/lib/calendar-model.ts	4648	16248	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	16355	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	16417	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	16448	287
-F	frontend/src/lib/clock-flight.test.ts	2404	16737	50
-F	frontend/src/lib/clock-flight.ts	1977	16789	50
-F	frontend/src/lib/components/CalendarWidget.svelte	14160	16841	294
-F	frontend/src/lib/components/DisplaySettings.svelte	24155	17137	457
-F	frontend/src/lib/components/LauncherWidget.svelte	10725	17596	239
-F	frontend/src/lib/components/NotificationCard.svelte	3191	17837	69
-F	frontend/src/lib/components/NotificationHost.svelte	5000	17908	106
-F	frontend/src/lib/components/SettingsWidget.svelte	7674	18016	142
-F	frontend/src/lib/components/SkyMap.svelte	13085	18160	284
-F	frontend/src/lib/components/SystemCharts.svelte	11535	18446	249
-F	frontend/src/lib/components/SystemHealth.svelte	2315	18697	57
-F	frontend/src/lib/components/SystemWidget.svelte	18509	18756	319
-F	frontend/src/lib/components/WindowControls.svelte	3178	19077	74
-F	frontend/src/lib/components/WorkspacePreview.svelte	6658	19153	119
-F	frontend/src/lib/display-confirmation.test.ts	1789	19274	34
-F	frontend/src/lib/display-confirmation.ts	1262	19310	28
-F	frontend/src/lib/launcher-model.test.ts	2266	19340	46
-F	frontend/src/lib/launcher-model.ts	1403	19388	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	19419	89
-F	frontend/src/lib/lazy-widget.ts	1984	19510	63
-F	frontend/src/lib/motion-contract.test.ts	11241	19575	198
-F	frontend/src/lib/motion.ts	24039	19775	657
-F	frontend/src/lib/notification-model.ts	237	20434	9
-F	frontend/src/lib/overlay-size.test.ts	2153	20445	53
-F	frontend/src/lib/overlay-size.ts	1601	20500	36
-F	frontend/src/lib/sdk/core.test.ts	29911	20538	605
-F	frontend/src/lib/sdk/core.ts	27259	21145	684
-F	frontend/src/lib/settings-model.test.ts	1064	21831	21
-F	frontend/src/lib/settings-model.ts	1262	21854	26
-F	frontend/src/lib/surface-colors.test.ts	1092	21882	23
-F	frontend/src/lib/surface-colors.ts	1834	21907	36
-F	frontend/src/lib/system-charts.test.ts	8934	21945	190
-F	frontend/src/lib/system-charts.ts	7498	22137	181
-F	frontend/src/lib/system-health.test.ts	3328	22320	58
-F	frontend/src/lib/system-health.ts	3594	22380	72
-F	frontend/src/lib/system-model.test.ts	5412	22454	103
-F	frontend/src/lib/system-model.ts	6298	22559	144
-F	frontend/src/lib/themes/kira-default.css	1941	22705	56
-F	frontend/src/lib/themes/kira-default.test.ts	4779	22763	107
-F	frontend/src/lib/themes/kira-default.ts	777	22872	22
-F	frontend/src/lib/themes/shell-composition.test.ts	10502	22896	172
-F	frontend/src/lib/time.test.ts	545	23070	14
-F	frontend/src/lib/time.ts	320	23086	9
-F	frontend/src/lib/ui-locale.test.ts	1821	23097	35
-F	frontend/src/lib/ui-locale.ts	1841	23134	48
-F	frontend/src/lib/warning-model.test.ts	1633	23184	34
-F	frontend/src/lib/warning-model.ts	749	23220	18
-F	frontend/src/lib/workspace-window.test.ts	2298	23240	52
-F	frontend/src/lib/workspace-window.ts	1063	23294	32
-F	frontend/src/main.ts	8243	23328	171
-F	frontend/src/style.css	8044	23501	234
-F	frontend/tsconfig.json	403	23737	16
-F	frontend/vite.config.ts	224	23755	8
-F	nix/package.nix	3904	23765	134
-F	scripts/dev_preview.py	18147	23901	403	x
-F	scripts/qa_visual.py	12052	24306	299
-F	tests/test_calendar_design.py	10187	24607	175
-F	tests/test_detailed_health.py	7668	24784	136
-F	tests/test_dev_preview.py	9339	24922	219
-F	tests/test_displays.py	6263	25143	103
-F	tests/test_launcher_design.py	10825	25248	195
-F	tests/test_native_theme.py	2897	25445	57
-F	tests/test_popup_geometry.py	3805	25504	66
-F	tests/test_qa_visual.py	10549	25572	217
-F	tests/test_settings.py	5486	25791	94
-F	tests/test_tenet_close.py	6297	25887	115
-F	tests/test_ui_bootstrap_contract.py	1103	26004	29
-F	tests/test_webview_pool.py	11723	26035	200
+C	3a9e40ac4c47226bddca77cb71bf12e708bf7ef4
+F	.cargo/config.toml	98	172	3
+F	.github/workflows/ci.yml	4419	177	114
+F	.github/workflows/frontend-nix.yml	1535	293	45
+F	.github/workflows/nix.yml	1258	340	38
+F	.github/workflows/overlay-smoke.yml	1321	380	44
+F	.github/workflows/publish-repospool.yml	3048	426	83
+F	.gitignore	178	511	11
+F	.repospoolignore	1028	524	47
+F	AGENTS.md	6275	573	103
+F	Cargo.toml	494	678	22
+F	README.md	12752	702	259
+F	Taskfile.yml	5957	963	185
+F	config/kira.kdl.example	358	1150	8
+F	crates/kira-core/Cargo.toml	207	1160	10
+F	crates/kira-core/src/config.rs	15217	1172	399
+F	crates/kira-core/src/main.rs	32080	1573	839
+F	crates/kira-core/src/niri.rs	16767	2414	453
+F	crates/kira-ipc/Cargo.toml	170	2869	9
+F	crates/kira-ipc/src/client.rs	17794	2880	458
+F	crates/kira-ipc/src/lib.rs	10460	3340	336
+F	crates/kira-shell/Cargo.toml	297	3678	12
+F	crates/kira-shell/src/calendar.rs	84762	3692	2214
+F	crates/kira-shell/src/config_layers.rs	19239	5908	496
+F	crates/kira-shell/src/display_manager.rs	26497	6406	681
+F	crates/kira-shell/src/launcher.rs	14125	7089	392
+F	crates/kira-shell/src/main.rs	24430	7483	555
+F	crates/kira-shell/src/native_ui.rs	4711	8040	109
+F	crates/kira-shell/src/notification_layout.rs	4130	8151	118
+F	crates/kira-shell/src/notification_queue.rs	17506	8271	486
+F	crates/kira-shell/src/notifications.rs	36242	8759	890
+F	crates/kira-shell/src/popup_layout.rs	2877	9651	78
+F	crates/kira-shell/src/process_monitor.rs	13067	9731	394
+F	crates/kira-shell/src/renderer_recovery.rs	3634	10127	116
+F	crates/kira-shell/src/system_info.rs	3951	10245	113
+F	crates/kira-shell/src/system_metrics.rs	19842	10360	559
+F	crates/kira-shell/src/system_panel.rs	11356	10921	318
+F	crates/kira-shell/src/tray.rs	58217	11241	1612
+F	crates/kira-shell/src/tray_menu.rs	5238	12855	171
+F	crates/kira-shell/src/webview_pool.rs	9574	13028	283
+F	docs/CONFIG.md	5801	13313	125
+F	docs/CONFIG_OWNERSHIP.md	7257	13440	135
+F	docs/DESIGN_SYSTEM.md	38900	13577	627
+F	docs/DEVELOPMENT.md	30675	14206	605
+F	docs/NOTIFICATIONS.md	9522	14813	53
+F	docs/QA_VISUAL.md	16349	14868	184
+F	docs/SKY_MAP.md	6776	15054	105
+F	docs/SPECIFICATION.md	29309	15161	427
+F	docs/TENET_MOTION.md	40785	15590	204
+F	docs/TRAY_DESIGN.md	8921	15796	154
+F	docs/UI_ARCHITECTURE.md	6794	15952	107
+F	docs/UI_NOISE_REVIEW.md	5382	16061	53
+F	docs/VISUAL_REVIEW.md	10204	16116	91
+F	docs/WEBVIEW_POOL.md	11431	16209	97
+F	flake.nix	3181	16308	91
+F	frontend/index.html	2846	16401	66
+F	frontend/package.json	720	16469	27
+F	frontend/scripts/inline-assets.mjs	4457	16498	103
+F	frontend/scripts/inline-assets.test.mjs	4645	16603	106
+F	frontend/scripts/smoke-notifications.mjs	4593	16711	83
+F	frontend/scripts/smoke-overlays.mjs	51590	16796	717
+F	frontend/scripts/smoke-warning-inspector.mjs	8998	17515	151
+F	frontend/src/App.svelte	17520	17668	347
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	18017	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	18035	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	18096	69
+F	frontend/src/lib/bootstrap.test.ts	3408	18167	84
+F	frontend/src/lib/bootstrap.ts	2613	18253	70
+F	frontend/src/lib/calendar-model.test.ts	3571	18325	65
+F	frontend/src/lib/calendar-model.ts	4648	18392	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	18499	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	18561	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	18592	287
+F	frontend/src/lib/clock-flight.test.ts	2404	18881	50
+F	frontend/src/lib/clock-flight.ts	1977	18933	50
+F	frontend/src/lib/components/CalendarWidget.svelte	14160	18985	294
+F	frontend/src/lib/components/DisplaySettings.svelte	24155	19281	457
+F	frontend/src/lib/components/LauncherWidget.svelte	10725	19740	239
+F	frontend/src/lib/components/NotificationCard.svelte	3191	19981	69
+F	frontend/src/lib/components/NotificationHost.svelte	5000	20052	106
+F	frontend/src/lib/components/SettingsWidget.svelte	7674	20160	142
+F	frontend/src/lib/components/SkyMap.svelte	13085	20304	284
+F	frontend/src/lib/components/SystemCharts.svelte	11535	20590	249
+F	frontend/src/lib/components/SystemHealth.svelte	2315	20841	57
+F	frontend/src/lib/components/SystemWidget.svelte	18509	20900	319
+F	frontend/src/lib/components/TrayBar.svelte	2760	21221	55
+F	frontend/src/lib/components/TrayWidget.svelte	7449	21278	139
+F	frontend/src/lib/components/WindowControls.svelte	3178	21419	74
+F	frontend/src/lib/components/WorkspacePreview.svelte	6658	21495	119
+F	frontend/src/lib/display-confirmation.test.ts	1789	21616	34
+F	frontend/src/lib/display-confirmation.ts	1262	21652	28
+F	frontend/src/lib/launcher-model.test.ts	2266	21682	46
+F	frontend/src/lib/launcher-model.ts	1403	21730	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	21761	89
+F	frontend/src/lib/lazy-widget.ts	1984	21852	63
+F	frontend/src/lib/motion-contract.test.ts	11241	21917	198
+F	frontend/src/lib/motion.ts	24039	22117	657
+F	frontend/src/lib/notification-model.ts	237	22776	9
+F	frontend/src/lib/overlay-size.test.ts	2153	22787	53
+F	frontend/src/lib/overlay-size.ts	1601	22842	36
+F	frontend/src/lib/sdk/core.test.ts	29911	22880	605
+F	frontend/src/lib/sdk/core.ts	29729	23487	734
+F	frontend/src/lib/settings-model.test.ts	1064	24223	21
+F	frontend/src/lib/settings-model.ts	1262	24246	26
+F	frontend/src/lib/surface-colors.test.ts	1092	24274	23
+F	frontend/src/lib/surface-colors.ts	1834	24299	36
+F	frontend/src/lib/system-charts.test.ts	8934	24337	190
+F	frontend/src/lib/system-charts.ts	7498	24529	181
+F	frontend/src/lib/system-health.test.ts	3328	24712	58
+F	frontend/src/lib/system-health.ts	3594	24772	72
+F	frontend/src/lib/system-model.test.ts	5412	24846	103
+F	frontend/src/lib/system-model.ts	6298	24951	144
+F	frontend/src/lib/themes/kira-default.css	1941	25097	56
+F	frontend/src/lib/themes/kira-default.test.ts	4779	25155	107
+F	frontend/src/lib/themes/kira-default.ts	777	25264	22
+F	frontend/src/lib/themes/shell-composition.test.ts	10502	25288	172
+F	frontend/src/lib/time.test.ts	545	25462	14
+F	frontend/src/lib/time.ts	320	25478	9
+F	frontend/src/lib/tray-model.test.ts	3577	25489	75
+F	frontend/src/lib/tray-model.ts	3829	25566	105
+F	frontend/src/lib/ui-locale.test.ts	1821	25673	35
+F	frontend/src/lib/ui-locale.ts	1841	25710	48
+F	frontend/src/lib/warning-model.test.ts	1633	25760	34
+F	frontend/src/lib/warning-model.ts	749	25796	18
+F	frontend/src/lib/workspace-window.test.ts	2298	25816	52
+F	frontend/src/lib/workspace-window.ts	1063	25870	32
+F	frontend/src/main.ts	8652	25904	180
+F	frontend/src/style.css	8044	26086	234
+F	frontend/tsconfig.json	403	26322	16
+F	frontend/vite.config.ts	224	26340	8
+F	nix/package.nix	3904	26350	134
+F	scripts/dev_preview.py	18147	26486	403	x
+F	scripts/qa_visual.py	12052	26891	299
+F	tests/test_calendar_design.py	10187	27192	175
+F	tests/test_detailed_health.py	7668	27369	136
+F	tests/test_dev_preview.py	9339	27507	219
+F	tests/test_displays.py	6263	27728	103
+F	tests/test_launcher_design.py	10825	27833	195
+F	tests/test_native_theme.py	2897	28030	57
+F	tests/test_popup_geometry.py	3805	28089	66
+F	tests/test_qa_visual.py	10549	28157	217
+F	tests/test_settings.py	5486	28376	94
+F	tests/test_tenet_close.py	6297	28472	115
+F	tests/test_ui_bootstrap_contract.py	1103	28589	29
+F	tests/test_webview_pool.py	11723	28620	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -3922,6 +3929,8 @@ impl OverlayPool {
         let output_width = crate::native_ui::popup_output_width(&view.window);
         if view.active.get() == Some(Surface::Settings) {
             popup_layout::settings_popup_width(output_width)
+        } else if view.active.get() == Some(Surface::Tray) {
+            popup_layout::tray_popup_width(output_width)
         } else {
             popup_layout::popup_width(output_width, 1, false)
         }
@@ -4085,6 +4094,7 @@ impl CalendarOverlay {
             Surface::System => "Kira System Monitor",
             Surface::Launcher => "Kira Launcher",
             Surface::Settings => "Kira Settings",
+            Surface::Tray => "Kira Tray",
             #[cfg(test)]
             Surface::Synthetic(_) => "Kira Widget",
         };
@@ -4335,6 +4345,8 @@ impl CalendarOverlay {
         // Reset the previous widget's geometry while still transparent.
         let preferred_width = if kind == Surface::Settings {
             popup_layout::SETTINGS_POPUP_WIDTH
+        } else if kind == Surface::Tray {
+            304
         } else {
             popup_layout::PREFERRED_POPUP_WIDTH
         };
@@ -4523,6 +4535,72 @@ impl CalendarOverlay {
 
     fn on_message(self: &Rc<Self>, message: &str) {
         if self.disposed.get() {
+            return;
+        }
+        // The tray uses the same strictly scoped, generation-bound overlay
+        // transport. A stale/recycled WebView cannot target the live session.
+        if let Some(raw) = message.strip_prefix("tray-sync:") {
+            if let Ok(generation) = raw.parse::<u32>() {
+                if generation != 0
+                    && self.requested.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Tray)
+                {
+                    crate::tray::snapshot_to(&self.view);
+                }
+            }
+            return;
+        }
+        if let Some(raw) = message.strip_prefix("tray-menu-click:") {
+            let fields: Vec<_> = raw.split(':').collect();
+            if let [generation, handle, entry] = fields.as_slice() {
+                if let (Ok(generation), Ok(handle), Ok(entry)) = (
+                    generation.parse::<u32>(),
+                    handle.parse::<u32>(),
+                    entry.parse::<i32>(),
+                ) {
+                    if generation != 0
+                        && handle != 0
+                        && entry > 0
+                        && self.requested.get()
+                        && !self.closing.get()
+                        && self.generation.get() == generation
+                        && self.active.get() == Some(Surface::Tray)
+                    {
+                        crate::tray::menu_click(handle, entry);
+                    }
+                }
+            }
+            return;
+        }
+        if let Some(raw) = message.strip_prefix("tray-menu-dismiss:") {
+            if let Ok(generation) = raw.parse::<u32>() {
+                if generation != 0
+                    && self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Tray)
+                {
+                    crate::tray::clear_menu();
+                }
+            }
+            return;
+        }
+        if let Some(raw) = message.strip_prefix("tray:") {
+            let fields: Vec<_> = raw.split(':').collect();
+            if let [generation, action, id] = fields.as_slice() {
+                if let (Ok(generation), Ok(id)) = (generation.parse::<u32>(), id.parse::<u32>()) {
+                    if generation != 0
+                        && id != 0
+                        && self.requested.get()
+                        && !self.closing.get()
+                        && self.generation.get() == generation
+                        && self.active.get() == Some(Surface::Tray)
+                    {
+                        crate::tray::action(id, action);
+                    }
+                }
+            }
             return;
         }
         match calendar_command(message) {
@@ -5496,6 +5574,67 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
             return true;
         }
         false
+    })
+}
+
+/// Dedicated SNI overflow menu in the existing right-docked pooled WebView.
+pub fn toggle_tray(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
+        return;
+    };
+    pool.request(
+        Surface::Tray,
+        true,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Tray) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+            } else {
+                view.show(Surface::Tray);
+            }
+        }),
+    );
+}
+
+/// Show the tray without toggling an already visible popup. Context menus
+/// reuse the same pooled surface rather than opening a second WebView.
+pub fn show_tray(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
+        return;
+    };
+    pool.request(
+        Surface::Tray,
+        false,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Tray) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    view.cancel_close();
+                    view.window.present();
+                }
+            } else {
+                view.show(Surface::Tray);
+            }
+        }),
+    );
+}
+
+/// Only the existing tray popup receives the native SNI update, never a new host.
+pub fn tray_view() -> Option<webkit6::WebView> {
+    POOL.with(|cache| {
+        let pool = cache.borrow();
+        let view = pool.as_ref()?.active(Surface::Tray)?;
+        (view.requested.get() && !view.closing.get()).then(|| view.view.clone())
     })
 }
 
@@ -7215,7 +7354,7 @@ fn generic_icon_path(theme: &gtk::IconTheme) -> Option<PathBuf> {
 
 /// Prefer the requested app icon; use the system-theme generic icon if
 /// a file is missing, too large or has an invalid signature.
-fn encode_icon(primary: Option<&Path>, fallback: Option<&Path>) -> Option<String> {
+pub(crate) fn encode_icon(primary: Option<&Path>, fallback: Option<&Path>) -> Option<String> {
     primary
         .and_then(file_data_url)
         .or_else(|| fallback.and_then(file_data_url))
@@ -7357,6 +7496,8 @@ mod renderer_recovery;
 mod system_info;
 mod system_metrics;
 mod system_panel;
+mod tray;
+mod tray_menu;
 mod webview_pool;
 use std::cell::{Cell, RefCell};
 use std::env;
@@ -7663,6 +7804,34 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraSettings", None));
 
+        // Dedicated SNI tray bridge: only toggle, snapshot and bounded
+        // numeric Activate requests. The popup's pin actions are separately
+        // scoped to its current lease generation by calendar.rs.
+        let tray_app = app.clone();
+        let tray_html = html.clone();
+        let tray_context = context.clone();
+        manager.connect_script_message_received(Some("kiraTray"), move |_, value| {
+            let command = value.to_string();
+            if command == "toggle" {
+                tray::clear_menu();
+                calendar::toggle_tray(&tray_app, &tray_html, &tray_context);
+            } else {
+                // The app-owned canonical menu is rendered in the existing
+                // Kira tray overlay; do not attempt to open another GTK host.
+                if let Some((action, raw)) = command.split_once(':') {
+                    if matches!(action, "activate" | "secondary") {
+                        if let Ok(id) = raw.parse::<u32>() {
+                            if id != 0 && tray::has_menu_popup(id, action) {
+                                calendar::show_tray(&tray_app, &tray_html, &tray_context);
+                            }
+                        }
+                    }
+                }
+                tray::handle(&command);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraTray", None));
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -7782,6 +7951,8 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
+        // Native SNI ownership and WebKit updates stay within this process.
+        tray::start(&view);
         // Own the user's session notification bus without replacing another
         // daemon. The toast WebView is allocated on the first actual event.
         notifications::start(app, &html, &context);
@@ -9512,6 +9683,10 @@ pub fn popup_width(output_width: i32, _active_count: usize, _launcher_active: bo
     PREFERRED_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
 }
 
+pub fn tray_popup_width(output_width: i32) -> i32 {
+    304.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
+}
+
 pub fn settings_popup_width(output_width: i32) -> i32 {
     SETTINGS_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
 }
@@ -9544,6 +9719,8 @@ mod tests {
         assert_eq!(popup_width(1264, 3, true), 420);
         assert_eq!(popup_width(800, 4, true), 420);
         assert_eq!(popup_width(400, 3, true), 376);
+        assert_eq!(tray_popup_width(1264), 304);
+        assert_eq!(tray_popup_width(300), 276);
         assert_eq!(settings_popup_width(1264), 600);
         assert_eq!(settings_popup_width(800), 600);
         assert_eq!(settings_popup_width(480), 456);
@@ -11060,6 +11237,1793 @@ mod tests {
     }
 }
 
+FILE	crates/kira-shell/src/tray.rs
+//! A narrowly scoped StatusNotifierItem watcher and host for Kira's 42px bar.
+//! All D-Bus calls are async; GTK/WebKit stay on the main context. No
+//! executable paths, generic D-Bus methods, or user-controlled JS commands.
+
+use std::cell::{Cell, RefCell};
+use std::collections::HashSet;
+use std::fs;
+use std::io::Read;
+use std::path::PathBuf;
+use std::rc::Rc;
+
+use crate::tray_menu::{self, MenuEntry};
+use gtk::gio;
+use gtk::glib::{self, variant::ToVariant};
+use gtk::prelude::*;
+use webkit6::prelude::*;
+
+const WATCHER: &str = "org.kde.StatusNotifierWatcher";
+const WATCHER_PATH: &str = "/StatusNotifierWatcher";
+const WATCHER_IFACE: &str = "org.kde.StatusNotifierWatcher";
+const ITEM_IFACE: &str = "org.kde.StatusNotifierItem";
+const PROPERTIES_IFACE: &str = "org.freedesktop.DBus.Properties";
+const MAX_ITEMS: usize = 64;
+const MAX_SAVED_PINS: usize = 128;
+const MAX_PINS_BYTES: usize = 64 * 1024;
+const MAX_PIN_KEY_BYTES: usize = 240;
+// Never ship dozens of full-size icons on every SNI property update.
+const MAX_SNAPSHOT_ICON_BYTES: usize = 2 * 1024 * 1024;
+const WATCHER_XML: &str = r#"<node>
+ <interface name="org.kde.StatusNotifierWatcher">
+  <method name="RegisterStatusNotifierItem"><arg type="s" direction="in"/></method>
+  <method name="RegisterStatusNotifierHost"><arg type="s" direction="in"/></method>
+  <property name="RegisteredStatusNotifierItems" type="as" access="read"/>
+  <property name="IsStatusNotifierHostRegistered" type="b" access="read"/>
+  <property name="ProtocolVersion" type="i" access="read"/>
+  <signal name="StatusNotifierItemRegistered"><arg type="s"/></signal>
+  <signal name="StatusNotifierItemUnregistered"><arg type="s"/></signal>
+  <signal name="StatusNotifierHostRegistered"/>
+ </interface>
+</node>"#;
+
+thread_local! {
+    static SERVICE: RefCell<Option<Rc<Service>>> = const { RefCell::new(None) };
+}
+
+#[derive(Clone)]
+struct Item {
+    handle: u32,
+    registration: String,
+    bus: String,
+    path: String,
+    owner_unique: Option<String>,
+    key: String,
+    title: String,
+    icon: Option<String>,
+    status: String,
+    // Do not expose a synthetic placeholder before reading real SNI data.
+    ready: bool,
+    item_is_menu: bool,
+    menu_path: Option<String>,
+    refresh_version: u64,
+}
+
+struct MenuSession {
+    handle: u32,
+    bus: String,
+    path: String,
+    title: String,
+    entries: Vec<MenuEntry>,
+}
+
+struct Service {
+    bar: webkit6::WebView,
+    connection: RefCell<Option<gio::DBusConnection>>,
+    owner: RefCell<Option<gio::OwnerId>>,
+    host_owner: RefCell<Option<gio::OwnerId>>,
+    host_name: String,
+    host_name_owned: Cell<bool>,
+    available: Cell<bool>,
+    owns_watcher: Cell<bool>,
+    watcher_exported: Cell<bool>,
+    host_registered: Cell<bool>,
+    next_handle: Cell<u32>,
+    external_revision: Cell<u64>,
+    items: RefCell<Vec<Item>>,
+    pins: RefCell<HashSet<String>>,
+    menu_serial: Cell<u64>,
+    current_menu: RefCell<Option<MenuSession>>,
+}
+
+pub fn start(bar: &webkit6::WebView) {
+    let service = Rc::new(Service {
+        bar: bar.clone(),
+        connection: RefCell::new(None),
+        owner: RefCell::new(None),
+        host_owner: RefCell::new(None),
+        host_name: format!("org.kde.StatusNotifierHost-{}", std::process::id()),
+        host_name_owned: Cell::new(false),
+        available: Cell::new(false),
+        owns_watcher: Cell::new(false),
+        watcher_exported: Cell::new(false),
+        host_registered: Cell::new(true), // This process is always a SNI host.
+        next_handle: Cell::new(1),
+        external_revision: Cell::new(0),
+        items: RefCell::new(Vec::new()),
+        pins: RefCell::new(load_pins()),
+        menu_serial: Cell::new(0),
+        current_menu: RefCell::new(None),
+    });
+    SERVICE.with(|active| *active.borrow_mut() = Some(service.clone()));
+
+    // A StatusNotifierHost must be discoverable under its own well-known
+    // D-Bus service, not merely the session bus's unique :1.N connection.
+    // A running external watcher can validate that this host really exists.
+    let host_ready = Rc::downgrade(&service);
+    let host_lost = Rc::downgrade(&service);
+    let host_id = gio::bus_own_name(
+        gio::BusType::Session,
+        &service.host_name,
+        gio::BusNameOwnerFlags::DO_NOT_QUEUE,
+        |_, _| {},
+        move |_, _| {
+            if let Some(service) = host_ready.upgrade() {
+                service.host_name_owned.set(true);
+                if service.connection.borrow().is_some() && !service.owns_watcher.get() {
+                    service.register_external_host();
+                }
+            }
+        },
+        move |_, _| {
+            if let Some(service) = host_lost.upgrade() {
+                service.host_name_owned.set(false);
+            }
+        },
+    );
+    service.host_owner.replace(Some(host_id));
+
+    // A nested preview shares the user's session D-Bus. Never take its
+    // watcher name away; it may attach as a host to an existing watcher.
+    if std::env::var_os("KIRA_PREVIEW").is_some() {
+        gio::bus_get(gio::BusType::Session, None::<&gio::Cancellable>, {
+            let weak = Rc::downgrade(&service);
+            move |result| {
+                if let (Some(service), Ok(connection)) = (weak.upgrade(), result) {
+                    service.install_signal_observers(&connection);
+                    service.connection.replace(Some(connection));
+                    service.adopt_external();
+                }
+            }
+        });
+        return;
+    }
+
+    let acquired = Rc::downgrade(&service);
+    let owned = Rc::downgrade(&service);
+    let lost = Rc::downgrade(&service);
+    let id = gio::bus_own_name(
+        gio::BusType::Session,
+        WATCHER,
+        gio::BusNameOwnerFlags::DO_NOT_QUEUE,
+        move |connection, _| {
+            if let Some(service) = acquired.upgrade() {
+                service.install_signal_observers(&connection);
+                service.connection.replace(Some(connection.clone()));
+                service.register_watcher(&connection);
+            }
+        },
+        move |_, _| {
+            if let Some(service) = owned.upgrade() {
+                if !service.watcher_exported.get() {
+                    eprintln!("kira-shell: SNI registration failed; releasing D-Bus watcher name");
+                    if let Some(owner) = service.owner.borrow_mut().take() {
+                        gio::bus_unown_name(owner);
+                    }
+                    return;
+                }
+                service.owns_watcher.set(true);
+                service.available.set(true);
+                if let Some(connection) = service.connection.borrow().as_ref() {
+                    let _ = connection.emit_signal(
+                        None,
+                        WATCHER_PATH,
+                        WATCHER_IFACE,
+                        "StatusNotifierHostRegistered",
+                        None,
+                    );
+                }
+                service.publish();
+                eprintln!("kira-shell: status notifier watcher and host available");
+            }
+        },
+        move |_, _| {
+            if let Some(service) = lost.upgrade() {
+                service.owns_watcher.set(false);
+                service
+                    .external_revision
+                    .set(service.external_revision.get().wrapping_add(1));
+                service.available.set(false);
+                service.items.borrow_mut().clear();
+                service.publish();
+                service.adopt_external();
+            }
+        },
+    );
+    service.owner.replace(Some(id));
+}
+
+impl Service {
+    fn register_watcher(self: &Rc<Self>, connection: &gio::DBusConnection) {
+        let Ok(xml) = gio::DBusNodeInfo::for_xml(WATCHER_XML) else {
+            eprintln!("kira-shell: cannot parse SNI watcher introspection");
+            return;
+        };
+        let Some(info) = xml.lookup_interface(WATCHER_IFACE) else {
+            return;
+        };
+        let weak_method = Rc::downgrade(self);
+        let weak_property = Rc::downgrade(self);
+        if let Err(error) = connection
+            .register_object(WATCHER_PATH, &info)
+            .method_call(
+                move |connection, sender, _, _, method, params, invocation| {
+                    let Some(service) = weak_method.upgrade() else {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "SNI watcher unavailable",
+                        );
+                        return;
+                    };
+                    if !service.owns_watcher.get() {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "SNI watcher not owned",
+                        );
+                        return;
+                    }
+                    match method {
+                        "RegisterStatusNotifierItem" => {
+                            let registration =
+                                params.child_value(0).get::<String>().unwrap_or_default();
+                            let Some(sender) = sender else {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.InvalidArgs",
+                                    "Missing sender",
+                                );
+                                return;
+                            };
+                            service.register_item_request(
+                                &connection,
+                                registration,
+                                sender.to_string(),
+                                invocation,
+                            );
+                        }
+                        "RegisterStatusNotifierHost" => {
+                            let host = params.child_value(0).get::<String>().unwrap_or_default();
+                            if host.is_empty() || host.len() > 240 {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.InvalidArgs",
+                                    "Invalid host",
+                                );
+                            } else {
+                                service.host_registered.set(true);
+                                invocation.return_value(None);
+                                let _ = connection.emit_signal(
+                                    None,
+                                    WATCHER_PATH,
+                                    WATCHER_IFACE,
+                                    "StatusNotifierHostRegistered",
+                                    None,
+                                );
+                            }
+                        }
+                        _ => invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.UnknownMethod",
+                            "Unknown SNI watcher method",
+                        ),
+                    }
+                },
+            )
+            .property(move |_, _, _, _, property| {
+                let Some(service) = weak_property.upgrade() else {
+                    return false.to_variant();
+                };
+                match property {
+                    "RegisteredStatusNotifierItems" => service
+                        .items
+                        .borrow()
+                        .iter()
+                        .map(|i| i.registration.clone())
+                        .collect::<Vec<_>>()
+                        .to_variant(),
+                    "IsStatusNotifierHostRegistered" => service.host_registered.get().to_variant(),
+                    "ProtocolVersion" => 0i32.to_variant(),
+                    _ => false.to_variant(),
+                }
+            })
+            .build()
+        {
+            eprintln!("kira-shell: cannot export SNI watcher: {error}");
+        } else {
+            self.watcher_exported.set(true);
+        }
+    }
+
+    fn install_signal_observers(self: &Rc<Self>, connection: &gio::DBusConnection) {
+        // These subscriptions live only for this Shell's session connection.
+        // Weak references keep callbacks from owning the service forever.
+        let weak = Rc::downgrade(self);
+        connection.signal_subscribe(
+            Some(WATCHER),
+            Some(WATCHER_IFACE),
+            None,
+            Some(WATCHER_PATH),
+            None,
+            gio::DBusSignalFlags::NONE,
+            move |_, _, _, _, member, params| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.owns_watcher.get() {
+                    return;
+                }
+                match member {
+                    "StatusNotifierItemRegistered" => {
+                        if let Some(raw) = params.child_value(0).get::<String>() {
+                            service.register_external(&raw);
+                        }
+                    }
+                    "StatusNotifierItemUnregistered" => {
+                        if let Some(raw) = params.child_value(0).get::<String>() {
+                            service.unregister(&raw);
+                        }
+                    }
+                    _ => {}
+                }
+            },
+        );
+
+        let weak = Rc::downgrade(self);
+        connection.signal_subscribe(
+            Some("org.freedesktop.DBus"),
+            Some("org.freedesktop.DBus"),
+            Some("NameOwnerChanged"),
+            Some("/org/freedesktop/DBus"),
+            None,
+            gio::DBusSignalFlags::NONE,
+            move |_, _, _, _, _, params| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                let name = params.child_value(0).get::<String>().unwrap_or_default();
+                let old_owner = params.child_value(1).get::<String>().unwrap_or_default();
+                let new_owner = params.child_value(2).get::<String>().unwrap_or_default();
+                if name == WATCHER && !service.owns_watcher.get() {
+                    service
+                        .external_revision
+                        .set(service.external_revision.get().wrapping_add(1));
+                    service.available.set(false);
+                    service.items.borrow_mut().clear();
+                    service.publish();
+                    if !new_owner.is_empty() {
+                        service.adopt_external();
+                    }
+                } else if !old_owner.is_empty() && old_owner != new_owner {
+                    // Well-known names can switch owners without ever becoming
+                    // empty. Their former SNI object must not target a new app.
+                    service.unregister_bus(&name);
+                }
+            },
+        );
+
+        let weak = Rc::downgrade(self);
+        connection.signal_subscribe(
+            None,
+            Some(ITEM_IFACE),
+            None,
+            None,
+            None,
+            gio::DBusSignalFlags::NONE,
+            move |_, sender, path, _, member, _| {
+                if !matches!(
+                    member,
+                    "NewIcon" | "NewAttentionIcon" | "NewTitle" | "NewStatus" | "NewIconThemePath"
+                ) {
+                    return;
+                }
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                service.refresh_matching(sender, path);
+            },
+        );
+
+        // A subset of clients emit only standard D-Bus PropertiesChanged,
+        // not the legacy NewIcon/NewStatus signals. Both paths are bounded by
+        // registered object identity and use the same read-only refresh.
+        let weak = Rc::downgrade(self);
+        connection.signal_subscribe(
+            None,
+            Some(PROPERTIES_IFACE),
+            Some("PropertiesChanged"),
+            None,
+            None,
+            gio::DBusSignalFlags::NONE,
+            move |_, sender, path, _, _, params| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if params.child_value(0).get::<String>().as_deref() == Some(ITEM_IFACE) {
+                    service.refresh_matching(sender, path);
+                }
+            },
+        );
+    }
+
+    fn refresh_matching(self: &Rc<Self>, sender: &str, path: &str) {
+        let items: Vec<(u32, String, String)> = self
+            .items
+            .borrow()
+            .iter()
+            .filter(|item| {
+                item.path == path
+                    && matches_item_sender(&item.bus, item.owner_unique.as_deref(), sender)
+            })
+            .map(|item| (item.handle, item.bus.clone(), item.path.clone()))
+            .collect();
+        for (id, bus, object_path) in items {
+            self.refresh_item(id, &bus, &object_path);
+        }
+    }
+
+    fn register_external_host(&self) {
+        if !self.host_name_owned.get() || self.owns_watcher.get() {
+            return;
+        }
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
+        connection.call(
+            Some(WATCHER),
+            WATCHER_PATH,
+            WATCHER_IFACE,
+            "RegisterStatusNotifierHost",
+            Some(&(self.host_name.as_str(),).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            |_| {},
+        );
+    }
+
+    fn adopt_external(self: &Rc<Self>) {
+        if self.owns_watcher.get() {
+            return;
+        }
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        // Registering the host name and fetching an existing roster are
+        // independent asynchronous operations: enumeration must not wait for
+        // another client's RegisterStatusNotifierHost implementation.
+        self.register_external_host();
+        let revision = self.external_revision.get().wrapping_add(1);
+        self.external_revision.set(revision);
+        let weak = Rc::downgrade(self);
+        connection.call(
+            Some(WATCHER),
+            WATCHER_PATH,
+            PROPERTIES_IFACE,
+            "GetAll",
+            Some(&(WATCHER_IFACE,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.owns_watcher.get() || service.external_revision.get() != revision {
+                    return;
+                }
+                let Ok(reply) = reply else {
+                    service.available.set(false);
+                    service.publish();
+                    return;
+                };
+                if reply.size() > 64 * 1024 {
+                    return;
+                }
+                let values = glib::VariantDict::new(Some(&reply.child_value(0)));
+                let registrations = values
+                    .lookup_value("RegisteredStatusNotifierItems", None)
+                    .and_then(|v| v.get::<Vec<String>>())
+                    .unwrap_or_default();
+                service.available.set(true);
+                for registration in registrations.into_iter().take(MAX_ITEMS) {
+                    service.register_external(&registration);
+                }
+                service.publish();
+            },
+        );
+    }
+
+    fn register_external(self: &Rc<Self>, registration: &str) {
+        // A watcher returns a registration (well-known service or unique
+        // bus name followed by an object path). No sender is available here.
+        if let Some((bus, path)) = parse_external(registration) {
+            self.insert_item(registration, &bus, &path);
+        }
+    }
+
+    fn register_item_request(
+        self: &Rc<Self>,
+        connection: &gio::DBusConnection,
+        registration: String,
+        sender: String,
+        invocation: gio::DBusMethodInvocation,
+    ) {
+        if registration.is_empty() || registration.len() > 240 || !valid_bus_name(&sender) {
+            invocation.return_dbus_error(
+                "org.freedesktop.DBus.Error.InvalidArgs",
+                "Invalid SNI registration",
+            );
+            return;
+        }
+        if registration.starts_with('/') {
+            if valid_object_path(&registration) {
+                self.finish_registration(
+                    connection,
+                    &registration,
+                    &sender,
+                    &registration,
+                    invocation,
+                );
+            } else {
+                invocation.return_dbus_error(
+                    "org.freedesktop.DBus.Error.InvalidArgs",
+                    "Invalid object path",
+                );
+            }
+            return;
+        }
+        if !valid_bus_name(&registration) {
+            invocation.return_dbus_error(
+                "org.freedesktop.DBus.Error.InvalidArgs",
+                "Invalid service name",
+            );
+            return;
+        }
+        if registration == sender {
+            self.finish_registration(
+                connection,
+                &registration,
+                &sender,
+                "/StatusNotifierItem",
+                invocation,
+            );
+            return;
+        }
+        // Real SNI apps generally register a well-known org.kde.* bus name.
+        // Accept it ONLY after D-Bus confirms that this exact caller owns it.
+        let weak = Rc::downgrade(self);
+        let reply_connection = connection.clone();
+        let owner_name = registration.clone();
+        connection.call(
+            Some("org.freedesktop.DBus"),
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus",
+            "GetNameOwner",
+            Some(&(registration,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let owner = reply
+                    .ok()
+                    .and_then(|value| value.child_value(0).get::<String>());
+                if owner.as_deref() != Some(sender.as_str()) {
+                    invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.AccessDenied",
+                        "Caller does not own the StatusNotifierItem service",
+                    );
+                    return;
+                }
+                if let Some(service) = weak.upgrade() {
+                    service.finish_registration(
+                        &reply_connection,
+                        &owner_name,
+                        &owner_name,
+                        "/StatusNotifierItem",
+                        invocation,
+                    );
+                } else {
+                    invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.Failed",
+                        "SNI watcher unavailable",
+                    );
+                }
+            },
+        );
+    }
+
+    fn finish_registration(
+        self: &Rc<Self>,
+        connection: &gio::DBusConnection,
+        registration: &str,
+        bus: &str,
+        path: &str,
+        invocation: gio::DBusMethodInvocation,
+    ) {
+        let advertised = if registration.starts_with('/') {
+            format!("{bus}{registration}")
+        } else {
+            registration.to_string()
+        };
+        if self.owns_watcher.get() && self.insert_item(&advertised, bus, path) {
+            invocation.return_value(None);
+            let _ = connection.emit_signal(
+                None,
+                WATCHER_PATH,
+                WATCHER_IFACE,
+                "StatusNotifierItemRegistered",
+                Some(&(advertised,).to_variant()),
+            );
+        } else {
+            invocation.return_dbus_error(
+                "org.freedesktop.DBus.Error.InvalidArgs",
+                "Duplicate or full SNI watcher",
+            );
+        }
+    }
+
+    fn insert_item(self: &Rc<Self>, registration: &str, bus: &str, path: &str) -> bool {
+        if !valid_bus_name(bus) || !valid_object_path(path) || registration.len() > 240 {
+            return false;
+        }
+        let mut items = self.items.borrow_mut();
+        if items.iter().any(|item| item.registration == registration) || items.len() >= MAX_ITEMS {
+            return false;
+        }
+        let id = self.next_handle.get();
+        self.next_handle.set(id.wrapping_add(1).max(1));
+        let title = bus.trim_start_matches(':').chars().take(120).collect();
+        items.push(Item {
+            handle: id,
+            registration: registration.into(),
+            bus: bus.into(),
+            path: path.into(),
+            owner_unique: bus.starts_with(':').then(|| bus.to_string()),
+            key: registration.into(),
+            title,
+            icon: None,
+            status: "Active".into(),
+            ready: false,
+            item_is_menu: false,
+            menu_path: None,
+            refresh_version: 0,
+        });
+        drop(items);
+        if !bus.starts_with(':') {
+            self.resolve_item_owner(id, bus);
+        }
+        self.refresh_item(id, bus, path);
+        true
+    }
+
+    // Well-known names are aliases. Authenticate NewIcon/NewStatus senders
+    // against the session bus's current unique owner, not a matching path.
+    fn resolve_item_owner(self: &Rc<Self>, id: u32, bus: &str) {
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let requested = bus.to_string();
+        connection.call(
+            Some("org.freedesktop.DBus"),
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus",
+            "GetNameOwner",
+            Some(&(bus,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let owner = reply
+                    .ok()
+                    .and_then(|value| value.child_value(0).get::<String>())
+                    .filter(|owner| owner.starts_with(':') && valid_bus_name(owner));
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if let Some(item) = service
+                    .items
+                    .borrow_mut()
+                    .iter_mut()
+                    .find(|item| item.handle == id && item.bus == requested)
+                {
+                    item.owner_unique = owner;
+                }
+            },
+        );
+    }
+
+    fn refresh_item(self: &Rc<Self>, id: u32, bus: &str, object_path: &str) {
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        // Out-of-order async GetAll responses must not roll back newer
+        // titles, attention states or icons.
+        let version = {
+            let mut items = self.items.borrow_mut();
+            let Some(item) = items.iter_mut().find(|item| item.handle == id) else {
+                return;
+            };
+            item.refresh_version = item.refresh_version.wrapping_add(1);
+            item.refresh_version
+        };
+        let weak = Rc::downgrade(self);
+        connection.call(
+            Some(bus),
+            object_path,
+            PROPERTIES_IFACE,
+            "GetAll",
+            Some(&(ITEM_IFACE,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                let Ok(reply) = reply else {
+                    return;
+                };
+                if !service
+                    .items
+                    .borrow()
+                    .iter()
+                    .any(|item| item.handle == id && item.refresh_version == version)
+                {
+                    return;
+                }
+                if reply.size() > 512 * 1024 {
+                    return;
+                }
+                let props = glib::VariantDict::new(Some(&reply.child_value(0)));
+                let id_property = props
+                    .lookup_value("Id", None)
+                    .and_then(|v| v.get::<String>());
+                let title = props
+                    .lookup_value("Title", None)
+                    .and_then(|v| v.get::<String>());
+                let icon_name = props
+                    .lookup_value("IconName", None)
+                    .and_then(|v| v.get::<String>());
+                let attention_icon = props
+                    .lookup_value("AttentionIconName", None)
+                    .and_then(|v| v.get::<String>());
+                let status = props
+                    .lookup_value("Status", None)
+                    .and_then(|v| v.get::<String>());
+                let item_is_menu = props
+                    .lookup_value("ItemIsMenu", None)
+                    .and_then(|v| v.get::<bool>())
+                    .unwrap_or(false);
+                // SNI Menu is a D-Bus OBJECT PATH ('o'), not a string
+                // ('s'). Variant::get::<String>() would drop real KDE menus.
+                let menu_path = props
+                    .lookup_value("Menu", None)
+                    .and_then(|v| {
+                        (v.type_().as_str() == "o")
+                            .then(|| v.str().map(str::to_string))
+                            .flatten()
+                    })
+                    .filter(|path| valid_object_path(path) && !path.ends_with("/NO_DBUSMENU"));
+                let pixmap = if status.as_deref() == Some("NeedsAttention") {
+                    props
+                        .lookup_value("AttentionIconPixmap", None)
+                        .and_then(|value| pixmap_icon(&value))
+                        .or_else(|| {
+                            props
+                                .lookup_value("IconPixmap", None)
+                                .and_then(|value| pixmap_icon(&value))
+                        })
+                } else {
+                    props
+                        .lookup_value("IconPixmap", None)
+                        .and_then(|value| pixmap_icon(&value))
+                };
+                // GIcon theme names are mapped by GTK, never by arbitrary
+                // filesystem paths or URLs supplied to the browser.
+                let preferred_icon = if status.as_deref() == Some("NeedsAttention") {
+                    attention_icon.filter(|v| !v.is_empty()).or(icon_name)
+                } else {
+                    icon_name
+                };
+                let icon = preferred_icon
+                    .as_deref()
+                    .and_then(resolve_theme_icon)
+                    .or(pixmap);
+                let mut items = service.items.borrow_mut();
+                let Some(item) = items
+                    .iter_mut()
+                    .find(|item| item.handle == id && item.refresh_version == version)
+                else {
+                    return;
+                };
+                if let Some(value) = id_property.as_deref().filter(|v| !v.is_empty()) {
+                    item.key = pin_identity(&item.registration, value);
+                }
+                if let Some(value) = title
+                    .as_deref()
+                    .filter(|v| !v.is_empty())
+                    .or(id_property.as_deref().filter(|v| !v.is_empty()))
+                {
+                    item.title = clean(value, 120);
+                }
+                item.status = match status.as_deref() {
+                    Some("Passive") => "Passive",
+                    Some("NeedsAttention") => "NeedsAttention",
+                    _ => "Active",
+                }
+                .into();
+                item.icon = icon;
+                item.item_is_menu = item_is_menu;
+                item.menu_path = menu_path;
+                item.ready = true;
+                drop(items);
+                service.publish();
+            },
+        );
+    }
+
+    fn unregister(&self, registration: &str) {
+        let removed_menu = self
+            .items
+            .borrow()
+            .iter()
+            .find(|item| item.registration == registration)
+            .map(|item| item.handle);
+        if removed_menu.is_some_and(|id| {
+            self.current_menu
+                .borrow()
+                .as_ref()
+                .is_some_and(|menu| menu.handle == id)
+        }) {
+            self.clear_menu();
+        }
+        let removed = {
+            let mut items = self.items.borrow_mut();
+            let original = items.len();
+            items.retain(|item| item.registration != registration);
+            items.len() != original
+        };
+        if removed {
+            self.publish();
+        }
+    }
+
+    fn unregister_bus(&self, bus: &str) {
+        let removed: Vec<String> = self
+            .items
+            .borrow()
+            .iter()
+            .filter(|item| item.bus == bus)
+            .map(|item| item.registration.clone())
+            .collect();
+        for name in removed {
+            self.unregister(&name);
+            if self.owns_watcher.get() {
+                if let Some(connection) = self.connection.borrow().as_ref() {
+                    let _ = connection.emit_signal(
+                        None,
+                        WATCHER_PATH,
+                        WATCHER_IFACE,
+                        "StatusNotifierItemUnregistered",
+                        Some(&(name,).to_variant()),
+                    );
+                }
+            }
+        }
+    }
+
+    fn snapshot(&self) -> serde_json::Value {
+        let pins = self.pins.borrow();
+        let mut icon_budget = MAX_SNAPSHOT_ICON_BYTES;
+        let items = self
+            .items
+            .borrow()
+            .iter()
+            .filter(|item| item.ready && item.status != "Passive")
+            .map(|item| {
+                let icon = bounded_snapshot_icon(&item.icon, &mut icon_budget);
+                serde_json::json!({
+                    "id": item.handle,
+                    "key": item.key,
+                    "title": item.title,
+                    "icon": icon,
+                    "status": item.status,
+                    "pinned": pins.contains(&item.key),
+                })
+            })
+            .collect::<Vec<_>>();
+        serde_json::json!({ "available": self.available.get(), "items": items })
+    }
+
+    fn dispatch(&self, view: &webkit6::WebView) {
+        let payload = self.snapshot();
+        // JSON is serialized as data, then JSON-string encoded a second
+        // time: external SNI metadata cannot become executable JavaScript.
+        let Ok(encoded) = serde_json::to_string(&payload.to_string()) else {
+            return;
+        };
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:tray', {{ detail: JSON.parse({encoded}) }}));"
+        );
+        view.evaluate_javascript(&script, None, None, None::<&gio::Cancellable>, |_| {});
+    }
+
+    fn publish(&self) {
+        self.dispatch(&self.bar);
+        if let Some(popup) = crate::calendar::tray_view() {
+            self.dispatch(&popup);
+        }
+    }
+
+    fn dispatch_menu(&self, view: &webkit6::WebView) {
+        let payload = if let Some(menu) = self.current_menu.borrow().as_ref() {
+            serde_json::json!({
+                "handle": menu.handle,
+                "title": menu.title,
+                "items": menu.entries.iter().map(|entry| {
+                    serde_json::json!({
+                        "id": entry.id,
+                        "label": entry.label,
+                        "depth": entry.depth,
+                        "enabled": entry.enabled,
+                        "separator": entry.separator,
+                        "checked": entry.checked,
+                        "radio": entry.radio,
+                        "has_children": entry.has_children,
+                    })
+                }).collect::<Vec<_>>(),
+            })
+        } else {
+            serde_json::json!({"handle": 0, "title": "", "items": []})
+        };
+        let Ok(encoded) = serde_json::to_string(&payload.to_string()) else {
+            return;
+        };
+        let script = format!(
+            "window.dispatchEvent(new CustomEvent('kira:tray-menu', {{ detail: JSON.parse({encoded}) }}));"
+        );
+        view.evaluate_javascript(&script, None, None, None::<&gio::Cancellable>, |_| {});
+    }
+
+    fn publish_menu(&self) {
+        if let Some(popup) = crate::calendar::tray_view() {
+            self.dispatch_menu(&popup);
+        }
+    }
+
+    fn clear_menu(&self) {
+        self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
+        self.current_menu.borrow_mut().take();
+        self.publish_menu();
+    }
+
+    fn has_menu_popup(&self, id: u32, action: &str) -> bool {
+        self.items.borrow().iter().any(|item| {
+            item.handle == id
+                && item.ready
+                && item.menu_path.is_some()
+                && (action == "secondary" || (action == "activate" && item.item_is_menu))
+        })
+    }
+
+    fn action(self: &Rc<Self>, id: u32, action: &str) {
+        let item = self
+            .items
+            .borrow()
+            .iter()
+            .find(|item| item.handle == id)
+            .cloned();
+        let Some(item) = item else {
+            return;
+        };
+        if action == "pin" {
+            let mut next = self.pins.borrow().clone();
+            if !next.remove(&item.key) {
+                next.insert(item.key.clone());
+            }
+            if let Err(error) = save_pins(&next) {
+                // Persistence failure must not show a pin as durable.
+                eprintln!("kira-shell: cannot persist SNI pins: {error}");
+                return;
+            }
+            *self.pins.borrow_mut() = next;
+            self.publish();
+        } else if action == "activate" || action == "secondary" {
+            let context = action == "secondary" || item.item_is_menu;
+            if context {
+                if let Some(path) = item.menu_path.as_deref() {
+                    self.open_menu(&item, path);
+                    return;
+                }
+            }
+            self.call_item_method(&item, if context { "ContextMenu" } else { "Activate" });
+        }
+    }
+
+    fn call_item_method(&self, item: &Item, method: &str) {
+        if let Some(connection) = self.connection.borrow().as_ref() {
+            connection.call(
+                Some(&item.bus),
+                &item.path,
+                ITEM_IFACE,
+                method,
+                Some(&(0i32, 0i32).to_variant()),
+                None,
+                gio::DBusCallFlags::NONE,
+                2500,
+                None::<&gio::Cancellable>,
+                |_| {},
+            );
+        }
+    }
+
+    fn open_menu(self: &Rc<Self>, item: &Item, path: &str) {
+        self.clear_menu();
+        let revision = self.menu_serial.get();
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let item = item.clone();
+        let path = path.to_string();
+        let menu_connection = connection.clone();
+        let call_bus = item.bus.clone();
+        let call_path = path.clone();
+        // AboutToShow lets dynamic app menus refresh themselves before
+        // GetLayout. Failure does not prevent reading a static layout.
+        connection.call(
+            Some(&call_bus),
+            &call_path,
+            "com.canonical.dbusmenu",
+            "AboutToShow",
+            Some(&(0i32,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            1000,
+            None::<&gio::Cancellable>,
+            move |_| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.menu_serial.get() != revision {
+                    return;
+                }
+                let weak = Rc::downgrade(&service);
+                let menu_item = item.clone();
+                let menu_path = path.clone();
+                menu_connection.call(
+                    Some(&item.bus),
+                    &path,
+                    "com.canonical.dbusmenu",
+                    "GetLayout",
+                    Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
+                    None,
+                    gio::DBusCallFlags::NONE,
+                    2500,
+                    None::<&gio::Cancellable>,
+                    move |reply| {
+                        let Some(service) = weak.upgrade() else {
+                            return;
+                        };
+                        if service.menu_serial.get() != revision {
+                            return;
+                        }
+                        let still_registered = service.items.borrow().iter().any(|current| {
+                            current.handle == menu_item.handle
+                                && current.bus == menu_item.bus
+                                && current.menu_path.as_deref() == Some(menu_path.as_str())
+                        });
+                        if !still_registered {
+                            return;
+                        }
+                        let entries = reply
+                            .ok()
+                            .as_ref()
+                            .and_then(tray_menu::parse_layout)
+                            .unwrap_or_default();
+                        if entries.is_empty() {
+                            // Some legacy clients only implement ContextMenu.
+                            service.call_item_method(&menu_item, "ContextMenu");
+                            return;
+                        }
+                        service.current_menu.replace(Some(MenuSession {
+                            handle: menu_item.handle,
+                            bus: menu_item.bus.clone(),
+                            path: menu_path,
+                            title: menu_item.title,
+                            entries,
+                        }));
+                        service.publish_menu();
+                    },
+                );
+            },
+        );
+    }
+
+    fn click_menu(&self, handle: u32, entry_id: i32) {
+        let selected = {
+            let mut active = self.current_menu.borrow_mut();
+            let Some(menu) = active.as_ref() else { return };
+            if menu.handle != handle || !tray_menu::clickable(&menu.entries, entry_id) {
+                return;
+            }
+            active.take()
+        };
+        let Some(menu) = selected else { return };
+        self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
+        self.publish_menu();
+        let still_registered = self.items.borrow().iter().any(|item| {
+            item.handle == handle
+                && item.bus == menu.bus
+                && item.menu_path.as_deref() == Some(menu.path.as_str())
+        });
+        if !still_registered {
+            return;
+        }
+        if let Some(connection) = self.connection.borrow().as_ref() {
+            connection.call(
+                Some(&menu.bus),
+                &menu.path,
+                "com.canonical.dbusmenu",
+                "Event",
+                Some(&tray_menu::click_params(entry_id)),
+                None,
+                gio::DBusCallFlags::NONE,
+                2500,
+                None::<&gio::Cancellable>,
+                |_| {},
+            );
+        }
+    }
+}
+
+/// Keep every native WebKit tray dispatch under the shared image budget.
+fn bounded_snapshot_icon<'a>(icon: &'a Option<String>, remaining: &mut usize) -> Option<&'a str> {
+    let value = icon.as_deref()?;
+    if value.len() > *remaining {
+        return None;
+    }
+    *remaining -= value.len();
+    Some(value)
+}
+
+/// App-provided Id is stable across unique D-Bus connections. An app with no
+/// Id retains its ASCII registration (up to 240 bytes) as a fallback key.
+fn pin_identity(registration: &str, id: &str) -> String {
+    // The local state format bounds keys by UTF-8 bytes. A count of Unicode
+    // scalar values alone would silently discard non-ASCII IDs on restart.
+    let mut cleaned = String::new();
+    for ch in id.chars().filter(|ch| !ch.is_control()).take(177) {
+        if cleaned.len() + ch.len_utf8() > 177 {
+            break;
+        }
+        cleaned.push(ch);
+    }
+    if cleaned.is_empty() {
+        registration.to_string()
+    } else {
+        format!("id:{cleaned}")
+    }
+}
+
+fn clean(value: &str, limit: usize) -> String {
+    value
+        .chars()
+        .filter(|c| !c.is_control())
+        .take(limit)
+        .collect()
+}
+
+fn matches_item_sender(bus: &str, owner_unique: Option<&str>, sender: &str) -> bool {
+    if bus.starts_with(':') {
+        bus == sender
+    } else {
+        owner_unique == Some(sender)
+    }
+}
+
+fn valid_bus_name(value: &str) -> bool {
+    if value.len() < 3 || value.len() > 240 {
+        return false;
+    }
+    let unique = value.starts_with(':');
+    let rest = if unique { &value[1..] } else { value };
+    let parts: Vec<_> = rest.split('.').collect();
+    if parts.len() < 2 {
+        return false;
+    }
+    parts.iter().all(|part| {
+        let Some(first) = part.chars().next() else {
+            return false;
+        };
+        (unique && (first.is_ascii_alphanumeric() || first == '_')
+            || !unique && (first.is_ascii_alphabetic() || first == '_'))
+            && part
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || matches!(c, '_' | '-'))
+    })
+}
+
+fn valid_object_path(value: &str) -> bool {
+    if value.len() < 2 || value.len() > 240 || !value.starts_with('/') {
+        return false;
+    }
+    // Empty segments and trailing separators are invalid D-Bus paths.
+    // Reject them before calling GIO, whose argument preconditions are strict.
+    value[1..]
+        .split('/')
+        .all(|part| !part.is_empty() && part.chars().all(|c| c.is_ascii_alphanumeric() || c == '_'))
+}
+
+fn parse_external(value: &str) -> Option<(String, String)> {
+    let (bus, path) = if let Some(index) = value.find('/') {
+        (&value[..index], &value[index..])
+    } else {
+        (value, "/StatusNotifierItem")
+    };
+    // Watcher registrations are authoritative; both unique and well-known
+    // names are supported. The caller cannot override this via WebKit.
+    if valid_bus_name(bus) && valid_object_path(path) {
+        Some((bus.to_string(), path.to_string()))
+    } else {
+        None
+    }
+}
+
+/// SNI IconPixmap is ARGB32 in network byte order, not host-endian BGRA.
+/// Convert to straight-alpha RGBA before asking GDK to serialize a PNG.
+fn argb_to_rgba(width: i32, height: i32, pixels: &[u8]) -> Option<Vec<u8>> {
+    if !(1..=128).contains(&width) || !(1..=128).contains(&height) {
+        return None;
+    }
+    let expected = usize::try_from(width.checked_mul(height)?.checked_mul(4)?).ok()?;
+    if pixels.len() != expected {
+        return None;
+    }
+    let mut rgba = Vec::with_capacity(expected);
+    for chunk in pixels.chunks_exact(4) {
+        rgba.extend_from_slice(&[chunk[1], chunk[2], chunk[3], chunk[0]]);
+    }
+    Some(rgba)
+}
+
+/// Choose a nearby 24px resolution rather than decoding an unbounded frame.
+/// The 512KiB GetAll cap is enforced before inspecting these variants.
+fn pixmap_icon(value: &glib::Variant) -> Option<String> {
+    if value.type_().as_str() != "a(iiay)" || value.n_children() > 32 {
+        return None;
+    }
+    let mut best: Option<(usize, i32, i32, i32)> = None;
+    for index in 0..value.n_children() {
+        let entry = value.child_value(index);
+        let (Some(width), Some(height)) = (
+            entry.child_value(0).get::<i32>(),
+            entry.child_value(1).get::<i32>(),
+        ) else {
+            continue;
+        };
+        if !(1..=128).contains(&width) || !(1..=128).contains(&height) {
+            continue;
+        }
+        let distance = (width - 24).abs() + (height - 24).abs();
+        if best.as_ref().is_none_or(|(_, score, largest, _)| {
+            distance < *score || (distance == *score && width > *largest)
+        }) {
+            best = Some((index, distance, width, height));
+        }
+    }
+    let (index, _, width, height) = best?;
+    let pixels = value.child_value(index).child_value(2).get::<Vec<u8>>()?;
+    let rgba = argb_to_rgba(width, height, &pixels)?;
+    let texture = gtk::gdk::MemoryTexture::new(
+        width,
+        height,
+        gtk::gdk::MemoryFormat::R8g8b8a8,
+        &glib::Bytes::from_owned(rgba),
+        usize::try_from(width).ok()?.checked_mul(4)?,
+    );
+    let png = texture.save_to_png_bytes();
+    if png.len() > 128 * 1024 {
+        return None;
+    }
+    Some(format!(
+        "data:image/png;base64,{}",
+        glib::base64_encode(&png)
+    ))
+}
+
+fn resolve_theme_icon(name: &str) -> Option<String> {
+    if name.is_empty()
+        || name.len() > 140
+        || !name
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.'))
+    {
+        return None;
+    }
+    let display = gtk::gdk::Display::default()?;
+    let theme = gtk::IconTheme::for_display(&display);
+    // GTK can silently resolve a missing name to image-missing; prefer a
+    // real app-provided pixmap to that generic placeholder.
+    if !theme.has_icon(name) {
+        return None;
+    }
+    let path = theme
+        .lookup_icon(
+            name,
+            &[],
+            24,
+            1,
+            gtk::TextDirection::None,
+            gtk::IconLookupFlags::empty(),
+        )
+        .file()?
+        .path()?;
+    crate::launcher::encode_icon(Some(&path), None)
+}
+
+fn pin_path() -> Option<PathBuf> {
+    let root = std::env::var_os("XDG_STATE_HOME")
+        .map(PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/state"))
+        })?;
+    Some(root.join("kira-desktop/tray-pins.json"))
+}
+
+fn load_pins() -> HashSet<String> {
+    let Some(path) = pin_path() else {
+        return HashSet::new();
+    };
+    let Ok(file) = fs::File::open(&path) else {
+        return HashSet::new();
+    };
+    let mut data = Vec::new();
+    if file
+        .take((MAX_PINS_BYTES + 1) as u64)
+        .read_to_end(&mut data)
+        .is_err()
+        || data.len() > MAX_PINS_BYTES
+    {
+        return HashSet::new();
+    }
+    serde_json::from_slice::<Vec<String>>(&data)
+        .unwrap_or_default()
+        .into_iter()
+        .filter(|value| !value.is_empty() && value.len() <= MAX_PIN_KEY_BYTES)
+        .take(MAX_SAVED_PINS)
+        .collect()
+}
+
+fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
+    if pins.len() > MAX_SAVED_PINS
+        || pins
+            .iter()
+            .any(|pin| pin.is_empty() || pin.len() > MAX_PIN_KEY_BYTES)
+    {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "SNI pin limit exceeded",
+        ));
+    }
+    let Some(path) = pin_path() else {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "XDG_STATE_HOME and HOME are unset",
+        ));
+    };
+    let Some(parent) = path.parent() else {
+        return Ok(());
+    };
+    fs::create_dir_all(parent)?;
+    let mut sorted: Vec<_> = pins.iter().cloned().collect();
+    sorted.sort();
+    let tmp = path.with_extension(format!("{}.tmp", std::process::id()));
+    let serialized = serde_json::to_vec(&sorted).map_err(std::io::Error::other)?;
+    if serialized.len() > MAX_PINS_BYTES {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "SNI pin file limit exceeded",
+        ));
+    }
+    fs::write(&tmp, serialized)?;
+    fs::rename(tmp, path)
+}
+
+pub fn snapshot_to(view: &webkit6::WebView) {
+    SERVICE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.dispatch(view);
+            service.dispatch_menu(view);
+        }
+    });
+}
+
+pub fn clear_menu() {
+    SERVICE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.clear_menu();
+        }
+    });
+}
+
+pub fn menu_click(handle: u32, entry_id: i32) {
+    SERVICE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.click_menu(handle, entry_id);
+        }
+    });
+}
+
+pub fn has_menu_popup(id: u32, action: &str) -> bool {
+    SERVICE.with(|active| {
+        active
+            .borrow()
+            .as_ref()
+            .is_some_and(|service| service.has_menu_popup(id, action))
+    })
+}
+
+pub fn handle(message: &str) {
+    SERVICE.with(|active| {
+        let service = active.borrow();
+        let Some(service) = service.as_ref() else {
+            return;
+        };
+        if message == "sync" {
+            service.publish();
+        } else if let Some((action, raw)) = message.split_once(':') {
+            if matches!(action, "activate" | "pin" | "secondary") {
+                if let Ok(id) = raw.parse::<u32>() {
+                    if id != 0 {
+                        service.action(id, action);
+                    }
+                }
+            }
+        }
+    });
+}
+
+pub fn action(id: u32, action: &str) {
+    if !matches!(action, "pin" | "activate" | "secondary") {
+        return;
+    }
+    SERVICE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.action(id, action);
+        }
+    });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepts_only_bounded_unique_service_and_path() {
+        assert_eq!(
+            parse_external(":1.42/StatusNotifierItem"),
+            Some((":1.42".into(), "/StatusNotifierItem".into()))
+        );
+        assert!(parse_external(":1.42").is_some());
+        assert!(parse_external("org.kde.StatusNotifierItem-1234-1").is_some());
+        for invalid in [
+            "",
+            "invalid",
+            ":1.2/../../etc/passwd",
+            ":1.2/Tray;touch",
+            ":1.2//icon-name?",
+        ] {
+            assert!(parse_external(invalid).is_none(), "{invalid}");
+        }
+    }
+
+    #[test]
+    fn icon_pixmap_requires_valid_bounded_argb_network_bytes() {
+        assert_eq!(
+            argb_to_rgba(1, 2, &[255, 10, 20, 30, 128, 40, 50, 60]),
+            Some(vec![10, 20, 30, 255, 40, 50, 60, 128])
+        );
+        assert!(argb_to_rgba(0, 1, &[]).is_none());
+        assert!(argb_to_rgba(129, 1, &[]).is_none());
+        assert!(argb_to_rgba(1, 1, &[0, 1, 2]).is_none());
+    }
+
+    #[test]
+    fn only_verified_unique_owners_can_refresh_registered_items() {
+        assert!(matches_item_sender(":1.42", None, ":1.42"));
+        assert!(!matches_item_sender(":1.42", None, ":1.43"));
+        assert!(!matches_item_sender("org.example.Tray", None, ":1.42"));
+        assert!(matches_item_sender(
+            "org.example.Tray",
+            Some(":1.42"),
+            ":1.42"
+        ));
+        assert!(!matches_item_sender(
+            "org.example.Tray",
+            Some(":1.42"),
+            ":1.43"
+        ));
+    }
+
+    #[test]
+    fn rejects_malformed_dbus_names_before_gio_calls() {
+        for invalid in [
+            "", ":1", ":::1.2", ":1.:2", ":1..2", "org..app", "1.org", "org.2app", "org.-app",
+            "org.app:", "org.app/",
+        ] {
+            assert!(!valid_bus_name(invalid), "{invalid}");
+        }
+        for valid in [
+            ":1.42",
+            "org.kde.StatusNotifierItem-1234-1",
+            "org.example_app.Tray_1",
+        ] {
+            assert!(valid_bus_name(valid), "{valid}");
+        }
+        assert!(!valid_object_path(""));
+        for invalid in [
+            "/",
+            "//StatusNotifierItem",
+            "/Status//Notifier",
+            "/StatusNotifierItem/",
+            "/Bad.Path",
+            "/Bad-Path",
+        ] {
+            assert!(!valid_object_path(invalid), "{invalid}");
+            assert!(
+                parse_external(&format!(":1.2{invalid}")).is_none(),
+                "{invalid}"
+            );
+        }
+        assert!(valid_object_path("/StatusNotifierItem"));
+        assert!(valid_object_path("/org/example_2/Tray"));
+    }
+
+    #[test]
+    fn snapshot_icon_budget_prevents_oversized_ipc_frames() {
+        let mut remaining = 12;
+        assert_eq!(
+            bounded_snapshot_icon(&Some("first".into()), &mut remaining),
+            Some("first")
+        );
+        assert_eq!(remaining, 7);
+        assert_eq!(
+            bounded_snapshot_icon(&Some("too-long".into()), &mut remaining),
+            None
+        );
+        assert_eq!(remaining, 7);
+        assert_eq!(
+            bounded_snapshot_icon(&Some("last".into()), &mut remaining),
+            Some("last")
+        );
+        assert_eq!(remaining, 3);
+    }
+
+    #[test]
+    fn long_registrations_remain_legal_fallback_pin_keys() {
+        let registration = format!("org.example.{}", "x".repeat(190));
+        assert!(registration.len() > 180);
+        assert!(registration.len() <= MAX_PIN_KEY_BYTES);
+        assert_eq!(pin_identity(&registration, ""), registration);
+    }
+
+    #[test]
+    fn unicode_pin_ids_fit_the_persisted_utf8_key_budget() {
+        let id = "😀".repeat(160);
+        let key = pin_identity(":1.4/StatusNotifierItem", &id);
+        assert!(key.len() <= 180);
+        assert_eq!(key, pin_identity(":1.9/StatusNotifierItem", &id));
+    }
+
+    #[test]
+    fn pin_identity_survives_unique_bus_name_changes() {
+        assert_eq!(
+            pin_identity(":1.34/StatusNotifierItem", "org.example.Client"),
+            pin_identity(":1.89/StatusNotifierItem", "org.example.Client")
+        );
+        assert_eq!(
+            pin_identity(":1.34/StatusNotifierItem", ""),
+            ":1.34/StatusNotifierItem"
+        );
+        assert_eq!(pin_identity("org.example.Client", "app\n"), "id:app");
+    }
+
+    #[test]
+    fn strips_control_characters_from_app_metadata() {
+        assert_eq!(clean("hello\nworld", 10), "helloworld");
+        assert_eq!(clean("abcdef", 3), "abc");
+    }
+}
+
+FILE	crates/kira-shell/src/tray_menu.rs
+//! A bounded, read-only decoder for application-owned com.canonical.dbusmenu.
+//! Never forward arbitrary menu paths, IDs or methods from WebKit to D-Bus.
+use gtk::glib;
+use gtk::glib::variant::ToVariant;
+
+const MAX_MENU_ENTRIES: usize = 80;
+const MAX_MENU_LEVEL: u8 = 3;
+const MAX_MENU_REPLY_BYTES: usize = 256 * 1024;
+
+#[derive(Clone, Debug)]
+pub struct MenuEntry {
+    pub id: i32,
+    pub label: String,
+    pub depth: u8,
+    pub enabled: bool,
+    pub separator: bool,
+    pub checked: bool,
+    pub radio: bool,
+    pub has_children: bool,
+}
+
+pub fn parse_layout(reply: &glib::Variant) -> Option<Vec<MenuEntry>> {
+    if reply.type_().as_str() != "(u(ia{sv}av))" || reply.size() > MAX_MENU_REPLY_BYTES {
+        return None;
+    }
+    let tree = reply.child_value(1);
+    let mut entries = Vec::new();
+    read_node(&tree, 0, &mut entries);
+    Some(entries)
+}
+
+fn read_node(node: &glib::Variant, depth: u8, entries: &mut Vec<MenuEntry>) {
+    if depth > MAX_MENU_LEVEL
+        || entries.len() >= MAX_MENU_ENTRIES
+        || node.type_().as_str() != "(ia{sv}av)"
+    {
+        return;
+    }
+    let Some(id) = node.child_value(0).get::<i32>() else {
+        return;
+    };
+    let properties = glib::VariantDict::new(Some(&node.child_value(1)));
+    if properties.lookup::<bool>("visible").ok().flatten() == Some(false) {
+        return;
+    }
+    let children = node.child_value(2);
+    let has_children = children.n_children() > 0;
+    if depth > 0 {
+        if id <= 0 {
+            return;
+        }
+        let type_name = properties.lookup::<String>("type").ok().flatten();
+        let separator = type_name.as_deref() == Some("separator");
+        let label = properties
+            .lookup::<String>("label")
+            .ok()
+            .flatten()
+            .unwrap_or_default();
+        let toggle_type = properties.lookup::<String>("toggle-type").ok().flatten();
+        let checked = properties.lookup::<i32>("toggle-state").ok().flatten() == Some(1);
+        let enabled = properties
+            .lookup::<bool>("enabled")
+            .ok()
+            .flatten()
+            .unwrap_or(true);
+        // Child nodes render indented under their parent in the first-phase menu.
+        // Only leaf nodes are actionable, even if a malicious client reuses IDs.
+        entries.push(MenuEntry {
+            id,
+            label: clean_label(&label),
+            depth: depth - 1,
+            enabled,
+            separator,
+            checked,
+            radio: toggle_type.as_deref() == Some("radio"),
+            has_children,
+        });
+    }
+    if depth == MAX_MENU_LEVEL {
+        return;
+    }
+    for child in 0..children.n_children().min(MAX_MENU_ENTRIES) {
+        if entries.len() >= MAX_MENU_ENTRIES {
+            break;
+        }
+        let Some(next) = children.child_value(child).as_variant() else {
+            continue;
+        };
+        read_node(&next, depth + 1, entries);
+    }
+}
+
+pub fn clickable(entries: &[MenuEntry], id: i32) -> bool {
+    id > 0
+        && entries.iter().filter(|entry| entry.id == id).count() == 1
+        && entries
+            .iter()
+            .any(|entry| entry.id == id && entry.enabled && !entry.separator && !entry.has_children)
+}
+
+fn clean_label(value: &str) -> String {
+    let mut clean = String::new();
+    let mut chars = value.chars().peekable();
+    while let Some(ch) = chars.next() {
+        if ch.is_control() {
+            continue;
+        }
+        if ch == '_' {
+            if chars.peek() == Some(&'_') {
+                chars.next();
+            } else {
+                continue;
+            }
+        }
+        if clean.chars().count() >= 120 {
+            break;
+        }
+        clean.push(ch);
+    }
+    clean
+}
+
+pub fn click_params(id: i32) -> glib::Variant {
+    // Event(int32 id, string "clicked", variant data, uint32 timestamp)
+    // Zero is permitted when no reliable compositor timestamp is exposed.
+    (
+        id,
+        "clicked",
+        glib::Variant::from_variant(&0i32.to_variant()),
+        0u32,
+    )
+        .to_variant()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn entry(id: i32, enabled: bool) -> MenuEntry {
+        MenuEntry {
+            id,
+            enabled,
+            label: String::from("Example"),
+            depth: 0,
+            checked: false,
+            radio: false,
+            separator: false,
+            has_children: false,
+        }
+    }
+    #[test]
+    fn only_unique_enabled_leaf_menu_entries_are_clickable() {
+        let mut entries = vec![entry(1, true), entry(2, false)];
+        assert!(clickable(&entries, 1));
+        assert!(!clickable(&entries, 2));
+        assert!(!clickable(&entries, 0));
+        entries[0].has_children = true;
+        assert!(!clickable(&entries, 1));
+        entries.push(entry(2, true));
+        assert!(!clickable(&entries, 2));
+    }
+    #[test]
+    fn labels_are_bounded_and_mnemonics_do_not_leak() {
+        assert_eq!(clean_label("_Open __Tools\n"), "Open _Tools");
+        assert_eq!(clean_label(&"x".repeat(300)).chars().count(), 120);
+        assert_eq!(click_params(3).type_().as_str(), "(isvu)");
+    }
+    #[test]
+    fn malformed_layout_is_ignored() {
+        assert!(parse_layout(&"invalid".to_variant()).is_none());
+    }
+}
+
 FILE	crates/kira-shell/src/webview_pool.rs
 //! A bounded, deterministic scheduler for trusted GTK/WebKit popup hosts.
 //! Pure policy: no GTK objects, renderer state, or timers live here.
@@ -11076,6 +13040,7 @@ pub enum Surface {
     System,
     Launcher,
     Settings,
+    Tray,
     #[cfg(test)]
     Synthetic(u8),
 }
@@ -11086,6 +13051,7 @@ impl Surface {
             Self::System => "system",
             Self::Launcher => "launcher",
             Self::Settings => "settings",
+            Self::Tray => "tray",
             #[cfg(test)]
             Self::Synthetic(_) => "synthetic",
         }
@@ -11615,8 +13581,11 @@ the detached sky atlas are implemented in Svelte 5. Rust/GTK hosts Wayland
 surfaces and system adapters, not widget presentation. Visual acceptance in
 nested Niri is still open. This document operationalizes
 [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
-Dock, notifications, configurable KDL themes and third-party widgets remain
-future milestones.
+The first native StatusNotifierItem system tray is now implemented on
+`feat/status-tray-foundation`; cross-WebView icon transfer motion, pixmaps and
+native Niri visual acceptance remain in progress. See
+[System Tray philosophy, interactions, and acceptance](TRAY_DESIGN.md).
+Dock, configurable KDL themes and third-party widgets remain future milestones.
 
 ## Kira official visual direction
 
@@ -11865,6 +13834,15 @@ and redirected on repeated edits. No invented retrospective fragment
 path is added to factual sky positions. Reduced-motion changes immediately
 settle on the target geometry and listeners/GSAP tweens are disposed
 on unmount. Real-world Niri resize and focus visual QA remains necessary.
+
+### Native system tray · icon identity and honest app state
+
+The tray is a StatusNotifierItem host, not a list of minimized Niri windows.
+Pinned icons appear in the 42px Top Bar utility region; the overflow list
+uses a right-docked, nonexclusive pooled Wayland overlay. Applications come
+only from D-Bus registrations, pin state persists by app identity, and
+controls can send only bounded native actions. More:
+[Tray Design](TRAY_DESIGN.md).
 
 ### TENET Motion System · обязательный закон анимаций
 
@@ -13814,6 +15792,162 @@ Calendar, Launcher и System Monitor используют общий жизне�
 
 **Исключения, которые защищают смысл UI:** измеренные ECharts-линии и шкалы не получают упругие overshoot значений (их факты нельзя «отпружинить» за реальные 100%). Тексты, недоступные датчики, время и изменённый результат поиска могут переключаться дискретно, если между состояниями **нет общей физической сущности**. Не добавлять бесконечное декоративное движение, не оживлять скрытые виджеты, не менять базовую палитру или GTK-геометрию во время entrance.
 
+FILE	docs/TRAY_DESIGN.md
+# Kira Desktop · System Tray
+
+**Status:** first implementation in `feat/status-tray-foundation`. Native Niri session
+acceptance and cross-surface drag motion are still to be verified.
+
+## Design philosophy: calm in repose, precise in motion
+
+Kira's official style remains **Neo-Brutalism + Editorial Design + Expressive
+Minimalism**, not a second design language for the tray. The system tray is a
+functional location for applications that register a notification-area item.
+It is **not** a copy of Niri's minimized-window/task switcher.
+
+- **Truth over decoration:** no invented running apps, unread counts, or static
+  example icons. An absent SNI host or client is shown honestly.
+- **One identity per item:** a stable application ID is the pinning identity;
+  a transient numeric handle is only valid within this Shell process.
+- **Material hierarchy:** the 42px bar stays compact, in the system-utilities
+  segment. The tray popup occupies its own zero-exclusive-zone Wayland surface.
+- **Functional accent:** canonical Black, Prussian Blue, Orange, Alabaster
+  Grey, and White only. Orange is for real attention and selected pin state.
+- **KISS and DRY:** GIO owns the external system protocol, Svelte renders;
+  the existing popup pool, typed bridge, theme and GSAP remain shared.
+
+## Motion philosophy: TENET without decorative fiction
+
+The mandatory [TENET Motion System](TENET_MOTION.md) applies:
+
+- **FORWARD:** focus, hover, click acknowledgments, and a short icon reorder.
+  The actual D-Bus action is never delayed for an animation.
+- **Temporal continuity:** a pin toggle retains the same item identity and
+  Svelte keyed row; the existing `tenetReflow` FLIP helper animates changes
+  inside the native popup. GSAP owns JS motion, never a second engine.
+- **INVERTED:** popup dismissal reverses the same saved opening scene.
+  Closing, Escape, another widget, or repeated clicks must settle correctly.
+- **Cross-surface transfer:** a future coordinated native/JS geometry relay
+  should animate a *single* icon trajectory between popup and top bar.
+  The first implementation keeps state synchronized but does not claim a
+  pixel-perfect shared-element animation across two distinct WebViews.
+- **No obstruction:** reduced-motion immediately displays true state,
+  and animation never blocks keyboard access or D-Bus dispatch.
+
+## Interaction contract
+
+| Action | Result |
+| --- | --- |
+| Click chevron in Top Bar | Toggle native tray popup |
+| Click pinned icon | SNI `Activate(0, 0)`, or show its D-Bus menu if `ItemIsMenu` |
+| Click row in popup | Same native activation |
+| Right click a pinned Top Bar icon | Open its `com.canonical.dbusmenu` in the pooled tray popup, or fallback to `ContextMenu(0,0)` |
+| Click pin control beside row | Move application identity between visible and hidden groups |
+| Right click row | Open its D-Bus menu, or fallback to native `ContextMenu(0,0)` |
+| Click a D-Bus menu leaf | Send only its validated `Event(id, clicked)` action |
+| Escape inside app menu | Return to the tray list; Escape again closes the popup |
+| Escape or close control | Reversibly dismiss popup |
+| Quit/restart Shell | Restore pin choices from local state |
+| StatusNotifierItem unregistered | Remove from live UI, preserving pin preference |
+
+SNI `Passive` items are omitted. `NeedsAttention` items are marked with
+an actual Orange point; no fabricated badge counts.
+
+Pin state is stored in `$XDG_STATE_HOME/kira-desktop/tray-pins.json` (or
+`~/.local/state/kira-desktop/tray-pins.json`). The Shell retains the
+write authority. Svelte can only send bounded native numeric handles.
+
+## Native architecture
+
+1. `kira-shell/src/tray.rs`: one GIO session D-Bus service, a watcher only
+   when the standard name is unowned, and a host when another watcher exists.
+   The preview never takes ownership of the user's SNI watcher.
+   A separate well-known `org.kde.StatusNotifierHost-PID` bus name identifies
+   the actual host for third-party watchers.
+2. The native Shell bridge and dedicated `kiraTray` channel leave arbitrary D-Bus
+   names, methods and paths inaccessible to UI callers.
+3. `calendar.rs` leases `Surface::Tray` through the existing native overlay
+   pool, with generation-bound `tray-sync` and `tray` actions.
+4. `tray_menu.rs` parses bounded `com.canonical.dbusmenu` layouts; only
+   a unique, enabled leaf in the current menu snapshot can emit `clicked`.
+   Submenu descendants are displayed as a compact indented list (up to three
+   levels), not as independent GTK windows. All clicks are overlay-generation
+   scoped.
+5. `frontend/src/lib/tray-model.ts` checks all renderer-visible data.
+6. `TrayBar.svelte` and `TrayWidget.svelte` display the **same live snapshot**.
+
+The implementation limits active items to 64, sanitizes metadata, checks
+registration ownership when a well-known service name is supplied, bounds
+serialized icons, and uses an allowlist of trusted native actions.
+
+## Known first-phase gaps
+
+- The native host now converts bounded `IconPixmap` ARGB32 bytes into PNG;
+  names from GTK icon themes take precedence. Unsupported images retain a
+  textual fallback. OverlayIcon composition remains future work.
+- `com.canonical.dbusmenu` is supported for bounded, flattened menu entries,
+  checkbox/radio indicators and leaf clicks. Deep/lazily loaded submenus,
+  live layout updates, full desktop-native nested popovers, and legacy XEmbed
+  remain outside this increment. Apps without a Menu object use ContextMenu.
+- `Activate(0,0)` and `ContextMenu(0,0)` are basic entry points; some
+  applications require compositor-aware pointer coordinates.
+- No draggable icon transfer across two WebViews yet. Explicit pin controls
+  supply the same state change.
+- Pinned icons beyond the width cap remain accessible in overflow; measuring
+  the available panel width dynamically and Wayland visual/interaction
+  acceptance remain required before merging.
+- GitHub CI verifies compilation and tests. This branch has not yet received
+  an interactive native Niri session acceptance pass.
+
+## Acceptance checklist
+
+- [ ] SNI item appears, changes title/icon/attention, then unregisters.
+- [ ] Existing external watcher remains owned by its original service.
+- [ ] Third-party watcher accepts the well-known Kira host registration.
+- [ ] KDE and AppIndicator menus open, respond to click, and close safely;
+      fall back to native ContextMenu for legacy applications.
+- [ ] Preview does not seize the host's watcher.
+- [ ] Pin/unpin survives restarting Shell and a re-registered app.
+- [ ] Clicking a pinned icon runs the real app's `Activate` action.
+- [ ] Tray popup opens underneath the 42px bar without expanding that zone.
+- [ ] Repeated click, Escape, focus transfer, and `prefers-reduced-motion`
+      all produce a settled true state with no retained WebView listeners.
+- [ ] Keyboards and small displays retain access to every registered item.
+- [ ] Verify native logs for invalid registrations and slow D-Bus services.
+
+## Review hardening (2026-11-05)
+
+- Do not show a registration placeholder before its real `GetAll` properties
+  arrive. Only verified, bounded SNI snapshots are rendered.
+- Refresh application data for legacy NewIcon/NewStatus and standard
+  `PropertiesChanged`; ignore superseded asynchronous replies.
+- Treat `NameOwnerChanged` with a new nonempty owner as a real ownership
+  transition; never keep calling an old item's service after it is replaced.
+- A changed external watcher invalidates pending roster reads, preventing a
+  stale reply from restoring items from the previous host.
+- Pin from a stable `Id` after property resolution. Fail closed if persistence
+  fails rather than displaying a preference that cannot be saved.
+- Respect `ItemIsMenu` for primary click; native context-menu behavior stays
+  consistent between pinned icons and the overflow.
+- Use the overflow badge for attention on clipped pinned icons too; never
+  fabricate an unread count.
+
+## Native app menu integration (2026-11-05)
+
+- The StatusNotifierHost now owns its own well-known D-Bus name instead of
+  trying to register only a transient session connection name.
+- Right-click from the Top Bar explicitly opens the existing pooled tray popup
+  only when the app advertises a canonical `Menu` object.
+- Native `AboutToShow` then `GetLayout` requests are async, time-bounded,
+  revision-guarded, and limited to 80 entries with a 256 KiB reply cap.
+- Only the current overlay generation, the current live app handle and a
+  unique enabled leaf from the saved menu may trigger a D-Bus `clicked` event.
+  The frontend never receives an arbitrary D-Bus destination or method.
+- Popup open is FORWARD; dismissal remains INVERTED under TENET. The embedded
+  menu is a distinct interaction state within the same popup, without a
+  second Wayland surface. A menu can be dismissed with Escape or its back
+  control; reduced-motion returns immediate true state.
+
 FILE	docs/UI_ARCHITECTURE.md
 # UI architecture: Rust host, Svelte 5 widgets
 
@@ -15534,13 +17668,16 @@ FILE	frontend/src/App.svelte
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import SystemHealth from './lib/components/SystemHealth.svelte';
+  import TrayBar from './lib/components/TrayBar.svelte';
+  import { EMPTY_TRAY, type TrayState } from './lib/tray-model';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
   import { russianCountLabel } from './lib/ui-locale';
   import { nextWarningId, visibleWarningIndex, type UiWarning } from './lib/warning-model';
-  import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics, onTrayUpdate, requestTraySnapshot, toggleTray, trayAction } from './lib/sdk/core';
 
   let now = $state(new Date());
+  let trayState = $state<TrayState>(EMPTY_TRAY);
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
   let workspaceState = $state<WorkspaceState | null>(null);
@@ -15688,6 +17825,9 @@ FILE	frontend/src/App.svelte
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
+    const stopTray = onTrayUpdate((value) => { if (!disposed) trayState = value; });
+    requestTraySnapshot();
+
     const stopMetrics = onSystemMetrics((value) => {
       if (!disposed) {
         systemMetrics = value;
@@ -15736,6 +17876,7 @@ FILE	frontend/src/App.svelte
       unsubscribe();
       stopConfig();
       stopMetrics();
+      stopTray();
     };
   });
 </script>
@@ -15792,6 +17933,9 @@ FILE	frontend/src/App.svelte
     aria-label="Система и местное время"
     inert={inspectingWarnings}
   >
+    <TrayBar items={trayState.items} onToggle={() => { toggleTray(); }}
+      onActivate={(id) => { trayAction(id, 'activate'); }}
+      onSecondary={(id) => { trayAction(id, 'secondary'); }} />
     <SystemHealth
       coreStatus={coreStatus}
       coreVersion={coreVersion}
@@ -19073,6 +21217,204 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   {/if}
 </main>
 
+FILE	frontend/src/lib/components/TrayBar.svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { trayBarView, type TrayItem } from '../tray-model';
+  let { items, onToggle, onActivate, onSecondary }: {
+    items: TrayItem[];
+    onToggle: () => void;
+    onActivate: (id: number) => void;
+    onSecondary: (id: number) => void;
+  } = $props();
+  let maxVisible = $state(4);
+  onMount(() => {
+    const resize = () => {
+      maxVisible = window.innerWidth < 700 ? 2 : window.innerWidth < 1100 ? 4 : 6;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    return () => window.removeEventListener('resize', resize);
+  });
+  const view = $derived(trayBarView(items, maxVisible));
+  const visiblePinned = $derived(view.visible);
+  const overflowCount = $derived(view.overflow.length);
+  const needsAttention = $derived(view.needsAttention);
+</script>
+
+<div class="flex shrink-0 items-center gap-0.5" role="group" aria-label="Системный трей">
+  {#each visiblePinned as item (item.id)}
+    <button type="button" title={item.title + ' · Правый клик: меню приложения'}
+      aria-label={'Открыть ' + item.title + (item.status === 'NeedsAttention' ? ', требует внимания' : '')}
+      onclick={() => onActivate(item.id)}
+      oncontextmenu={(event) => { event.preventDefault(); onSecondary(item.id); }}
+      class="relative flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-[2px] text-kira-muted hover:bg-kira-bg/20 hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">
+      {#if item.icon}
+        <img src={item.icon} alt="" class="size-5 object-contain" draggable="false" />
+      {:else}
+        <span aria-hidden="true" class="text-[11px] font-bold uppercase">{item.title.slice(0, 1)}</span>
+      {/if}
+      {#if item.status === 'NeedsAttention'}
+        <span class="absolute bottom-1 right-1 size-1 bg-kira-accent" aria-hidden="true"></span>
+      {/if}
+    </button>
+  {/each}
+  <button type="button" onclick={onToggle}
+    aria-label={'Открыть скрытые значки трея, ' + overflowCount}
+    title="Скрытые значки"
+    aria-haspopup="dialog"
+    class="relative flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-[2px] text-kira-muted hover:bg-kira-bg/20 hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m6 9 6 6 6-6"/>
+    </svg>
+    {#if needsAttention}
+      <span class="absolute bottom-1 right-1 size-1 bg-kira-accent" aria-hidden="true"></span>
+    {/if}
+  </button>
+</div>
+
+FILE	frontend/src/lib/components/TrayWidget.svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { tenetWidgetReveal, tenetReflow, tenetReflowScope } from '../motion';
+  import { EMPTY_TRAY, EMPTY_TRAY_MENU, splitTray, type TrayState, type TrayMenu } from '../tray-model';
+  import { onTrayUpdate, onTrayMenuUpdate, requestTraySnapshot, trayAction, clickTrayMenu, dismissTrayMenu } from '../sdk/core';
+
+  let { onClose, generation }: { onClose: () => void; generation: number } = $props();
+  let trayState: TrayState = $state(EMPTY_TRAY);
+  let currentMenu: TrayMenu = $state(EMPTY_TRAY_MENU);
+  let list = $state<HTMLDivElement | undefined>(undefined);
+  const groups = $derived(splitTray(trayState.items));
+
+  onMount(() => {
+    const stop = onTrayUpdate(next => {
+      if (list?.isConnected) tenetReflow(list, () => { trayState = next; });
+      else trayState = next;
+    });
+    const stopMenu = onTrayMenuUpdate(next => { currentMenu = next; });
+    requestTraySnapshot(generation);
+    return () => { stop(); stopMenu(); };
+  });
+
+  function keydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      if (currentMenu.handle !== 0) dismissTrayMenu(generation);
+      else onClose();
+    }
+  }
+
+  function togglePin(id: number) {
+    trayAction(id, 'pin', generation);
+  }
+  function activate(id: number) {
+    trayAction(id, 'activate', generation);
+  }
+  function secondary(event: MouseEvent, id: number) {
+    event.preventDefault();
+    trayAction(id, 'secondary', generation);
+  }
+  function clickMenuItem(id: number) {
+    if (currentMenu.handle !== 0) clickTrayMenu(generation, currentMenu.handle, id);
+  }
+</script>
+
+<svelte:window onkeydown={keydown} />
+<main data-kira-ui-root aria-label="Kira Tray" role="dialog" aria-modal="false"
+  use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
+  class="relative flex min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
+  <header data-kira-enter class="flex items-center justify-between gap-3 px-4 pb-3 pt-4">
+    <h1 data-kira-contact class="border-l-2 border-kira-accent pl-3 text-base font-extrabold">
+      {currentMenu.handle !== 0 ? 'Меню приложения' : 'Скрытые значки'}
+    </h1>
+    <button type="button" title="Закрыть трей" aria-label="Закрыть трей" onclick={onClose}
+      class="flex size-7 items-center justify-center text-lg text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
+  </header>
+  {#if currentMenu.handle !== 0}
+    <section data-kira-enter class="kira-tray-scroll max-h-[420px] min-h-0 overflow-y-auto bg-kira-surface px-3 py-3"
+      aria-label={'Меню ' + currentMenu.title}>
+      <button type="button" onclick={() => dismissTrayMenu(generation)}
+        class="mb-2 flex w-full items-center gap-2 border-b border-kira-muted/20 px-2 py-2 text-left text-xs text-kira-muted hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+        aria-label="Назад к значкам трея">
+        <span aria-hidden="true">‹</span>
+        <span>Назад · {currentMenu.title}</span>
+      </button>
+      <div role="menu" aria-label={'Действия ' + currentMenu.title}>
+        {#each currentMenu.items as entry, i (i)}
+          {#if entry.separator}
+            <div role="separator" class="my-2 border-t border-kira-muted/20"></div>
+          {:else if entry.has_children}
+            <p class="py-2 text-[11px] font-extrabold uppercase tracking-wide text-kira-muted"
+              style={'padding-left: ' + (8 + entry.depth * 12) + 'px'}>
+              {entry.label}
+            </p>
+          {:else}
+            <button type="button" role="menuitem"
+              disabled={!entry.enabled}
+              title={entry.label}
+              aria-label={entry.label + (entry.checked ? ', выбрано' : '')}
+              onclick={() => clickMenuItem(entry.id)}
+              style={'padding-left: ' + (8 + entry.depth * 12) + 'px'}
+              class="flex min-h-9 w-full items-center gap-2 rounded-[2px] py-1.5 pr-2 text-left text-[12px] hover:bg-kira-bg/20 focus-visible:outline-2 focus-visible:outline-kira-accent disabled:cursor-not-allowed disabled:opacity-40">
+              <span class="w-4 shrink-0 text-center text-kira-accent" aria-hidden="true">
+                {entry.checked ? (entry.radio ? '●' : '✓') : ''}
+              </span>
+              <span class="min-w-0 flex-1 truncate">{entry.label}</span>
+            </button>
+          {/if}
+        {/each}
+      </div>
+    </section>
+  {:else}
+  <div data-kira-enter bind:this={list} use:tenetReflowScope
+    class="kira-tray-scroll max-h-[360px] min-h-0 overflow-y-auto bg-kira-surface px-3 py-3"
+    role="group" aria-label="Значки приложений">
+    {#each [...groups.hidden, ...groups.pinned] as item (item.id)}
+      <div data-kira-reflow class="mb-1 flex min-h-11 items-center gap-2">
+        <button type="button" onclick={() => activate(item.id)}
+          oncontextmenu={(event) => secondary(event, item.id)}
+          title={item.title}
+          class="flex min-w-0 flex-1 items-center gap-3 rounded-[2px] p-1.5 text-left hover:bg-kira-bg/25 focus-visible:outline-2 focus-visible:outline-kira-accent">
+          <span class="flex size-7 shrink-0 items-center justify-center bg-kira-bg text-kira-muted" aria-hidden="true">
+            {#if item.icon}
+              <img src={item.icon} alt="" class="size-6 object-contain" draggable="false" />
+            {:else}
+              <span class="text-xs font-semibold uppercase">{item.title.slice(0, 1)}</span>
+            {/if}
+          </span>
+          <span class="min-w-0 flex-1 truncate text-[12px] font-medium">{item.title}</span>
+          {#if item.status === 'NeedsAttention'}
+            <span class="size-1.5 shrink-0 bg-kira-accent" aria-label="Требует внимания"></span>
+          {/if}
+        </button>
+        <button type="button" onclick={() => togglePin(item.id)}
+          title={item.pinned ? 'Убрать в трей' : 'Закрепить в Top Bar'}
+          aria-label={(item.pinned ? 'Открепить ' : 'Закрепить ') + item.title}
+          aria-pressed={item.pinned}
+          class={'flex size-8 shrink-0 items-center justify-center rounded-[2px] focus-visible:outline-2 focus-visible:outline-kira-accent ' +
+            (item.pinned ? 'bg-kira-accent text-kira-on-accent' : 'text-kira-muted hover:bg-kira-bg/20 hover:text-kira-text')}>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+            stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6ZM12 14v7"/>
+          </svg>
+        </button>
+      </div>
+    {:else}
+      <p class="px-2 py-6 text-center text-[12px] text-kira-muted" role="status">
+        {trayState.available ? 'Приложения не добавили значки в трей' : 'Служба системного трея недоступна'}
+      </p>
+    {/each}
+    {#if groups.pinned.length > 0}
+      <p class="mt-3 border-t border-kira-muted/15 px-2 pt-3 text-[11px] text-kira-muted">
+        Закреплённые значки доступны в панели или через кнопку переполнения.
+      </p>
+    {/if}
+  </div>
+  {/if}
+</main>
+
 FILE	frontend/src/lib/components/WindowControls.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
@@ -21367,20 +23709,44 @@ type RpcReply = {
   error?: { code: number; message: string };
 };
 
+import { isTrayState, isTrayMenu, type TrayState, type TrayMenu } from '../tray-model';
+
+/** No client-side discovery: SNI items arrive only from the trusted host. */
+export function onTrayUpdate(callback: (state: TrayState) => void): () => void {
+  return onNativeEvent('kira:tray', isTrayState, callback);
+}
+
+/** App menu layouts remain host-provided, validated and read-only. */
+export function onTrayMenuUpdate(callback: (menu: TrayMenu) => void): () => void {
+  return onNativeEvent('kira:tray-menu', isTrayMenu, callback);
+}
+
+export function clickTrayMenu(generation: number, handle: number, id: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      !Number.isSafeInteger(handle) || handle <= 0 || handle > 0xffffffff ||
+      !Number.isSafeInteger(id) || id <= 0 || id > 0x7fffffff) return false;
+  return sendCalendarUi('tray-menu-click:' + generation + ':' + handle + ':' + id);
+}
+
+export function dismissTrayMenu(generation: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return false;
+  return sendCalendarUi('tray-menu-dismiss:' + generation);
+}
+
 type Bridge = {
   postMessage(message: string): void;
 };
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge; kiraNotificationUi?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge; kiraNotificationUi?: Bridge; kiraTray?: Bridge } };
   }
 }
 
 /** Only fixed commands are exposed to trusted Svelte components. Keep host
  * bridge failures non-throwing so an offline overlay does not crash the bar.
  */
-function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem' | 'kiraSettings', command: 'open' | 'toggle'): boolean {
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem' | 'kiraSettings' | 'kiraTray', command: 'open' | 'toggle' | 'sync'): boolean {
   const channel = typeof window === 'undefined'
     ? undefined
     : window.webkit?.messageHandlers?.[channelName];
@@ -21401,6 +23767,32 @@ export function openLauncher(): boolean {
 /** Toggle the native calendar overlay through its fixed-purpose channel. */
 export function toggleCalendar(): boolean {
   return postNativeCommand('kiraCalendar', 'toggle');
+}
+
+/** Toggle the dedicated native tray popup, outside the 42px bar surface. */
+export function toggleTray(): boolean {
+  return postNativeCommand('kiraTray', 'toggle');
+}
+
+export function requestTraySnapshot(generation?: number): boolean {
+  if (generation !== undefined) {
+    return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff &&
+      sendCalendarUi('tray-sync:' + generation);
+  }
+  return postNativeCommand('kiraTray', 'sync');
+}
+
+/** Only validated numeric handles and named SNI actions cross the bridge. */
+export function trayAction(id: number, action: 'pin' | 'activate' | 'secondary', generation?: number): boolean {
+  if (!Number.isSafeInteger(id) || id <= 0 || id > 0xffffffff) return false;
+  if (generation !== undefined) {
+    return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff &&
+      sendCalendarUi('tray:' + generation + ':' + action + ':' + id);
+  }
+  if (action !== 'activate' && action !== 'pin' && action !== 'secondary') return false;
+  const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kiraTray;
+  if (!channel) return false;
+  try { channel.postMessage(action + ':' + id); return true; } catch { return false; }
 }
 
 /** Only the calendar overlay has access to this dedicated host channel.
@@ -23093,6 +25485,190 @@ export function formatClock(date: Date, timeZone?: string, showSeconds = false):
   }).format(date);
 }
 
+FILE	frontend/src/lib/tray-model.test.ts
+import { describe, expect, it } from 'vitest';
+import { EMPTY_TRAY, isTrayState, isTrayMenu, splitTray, trayBarView, type TrayItem } from './tray-model';
+
+const item = (id: number, pinned: boolean): TrayItem => ({
+  id, key: 'app-' + id, title: 'Application ' + id, icon: null,
+  status: 'Active', pinned,
+});
+
+describe('native tray state', () => {
+  it('is empty rather than inventing icons while offline', () => {
+    expect(isTrayState(EMPTY_TRAY)).toBe(true);
+    expect(splitTray(EMPTY_TRAY.items)).toEqual({ pinned: [], hidden: [] });
+  });
+
+  it('partitions without mutating SNI registration order', () => {
+    const original = [item(1, false), item(2, true), item(3, false), item(4, true)];
+    const groups = splitTray(original);
+    expect(groups.pinned.map(i => i.id)).toEqual([2, 4]);
+    expect(groups.hidden.map(i => i.id)).toEqual([1, 3]);
+    expect(original.map(i => i.id)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('keeps clipped pinned items reachable and attention truthful', () => {
+    const items = [item(1, true), item(2, true), item(3, false)];
+    items[1].status = 'NeedsAttention';
+    const view = trayBarView(items, 1);
+    expect(view.visible.map(i => i.id)).toEqual([1]);
+    expect(view.overflow.map(i => i.id)).toEqual([3, 2]);
+    expect(view.needsAttention).toBe(true);
+    expect(trayBarView(items, 2).needsAttention).toBe(false);
+  });
+
+  it('accepts bounded Unicode metadata without confusing UTF-16 and scalar length', () => {
+    expect(isTrayState({
+      available: true,
+      items: [{ ...item(7, false), title: '😀'.repeat(120), key: '应用'.repeat(90) }],
+    })).toBe(true);
+    expect(isTrayState({
+      available: true,
+      items: [{ ...item(7, false), title: '😀'.repeat(121) }],
+    })).toBe(false);
+    expect(isTrayState({
+      available: true,
+      items: [{ ...item(8, false), key: 'org.example.' + 'x'.repeat(190) }],
+    })).toBe(true);
+  });
+
+  it('accepts only bounded trusted canonical menu actions', () => {
+    const entry = {
+      id: 1, label: 'Open', depth: 0, enabled: true,
+      separator: false, checked: false, radio: false, has_children: false,
+    };
+    expect(isTrayMenu({ handle: 13, title: 'Player', items: [entry] })).toBe(true);
+    expect(isTrayMenu({ handle: 0, title: '', items: [] })).toBe(true);
+    expect(isTrayMenu({ handle: 0, title: '', items: [entry] })).toBe(false);
+    expect(isTrayMenu({ handle: 13, title: '', items: [{ ...entry, id: -1 }] })).toBe(false);
+    expect(isTrayMenu({ handle: 13, title: '', items: [{ ...entry, depth: 10 }] })).toBe(false);
+    expect(isTrayMenu({ handle: 13, title: '', items: [{ ...entry, label: 'x'.repeat(121) }] })).toBe(false);
+    expect(isTrayMenu({
+      handle: 13, title: '', items: Array.from({ length: 81 }, () => entry),
+    })).toBe(false);
+  });
+
+  it('rejects forged URLs, duplicate IDs, oversized lists and invalid statuses', () => {
+    expect(isTrayState({ available: true, items: [item(1, false)] })).toBe(true);
+    expect(isTrayState({ available: true, items: [item(1, false), item(1, true)] })).toBe(false);
+    expect(isTrayState({ available: true, items: [{ ...item(1, false), icon: 'file:///etc/passwd' }] })).toBe(false);
+    expect(isTrayState({ available: true, items: [{ ...item(1, false), status: 'Fake' }] })).toBe(false);
+    expect(isTrayState({
+      available: true,
+      items: [{ ...item(1, false), status: { toString() { throw Error('unsafe'); } } }],
+    })).toBe(false);
+    expect(isTrayState({ available: true, items: Array.from({ length: 65 }, (_, i) => item(i + 1, false)) })).toBe(false);
+  });
+});
+
+FILE	frontend/src/lib/tray-model.ts
+/** Trusted StatusNotifierItem snapshots. IDs are opaque, session-local native handles. */
+export interface TrayItem {
+  id: number;
+  key: string;
+  title: string;
+  icon: string | null;
+  status: 'Active' | 'Passive' | 'NeedsAttention';
+  pinned: boolean;
+}
+
+export interface TrayState {
+  available: boolean;
+  items: TrayItem[];
+}
+
+export const EMPTY_TRAY: TrayState = { available: false, items: [] };
+
+function record(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/** WebKit receives no arbitrary external URLs or client-supplied D-Bus names. */
+export function isTrayState(value: unknown): value is TrayState {
+  if (!record(value) || typeof value.available !== 'boolean' ||
+      !Array.isArray(value.items) || value.items.length > 64) return false;
+  const ids = new Set<number>();
+  return value.items.every((item: unknown) => {
+    if (!record(item) ||
+        !Number.isSafeInteger(item.id) || (item.id as number) <= 0 ||
+        ids.has(item.id as number) ||
+        typeof item.key !== 'string' || Array.from(item.key).length > 240 ||
+        typeof item.title !== 'string' || Array.from(item.title).length > 120 ||
+        typeof item.pinned !== 'boolean' ||
+        typeof item.status !== 'string' ||
+        !['Active', 'Passive', 'NeedsAttention'].includes(item.status) ||
+        !(item.icon === null || (typeof item.icon === 'string' &&
+          item.icon.length <= 190000 &&
+          /^data:image\/(?:png|svg\+xml|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(item.icon)))) return false;
+    ids.add(item.id as number);
+    return true;
+  });
+}
+
+export function splitTray(items: TrayItem[]): { pinned: TrayItem[]; hidden: TrayItem[] } {
+  return {
+    pinned: items.filter(item => item.pinned),
+    hidden: items.filter(item => !item.pinned),
+  };
+}
+
+/** The bar may clip pinned icons, but those icons still belong to overflow. */
+export function trayBarView(items: TrayItem[], limit: number): {
+  visible: TrayItem[];
+  overflow: TrayItem[];
+  needsAttention: boolean;
+} {
+  const { pinned, hidden } = splitTray(items);
+  const visible = pinned.slice(0, Math.max(0, Math.floor(limit)));
+  const overflow = [...hidden, ...pinned.slice(visible.length)];
+  return {
+    visible,
+    overflow,
+    needsAttention: overflow.some(item => item.status === 'NeedsAttention'),
+  };
+}
+
+/** Subset of app-owned D-Bus menus rendered by the trusted tray host. */
+export interface TrayMenuEntry {
+  id: number;
+  label: string;
+  depth: number;
+  enabled: boolean;
+  separator: boolean;
+  checked: boolean;
+  radio: boolean;
+  has_children: boolean;
+}
+
+export interface TrayMenu {
+  handle: number;
+  title: string;
+  items: TrayMenuEntry[];
+}
+
+export const EMPTY_TRAY_MENU: TrayMenu = { handle: 0, title: '', items: [] };
+
+export function isTrayMenu(value: unknown): value is TrayMenu {
+  if (!record(value) || !Number.isSafeInteger(value.handle) ||
+      (value.handle as number) < 0 || (value.handle as number) > 0xffffffff ||
+      typeof value.title !== 'string' || Array.from(value.title).length > 120 ||
+      !Array.isArray(value.items) || value.items.length > 80 ||
+      ((value.handle as number) === 0 && value.items.length !== 0)) return false;
+  return value.items.every((entry: unknown) =>
+    record(entry) && Number.isSafeInteger(entry.id) &&
+    (entry.id as number) > 0 && (entry.id as number) <= 0x7fffffff &&
+    Number.isSafeInteger(entry.depth) &&
+    (entry.depth as number) >= 0 && (entry.depth as number) <= 2 &&
+    typeof entry.label === 'string' && Array.from(entry.label).length <= 120 &&
+    typeof entry.enabled === 'boolean' &&
+    typeof entry.separator === 'boolean' &&
+    typeof entry.checked === 'boolean' &&
+    typeof entry.radio === 'boolean' &&
+    typeof entry.has_children === 'boolean',
+  );
+}
+
 FILE	frontend/src/lib/ui-locale.test.ts
 import { describe, expect, it } from 'vitest';
 import { UI_LOCALE, healthLabel, monitorLabel, matchingAppsLabel, russianCountLabel } from './ui-locale';
@@ -23332,6 +25908,7 @@ import SystemWidget from './lib/components/SystemWidget.svelte';
 import LauncherWidget from './lib/components/LauncherWidget.svelte';
 import SettingsWidget from './lib/components/SettingsWidget.svelte';
 import NotificationHost from './lib/components/NotificationHost.svelte';
+import TrayWidget from './lib/components/TrayWidget.svelte';
 import { closeCalendarOverlay, copyCalendarDate, closeSystemOverlay, copySystemReport, setSystemMonitorTab, closeLauncherOverlay, detachOverlay, notifyCalendarHostReady, notifyCalendarMounted, notifyOverlayMotion } from './lib/sdk/core';
 import { createLazyWidget } from './lib/lazy-widget';
 import { observeOverlaySize } from './lib/overlay-size';
@@ -23368,7 +25945,7 @@ whenDocumentReady(document, () => {
       report('Calendar bootstrap failure: #app missing');
       return;
     }
-    let requestedKind: 'calendar' | 'system' | 'launcher' | 'settings' = 'calendar';
+    let requestedKind: 'calendar' | 'system' | 'launcher' | 'settings' | 'tray' = 'calendar';
     let visibleGeneration: number | null = null;
     let lastGeneration = 0;
     const host = createLazyWidget(
@@ -23404,6 +25981,14 @@ whenDocumentReady(document, () => {
                     onTab: (tab: 'overview' | 'processes') => setSystemMonitorTab(lease, tab),
                   },
                 })
+                : kind === 'tray'
+                ? mount(TrayWidget, {
+                    target,
+                    props: {
+                      onClose: () => closeCalendarOverlay(lease),
+                      generation: lease,
+                    },
+                  })
                 : kind === 'settings'
                   ? mount(SettingsWidget, { target, props: {
                       onClose: () => closeCalendarOverlay(lease),
@@ -23416,7 +26001,7 @@ whenDocumentReady(document, () => {
                       generation: lease,
                     } });
             flushSync();
-            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : kind === 'settings' ? 'Kira Settings' : 'Kira Launcher';
+            const label = kind === 'calendar' ? 'Kira Calendar' : kind === 'system' ? 'Kira System Monitor' : kind === 'settings' ? 'Kira Settings' : kind === 'tray' ? 'Kira Tray' : 'Kira Launcher';
             if (!target.querySelector('main[data-kira-ui-root][aria-label="' + label + '"]')) {
               throw new Error('Svelte ' + kind + ' root missing after mount');
             }
@@ -23450,7 +26035,7 @@ whenDocumentReady(document, () => {
     });
     window.addEventListener('kira:overlay:show', (event: Event) => {
       const detail = (event as CustomEvent<{ kind: string; generation: number; maxHeight: number }>).detail;
-      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher' && detail?.kind !== 'settings') ||
+      if ((detail?.kind !== 'calendar' && detail?.kind !== 'system' && detail?.kind !== 'launcher' && detail?.kind !== 'settings' && detail?.kind !== 'tray') ||
           !Number.isSafeInteger(detail.generation) || detail.generation <= 0 ||
           detail.generation > 0xffffffff || detail.generation <= lastGeneration ||
           !Number.isSafeInteger(detail.maxHeight) || detail.maxHeight < 1 ||
