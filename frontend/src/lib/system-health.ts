@@ -32,30 +32,29 @@ export function systemHealth(
     ? 'Ожидание первого снимка'
     : niriConnected ? 'Подключён' : 'Отключён';
 
-  // A stale badge is not enough. Never place expired CPU, memory, disk or
-  // battery readings in the tooltip, even if Core/Niri itself is offline.
+  // Expired measurements must not appear as live resource readings, but a
+  // transient sampler interruption does not warrant a prominent warning.
   const live = freshness === 'stale' ? null : metrics;
   const mem = live && percentUsed(live.memory_total_kib, live.memory_available_kib);
   const disk = live && percentUsed(live.root_total_kib, live.root_available_kib);
-  const staleReading = 'Данные устарели';
   const details = [
     'Kira Core: ' + coreDetail,
     'Niri IPC: ' + niriDetail,
-    'CPU: ' + (freshness === 'stale' ? staleReading :
-      live?.cpu_percent === null || !live ? 'Измеряется' : live.cpu_percent + '%'),
-    'Память: ' + (freshness === 'stale' ? staleReading :
+    'CPU: ' + (!live ? 'Нет данных' :
+      live.cpu_percent === null ? 'Измеряется' : live.cpu_percent + '%'),
+    'Память: ' + (!live ? 'Нет данных' :
       mem === null ? 'Недоступно' : mem + '% занято'),
-    'Диск: ' + (freshness === 'stale' ? staleReading :
+    'Диск: ' + (!live ? 'Нет данных' :
       disk === null ? 'Недоступно' : disk + '% занято'),
-    'Батарея: ' + (freshness === 'stale' ? staleReading :
-      live?.battery_percent == null ? 'Не обнаружена' : live.battery_percent + '%'),
+    'Батарея: ' + (!live ? 'Нет данных' :
+      live.battery_percent == null ? 'Не обнаружена' : live.battery_percent + '%'),
   ].join('\n');
   if (core === 'unavailable') return { label: 'CORE OFF', phase: 'error', details };
   if (core === 'connecting') return { label: 'STARTING', phase: 'pending', details };
   if (niriConnected === false) return { label: 'NIRI OFF', phase: 'error', details };
   if (niriConnected === null) return { label: 'WAITING', phase: 'pending', details };
   if (freshness === 'stale') {
-    return { label: 'STALE', phase: 'warning', details: details + '\nТелеметрия: последняя проба устарела' };
+    return { label: 'CHECKING', phase: 'pending', details };
   }
   if (!metrics || mem === null || metrics.cpu_percent === null) {
     return { label: 'CHECKING', phase: 'pending', details };

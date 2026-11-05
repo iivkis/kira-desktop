@@ -28,13 +28,17 @@
     !isSampleFresh(metricsLastReceivedAt, now.getTime()) ? 'stale' : 'fresh');
   const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected, metrics, freshness));
   const label = $derived(healthLabel(health.label));
+  // A delayed telemetry tick is not a user-facing incident. Keep the
+  // small neutral indicator, but do not flash a new status message.
+  const quietRefresh = $derived(freshness === 'stale' &&
+    coreStatus === 'connected' && niriConnected === true);
 </script>
 
 <button
   type="button"
   class="inline-flex h-8 shrink-0 cursor-pointer items-center justify-center gap-[7px] rounded-[2px] border-0 bg-transparent px-2 text-kira-muted transition-colors duration-150 hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
   aria-haspopup="dialog"
-  aria-label={'Открыть монитор системы: ' + label}
+  aria-label={'Открыть монитор системы' + (quietRefresh ? '' : ': ' + label)}
   title={health.details + '\nНажмите для подробных сведений'}
   data-phase={health.phase}
   onclick={onOpen}
@@ -48,10 +52,12 @@
           : 'rounded-full border-kira-muted bg-transparent'].join(' ')}
     aria-hidden="true"
   ></span>
-  <span role="status" aria-live="polite" aria-atomic="true"
-    class={['text-[10px] leading-none font-bold tracking-[0.04em] max-[540px]:sr-only',
-      health.phase === 'error' || health.phase === 'warning'
-        ? 'text-kira-accent' : 'text-kira-text',
-      health.phase === 'ready' ? 'sr-only' : ''].join(' ')}
-  >{label}</span>
+  {#if !quietRefresh}
+    <span role="status" aria-live="polite" aria-atomic="true"
+      class={['text-[10px] leading-none font-bold tracking-[0.04em] max-[540px]:sr-only',
+        health.phase === 'error' || health.phase === 'warning'
+          ? 'text-kira-accent' : 'text-kira-text',
+        health.phase === 'ready' ? 'sr-only' : ''].join(' ')}
+    >{label}</span>
+  {/if}
 </button>

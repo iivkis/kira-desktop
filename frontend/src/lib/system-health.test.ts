@@ -33,20 +33,23 @@ describe('read-only system health status', () => {
     expect(systemHealth('connected', '', true, { ...normal, root_total_kib: null }).label).toBe('PARTIAL');
   });
 
-  it('never calls an expired sample READY, while preserving service failure priority', () => {
-    const stale = systemHealth('connected', '', true, normal, 'stale');
-    expect(stale).toMatchObject({ label: 'STALE', phase: 'warning' });
-    expect(stale.details).toContain('последняя проба устарела');
-    // The tooltip must not contradict the stale badge with old percentages.
+  it('quietly expires metrics without stale alarms or false live values', () => {
+    const expired = systemHealth('connected', '', true, normal, 'stale');
+    expect(expired).toMatchObject({ label: 'CHECKING', phase: 'pending' });
+    // No old percentages, and no repetitive expiration warnings in tooltips.
     for (const label of ['CPU:', 'Память:', 'Диск:', 'Батарея:']) {
-      expect(stale.details).toContain(label + ' Данные устарели');
+      expect(expired.details).toContain(label + ' Нет данных');
     }
-    expect(stale.details).not.toContain('24%');
-    expect(stale.details).not.toContain('42%');
-    expect(stale.details).not.toContain('50%');
+    expect(expired.details).not.toMatch(/устарел/i);
+    expect(expired.details).not.toContain('24%');
+    expect(expired.details).not.toContain('42%');
+    expect(expired.details).not.toContain('50%');
     const offline = systemHealth('unavailable', '', true, normal, 'stale');
     expect(offline.label).toBe('CORE OFF');
-    expect(offline.details).toContain('CPU: Данные устарели');
+    expect(offline.details).toContain('CPU: Нет данных');
+    // Real current pressure still warrants a warning.
+    expect(systemHealth('connected', '', true, { ...normal, root_available_kib: 50 }))
+      .toMatchObject({ label: 'LOW DISK', phase: 'warning' });
   });
 
   it('never renders an unknown metric as zero', () => {

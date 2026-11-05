@@ -102,7 +102,8 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(core).toContain('data-phase={health.phase}');
     expect(core).toContain('aria-haspopup="dialog"');
     expect(core).toContain('onclick={onOpen}');
-    expect(core).toContain("aria-label={'Открыть монитор системы: ' + label}");
+    expect(core).toContain("aria-label={'Открыть монитор системы' + (quietRefresh ? '' : ': ' + label)}");
+    expect(core).toContain('{#if !quietRefresh}');
     expect(core).toContain('border-kira-accent bg-kira-accent');
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
@@ -141,6 +142,14 @@ describe('Kira editorial polish', () => {
     expect(markup).toContain('role="status" aria-live="polite"');
     expect(markup).toContain('focus-visible:outline-2');
     expect(markup).not.toContain("warnings[0]}{warnings.length > 1");
+  });
+
+  it('keeps telemetry expiry quiet without presenting expired metrics as current', () => {
+    expect(monitor).not.toContain('ДАННЫЕ УСТАРЕЛИ');
+    expect(monitor).not.toContain('ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ');
+    expect(charts).not.toContain('ИМПУЛЬС УСТАРЕЛ');
+    expect(monitor).toContain('const liveMetrics = $derived(sampleFresh ? metrics : null)');
+    expect(charts).toContain('isSampleFresh(lastPulseAt, performance.now(), 2_500)');
   });
 
   it('reserves orange for meaningful monitor states instead of static sections', () => {
