@@ -139,7 +139,9 @@ pub fn start(bar: &webkit6::WebView) {
         move |_, _| {
             if let Some(service) = lost.upgrade() {
                 service.owns_watcher.set(false);
-                service.external_revision.set(service.external_revision.get().wrapping_add(1));
+                service
+                    .external_revision
+                    .set(service.external_revision.get().wrapping_add(1));
                 service.available.set(false);
                 service.items.borrow_mut().clear();
                 service.publish();
@@ -298,7 +300,9 @@ impl Service {
                 let old_owner = params.child_value(1).get::<String>().unwrap_or_default();
                 let new_owner = params.child_value(2).get::<String>().unwrap_or_default();
                 if name == WATCHER && !service.owns_watcher.get() {
-                    service.external_revision.set(service.external_revision.get().wrapping_add(1));
+                    service
+                        .external_revision
+                        .set(service.external_revision.get().wrapping_add(1));
                     service.available.set(false);
                     service.items.borrow_mut().clear();
                     service.publish();
@@ -362,9 +366,7 @@ impl Service {
             .items
             .borrow()
             .iter()
-            .filter(|item| {
-                item.path == path && (item.bus == sender || !item.bus.starts_with(':'))
-            })
+            .filter(|item| item.path == path && (item.bus == sender || !item.bus.starts_with(':')))
             .map(|item| (item.handle, item.bus.clone(), item.path.clone()))
             .collect();
         for (id, bus, object_path) in items {
@@ -412,9 +414,7 @@ impl Service {
                 let Some(service) = weak.upgrade() else {
                     return;
                 };
-                if service.owns_watcher.get()
-                    || service.external_revision.get() != revision
-                {
+                if service.owns_watcher.get() || service.external_revision.get() != revision {
                     return;
                 }
                 let Ok(reply) = reply else {
@@ -630,9 +630,12 @@ impl Service {
                 let Ok(reply) = reply else {
                     return;
                 };
-                if !service.items.borrow().iter().any(|item| {
-                    item.handle == id && item.refresh_version == version
-                }) {
+                if !service
+                    .items
+                    .borrow()
+                    .iter()
+                    .any(|item| item.handle == id && item.refresh_version == version)
+                {
                     return;
                 }
                 if reply.size() > 512 * 1024 {
@@ -659,12 +662,17 @@ impl Service {
                     .and_then(|v| v.get::<bool>())
                     .unwrap_or(false);
                 let pixmap = if status.as_deref() == Some("NeedsAttention") {
-                    props.lookup_value("AttentionIconPixmap", None)
+                    props
+                        .lookup_value("AttentionIconPixmap", None)
                         .and_then(|value| pixmap_icon(&value))
-                        .or_else(|| props.lookup_value("IconPixmap", None)
-                            .and_then(|value| pixmap_icon(&value)))
+                        .or_else(|| {
+                            props
+                                .lookup_value("IconPixmap", None)
+                                .and_then(|value| pixmap_icon(&value))
+                        })
                 } else {
-                    props.lookup_value("IconPixmap", None)
+                    props
+                        .lookup_value("IconPixmap", None)
                         .and_then(|value| pixmap_icon(&value))
                 };
                 // GIcon theme names are mapped by GTK, never by arbitrary
@@ -674,12 +682,15 @@ impl Service {
                 } else {
                     icon_name
                 };
-                let icon = preferred_icon.as_deref().and_then(resolve_theme_icon)
+                let icon = preferred_icon
+                    .as_deref()
+                    .and_then(resolve_theme_icon)
                     .or(pixmap);
                 let mut items = service.items.borrow_mut();
-                let Some(item) = items.iter_mut().find(|item| {
-                    item.handle == id && item.refresh_version == version
-                }) else {
+                let Some(item) = items
+                    .iter_mut()
+                    .find(|item| item.handle == id && item.refresh_version == version)
+                else {
                     return;
                 };
                 if let Some(value) = id_property.filter(|v| !v.is_empty()) {
@@ -941,7 +952,10 @@ fn pixmap_icon(value: &glib::Variant) -> Option<String> {
     if png.len() > 128 * 1024 {
         return None;
     }
-    Some(format!("data:image/png;base64,{}", glib::base64_encode(&png)))
+    Some(format!(
+        "data:image/png;base64,{}",
+        glib::base64_encode(&png)
+    ))
 }
 
 fn resolve_theme_icon(name: &str) -> Option<String> {
@@ -1091,7 +1105,10 @@ mod tests {
             pin_identity(":1.34/StatusNotifierItem", "org.example.Client"),
             pin_identity(":1.89/StatusNotifierItem", "org.example.Client")
         );
-        assert_eq!(pin_identity(":1.34/StatusNotifierItem", ""), ":1.34/StatusNotifierItem");
+        assert_eq!(
+            pin_identity(":1.34/StatusNotifierItem", ""),
+            ":1.34/StatusNotifierItem"
+        );
         assert_eq!(pin_identity("org.example.Client", "app\n"), "id:app");
     }
 
