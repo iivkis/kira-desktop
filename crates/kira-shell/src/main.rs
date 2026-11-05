@@ -15,6 +15,7 @@ mod system_info;
 mod system_metrics;
 mod system_panel;
 mod tray;
+mod tray_menu;
 mod webview_pool;
 use std::cell::{Cell, RefCell};
 use std::env;
@@ -330,8 +331,20 @@ fn main() {
         manager.connect_script_message_received(Some("kiraTray"), move |_, value| {
             let command = value.to_string();
             if command == "toggle" {
+                tray::clear_menu();
                 calendar::toggle_tray(&tray_app, &tray_html, &tray_context);
             } else {
+                // The app-owned canonical menu is rendered in the existing
+                // Kira tray overlay; do not attempt to open another GTK host.
+                if let Some((action, raw)) = command.split_once(':') {
+                    if matches!(action, "activate" | "secondary") {
+                        if let Ok(id) = raw.parse::<u32>() {
+                            if id != 0 && tray::has_menu_popup(id, action) {
+                                calendar::show_tray(&tray_app, &tray_html, &tray_context);
+                            }
+                        }
+                    }
+                }
                 tray::handle(&command);
             }
         });
