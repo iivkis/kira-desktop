@@ -31,11 +31,15 @@ pub fn parse_layout(reply: &glib::Variant) -> Option<Vec<MenuEntry>> {
 }
 
 fn read_node(node: &glib::Variant, depth: u8, entries: &mut Vec<MenuEntry>) {
-    if depth > MAX_MENU_LEVEL || entries.len() >= MAX_MENU_ENTRIES
-        || node.type_().as_str() != "(ia{sv}av)" {
+    if depth > MAX_MENU_LEVEL
+        || entries.len() >= MAX_MENU_ENTRIES
+        || node.type_().as_str() != "(ia{sv}av)"
+    {
         return;
     }
-    let Some(id) = node.child_value(0).get::<i32>() else { return };
+    let Some(id) = node.child_value(0).get::<i32>() else {
+        return;
+    };
     let properties = glib::VariantDict::new(Some(&node.child_value(1)));
     if properties.lookup::<bool>("visible").ok().flatten() == Some(false) {
         return;
@@ -43,47 +47,75 @@ fn read_node(node: &glib::Variant, depth: u8, entries: &mut Vec<MenuEntry>) {
     let children = node.child_value(2);
     let has_children = children.n_children() > 0;
     if depth > 0 {
-        if id <= 0 { return; }
+        if id <= 0 {
+            return;
+        }
         let type_name = properties.lookup::<String>("type").ok().flatten();
         let separator = type_name.as_deref() == Some("separator");
-        let label = properties.lookup::<String>("label").ok().flatten().unwrap_or_default();
+        let label = properties
+            .lookup::<String>("label")
+            .ok()
+            .flatten()
+            .unwrap_or_default();
         let toggle_type = properties.lookup::<String>("toggle-type").ok().flatten();
         let checked = properties.lookup::<i32>("toggle-state").ok().flatten() == Some(1);
-        let enabled = properties.lookup::<bool>("enabled").ok().flatten().unwrap_or(true);
+        let enabled = properties
+            .lookup::<bool>("enabled")
+            .ok()
+            .flatten()
+            .unwrap_or(true);
         // Child nodes render indented under their parent in the first-phase menu.
         // Only leaf nodes are actionable, even if a malicious client reuses IDs.
         entries.push(MenuEntry {
-            id, label: clean_label(&label), depth: depth - 1,
-            enabled, separator, checked,
+            id,
+            label: clean_label(&label),
+            depth: depth - 1,
+            enabled,
+            separator,
+            checked,
             radio: toggle_type.as_deref() == Some("radio"),
             has_children,
         });
     }
-    if depth == MAX_MENU_LEVEL { return; }
+    if depth == MAX_MENU_LEVEL {
+        return;
+    }
     for child in 0..children.n_children().min(MAX_MENU_ENTRIES) {
-        if entries.len() >= MAX_MENU_ENTRIES { break; }
-        let Some(next) = children.child_value(child).as_variant() else { continue };
+        if entries.len() >= MAX_MENU_ENTRIES {
+            break;
+        }
+        let Some(next) = children.child_value(child).as_variant() else {
+            continue;
+        };
         read_node(&next, depth + 1, entries);
     }
 }
 
 pub fn clickable(entries: &[MenuEntry], id: i32) -> bool {
-    id > 0 && entries.iter().filter(|entry| entry.id == id).count() == 1
-        && entries.iter().any(|entry| {
-            entry.id == id && entry.enabled && !entry.separator && !entry.has_children
-        })
+    id > 0
+        && entries.iter().filter(|entry| entry.id == id).count() == 1
+        && entries
+            .iter()
+            .any(|entry| entry.id == id && entry.enabled && !entry.separator && !entry.has_children)
 }
 
 fn clean_label(value: &str) -> String {
     let mut clean = String::new();
     let mut chars = value.chars().peekable();
     while let Some(ch) = chars.next() {
-        if ch.is_control() { continue; }
-        if ch == '_' {
-            if chars.peek() == Some(&'_') { chars.next(); }
-            else { continue; }
+        if ch.is_control() {
+            continue;
         }
-        if clean.chars().count() >= 120 { break; }
+        if ch == '_' {
+            if chars.peek() == Some(&'_') {
+                chars.next();
+            } else {
+                continue;
+            }
+        }
+        if clean.chars().count() >= 120 {
+            break;
+        }
         clean.push(ch);
     }
     clean
@@ -92,7 +124,13 @@ fn clean_label(value: &str) -> String {
 pub fn click_params(id: i32) -> glib::Variant {
     // Event(int32 id, string "clicked", variant data, uint32 timestamp)
     // Zero is permitted when no reliable compositor timestamp is exposed.
-    (id, "clicked", glib::Variant::from_variant(&0i32.to_variant()), 0u32).to_variant()
+    (
+        id,
+        "clicked",
+        glib::Variant::from_variant(&0i32.to_variant()),
+        0u32,
+    )
+        .to_variant()
 }
 
 #[cfg(test)]
@@ -100,8 +138,14 @@ mod tests {
     use super::*;
     fn entry(id: i32, enabled: bool) -> MenuEntry {
         MenuEntry {
-            id, enabled, label: String::from("Example"), depth: 0, checked: false,
-            radio: false, separator: false, has_children: false,
+            id,
+            enabled,
+            label: String::from("Example"),
+            depth: 0,
+            checked: false,
+            radio: false,
+            separator: false,
+            has_children: false,
         }
     }
     #[test]
