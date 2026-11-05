@@ -46,3 +46,19 @@ export function splitTray(items: TrayItem[]): { pinned: TrayItem[]; hidden: Tray
     hidden: items.filter(item => !item.pinned),
   };
 }
+
+/** The bar may clip pinned icons, but those icons still belong to overflow. */
+export function trayBarView(items: TrayItem[], limit: number): {
+  visible: TrayItem[];
+  overflow: TrayItem[];
+  needsAttention: boolean;
+} {
+  const { pinned, hidden } = splitTray(items);
+  const visible = pinned.slice(0, Math.max(0, Math.floor(limit)));
+  const overflow = [...hidden, ...pinned.slice(visible.length)];
+  return {
+    visible,
+    overflow,
+    needsAttention: overflow.some(item => item.status === 'NeedsAttention'),
+  };
+}
