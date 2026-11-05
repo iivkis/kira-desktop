@@ -63,6 +63,9 @@ struct Service {
     bar: webkit6::WebView,
     connection: RefCell<Option<gio::DBusConnection>>,
     owner: RefCell<Option<gio::OwnerId>>,
+    host_owner: RefCell<Option<gio::OwnerId>>,
+    host_name: String,
+    host_name_owned: Cell<bool>,
     available: Cell<bool>,
     owns_watcher: Cell<bool>,
     watcher_exported: Cell<bool>,
@@ -78,6 +81,9 @@ pub fn start(bar: &webkit6::WebView) {
         bar: bar.clone(),
         connection: RefCell::new(None),
         owner: RefCell::new(None),
+        host_owner: RefCell::new(None),
+        host_name: format!("org.kde.StatusNotifierHost-{}", std::process::id()),
+        host_name_owned: Cell::new(false),
         available: Cell::new(false),
         owns_watcher: Cell::new(false),
         watcher_exported: Cell::new(false),
@@ -88,6 +94,32 @@ pub fn start(bar: &webkit6::WebView) {
         pins: RefCell::new(load_pins()),
     });
     SERVICE.with(|active| *active.borrow_mut() = Some(service.clone()));
+
+    // A StatusNotifierHost must be discoverable under its own well-known
+    // D-Bus service, not merely the session bus's unique :1.N connection.
+    // A running external watcher can validate that this host really exists.
+    let host_ready = Rc::downgrade(&service);
+    let host_lost = Rc::downgrade(&service);
+    let host_id = gio::bus_own_name(
+        gio::BusType::Session,
+        &service.host_name,
+        gio::BusNameOwnerFlags::DO_NOT_QUEUE,
+        |_, _| {},
+        move |_, _| {
+            if let Some(service) = host_ready.upgrade() {
+                service.host_name_owned.set(true);
+                if service.connection.borrow().is_some() && !service.owns_watcher.get() {
+                    service.register_external_host();
+                }
+            }
+        },
+        move |_, _| {
+            if let Some(service) = host_lost.upgrade() {
+                service.host_name_owned.set(false);
+            }
+        },
+    );
+    service.host_owner.replace(Some(host_id));
 
     // A nested preview shares the user's session D-Bus. Never take its
     // watcher name away; it may attach as a host to an existing watcher.
@@ -384,6 +416,27 @@ impl Service {
         }
     }
 
+    fn register_external_host(&self) {
+        if !self.host_name_owned.get() || self.owns_watcher.get() {
+            return;
+        }
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
+        connection.call(
+            Some(WATCHER),
+            WATCHER_PATH,
+            WATCHER_IFACE,
+            "RegisterStatusNotifierHost",
+            Some(&(self.host_name.as_str(),).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            |_| {},
+        );
+    }
+
     fn adopt_external(self: &Rc<Self>) {
         if self.owns_watcher.get() {
             return;
@@ -391,22 +444,10 @@ impl Service {
         let Some(connection) = self.connection.borrow().clone() else {
             return;
         };
-        let Some(unique) = connection.unique_name() else {
-            return;
-        };
-        // Existing watchers and SNI hosts coexist; never seize a name.
-        connection.call(
-            Some(WATCHER),
-            WATCHER_PATH,
-            WATCHER_IFACE,
-            "RegisterStatusNotifierHost",
-            Some(&(unique.to_string(),).to_variant()),
-            None,
-            gio::DBusCallFlags::NONE,
-            2500,
-            None::<&gio::Cancellable>,
-            |_| {},
-        );
+        // Registering the host name and fetching an existing roster are
+        // independent asynchronous operations: enumeration must not wait for
+        // another client's RegisterStatusNotifierHost implementation.
+        self.register_external_host();
         let revision = self.external_revision.get().wrapping_add(1);
         self.external_revision.set(revision);
         let weak = Rc::downgrade(self);
