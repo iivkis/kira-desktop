@@ -110,8 +110,12 @@ pub fn start(bar: &webkit6::WebView) {
                 service.available.set(true);
                 if let Some(connection) = service.connection.borrow().as_ref() {
                     let _ = connection.emit_signal(
-                        None, WATCHER_PATH, WATCHER_IFACE,
-                        "StatusNotifierHostRegistered", None);
+                        None,
+                        WATCHER_PATH,
+                        WATCHER_IFACE,
+                        "StatusNotifierHostRegistered",
+                        None,
+                    );
                 }
                 service.publish();
                 eprintln!("kira-shell: status notifier watcher and host available");
@@ -136,65 +140,92 @@ impl Service {
             eprintln!("kira-shell: cannot parse SNI watcher introspection");
             return;
         };
-        let Some(info) = xml.lookup_interface(WATCHER_IFACE) else { return; };
+        let Some(info) = xml.lookup_interface(WATCHER_IFACE) else {
+            return;
+        };
         let weak_method = Rc::downgrade(self);
         let weak_property = Rc::downgrade(self);
-        if let Err(error) = connection.register_object(WATCHER_PATH, &info)
-            .method_call(move |connection, sender, _, _, method, params, invocation| {
-                let Some(service) = weak_method.upgrade() else {
-                    invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.Failed", "SNI watcher unavailable");
-                    return;
-                };
-                if !service.owns_watcher.get() {
-                    invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.Failed", "SNI watcher not owned");
-                    return;
-                }
-                match method {
-                    "RegisterStatusNotifierItem" => {
-                        let registration = params.child_value(0).get::<String>().unwrap_or_default();
-                        let Some(sender) = sender else {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.DBus.Error.InvalidArgs", "Missing sender");
-                            return;
-                        };
-                        service.register_item_request(
-                            &connection, registration, sender.to_string(), invocation);
-
+        if let Err(error) = connection
+            .register_object(WATCHER_PATH, &info)
+            .method_call(
+                move |connection, sender, _, _, method, params, invocation| {
+                    let Some(service) = weak_method.upgrade() else {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "SNI watcher unavailable",
+                        );
+                        return;
+                    };
+                    if !service.owns_watcher.get() {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "SNI watcher not owned",
+                        );
+                        return;
                     }
-                    "RegisterStatusNotifierHost" => {
-                        let host = params.child_value(0).get::<String>().unwrap_or_default();
-                        if host.is_empty() || host.len() > 240 {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.DBus.Error.InvalidArgs", "Invalid host");
-                        } else {
-                            service.host_registered.set(true);
-                            invocation.return_value(None);
-                            let _ = connection.emit_signal(
-                                None, WATCHER_PATH, WATCHER_IFACE,
-                                "StatusNotifierHostRegistered", None);
+                    match method {
+                        "RegisterStatusNotifierItem" => {
+                            let registration =
+                                params.child_value(0).get::<String>().unwrap_or_default();
+                            let Some(sender) = sender else {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.InvalidArgs",
+                                    "Missing sender",
+                                );
+                                return;
+                            };
+                            service.register_item_request(
+                                &connection,
+                                registration,
+                                sender.to_string(),
+                                invocation,
+                            );
                         }
+                        "RegisterStatusNotifierHost" => {
+                            let host = params.child_value(0).get::<String>().unwrap_or_default();
+                            if host.is_empty() || host.len() > 240 {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.InvalidArgs",
+                                    "Invalid host",
+                                );
+                            } else {
+                                service.host_registered.set(true);
+                                invocation.return_value(None);
+                                let _ = connection.emit_signal(
+                                    None,
+                                    WATCHER_PATH,
+                                    WATCHER_IFACE,
+                                    "StatusNotifierHostRegistered",
+                                    None,
+                                );
+                            }
+                        }
+                        _ => invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.UnknownMethod",
+                            "Unknown SNI watcher method",
+                        ),
                     }
-                    _ => invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.UnknownMethod",
-                        "Unknown SNI watcher method"),
-                }
-            })
+                },
+            )
             .property(move |_, _, _, _, property| {
                 let Some(service) = weak_property.upgrade() else {
                     return false.to_variant();
                 };
                 match property {
-                    "RegisteredStatusNotifierItems" => service.items.borrow()
-                        .iter().map(|i| i.registration.clone())
-                        .collect::<Vec<_>>().to_variant(),
+                    "RegisteredStatusNotifierItems" => service
+                        .items
+                        .borrow()
+                        .iter()
+                        .map(|i| i.registration.clone())
+                        .collect::<Vec<_>>()
+                        .to_variant(),
                     "IsStatusNotifierHostRegistered" => service.host_registered.get().to_variant(),
                     "ProtocolVersion" => 0i32.to_variant(),
                     _ => false.to_variant(),
                 }
             })
-            .build() {
+            .build()
+        {
             eprintln!("kira-shell: cannot export SNI watcher: {error}");
         }
     }
@@ -204,11 +235,19 @@ impl Service {
         // Weak references keep callbacks from owning the service forever.
         let weak = Rc::downgrade(self);
         connection.signal_subscribe(
-            Some(WATCHER), Some(WATCHER_IFACE), None, Some(WATCHER_PATH), None,
+            Some(WATCHER),
+            Some(WATCHER_IFACE),
+            None,
+            Some(WATCHER_PATH),
+            None,
             gio::DBusSignalFlags::NONE,
             move |_, _, _, _, member, params| {
-                let Some(service) = weak.upgrade() else { return; };
-                if service.owns_watcher.get() { return; }
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.owns_watcher.get() {
+                    return;
+                }
                 match member {
                     "StatusNotifierItemRegistered" => {
                         if let Some(raw) = params.child_value(0).get::<String>() {
@@ -227,11 +266,16 @@ impl Service {
 
         let weak = Rc::downgrade(self);
         connection.signal_subscribe(
-            Some("org.freedesktop.DBus"), Some("org.freedesktop.DBus"),
-            Some("NameOwnerChanged"), Some("/org/freedesktop/DBus"), None,
+            Some("org.freedesktop.DBus"),
+            Some("org.freedesktop.DBus"),
+            Some("NameOwnerChanged"),
+            Some("/org/freedesktop/DBus"),
+            None,
             gio::DBusSignalFlags::NONE,
             move |_, _, _, _, _, params| {
-                let Some(service) = weak.upgrade() else { return; };
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
                 let name = params.child_value(0).get::<String>().unwrap_or_default();
                 let new_owner = params.child_value(2).get::<String>().unwrap_or_default();
                 if new_owner.is_empty() {
@@ -250,15 +294,29 @@ impl Service {
 
         let weak = Rc::downgrade(self);
         connection.signal_subscribe(
-            None, Some(ITEM_IFACE), None, None, None,
+            None,
+            Some(ITEM_IFACE),
+            None,
+            None,
+            None,
             gio::DBusSignalFlags::NONE,
             move |_, sender, path, _, member, _| {
-                if !matches!(member, "NewIcon" | "NewAttentionIcon" |
-                    "NewTitle" | "NewStatus" | "NewIconThemePath") { return; }
-                let Some(service) = weak.upgrade() else { return; };
-                let items: Vec<(u32, String, String)> = service.items.borrow().iter()
-                    .filter(|item| item.path == path
-                        && (item.bus == sender || !item.bus.starts_with(':')))
+                if !matches!(
+                    member,
+                    "NewIcon" | "NewAttentionIcon" | "NewTitle" | "NewStatus" | "NewIconThemePath"
+                ) {
+                    return;
+                }
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                let items: Vec<(u32, String, String)> = service
+                    .items
+                    .borrow()
+                    .iter()
+                    .filter(|item| {
+                        item.path == path && (item.bus == sender || !item.bus.starts_with(':'))
+                    })
                     .map(|item| (item.handle, item.bus.clone(), item.path.clone()))
                     .collect();
                 for (id, bus, object_path) in items {
@@ -269,31 +327,54 @@ impl Service {
     }
 
     fn adopt_external(self: &Rc<Self>) {
-        if self.owns_watcher.get() { return; }
-        let Some(connection) = self.connection.borrow().clone() else { return; };
-        let Some(unique) = connection.unique_name() else { return; };
+        if self.owns_watcher.get() {
+            return;
+        }
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        let Some(unique) = connection.unique_name() else {
+            return;
+        };
         // Existing watchers and SNI hosts coexist; never seize a name.
         connection.call(
-            Some(WATCHER), WATCHER_PATH, WATCHER_IFACE,
+            Some(WATCHER),
+            WATCHER_PATH,
+            WATCHER_IFACE,
             "RegisterStatusNotifierHost",
-            Some(&(unique.to_string(),).to_variant()), None,
-            gio::DBusCallFlags::NONE, 2500,
-            None::<&gio::Cancellable>, |_| {},
+            Some(&(unique.to_string(),).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            |_| {},
         );
         let weak = Rc::downgrade(self);
         connection.call(
-            Some(WATCHER), WATCHER_PATH, PROPERTIES_IFACE,
-            "GetAll", Some(&(WATCHER_IFACE,).to_variant()), None,
-            gio::DBusCallFlags::NONE, 2500,
-            None::<&gio::Cancellable>, move |reply| {
-                let Some(service) = weak.upgrade() else { return; };
-                if service.owns_watcher.get() { return; }
+            Some(WATCHER),
+            WATCHER_PATH,
+            PROPERTIES_IFACE,
+            "GetAll",
+            Some(&(WATCHER_IFACE,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.owns_watcher.get() {
+                    return;
+                }
                 let Ok(reply) = reply else {
                     service.available.set(false);
                     service.publish();
                     return;
                 };
-                if reply.size() > 64 * 1024 { return; }
+                if reply.size() > 64 * 1024 {
+                    return;
+                }
                 let values = glib::VariantDict::new(Some(&reply.child_value(0)));
                 let registrations = values.lookup_value("RegisteredStatusNotifierItems", None)
                     .and_then(|v| v.get::<Vec<String>>()).unwrap_or_default();
@@ -323,27 +404,43 @@ impl Service {
     ) {
         if registration.is_empty() || registration.len() > 240 || !valid_bus_name(&sender) {
             invocation.return_dbus_error(
-                "org.freedesktop.DBus.Error.InvalidArgs", "Invalid SNI registration");
+                "org.freedesktop.DBus.Error.InvalidArgs",
+                "Invalid SNI registration",
+            );
             return;
         }
         if registration.starts_with('/') {
             if valid_object_path(&registration) {
-                self.finish_registration(connection, &registration, &sender,
-                    &registration, invocation);
+                self.finish_registration(
+                    connection,
+                    &registration,
+                    &sender,
+                    &registration,
+                    invocation,
+                );
             } else {
                 invocation.return_dbus_error(
-                    "org.freedesktop.DBus.Error.InvalidArgs", "Invalid object path");
+                    "org.freedesktop.DBus.Error.InvalidArgs",
+                    "Invalid object path",
+                );
             }
             return;
         }
         if !valid_bus_name(&registration) {
             invocation.return_dbus_error(
-                "org.freedesktop.DBus.Error.InvalidArgs", "Invalid service name");
+                "org.freedesktop.DBus.Error.InvalidArgs",
+                "Invalid service name",
+            );
             return;
         }
         if registration == sender {
-            self.finish_registration(connection, &registration, &sender,
-                "/StatusNotifierItem", invocation);
+            self.finish_registration(
+                connection,
+                &registration,
+                &sender,
+                "/StatusNotifierItem",
+                invocation,
+            );
             return;
         }
         // Real SNI apps generally register a well-known org.kde.* bus name.
@@ -352,25 +449,39 @@ impl Service {
         let reply_connection = connection.clone();
         let owner_name = registration.clone();
         connection.call(
-            Some("org.freedesktop.DBus"), "/org/freedesktop/DBus",
-            "org.freedesktop.DBus", "GetNameOwner",
-            Some(&(registration,).to_variant()), None,
-            gio::DBusCallFlags::NONE, 2500,
-            None::<&gio::Cancellable>, move |reply| {
-                let owner = reply.ok().and_then(|value|
-                    value.child_value(0).get::<String>());
+            Some("org.freedesktop.DBus"),
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus",
+            "GetNameOwner",
+            Some(&(registration,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let owner = reply
+                    .ok()
+                    .and_then(|value| value.child_value(0).get::<String>());
                 if owner.as_deref() != Some(sender.as_str()) {
                     invocation.return_dbus_error(
                         "org.freedesktop.DBus.Error.AccessDenied",
-                        "Caller does not own the StatusNotifierItem service");
+                        "Caller does not own the StatusNotifierItem service",
+                    );
                     return;
                 }
                 if let Some(service) = weak.upgrade() {
-                    service.finish_registration(&reply_connection, &owner_name,
-                        &owner_name, "/StatusNotifierItem", invocation);
+                    service.finish_registration(
+                        &reply_connection,
+                        &owner_name,
+                        &owner_name,
+                        "/StatusNotifierItem",
+                        invocation,
+                    );
                 } else {
                     invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.Failed", "SNI watcher unavailable");
+                        "org.freedesktop.DBus.Error.Failed",
+                        "SNI watcher unavailable",
+                    );
                 }
             },
         );
@@ -392,22 +503,28 @@ impl Service {
         if self.owns_watcher.get() && self.insert_item(&advertised, bus, path) {
             invocation.return_value(None);
             let _ = connection.emit_signal(
-                None, WATCHER_PATH, WATCHER_IFACE,
+                None,
+                WATCHER_PATH,
+                WATCHER_IFACE,
                 "StatusNotifierItemRegistered",
-                Some(&(advertised,).to_variant()));
+                Some(&(advertised,).to_variant()),
+            );
         } else {
             invocation.return_dbus_error(
                 "org.freedesktop.DBus.Error.InvalidArgs",
-                "Duplicate or full SNI watcher");
+                "Duplicate or full SNI watcher",
+            );
         }
     }
 
     fn insert_item(self: &Rc<Self>, registration: &str, bus: &str, path: &str) -> bool {
-        if !valid_bus_name(bus) || !valid_object_path(path) ||
-            registration.len() > 240 { return false; }
+        if !valid_bus_name(bus) || !valid_object_path(path) || registration.len() > 240 {
+            return false;
+        }
         let mut items = self.items.borrow_mut();
-        if items.iter().any(|item| item.registration == registration) ||
-            items.len() >= MAX_ITEMS { return false; }
+        if items.iter().any(|item| item.registration == registration) || items.len() >= MAX_ITEMS {
+            return false;
+        }
         let id = self.next_handle.get();
         self.next_handle.set(id.wrapping_add(1).max(1));
         let title = bus.trim_start_matches(':').chars().take(120).collect();
@@ -428,26 +545,45 @@ impl Service {
     }
 
     fn refresh_item(self: &Rc<Self>, id: u32, bus: &str, object_path: &str) {
-        let Some(connection) = self.connection.borrow().clone() else { return; };
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
         let weak = Rc::downgrade(self);
         connection.call(
-            Some(bus), object_path, PROPERTIES_IFACE, "GetAll",
-            Some(&(ITEM_IFACE,).to_variant()), None,
-            gio::DBusCallFlags::NONE, 2500,
-            None::<&gio::Cancellable>, move |reply| {
-                let Some(service) = weak.upgrade() else { return; };
-                let Ok(reply) = reply else { return; };
-                if reply.size() > 256 * 1024 { return; }
+            Some(bus),
+            object_path,
+            PROPERTIES_IFACE,
+            "GetAll",
+            Some(&(ITEM_IFACE,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                let Ok(reply) = reply else {
+                    return;
+                };
+                if reply.size() > 256 * 1024 {
+                    return;
+                }
                 let props = glib::VariantDict::new(Some(&reply.child_value(0)));
-                let id_property = props.lookup_value("Id", None)
+                let id_property = props
+                    .lookup_value("Id", None)
                     .and_then(|v| v.get::<String>());
-                let title = props.lookup_value("Title", None)
+                let title = props
+                    .lookup_value("Title", None)
                     .and_then(|v| v.get::<String>());
-                let icon_name = props.lookup_value("IconName", None)
+                let icon_name = props
+                    .lookup_value("IconName", None)
                     .and_then(|v| v.get::<String>());
-                let attention_icon = props.lookup_value("AttentionIconName", None)
+                let attention_icon = props
+                    .lookup_value("AttentionIconName", None)
                     .and_then(|v| v.get::<String>());
-                let status = props.lookup_value("Status", None)
+                let status = props
+                    .lookup_value("Status", None)
                     .and_then(|v| v.get::<String>());
                 // GIcon theme names are mapped by GTK, never by arbitrary
                 // filesystem paths or URLs supplied to the browser.
@@ -456,10 +592,11 @@ impl Service {
                 } else {
                     icon_name
                 };
-                let icon = preferred_icon.as_deref()
-                    .and_then(resolve_theme_icon);
+                let icon = preferred_icon.as_deref().and_then(resolve_theme_icon);
                 let mut items = service.items.borrow_mut();
-                let Some(item) = items.iter_mut().find(|item| item.handle == id) else { return; };
+                let Some(item) = items.iter_mut().find(|item| item.handle == id) else {
+                    return;
+                };
                 if let Some(value) = id_property.filter(|v| !v.is_empty()) {
                     item.key = clean(&value, 180);
                 }
@@ -470,7 +607,8 @@ impl Service {
                     Some("Passive") => "Passive",
                     Some("NeedsAttention") => "NeedsAttention",
                     _ => "Active",
-                }.into();
+                }
+                .into();
                 item.icon = icon;
                 drop(items);
                 service.publish();
@@ -491,17 +629,24 @@ impl Service {
     }
 
     fn unregister_bus(&self, bus: &str) {
-        let removed: Vec<String> = self.items.borrow().iter()
+        let removed: Vec<String> = self
+            .items
+            .borrow()
+            .iter()
             .filter(|item| item.bus == bus)
-            .map(|item| item.registration.clone()).collect();
+            .map(|item| item.registration.clone())
+            .collect();
         for name in removed {
             self.unregister(&name);
             if self.owns_watcher.get() {
                 if let Some(connection) = self.connection.borrow().as_ref() {
                     let _ = connection.emit_signal(
-                        None, WATCHER_PATH, WATCHER_IFACE,
+                        None,
+                        WATCHER_PATH,
+                        WATCHER_IFACE,
                         "StatusNotifierItemUnregistered",
-                        Some(&(name,).to_variant()));
+                        Some(&(name,).to_variant()),
+                    );
                 }
             }
         }
@@ -509,16 +654,22 @@ impl Service {
 
     fn snapshot(&self) -> serde_json::Value {
         let pins = self.pins.borrow();
-        let items = self.items.borrow().iter()
+        let items = self
+            .items
+            .borrow()
+            .iter()
             .filter(|item| item.status != "Passive")
-            .map(|item| serde_json::json!({
-                "id": item.handle,
-                "key": item.key,
-                "title": item.title,
-                "icon": item.icon,
-                "status": item.status,
-                "pinned": pins.contains(&item.key),
-            })).collect::<Vec<_>>();
+            .map(|item| {
+                serde_json::json!({
+                    "id": item.handle,
+                    "key": item.key,
+                    "title": item.title,
+                    "icon": item.icon,
+                    "status": item.status,
+                    "pinned": pins.contains(&item.key),
+                })
+            })
+            .collect::<Vec<_>>();
         serde_json::json!({ "available": self.available.get(), "items": items })
     }
 
@@ -526,13 +677,13 @@ impl Service {
         let payload = self.snapshot();
         // JSON is serialized as data, then JSON-string encoded a second
         // time: external SNI metadata cannot become executable JavaScript.
-        let Ok(encoded) = serde_json::to_string(&payload.to_string()) else { return; };
+        let Ok(encoded) = serde_json::to_string(&payload.to_string()) else {
+            return;
+        };
         let script = format!(
             "window.dispatchEvent(new CustomEvent('kira:tray', {{ detail: JSON.parse({encoded}) }}));"
         );
-        view.evaluate_javascript(
-            &script, None, None, None::<&gio::Cancellable>, |_| {},
-        );
+        view.evaluate_javascript(&script, None, None, None::<&gio::Cancellable>, |_| {});
     }
 
     fn publish(&self) {
@@ -543,8 +694,15 @@ impl Service {
     }
 
     fn action(&self, id: u32, action: &str) {
-        let item = self.items.borrow().iter().find(|item| item.handle == id).cloned();
-        let Some(item) = item else { return; };
+        let item = self
+            .items
+            .borrow()
+            .iter()
+            .find(|item| item.handle == id)
+            .cloned();
+        let Some(item) = item else {
+            return;
+        };
         if action == "pin" {
             let mut pins = self.pins.borrow_mut();
             if !pins.remove(&item.key) {
@@ -557,13 +715,23 @@ impl Service {
             }
             self.publish();
         } else if action == "activate" || action == "secondary" {
-            let method = if action == "activate" { "Activate" } else { "ContextMenu" };
+            let method = if action == "activate" {
+                "Activate"
+            } else {
+                "ContextMenu"
+            };
             if let Some(connection) = self.connection.borrow().as_ref() {
                 connection.call(
-                    Some(&item.bus), &item.path, ITEM_IFACE, method,
-                    Some(&(0i32, 0i32).to_variant()), None,
-                    gio::DBusCallFlags::NONE, 2500,
-                    None::<&gio::Cancellable>, |_| {},
+                    Some(&item.bus),
+                    &item.path,
+                    ITEM_IFACE,
+                    method,
+                    Some(&(0i32, 0i32).to_variant()),
+                    None,
+                    gio::DBusCallFlags::NONE,
+                    2500,
+                    None::<&gio::Cancellable>,
+                    |_| {},
                 );
             }
         }
@@ -571,22 +739,34 @@ impl Service {
 }
 
 fn clean(value: &str, limit: usize) -> String {
-    value.chars().filter(|c| !c.is_control()).take(limit).collect()
+    value
+        .chars()
+        .filter(|c| !c.is_control())
+        .take(limit)
+        .collect()
 }
 
 fn valid_bus_name(value: &str) -> bool {
-    if value.len() < 3 || value.len() > 240 { return false; }
+    if value.len() < 3 || value.len() > 240 {
+        return false;
+    }
     let parts: Vec<_> = value.trim_start_matches(':').split('.').collect();
-    parts.len() >= 2 && parts.iter().all(|part| {
-        !part.is_empty() && part.chars().all(|c|
-            c.is_ascii_alphanumeric() || matches!(c, '_' | '-'))
-    })
+    parts.len() >= 2
+        && parts.iter().all(|part| {
+            !part.is_empty()
+                && part
+                    .chars()
+                    .all(|c| c.is_ascii_alphanumeric() || matches!(c, '_' | '-'))
+        })
 }
 
 fn valid_object_path(value: &str) -> bool {
-    value.starts_with('/') && value.len() <= 240 &&
-    value != "/" && value.chars().all(|c|
-        c.is_ascii_alphanumeric() || matches!(c, '/' | '_'))
+    value.starts_with('/')
+        && value.len() <= 240
+        && value != "/"
+        && value
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '/' | '_'))
 }
 
 fn parse_external(value: &str) -> Option<(String, String)> {
@@ -597,50 +777,75 @@ fn parse_external(value: &str) -> Option<(String, String)> {
     };
     // Watcher registrations are authoritative; both unique and well-known
     // names are supported. The caller cannot override this via WebKit.
-    valid_bus_name(bus).then(|| (bus.into(), path.into()))
+    valid_bus_name(bus)
+        .then(|| (bus.into(), path.into()))
         .filter(|(_, path)| valid_object_path(path))
 }
 
 fn resolve_theme_icon(name: &str) -> Option<String> {
-    if name.is_empty() || name.len() > 140 ||
-        !name.chars().all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.'))
-    { return None; }
+    if name.is_empty()
+        || name.len() > 140
+        || !name
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.'))
+    {
+        return None;
+    }
     let display = gtk::gdk::Display::default()?;
     let theme = gtk::IconTheme::for_display(&display);
-    let path = theme.lookup_icon(
-        name, &[], 24, 1, gtk::TextDirection::None,
-        gtk::IconLookupFlags::empty(),
-    ).file()?.path()?;
+    let path = theme
+        .lookup_icon(
+            name,
+            &[],
+            24,
+            1,
+            gtk::TextDirection::None,
+            gtk::IconLookupFlags::empty(),
+        )
+        .file()?
+        .path()?;
     crate::launcher::encode_icon(Some(&path), None)
 }
 
 fn pin_path() -> Option<PathBuf> {
     let root = std::env::var_os("XDG_STATE_HOME")
         .map(PathBuf::from)
-        .or_else(|| std::env::var_os("HOME")
-            .map(|home| PathBuf::from(home).join(".local/state")))?;
+        .or_else(|| {
+            std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/state"))
+        })?;
     Some(root.join("kira-desktop/tray-pins.json"))
 }
 
 fn load_pins() -> HashSet<String> {
-    let Some(path) = pin_path() else { return HashSet::new(); };
-    let Ok(data) = fs::read_to_string(&path) else { return HashSet::new(); };
-    if data.len() > 16 * 1024 { return HashSet::new(); }
+    let Some(path) = pin_path() else {
+        return HashSet::new();
+    };
+    let Ok(data) = fs::read_to_string(&path) else {
+        return HashSet::new();
+    };
+    if data.len() > 16 * 1024 {
+        return HashSet::new();
+    }
     serde_json::from_str::<Vec<String>>(&data)
-        .unwrap_or_default().into_iter()
+        .unwrap_or_default()
+        .into_iter()
         .filter(|value| !value.is_empty() && value.len() <= 180)
-        .take(128).collect()
+        .take(128)
+        .collect()
 }
 
 fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
-    let Some(path) = pin_path() else { return Ok(()); };
-    let Some(parent) = path.parent() else { return Ok(()); };
+    let Some(path) = pin_path() else {
+        return Ok(());
+    };
+    let Some(parent) = path.parent() else {
+        return Ok(());
+    };
     fs::create_dir_all(parent)?;
     let mut sorted: Vec<_> = pins.iter().cloned().collect();
     sorted.sort();
     let tmp = path.with_extension(format!("{}.tmp", std::process::id()));
-    let serialized = serde_json::to_vec(&sorted)
-        .map_err(std::io::Error::other)?;
+    let serialized = serde_json::to_vec(&sorted).map_err(std::io::Error::other)?;
     fs::write(&tmp, serialized)?;
     fs::rename(tmp, path)
 }
@@ -656,13 +861,17 @@ pub fn snapshot_to(view: &webkit6::WebView) {
 pub fn handle(message: &str) {
     SERVICE.with(|active| {
         let service = active.borrow();
-        let Some(service) = service.as_ref() else { return; };
+        let Some(service) = service.as_ref() else {
+            return;
+        };
         if message == "sync" {
             service.publish();
         } else if let Some((action, raw)) = message.split_once(':') {
             if matches!(action, "activate" | "pin") {
                 if let Ok(id) = raw.parse::<u32>() {
-                    if id != 0 { service.action(id, action); }
+                    if id != 0 {
+                        service.action(id, action);
+                    }
                 }
             }
         }
@@ -670,7 +879,9 @@ pub fn handle(message: &str) {
 }
 
 pub fn action(id: u32, action: &str) {
-    if !matches!(action, "pin" | "activate" | "secondary") { return; }
+    if !matches!(action, "pin" | "activate" | "secondary") {
+        return;
+    }
     SERVICE.with(|active| {
         if let Some(service) = active.borrow().as_ref() {
             service.action(id, action);
@@ -690,8 +901,13 @@ mod tests {
         );
         assert!(parse_external(":1.42").is_some());
         assert!(parse_external("org.kde.StatusNotifierItem-1234-1").is_some());
-        for invalid in ["", "invalid", ":1.2/../../etc/passwd",
-            ":1.2/Tray;touch", ":1.2//icon-name?"] {
+        for invalid in [
+            "",
+            "invalid",
+            ":1.2/../../etc/passwd",
+            ":1.2/Tray;touch",
+            ":1.2//icon-name?",
+        ] {
             assert!(parse_external(invalid).is_none(), "{invalid}");
         }
     }
