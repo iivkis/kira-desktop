@@ -1,28 +1,31 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { tenetWidgetReveal, tenetReflow, tenetReflowScope } from '../motion';
-  import { EMPTY_TRAY, splitTray, type TrayState } from '../tray-model';
-  import { onTrayUpdate, requestTraySnapshot, trayAction } from '../sdk/core';
+  import { EMPTY_TRAY, EMPTY_TRAY_MENU, splitTray, type TrayState, type TrayMenu } from '../tray-model';
+  import { onTrayUpdate, onTrayMenuUpdate, requestTraySnapshot, trayAction, clickTrayMenu, dismissTrayMenu } from '../sdk/core';
 
   let { onClose, generation }: { onClose: () => void; generation: number } = $props();
   let state = $state<TrayState>(EMPTY_TRAY);
+  let menu = $state<TrayMenu>(EMPTY_TRAY_MENU);
   let list: HTMLDivElement;
   const groups = $derived(splitTray(state.items));
 
   onMount(() => {
     const stop = onTrayUpdate(next => {
-      if (list) tenetReflow(list, () => { state = next; });
+      if (list?.isConnected) tenetReflow(list, () => { state = next; });
       else state = next;
     });
+    const stopMenu = onTrayMenuUpdate(next => { menu = next; });
     requestTraySnapshot(generation);
-    return stop;
+    return () => { stop(); stopMenu(); };
   });
 
   function keydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       event.preventDefault();
       event.stopPropagation();
-      onClose();
+      if (menu.handle !== 0) dismissTrayMenu(generation);
+      else onClose();
     }
   }
 
@@ -36,6 +39,9 @@
     event.preventDefault();
     trayAction(id, 'secondary', generation);
   }
+  function clickMenuItem(id: number) {
+    if (menu.handle !== 0) clickTrayMenu(generation, menu.handle, id);
+  }
 </script>
 
 <svelte:window onkeydown={keydown} />
@@ -43,10 +49,48 @@
   use:tenetWidgetReveal={{ contact: '[data-kira-contact]', direction: 1 }}
   class="relative flex min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header data-kira-enter class="flex items-center justify-between gap-3 px-4 pb-3 pt-4">
-    <h1 data-kira-contact class="border-l-2 border-kira-accent pl-3 text-base font-extrabold">Скрытые значки</h1>
+    <h1 data-kira-contact class="border-l-2 border-kira-accent pl-3 text-base font-extrabold">
+      {menu.handle !== 0 ? 'Меню приложения' : 'Скрытые значки'}
+    </h1>
     <button type="button" title="Закрыть трей" aria-label="Закрыть трей" onclick={onClose}
       class="flex size-7 items-center justify-center text-lg text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
   </header>
+  {#if menu.handle !== 0}
+    <section data-kira-enter class="kira-tray-scroll max-h-[420px] min-h-0 overflow-y-auto bg-kira-surface px-3 py-3"
+      aria-label={'Меню ' + menu.title}>
+      <button type="button" onclick={() => dismissTrayMenu(generation)}
+        class="mb-2 flex w-full items-center gap-2 border-b border-kira-muted/20 px-2 py-2 text-left text-xs text-kira-muted hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
+        aria-label="Назад к значкам трея">
+        <span aria-hidden="true">‹</span>
+        <span>Назад · {menu.title}</span>
+      </button>
+      <div role="menu" aria-label={'Действия ' + menu.title}>
+        {#each menu.items as entry, i (i)}
+          {#if entry.separator}
+            <div role="separator" class="my-2 border-t border-kira-muted/20"></div>
+          {:else if entry.has_children}
+            <p class="py-2 text-[11px] font-extrabold uppercase tracking-wide text-kira-muted"
+              style={'padding-left: ' + (8 + entry.depth * 12) + 'px'}>
+              {entry.label}
+            </p>
+          {:else}
+            <button type="button" role="menuitem"
+              disabled={!entry.enabled}
+              title={entry.label}
+              aria-label={entry.label + (entry.checked ? ', выбрано' : '')}
+              onclick={() => clickMenuItem(entry.id)}
+              style={'padding-left: ' + (8 + entry.depth * 12) + 'px'}
+              class="flex min-h-9 w-full items-center gap-2 rounded-[2px] py-1.5 pr-2 text-left text-[12px] hover:bg-kira-bg/20 focus-visible:outline-2 focus-visible:outline-kira-accent disabled:cursor-not-allowed disabled:opacity-40">
+              <span class="w-4 shrink-0 text-center text-kira-accent" aria-hidden="true">
+                {entry.checked ? (entry.radio ? '●' : '✓') : ''}
+              </span>
+              <span class="min-w-0 flex-1 truncate">{entry.label}</span>
+            </button>
+          {/if}
+        {/each}
+      </div>
+    </section>
+  {:else}
   <div data-kira-enter bind:this={list} use:tenetReflowScope
     class="kira-tray-scroll max-h-[360px] min-h-0 overflow-y-auto bg-kira-surface px-3 py-3"
     role="group" aria-label="Значки приложений">
@@ -91,4 +135,5 @@
       </p>
     {/if}
   </div>
+  {/if}
 </main>
