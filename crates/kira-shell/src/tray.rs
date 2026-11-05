@@ -49,6 +49,7 @@ struct Item {
     // Do not expose a synthetic placeholder before reading real SNI data.
     ready: bool,
     item_is_menu: bool,
+    refresh_version: u64,
 }
 
 struct Service {
@@ -579,6 +580,7 @@ impl Service {
             status: "Active".into(),
             ready: false,
             item_is_menu: false,
+            refresh_version: 0,
         });
         drop(items);
         self.refresh_item(id, bus, path);
@@ -588,6 +590,16 @@ impl Service {
     fn refresh_item(self: &Rc<Self>, id: u32, bus: &str, object_path: &str) {
         let Some(connection) = self.connection.borrow().clone() else {
             return;
+        };
+        // Out-of-order async GetAll responses must not roll back newer
+        // titles, attention states or icons.
+        let version = {
+            let mut items = self.items.borrow_mut();
+            let Some(item) = items.iter_mut().find(|item| item.handle == id) else {
+                return;
+            };
+            item.refresh_version = item.refresh_version.wrapping_add(1);
+            item.refresh_version
         };
         let weak = Rc::downgrade(self);
         connection.call(
@@ -607,6 +619,11 @@ impl Service {
                 let Ok(reply) = reply else {
                     return;
                 };
+                if !service.items.borrow().iter().any(|item| {
+                    item.handle == id && item.refresh_version == version
+                }) {
+                    return;
+                }
                 if reply.size() > 512 * 1024 {
                     return;
                 }
@@ -649,7 +666,9 @@ impl Service {
                 let icon = preferred_icon.as_deref().and_then(resolve_theme_icon)
                     .or(pixmap);
                 let mut items = service.items.borrow_mut();
-                let Some(item) = items.iter_mut().find(|item| item.handle == id) else {
+                let Some(item) = items.iter_mut().find(|item| {
+                    item.handle == id && item.refresh_version == version
+                }) else {
                     return;
                 };
                 if let Some(value) = id_property.filter(|v| !v.is_empty()) {
