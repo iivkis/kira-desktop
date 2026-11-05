@@ -5,8 +5,11 @@ the detached sky atlas are implemented in Svelte 5. Rust/GTK hosts Wayland
 surfaces and system adapters, not widget presentation. Visual acceptance in
 nested Niri is still open. This document operationalizes
 [specification §15](SPECIFICATION.md#15-премиальный-ui-и-фирменная-палитра-обязательное-требование).
-Dock, notifications, configurable KDL themes and third-party widgets remain
-future milestones.
+The first native StatusNotifierItem system tray is now implemented on
+`feat/status-tray-foundation`; cross-WebView icon transfer motion, pixmaps and
+native Niri visual acceptance remain in progress. See
+[System Tray philosophy, interactions, and acceptance](TRAY_DESIGN.md).
+Dock, configurable KDL themes and third-party widgets remain future milestones.
 
 ## Kira official visual direction
 
@@ -255,6 +258,15 @@ and redirected on repeated edits. No invented retrospective fragment
 path is added to factual sky positions. Reduced-motion changes immediately
 settle on the target geometry and listeners/GSAP tweens are disposed
 on unmount. Real-world Niri resize and focus visual QA remains necessary.
+
+### Native system tray · icon identity and honest app state
+
+The tray is a StatusNotifierItem host, not a list of minimized Niri windows.
+Pinned icons appear in the 42px Top Bar utility region; the overflow list
+uses a right-docked, nonexclusive pooled Wayland overlay. Applications come
+only from D-Bus registrations, pin state persists by app identity, and
+controls can send only bounded native actions. More:
+[Tray Design](TRAY_DESIGN.md).
 
 ### TENET Motion System · обязательный закон анимаций
 
