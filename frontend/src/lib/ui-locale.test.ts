@@ -4,7 +4,7 @@ import { UI_LOCALE, healthLabel, monitorLabel, matchingAppsLabel, russianCountLa
 describe('one built-in user-facing locale', () => {
   it('retains machine status codes but localizes their presentation', () => {
     expect(UI_LOCALE).toBe('ru-RU');
-    expect(healthLabel('STALE')).toBe('ДАННЫЕ УСТАРЕЛИ');
+    expect(healthLabel('CHECKING')).toBe('ПРОВЕРКА');
     expect(healthLabel('READY')).toBe('ГОТОВО');
     expect(monitorLabel('ALL SYSTEMS NOMINAL')).toBe('ВСЁ В НОРМЕ');
     expect(monitorLabel('NIRI DISCONNECTED')).toBe('NIRI ОТКЛЮЧЁН');
