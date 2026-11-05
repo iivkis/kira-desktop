@@ -19,6 +19,8 @@ const WATCHER_IFACE: &str = "org.kde.StatusNotifierWatcher";
 const ITEM_IFACE: &str = "org.kde.StatusNotifierItem";
 const PROPERTIES_IFACE: &str = "org.freedesktop.DBus.Properties";
 const MAX_ITEMS: usize = 64;
+const MAX_SAVED_PINS: usize = 128;
+const MAX_PINS_BYTES: usize = 64 * 1024;
 const WATCHER_XML: &str = r#"<node>
  <interface name="org.kde.StatusNotifierWatcher">
   <method name="RegisterStatusNotifierItem"><arg type="s" direction="in"/></method>
@@ -846,11 +848,19 @@ impl Service {
 /// App-provided Id is stable across new unique D-Bus connections. A
 /// registration fallback is used only when the app does not expose Id.
 fn pin_identity(registration: &str, id: &str) -> String {
-    let id = clean(id, 177);
-    if id.is_empty() {
+    // The local state format bounds keys by UTF-8 bytes. A count of Unicode
+    // scalar values alone would silently discard non-ASCII IDs on restart.
+    let mut cleaned = String::new();
+    for ch in id.chars().filter(|ch| !ch.is_control()).take(177) {
+        if cleaned.len() + ch.len_utf8() > 177 {
+            break;
+        }
+        cleaned.push(ch);
+    }
+    if cleaned.is_empty() {
         registration.to_string()
     } else {
-        format!("id:{id}")
+        format!("id:{cleaned}")
     }
 }
 
@@ -866,23 +876,36 @@ fn valid_bus_name(value: &str) -> bool {
     if value.len() < 3 || value.len() > 240 {
         return false;
     }
-    let parts: Vec<_> = value.trim_start_matches(':').split('.').collect();
-    parts.len() >= 2
-        && parts.iter().all(|part| {
-            !part.is_empty()
-                && part
-                    .chars()
-                    .all(|c| c.is_ascii_alphanumeric() || matches!(c, '_' | '-'))
-        })
+    let unique = value.starts_with(':');
+    let rest = if unique { &value[1..] } else { value };
+    let parts: Vec<_> = rest.split('.').collect();
+    if parts.len() < 2 {
+        return false;
+    }
+    parts.iter().all(|part| {
+        let Some(first) = part.chars().next() else {
+            return false;
+        };
+        (unique && (first.is_ascii_alphanumeric() || first == '_')
+            || !unique && (first.is_ascii_alphabetic() || first == '_'))
+            && part
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || matches!(c, '_' | '-'))
+    })
 }
 
 fn valid_object_path(value: &str) -> bool {
-    value.starts_with('/')
-        && value.len() <= 240
-        && value != "/"
-        && value
-            .chars()
-            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '/' | '_'))
+    if value.len() < 2 || value.len() > 240 || !value.starts_with('/') {
+        return false;
+    }
+    // Empty segments and trailing separators are invalid D-Bus paths.
+    // Reject them before calling GIO, whose argument preconditions are strict.
+    value[1..].split('/').all(|part| {
+        !part.is_empty()
+            && part
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '_')
+    })
 }
 
 fn parse_external(value: &str) -> Option<(String, String)> {
@@ -1008,20 +1031,29 @@ fn load_pins() -> HashSet<String> {
     let Ok(data) = fs::read_to_string(&path) else {
         return HashSet::new();
     };
-    if data.len() > 16 * 1024 {
+    if data.len() > MAX_PINS_BYTES {
         return HashSet::new();
     }
     serde_json::from_str::<Vec<String>>(&data)
         .unwrap_or_default()
         .into_iter()
         .filter(|value| !value.is_empty() && value.len() <= 180)
-        .take(128)
+        .take(MAX_SAVED_PINS)
         .collect()
 }
 
 fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
+    if pins.len() > MAX_SAVED_PINS || pins.iter().any(|pin| pin.is_empty() || pin.len() > 180) {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "SNI pin limit exceeded",
+        ));
+    }
     let Some(path) = pin_path() else {
-        return Ok(());
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "XDG_STATE_HOME and HOME are unset",
+        ));
     };
     let Some(parent) = path.parent() else {
         return Ok(());
@@ -1031,6 +1063,12 @@ fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
     sorted.sort();
     let tmp = path.with_extension(format!("{}.tmp", std::process::id()));
     let serialized = serde_json::to_vec(&sorted).map_err(std::io::Error::other)?;
+    if serialized.len() > MAX_PINS_BYTES {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "SNI pin file limit exceeded",
+        ));
+    }
     fs::write(&tmp, serialized)?;
     fs::rename(tmp, path)
 }
@@ -1106,6 +1144,39 @@ mod tests {
         assert!(argb_to_rgba(0, 1, &[]).is_none());
         assert!(argb_to_rgba(129, 1, &[]).is_none());
         assert!(argb_to_rgba(1, 1, &[0, 1, 2]).is_none());
+    }
+
+    #[test]
+    fn rejects_malformed_dbus_names_before_gio_calls() {
+        for invalid in [
+            "", ":1", ":::1.2", ":1.:2", ":1..2", "org..app",
+            "1.org", "org.2app", "org.-app", "org.app:", "org.app/",
+        ] {
+            assert!(!valid_bus_name(invalid), "{invalid}");
+        }
+        for valid in [
+            ":1.42", "org.kde.StatusNotifierItem-1234-1",
+            "org.example_app.Tray_1",
+        ] {
+            assert!(valid_bus_name(valid), "{valid}");
+        }
+        for invalid in [
+            "", "/", "//StatusNotifierItem", "/Status//Notifier",
+            "/StatusNotifierItem/", "/Bad.Path", "/Bad-Path",
+        ] {
+            assert!(!valid_object_path(invalid), "{invalid}");
+            assert!(parse_external(&format!(":1.2{invalid}")).is_none(), "{invalid}");
+        }
+        assert!(valid_object_path("/StatusNotifierItem"));
+        assert!(valid_object_path("/org/example_2/Tray"));
+    }
+
+    #[test]
+    fn unicode_pin_ids_fit_the_persisted_utf8_key_budget() {
+        let id = "😀".repeat(160);
+        let key = pin_identity(":1.4/StatusNotifierItem", &id);
+        assert!(key.len() <= 180);
+        assert_eq!(key, pin_identity(":1.9/StatusNotifierItem", &id));
     }
 
     #[test]
