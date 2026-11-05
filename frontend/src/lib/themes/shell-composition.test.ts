@@ -102,7 +102,8 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(core).toContain('data-phase={health.phase}');
     expect(core).toContain('aria-haspopup="dialog"');
     expect(core).toContain('onclick={onOpen}');
-    expect(core).toContain("aria-label={'Открыть монитор системы: ' + label}");
+    expect(core).toContain("aria-label={'Открыть монитор системы' + (quietRefresh ? '' : ': ' + label)}");
+    expect(core).toContain('{#if !quietRefresh}');
     expect(core).toContain('border-kira-accent bg-kira-accent');
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
