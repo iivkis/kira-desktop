@@ -696,7 +696,9 @@ impl Service {
                 if let Some(value) = id_property.as_deref().filter(|v| !v.is_empty()) {
                     item.key = pin_identity(&item.registration, value);
                 }
-                if let Some(value) = title.as_deref().filter(|v| !v.is_empty())
+                if let Some(value) = title
+                    .as_deref()
+                    .filter(|v| !v.is_empty())
                     .or(id_property.as_deref().filter(|v| !v.is_empty()))
                 {
                     item.title = clean(value, 120);
