@@ -203,9 +203,6 @@
 
 <div class="space-y-5">
   <section aria-label="Загрузка процессора и использование памяти">
-    {#if pulse !== null && !pulseFresh}
-      <p class="mb-2 text-[10px] font-semibold text-kira-muted" role="status">ИМПУЛЬС УСТАРЕЛ</p>
-    {/if}
     <div class="relative h-[182px] bg-kira-bg">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
@@ -233,8 +230,7 @@
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
         role="img" aria-label={'История нагрузки с адаптивными шкалами. ' + historyCaption + '. ' +
           'CPU ' + (cpu === null ? 'нет данных' : cpu + '%') +
-          ', RAM ' + (ram === null ? 'нет данных' : ram + '%') +
-          (pulse !== null && !pulseFresh ? '. Последний импульс устарел.' : '')}></div>
+          ', RAM ' + (ram === null ? 'нет данных' : ram + '%')}></div>
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
         <div class="absolute left-9 top-[96px] text-[10px] font-bold tracking-wide text-kira-text">RAM</div>
