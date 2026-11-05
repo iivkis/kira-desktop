@@ -5,6 +5,7 @@
 use std::cell::{Cell, RefCell};
 use std::collections::HashSet;
 use std::fs;
+use std::io::Read;
 use std::path::PathBuf;
 use std::rc::Rc;
 
@@ -21,6 +22,8 @@ const PROPERTIES_IFACE: &str = "org.freedesktop.DBus.Properties";
 const MAX_ITEMS: usize = 64;
 const MAX_SAVED_PINS: usize = 128;
 const MAX_PINS_BYTES: usize = 64 * 1024;
+// Never ship dozens of full-size icons on every SNI property update.
+const MAX_SNAPSHOT_ICON_BYTES: usize = 2 * 1024 * 1024;
 const WATCHER_XML: &str = r#"<node>
  <interface name="org.kde.StatusNotifierWatcher">
   <method name="RegisterStatusNotifierItem"><arg type="s" direction="in"/></method>
@@ -758,17 +761,19 @@ impl Service {
 
     fn snapshot(&self) -> serde_json::Value {
         let pins = self.pins.borrow();
+        let mut icon_budget = MAX_SNAPSHOT_ICON_BYTES;
         let items = self
             .items
             .borrow()
             .iter()
             .filter(|item| item.ready && item.status != "Passive")
             .map(|item| {
+                let icon = bounded_snapshot_icon(&item.icon, &mut icon_budget);
                 serde_json::json!({
                     "id": item.handle,
                     "key": item.key,
                     "title": item.title,
-                    "icon": item.icon,
+                    "icon": icon,
                     "status": item.status,
                     "pinned": pins.contains(&item.key),
                 })
@@ -847,6 +852,18 @@ impl Service {
 
 /// App-provided Id is stable across new unique D-Bus connections. A
 /// registration fallback is used only when the app does not expose Id.
+fn bounded_snapshot_icon<'a>(
+    icon: &'a Option<String>,
+    remaining: &mut usize,
+) -> Option<&'a str> {
+    let value = icon.as_deref()?;
+    if value.len() > *remaining {
+        return None;
+    }
+    *remaining -= value.len();
+    Some(value)
+}
+
 fn pin_identity(registration: &str, id: &str) -> String {
     // The local state format bounds keys by UTF-8 bytes. A count of Unicode
     // scalar values alone would silently discard non-ASCII IDs on restart.
@@ -1028,13 +1045,19 @@ fn load_pins() -> HashSet<String> {
     let Some(path) = pin_path() else {
         return HashSet::new();
     };
-    let Ok(data) = fs::read_to_string(&path) else {
+    let Ok(file) = fs::File::open(&path) else {
         return HashSet::new();
     };
-    if data.len() > MAX_PINS_BYTES {
+    let mut data = Vec::new();
+    if file
+        .take((MAX_PINS_BYTES + 1) as u64)
+        .read_to_end(&mut data)
+        .is_err()
+        || data.len() > MAX_PINS_BYTES
+    {
         return HashSet::new();
     }
-    serde_json::from_str::<Vec<String>>(&data)
+    serde_json::from_slice::<Vec<String>>(&data)
         .unwrap_or_default()
         .into_iter()
         .filter(|value| !value.is_empty() && value.len() <= 180)
@@ -1170,6 +1193,20 @@ mod tests {
         }
         assert!(valid_object_path("/StatusNotifierItem"));
         assert!(valid_object_path("/org/example_2/Tray"));
+    }
+
+    #[test]
+    fn snapshot_icon_budget_prevents_oversized_ipc_frames() {
+        let mut remaining = 12;
+        assert_eq!(
+            bounded_snapshot_icon(&Some("first".into()), &mut remaining),
+            Some("first")
+        );
+        assert_eq!(remaining, 7);
+        assert_eq!(bounded_snapshot_icon(&Some("too-long".into()), &mut remaining), None);
+        assert_eq!(remaining, 7);
+        assert_eq!(bounded_snapshot_icon(&Some("last".into()), &mut remaining), Some("last"));
+        assert_eq!(remaining, 3);
     }
 
     #[test]
