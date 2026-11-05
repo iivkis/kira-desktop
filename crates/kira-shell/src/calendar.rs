@@ -868,8 +868,11 @@ impl CalendarOverlay {
                     handle.parse::<u32>(),
                     entry.parse::<i32>(),
                 ) {
-                    if generation != 0 && handle != 0 && entry > 0
-                        && self.requested.get() && !self.closing.get()
+                    if generation != 0
+                        && handle != 0
+                        && entry > 0
+                        && self.requested.get()
+                        && !self.closing.get()
                         && self.generation.get() == generation
                         && self.active.get() == Some(Surface::Tray)
                     {
@@ -881,7 +884,9 @@ impl CalendarOverlay {
         }
         if let Some(raw) = message.strip_prefix("tray-menu-dismiss:") {
             if let Ok(generation) = raw.parse::<u32>() {
-                if generation != 0 && self.requested.get() && !self.closing.get()
+                if generation != 0
+                    && self.requested.get()
+                    && !self.closing.get()
                     && self.generation.get() == generation
                     && self.active.get() == Some(Surface::Tray)
                 {
