@@ -19,7 +19,11 @@
   });
 
   function keydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') { event.preventDefault(); onClose(); }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      onClose();
+    }
   }
 
   function togglePin(id: number) {
@@ -83,7 +87,7 @@
     {/each}
     {#if groups.pinned.length > 0}
       <p class="mt-3 border-t border-kira-muted/15 px-2 pt-3 text-[11px] text-kira-muted">
-        Закреплённые значки остаются в верхней панели.
+        Закреплённые значки доступны в панели или через кнопку переполнения.
       </p>
     {/if}
   </div>
