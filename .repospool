@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	cfb79d2f31e7482b4d9a5fed1eb85ea392acf3a8
+C	449e6cc0f825eb3afe84a548846487167f988d9d
 F	.cargo/config.toml	98	172	3
 F	.github/workflows/ci.yml	4419	177	114
 F	.github/workflows/frontend-nix.yml	1535	293	45
@@ -52,114 +52,114 @@ F	crates/kira-shell/src/renderer_recovery.rs	3634	10127	116
 F	crates/kira-shell/src/system_info.rs	3951	10245	113
 F	crates/kira-shell/src/system_metrics.rs	19842	10360	559
 F	crates/kira-shell/src/system_panel.rs	11356	10921	318
-F	crates/kira-shell/src/tray.rs	58217	11241	1612
-F	crates/kira-shell/src/tray_menu.rs	5238	12855	171
-F	crates/kira-shell/src/webview_pool.rs	9574	13028	283
-F	docs/CONFIG.md	5801	13313	125
-F	docs/CONFIG_OWNERSHIP.md	7257	13440	135
-F	docs/DESIGN_SYSTEM.md	38900	13577	627
-F	docs/DEVELOPMENT.md	30675	14206	605
-F	docs/NOTIFICATIONS.md	9522	14813	53
-F	docs/QA_VISUAL.md	16349	14868	184
-F	docs/SKY_MAP.md	6776	15054	105
-F	docs/SPECIFICATION.md	29309	15161	427
-F	docs/TENET_MOTION.md	40785	15590	204
-F	docs/TRAY_DESIGN.md	8921	15796	154
-F	docs/UI_ARCHITECTURE.md	6794	15952	107
-F	docs/UI_NOISE_REVIEW.md	5382	16061	53
-F	docs/VISUAL_REVIEW.md	10204	16116	91
-F	docs/WEBVIEW_POOL.md	11431	16209	97
-F	flake.nix	3181	16308	91
-F	frontend/index.html	2846	16401	66
-F	frontend/package.json	720	16469	27
-F	frontend/scripts/inline-assets.mjs	4457	16498	103
-F	frontend/scripts/inline-assets.test.mjs	4645	16603	106
-F	frontend/scripts/smoke-notifications.mjs	4593	16711	83
-F	frontend/scripts/smoke-overlays.mjs	51590	16796	717
-F	frontend/scripts/smoke-warning-inspector.mjs	8998	17515	151
-F	frontend/src/App.svelte	17520	17668	347
-F	frontend/src/lib/astronomy/sky-catalog.ts	74100	18017	16
-F	frontend/src/lib/astronomy/sky-model.test.ts	2738	18035	59
-F	frontend/src/lib/astronomy/sky-model.ts	3295	18096	69
-F	frontend/src/lib/bootstrap.test.ts	3408	18167	84
-F	frontend/src/lib/bootstrap.ts	2613	18253	70
-F	frontend/src/lib/calendar-model.test.ts	3571	18325	65
-F	frontend/src/lib/calendar-model.ts	4648	18392	105
-F	frontend/src/lib/calendar-tenet-model.test.ts	2621	18499	60
-F	frontend/src/lib/calendar-tenet-model.ts	1247	18561	29
-F	frontend/src/lib/calendar-tenet-motion.ts	10784	18592	287
-F	frontend/src/lib/clock-flight.test.ts	2404	18881	50
-F	frontend/src/lib/clock-flight.ts	1977	18933	50
-F	frontend/src/lib/components/CalendarWidget.svelte	14160	18985	294
-F	frontend/src/lib/components/DisplaySettings.svelte	24155	19281	457
-F	frontend/src/lib/components/LauncherWidget.svelte	10725	19740	239
-F	frontend/src/lib/components/NotificationCard.svelte	3191	19981	69
-F	frontend/src/lib/components/NotificationHost.svelte	5000	20052	106
-F	frontend/src/lib/components/SettingsWidget.svelte	7674	20160	142
-F	frontend/src/lib/components/SkyMap.svelte	13085	20304	284
-F	frontend/src/lib/components/SystemCharts.svelte	11268	20590	245
-F	frontend/src/lib/components/SystemHealth.svelte	2639	20837	63
-F	frontend/src/lib/components/SystemWidget.svelte	18194	20902	315
-F	frontend/src/lib/components/TrayBar.svelte	2760	21219	55
-F	frontend/src/lib/components/TrayWidget.svelte	7449	21276	139
-F	frontend/src/lib/components/WindowControls.svelte	3178	21417	74
-F	frontend/src/lib/components/WorkspacePreview.svelte	6658	21493	119
-F	frontend/src/lib/display-confirmation.test.ts	1789	21614	34
-F	frontend/src/lib/display-confirmation.ts	1262	21650	28
-F	frontend/src/lib/launcher-model.test.ts	2266	21680	46
-F	frontend/src/lib/launcher-model.ts	1403	21728	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	21759	89
-F	frontend/src/lib/lazy-widget.ts	1984	21850	63
-F	frontend/src/lib/motion-contract.test.ts	11241	21915	198
-F	frontend/src/lib/motion.ts	24039	22115	657
-F	frontend/src/lib/notification-model.ts	237	22774	9
-F	frontend/src/lib/overlay-size.test.ts	2153	22785	53
-F	frontend/src/lib/overlay-size.ts	1601	22840	36
-F	frontend/src/lib/sdk/core.test.ts	29911	22878	605
-F	frontend/src/lib/sdk/core.ts	29729	23485	734
-F	frontend/src/lib/settings-model.test.ts	1064	24221	21
-F	frontend/src/lib/settings-model.ts	1262	24244	26
-F	frontend/src/lib/surface-colors.test.ts	1092	24272	23
-F	frontend/src/lib/surface-colors.ts	1834	24297	36
-F	frontend/src/lib/system-charts.test.ts	8934	24335	190
-F	frontend/src/lib/system-charts.ts	7498	24527	181
-F	frontend/src/lib/system-health.test.ts	3489	24710	61
-F	frontend/src/lib/system-health.ts	3417	24773	71
-F	frontend/src/lib/system-model.test.ts	5412	24846	103
-F	frontend/src/lib/system-model.ts	6298	24951	144
-F	frontend/src/lib/themes/kira-default.css	1941	25097	56
-F	frontend/src/lib/themes/kira-default.test.ts	4779	25155	107
-F	frontend/src/lib/themes/kira-default.ts	777	25264	22
-F	frontend/src/lib/themes/shell-composition.test.ts	11079	25288	181
-F	frontend/src/lib/time.test.ts	545	25471	14
-F	frontend/src/lib/time.ts	320	25487	9
-F	frontend/src/lib/tray-model.test.ts	3577	25498	75
-F	frontend/src/lib/tray-model.ts	3829	25575	105
-F	frontend/src/lib/ui-locale.test.ts	1811	25682	35
-F	frontend/src/lib/ui-locale.ts	1799	25719	47
-F	frontend/src/lib/warning-model.test.ts	1633	25768	34
-F	frontend/src/lib/warning-model.ts	749	25804	18
-F	frontend/src/lib/workspace-window.test.ts	2298	25824	52
-F	frontend/src/lib/workspace-window.ts	1063	25878	32
-F	frontend/src/main.ts	8652	25912	180
-F	frontend/src/style.css	8044	26094	234
-F	frontend/tsconfig.json	403	26330	16
-F	frontend/vite.config.ts	224	26348	8
-F	nix/package.nix	3904	26358	134
-F	scripts/dev_preview.py	18147	26494	403	x
-F	scripts/qa_visual.py	12052	26899	299
-F	tests/test_calendar_design.py	10187	27200	175
-F	tests/test_detailed_health.py	7798	27377	138
-F	tests/test_dev_preview.py	9339	27517	219
-F	tests/test_displays.py	6263	27738	103
-F	tests/test_launcher_design.py	10825	27843	195
-F	tests/test_native_theme.py	2897	28040	57
-F	tests/test_popup_geometry.py	3805	28099	66
-F	tests/test_qa_visual.py	10549	28167	217
-F	tests/test_settings.py	5486	28386	94
-F	tests/test_tenet_close.py	6297	28482	115
-F	tests/test_ui_bootstrap_contract.py	1103	28599	29
-F	tests/test_webview_pool.py	11723	28630	200
+F	crates/kira-shell/src/tray.rs	63850	11241	1770
+F	crates/kira-shell/src/tray_menu.rs	5253	13013	171
+F	crates/kira-shell/src/webview_pool.rs	9574	13186	283
+F	docs/CONFIG.md	5801	13471	125
+F	docs/CONFIG_OWNERSHIP.md	7257	13598	135
+F	docs/DESIGN_SYSTEM.md	38900	13735	627
+F	docs/DEVELOPMENT.md	30675	14364	605
+F	docs/NOTIFICATIONS.md	9522	14971	53
+F	docs/QA_VISUAL.md	16349	15026	184
+F	docs/SKY_MAP.md	6776	15212	105
+F	docs/SPECIFICATION.md	29309	15319	427
+F	docs/TENET_MOTION.md	40785	15748	204
+F	docs/TRAY_DESIGN.md	9663	15954	167
+F	docs/UI_ARCHITECTURE.md	6794	16123	107
+F	docs/UI_NOISE_REVIEW.md	5382	16232	53
+F	docs/VISUAL_REVIEW.md	10204	16287	91
+F	docs/WEBVIEW_POOL.md	11431	16380	97
+F	flake.nix	3181	16479	91
+F	frontend/index.html	2846	16572	66
+F	frontend/package.json	720	16640	27
+F	frontend/scripts/inline-assets.mjs	4457	16669	103
+F	frontend/scripts/inline-assets.test.mjs	4645	16774	106
+F	frontend/scripts/smoke-notifications.mjs	4593	16882	83
+F	frontend/scripts/smoke-overlays.mjs	51590	16967	717
+F	frontend/scripts/smoke-warning-inspector.mjs	8998	17686	151
+F	frontend/src/App.svelte	17520	17839	347
+F	frontend/src/lib/astronomy/sky-catalog.ts	74100	18188	16
+F	frontend/src/lib/astronomy/sky-model.test.ts	2738	18206	59
+F	frontend/src/lib/astronomy/sky-model.ts	3295	18267	69
+F	frontend/src/lib/bootstrap.test.ts	3408	18338	84
+F	frontend/src/lib/bootstrap.ts	2613	18424	70
+F	frontend/src/lib/calendar-model.test.ts	3571	18496	65
+F	frontend/src/lib/calendar-model.ts	4648	18563	105
+F	frontend/src/lib/calendar-tenet-model.test.ts	2621	18670	60
+F	frontend/src/lib/calendar-tenet-model.ts	1247	18732	29
+F	frontend/src/lib/calendar-tenet-motion.ts	10784	18763	287
+F	frontend/src/lib/clock-flight.test.ts	2404	19052	50
+F	frontend/src/lib/clock-flight.ts	1977	19104	50
+F	frontend/src/lib/components/CalendarWidget.svelte	14160	19156	294
+F	frontend/src/lib/components/DisplaySettings.svelte	24155	19452	457
+F	frontend/src/lib/components/LauncherWidget.svelte	10725	19911	239
+F	frontend/src/lib/components/NotificationCard.svelte	3191	20152	69
+F	frontend/src/lib/components/NotificationHost.svelte	5000	20223	106
+F	frontend/src/lib/components/SettingsWidget.svelte	7674	20331	142
+F	frontend/src/lib/components/SkyMap.svelte	13085	20475	284
+F	frontend/src/lib/components/SystemCharts.svelte	11268	20761	245
+F	frontend/src/lib/components/SystemHealth.svelte	2639	21008	63
+F	frontend/src/lib/components/SystemWidget.svelte	18194	21073	315
+F	frontend/src/lib/components/TrayBar.svelte	2760	21390	55
+F	frontend/src/lib/components/TrayWidget.svelte	7654	21447	143
+F	frontend/src/lib/components/WindowControls.svelte	3178	21592	74
+F	frontend/src/lib/components/WorkspacePreview.svelte	6658	21668	119
+F	frontend/src/lib/display-confirmation.test.ts	1789	21789	34
+F	frontend/src/lib/display-confirmation.ts	1262	21825	28
+F	frontend/src/lib/launcher-model.test.ts	2266	21855	46
+F	frontend/src/lib/launcher-model.ts	1403	21903	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	21934	89
+F	frontend/src/lib/lazy-widget.ts	1984	22025	63
+F	frontend/src/lib/motion-contract.test.ts	11241	22090	198
+F	frontend/src/lib/motion.ts	24039	22290	657
+F	frontend/src/lib/notification-model.ts	237	22949	9
+F	frontend/src/lib/overlay-size.test.ts	2153	22960	53
+F	frontend/src/lib/overlay-size.ts	1601	23015	36
+F	frontend/src/lib/sdk/core.test.ts	29911	23053	605
+F	frontend/src/lib/sdk/core.ts	29729	23660	734
+F	frontend/src/lib/settings-model.test.ts	1064	24396	21
+F	frontend/src/lib/settings-model.ts	1262	24419	26
+F	frontend/src/lib/surface-colors.test.ts	1092	24447	23
+F	frontend/src/lib/surface-colors.ts	1834	24472	36
+F	frontend/src/lib/system-charts.test.ts	8934	24510	190
+F	frontend/src/lib/system-charts.ts	7498	24702	181
+F	frontend/src/lib/system-health.test.ts	3489	24885	61
+F	frontend/src/lib/system-health.ts	3417	24948	71
+F	frontend/src/lib/system-model.test.ts	5412	25021	103
+F	frontend/src/lib/system-model.ts	6298	25126	144
+F	frontend/src/lib/themes/kira-default.css	1941	25272	56
+F	frontend/src/lib/themes/kira-default.test.ts	4779	25330	107
+F	frontend/src/lib/themes/kira-default.ts	777	25439	22
+F	frontend/src/lib/themes/shell-composition.test.ts	11079	25463	181
+F	frontend/src/lib/time.test.ts	545	25646	14
+F	frontend/src/lib/time.ts	320	25662	9
+F	frontend/src/lib/tray-model.test.ts	3577	25673	75
+F	frontend/src/lib/tray-model.ts	3829	25750	105
+F	frontend/src/lib/ui-locale.test.ts	1811	25857	35
+F	frontend/src/lib/ui-locale.ts	1799	25894	47
+F	frontend/src/lib/warning-model.test.ts	1633	25943	34
+F	frontend/src/lib/warning-model.ts	749	25979	18
+F	frontend/src/lib/workspace-window.test.ts	2298	25999	52
+F	frontend/src/lib/workspace-window.ts	1063	26053	32
+F	frontend/src/main.ts	8652	26087	180
+F	frontend/src/style.css	8044	26269	234
+F	frontend/tsconfig.json	403	26505	16
+F	frontend/vite.config.ts	224	26523	8
+F	nix/package.nix	3904	26533	134
+F	scripts/dev_preview.py	18147	26669	403	x
+F	scripts/qa_visual.py	12052	27074	299
+F	tests/test_calendar_design.py	10187	27375	175
+F	tests/test_detailed_health.py	7798	27552	138
+F	tests/test_dev_preview.py	9339	27692	219
+F	tests/test_displays.py	6263	27913	103
+F	tests/test_launcher_design.py	10825	28018	195
+F	tests/test_native_theme.py	2897	28215	57
+F	tests/test_popup_geometry.py	3805	28274	66
+F	tests/test_qa_visual.py	10549	28342	217
+F	tests/test_settings.py	5486	28561	94
+F	tests/test_tenet_close.py	6297	28657	115
+F	tests/test_ui_bootstrap_contract.py	1103	28774	29
+F	tests/test_webview_pool.py	11723	28805	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -11301,12 +11301,32 @@ struct Item {
     refresh_version: u64,
 }
 
+#[derive(Clone)]
 struct MenuSession {
     handle: u32,
     bus: String,
     path: String,
     title: String,
     entries: Vec<MenuEntry>,
+}
+
+impl MenuSession {
+    fn same_target(&self, other: &Self) -> bool {
+        self.handle == other.handle && self.bus == other.bus && self.path == other.path
+    }
+}
+
+/// Selecting an item must not consume the open menu. Only an explicit
+/// dismissal, a different menu, or the app unregistering may clear it.
+fn selected_menu_for_click(
+    current: &Option<MenuSession>,
+    handle: u32,
+    entry_id: i32,
+) -> Option<MenuSession> {
+    current
+        .as_ref()
+        .filter(|menu| menu.handle == handle && tray_menu::clickable(&menu.entries, entry_id))
+        .cloned()
 }
 
 struct Service {
@@ -12355,40 +12375,106 @@ impl Service {
         );
     }
 
-    fn click_menu(&self, handle: u32, entry_id: i32) {
-        let selected = {
-            let mut active = self.current_menu.borrow_mut();
-            let Some(menu) = active.as_ref() else { return };
-            if menu.handle != handle || !tray_menu::clickable(&menu.entries, entry_id) {
-                return;
-            }
-            active.take()
+    fn click_menu(self: &Rc<Self>, handle: u32, entry_id: i32) {
+        let menu = {
+            let current = self.current_menu.borrow();
+            selected_menu_for_click(&current, handle, entry_id)
         };
-        let Some(menu) = selected else { return };
-        self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
-        self.publish_menu();
-        let still_registered = self.items.borrow().iter().any(|item| {
-            item.handle == handle
-                && item.bus == menu.bus
-                && item.menu_path.as_deref() == Some(menu.path.as_str())
-        });
-        if !still_registered {
+        let Some(menu) = menu else {
+            return;
+        };
+        if !self.menu_item_is_live(&menu) {
             return;
         }
-        if let Some(connection) = self.connection.borrow().as_ref() {
-            connection.call(
-                Some(&menu.bus),
-                &menu.path,
-                "com.canonical.dbusmenu",
-                "Event",
-                Some(&tray_menu::click_params(entry_id)),
-                None,
-                gio::DBusCallFlags::NONE,
-                2500,
-                None::<&gio::Cancellable>,
-                |_| {},
-            );
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
+
+        // Keep current_menu intact. A D-Bus menu item is an action, not
+        // implicit navigation back to the hidden-icons list.
+        // A new click invalidates any older pending post-action layout read.
+        let revision = self.menu_serial.get().wrapping_add(1);
+        self.menu_serial.set(revision);
+        let weak = Rc::downgrade(self);
+        let bus = menu.bus.clone();
+        let path = menu.path.clone();
+        connection.call(
+            Some(&bus),
+            &path,
+            "com.canonical.dbusmenu",
+            "Event",
+            Some(&tray_menu::click_params(entry_id)),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if reply.is_err() || service.menu_serial.get() != revision {
+                    return;
+                }
+                // Checkboxes, radio buttons and enabled states may change.
+                // Refresh after Event completes, without hiding the menu.
+                service.refresh_menu_after_action(menu, revision);
+            },
+        );
+    }
+
+    fn menu_item_is_live(&self, menu: &MenuSession) -> bool {
+        self.items.borrow().iter().any(|item| {
+            item.ready
+                && item.handle == menu.handle
+                && item.bus == menu.bus
+                && item.menu_path.as_deref() == Some(menu.path.as_str())
+        })
+    }
+
+    fn refresh_menu_after_action(self: &Rc<Self>, menu: MenuSession, revision: u64) {
+        if self.menu_serial.get() != revision || !self.menu_item_is_live(&menu) {
+            return;
         }
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let bus = menu.bus.clone();
+        let path = menu.path.clone();
+        connection.call(
+            Some(&bus),
+            &path,
+            "com.canonical.dbusmenu",
+            "GetLayout",
+            Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.menu_serial.get() != revision || !service.menu_item_is_live(&menu) {
+                    return;
+                }
+                // A failed or malformed refresh must never throw the user out
+                // of the menu. An empty *valid* layout is still a menu.
+                let Some(entries) = reply.ok().as_ref().and_then(tray_menu::parse_layout) else {
+                    return;
+                };
+                let mut current = service.current_menu.borrow_mut();
+                let Some(active) = current.as_mut() else {
+                    return;
+                };
+                if !active.same_target(&menu) || active.entries == entries {
+                    return;
+                }
+                active.entries = entries;
+                drop(current);
+                service.publish_menu();
+            },
+        );
     }
 }
 
@@ -12715,6 +12801,78 @@ mod tests {
     use super::*;
 
     #[test]
+    fn clicking_a_menu_leaf_preserves_the_active_menu() {
+        let original = Some(MenuSession {
+            handle: 42,
+            bus: ":1.42".into(),
+            path: "/MenuBar".into(),
+            title: "Audio player".into(),
+            entries: vec![
+                MenuEntry {
+                    id: 3,
+                    label: "Shuffle".into(),
+                    depth: 0,
+                    enabled: true,
+                    separator: false,
+                    checked: false,
+                    radio: false,
+                    has_children: false,
+                },
+                MenuEntry {
+                    id: 4,
+                    label: "Unavailable".into(),
+                    depth: 0,
+                    enabled: false,
+                    separator: false,
+                    checked: false,
+                    radio: false,
+                    has_children: false,
+                },
+            ],
+        });
+
+        let selected = selected_menu_for_click(&original, 42, 3).unwrap();
+        assert_eq!(selected.title, "Audio player");
+        assert!(selected.same_target(original.as_ref().unwrap()));
+        // Sending Event may refresh the layout, but must not navigate back.
+        assert!(original.is_some());
+        assert_eq!(original.as_ref().unwrap().entries[0].label, "Shuffle");
+        assert!(selected_menu_for_click(&original, 42, 4).is_none());
+        assert!(selected_menu_for_click(&original, 77, 3).is_none());
+        assert!(selected_menu_for_click(&original, 42, 999).is_none());
+        assert!(selected_menu_for_click(&None, 42, 3).is_none());
+    }
+
+    #[test]
+    fn refreshed_menu_entries_keep_the_same_app_target() {
+        let before = MenuSession {
+            handle: 42,
+            bus: ":1.42".into(),
+            path: "/MenuBar".into(),
+            title: "Player".into(),
+            entries: Vec::new(),
+        };
+        let mut after = before.clone();
+        after.entries.push(MenuEntry {
+            id: 6,
+            label: "Mute".into(),
+            depth: 0,
+            enabled: true,
+            separator: false,
+            checked: true,
+            radio: false,
+            has_children: false,
+        });
+        assert!(before.same_target(&after));
+        assert_ne!(before.entries, after.entries);
+        after.path = "/DifferentMenu".into();
+        assert!(!before.same_target(&after));
+        after.path = before.path.clone();
+        after.bus = ":1.999".into();
+        assert!(!before.same_target(&after));
+    }
+
+    #[test]
     fn accepts_only_bounded_unique_service_and_path() {
         assert_eq!(
             parse_external(":1.42/StatusNotifierItem"),
@@ -12861,7 +13019,7 @@ const MAX_MENU_ENTRIES: usize = 80;
 const MAX_MENU_LEVEL: u8 = 3;
 const MAX_MENU_REPLY_BYTES: usize = 256 * 1024;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MenuEntry {
     pub id: i32,
     pub label: String,
@@ -15844,7 +16002,7 @@ The mandatory [TENET Motion System](TENET_MOTION.md) applies:
 | Right click a pinned Top Bar icon | Open its `com.canonical.dbusmenu` in the pooled tray popup, or fallback to `ContextMenu(0,0)` |
 | Click pin control beside row | Move application identity between visible and hidden groups |
 | Right click row | Open its D-Bus menu, or fallback to native `ContextMenu(0,0)` |
-| Click a D-Bus menu leaf | Send only its validated `Event(id, clicked)` action |
+| Click a D-Bus menu leaf | Send only its validated `Event(id, clicked)` action, keep the app menu open, refresh its current items |
 | Escape inside app menu | Return to the tray list; Escape again closes the popup |
 | Escape or close control | Reversibly dismiss popup |
 | Quit/restart Shell | Restore pin choices from local state |
@@ -15947,6 +16105,19 @@ serialized icons, and uses an allowlist of trusted native actions.
   menu is a distinct interaction state within the same popup, without a
   second Wayland surface. A menu can be dismissed with Escape or its back
   control; reduced-motion returns immediate true state.
+
+## Menu action continuity
+
+Choosing a D-Bus menu command **does not** navigate back to hidden icons.
+The native host retains the same menu session while the application's
+`Event(clicked)` is in flight, then requests a fresh bounded `GetLayout`
+so checkbox, radio, disabled and removed entries can update in place.
+Failed or malformed refreshes keep the last safe menu snapshot instead
+of closing it. Out-of-order refreshes are ignored; the menu is dismissed
+only when the user goes back/closes the popup, opens a different menu,
+or the application unregisters or otherwise becomes unavailable.
+A valid empty layout keeps the application's menu surface visible with
+a neutral empty message.
 
 FILE	docs/UI_ARCHITECTURE.md
 # UI architecture: Rust host, Svelte 5 widgets
@@ -21362,6 +21533,10 @@ FILE	frontend/src/lib/components/TrayWidget.svelte
               <span class="min-w-0 flex-1 truncate">{entry.label}</span>
             </button>
           {/if}
+        {:else}
+          <p class="px-2 py-5 text-center text-[12px] text-kira-muted" role="status">
+            У приложения пока нет доступных действий
+          </p>
         {/each}
       </div>
     </section>
