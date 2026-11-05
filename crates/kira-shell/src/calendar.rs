@@ -860,6 +860,36 @@ impl CalendarOverlay {
             }
             return;
         }
+        if let Some(raw) = message.strip_prefix("tray-menu-click:") {
+            let fields: Vec<_> = raw.split(':').collect();
+            if let [generation, handle, entry] = fields.as_slice() {
+                if let (Ok(generation), Ok(handle), Ok(entry)) = (
+                    generation.parse::<u32>(),
+                    handle.parse::<u32>(),
+                    entry.parse::<i32>(),
+                ) {
+                    if generation != 0 && handle != 0 && entry > 0
+                        && self.requested.get() && !self.closing.get()
+                        && self.generation.get() == generation
+                        && self.active.get() == Some(Surface::Tray)
+                    {
+                        crate::tray::menu_click(handle, entry);
+                    }
+                }
+            }
+            return;
+        }
+        if let Some(raw) = message.strip_prefix("tray-menu-dismiss:") {
+            if let Ok(generation) = raw.parse::<u32>() {
+                if generation != 0 && self.requested.get() && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Tray)
+                {
+                    crate::tray::clear_menu();
+                }
+            }
+            return;
+        }
         if let Some(raw) = message.strip_prefix("tray:") {
             let fields: Vec<_> = raw.split(':').collect();
             if let [generation, action, id] = fields.as_slice() {
@@ -1870,6 +1900,31 @@ pub fn toggle_tray(application: &gtk::Application, html: &str, context: &webkit6
                     } else {
                         view.request_close();
                     }
+                }
+            } else {
+                view.show(Surface::Tray);
+            }
+        }),
+    );
+}
+
+/// Show the tray without toggling an already visible popup. Context menus
+/// reuse the same pooled surface rather than opening a second WebView.
+pub fn show_tray(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
+        return;
+    };
+    pool.request(
+        Surface::Tray,
+        false,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Tray) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    view.cancel_close();
+                    view.window.present();
                 }
             } else {
                 view.show(Surface::Tray);
