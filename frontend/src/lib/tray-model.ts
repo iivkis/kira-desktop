@@ -63,3 +63,43 @@ export function trayBarView(items: TrayItem[], limit: number): {
     needsAttention: overflow.some(item => item.status === 'NeedsAttention'),
   };
 }
+
+/** Subset of app-owned D-Bus menus rendered by the trusted tray host. */
+export interface TrayMenuEntry {
+  id: number;
+  label: string;
+  depth: number;
+  enabled: boolean;
+  separator: boolean;
+  checked: boolean;
+  radio: boolean;
+  has_children: boolean;
+}
+
+export interface TrayMenu {
+  handle: number;
+  title: string;
+  items: TrayMenuEntry[];
+}
+
+export const EMPTY_TRAY_MENU: TrayMenu = { handle: 0, title: '', items: [] };
+
+export function isTrayMenu(value: unknown): value is TrayMenu {
+  if (!record(value) || !Number.isSafeInteger(value.handle) ||
+      (value.handle as number) < 0 || (value.handle as number) > 0xffffffff ||
+      typeof value.title !== 'string' || Array.from(value.title).length > 120 ||
+      !Array.isArray(value.items) || value.items.length > 80 ||
+      ((value.handle as number) === 0 && value.items.length !== 0)) return false;
+  return value.items.every((entry: unknown) =>
+    record(entry) && Number.isSafeInteger(entry.id) &&
+    (entry.id as number) > 0 && (entry.id as number) <= 0x7fffffff &&
+    Number.isSafeInteger(entry.depth) &&
+    (entry.depth as number) >= 0 && (entry.depth as number) <= 2 &&
+    typeof entry.label === 'string' && Array.from(entry.label).length <= 120 &&
+    typeof entry.enabled === 'boolean' &&
+    typeof entry.separator === 'boolean' &&
+    typeof entry.checked === 'boolean' &&
+    typeof entry.radio === 'boolean' &&
+    typeof entry.has_children === 'boolean',
+  );
+}
