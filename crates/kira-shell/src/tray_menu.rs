@@ -7,7 +7,7 @@ const MAX_MENU_ENTRIES: usize = 80;
 const MAX_MENU_LEVEL: u8 = 3;
 const MAX_MENU_REPLY_BYTES: usize = 256 * 1024;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MenuEntry {
     pub id: i32,
     pub label: String,
