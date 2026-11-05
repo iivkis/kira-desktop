@@ -99,9 +99,9 @@ pub fn start(bar: &webkit6::WebView) {
         gio::BusNameOwnerFlags::DO_NOT_QUEUE,
         move |connection, _| {
             if let Some(service) = acquired.upgrade() {
-                service.install_signal_observers(connection);
+                service.install_signal_observers(&connection);
                 service.connection.replace(Some(connection.clone()));
-                service.register_watcher(connection);
+                service.register_watcher(&connection);
             }
         },
         move |_, _| {
@@ -777,9 +777,11 @@ fn parse_external(value: &str) -> Option<(String, String)> {
     };
     // Watcher registrations are authoritative; both unique and well-known
     // names are supported. The caller cannot override this via WebKit.
-    valid_bus_name(bus)
-        .then(|| (bus.into(), path.into()))
-        .filter(|(_, path)| valid_object_path(path))
+    if valid_bus_name(bus) && valid_object_path(path) {
+        Some((bus.to_string(), path.to_string()))
+    } else {
+        None
+    }
 }
 
 fn resolve_theme_icon(name: &str) -> Option<String> {
