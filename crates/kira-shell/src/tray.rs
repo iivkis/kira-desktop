@@ -1116,7 +1116,11 @@ fn load_pins() -> HashSet<String> {
 }
 
 fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
-    if pins.len() > MAX_SAVED_PINS || pins.iter().any(|pin| pin.is_empty() || pin.len() > MAX_PIN_KEY_BYTES) {
+    if pins.len() > MAX_SAVED_PINS
+        || pins
+            .iter()
+            .any(|pin| pin.is_empty() || pin.len() > MAX_PIN_KEY_BYTES)
+    {
         return Err(std::io::Error::new(
             std::io::ErrorKind::InvalidData,
             "SNI pin limit exceeded",
