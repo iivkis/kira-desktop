@@ -39,6 +39,10 @@ describe('native tray state', () => {
       available: true,
       items: [{ ...item(7, false), title: '😀'.repeat(121) }],
     })).toBe(false);
+    expect(isTrayState({
+      available: true,
+      items: [{ ...item(8, false), key: 'org.example.' + 'x'.repeat(190) }],
+    })).toBe(true);
   });
 
   it('rejects forged URLs, duplicate IDs, oversized lists and invalid statuses', () => {
