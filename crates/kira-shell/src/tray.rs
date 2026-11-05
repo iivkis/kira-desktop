@@ -154,22 +154,9 @@ impl Service {
                                 "org.freedesktop.DBus.Error.InvalidArgs", "Missing sender");
                             return;
                         };
-                        if service.register_item(&registration, sender) {
-                            invocation.return_value(None);
-                            // Emit precisely one registration for each accepted item.
-                            let registered = service.items.borrow().last()
-                                .map(|item| item.registration.clone());
-                            if let Some(registered) = registered {
-                                let _ = connection.emit_signal(
-                                    None, WATCHER_PATH, WATCHER_IFACE,
-                                    "StatusNotifierItemRegistered",
-                                    Some(&(registered,).to_variant()));
-                            }
-                        } else {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.DBus.Error.InvalidArgs",
-                                "Invalid or duplicate status item registration");
-                        }
+                        service.register_item_request(
+                            &connection, registration, sender.to_string(), invocation);
+
                     }
                     "RegisterStatusNotifierHost" => {
                         let host = params.child_value(0).get::<String>().unwrap_or_default();
@@ -322,22 +309,92 @@ impl Service {
         }
     }
 
-    fn register_item(self: &Rc<Self>, raw: &str, sender: &str) -> bool {
-        if raw.is_empty() || raw.len() > 240 || !valid_bus_name(sender) { return false; }
-        // Restrict registrations to the caller's own unique bus name or an
-        // object path on that connection. We don't trust a forged well-known
-        // bus name from an unrelated D-Bus sender.
-        let (bus, path) = if raw.starts_with('/') {
-            if !valid_object_path(raw) { return false; }
-            (sender.to_string(), raw.to_string())
-        } else if raw == sender {
-            (sender.to_string(), "/StatusNotifierItem".into())
+    fn register_item_request(
+        self: &Rc<Self>,
+        connection: &gio::DBusConnection,
+        registration: String,
+        sender: String,
+        invocation: gio::DBusMethodInvocation,
+    ) {
+        if registration.is_empty() || registration.len() > 240 || !valid_bus_name(&sender) {
+            invocation.return_dbus_error(
+                "org.freedesktop.DBus.Error.InvalidArgs", "Invalid SNI registration");
+            return;
+        }
+        if registration.starts_with('/') {
+            if valid_object_path(&registration) {
+                self.finish_registration(connection, &registration, &sender,
+                    &registration, invocation);
+            } else {
+                invocation.return_dbus_error(
+                    "org.freedesktop.DBus.Error.InvalidArgs", "Invalid object path");
+            }
+            return;
+        }
+        if !valid_bus_name(&registration) {
+            invocation.return_dbus_error(
+                "org.freedesktop.DBus.Error.InvalidArgs", "Invalid service name");
+            return;
+        }
+        if registration == sender {
+            self.finish_registration(connection, &registration, &sender,
+                "/StatusNotifierItem", invocation);
+            return;
+        }
+        // Real SNI apps generally register a well-known org.kde.* bus name.
+        // Accept it ONLY after D-Bus confirms that this exact caller owns it.
+        let weak = Rc::downgrade(self);
+        let reply_connection = connection.clone();
+        let owner_name = registration.clone();
+        connection.call(
+            Some("org.freedesktop.DBus"), "/org/freedesktop/DBus",
+            "org.freedesktop.DBus", "GetNameOwner",
+            Some(&(registration,).to_variant()), None,
+            gio::DBusCallFlags::NONE, 2500,
+            None::<&gio::Cancellable>, move |reply| {
+                let owner = reply.ok().and_then(|value|
+                    value.child_value(0).get::<String>());
+                if owner.as_deref() != Some(sender.as_str()) {
+                    invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.AccessDenied",
+                        "Caller does not own the StatusNotifierItem service");
+                    return;
+                }
+                if let Some(service) = weak.upgrade() {
+                    service.finish_registration(&reply_connection, &owner_name,
+                        &owner_name, "/StatusNotifierItem", invocation);
+                } else {
+                    invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.Failed", "SNI watcher unavailable");
+                }
+            },
+        );
+    }
+
+    fn finish_registration(
+        self: &Rc<Self>,
+        connection: &gio::DBusConnection,
+        registration: &str,
+        bus: &str,
+        path: &str,
+        invocation: gio::DBusMethodInvocation,
+    ) {
+        if self.insert_item(registration, bus, path) {
+            invocation.return_value(None);
+            let advertised = if registration.starts_with('/') {
+                format!("{bus}{registration}")
+            } else {
+                registration.to_string()
+            };
+            let _ = connection.emit_signal(
+                None, WATCHER_PATH, WATCHER_IFACE,
+                "StatusNotifierItemRegistered",
+                Some(&(advertised,).to_variant()));
         } else {
-            // Resolve legitimate well-known registrations via their caller
-            // later; this narrow initial watcher accepts unique names only.
-            return false;
-        };
-        self.insert_item(raw, &bus, &path)
+            invocation.return_dbus_error(
+                "org.freedesktop.DBus.Error.InvalidArgs",
+                "Duplicate or full SNI watcher");
+        }
     }
 
     fn insert_item(self: &Rc<Self>, registration: &str, bus: &str, path: &str) -> bool {
@@ -513,9 +570,12 @@ fn clean(value: &str, limit: usize) -> String {
 }
 
 fn valid_bus_name(value: &str) -> bool {
-    value.len() <= 240 && value.len() >= 3 &&
-    value.starts_with(':') && value.chars().all(|c|
-        c.is_ascii_alphanumeric() || matches!(c, ':' | '.' | '_' | '-'))
+    if value.len() < 3 || value.len() > 240 { return false; }
+    let parts: Vec<_> = value.trim_start_matches(':').split('.').collect();
+    parts.len() >= 2 && parts.iter().all(|part| {
+        !part.is_empty() && part.chars().all(|c|
+            c.is_ascii_alphanumeric() || matches!(c, '_' | '-'))
+    })
 }
 
 fn valid_object_path(value: &str) -> bool {
@@ -530,8 +590,8 @@ fn parse_external(value: &str) -> Option<(String, String)> {
     } else {
         (value, "/StatusNotifierItem")
     };
-    // For now we accept unique service-name registrations from external
-    // watchers. Well-known names can be mapped when their owner is checked.
+    // Watcher registrations are authoritative; both unique and well-known
+    // names are supported. The caller cannot override this via WebKit.
     valid_bus_name(bus).then(|| (bus.into(), path.into()))
         .filter(|(_, path)| valid_object_path(path))
 }
@@ -574,7 +634,9 @@ fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
     let mut sorted: Vec<_> = pins.iter().cloned().collect();
     sorted.sort();
     let tmp = path.with_extension(format!("{}.tmp", std::process::id()));
-    fs::write(&tmp, serde_json::to_vec(&sorted)?)?;
+    let serialized = serde_json::to_vec(&sorted)
+        .map_err(std::io::Error::other)?;
+    fs::write(&tmp, serialized)?;
     fs::rename(tmp, path)
 }
 
@@ -620,7 +682,8 @@ mod tests {
             Some((":1.42".into(), "/StatusNotifierItem".into()))
         );
         assert!(parse_external(":1.42").is_some());
-        for invalid in ["", "org.fake.App", ":1.2/../../etc/passwd",
+        assert!(parse_external("org.kde.StatusNotifierItem-1234-1").is_some());
+        for invalid in ["", "invalid", ":1.2/../../etc/passwd",
             ":1.2/Tray;touch", ":1.2//icon-name?"] {
             assert!(parse_external(invalid).is_none(), "{invalid}");
         }
