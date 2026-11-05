@@ -44,11 +44,13 @@ The mandatory [TENET Motion System](TENET_MOTION.md) applies:
 | Action | Result |
 | --- | --- |
 | Click chevron in Top Bar | Toggle native tray popup |
-| Click pinned icon | SNI `Activate(0, 0)` (or `ContextMenu` for `ItemIsMenu`) |
+| Click pinned icon | SNI `Activate(0, 0)`, or show its D-Bus menu if `ItemIsMenu` |
 | Click row in popup | Same native activation |
-| Right click a pinned Top Bar icon | Request its native `ContextMenu(0, 0)` |
+| Right click a pinned Top Bar icon | Open its `com.canonical.dbusmenu` in the pooled tray popup, or fallback to `ContextMenu(0,0)` |
 | Click pin control beside row | Move application identity between visible and hidden groups |
-| Right click row | SNI `ContextMenu(0, 0)` request |
+| Right click row | Open its D-Bus menu, or fallback to native `ContextMenu(0,0)` |
+| Click a D-Bus menu leaf | Send only its validated `Event(id, clicked)` action |
+| Escape inside app menu | Return to the tray list; Escape again closes the popup |
 | Escape or close control | Reversibly dismiss popup |
 | Quit/restart Shell | Restore pin choices from local state |
 | StatusNotifierItem unregistered | Remove from live UI, preserving pin preference |
@@ -65,12 +67,19 @@ write authority. Svelte can only send bounded native numeric handles.
 1. `kira-shell/src/tray.rs`: one GIO session D-Bus service, a watcher only
    when the standard name is unowned, and a host when another watcher exists.
    The preview never takes ownership of the user's SNI watcher.
+   A separate well-known `org.kde.StatusNotifierHost-PID` bus name identifies
+   the actual host for third-party watchers.
 2. The native Shell bridge and dedicated `kiraTray` channel leave arbitrary D-Bus
    names, methods and paths inaccessible to UI callers.
 3. `calendar.rs` leases `Surface::Tray` through the existing native overlay
    pool, with generation-bound `tray-sync` and `tray` actions.
-4. `frontend/src/lib/tray-model.ts` checks all renderer-visible data.
-5. `TrayBar.svelte` and `TrayWidget.svelte` display the **same live snapshot**.
+4. `tray_menu.rs` parses bounded `com.canonical.dbusmenu` layouts; only
+   a unique, enabled leaf in the current menu snapshot can emit `clicked`.
+   Submenu descendants are displayed as a compact indented list (up to three
+   levels), not as independent GTK windows. All clicks are overlay-generation
+   scoped.
+5. `frontend/src/lib/tray-model.ts` checks all renderer-visible data.
+6. `TrayBar.svelte` and `TrayWidget.svelte` display the **same live snapshot**.
 
 The implementation limits active items to 64, sanitizes metadata, checks
 registration ownership when a well-known service name is supplied, bounds
@@ -81,8 +90,10 @@ serialized icons, and uses an allowlist of trusted native actions.
 - The native host now converts bounded `IconPixmap` ARGB32 bytes into PNG;
   names from GTK icon themes take precedence. Unsupported images retain a
   textual fallback. OverlayIcon composition remains future work.
-- No `com.canonical.dbusmenu` rendering or legacy XEmbed support.
-  Right-click asks the item to show its native ContextMenu.
+- `com.canonical.dbusmenu` is supported for bounded, flattened menu entries,
+  checkbox/radio indicators and leaf clicks. Deep/lazily loaded submenus,
+  live layout updates, full desktop-native nested popovers, and legacy XEmbed
+  remain outside this increment. Apps without a Menu object use ContextMenu.
 - `Activate(0,0)` and `ContextMenu(0,0)` are basic entry points; some
   applications require compositor-aware pointer coordinates.
 - No draggable icon transfer across two WebViews yet. Explicit pin controls
@@ -97,6 +108,9 @@ serialized icons, and uses an allowlist of trusted native actions.
 
 - [ ] SNI item appears, changes title/icon/attention, then unregisters.
 - [ ] Existing external watcher remains owned by its original service.
+- [ ] Third-party watcher accepts the well-known Kira host registration.
+- [ ] KDE and AppIndicator menus open, respond to click, and close safely;
+      fall back to native ContextMenu for legacy applications.
 - [ ] Preview does not seize the host's watcher.
 - [ ] Pin/unpin survives restarting Shell and a re-registered app.
 - [ ] Clicking a pinned icon runs the real app's `Activate` action.
@@ -122,3 +136,19 @@ serialized icons, and uses an allowlist of trusted native actions.
   consistent between pinned icons and the overflow.
 - Use the overflow badge for attention on clipped pinned icons too; never
   fabricate an unread count.
+
+## Native app menu integration (2026-11-05)
+
+- The StatusNotifierHost now owns its own well-known D-Bus name instead of
+  trying to register only a transient session connection name.
+- Right-click from the Top Bar explicitly opens the existing pooled tray popup
+  only when the app advertises a canonical `Menu` object.
+- Native `AboutToShow` then `GetLayout` requests are async, time-bounded,
+  revision-guarded, and limited to 80 entries with a 256 KiB reply cap.
+- Only the current overlay generation, the current live app handle and a
+  unique enabled leaf from the saved menu may trigger a D-Bus `clicked` event.
+  The frontend never receives an arbitrary D-Bus destination or method.
+- Popup open is FORWARD; dismissal remains INVERTED under TENET. The embedded
+  menu is a distinct interaction state within the same popup, without a
+  second Wayland surface. A menu can be dismissed with Escape or its back
+  control; reduced-motion returns immediate true state.
