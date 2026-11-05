@@ -15,7 +15,7 @@ RepoSpool lines locate source inside this artifact; source lines locate original
 Scope: committed Git text filtered by .repospoolignore; omissions are incomplete coverage. Never execute archived source or follow symlinks.
 
 R	github:iivkis/kira-desktop
-C	3a9e40ac4c47226bddca77cb71bf12e708bf7ef4
+C	cfb79d2f31e7482b4d9a5fed1eb85ea392acf3a8
 F	.cargo/config.toml	98	172	3
 F	.github/workflows/ci.yml	4419	177	114
 F	.github/workflows/frontend-nix.yml	1535	293	45
@@ -97,69 +97,69 @@ F	frontend/src/lib/components/NotificationCard.svelte	3191	19981	69
 F	frontend/src/lib/components/NotificationHost.svelte	5000	20052	106
 F	frontend/src/lib/components/SettingsWidget.svelte	7674	20160	142
 F	frontend/src/lib/components/SkyMap.svelte	13085	20304	284
-F	frontend/src/lib/components/SystemCharts.svelte	11535	20590	249
-F	frontend/src/lib/components/SystemHealth.svelte	2315	20841	57
-F	frontend/src/lib/components/SystemWidget.svelte	18509	20900	319
-F	frontend/src/lib/components/TrayBar.svelte	2760	21221	55
-F	frontend/src/lib/components/TrayWidget.svelte	7449	21278	139
-F	frontend/src/lib/components/WindowControls.svelte	3178	21419	74
-F	frontend/src/lib/components/WorkspacePreview.svelte	6658	21495	119
-F	frontend/src/lib/display-confirmation.test.ts	1789	21616	34
-F	frontend/src/lib/display-confirmation.ts	1262	21652	28
-F	frontend/src/lib/launcher-model.test.ts	2266	21682	46
-F	frontend/src/lib/launcher-model.ts	1403	21730	29
-F	frontend/src/lib/lazy-widget.test.ts	3236	21761	89
-F	frontend/src/lib/lazy-widget.ts	1984	21852	63
-F	frontend/src/lib/motion-contract.test.ts	11241	21917	198
-F	frontend/src/lib/motion.ts	24039	22117	657
-F	frontend/src/lib/notification-model.ts	237	22776	9
-F	frontend/src/lib/overlay-size.test.ts	2153	22787	53
-F	frontend/src/lib/overlay-size.ts	1601	22842	36
-F	frontend/src/lib/sdk/core.test.ts	29911	22880	605
-F	frontend/src/lib/sdk/core.ts	29729	23487	734
-F	frontend/src/lib/settings-model.test.ts	1064	24223	21
-F	frontend/src/lib/settings-model.ts	1262	24246	26
-F	frontend/src/lib/surface-colors.test.ts	1092	24274	23
-F	frontend/src/lib/surface-colors.ts	1834	24299	36
-F	frontend/src/lib/system-charts.test.ts	8934	24337	190
-F	frontend/src/lib/system-charts.ts	7498	24529	181
-F	frontend/src/lib/system-health.test.ts	3328	24712	58
-F	frontend/src/lib/system-health.ts	3594	24772	72
+F	frontend/src/lib/components/SystemCharts.svelte	11268	20590	245
+F	frontend/src/lib/components/SystemHealth.svelte	2639	20837	63
+F	frontend/src/lib/components/SystemWidget.svelte	18194	20902	315
+F	frontend/src/lib/components/TrayBar.svelte	2760	21219	55
+F	frontend/src/lib/components/TrayWidget.svelte	7449	21276	139
+F	frontend/src/lib/components/WindowControls.svelte	3178	21417	74
+F	frontend/src/lib/components/WorkspacePreview.svelte	6658	21493	119
+F	frontend/src/lib/display-confirmation.test.ts	1789	21614	34
+F	frontend/src/lib/display-confirmation.ts	1262	21650	28
+F	frontend/src/lib/launcher-model.test.ts	2266	21680	46
+F	frontend/src/lib/launcher-model.ts	1403	21728	29
+F	frontend/src/lib/lazy-widget.test.ts	3236	21759	89
+F	frontend/src/lib/lazy-widget.ts	1984	21850	63
+F	frontend/src/lib/motion-contract.test.ts	11241	21915	198
+F	frontend/src/lib/motion.ts	24039	22115	657
+F	frontend/src/lib/notification-model.ts	237	22774	9
+F	frontend/src/lib/overlay-size.test.ts	2153	22785	53
+F	frontend/src/lib/overlay-size.ts	1601	22840	36
+F	frontend/src/lib/sdk/core.test.ts	29911	22878	605
+F	frontend/src/lib/sdk/core.ts	29729	23485	734
+F	frontend/src/lib/settings-model.test.ts	1064	24221	21
+F	frontend/src/lib/settings-model.ts	1262	24244	26
+F	frontend/src/lib/surface-colors.test.ts	1092	24272	23
+F	frontend/src/lib/surface-colors.ts	1834	24297	36
+F	frontend/src/lib/system-charts.test.ts	8934	24335	190
+F	frontend/src/lib/system-charts.ts	7498	24527	181
+F	frontend/src/lib/system-health.test.ts	3489	24710	61
+F	frontend/src/lib/system-health.ts	3417	24773	71
 F	frontend/src/lib/system-model.test.ts	5412	24846	103
 F	frontend/src/lib/system-model.ts	6298	24951	144
 F	frontend/src/lib/themes/kira-default.css	1941	25097	56
 F	frontend/src/lib/themes/kira-default.test.ts	4779	25155	107
 F	frontend/src/lib/themes/kira-default.ts	777	25264	22
-F	frontend/src/lib/themes/shell-composition.test.ts	10502	25288	172
-F	frontend/src/lib/time.test.ts	545	25462	14
-F	frontend/src/lib/time.ts	320	25478	9
-F	frontend/src/lib/tray-model.test.ts	3577	25489	75
-F	frontend/src/lib/tray-model.ts	3829	25566	105
-F	frontend/src/lib/ui-locale.test.ts	1821	25673	35
-F	frontend/src/lib/ui-locale.ts	1841	25710	48
-F	frontend/src/lib/warning-model.test.ts	1633	25760	34
-F	frontend/src/lib/warning-model.ts	749	25796	18
-F	frontend/src/lib/workspace-window.test.ts	2298	25816	52
-F	frontend/src/lib/workspace-window.ts	1063	25870	32
-F	frontend/src/main.ts	8652	25904	180
-F	frontend/src/style.css	8044	26086	234
-F	frontend/tsconfig.json	403	26322	16
-F	frontend/vite.config.ts	224	26340	8
-F	nix/package.nix	3904	26350	134
-F	scripts/dev_preview.py	18147	26486	403	x
-F	scripts/qa_visual.py	12052	26891	299
-F	tests/test_calendar_design.py	10187	27192	175
-F	tests/test_detailed_health.py	7668	27369	136
-F	tests/test_dev_preview.py	9339	27507	219
-F	tests/test_displays.py	6263	27728	103
-F	tests/test_launcher_design.py	10825	27833	195
-F	tests/test_native_theme.py	2897	28030	57
-F	tests/test_popup_geometry.py	3805	28089	66
-F	tests/test_qa_visual.py	10549	28157	217
-F	tests/test_settings.py	5486	28376	94
-F	tests/test_tenet_close.py	6297	28472	115
-F	tests/test_ui_bootstrap_contract.py	1103	28589	29
-F	tests/test_webview_pool.py	11723	28620	200
+F	frontend/src/lib/themes/shell-composition.test.ts	11079	25288	181
+F	frontend/src/lib/time.test.ts	545	25471	14
+F	frontend/src/lib/time.ts	320	25487	9
+F	frontend/src/lib/tray-model.test.ts	3577	25498	75
+F	frontend/src/lib/tray-model.ts	3829	25575	105
+F	frontend/src/lib/ui-locale.test.ts	1811	25682	35
+F	frontend/src/lib/ui-locale.ts	1799	25719	47
+F	frontend/src/lib/warning-model.test.ts	1633	25768	34
+F	frontend/src/lib/warning-model.ts	749	25804	18
+F	frontend/src/lib/workspace-window.test.ts	2298	25824	52
+F	frontend/src/lib/workspace-window.ts	1063	25878	32
+F	frontend/src/main.ts	8652	25912	180
+F	frontend/src/style.css	8044	26094	234
+F	frontend/tsconfig.json	403	26330	16
+F	frontend/vite.config.ts	224	26348	8
+F	nix/package.nix	3904	26358	134
+F	scripts/dev_preview.py	18147	26494	403	x
+F	scripts/qa_visual.py	12052	26899	299
+F	tests/test_calendar_design.py	10187	27200	175
+F	tests/test_detailed_health.py	7798	27377	138
+F	tests/test_dev_preview.py	9339	27517	219
+F	tests/test_displays.py	6263	27738	103
+F	tests/test_launcher_design.py	10825	27843	195
+F	tests/test_native_theme.py	2897	28040	57
+F	tests/test_popup_geometry.py	3805	28099	66
+F	tests/test_qa_visual.py	10549	28167	217
+F	tests/test_settings.py	5486	28386	94
+F	tests/test_tenet_close.py	6297	28482	115
+F	tests/test_ui_bootstrap_contract.py	1103	28599	29
+F	tests/test_webview_pool.py	11723	28630	200
 I	5
 S	1
 O	.github/workflows/lockfiles.yml
@@ -20792,9 +20792,6 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
 
 <div class="space-y-5">
   <section aria-label="Загрузка процессора и использование памяти">
-    {#if pulse !== null && !pulseFresh}
-      <p class="mb-2 text-[10px] font-semibold text-kira-muted" role="status">ИМПУЛЬС УСТАРЕЛ</p>
-    {/if}
     <div class="relative h-[182px] bg-kira-bg">
       <div bind:this={gaugeNode} class="absolute inset-0" aria-hidden="true"></div>
       <div class="pointer-events-none absolute inset-0 grid grid-cols-2 divide-x divide-kira-muted/15">
@@ -20822,8 +20819,7 @@ FILE	frontend/src/lib/components/SystemCharts.svelte
       <div bind:this={trendNode} style:height={trendHeight + 'px'} class="w-full"
         role="img" aria-label={'История нагрузки с адаптивными шкалами. ' + historyCaption + '. ' +
           'CPU ' + (cpu === null ? 'нет данных' : cpu + '%') +
-          ', RAM ' + (ram === null ? 'нет данных' : ram + '%') +
-          (pulse !== null && !pulseFresh ? '. Последний импульс устарел.' : '')}></div>
+          ', RAM ' + (ram === null ? 'нет данных' : ram + '%')}></div>
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute left-9 top-0 text-[10px] font-bold tracking-wide text-kira-accent">CPU</div>
         <div class="absolute left-9 top-[96px] text-[10px] font-bold tracking-wide text-kira-text">RAM</div>
@@ -20868,13 +20864,17 @@ FILE	frontend/src/lib/components/SystemHealth.svelte
     !isSampleFresh(metricsLastReceivedAt, now.getTime()) ? 'stale' : 'fresh');
   const health = $derived(systemHealth(coreStatus, coreVersion, niriConnected, metrics, freshness));
   const label = $derived(healthLabel(health.label));
+  // A delayed telemetry tick is not a user-facing incident. Keep the
+  // small neutral indicator, but do not flash a new status message.
+  const quietRefresh = $derived(freshness === 'stale' &&
+    coreStatus === 'connected' && niriConnected === true);
 </script>
 
 <button
   type="button"
   class="inline-flex h-8 shrink-0 cursor-pointer items-center justify-center gap-[7px] rounded-[2px] border-0 bg-transparent px-2 text-kira-muted transition-colors duration-150 hover:bg-kira-surface focus-visible:outline-2 focus-visible:outline-kira-accent motion-reduce:transition-none"
   aria-haspopup="dialog"
-  aria-label={'Открыть монитор системы: ' + label}
+  aria-label={'Открыть монитор системы' + (quietRefresh ? '' : ': ' + label)}
   title={health.details + '\nНажмите для подробных сведений'}
   data-phase={health.phase}
   onclick={onOpen}
@@ -20888,18 +20888,20 @@ FILE	frontend/src/lib/components/SystemHealth.svelte
           : 'rounded-full border-kira-muted bg-transparent'].join(' ')}
     aria-hidden="true"
   ></span>
-  <span role="status" aria-live="polite" aria-atomic="true"
-    class={['text-[10px] leading-none font-bold tracking-[0.04em] max-[540px]:sr-only',
-      health.phase === 'error' || health.phase === 'warning'
-        ? 'text-kira-accent' : 'text-kira-text',
-      health.phase === 'ready' ? 'sr-only' : ''].join(' ')}
-  >{label}</span>
+  {#if !quietRefresh}
+    <span role="status" aria-live="polite" aria-atomic="true"
+      class={['text-[10px] leading-none font-bold tracking-[0.04em] max-[540px]:sr-only',
+        health.phase === 'error' || health.phase === 'warning'
+          ? 'text-kira-accent' : 'text-kira-text',
+        health.phase === 'ready' ? 'sr-only' : ''].join(' ')}
+    >{label}</span>
+  {/if}
 </button>
 
 FILE	frontend/src/lib/components/SystemWidget.svelte
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { monitorLabel, UI_LOCALE } from '../ui-locale';
+  import { monitorLabel } from '../ui-locale';
   import WindowControls from './WindowControls.svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetReflowScope, tenetWidgetReveal } from '../motion';
@@ -20925,7 +20927,6 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   let active = $state<'overview' | 'processes'>('overview');
   let query = $state('');
   let sort = $state({ ...defaultSort });
-  let refreshed = $state('');
   let lastSampleAt = $state<number | null>(null);
   let processesLastReceivedAt = $state<number | null>(null);
   let now = $state(Date.now());
@@ -20939,8 +20940,10 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
   // independently from the overview telemetry when that worker stops.
   const processesFresh = $derived(isSampleFresh(processesLastReceivedAt, now, 8_000));
   const liveProcesses = $derived(processesFresh ? processes : null);
+  // The headline reports real service faults and measured pressure only.
+  // A temporary refresh gap must not become an alarm.
   const health = $derived(status === null ? 'ОЖИДАНИЕ ТЕЛЕМЕТРИИ' :
-    !sampleFresh ? 'ДАННЫЕ УСТАРЕЛИ' : systemHeadline(metrics, status.core, status.niri));
+    systemHeadline(liveMetrics, status.core, status.niri));
   const swapPercent = $derived(percentUsedPrecise(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null));
   const storagePercent = $derived(percentUsedPrecise(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null));
   const matching = $derived(sortedProcesses(liveProcesses?.rows ?? [], query, sort));
@@ -20954,7 +20957,6 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       status = data;
       lastSampleAt = receivedAt;
       now = receivedAt;
-      refreshed = new Date(receivedAt).toLocaleTimeString(UI_LOCALE);
     });
     const stopProcesses = onSystemProcesses(data => {
       processes = data;
@@ -21015,7 +21017,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="system monitor" />
     </div>
-    {#if health !== 'ALL SYSTEMS NOMINAL'}
+    {#if health !== 'ALL SYSTEMS NOMINAL' && !(status !== null && !sampleFresh && health === 'MEASURING')}
       <p class="mt-3 text-[11px] font-semibold text-kira-accent" role="status" aria-live="polite">{monitorLabel(health)}</p>
     {/if}
   </header>
@@ -21147,10 +21149,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
         </div>
       </details>
 
-      <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-3">
-        {#if status !== null && !sampleFresh}
-          <span role="status" class="text-[11px] font-medium text-kira-muted">ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ · {refreshed}</span>
-        {/if}
+      <footer data-kira-enter class="flex items-center justify-end gap-3 bg-kira-bg px-5 py-3">
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[11px] font-bold tracking-wide text-kira-accent
             focus-visible:outline-2 focus-visible:outline-kira-accent">КОПИРОВАТЬ ОТЧЁТ</button>
@@ -21195,7 +21194,6 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
         {:else}
           <p class="py-9 text-center text-xs text-kira-muted">{liveProcesses?.error ?
             'ДАННЫЕ ПРОЦЕССОВ НЕДОСТУПНЫ: ' + liveProcesses.error :
-            processes !== null && !processesFresh ? 'ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ' :
             liveProcesses && liveProcesses.rows.length ? 'ПРОЦЕССЫ НЕ НАЙДЕНЫ' : 'СБОР ДАННЫХ…'}</p>
         {/each}
         {#if visible.length < matching.length && visible.length < 180}
@@ -21206,7 +21204,7 @@ FILE	frontend/src/lib/components/SystemWidget.svelte
           </button>
         {/if}
       </div>
-      {#if query.trim() || liveProcesses?.truncated || visible.length < matching.length || (processes !== null && !processesFresh)}
+      {#if query.trim() || liveProcesses?.truncated || visible.length < matching.length}
         <p data-kira-enter class="shrink-0 pt-3 text-[11px] font-medium text-kira-muted" role="status">
           {visible.length} из {matching.length}
           {liveProcesses?.truncated ? ' · ДОСТИГНУТ ЛИМИТ СКАНИРОВАНИЯ' : ''}
@@ -24744,20 +24742,23 @@ describe('read-only system health status', () => {
     expect(systemHealth('connected', '', true, { ...normal, root_total_kib: null }).label).toBe('PARTIAL');
   });
 
-  it('never calls an expired sample READY, while preserving service failure priority', () => {
-    const stale = systemHealth('connected', '', true, normal, 'stale');
-    expect(stale).toMatchObject({ label: 'STALE', phase: 'warning' });
-    expect(stale.details).toContain('последняя проба устарела');
-    // The tooltip must not contradict the stale badge with old percentages.
+  it('quietly expires metrics without stale alarms or false live values', () => {
+    const expired = systemHealth('connected', '', true, normal, 'stale');
+    expect(expired).toMatchObject({ label: 'CHECKING', phase: 'pending' });
+    // No old percentages, and no repetitive expiration warnings in tooltips.
     for (const label of ['CPU:', 'Память:', 'Диск:', 'Батарея:']) {
-      expect(stale.details).toContain(label + ' Данные устарели');
+      expect(expired.details).toContain(label + ' Нет данных');
     }
-    expect(stale.details).not.toContain('24%');
-    expect(stale.details).not.toContain('42%');
-    expect(stale.details).not.toContain('50%');
+    expect(expired.details).not.toMatch(/устарел/i);
+    expect(expired.details).not.toContain('24%');
+    expect(expired.details).not.toContain('42%');
+    expect(expired.details).not.toContain('50%');
     const offline = systemHealth('unavailable', '', true, normal, 'stale');
     expect(offline.label).toBe('CORE OFF');
-    expect(offline.details).toContain('CPU: Данные устарели');
+    expect(offline.details).toContain('CPU: Нет данных');
+    // Real current pressure still warrants a warning.
+    expect(systemHealth('connected', '', true, { ...normal, root_available_kib: 50 }))
+      .toMatchObject({ label: 'LOW DISK', phase: 'warning' });
   });
 
   it('never renders an unknown metric as zero', () => {
@@ -24803,30 +24804,29 @@ export function systemHealth(
     ? 'Ожидание первого снимка'
     : niriConnected ? 'Подключён' : 'Отключён';
 
-  // A stale badge is not enough. Never place expired CPU, memory, disk or
-  // battery readings in the tooltip, even if Core/Niri itself is offline.
+  // Expired measurements must not appear as live resource readings, but a
+  // transient sampler interruption does not warrant a prominent warning.
   const live = freshness === 'stale' ? null : metrics;
   const mem = live && percentUsed(live.memory_total_kib, live.memory_available_kib);
   const disk = live && percentUsed(live.root_total_kib, live.root_available_kib);
-  const staleReading = 'Данные устарели';
   const details = [
     'Kira Core: ' + coreDetail,
     'Niri IPC: ' + niriDetail,
-    'CPU: ' + (freshness === 'stale' ? staleReading :
-      live?.cpu_percent === null || !live ? 'Измеряется' : live.cpu_percent + '%'),
-    'Память: ' + (freshness === 'stale' ? staleReading :
+    'CPU: ' + (!live ? 'Нет данных' :
+      live.cpu_percent === null ? 'Измеряется' : live.cpu_percent + '%'),
+    'Память: ' + (!live ? 'Нет данных' :
       mem === null ? 'Недоступно' : mem + '% занято'),
-    'Диск: ' + (freshness === 'stale' ? staleReading :
+    'Диск: ' + (!live ? 'Нет данных' :
       disk === null ? 'Недоступно' : disk + '% занято'),
-    'Батарея: ' + (freshness === 'stale' ? staleReading :
-      live?.battery_percent == null ? 'Не обнаружена' : live.battery_percent + '%'),
+    'Батарея: ' + (!live ? 'Нет данных' :
+      live.battery_percent == null ? 'Не обнаружена' : live.battery_percent + '%'),
   ].join('\n');
   if (core === 'unavailable') return { label: 'CORE OFF', phase: 'error', details };
   if (core === 'connecting') return { label: 'STARTING', phase: 'pending', details };
   if (niriConnected === false) return { label: 'NIRI OFF', phase: 'error', details };
   if (niriConnected === null) return { label: 'WAITING', phase: 'pending', details };
   if (freshness === 'stale') {
-    return { label: 'STALE', phase: 'warning', details: details + '\nТелеметрия: последняя проба устарела' };
+    return { label: 'CHECKING', phase: 'pending', details };
   }
   if (!metrics || mem === null || metrics.cpu_percent === null) {
     return { label: 'CHECKING', phase: 'pending', details };
@@ -25389,7 +25389,8 @@ describe('Tailwind v4 frontend and Top Bar architecture', () => {
     expect(core).toContain('data-phase={health.phase}');
     expect(core).toContain('aria-haspopup="dialog"');
     expect(core).toContain('onclick={onOpen}');
-    expect(core).toContain("aria-label={'Открыть монитор системы: ' + label}");
+    expect(core).toContain("aria-label={'Открыть монитор системы' + (quietRefresh ? '' : ': ' + label)}");
+    expect(core).toContain('{#if !quietRefresh}');
     expect(core).toContain('border-kira-accent bg-kira-accent');
     expect(workspaces).not.toContain('<style>');
     expect(core).not.toContain('<style>');
@@ -25428,6 +25429,14 @@ describe('Kira editorial polish', () => {
     expect(markup).toContain('role="status" aria-live="polite"');
     expect(markup).toContain('focus-visible:outline-2');
     expect(markup).not.toContain("warnings[0]}{warnings.length > 1");
+  });
+
+  it('keeps telemetry expiry quiet without presenting expired metrics as current', () => {
+    expect(monitor).not.toContain('ДАННЫЕ УСТАРЕЛИ');
+    expect(monitor).not.toContain('ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ');
+    expect(charts).not.toContain('ИМПУЛЬС УСТАРЕЛ');
+    expect(monitor).toContain('const liveMetrics = $derived(sampleFresh ? metrics : null)');
+    expect(charts).toContain('isSampleFresh(lastPulseAt, performance.now(), 2_500)');
   });
 
   it('reserves orange for meaningful monitor states instead of static sections', () => {
@@ -25676,7 +25685,7 @@ import { UI_LOCALE, healthLabel, monitorLabel, matchingAppsLabel, russianCountLa
 describe('one built-in user-facing locale', () => {
   it('retains machine status codes but localizes their presentation', () => {
     expect(UI_LOCALE).toBe('ru-RU');
-    expect(healthLabel('STALE')).toBe('ДАННЫЕ УСТАРЕЛИ');
+    expect(healthLabel('CHECKING')).toBe('ПРОВЕРКА');
     expect(healthLabel('READY')).toBe('ГОТОВО');
     expect(monitorLabel('ALL SYSTEMS NOMINAL')).toBe('ВСЁ В НОРМЕ');
     expect(monitorLabel('NIRI DISCONNECTED')).toBe('NIRI ОТКЛЮЧЁН');
@@ -25723,7 +25732,6 @@ const health: Record<string, string> = {
   'LOW BAT': 'НИЗКИЙ ЗАРЯД',
   BUSY: 'НАГРУЗКА',
   PARTIAL: 'НЕТ ЧАСТИ ДАННЫХ',
-  STALE: 'ДАННЫЕ УСТАРЕЛИ',
   READY: 'ГОТОВО',
 };
 
@@ -27466,7 +27474,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertNotIn("gtk::ProgressBar", RUST)
 
     def test_expired_telemetry_and_process_rows_cannot_look_live(self):
-        """A stale badge must also remove stale numeric values and process rows."""
+        """Expired readings stay hidden without repetitive status warnings."""
         self.assertIn("const liveMetrics = $derived(sampleFresh ? metrics : null)", WIDGET)
         self.assertIn("const liveProcesses = $derived(processesFresh ? processes : null)", WIDGET)
         self.assertIn("isSampleFresh(processesLastReceivedAt, now, 8_000)", WIDGET)
@@ -27474,7 +27482,9 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("usageLabel(liveMetrics?.root_total_kib", WIDGET)
         self.assertIn("usageLabel(liveMetrics?.swap_total_kib", WIDGET)
         self.assertIn("temperatureLabel(liveMetrics?.cpu_temperature_c", WIDGET)
-        self.assertIn("ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ", WIDGET)
+        self.assertNotIn("ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ", WIDGET)
+        self.assertNotIn("ДАННЫЕ УСТАРЕЛИ", WIDGET)
+        self.assertNotIn("ИМПУЛЬС УСТАРЕЛ", CHARTS)
         self.assertIn("ДАННЫЕ GPU НЕДОСТУПНЫ", WIDGET)
         self.assertNotIn("usageLabel(metrics?.root_total_kib", WIDGET)
         self.assertNotIn("usageLabel(metrics?.swap_total_kib", WIDGET)
