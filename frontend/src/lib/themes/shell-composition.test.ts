@@ -144,6 +144,14 @@ describe('Kira editorial polish', () => {
     expect(markup).not.toContain("warnings[0]}{warnings.length > 1");
   });
 
+  it('keeps telemetry expiry quiet without presenting expired metrics as current', () => {
+    expect(monitor).not.toContain('ДАННЫЕ УСТАРЕЛИ');
+    expect(monitor).not.toContain('ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ');
+    expect(charts).not.toContain('ИМПУЛЬС УСТАРЕЛ');
+    expect(monitor).toContain('const liveMetrics = $derived(sampleFresh ? metrics : null)');
+    expect(charts).toContain('isSampleFresh(lastPulseAt, performance.now(), 2_500)');
+  });
+
   it('reserves orange for meaningful monitor states instead of static sections', () => {
     expect(monitor).toContain('text-kira-text">ЁМКОСТЬ</h2>');
     expect(monitor).toContain('text-kira-text">ОБОРУДОВАНИЕ</h2>');
