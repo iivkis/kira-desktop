@@ -2,13 +2,12 @@
 //! Never forward arbitrary menu paths, IDs or methods from WebKit to D-Bus.
 use gtk::glib;
 use gtk::glib::variant::ToVariant;
-use serde::Serialize;
 
 const MAX_MENU_ENTRIES: usize = 80;
 const MAX_MENU_LEVEL: u8 = 3;
 const MAX_MENU_REPLY_BYTES: usize = 256 * 1024;
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug)]
 pub struct MenuEntry {
     pub id: i32,
     pub label: String,
