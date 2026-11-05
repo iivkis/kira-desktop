@@ -108,6 +108,11 @@ pub fn start(bar: &webkit6::WebView) {
             if let Some(service) = owned.upgrade() {
                 service.owns_watcher.set(true);
                 service.available.set(true);
+                if let Some(connection) = service.connection.borrow().as_ref() {
+                    let _ = connection.emit_signal(
+                        None, WATCHER_PATH, WATCHER_IFACE,
+                        "StatusNotifierHostRegistered", None);
+                }
                 service.publish();
                 eprintln!("kira-shell: status notifier watcher and host available");
             }
@@ -199,7 +204,7 @@ impl Service {
         // Weak references keep callbacks from owning the service forever.
         let weak = Rc::downgrade(self);
         connection.signal_subscribe(
-            None, Some(WATCHER_IFACE), None, Some(WATCHER_PATH), None,
+            Some(WATCHER), Some(WATCHER_IFACE), None, Some(WATCHER_PATH), None,
             gio::DBusSignalFlags::NONE,
             move |_, _, _, _, member, params| {
                 let Some(service) = weak.upgrade() else { return; };
