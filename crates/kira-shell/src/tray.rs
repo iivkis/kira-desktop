@@ -47,6 +47,7 @@ struct Item {
     registration: String,
     bus: String,
     path: String,
+    owner_unique: Option<String>,
     key: String,
     title: String,
     icon: Option<String>,
@@ -371,7 +372,10 @@ impl Service {
             .items
             .borrow()
             .iter()
-            .filter(|item| item.path == path && (item.bus == sender || !item.bus.starts_with(':')))
+            .filter(|item| {
+                item.path == path
+                    && matches_item_sender(&item.bus, item.owner_unique.as_deref(), sender)
+            })
             .map(|item| (item.handle, item.bus.clone(), item.path.clone()))
             .collect();
         for (id, bus, object_path) in items {
@@ -590,6 +594,7 @@ impl Service {
             registration: registration.into(),
             bus: bus.into(),
             path: path.into(),
+            owner_unique: bus.starts_with(':').then(|| bus.to_string()),
             key: registration.into(),
             title,
             icon: None,
@@ -599,8 +604,49 @@ impl Service {
             refresh_version: 0,
         });
         drop(items);
+        if !bus.starts_with(':') {
+            self.resolve_item_owner(id, bus);
+        }
         self.refresh_item(id, bus, path);
         true
+    }
+
+    // Well-known names are aliases. Authenticate NewIcon/NewStatus senders
+    // against the session bus's current unique owner, not a matching path.
+    fn resolve_item_owner(self: &Rc<Self>, id: u32, bus: &str) {
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let requested = bus.to_string();
+        connection.call(
+            Some("org.freedesktop.DBus"),
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus",
+            "GetNameOwner",
+            Some(&(bus,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let owner = reply
+                    .ok()
+                    .and_then(|value| value.child_value(0).get::<String>())
+                    .filter(|owner| owner.starts_with(':') && valid_bus_name(owner));
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if let Some(item) = service
+                    .items
+                    .borrow_mut()
+                    .iter_mut()
+                    .find(|item| item.handle == id && item.bus == requested)
+                {
+                    item.owner_unique = owner;
+                }
+            },
+        );
     }
 
     fn refresh_item(self: &Rc<Self>, id: u32, bus: &str, object_path: &str) {
@@ -889,6 +935,14 @@ fn clean(value: &str, limit: usize) -> String {
         .collect()
 }
 
+fn matches_item_sender(bus: &str, owner_unique: Option<&str>, sender: &str) -> bool {
+    if bus.starts_with(':') {
+        bus == sender
+    } else {
+        owner_unique == Some(sender)
+    }
+}
+
 fn valid_bus_name(value: &str) -> bool {
     if value.len() < 3 || value.len() > 240 {
         return false;
@@ -1164,6 +1218,15 @@ mod tests {
         assert!(argb_to_rgba(0, 1, &[]).is_none());
         assert!(argb_to_rgba(129, 1, &[]).is_none());
         assert!(argb_to_rgba(1, 1, &[0, 1, 2]).is_none());
+    }
+
+    #[test]
+    fn only_verified_unique_owners_can_refresh_registered_items() {
+        assert!(matches_item_sender(":1.42", None, ":1.42"));
+        assert!(!matches_item_sender(":1.42", None, ":1.43"));
+        assert!(!matches_item_sender("org.example.Tray", None, ":1.42"));
+        assert!(matches_item_sender("org.example.Tray", Some(":1.42"), ":1.42"));
+        assert!(!matches_item_sender("org.example.Tray", Some(":1.42"), ":1.43"));
     }
 
     #[test]
