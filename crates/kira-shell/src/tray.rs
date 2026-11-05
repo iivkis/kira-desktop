@@ -85,9 +85,7 @@ fn selected_menu_for_click(
 ) -> Option<MenuSession> {
     current
         .as_ref()
-        .filter(|menu| {
-            menu.handle == handle && tray_menu::clickable(&menu.entries, entry_id)
-        })
+        .filter(|menu| menu.handle == handle && tray_menu::clickable(&menu.entries, entry_id))
         .cloned()
 }
 
