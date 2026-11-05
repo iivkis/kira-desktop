@@ -769,10 +769,16 @@ impl Service {
                     .lookup_value("ItemIsMenu", None)
                     .and_then(|v| v.get::<bool>())
                     .unwrap_or(false);
+                // SNI Menu is a D-Bus OBJECT PATH ('o'), not a string
+                // ('s'). Variant::get::<String>() would drop real KDE menus.
                 let menu_path = props
                     .lookup_value("Menu", None)
-                    .and_then(|v| v.get::<String>())
-                    .filter(|path| valid_object_path(path));
+                    .and_then(|v| {
+                        (v.type_().as_str() == "o")
+                            .then(|| v.str().map(str::to_string))
+                            .flatten()
+                    })
+                    .filter(|path| valid_object_path(path) && !path.ends_with("/NO_DBUSMENU"));
                 let pixmap = if status.as_deref() == Some("NeedsAttention") {
                     props
                         .lookup_value("AttentionIconPixmap", None)
