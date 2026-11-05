@@ -268,7 +268,7 @@
   >
     <TrayBar items={trayState.items} onToggle={() => { toggleTray(); }}
       onActivate={(id) => { trayAction(id, 'activate'); }}
-      onPin={(id) => { trayAction(id, 'pin'); }} />
+      onSecondary={(id) => { trayAction(id, 'secondary'); }} />
     <SystemHealth
       coreStatus={coreStatus}
       coreVersion={coreVersion}
