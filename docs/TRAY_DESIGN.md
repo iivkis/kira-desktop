@@ -1,7 +1,7 @@
 # Kira Desktop · System Tray
 
 **Status:** first implementation in `feat/status-tray-foundation`. Native Niri session
-acceptance, icon pixmaps, and cross-surface drag motion are still to be verified.
+acceptance and cross-surface drag motion are still to be verified.
 
 ## Design philosophy: calm in repose, precise in motion
 
@@ -44,9 +44,9 @@ The mandatory [TENET Motion System](TENET_MOTION.md) applies:
 | Action | Result |
 | --- | --- |
 | Click chevron in Top Bar | Toggle native tray popup |
-| Click pinned icon | SNI `Activate(0, 0)` on its registered D-Bus object |
+| Click pinned icon | SNI `Activate(0, 0)` (or `ContextMenu` for `ItemIsMenu`) |
 | Click row in popup | Same native activation |
-| Right click a pinned Top Bar icon | Remove it from the visible bar |
+| Right click a pinned Top Bar icon | Request its native `ContextMenu(0, 0)` |
 | Click pin control beside row | Move application identity between visible and hidden groups |
 | Right click row | SNI `ContextMenu(0, 0)` request |
 | Escape or close control | Reversibly dismiss popup |
@@ -78,18 +78,20 @@ serialized icons, and uses an allowlist of trusted native actions.
 
 ## Known first-phase gaps
 
-- No `IconPixmap` conversion yet; only safe GTK theme icons are encoded,
-  with textual fallback if no usable icon exists.
+- The native host now converts bounded `IconPixmap` ARGB32 bytes into PNG;
+  names from GTK icon themes take precedence. Unsupported images retain a
+  textual fallback. OverlayIcon composition remains future work.
 - No `com.canonical.dbusmenu` rendering or legacy XEmbed support.
   Right-click asks the item to show its native ContextMenu.
 - `Activate(0,0)` and `ContextMenu(0,0)` are basic entry points; some
   applications require compositor-aware pointer coordinates.
 - No draggable icon transfer across two WebViews yet. Explicit pin controls
   supply the same state change.
-- Dynamic narrow-screen icon overflow and Wayland visual/interaction
+- Pinned icons beyond the width cap remain accessible in overflow; measuring
+  the available panel width dynamically and Wayland visual/interaction
   acceptance remain required before merging.
-- This branch has not been built in a NixOS/Niri desktop in the current
-  session. Run the frontend and Rust checks before merging.
+- GitHub CI verifies compilation and tests. This branch has not yet received
+  an interactive native Niri session acceptance pass.
 
 ## Acceptance checklist
 
@@ -103,3 +105,20 @@ serialized icons, and uses an allowlist of trusted native actions.
       all produce a settled true state with no retained WebView listeners.
 - [ ] Keyboards and small displays retain access to every registered item.
 - [ ] Verify native logs for invalid registrations and slow D-Bus services.
+
+## Review hardening (2026-11-05)
+
+- Do not show a registration placeholder before its real `GetAll` properties
+  arrive. Only verified, bounded SNI snapshots are rendered.
+- Refresh application data for legacy NewIcon/NewStatus and standard
+  `PropertiesChanged`; ignore superseded asynchronous replies.
+- Treat `NameOwnerChanged` with a new nonempty owner as a real ownership
+  transition; never keep calling an old item's service after it is replaced.
+- A changed external watcher invalidates pending roster reads, preventing a
+  stale reply from restoring items from the previous host.
+- Pin from a stable `Id` after property resolution. Fail closed if persistence
+  fails rather than displaying a preference that cannot be saved.
+- Respect `ItemIsMenu` for primary click; native context-menu behavior stays
+  consistent between pinned icons and the overflow.
+- Use the overflow badge for attention on clipped pinned icons too; never
+  fabricate an unread count.
