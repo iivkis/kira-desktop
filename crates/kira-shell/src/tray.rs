@@ -58,6 +58,7 @@ struct Service {
     owner: RefCell<Option<gio::OwnerId>>,
     available: Cell<bool>,
     owns_watcher: Cell<bool>,
+    watcher_exported: Cell<bool>,
     host_registered: Cell<bool>,
     next_handle: Cell<u32>,
     external_revision: Cell<u64>,
@@ -72,6 +73,7 @@ pub fn start(bar: &webkit6::WebView) {
         owner: RefCell::new(None),
         available: Cell::new(false),
         owns_watcher: Cell::new(false),
+        watcher_exported: Cell::new(false),
         host_registered: Cell::new(true), // This process is always a SNI host.
         next_handle: Cell::new(1),
         external_revision: Cell::new(0),
@@ -112,6 +114,13 @@ pub fn start(bar: &webkit6::WebView) {
         },
         move |_, _| {
             if let Some(service) = owned.upgrade() {
+                if !service.watcher_exported.get() {
+                    eprintln!("kira-shell: SNI registration failed; releasing D-Bus watcher name");
+                    if let Some(owner) = service.owner.borrow_mut().take() {
+                        gio::bus_unown_name(owner);
+                    }
+                    return;
+                }
                 service.owns_watcher.set(true);
                 service.available.set(true);
                 if let Some(connection) = service.connection.borrow().as_ref() {
@@ -234,6 +243,8 @@ impl Service {
             .build()
         {
             eprintln!("kira-shell: cannot export SNI watcher: {error}");
+        } else {
+            self.watcher_exported.set(true);
         }
     }
 
