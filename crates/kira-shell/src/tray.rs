@@ -1160,8 +1160,9 @@ mod tests {
         ] {
             assert!(valid_bus_name(valid), "{valid}");
         }
+        assert!(!valid_object_path(""));
         for invalid in [
-            "", "/", "//StatusNotifierItem", "/Status//Notifier",
+            "/", "//StatusNotifierItem", "/Status//Notifier",
             "/StatusNotifierItem/", "/Bad.Path", "/Bad-Path",
         ] {
             assert!(!valid_object_path(invalid), "{invalid}");
