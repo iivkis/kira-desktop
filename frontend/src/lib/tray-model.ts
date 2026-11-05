@@ -28,10 +28,11 @@ export function isTrayState(value: unknown): value is TrayState {
     if (!record(item) ||
         !Number.isSafeInteger(item.id) || (item.id as number) <= 0 ||
         ids.has(item.id as number) ||
-        typeof item.key !== 'string' || item.key.length > 180 ||
-        typeof item.title !== 'string' || item.title.length > 120 ||
+        typeof item.key !== 'string' || Array.from(item.key).length > 180 ||
+        typeof item.title !== 'string' || Array.from(item.title).length > 120 ||
         typeof item.pinned !== 'boolean' ||
-        !['Active', 'Passive', 'NeedsAttention'].includes(String(item.status)) ||
+        typeof item.status !== 'string' ||
+        !['Active', 'Passive', 'NeedsAttention'].includes(item.status) ||
         !(item.icon === null || (typeof item.icon === 'string' &&
           item.icon.length <= 190000 &&
           /^data:image\/(?:png|svg\+xml|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(item.icon)))) return false;
