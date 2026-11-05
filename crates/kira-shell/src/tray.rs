@@ -917,12 +917,9 @@ fn valid_object_path(value: &str) -> bool {
     }
     // Empty segments and trailing separators are invalid D-Bus paths.
     // Reject them before calling GIO, whose argument preconditions are strict.
-    value[1..].split('/').all(|part| {
-        !part.is_empty()
-            && part
-                .chars()
-                .all(|c| c.is_ascii_alphanumeric() || c == '_')
-    })
+    value[1..]
+        .split('/')
+        .all(|part| !part.is_empty() && part.chars().all(|c| c.is_ascii_alphanumeric() || c == '_'))
 }
 
 fn parse_external(value: &str) -> Option<(String, String)> {
@@ -1172,24 +1169,32 @@ mod tests {
     #[test]
     fn rejects_malformed_dbus_names_before_gio_calls() {
         for invalid in [
-            "", ":1", ":::1.2", ":1.:2", ":1..2", "org..app",
-            "1.org", "org.2app", "org.-app", "org.app:", "org.app/",
+            "", ":1", ":::1.2", ":1.:2", ":1..2", "org..app", "1.org", "org.2app", "org.-app",
+            "org.app:", "org.app/",
         ] {
             assert!(!valid_bus_name(invalid), "{invalid}");
         }
         for valid in [
-            ":1.42", "org.kde.StatusNotifierItem-1234-1",
+            ":1.42",
+            "org.kde.StatusNotifierItem-1234-1",
             "org.example_app.Tray_1",
         ] {
             assert!(valid_bus_name(valid), "{valid}");
         }
         assert!(!valid_object_path(""));
         for invalid in [
-            "/", "//StatusNotifierItem", "/Status//Notifier",
-            "/StatusNotifierItem/", "/Bad.Path", "/Bad-Path",
+            "/",
+            "//StatusNotifierItem",
+            "/Status//Notifier",
+            "/StatusNotifierItem/",
+            "/Bad.Path",
+            "/Bad-Path",
         ] {
             assert!(!valid_object_path(invalid), "{invalid}");
-            assert!(parse_external(&format!(":1.2{invalid}")).is_none(), "{invalid}");
+            assert!(
+                parse_external(&format!(":1.2{invalid}")).is_none(),
+                "{invalid}"
+            );
         }
         assert!(valid_object_path("/StatusNotifierItem"));
         assert!(valid_object_path("/org/example_2/Tray"));
