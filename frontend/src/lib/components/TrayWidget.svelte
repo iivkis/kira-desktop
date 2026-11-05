@@ -87,6 +87,10 @@
               <span class="min-w-0 flex-1 truncate">{entry.label}</span>
             </button>
           {/if}
+        {:else}
+          <p class="px-2 py-5 text-center text-[12px] text-kira-muted" role="status">
+            У приложения пока нет доступных действий
+          </p>
         {/each}
       </div>
     </section>
