@@ -14,7 +14,6 @@ const health: Record<string, string> = {
   'LOW BAT': 'НИЗКИЙ ЗАРЯД',
   BUSY: 'НАГРУЗКА',
   PARTIAL: 'НЕТ ЧАСТИ ДАННЫХ',
-  STALE: 'ДАННЫЕ УСТАРЕЛИ',
   READY: 'ГОТОВО',
 };
 
