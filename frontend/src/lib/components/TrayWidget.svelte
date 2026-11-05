@@ -5,17 +5,17 @@
   import { onTrayUpdate, onTrayMenuUpdate, requestTraySnapshot, trayAction, clickTrayMenu, dismissTrayMenu } from '../sdk/core';
 
   let { onClose, generation }: { onClose: () => void; generation: number } = $props();
-  let state = $state<TrayState>(EMPTY_TRAY);
-  let menu = $state<TrayMenu>(EMPTY_TRAY_MENU);
-  let list: HTMLDivElement;
-  const groups = $derived(splitTray(state.items));
+  let trayState: TrayState = $state(EMPTY_TRAY);
+  let currentMenu: TrayMenu = $state(EMPTY_TRAY_MENU);
+  let list = $state<HTMLDivElement | undefined>(undefined);
+  const groups = $derived(splitTray(trayState.items));
 
   onMount(() => {
     const stop = onTrayUpdate(next => {
-      if (list?.isConnected) tenetReflow(list, () => { state = next; });
-      else state = next;
+      if (list?.isConnected) tenetReflow(list, () => { trayState = next; });
+      else trayState = next;
     });
-    const stopMenu = onTrayMenuUpdate(next => { menu = next; });
+    const stopMenu = onTrayMenuUpdate(next => { currentMenu = next; });
     requestTraySnapshot(generation);
     return () => { stop(); stopMenu(); };
   });
@@ -24,7 +24,7 @@
     if (event.key === 'Escape') {
       event.preventDefault();
       event.stopPropagation();
-      if (menu.handle !== 0) dismissTrayMenu(generation);
+      if (currentMenu.handle !== 0) dismissTrayMenu(generation);
       else onClose();
     }
   }
@@ -40,7 +40,7 @@
     trayAction(id, 'secondary', generation);
   }
   function clickMenuItem(id: number) {
-    if (menu.handle !== 0) clickTrayMenu(generation, menu.handle, id);
+    if (currentMenu.handle !== 0) clickTrayMenu(generation, currentMenu.handle, id);
   }
 </script>
 
@@ -50,22 +50,22 @@
   class="relative flex min-h-0 w-full flex-col overflow-hidden bg-kira-bg text-kira-text">
   <header data-kira-enter class="flex items-center justify-between gap-3 px-4 pb-3 pt-4">
     <h1 data-kira-contact class="border-l-2 border-kira-accent pl-3 text-base font-extrabold">
-      {menu.handle !== 0 ? 'Меню приложения' : 'Скрытые значки'}
+      {currentMenu.handle !== 0 ? 'Меню приложения' : 'Скрытые значки'}
     </h1>
     <button type="button" title="Закрыть трей" aria-label="Закрыть трей" onclick={onClose}
       class="flex size-7 items-center justify-center text-lg text-kira-muted hover:text-kira-accent focus-visible:outline-2 focus-visible:outline-kira-accent">×</button>
   </header>
-  {#if menu.handle !== 0}
+  {#if currentMenu.handle !== 0}
     <section data-kira-enter class="kira-tray-scroll max-h-[420px] min-h-0 overflow-y-auto bg-kira-surface px-3 py-3"
-      aria-label={'Меню ' + menu.title}>
+      aria-label={'Меню ' + currentMenu.title}>
       <button type="button" onclick={() => dismissTrayMenu(generation)}
         class="mb-2 flex w-full items-center gap-2 border-b border-kira-muted/20 px-2 py-2 text-left text-xs text-kira-muted hover:text-kira-text focus-visible:outline-2 focus-visible:outline-kira-accent"
         aria-label="Назад к значкам трея">
         <span aria-hidden="true">‹</span>
-        <span>Назад · {menu.title}</span>
+        <span>Назад · {currentMenu.title}</span>
       </button>
-      <div role="menu" aria-label={'Действия ' + menu.title}>
-        {#each menu.items as entry, i (i)}
+      <div role="menu" aria-label={'Действия ' + currentMenu.title}>
+        {#each currentMenu.items as entry, i (i)}
           {#if entry.separator}
             <div role="separator" class="my-2 border-t border-kira-muted/20"></div>
           {:else if entry.has_children}
@@ -126,7 +126,7 @@
       </div>
     {:else}
       <p class="px-2 py-6 text-center text-[12px] text-kira-muted" role="status">
-        {state.available ? 'Приложения не добавили значки в трей' : 'Служба системного трея недоступна'}
+        {trayState.available ? 'Приложения не добавили значки в трей' : 'Служба системного трея недоступна'}
       </p>
     {/each}
     {#if groups.pinned.length > 0}
