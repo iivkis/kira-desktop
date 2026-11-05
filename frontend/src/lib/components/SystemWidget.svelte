@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { monitorLabel, UI_LOCALE } from '../ui-locale';
+  import { monitorLabel } from '../ui-locale';
   import WindowControls from './WindowControls.svelte';
   import SystemCharts from './SystemCharts.svelte';
   import { pulseReading, tenetDisclosure, tenetFlowIndicator, tenetPanelArrival, tenetReflow, tenetReflowScope, tenetWidgetReveal } from '../motion';
@@ -26,8 +26,7 @@
   let active = $state<'overview' | 'processes'>('overview');
   let query = $state('');
   let sort = $state({ ...defaultSort });
-  let refreshed = $state('');
-  let lastSampleAt = $state<number | null>(null);
+   let lastSampleAt = $state<number | null>(null);
   let processesLastReceivedAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
@@ -40,8 +39,10 @@
   // independently from the overview telemetry when that worker stops.
   const processesFresh = $derived(isSampleFresh(processesLastReceivedAt, now, 8_000));
   const liveProcesses = $derived(processesFresh ? processes : null);
+  // The headline reports real service faults and measured pressure only.
+  // A temporary refresh gap must not become an alarm.
   const health = $derived(status === null ? 'ОЖИДАНИЕ ТЕЛЕМЕТРИИ' :
-    !sampleFresh ? 'ДАННЫЕ УСТАРЕЛИ' : systemHeadline(metrics, status.core, status.niri));
+    systemHeadline(liveMetrics, status.core, status.niri));
   const swapPercent = $derived(percentUsedPrecise(liveMetrics?.swap_total_kib ?? null, liveMetrics?.swap_free_kib ?? null));
   const storagePercent = $derived(percentUsedPrecise(liveMetrics?.root_total_kib ?? null, liveMetrics?.root_available_kib ?? null));
   const matching = $derived(sortedProcesses(liveProcesses?.rows ?? [], query, sort));
@@ -55,7 +56,6 @@
       status = data;
       lastSampleAt = receivedAt;
       now = receivedAt;
-      refreshed = new Date(receivedAt).toLocaleTimeString(UI_LOCALE);
     });
     const stopProcesses = onSystemProcesses(data => {
       processes = data;
@@ -116,7 +116,7 @@
       </div>
       <WindowControls {onClose} {onPopout} {generation} label="system monitor" />
     </div>
-    {#if health !== 'ALL SYSTEMS NOMINAL'}
+    {#if health !== 'ALL SYSTEMS NOMINAL' && !(status !== null && !sampleFresh && health === 'MEASURING')}
       <p class="mt-3 text-[11px] font-semibold text-kira-accent" role="status" aria-live="polite">{monitorLabel(health)}</p>
     {/if}
   </header>
@@ -248,10 +248,7 @@
         </div>
       </details>
 
-      <footer data-kira-enter class="flex items-center justify-between gap-3 bg-kira-bg px-5 py-3">
-        {#if status !== null && !sampleFresh}
-          <span role="status" class="text-[11px] font-medium text-kira-muted">ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ · {refreshed}</span>
-        {/if}
+      <footer data-kira-enter class="flex items-center justify-end gap-3 bg-kira-bg px-5 py-3">
         <button type="button" onclick={onCopy}
           class="px-1 py-2 text-[11px] font-bold tracking-wide text-kira-accent
             focus-visible:outline-2 focus-visible:outline-kira-accent">КОПИРОВАТЬ ОТЧЁТ</button>
@@ -296,7 +293,6 @@
         {:else}
           <p class="py-9 text-center text-xs text-kira-muted">{liveProcesses?.error ?
             'ДАННЫЕ ПРОЦЕССОВ НЕДОСТУПНЫ: ' + liveProcesses.error :
-            processes !== null && !processesFresh ? 'ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ' :
             liveProcesses && liveProcesses.rows.length ? 'ПРОЦЕССЫ НЕ НАЙДЕНЫ' : 'СБОР ДАННЫХ…'}</p>
         {/each}
         {#if visible.length < matching.length && visible.length < 180}
@@ -307,7 +303,7 @@
           </button>
         {/if}
       </div>
-      {#if query.trim() || liveProcesses?.truncated || visible.length < matching.length || (processes !== null && !processesFresh)}
+      {#if query.trim() || liveProcesses?.truncated || visible.length < matching.length}
         <p data-kira-enter class="shrink-0 pt-3 text-[11px] font-medium text-kira-muted" role="status">
           {visible.length} из {matching.length}
           {liveProcesses?.truncated ? ' · ДОСТИГНУТ ЛИМИТ СКАНИРОВАНИЯ' : ''}
