@@ -379,13 +379,13 @@ impl Service {
         path: &str,
         invocation: gio::DBusMethodInvocation,
     ) {
-        if self.insert_item(registration, bus, path) {
+        let advertised = if registration.starts_with('/') {
+            format!("{bus}{registration}")
+        } else {
+            registration.to_string()
+        };
+        if self.owns_watcher.get() && self.insert_item(&advertised, bus, path) {
             invocation.return_value(None);
-            let advertised = if registration.starts_with('/') {
-                format!("{bus}{registration}")
-            } else {
-                registration.to_string()
-            };
             let _ = connection.emit_signal(
                 None, WATCHER_PATH, WATCHER_IFACE,
                 "StatusNotifierItemRegistered",
