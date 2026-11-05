@@ -34,7 +34,7 @@ export function isTrayState(value: unknown): value is TrayState {
         !['Active', 'Passive', 'NeedsAttention'].includes(String(item.status)) ||
         !(item.icon === null || (typeof item.icon === 'string' &&
           item.icon.length <= 190000 &&
-          /^data:image\/(?:png|svg\+xml);base64,[A-Za-z0-9+/=]+$/.test(item.icon)))) return false;
+          /^data:image\/(?:png|svg\+xml|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(item.icon)))) return false;
     ids.add(item.id as number);
     return true;
   });
