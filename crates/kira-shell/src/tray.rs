@@ -9,11 +9,11 @@ use std::io::Read;
 use std::path::PathBuf;
 use std::rc::Rc;
 
+use crate::tray_menu::{self, MenuEntry};
 use gtk::gio;
 use gtk::glib::{self, variant::ToVariant};
 use gtk::prelude::*;
 use webkit6::prelude::*;
-use crate::tray_menu::{self, MenuEntry};
 
 const WATCHER: &str = "org.kde.StatusNotifierWatcher";
 const WATCHER_PATH: &str = "/StatusNotifierWatcher";
@@ -844,7 +844,12 @@ impl Service {
             .iter()
             .find(|item| item.registration == registration)
             .map(|item| item.handle);
-        if removed_menu.is_some_and(|id| self.current_menu.borrow().as_ref().is_some_and(|menu| menu.handle == id)) {
+        if removed_menu.is_some_and(|id| {
+            self.current_menu
+                .borrow()
+                .as_ref()
+                .is_some_and(|menu| menu.handle == id)
+        }) {
             self.clear_menu();
         }
         let removed = {
@@ -935,7 +940,9 @@ impl Service {
         } else {
             serde_json::json!({"handle": 0, "title": "", "items": []})
         };
-        let Ok(encoded) = serde_json::to_string(&payload.to_string()) else { return };
+        let Ok(encoded) = serde_json::to_string(&payload.to_string()) else {
+            return;
+        };
         let script = format!(
             "window.dispatchEvent(new CustomEvent('kira:tray-menu', {{ detail: JSON.parse({encoded}) }}));"
         );
@@ -956,7 +963,9 @@ impl Service {
 
     fn has_menu_popup(&self, id: u32, action: &str) -> bool {
         self.items.borrow().iter().any(|item| {
-            item.handle == id && item.ready && item.menu_path.is_some()
+            item.handle == id
+                && item.ready
+                && item.menu_path.is_some()
                 && (action == "secondary" || (action == "activate" && item.item_is_menu))
         })
     }
@@ -991,20 +1000,23 @@ impl Service {
                     return;
                 }
             }
-            self.call_item_method(
-                &item,
-                if context { "ContextMenu" } else { "Activate" },
-            );
+            self.call_item_method(&item, if context { "ContextMenu" } else { "Activate" });
         }
     }
 
     fn call_item_method(&self, item: &Item, method: &str) {
         if let Some(connection) = self.connection.borrow().as_ref() {
             connection.call(
-                Some(&item.bus), &item.path, ITEM_IFACE, method,
+                Some(&item.bus),
+                &item.path,
+                ITEM_IFACE,
+                method,
                 Some(&(0i32, 0i32).to_variant()),
-                None, gio::DBusCallFlags::NONE, 2500,
-                None::<&gio::Cancellable>, |_| {},
+                None,
+                gio::DBusCallFlags::NONE,
+                2500,
+                None::<&gio::Cancellable>,
+                |_| {},
             );
         }
     }
@@ -1012,7 +1024,9 @@ impl Service {
     fn open_menu(self: &Rc<Self>, item: &Item, path: &str) {
         self.clear_menu();
         let revision = self.menu_serial.get();
-        let Some(connection) = self.connection.borrow().as_ref().cloned() else { return };
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
         let weak = Rc::downgrade(self);
         let item = item.clone();
         let path = path.to_string();
@@ -1020,31 +1034,54 @@ impl Service {
         // AboutToShow lets dynamic app menus refresh themselves before
         // GetLayout. Failure does not prevent reading a static layout.
         connection.call(
-            Some(&item.bus), &path, "com.canonical.dbusmenu", "AboutToShow",
+            Some(&item.bus),
+            &path,
+            "com.canonical.dbusmenu",
+            "AboutToShow",
             Some(&(0i32,).to_variant()),
-            None, gio::DBusCallFlags::NONE, 1000,
+            None,
+            gio::DBusCallFlags::NONE,
+            1000,
             None::<&gio::Cancellable>,
             move |_| {
-                let Some(service) = weak.upgrade() else { return };
-                if service.menu_serial.get() != revision { return; }
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.menu_serial.get() != revision {
+                    return;
+                }
                 let weak = Rc::downgrade(&service);
                 let menu_item = item.clone();
                 let menu_path = path.clone();
                 menu_connection.call(
-                    Some(&item.bus), &path, "com.canonical.dbusmenu", "GetLayout",
+                    Some(&item.bus),
+                    &path,
+                    "com.canonical.dbusmenu",
+                    "GetLayout",
                     Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
-                    None, gio::DBusCallFlags::NONE, 2500,
+                    None,
+                    gio::DBusCallFlags::NONE,
+                    2500,
                     None::<&gio::Cancellable>,
                     move |reply| {
-                        let Some(service) = weak.upgrade() else { return };
-                        if service.menu_serial.get() != revision { return; }
+                        let Some(service) = weak.upgrade() else {
+                            return;
+                        };
+                        if service.menu_serial.get() != revision {
+                            return;
+                        }
                         let still_registered = service.items.borrow().iter().any(|current| {
                             current.handle == menu_item.handle
                                 && current.bus == menu_item.bus
                                 && current.menu_path.as_deref() == Some(menu_path.as_str())
                         });
-                        if !still_registered { return; }
-                        let entries = reply.ok().as_ref().and_then(tray_menu::parse_layout)
+                        if !still_registered {
+                            return;
+                        }
+                        let entries = reply
+                            .ok()
+                            .as_ref()
+                            .and_then(tray_menu::parse_layout)
                             .unwrap_or_default();
                         if entries.is_empty() {
                             // Some legacy clients only implement ContextMenu.
@@ -1052,8 +1089,10 @@ impl Service {
                             return;
                         }
                         service.current_menu.replace(Some(MenuSession {
-                            handle: menu_item.handle, bus: menu_item.bus.clone(),
-                            path: menu_path, title: menu_item.title,
+                            handle: menu_item.handle,
+                            bus: menu_item.bus.clone(),
+                            path: menu_path,
+                            title: menu_item.title,
                             entries,
                         }));
                         service.publish_menu();
@@ -1076,16 +1115,25 @@ impl Service {
         self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
         self.publish_menu();
         let still_registered = self.items.borrow().iter().any(|item| {
-            item.handle == handle && item.bus == menu.bus
+            item.handle == handle
+                && item.bus == menu.bus
                 && item.menu_path.as_deref() == Some(menu.path.as_str())
         });
-        if !still_registered { return; }
+        if !still_registered {
+            return;
+        }
         if let Some(connection) = self.connection.borrow().as_ref() {
             connection.call(
-                Some(&menu.bus), &menu.path, "com.canonical.dbusmenu", "Event",
+                Some(&menu.bus),
+                &menu.path,
+                "com.canonical.dbusmenu",
+                "Event",
                 Some(&tray_menu::click_params(entry_id)),
-                None, gio::DBusCallFlags::NONE, 2500,
-                None::<&gio::Cancellable>, |_| {},
+                None,
+                gio::DBusCallFlags::NONE,
+                2500,
+                None::<&gio::Cancellable>,
+                |_| {},
             );
         }
     }
@@ -1371,7 +1419,9 @@ pub fn menu_click(handle: u32, entry_id: i32) {
 
 pub fn has_menu_popup(id: u32, action: &str) -> bool {
     SERVICE.with(|active| {
-        active.borrow().as_ref()
+        active
+            .borrow()
+            .as_ref()
             .is_some_and(|service| service.has_menu_popup(id, action))
     })
 }
