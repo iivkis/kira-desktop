@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_TRAY, isTrayState, splitTray, type TrayItem } from './tray-model';
+import { EMPTY_TRAY, isTrayState, splitTray, trayBarView, type TrayItem } from './tray-model';
 
 const item = (id: number, pinned: boolean): TrayItem => ({
   id, key: 'app-' + id, title: 'Application ' + id, icon: null,
@@ -18,6 +18,16 @@ describe('native tray state', () => {
     expect(groups.pinned.map(i => i.id)).toEqual([2, 4]);
     expect(groups.hidden.map(i => i.id)).toEqual([1, 3]);
     expect(original.map(i => i.id)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('keeps clipped pinned items reachable and attention truthful', () => {
+    const items = [item(1, true), item(2, true), item(3, false)];
+    items[1].status = 'NeedsAttention';
+    const view = trayBarView(items, 1);
+    expect(view.visible.map(i => i.id)).toEqual([1]);
+    expect(view.overflow.map(i => i.id)).toEqual([3, 2]);
+    expect(view.needsAttention).toBe(true);
+    expect(trayBarView(items, 2).needsAttention).toBe(false);
   });
 
   it('rejects forged URLs, duplicate IDs, oversized lists and invalid statuses', () => {
