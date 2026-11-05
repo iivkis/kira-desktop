@@ -654,9 +654,11 @@ pub fn handle(message: &str) {
         let Some(service) = service.as_ref() else { return; };
         if message == "sync" {
             service.publish();
-        } else if let Some(raw) = message.strip_prefix("activate:") {
-            if let Ok(id) = raw.parse::<u32>() {
-                if id != 0 { service.action(id, "activate"); }
+        } else if let Some((action, raw)) = message.split_once(':') {
+            if matches!(action, "activate" | "pin") {
+                if let Ok(id) = raw.parse::<u32>() {
+                    if id != 0 { service.action(id, action); }
+                }
             }
         }
     });
