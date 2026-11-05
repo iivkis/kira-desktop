@@ -1222,8 +1222,16 @@ mod tests {
         assert!(matches_item_sender(":1.42", None, ":1.42"));
         assert!(!matches_item_sender(":1.42", None, ":1.43"));
         assert!(!matches_item_sender("org.example.Tray", None, ":1.42"));
-        assert!(matches_item_sender("org.example.Tray", Some(":1.42"), ":1.42"));
-        assert!(!matches_item_sender("org.example.Tray", Some(":1.42"), ":1.43"));
+        assert!(matches_item_sender(
+            "org.example.Tray",
+            Some(":1.42"),
+            ":1.42"
+        ));
+        assert!(!matches_item_sender(
+            "org.example.Tray",
+            Some(":1.42"),
+            ":1.43"
+        ));
     }
 
     #[test]
