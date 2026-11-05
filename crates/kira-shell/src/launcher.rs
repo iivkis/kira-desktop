@@ -266,7 +266,7 @@ fn generic_icon_path(theme: &gtk::IconTheme) -> Option<PathBuf> {
 
 /// Prefer the requested app icon; use the system-theme generic icon if
 /// a file is missing, too large or has an invalid signature.
-fn encode_icon(primary: Option<&Path>, fallback: Option<&Path>) -> Option<String> {
+pub(crate) fn encode_icon(primary: Option<&Path>, fallback: Option<&Path>) -> Option<String> {
     primary
         .and_then(file_data_url)
         .or_else(|| fallback.and_then(file_data_url))
