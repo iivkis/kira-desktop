@@ -61,12 +61,34 @@ struct Item {
     refresh_version: u64,
 }
 
+#[derive(Clone)]
 struct MenuSession {
     handle: u32,
     bus: String,
     path: String,
     title: String,
     entries: Vec<MenuEntry>,
+}
+
+impl MenuSession {
+    fn same_target(&self, other: &Self) -> bool {
+        self.handle == other.handle && self.bus == other.bus && self.path == other.path
+    }
+}
+
+/// Selecting an item must not consume the open menu. Only an explicit
+/// dismissal, a different menu, or the app unregistering may clear it.
+fn selected_menu_for_click(
+    current: &Option<MenuSession>,
+    handle: u32,
+    entry_id: i32,
+) -> Option<MenuSession> {
+    current
+        .as_ref()
+        .filter(|menu| {
+            menu.handle == handle && tray_menu::clickable(&menu.entries, entry_id)
+        })
+        .cloned()
 }
 
 struct Service {
@@ -1115,40 +1137,106 @@ impl Service {
         );
     }
 
-    fn click_menu(&self, handle: u32, entry_id: i32) {
-        let selected = {
-            let mut active = self.current_menu.borrow_mut();
-            let Some(menu) = active.as_ref() else { return };
-            if menu.handle != handle || !tray_menu::clickable(&menu.entries, entry_id) {
-                return;
-            }
-            active.take()
+    fn click_menu(self: &Rc<Self>, handle: u32, entry_id: i32) {
+        let menu = {
+            let current = self.current_menu.borrow();
+            selected_menu_for_click(&current, handle, entry_id)
         };
-        let Some(menu) = selected else { return };
-        self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
-        self.publish_menu();
-        let still_registered = self.items.borrow().iter().any(|item| {
-            item.handle == handle
-                && item.bus == menu.bus
-                && item.menu_path.as_deref() == Some(menu.path.as_str())
-        });
-        if !still_registered {
+        let Some(menu) = menu else {
+            return;
+        };
+        if !self.menu_item_is_live(&menu) {
             return;
         }
-        if let Some(connection) = self.connection.borrow().as_ref() {
-            connection.call(
-                Some(&menu.bus),
-                &menu.path,
-                "com.canonical.dbusmenu",
-                "Event",
-                Some(&tray_menu::click_params(entry_id)),
-                None,
-                gio::DBusCallFlags::NONE,
-                2500,
-                None::<&gio::Cancellable>,
-                |_| {},
-            );
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
+
+        // Keep current_menu intact. A D-Bus menu item is an action, not
+        // implicit navigation back to the hidden-icons list.
+        // A new click invalidates any older pending post-action layout read.
+        let revision = self.menu_serial.get().wrapping_add(1);
+        self.menu_serial.set(revision);
+        let weak = Rc::downgrade(self);
+        let bus = menu.bus.clone();
+        let path = menu.path.clone();
+        connection.call(
+            Some(&bus),
+            &path,
+            "com.canonical.dbusmenu",
+            "Event",
+            Some(&tray_menu::click_params(entry_id)),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if reply.is_err() || service.menu_serial.get() != revision {
+                    return;
+                }
+                // Checkboxes, radio buttons and enabled states may change.
+                // Refresh after Event completes, without hiding the menu.
+                service.refresh_menu_after_action(menu, revision);
+            },
+        );
+    }
+
+    fn menu_item_is_live(&self, menu: &MenuSession) -> bool {
+        self.items.borrow().iter().any(|item| {
+            item.ready
+                && item.handle == menu.handle
+                && item.bus == menu.bus
+                && item.menu_path.as_deref() == Some(menu.path.as_str())
+        })
+    }
+
+    fn refresh_menu_after_action(self: &Rc<Self>, menu: MenuSession, revision: u64) {
+        if self.menu_serial.get() != revision || !self.menu_item_is_live(&menu) {
+            return;
         }
+        let Some(connection) = self.connection.borrow().as_ref().cloned() else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let bus = menu.bus.clone();
+        let path = menu.path.clone();
+        connection.call(
+            Some(&bus),
+            &path,
+            "com.canonical.dbusmenu",
+            "GetLayout",
+            Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.menu_serial.get() != revision || !service.menu_item_is_live(&menu) {
+                    return;
+                }
+                // A failed or malformed refresh must never throw the user out
+                // of the menu. An empty *valid* layout is still a menu.
+                let Some(entries) = reply.ok().as_ref().and_then(tray_menu::parse_layout) else {
+                    return;
+                };
+                let mut current = service.current_menu.borrow_mut();
+                let Some(active) = current.as_mut() else {
+                    return;
+                };
+                if !active.same_target(&menu) || active.entries == entries {
+                    return;
+                }
+                active.entries = entries;
+                drop(current);
+                service.publish_menu();
+            },
+        );
     }
 }
 
