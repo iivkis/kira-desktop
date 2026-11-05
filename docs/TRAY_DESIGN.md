@@ -49,7 +49,7 @@ The mandatory [TENET Motion System](TENET_MOTION.md) applies:
 | Right click a pinned Top Bar icon | Open its `com.canonical.dbusmenu` in the pooled tray popup, or fallback to `ContextMenu(0,0)` |
 | Click pin control beside row | Move application identity between visible and hidden groups |
 | Right click row | Open its D-Bus menu, or fallback to native `ContextMenu(0,0)` |
-| Click a D-Bus menu leaf | Send only its validated `Event(id, clicked)` action |
+| Click a D-Bus menu leaf | Send only its validated `Event(id, clicked)` action, keep the app menu open, refresh its current items |
 | Escape inside app menu | Return to the tray list; Escape again closes the popup |
 | Escape or close control | Reversibly dismiss popup |
 | Quit/restart Shell | Restore pin choices from local state |
@@ -152,3 +152,16 @@ serialized icons, and uses an allowlist of trusted native actions.
   menu is a distinct interaction state within the same popup, without a
   second Wayland surface. A menu can be dismissed with Escape or its back
   control; reduced-motion returns immediate true state.
+
+## Menu action continuity
+
+Choosing a D-Bus menu command **does not** navigate back to hidden icons.
+The native host retains the same menu session while the application's
+`Event(clicked)` is in flight, then requests a fresh bounded `GetLayout`
+so checkbox, radio, disabled and removed entries can update in place.
+Failed or malformed refreshes keep the last safe menu snapshot instead
+of closing it. Out-of-order refreshes are ignored; the menu is dismissed
+only when the user goes back/closes the popup, opens a different menu,
+or the application unregisters or otherwise becomes unavailable.
+A valid empty layout keeps the application's menu surface visible with
+a neutral empty message.
