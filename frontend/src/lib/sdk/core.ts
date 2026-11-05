@@ -286,7 +286,7 @@ export function trayAction(id: number, action: 'pin' | 'activate' | 'secondary',
     return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff &&
       sendCalendarUi('tray:' + generation + ':' + action + ':' + id);
   }
-  if (action !== 'activate' && action !== 'pin') return false;
+  if (action !== 'activate' && action !== 'pin' && action !== 'secondary') return false;
   const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kiraTray;
   if (!channel) return false;
   try { channel.postMessage(action + ':' + id); return true; } catch { return false; }
