@@ -22,6 +22,7 @@ const PROPERTIES_IFACE: &str = "org.freedesktop.DBus.Properties";
 const MAX_ITEMS: usize = 64;
 const MAX_SAVED_PINS: usize = 128;
 const MAX_PINS_BYTES: usize = 64 * 1024;
+const MAX_PIN_KEY_BYTES: usize = 240;
 // Never ship dozens of full-size icons on every SNI property update.
 const MAX_SNAPSHOT_ICON_BYTES: usize = 2 * 1024 * 1024;
 const WATCHER_XML: &str = r#"<node>
@@ -896,8 +897,7 @@ impl Service {
     }
 }
 
-/// App-provided Id is stable across new unique D-Bus connections. A
-/// registration fallback is used only when the app does not expose Id.
+/// Keep every native WebKit tray dispatch under the shared image budget.
 fn bounded_snapshot_icon<'a>(icon: &'a Option<String>, remaining: &mut usize) -> Option<&'a str> {
     let value = icon.as_deref()?;
     if value.len() > *remaining {
@@ -907,6 +907,8 @@ fn bounded_snapshot_icon<'a>(icon: &'a Option<String>, remaining: &mut usize) ->
     Some(value)
 }
 
+/// App-provided Id is stable across unique D-Bus connections. An app with no
+/// Id retains its ASCII registration (up to 240 bytes) as a fallback key.
 fn pin_identity(registration: &str, id: &str) -> String {
     // The local state format bounds keys by UTF-8 bytes. A count of Unicode
     // scalar values alone would silently discard non-ASCII IDs on restart.
@@ -1108,13 +1110,13 @@ fn load_pins() -> HashSet<String> {
     serde_json::from_slice::<Vec<String>>(&data)
         .unwrap_or_default()
         .into_iter()
-        .filter(|value| !value.is_empty() && value.len() <= 180)
+        .filter(|value| !value.is_empty() && value.len() <= MAX_PIN_KEY_BYTES)
         .take(MAX_SAVED_PINS)
         .collect()
 }
 
 fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
-    if pins.len() > MAX_SAVED_PINS || pins.iter().any(|pin| pin.is_empty() || pin.len() > 180) {
+    if pins.len() > MAX_SAVED_PINS || pins.iter().any(|pin| pin.is_empty() || pin.len() > MAX_PIN_KEY_BYTES) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::InvalidData,
             "SNI pin limit exceeded",
@@ -1286,6 +1288,14 @@ mod tests {
             Some("last")
         );
         assert_eq!(remaining, 3);
+    }
+
+    #[test]
+    fn long_registrations_remain_legal_fallback_pin_keys() {
+        let registration = format!("org.example.{}", "x".repeat(190));
+        assert!(registration.len() > 180);
+        assert!(registration.len() <= MAX_PIN_KEY_BYTES);
+        assert_eq!(pin_identity(&registration, ""), registration);
     }
 
     #[test]
