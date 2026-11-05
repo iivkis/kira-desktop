@@ -46,6 +46,8 @@ struct Item {
     title: String,
     icon: Option<String>,
     status: String,
+    // Do not expose a synthetic placeholder before reading real SNI data.
+    ready: bool,
 }
 
 struct Service {
@@ -56,6 +58,7 @@ struct Service {
     owns_watcher: Cell<bool>,
     host_registered: Cell<bool>,
     next_handle: Cell<u32>,
+    external_revision: Cell<u64>,
     items: RefCell<Vec<Item>>,
     pins: RefCell<HashSet<String>>,
 }
@@ -69,6 +72,7 @@ pub fn start(bar: &webkit6::WebView) {
         owns_watcher: Cell::new(false),
         host_registered: Cell::new(true), // This process is always a SNI host.
         next_handle: Cell::new(1),
+        external_revision: Cell::new(0),
         items: RefCell::new(Vec::new()),
         pins: RefCell::new(load_pins()),
     });
@@ -124,6 +128,7 @@ pub fn start(bar: &webkit6::WebView) {
         move |_, _| {
             if let Some(service) = lost.upgrade() {
                 service.owns_watcher.set(false);
+                service.external_revision.set(service.external_revision.get().wrapping_add(1));
                 service.available.set(false);
                 service.items.borrow_mut().clear();
                 service.publish();
@@ -277,17 +282,20 @@ impl Service {
                     return;
                 };
                 let name = params.child_value(0).get::<String>().unwrap_or_default();
+                let old_owner = params.child_value(1).get::<String>().unwrap_or_default();
                 let new_owner = params.child_value(2).get::<String>().unwrap_or_default();
-                if new_owner.is_empty() {
-                    if name == WATCHER && !service.owns_watcher.get() {
-                        service.available.set(false);
-                        service.items.borrow_mut().clear();
-                        service.publish();
-                    } else {
-                        service.unregister_bus(&name);
+                if name == WATCHER && !service.owns_watcher.get() {
+                    service.external_revision.set(service.external_revision.get().wrapping_add(1));
+                    service.available.set(false);
+                    service.items.borrow_mut().clear();
+                    service.publish();
+                    if !new_owner.is_empty() {
+                        service.adopt_external();
                     }
-                } else if name == WATCHER && !service.owns_watcher.get() {
-                    service.adopt_external();
+                } else if !old_owner.is_empty() && old_owner != new_owner {
+                    // Well-known names can switch owners without ever becoming
+                    // empty. Their former SNI object must not target a new app.
+                    service.unregister_bus(&name);
                 }
             },
         );
@@ -349,6 +357,8 @@ impl Service {
             None::<&gio::Cancellable>,
             |_| {},
         );
+        let revision = self.external_revision.get().wrapping_add(1);
+        self.external_revision.set(revision);
         let weak = Rc::downgrade(self);
         connection.call(
             Some(WATCHER),
@@ -364,7 +374,9 @@ impl Service {
                 let Some(service) = weak.upgrade() else {
                     return;
                 };
-                if service.owns_watcher.get() {
+                if service.owns_watcher.get()
+                    || service.external_revision.get() != revision
+                {
                     return;
                 }
                 let Ok(reply) = reply else {
@@ -539,9 +551,9 @@ impl Service {
             title,
             icon: None,
             status: "Active".into(),
+            ready: false,
         });
         drop(items);
-        self.publish();
         self.refresh_item(id, bus, path);
         true
     }
@@ -600,7 +612,7 @@ impl Service {
                     return;
                 };
                 if let Some(value) = id_property.filter(|v| !v.is_empty()) {
-                    item.key = clean(&value, 180);
+                    item.key = pin_identity(&item.registration, &value);
                 }
                 if let Some(value) = title.filter(|v| !v.is_empty()) {
                     item.title = clean(&value, 120);
@@ -612,6 +624,7 @@ impl Service {
                 }
                 .into();
                 item.icon = icon;
+                item.ready = true;
                 drop(items);
                 service.publish();
             },
@@ -660,7 +673,7 @@ impl Service {
             .items
             .borrow()
             .iter()
-            .filter(|item| item.status != "Passive")
+            .filter(|item| item.ready && item.status != "Passive")
             .map(|item| {
                 serde_json::json!({
                     "id": item.handle,
@@ -706,15 +719,16 @@ impl Service {
             return;
         };
         if action == "pin" {
-            let mut pins = self.pins.borrow_mut();
-            if !pins.remove(&item.key) {
-                pins.insert(item.key.clone());
+            let mut next = self.pins.borrow().clone();
+            if !next.remove(&item.key) {
+                next.insert(item.key.clone());
             }
-            let next = pins.clone();
-            drop(pins);
             if let Err(error) = save_pins(&next) {
+                // Persistence failure must not show a pin as durable.
                 eprintln!("kira-shell: cannot persist SNI pins: {error}");
+                return;
             }
+            *self.pins.borrow_mut() = next;
             self.publish();
         } else if action == "activate" || action == "secondary" {
             let method = if action == "activate" {
@@ -737,6 +751,17 @@ impl Service {
                 );
             }
         }
+    }
+}
+
+/// App-provided Id is stable across new unique D-Bus connections. A
+/// registration fallback is used only when the app does not expose Id.
+fn pin_identity(registration: &str, id: &str) -> String {
+    let id = clean(id, 177);
+    if id.is_empty() {
+        registration.to_string()
+    } else {
+        format!("id:{id}")
     }
 }
 
@@ -914,6 +939,16 @@ mod tests {
         ] {
             assert!(parse_external(invalid).is_none(), "{invalid}");
         }
+    }
+
+    #[test]
+    fn pin_identity_survives_unique_bus_name_changes() {
+        assert_eq!(
+            pin_identity(":1.34/StatusNotifierItem", "org.example.Client"),
+            pin_identity(":1.89/StatusNotifierItem", "org.example.Client")
+        );
+        assert_eq!(pin_identity(":1.34/StatusNotifierItem", ""), ":1.34/StatusNotifierItem");
+        assert_eq!(pin_identity("org.example.Client", "app\n"), "id:app");
     }
 
     #[test]
