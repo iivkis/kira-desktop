@@ -376,8 +376,10 @@ impl Service {
                     return;
                 }
                 let values = glib::VariantDict::new(Some(&reply.child_value(0)));
-                let registrations = values.lookup_value("RegisteredStatusNotifierItems", None)
-                    .and_then(|v| v.get::<Vec<String>>()).unwrap_or_default();
+                let registrations = values
+                    .lookup_value("RegisteredStatusNotifierItems", None)
+                    .and_then(|v| v.get::<Vec<String>>())
+                    .unwrap_or_default();
                 service.available.set(true);
                 for registration in registrations.into_iter().take(MAX_ITEMS) {
                     service.register_external(&registration);
