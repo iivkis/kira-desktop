@@ -98,7 +98,7 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertNotIn("gtk::ProgressBar", RUST)
 
     def test_expired_telemetry_and_process_rows_cannot_look_live(self):
-        """A stale badge must also remove stale numeric values and process rows."""
+        """Expired readings stay hidden without repetitive status warnings."""
         self.assertIn("const liveMetrics = $derived(sampleFresh ? metrics : null)", WIDGET)
         self.assertIn("const liveProcesses = $derived(processesFresh ? processes : null)", WIDGET)
         self.assertIn("isSampleFresh(processesLastReceivedAt, now, 8_000)", WIDGET)
@@ -106,7 +106,9 @@ class DetailedHealthContractTests(unittest.TestCase):
         self.assertIn("usageLabel(liveMetrics?.root_total_kib", WIDGET)
         self.assertIn("usageLabel(liveMetrics?.swap_total_kib", WIDGET)
         self.assertIn("temperatureLabel(liveMetrics?.cpu_temperature_c", WIDGET)
-        self.assertIn("ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ", WIDGET)
+        self.assertNotIn("ДАННЫЕ ПРОЦЕССОВ УСТАРЕЛИ", WIDGET)
+        self.assertNotIn("ДАННЫЕ УСТАРЕЛИ", WIDGET)
+        self.assertNotIn("ИМПУЛЬС УСТАРЕЛ", CHARTS)
         self.assertIn("ДАННЫЕ GPU НЕДОСТУПНЫ", WIDGET)
         self.assertNotIn("usageLabel(metrics?.root_total_kib", WIDGET)
         self.assertNotIn("usageLabel(metrics?.swap_total_kib", WIDGET)
