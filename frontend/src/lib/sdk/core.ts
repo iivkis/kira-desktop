@@ -223,11 +223,28 @@ type RpcReply = {
   error?: { code: number; message: string };
 };
 
-import { isTrayState, type TrayState } from '../tray-model';
+import { isTrayState, isTrayMenu, type TrayState, type TrayMenu } from '../tray-model';
 
 /** No client-side discovery: SNI items arrive only from the trusted host. */
 export function onTrayUpdate(callback: (state: TrayState) => void): () => void {
   return onNativeEvent('kira:tray', isTrayState, callback);
+}
+
+/** App menu layouts remain host-provided, validated and read-only. */
+export function onTrayMenuUpdate(callback: (menu: TrayMenu) => void): () => void {
+  return onNativeEvent('kira:tray-menu', isTrayMenu, callback);
+}
+
+export function clickTrayMenu(generation: number, handle: number, id: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff ||
+      !Number.isSafeInteger(handle) || handle <= 0 || handle > 0xffffffff ||
+      !Number.isSafeInteger(id) || id <= 0 || id > 0x7fffffff) return false;
+  return sendCalendarUi('tray-menu-click:' + generation + ':' + handle + ':' + id);
+}
+
+export function dismissTrayMenu(generation: number): boolean {
+  if (!Number.isSafeInteger(generation) || generation <= 0 || generation > 0xffffffff) return false;
+  return sendCalendarUi('tray-menu-dismiss:' + generation);
 }
 
 type Bridge = {
