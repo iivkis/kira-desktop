@@ -1563,6 +1563,78 @@ mod tests {
     use super::*;
 
     #[test]
+    fn clicking_a_menu_leaf_preserves_the_active_menu() {
+        let original = Some(MenuSession {
+            handle: 42,
+            bus: ":1.42".into(),
+            path: "/MenuBar".into(),
+            title: "Audio player".into(),
+            entries: vec![
+                MenuEntry {
+                    id: 3,
+                    label: "Shuffle".into(),
+                    depth: 0,
+                    enabled: true,
+                    separator: false,
+                    checked: false,
+                    radio: false,
+                    has_children: false,
+                },
+                MenuEntry {
+                    id: 4,
+                    label: "Unavailable".into(),
+                    depth: 0,
+                    enabled: false,
+                    separator: false,
+                    checked: false,
+                    radio: false,
+                    has_children: false,
+                },
+            ],
+        });
+
+        let selected = selected_menu_for_click(&original, 42, 3).unwrap();
+        assert_eq!(selected.title, "Audio player");
+        assert!(selected.same_target(original.as_ref().unwrap()));
+        // Sending Event may refresh the layout, but must not navigate back.
+        assert!(original.is_some());
+        assert_eq!(original.as_ref().unwrap().entries[0].label, "Shuffle");
+        assert!(selected_menu_for_click(&original, 42, 4).is_none());
+        assert!(selected_menu_for_click(&original, 77, 3).is_none());
+        assert!(selected_menu_for_click(&original, 42, 999).is_none());
+        assert!(selected_menu_for_click(&None, 42, 3).is_none());
+    }
+
+    #[test]
+    fn refreshed_menu_entries_keep_the_same_app_target() {
+        let before = MenuSession {
+            handle: 42,
+            bus: ":1.42".into(),
+            path: "/MenuBar".into(),
+            title: "Player".into(),
+            entries: Vec::new(),
+        };
+        let mut after = before.clone();
+        after.entries.push(MenuEntry {
+            id: 6,
+            label: "Mute".into(),
+            depth: 0,
+            enabled: true,
+            separator: false,
+            checked: true,
+            radio: false,
+            has_children: false,
+        });
+        assert!(before.same_target(&after));
+        assert_ne!(before.entries, after.entries);
+        after.path = "/DifferentMenu".into();
+        assert!(!before.same_target(&after));
+        after.path = before.path.clone();
+        after.bus = ":1.999".into();
+        assert!(!before.same_target(&after));
+    }
+
+    #[test]
     fn accepts_only_bounded_unique_service_and_path() {
         assert_eq!(
             parse_external(":1.42/StatusNotifierItem"),
