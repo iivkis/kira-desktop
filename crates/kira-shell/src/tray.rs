@@ -1342,8 +1342,32 @@ pub fn snapshot_to(view: &webkit6::WebView) {
     SERVICE.with(|active| {
         if let Some(service) = active.borrow().as_ref() {
             service.dispatch(view);
+            service.dispatch_menu(view);
         }
     });
+}
+
+pub fn clear_menu() {
+    SERVICE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.clear_menu();
+        }
+    });
+}
+
+pub fn menu_click(handle: u32, entry_id: i32) {
+    SERVICE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.click_menu(handle, entry_id);
+        }
+    });
+}
+
+pub fn has_menu_popup(id: u32, action: &str) -> bool {
+    SERVICE.with(|active| {
+        active.borrow().as_ref()
+            .is_some_and(|service| service.has_menu_popup(id, action))
+    })
 }
 
 pub fn handle(message: &str) {
