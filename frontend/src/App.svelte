@@ -267,7 +267,8 @@
     inert={inspectingWarnings}
   >
     <TrayBar items={trayState.items} onToggle={() => { toggleTray(); }}
-      onActivate={(id) => { trayAction(id, 'activate'); }} />
+      onActivate={(id) => { trayAction(id, 'activate'); }}
+      onPin={(id) => { trayAction(id, 'pin'); }} />
     <SystemHealth
       coreStatus={coreStatus}
       coreVersion={coreVersion}
