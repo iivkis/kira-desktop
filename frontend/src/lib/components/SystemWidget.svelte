@@ -26,7 +26,7 @@
   let active = $state<'overview' | 'processes'>('overview');
   let query = $state('');
   let sort = $state({ ...defaultSort });
-   let lastSampleAt = $state<number | null>(null);
+  let lastSampleAt = $state<number | null>(null);
   let processesLastReceivedAt = $state<number | null>(null);
   let now = $state(Date.now());
   let visibleCount = $state(36);
