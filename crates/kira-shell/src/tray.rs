@@ -693,11 +693,13 @@ impl Service {
                 else {
                     return;
                 };
-                if let Some(value) = id_property.filter(|v| !v.is_empty()) {
-                    item.key = pin_identity(&item.registration, &value);
+                if let Some(value) = id_property.as_deref().filter(|v| !v.is_empty()) {
+                    item.key = pin_identity(&item.registration, value);
                 }
-                if let Some(value) = title.filter(|v| !v.is_empty()) {
-                    item.title = clean(&value, 120);
+                if let Some(value) = title.as_deref().filter(|v| !v.is_empty())
+                    .or(id_property.as_deref().filter(|v| !v.is_empty()))
+                {
+                    item.title = clean(value, 120);
                 }
                 item.status = match status.as_deref() {
                     Some("Passive") => "Passive",
@@ -969,6 +971,11 @@ fn resolve_theme_icon(name: &str) -> Option<String> {
     }
     let display = gtk::gdk::Display::default()?;
     let theme = gtk::IconTheme::for_display(&display);
+    // GTK can silently resolve a missing name to image-missing; prefer a
+    // real app-provided pixmap to that generic placeholder.
+    if !theme.has_icon(name) {
+        return None;
+    }
     let path = theme
         .lookup_icon(
             name,
