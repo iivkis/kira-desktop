@@ -238,6 +238,8 @@ impl OverlayPool {
         let output_width = crate::native_ui::popup_output_width(&view.window);
         if view.active.get() == Some(Surface::Settings) {
             popup_layout::settings_popup_width(output_width)
+        } else if view.active.get() == Some(Surface::Tray) {
+            popup_layout::tray_popup_width(output_width)
         } else {
             popup_layout::popup_width(output_width, 1, false)
         }
@@ -401,6 +403,7 @@ impl CalendarOverlay {
             Surface::System => "Kira System Monitor",
             Surface::Launcher => "Kira Launcher",
             Surface::Settings => "Kira Settings",
+            Surface::Tray => "Kira Tray",
             #[cfg(test)]
             Surface::Synthetic(_) => "Kira Widget",
         };
@@ -651,6 +654,8 @@ impl CalendarOverlay {
         // Reset the previous widget's geometry while still transparent.
         let preferred_width = if kind == Surface::Settings {
             popup_layout::SETTINGS_POPUP_WIDTH
+        } else if kind == Surface::Tray {
+            304
         } else {
             popup_layout::PREFERRED_POPUP_WIDTH
         };
@@ -839,6 +844,72 @@ impl CalendarOverlay {
 
     fn on_message(self: &Rc<Self>, message: &str) {
         if self.disposed.get() {
+            return;
+        }
+        // The tray uses the same strictly scoped, generation-bound overlay
+        // transport. A stale/recycled WebView cannot target the live session.
+        if let Some(raw) = message.strip_prefix("tray-sync:") {
+            if let Ok(generation) = raw.parse::<u32>() {
+                if generation != 0
+                    && self.requested.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Tray)
+                {
+                    crate::tray::snapshot_to(&self.view);
+                }
+            }
+            return;
+        }
+        if let Some(raw) = message.strip_prefix("tray-menu-click:") {
+            let fields: Vec<_> = raw.split(':').collect();
+            if let [generation, handle, entry] = fields.as_slice() {
+                if let (Ok(generation), Ok(handle), Ok(entry)) = (
+                    generation.parse::<u32>(),
+                    handle.parse::<u32>(),
+                    entry.parse::<i32>(),
+                ) {
+                    if generation != 0
+                        && handle != 0
+                        && entry > 0
+                        && self.requested.get()
+                        && !self.closing.get()
+                        && self.generation.get() == generation
+                        && self.active.get() == Some(Surface::Tray)
+                    {
+                        crate::tray::menu_click(handle, entry);
+                    }
+                }
+            }
+            return;
+        }
+        if let Some(raw) = message.strip_prefix("tray-menu-dismiss:") {
+            if let Ok(generation) = raw.parse::<u32>() {
+                if generation != 0
+                    && self.requested.get()
+                    && !self.closing.get()
+                    && self.generation.get() == generation
+                    && self.active.get() == Some(Surface::Tray)
+                {
+                    crate::tray::clear_menu();
+                }
+            }
+            return;
+        }
+        if let Some(raw) = message.strip_prefix("tray:") {
+            let fields: Vec<_> = raw.split(':').collect();
+            if let [generation, action, id] = fields.as_slice() {
+                if let (Ok(generation), Ok(id)) = (generation.parse::<u32>(), id.parse::<u32>()) {
+                    if generation != 0
+                        && id != 0
+                        && self.requested.get()
+                        && !self.closing.get()
+                        && self.generation.get() == generation
+                        && self.active.get() == Some(Surface::Tray)
+                    {
+                        crate::tray::action(id, action);
+                    }
+                }
+            }
             return;
         }
         match calendar_command(message) {
@@ -1812,6 +1883,67 @@ pub fn dismiss_system(_application: &gtk::Application) -> bool {
             return true;
         }
         false
+    })
+}
+
+/// Dedicated SNI overflow menu in the existing right-docked pooled WebView.
+pub fn toggle_tray(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
+        return;
+    };
+    pool.request(
+        Surface::Tray,
+        true,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Tray) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    if view.closing.get() {
+                        view.cancel_close();
+                    } else {
+                        view.request_close();
+                    }
+                }
+            } else {
+                view.show(Surface::Tray);
+            }
+        }),
+    );
+}
+
+/// Show the tray without toggling an already visible popup. Context menus
+/// reuse the same pooled surface rather than opening a second WebView.
+pub fn show_tray(application: &gtk::Application, html: &str, context: &webkit6::WebContext) {
+    let Some(pool) = ensure(application, html, context) else {
+        return;
+    };
+    pool.request(
+        Surface::Tray,
+        false,
+        Box::new(|pool| {
+            let Some((view, existing)) = pool.acquire(Surface::Tray) else {
+                return;
+            };
+            if existing {
+                if !view.focus_detached() {
+                    view.cancel_close();
+                    view.window.present();
+                }
+            } else {
+                view.show(Surface::Tray);
+            }
+        }),
+    );
+}
+
+/// Only the existing tray popup receives the native SNI update, never a new host.
+pub fn tray_view() -> Option<webkit6::WebView> {
+    POOL.with(|cache| {
+        let pool = cache.borrow();
+        let view = pool.as_ref()?.active(Surface::Tray)?;
+        (view.requested.get() && !view.closing.get()).then(|| view.view.clone())
     })
 }
 

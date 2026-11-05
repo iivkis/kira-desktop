@@ -33,6 +33,10 @@ pub fn popup_width(output_width: i32, _active_count: usize, _launcher_active: bo
     PREFERRED_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
 }
 
+pub fn tray_popup_width(output_width: i32) -> i32 {
+    304.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
+}
+
 pub fn settings_popup_width(output_width: i32) -> i32 {
     SETTINGS_POPUP_WIDTH.min(output_width.saturating_sub(OUTER_MARGIN * 2).max(1))
 }
@@ -65,6 +69,8 @@ mod tests {
         assert_eq!(popup_width(1264, 3, true), 420);
         assert_eq!(popup_width(800, 4, true), 420);
         assert_eq!(popup_width(400, 3, true), 376);
+        assert_eq!(tray_popup_width(1264), 304);
+        assert_eq!(tray_popup_width(300), 276);
         assert_eq!(settings_popup_width(1264), 600);
         assert_eq!(settings_popup_width(800), 600);
         assert_eq!(settings_popup_width(480), 456);

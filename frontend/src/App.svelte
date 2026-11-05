@@ -1,13 +1,16 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import SystemHealth from './lib/components/SystemHealth.svelte';
+  import TrayBar from './lib/components/TrayBar.svelte';
+  import { EMPTY_TRAY, type TrayState } from './lib/tray-model';
   import WorkspacePreview from './lib/components/WorkspacePreview.svelte';
   import { formatClock } from './lib/time';
   import { russianCountLabel } from './lib/ui-locale';
   import { nextWarningId, visibleWarningIndex, type UiWarning } from './lib/warning-model';
-  import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics } from './lib/sdk/core';
+  import { openLauncher, toggleCalendar, toggleSystemPanel, toggleSettings, request, focusWorkspace, onWorkspaceUpdate, onConfigUpdate, onSystemMetrics, defaultUiConfig, type WorkspaceState, type ConfigState, type SystemMetrics, onTrayUpdate, requestTraySnapshot, toggleTray, trayAction } from './lib/sdk/core';
 
   let now = $state(new Date());
+  let trayState = $state<TrayState>(EMPTY_TRAY);
   let coreStatus = $state<'connecting' | 'connected' | 'unavailable'>('connecting');
   let coreVersion = $state('');
   let workspaceState = $state<WorkspaceState | null>(null);
@@ -155,6 +158,9 @@
     void refresh();
     const statusTimer = window.setInterval(() => void refresh(), 5_000);
 
+    const stopTray = onTrayUpdate((value) => { if (!disposed) trayState = value; });
+    requestTraySnapshot();
+
     const stopMetrics = onSystemMetrics((value) => {
       if (!disposed) {
         systemMetrics = value;
@@ -203,6 +209,7 @@
       unsubscribe();
       stopConfig();
       stopMetrics();
+      stopTray();
     };
   });
 </script>
@@ -259,6 +266,9 @@
     aria-label="Система и местное время"
     inert={inspectingWarnings}
   >
+    <TrayBar items={trayState.items} onToggle={() => { toggleTray(); }}
+      onActivate={(id) => { trayAction(id, 'activate'); }}
+      onSecondary={(id) => { trayAction(id, 'secondary'); }} />
     <SystemHealth
       coreStatus={coreStatus}
       coreVersion={coreVersion}

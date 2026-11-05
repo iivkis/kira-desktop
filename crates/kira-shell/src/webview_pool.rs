@@ -13,6 +13,7 @@ pub enum Surface {
     System,
     Launcher,
     Settings,
+    Tray,
     #[cfg(test)]
     Synthetic(u8),
 }
@@ -23,6 +24,7 @@ impl Surface {
             Self::System => "system",
             Self::Launcher => "launcher",
             Self::Settings => "settings",
+            Self::Tray => "tray",
             #[cfg(test)]
             Self::Synthetic(_) => "synthetic",
         }
