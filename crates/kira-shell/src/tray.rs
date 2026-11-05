@@ -48,6 +48,7 @@ struct Item {
     status: String,
     // Do not expose a synthetic placeholder before reading real SNI data.
     ready: bool,
+    item_is_menu: bool,
 }
 
 struct Service {
@@ -552,6 +553,7 @@ impl Service {
             icon: None,
             status: "Active".into(),
             ready: false,
+            item_is_menu: false,
         });
         drop(items);
         self.refresh_item(id, bus, path);
@@ -599,6 +601,10 @@ impl Service {
                 let status = props
                     .lookup_value("Status", None)
                     .and_then(|v| v.get::<String>());
+                let item_is_menu = props
+                    .lookup_value("ItemIsMenu", None)
+                    .and_then(|v| v.get::<bool>())
+                    .unwrap_or(false);
                 let pixmap = if status.as_deref() == Some("NeedsAttention") {
                     props.lookup_value("AttentionIconPixmap", None)
                         .and_then(|value| pixmap_icon(&value))
@@ -634,6 +640,7 @@ impl Service {
                 }
                 .into();
                 item.icon = icon;
+                item.item_is_menu = item_is_menu;
                 item.ready = true;
                 drop(items);
                 service.publish();
@@ -741,7 +748,9 @@ impl Service {
             *self.pins.borrow_mut() = next;
             self.publish();
         } else if action == "activate" || action == "secondary" {
-            let method = if action == "activate" {
+            // An ItemIsMenu registration uses its menu for primary clicks.
+            // Plain SNI items retain the standard Activate action.
+            let method = if action == "activate" && !item.item_is_menu {
                 "Activate"
             } else {
                 "ContextMenu"
@@ -965,7 +974,7 @@ pub fn handle(message: &str) {
         if message == "sync" {
             service.publish();
         } else if let Some((action, raw)) = message.split_once(':') {
-            if matches!(action, "activate" | "pin") {
+            if matches!(action, "activate" | "pin" | "secondary") {
                 if let Ok(id) = raw.parse::<u32>() {
                     if id != 0 {
                         service.action(id, action);
