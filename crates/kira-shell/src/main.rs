@@ -14,6 +14,7 @@ mod renderer_recovery;
 mod system_info;
 mod system_metrics;
 mod system_panel;
+mod tray;
 mod webview_pool;
 use std::cell::{Cell, RefCell};
 use std::env;
@@ -320,6 +321,22 @@ fn main() {
         });
         assert!(manager.register_script_message_handler("kiraSettings", None));
 
+        // Dedicated SNI tray bridge: only toggle, snapshot and bounded
+        // numeric Activate requests. The popup's pin actions are separately
+        // scoped to its current lease generation by calendar.rs.
+        let tray_app = app.clone();
+        let tray_html = html.clone();
+        let tray_context = context.clone();
+        manager.connect_script_message_received(Some("kiraTray"), move |_, value| {
+            let command = value.to_string();
+            if command == "toggle" {
+                calendar::toggle_tray(&tray_app, &tray_html, &tray_context);
+            } else {
+                tray::handle(&command);
+            }
+        });
+        assert!(manager.register_script_message_handler("kiraTray", None));
+
         view.connect_load_failed(|_, event, uri, error| {
             eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
             false
@@ -439,6 +456,8 @@ fn main() {
         view.load_html(&html, None);
         window.set_child(Some(&view));
         window.present();
+        // Native SNI ownership and WebKit updates stay within this process.
+        tray::start(&view);
         // Own the user's session notification bus without replacing another
         // daemon. The toast WebView is allocated on the first actual event.
         notifications::start(app, &html, &context);
