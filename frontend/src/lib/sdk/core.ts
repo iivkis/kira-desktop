@@ -223,20 +223,27 @@ type RpcReply = {
   error?: { code: number; message: string };
 };
 
+import { isTrayState, type TrayState } from '../tray-model';
+
+/** No client-side discovery: SNI items arrive only from the trusted host. */
+export function onTrayUpdate(callback: (state: TrayState) => void): () => void {
+  return onNativeEvent('kira:tray', isTrayState, callback);
+}
+
 type Bridge = {
   postMessage(message: string): void;
 };
 
 declare global {
   interface Window {
-    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge; kiraNotificationUi?: Bridge } };
+    webkit?: { messageHandlers?: { kira?: Bridge; kiraDiagnostics?: Bridge; kiraLauncher?: Bridge; kiraCalendar?: Bridge; kiraCalendarUi?: Bridge; kiraSystem?: Bridge; kiraSettings?: Bridge; kiraNotificationUi?: Bridge; kiraTray?: Bridge } };
   }
 }
 
 /** Only fixed commands are exposed to trusted Svelte components. Keep host
  * bridge failures non-throwing so an offline overlay does not crash the bar.
  */
-function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem' | 'kiraSettings', command: 'open' | 'toggle'): boolean {
+function postNativeCommand(channelName: 'kiraLauncher' | 'kiraCalendar' | 'kiraSystem' | 'kiraSettings' | 'kiraTray', command: 'open' | 'toggle' | 'sync'): boolean {
   const channel = typeof window === 'undefined'
     ? undefined
     : window.webkit?.messageHandlers?.[channelName];
@@ -257,6 +264,32 @@ export function openLauncher(): boolean {
 /** Toggle the native calendar overlay through its fixed-purpose channel. */
 export function toggleCalendar(): boolean {
   return postNativeCommand('kiraCalendar', 'toggle');
+}
+
+/** Toggle the dedicated native tray popup, outside the 42px bar surface. */
+export function toggleTray(): boolean {
+  return postNativeCommand('kiraTray', 'toggle');
+}
+
+export function requestTraySnapshot(generation?: number): boolean {
+  if (generation !== undefined) {
+    return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff &&
+      sendCalendarUi('tray-sync:' + generation);
+  }
+  return postNativeCommand('kiraTray', 'sync');
+}
+
+/** Only validated numeric handles and named SNI actions cross the bridge. */
+export function trayAction(id: number, action: 'pin' | 'activate' | 'secondary', generation?: number): boolean {
+  if (!Number.isSafeInteger(id) || id <= 0 || id > 0xffffffff) return false;
+  if (generation !== undefined) {
+    return Number.isSafeInteger(generation) && generation > 0 && generation <= 0xffffffff &&
+      sendCalendarUi('tray:' + generation + ':' + action + ':' + id);
+  }
+  if (action !== 'activate') return false;
+  const channel = typeof window === 'undefined' ? undefined : window.webkit?.messageHandlers?.kiraTray;
+  if (!channel) return false;
+  try { channel.postMessage('activate:' + id); return true; } catch { return false; }
 }
 
 /** Only the calendar overlay has access to this dedicated host channel.
