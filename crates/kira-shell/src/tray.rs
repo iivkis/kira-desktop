@@ -580,7 +580,7 @@ impl Service {
                 let Ok(reply) = reply else {
                     return;
                 };
-                if reply.size() > 256 * 1024 {
+                if reply.size() > 512 * 1024 {
                     return;
                 }
                 let props = glib::VariantDict::new(Some(&reply.child_value(0)));
@@ -599,6 +599,15 @@ impl Service {
                 let status = props
                     .lookup_value("Status", None)
                     .and_then(|v| v.get::<String>());
+                let pixmap = if status.as_deref() == Some("NeedsAttention") {
+                    props.lookup_value("AttentionIconPixmap", None)
+                        .and_then(|value| pixmap_icon(&value))
+                        .or_else(|| props.lookup_value("IconPixmap", None)
+                            .and_then(|value| pixmap_icon(&value)))
+                } else {
+                    props.lookup_value("IconPixmap", None)
+                        .and_then(|value| pixmap_icon(&value))
+                };
                 // GIcon theme names are mapped by GTK, never by arbitrary
                 // filesystem paths or URLs supplied to the browser.
                 let preferred_icon = if status.as_deref() == Some("NeedsAttention") {
@@ -606,7 +615,8 @@ impl Service {
                 } else {
                     icon_name
                 };
-                let icon = preferred_icon.as_deref().and_then(resolve_theme_icon);
+                let icon = preferred_icon.as_deref().and_then(resolve_theme_icon)
+                    .or(pixmap);
                 let mut items = service.items.borrow_mut();
                 let Some(item) = items.iter_mut().find(|item| item.handle == id) else {
                     return;
@@ -811,6 +821,65 @@ fn parse_external(value: &str) -> Option<(String, String)> {
     }
 }
 
+/// SNI IconPixmap is ARGB32 in network byte order, not host-endian BGRA.
+/// Convert to straight-alpha RGBA before asking GDK to serialize a PNG.
+fn argb_to_rgba(width: i32, height: i32, pixels: &[u8]) -> Option<Vec<u8>> {
+    if !(1..=128).contains(&width) || !(1..=128).contains(&height) {
+        return None;
+    }
+    let expected = usize::try_from(width.checked_mul(height)?.checked_mul(4)?).ok()?;
+    if pixels.len() != expected {
+        return None;
+    }
+    let mut rgba = Vec::with_capacity(expected);
+    for chunk in pixels.chunks_exact(4) {
+        rgba.extend_from_slice(&[chunk[1], chunk[2], chunk[3], chunk[0]]);
+    }
+    Some(rgba)
+}
+
+/// Choose a nearby 24px resolution rather than decoding an unbounded frame.
+/// The 512KiB GetAll cap is enforced before inspecting these variants.
+fn pixmap_icon(value: &glib::Variant) -> Option<String> {
+    if value.type_().as_str() != "a(iiay)" || value.n_children() > 32 {
+        return None;
+    }
+    let mut best: Option<(usize, i32, i32, i32)> = None;
+    for index in 0..value.n_children() {
+        let entry = value.child_value(index);
+        let (Some(width), Some(height)) = (
+            entry.child_value(0).get::<i32>(),
+            entry.child_value(1).get::<i32>(),
+        ) else {
+            continue;
+        };
+        if !(1..=128).contains(&width) || !(1..=128).contains(&height) {
+            continue;
+        }
+        let distance = (width - 24).abs() + (height - 24).abs();
+        if best.as_ref().is_none_or(|(_, score, largest, _)| {
+            distance < *score || (distance == *score && width > *largest)
+        }) {
+            best = Some((index, distance, width, height));
+        }
+    }
+    let (index, _, width, height) = best?;
+    let pixels = value.child_value(index).child_value(2).get::<Vec<u8>>()?;
+    let rgba = argb_to_rgba(width, height, &pixels)?;
+    let texture = gtk::gdk::MemoryTexture::new(
+        width,
+        height,
+        gtk::gdk::MemoryFormat::R8g8b8a8,
+        &glib::Bytes::from_owned(rgba),
+        usize::try_from(width).ok()?.checked_mul(4)?,
+    );
+    let png = texture.save_to_png_bytes();
+    if png.len() > 128 * 1024 {
+        return None;
+    }
+    Some(format!("data:image/png;base64,{}", glib::base64_encode(&png)))
+}
+
 fn resolve_theme_icon(name: &str) -> Option<String> {
     if name.is_empty()
         || name.len() > 140
@@ -939,6 +1008,17 @@ mod tests {
         ] {
             assert!(parse_external(invalid).is_none(), "{invalid}");
         }
+    }
+
+    #[test]
+    fn icon_pixmap_requires_valid_bounded_argb_network_bytes() {
+        assert_eq!(
+            argb_to_rgba(1, 2, &[255, 10, 20, 30, 128, 40, 50, 60]),
+            Some(vec![10, 20, 30, 255, 40, 50, 60, 128])
+        );
+        assert!(argb_to_rgba(0, 1, &[]).is_none());
+        assert!(argb_to_rgba(129, 1, &[]).is_none());
+        assert!(argb_to_rgba(1, 1, &[0, 1, 2]).is_none());
     }
 
     #[test]
