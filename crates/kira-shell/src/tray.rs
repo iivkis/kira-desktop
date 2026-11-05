@@ -898,10 +898,7 @@ impl Service {
 
 /// App-provided Id is stable across new unique D-Bus connections. A
 /// registration fallback is used only when the app does not expose Id.
-fn bounded_snapshot_icon<'a>(
-    icon: &'a Option<String>,
-    remaining: &mut usize,
-) -> Option<&'a str> {
+fn bounded_snapshot_icon<'a>(icon: &'a Option<String>, remaining: &mut usize) -> Option<&'a str> {
     let value = icon.as_deref()?;
     if value.len() > *remaining {
         return None;
@@ -1271,9 +1268,15 @@ mod tests {
             Some("first")
         );
         assert_eq!(remaining, 7);
-        assert_eq!(bounded_snapshot_icon(&Some("too-long".into()), &mut remaining), None);
+        assert_eq!(
+            bounded_snapshot_icon(&Some("too-long".into()), &mut remaining),
+            None
+        );
         assert_eq!(remaining, 7);
-        assert_eq!(bounded_snapshot_icon(&Some("last".into()), &mut remaining), Some("last"));
+        assert_eq!(
+            bounded_snapshot_icon(&Some("last".into()), &mut remaining),
+            Some("last")
+        );
         assert_eq!(remaining, 3);
     }
 
