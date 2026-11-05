@@ -28,7 +28,7 @@ export function isTrayState(value: unknown): value is TrayState {
     if (!record(item) ||
         !Number.isSafeInteger(item.id) || (item.id as number) <= 0 ||
         ids.has(item.id as number) ||
-        typeof item.key !== 'string' || Array.from(item.key).length > 180 ||
+        typeof item.key !== 'string' || Array.from(item.key).length > 240 ||
         typeof item.title !== 'string' || Array.from(item.title).length > 120 ||
         typeof item.pinned !== 'boolean' ||
         typeof item.status !== 'string' ||
