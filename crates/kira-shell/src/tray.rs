@@ -319,20 +319,45 @@ impl Service {
                 let Some(service) = weak.upgrade() else {
                     return;
                 };
-                let items: Vec<(u32, String, String)> = service
-                    .items
-                    .borrow()
-                    .iter()
-                    .filter(|item| {
-                        item.path == path && (item.bus == sender || !item.bus.starts_with(':'))
-                    })
-                    .map(|item| (item.handle, item.bus.clone(), item.path.clone()))
-                    .collect();
-                for (id, bus, object_path) in items {
-                    service.refresh_item(id, &bus, &object_path);
+                service.refresh_matching(sender, path);
+            },
+        );
+
+        // A subset of clients emit only standard D-Bus PropertiesChanged,
+        // not the legacy NewIcon/NewStatus signals. Both paths are bounded by
+        // registered object identity and use the same read-only refresh.
+        let weak = Rc::downgrade(self);
+        connection.signal_subscribe(
+            None,
+            Some(PROPERTIES_IFACE),
+            Some("PropertiesChanged"),
+            None,
+            None,
+            gio::DBusSignalFlags::NONE,
+            move |_, sender, path, _, _, params| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if params.child_value(0).get::<String>().as_deref() == Some(ITEM_IFACE) {
+                    service.refresh_matching(sender, path);
                 }
             },
         );
+    }
+
+    fn refresh_matching(self: &Rc<Self>, sender: &str, path: &str) {
+        let items: Vec<(u32, String, String)> = self
+            .items
+            .borrow()
+            .iter()
+            .filter(|item| {
+                item.path == path && (item.bus == sender || !item.bus.starts_with(':'))
+            })
+            .map(|item| (item.handle, item.bus.clone(), item.path.clone()))
+            .collect();
+        for (id, bus, object_path) in items {
+            self.refresh_item(id, &bus, &object_path);
+        }
     }
 
     fn adopt_external(self: &Rc<Self>) {
