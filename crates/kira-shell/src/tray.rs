@@ -935,7 +935,18 @@ impl Service {
             serde_json::json!({
                 "handle": menu.handle,
                 "title": menu.title,
-                "items": menu.entries,
+                "items": menu.entries.iter().map(|entry| {
+                    serde_json::json!({
+                        "id": entry.id,
+                        "label": entry.label,
+                        "depth": entry.depth,
+                        "enabled": entry.enabled,
+                        "separator": entry.separator,
+                        "checked": entry.checked,
+                        "radio": entry.radio,
+                        "has_children": entry.has_children,
+                    })
+                }).collect::<Vec<_>>(),
             })
         } else {
             serde_json::json!({"handle": 0, "title": "", "items": []})
@@ -1031,11 +1042,13 @@ impl Service {
         let item = item.clone();
         let path = path.to_string();
         let menu_connection = connection.clone();
+        let call_bus = item.bus.clone();
+        let call_path = path.clone();
         // AboutToShow lets dynamic app menus refresh themselves before
         // GetLayout. Failure does not prevent reading a static layout.
         connection.call(
-            Some(&item.bus),
-            &path,
+            Some(&call_bus),
+            &call_path,
             "com.canonical.dbusmenu",
             "AboutToShow",
             Some(&(0i32,).to_variant()),
