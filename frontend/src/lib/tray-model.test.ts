@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_TRAY, isTrayState, splitTray, trayBarView, type TrayItem } from './tray-model';
+import { EMPTY_TRAY, isTrayState, isTrayMenu, splitTray, trayBarView, type TrayItem } from './tray-model';
 
 const item = (id: number, pinned: boolean): TrayItem => ({
   id, key: 'app-' + id, title: 'Application ' + id, icon: null,
@@ -43,6 +43,22 @@ describe('native tray state', () => {
       available: true,
       items: [{ ...item(8, false), key: 'org.example.' + 'x'.repeat(190) }],
     })).toBe(true);
+  });
+
+  it('accepts only bounded trusted canonical menu actions', () => {
+    const entry = {
+      id: 1, label: 'Open', depth: 0, enabled: true,
+      separator: false, checked: false, radio: false, has_children: false,
+    };
+    expect(isTrayMenu({ handle: 13, title: 'Player', items: [entry] })).toBe(true);
+    expect(isTrayMenu({ handle: 0, title: '', items: [] })).toBe(true);
+    expect(isTrayMenu({ handle: 0, title: '', items: [entry] })).toBe(false);
+    expect(isTrayMenu({ handle: 13, title: '', items: [{ ...entry, id: -1 }] })).toBe(false);
+    expect(isTrayMenu({ handle: 13, title: '', items: [{ ...entry, depth: 10 }] })).toBe(false);
+    expect(isTrayMenu({ handle: 13, title: '', items: [{ ...entry, label: 'x'.repeat(121) }] })).toBe(false);
+    expect(isTrayMenu({
+      handle: 13, title: '', items: Array.from({ length: 81 }, () => entry),
+    })).toBe(false);
   });
 
   it('rejects forged URLs, duplicate IDs, oversized lists and invalid statuses', () => {
