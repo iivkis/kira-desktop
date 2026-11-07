@@ -8,6 +8,7 @@ use gtk::prelude::*;
 
 use crate::calendar_model::{CivilDate, MONTHS, WEEKDAYS, current_local_date, month_grid};
 use crate::clock_digits::ClockDigits;
+use crate::flow_indicator::{FlowAxis, FlowIndicator, FlowStyle};
 use crate::motion::CalendarFragmentScene;
 use crate::popup_section::PopupSection;
 
@@ -30,6 +31,7 @@ struct State {
     navigation: Vec<(i32, gtk::Button)>,
     grid_scene: Rc<CalendarFragmentScene>,
     grid_surface: PopupSection,
+    selection_flow: FlowIndicator,
     copy: CopyDate,
 }
 
@@ -141,6 +143,15 @@ impl State {
                     button.set_visible(false);
                 }
             }
+        }
+        let selected_button = dates
+            .iter()
+            .position(|day| *day == Some(selected))
+            .and_then(|index| self.days.get(index));
+        if let Some(button) = selected_button {
+            self.selection_flow.retarget(button.upcast_ref());
+        } else {
+            self.selection_flow.clear();
         }
     }
 
@@ -264,7 +275,12 @@ impl Calendar {
             }
         }
         let grid_scene = Rc::new(CalendarFragmentScene::new());
-        let grid_surface = PopupSection::calendar_grid(&grid.clone().upcast());
+        let selection_flow = FlowIndicator::new(
+            &grid.clone().upcast(),
+            FlowAxis::Both,
+            FlowStyle::Fill,
+        );
+        let grid_surface = PopupSection::calendar_grid(&selection_flow.clone().upcast());
         let grid_overlay = gtk::Overlay::new();
         grid_overlay.set_child(Some(&grid_surface));
         let traces = grid_scene.widget();
@@ -324,6 +340,7 @@ impl Calendar {
             navigation,
             grid_scene,
             grid_surface,
+            selection_flow,
             copy: Rc::new(copy),
         });
 
