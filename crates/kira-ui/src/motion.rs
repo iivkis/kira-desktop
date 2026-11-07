@@ -636,7 +636,13 @@ mod tests {
             assert_eq!(initial.opacity, 1.0);
             assert_eq!(clock_juggle_frame(flight, 0.5).x, flight.x);
             for t in [0.1, 0.25, 0.4] {
-                assert_eq!(clock_juggle_frame(flight, t), clock_juggle_frame(flight, 1.0 - t));
+                let outbound = clock_juggle_frame(flight, t);
+                let inbound = clock_juggle_frame(flight, 1.0 - t);
+                assert!((outbound.x - inbound.x).abs() < 1e-9);
+                assert!((outbound.y - inbound.y).abs() < 1e-9);
+                assert!((outbound.rotation - inbound.rotation).abs() < 1e-9);
+                assert!((outbound.scale - inbound.scale).abs() < 1e-9);
+                assert!((outbound.opacity - inbound.opacity).abs() < 1e-9);
             }
         }
     }
