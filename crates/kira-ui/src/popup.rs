@@ -8,9 +8,7 @@ use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
 use crate::bar::BAR_HEIGHT;
-use crate::motion::{
-    MotionToken, POPUP_MASTER_DURATION_MS, PopupTimeline, popup_trace_frame,
-};
+use crate::motion::{MotionToken, POPUP_MASTER_DURATION_MS, PopupTimeline, popup_trace_frame};
 use crate::popup_clip::PopupClip;
 use crate::popup_section::PopupSection;
 
@@ -157,7 +155,6 @@ fn layout_for(kind: PopupKind, width: i32, height: i32) -> (i32, i32, i32) {
     let usable_height = (height - top - GAP).max(160);
     (width, top, usable_height)
 }
-
 
 /// Decorate, but never recreate, up to three original view sections.
 /// The original widgets and their controllers survive opening, closing

@@ -149,9 +149,8 @@ impl State {
             if let Ok(clock) = now.format("%H:%M:%S") {
                 self.clock.set_time(&clock);
                 let accessible = format!("Анимировать цифры часов, текущее время {clock}");
-                self.clock_button.update_property(&[
-                    gtk::accessible::Property::Label(&accessible),
-                ]);
+                self.clock_button
+                    .update_property(&[gtk::accessible::Property::Label(&accessible)]);
             }
             if let Some(today) = current_local_date() {
                 if self.today.replace(today) != today {

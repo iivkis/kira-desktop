@@ -18,15 +18,15 @@ mod imp {
 
     use gtk::{glib, prelude::*, subclass::prelude::*};
 
-    use crate::motion::{calendar_grid_frame, popup_section_frame};
     use super::MotionProfile;
+    use crate::motion::{calendar_grid_frame, popup_section_frame};
 
     #[derive(Default)]
     pub struct PopupSection {
         pub child: RefCell<Option<gtk::Widget>>,
         pub progress: Cell<f64>,
         pub index: Cell<usize>,
-        pub profile: Cell<MotionProfile>,
+        pub(super) profile: Cell<MotionProfile>,
         pub direction: Cell<i32>,
         pub motion: super::MotionToken,
     }
@@ -47,11 +47,7 @@ mod imp {
     }
 
     impl WidgetImpl for PopupSection {
-        fn measure(
-            &self,
-            orientation: gtk::Orientation,
-            for_size: i32,
-        ) -> (i32, i32, i32, i32) {
+        fn measure(&self, orientation: gtk::Orientation, for_size: i32) -> (i32, i32, i32, i32) {
             self.child
                 .borrow()
                 .as_ref()

@@ -7,8 +7,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use gtk::prelude::*;
 
 use crate::motion::{
-    CLOCK_DIGIT_DURATION_MS, CLOCK_JUGGLE_FLIGHT_MS, CLOCK_JUGGLE_STAGGER_MS,
-    ClockFlight, MotionToken, clock_digit_frame, clock_juggle_frame, next_clock_flights,
+    CLOCK_DIGIT_DURATION_MS, CLOCK_JUGGLE_FLIGHT_MS, CLOCK_JUGGLE_STAGGER_MS, ClockFlight,
+    MotionToken, clock_digit_frame, clock_juggle_frame, next_clock_flights,
 };
 
 struct DigitCell {
@@ -165,9 +165,8 @@ impl ClockDigits {
         let settings_handler = gtk::Settings::default().map(|settings| {
             let jog = juggle_motion.clone();
             let weak = Rc::downgrade(&digits);
-            let handler = settings.connect_notify_local(
-                Some("gtk-enable-animations"),
-                move |settings, _| {
+            let handler =
+                settings.connect_notify_local(Some("gtk-enable-animations"), move |settings, _| {
                     if !settings.property::<bool>("gtk-enable-animations")
                         && let Some(digits) = weak.upgrade()
                     {
@@ -178,8 +177,7 @@ impl ClockDigits {
                             cell.slot.set_clip_overlay(&cell.layer, true);
                         }
                     }
-                },
-            );
+                });
             (settings, handler)
         });
         Self {
@@ -200,8 +198,13 @@ impl ClockDigits {
 
     pub fn set_time(&self, time: &str) {
         // Malformed or unavailable time must never animate speculative digits.
-        if time.len() != 8 || time.as_bytes()[2] != b':' || time.as_bytes()[5] != b':'
-            || !time.bytes().enumerate().all(|(i, b)| i == 2 || i == 5 || b.is_ascii_digit())
+        if time.len() != 8
+            || time.as_bytes()[2] != b':'
+            || time.as_bytes()[5] != b':'
+            || !time
+                .bytes()
+                .enumerate()
+                .all(|(i, b)| i == 2 || i == 5 || b.is_ascii_digit())
         {
             self.clear_motion();
             return;

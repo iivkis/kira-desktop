@@ -164,8 +164,7 @@ pub fn next_clock_flights(
         let selected = (unit() * sectors.len() as f64) as usize;
         let sector = sectors[selected.min(sectors.len() - 1)];
         used[sector] = true;
-        let angle = (sector as f64 + 0.16 + unit() * 0.68)
-            * std::f64::consts::FRAC_PI_4;
+        let angle = (sector as f64 + 0.16 + unit() * 0.68) * std::f64::consts::FRAC_PI_4;
         let distance = 24.0 + unit() * 23.0;
         let sign = if unit() < 0.5 { -1.0 } else { 1.0 };
         let spin = sign * (32.0 + unit() * 73.0);
@@ -232,11 +231,7 @@ pub fn calendar_grid_frame(progress: f64, direction: i32) -> CalendarGridFrame {
 
 /// Rewinds main's 520ms power3.out fragment flights, staggered by 25ms,
 /// along the same 440ms forward master cursor. No new flight is generated.
-pub fn calendar_grid_trace_frame(
-    progress: f64,
-    direction: i32,
-    index: usize,
-) -> PopupTraceFrame {
+pub fn calendar_grid_trace_frame(progress: f64, direction: i32, index: usize) -> PopupTraceFrame {
     let flights = calendar_flights(direction);
     let flight = flights[index % flights.len()];
     let inverted_cursor = 1.0 - bounded(progress);
@@ -364,8 +359,7 @@ pub fn popup_frame(progress: f64, direction: i32) -> PopupFrame {
     // The source seam first fades in after 25ms and fades out at 370ms.
     let in_progress = ((ms - 25.0) / 90.0).clamp(0.0, 1.0);
     let out_progress = ((ms - 370.0) / 170.0).clamp(0.0, 1.0);
-    let seam_opacity = 0.82 * (1.0 - (1.0 - in_progress).powi(2))
-        * (1.0 - out_progress.powi(2));
+    let seam_opacity = 0.82 * (1.0 - (1.0 - in_progress).powi(2)) * (1.0 - out_progress.powi(2));
     let section_p = (ms / 440.0).clamp(0.0, 1.0);
     let spring = back_out(section_p, 1.22);
     let fade_p = (ms / 220.0).clamp(0.0, 1.0);
@@ -378,7 +372,6 @@ pub fn popup_frame(progress: f64, direction: i32) -> PopupFrame {
         section_opacity: 0.94 + 0.06 * (1.0 - (1.0 - fade_p).powi(2)),
     }
 }
-
 
 /// Visual state of a content section on main's shared 540ms master clock.
 /// There are at most three animated sections; factual content is already set.
@@ -546,8 +539,7 @@ impl CalendarFragmentScene {
                     return;
                 };
                 for index in 0..4 {
-                    let trace =
-                        calendar_grid_trace_frame(progress.get(), direction.get(), index);
+                    let trace = calendar_grid_trace_frame(progress.get(), direction.get(), index);
                     if trace.opacity <= 0.0 {
                         continue;
                     }

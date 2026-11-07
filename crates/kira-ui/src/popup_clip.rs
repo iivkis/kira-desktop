@@ -30,11 +30,7 @@ mod imp {
     }
 
     impl WidgetImpl for PopupClip {
-        fn measure(
-            &self,
-            orientation: gtk::Orientation,
-            for_size: i32,
-        ) -> (i32, i32, i32, i32) {
+        fn measure(&self, orientation: gtk::Orientation, for_size: i32) -> (i32, i32, i32, i32) {
             self.child
                 .borrow()
                 .as_ref()
