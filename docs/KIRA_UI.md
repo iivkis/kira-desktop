@@ -29,7 +29,7 @@
 | `SystemMonitor` | Typed metrics, GPU readings, bounded process list | Overview / Processes pages with queryable tab selection | Pure sorting/format tests; data sampling belongs to service worker |
 | `DisplaySettings` | Typed output/mode descriptions, transaction phase and persistence status | Refresh, Apply(draft), Confirm(id), Revert(id), Save intents | Native 15-second countdown; host can disable mutations; no Niri command or raw JSON in library |
 | `Calendar` | Local live date/time, optional ISO-date copy intent | Native editable six-row Monday-first 8-column ISO week grid, month/year/day navigation, Today, ISO date + feedback | Dates/ISO tests ported from main; GTK DrawingArea replay of saved TENET fragment coordinates, remaining clock-digit/section choreography and detached SkyMap pending |
-| `MotionToken` / `CalendarFragmentScene` / `ClockDigits` / `PopupTimeline` / `PopupSection` | Event-lifetime cursor, per-digit 400ms history, source section stagger and recorded four-flight paths | Frame-clock digit exchange, GSK-clipped reversible popup, GTK section transforms and saved INVERTED traces | Reduced-motion settling and basic interruption modeled; nested-Niri motion, focus and geometry acceptance remain unverified |
+| `MotionToken` / `CalendarFragmentScene` / `ClockDigits` / `PopupTimeline` / `PopupSection` | Event-lifetime cursor, per-digit 400ms history, source section stagger and recorded four-flight paths | Frame-clock digit exchange and saved-sector clock click-juggle, GSK-clipped reversible popup, GTK section transforms and saved INVERTED traces | Reduced-motion settling and basic interruption modeled; nested-Niri motion, focus and geometry acceptance remain unverified |
 
 ## Guardrails and acceptance
 
