@@ -1,7 +1,9 @@
 # Kira Lua Runtime UI API — M1 contract
 
 **Статус:** проект публичного API будущего `mlua` GTK-хоста; **реализации ещё нет**.
-**Контекст:** [V2 architecture](V2_ARCHITECTURE.md) · [Lua styling](V2_STYLES.md) · [counter](../examples/v2/counter.lua).
+**Контекст:** [Engine/Desktop separation](ENGINE_DESKTOP.md) · [V2 architecture](V2_ARCHITECTURE.md) · [Lua styling](V2_STYLES.md) · [counter](../examples/v2/counter.lua).
+
+**Владелец API: Kira Engine.** `require("kira.ui")`, GTK widgets, `ui.state`, `ui.bind`, `ui.theme` и `ui.compose` должны работать в **любом** GTK-приложении на Engine, без Niri, Core и Desktop. Отдельный optional `require("kira.desktop")` будет регистрировать **только Kira Desktop host** с разрешёнными OS capabilities; это не часть Engine и пока не реализовано.
 
 ## Главный принцип
 

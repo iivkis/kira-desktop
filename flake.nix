@@ -82,11 +82,13 @@
         repository-spec = pkgs.runCommand "kira-desktop-spec-check" { } ''
           test -s ${./docs/SPECIFICATION.md}
           test -s ${./docs/V2_ARCHITECTURE.md}
+          test -s ${./docs/ENGINE_DESKTOP.md}
           test -s ${./docs/V2_LANGUAGE.md}
           test -s ${./docs/V2_STYLES.md}
           test -s ${./examples/v2/styles.lua}
           test -s ${./docs/adr/0001-lua-rust-gtk.md}
           test -s ${./docs/adr/0002-embedded-lua-mlua.md}
+          test -s ${./docs/adr/0003-kira-engine-desktop-split.md}
           test -s ${./nix/package.nix}
           test -s ${./Taskfile.yml}
           test -s ${./.github/workflows/ci.yml}

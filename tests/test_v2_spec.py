@@ -5,10 +5,11 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 V2_FILES = (
-    "README.md", "AGENTS.md", "docs/V2_ARCHITECTURE.md",
+    "README.md", "AGENTS.md", "docs/V2_ARCHITECTURE.md", "docs/ENGINE_DESKTOP.md",
     "docs/V2_LANGUAGE.md", "docs/V2_STYLES.md", "docs/V2_MIGRATION.md",
     "docs/V2_REVIEW.md", "docs/adr/0001-lua-rust-gtk.md",
     "docs/adr/0002-embedded-lua-mlua.md",
+    "docs/adr/0003-kira-engine-desktop-split.md",
     "examples/v2/counter.lua", "examples/v2/styles.lua",
 )
 V1_DOCS = (
@@ -78,6 +79,31 @@ class V2DocsContract(unittest.TestCase):
         self.assertIn("Superseded by", old)
         self.assertIn("mlua", new)
         self.assertIn("Do not develop a Lua-to-Rust translator", new)
+
+    def test_engine_desktop_are_separate_products(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        contract = (ROOT / "docs/ENGINE_DESKTOP.md").read_text(encoding="utf-8")
+        adr = (ROOT / "docs/adr/0003-kira-engine-desktop-split.md").read_text(encoding="utf-8")
+        for phrase in ("Kira Engine", "Kira Desktop"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, readme)
+                self.assertIn(phrase, contract)
+                self.assertIn(phrase, adr)
+        self.assertIn("crates/kira-engine", contract)
+        self.assertIn("crates/kira-desktop", contract)
+        self.assertIn("kira-desktop -> kira-engine", adr)
+        self.assertIn("must not require", adr)
+        self.assertIn('require("kira.ui")', contract)
+        self.assertIn('require("kira.desktop")', contract)
+        # Still a future target; do not claim standalone engine exists in Cargo yet.
+        self.assertFalse((ROOT / "crates/kira-engine").exists())
+        self.assertFalse((ROOT / "crates/kira-desktop").exists())
+
+    def test_generic_engine_fixture_does_not_require_desktop(self):
+        src = (ROOT / "examples/v2/counter.lua").read_text(encoding="utf-8")
+        self.assertIn('require("kira.ui")', src)
+        self.assertNotIn('require("kira.desktop")', src)
+        self.assertNotIn("niri", src.lower())
 
     def test_runtime_not_falsely_marked_complete(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

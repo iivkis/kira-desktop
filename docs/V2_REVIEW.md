@@ -3,6 +3,10 @@
 **Ветка:** `kira-desktop-v2` · **Решение:** [ADR-0002](adr/0002-embedded-lua-mlua.md), заменяет [ADR-0001](adr/0001-lua-rust-gtk.md).
 **Метод:** статический анализ дерева/манифестов/документации; новый runtime ещё не собирался.
 
+## Kira Engine и Kira Desktop
+
+[ADR-0003](adr/0003-kira-engine-desktop-split.md) устанавливает новую границу: **Kira Engine** станет независимым Rust+mlua+GTK4 runtime для любых GTK-приложений на Lua, а **Kira Desktop** будет отдельным Desktop Shell, использующим Engine, Niri и системные Core/IPC. Подробности: [ENGINE_DESKTOP.md](ENGINE_DESKTOP.md). Новых Cargo crates пока нет. Движок **не должен** зависеть от Desktop/Niri/gtk4-layer-shell; это важнейшая будущая проверка.
+
 ## Новая архитектура
 
 После исходной идеи Lua-to-Rust translator проект перешёл на **встраивание настоящего Lua 5.4 через mlua** в Rust GTK Shell. Компилятор `kira-lua-compiler` **отменён**; контракты `ui.*`, state, callbacks, themes и styles в [V2_LANGUAGE.md](V2_LANGUAGE.md) и [V2_STYLES.md](V2_STYLES.md) теперь описывают **исполняемый Lua runtime API**.

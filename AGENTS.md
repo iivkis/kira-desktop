@@ -1,32 +1,32 @@
-# Kira Desktop V2 contributor and agent rules
+# Kira V2 — Kira Engine and Kira Desktop contributor rules
 
-**Current decision:** [ADR-0002: embedded Lua + mlua](docs/adr/0002-embedded-lua-mlua.md).
-**Reference:** [architecture](docs/V2_ARCHITECTURE.md) · [runtime Lua API](docs/V2_LANGUAGE.md) · [Lua styles](docs/V2_STYLES.md) · [migration](docs/V2_MIGRATION.md).
-**Superseded:** [ADR-0001 Lua-to-Rust compiler](docs/adr/0001-lua-rust-gtk.md) is for historical context only.
+**Authoritative decision:** [ADR-0003](docs/adr/0003-kira-engine-desktop-split.md) + [Engine/Desktop contract](docs/ENGINE_DESKTOP.md).
+**Runtime decision:** [ADR-0002: Lua via mlua](docs/adr/0002-embedded-lua-mlua.md); [ADR-0001](docs/adr/0001-lua-rust-gtk.md) superseded.
+**Public API:** [Lua UI](docs/V2_LANGUAGE.md) · [Lua styles](docs/V2_STYLES.md) · [Migration](docs/V2_MIGRATION.md).
 
-## Authoritative direction
+## Two products, one-way dependency
 
-1. Widgets, state, callbacks and styles are **real Lua 5.4**, executed by `mlua` embedded in native Rust/GTK4 Shell at **runtime**.
-2. **Do not create a Lua-to-Rust compiler/transpiler**, codegen pipeline or "static Lua AST DSL". `ui.*` are actual Lua functions registered by the Rust host. Lua functions, closures, local variables and controlled `require` are allowed.
-3. Rust owns GTK widgets and Wayland layer surfaces, Niri, system resources, D-Bus, config safety and typed Core/IPC capabilities. Lua never receives raw unrestricted system or GTK access.
-4. Render native GTK4 widgets. Do not use Svelte, WebKitGTK, Tauri, JS or GSAP for **new V2 UI**. V1 code and dependencies stay only for regression/migration until replacement parity.
-5. Lua themes and styles are applied by a Rust-side **runtime GTK CSS bridge**. No Grass/SCSS/Sass/Tailwind/PostCSS build step in V2.
-6. Until `mlua` is added to Cargo and the host is built, all Lua code in `examples/v2` is **API-contract code, not runnable in the current project**. Do not claim otherwise.
+1. **Kira Engine** is a standalone **Rust + mlua (Lua 5.4) + GTK4** framework/runtime for generic native Lua GTK applications.
+2. **Kira Desktop** is the **desktop environment built on Kira Engine**, with Niri/Wayland layer-shell, Linux services, panels and shell-specific Lua widgets.
+3. Dependency direction: `kira-desktop -> kira-engine`, **never** `kira-engine -> kira-desktop`. Engine must not depend on Niri, `kira-core`, `kira-ipc`, `gtk4-layer-shell`, `kira.desktop` or desktop configuration.
+4. Engine owns `require("kira.ui")`, generic GTK widgets, Lua VM/module loader, state/bind, events, styles, callback ownership, lifecycle and error reporting.
+5. Desktop owns its `require("kira.desktop")` capability provider, GTK layer-shell windows, Core/IPC, Niri, D-Bus, Linux permissions, system configuration and Desktop Lua widget sources. Its capabilities are injected into Engine explicitly; they are **not** automatically present for generic Engine applications.
+6. Plan Rust library `crates/kira-engine` and Desktop binary `crates/kira-desktop`. **Neither crate exists yet**. Existing `crates/kira-shell` and `frontend/` are V1 legacy, not Engine. Do not create placeholder crates or edit Cargo.lock by hand just to claim the split is implemented.
 
-## Runtime bridge rules
+## Lua and runtime rules
 
-- M1 `ui.box`, `ui.text` and `ui.button` build validated WidgetSpec objects, later mounted to native GTK by Rust on the GTK main thread.
-- `ui.state(value)` uses Rust-backed observable userdata with `:get()` and `:set(...)`. `ui.bind(state)` creates explicit update subscriptions; do not promise that plain Lua table-field writes are reactive.
-- Lua callbacks are real closures. Keep their `mlua::Function` references alive while GTK signals exist; release callbacks, subscriptions, and view resources on unmount. Catch/report `mlua::Error` inside GTK handlers without panic propagation.
-- Run Lua and GTK on GTK main thread initially; do not enable `mlua/send` without a carefully proven design. Off-thread Niri/Core data arrives via typed messages to GTK main context.
-- Use a controlled module loader, validated widget attributes, allowed GTK CSS style fields/states and approved system capabilities. Lua VM is **not a security sandbox**; M1 assumes trusted local widgets, not arbitrary downloaded plugins.
-- Restrict unsafe stdlibs/native C modules and impose sensible memory/execution budgets. Keep OS work off the GTK thread.
-- Reproducibility: when adding `mlua`, generate a **real** Cargo.lock update with Cargo and validate Nix linking (`lua54` + chosen vendored/system feature). Do not handwrite lockfile entries.
+- Execute **real Lua 5.4** via `mlua` at runtime. Do not create a Lua-to-Rust compiler/transpiler, AST DSL, `generated_ui.rs` or JS/WebView frontend for V2.
+- `kira.ui` is implemented as Rust-registered Lua functions (e.g. `ui.box`, `ui.text`, `ui.button`, `ui.state`, `ui.bind`, `ui.theme`, `ui.compose`). Native GTK4 rendering belongs to Engine, not Desktop.
+- Keep GUI widgets and Lua event callbacks on GTK main thread initially, no premature `mlua/send`. Events and typed messages from Core go through main context.
+- Keep real Lua closures alive for GTK signals, dispose callbacks/subscriptions on unmount, catch `mlua::Error`; avoid UI-thread blocking operations.
+- Runtime GTK CSS is produced by Engine from checked Lua styles, no Sass/Grass/PostCSS/Tailwind.
+- Lua VM is **not a process sandbox**. M1 runs trusted locally installed scripts. Explicit, validated Desktop capability APIs; no raw system powers or untrusted plugins by default. Module loader and runtime limits must be designed and tested.
 
-## Design invariants
+## Testing and deliverables
 
-Keep Kira Default palette and TENET philosophy (causality, continuity, accessibility, reduced motion) but reimplement native GTK/Rust behavior; GSAP-specific V1 implementation is not required. Keep truthful state, keyboard focus, display safety rollback, and repeatable nested-Niri visual QA.
-
-## Current implementation boundary
-
-The existing repo still contains V1 Svelte/WebKit; its CI is a regression gate, **not** evidence that mlua GTK UI works. V1 guides are explicitly labeled as migration references. No changes to `main` while developing this branch.
+- **Engine acceptance:** generic counter GTK app runs without Niri, Desktop, `kira-core` or `gtk4-layer-shell`. Real Lua click handlers update GTK text/state and styles, and unmount cleans up resources.
+- **Desktop acceptance:** desktop UI written in Lua mounts through the **same Engine** in nested Niri, with a separately injected `kira.desktop` capability provider. Test focus, multi-monitor, reduced motion and system-state truthfulness.
+- Check Cargo dependency graph: Engine cannot transitively pull Desktop/Niri-specific components.
+- Reproducible Cargo/Nix build; add `mlua` and update Cargo.lock **only with Cargo**, then test actual GTK linking. Existing V1 checks and docs tests do **not** demonstrate Engine or Desktop V2 functionality.
+- Keep Kira Default visual identity and TENET principles; GSAP-specific V1 implementation does not carry to V2.
+- Do not remove V1 app/CI until native replacement passes parity and nested Niri QA. Work only in `kira-desktop-v2`, leave main untouched.

@@ -17,7 +17,7 @@ tasks:
       - task: config:check
 
   v2:spec:check:
-    desc: Validate V2 mlua runtime API documentation and fixtures (not native GTK execution).
+    desc: Validate Kira Engine/Desktop architecture, mlua contracts and fixtures (not native GTK execution).
     cmds:
       - python3 -m unittest discover -s tests -p 'test_v2_spec.py'
 
@@ -32,6 +32,7 @@ tasks:
       - test -s README.md
       - test -s docs/SPECIFICATION.md
       - test -s docs/V2_ARCHITECTURE.md
+      - test -s docs/ENGINE_DESKTOP.md
       - test -s docs/V2_LANGUAGE.md
       - test -s docs/V2_STYLES.md
       - test -s examples/v2/styles.lua
@@ -39,6 +40,7 @@ tasks:
       - test -s docs/V2_REVIEW.md
       - test -s docs/adr/0001-lua-rust-gtk.md
       - test -s docs/adr/0002-embedded-lua-mlua.md
+      - test -s docs/adr/0003-kira-engine-desktop-split.md
       - test -s examples/v2/counter.lua
       - test -s docs/DESIGN_SYSTEM.md
       - test -s frontend/src/lib/themes/kira-default.css

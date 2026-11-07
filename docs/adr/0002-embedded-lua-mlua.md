@@ -4,6 +4,7 @@
 - **Status:** Accepted; implementation pending
 - **Branch:** kira-desktop-v2
 - **Supersedes:** [ADR-0001](0001-lua-rust-gtk.md)
+- **Extended by:** [ADR-0003: Kira Engine / Kira Desktop split](0003-kira-engine-desktop-split.md). The mlua decision remains active; GTK/Lua runtime ownership now belongs to independent Kira Engine.
 
 ## Context
 

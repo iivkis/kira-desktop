@@ -1,7 +1,9 @@
 # Kira Lua Style API — runtime mlua + GTK CSS
 
 **Статус:** контракт будущего Rust GTK-хоста; **реализация пока отсутствует**.
-[UI API](V2_LANGUAGE.md) · [пример Lua-темы](../examples/v2/styles.lua) · [пример виджета](../examples/v2/counter.lua).
+[Engine/Desktop boundary](ENGINE_DESKTOP.md) · [UI API](V2_LANGUAGE.md) · [пример Lua-темы](../examples/v2/styles.lua) · [пример виджета](../examples/v2/counter.lua).
+
+**Владелец стилей: Kira Engine.** Все GTK CSS style bridge, кеширование классов, темы и `ui.compose` являются универсальными для обычных GTK-приложений. Desktop предоставляет только собственные Lua theme files; Engine не зависит от дизайна, Niri или компоновки Kira Desktop.
 
 ## Концепция
 
