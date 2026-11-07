@@ -33,10 +33,29 @@ struct State {
 
 impl State {
     fn choose(&self, date: CivilDate) {
-        self.selected.set(date);
+        let previous = self.selected.replace(date);
         self.feedback.set_text("");
         self.copy_button.set_label("КОПИРОВАТЬ");
         self.render();
+        if previous != date {
+            let direction = if (date.year, date.month, date.day)
+                < (previous.year, previous.month, previous.day)
+            {
+                -1
+            } else {
+                1
+            };
+            let index = self
+                .dates
+                .borrow()
+                .iter()
+                .position(|day| *day == Some(date));
+            if let Some(index) = index
+                && let Some(button) = self.days.get(index)
+            {
+                self.grid_scene.play_at(direction, &button.clone().upcast());
+            }
+        }
     }
 
     fn move_days(&self, days: i32) {
@@ -49,7 +68,6 @@ impl State {
     fn move_months(&self, months: i32) {
         if let Some(date) = self.selected.get().shift_month(months) {
             self.choose(date);
-            self.grid_scene.play(months);
             self.focus_selected();
         }
     }
@@ -241,7 +259,10 @@ impl Calendar {
         let grid_scene = Rc::new(CalendarFragmentScene::new());
         let grid_overlay = gtk::Overlay::new();
         grid_overlay.set_child(Some(&grid));
-        grid_overlay.add_overlay(&grid_scene.widget());
+        let traces = grid_scene.widget();
+        grid_overlay.add_overlay(&traces);
+        grid_overlay.set_measure_overlay(&traces, false);
+        grid_overlay.set_clip_overlay(&traces, false);
         section.append(&grid_overlay);
         root.append(&section);
 
