@@ -145,16 +145,26 @@ impl Controls {
     }
 
     fn edited(&self, index: usize, update: impl FnOnce(&mut DisplayChoice)) {
-        if let Some(item) = self.choices.borrow_mut().get_mut(index) {
-            update(item);
-            if matches!(
-                *self.phase.borrow(),
-                DisplayPhase::Confirmed | DisplayPhase::Saved
-            ) {
-                *self.phase.borrow_mut() = DisplayPhase::Ready;
+        let changed = {
+            let mut choices = self.choices.borrow_mut();
+            if let Some(item) = choices.get_mut(index) {
+                update(item);
+                true
+            } else {
+                false
             }
-            self.sync();
+        };
+        if !changed {
+            return;
         }
+        let reset_confirmed = matches!(
+            &*self.phase.borrow(),
+            DisplayPhase::Confirmed | DisplayPhase::Saved
+        );
+        if reset_confirmed {
+            *self.phase.borrow_mut() = DisplayPhase::Ready;
+        }
+        self.sync();
     }
 
     fn sync(&self) {
@@ -215,6 +225,7 @@ impl Controls {
     }
 
     fn submit(&self, action: &str) {
+        let can_save = *self.phase.borrow() == DisplayPhase::Confirmed;
         match action {
             "refresh" => {
                 self.set_phase(DisplayPhase::Loading);
@@ -244,7 +255,7 @@ impl Controls {
                     (self.on_intent)(DisplayIntent::Revert(id));
                 }
             }
-            "save" if *self.phase.borrow() == DisplayPhase::Confirmed => {
+            "save" if can_save => {
                 self.set_phase(DisplayPhase::Saving);
                 (self.on_intent)(DisplayIntent::Save);
             }
