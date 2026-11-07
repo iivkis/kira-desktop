@@ -1,7 +1,7 @@
 # ADR-0001: Lua as source language, Rust as compiler, GTK as native UI
 
 - **Date:** 2026-11-07
-- **Status:** Accepted (architectural direction, implementation pending)
+- **Status:** Superseded by [ADR-0002](0002-embedded-lua-mlua.md) (2026-11-07)
 - **Branch:** kira-desktop-v2
 - **Decision owners:** Kira Desktop project
 
@@ -46,3 +46,6 @@ Kira Desktop V1 renders its UI in Svelte/WebKitGTK while Rust handles Linux serv
 ## Implementation reference
 
 [Full V2 architecture](../V2_ARCHITECTURE.md) · [migration milestones](../V2_MIGRATION.md) · [initial Lua syntax proposal](../../examples/v2/counter.lua).
+
+
+> **Historical decision only.** The Lua-to-Rust transpiler, no-Lua-VM requirement and rejection of embedded Lua described above were explicitly reversed by [ADR-0002](0002-embedded-lua-mlua.md).

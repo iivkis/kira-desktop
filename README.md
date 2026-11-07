@@ -1,47 +1,57 @@
 # Kira Desktop V2
 
-**Ветка:** `kira-desktop-v2` · **Статус:** архитектура принята, Lua → Rust/GTK транслятор ещё не реализован.
+**Ветка:** `kira-desktop-v2` · **Статус:** новая архитектура принята; интеграция `mlua` и GTK Lua API ещё не реализованы.
 
-Kira Desktop V2 — нативная оболочка для **NixOS / Niri / Wayland**. Виджеты, стили, состояние и UI-логику автор пишет на **Lua**. Транслятор на **Rust** разбирает ограниченный Lua 5.4 DSL и генерирует **Rust/gtk4-rs + GTK CSS напрямую без внешних CSS-препроцессоров**. Обычный компилятор Rust собирает нативный интерфейс без Lua VM и WebKit.
+Kira Desktop — модульная оболочка для **NixOS / Niri / Wayland**. **Виджеты, стили и UI-логика пишутся на настоящем Lua 5.4, который Rust исполняет через [mlua](https://docs.rs/mlua/)**. Rust отвечает за GTK4/Wayland, Niri IPC, D-Bus, безопасность и системные сервисы. Никакого самописного транслятора Lua → Rust и генерации Rust-кода из Lua.
 
 ```text
-Lua widget / style / state / event handlers
-                     |
-                     v
-Rust translator: parser → typed IR → codegen
-                     |
-                     v
-Generated Rust GTK4 widgets + GTK CSS
-                     |
-                     v
-Native GTK4 Shell → Rust Core → Niri / Linux
+Lua widgets + Lua theme + callbacks
+                  |
+                  v
+mlua (embedded Lua VM in Rust GTK Shell)
+                  |
+                  v
+Rust ui bridge -> native gtk4-rs widgets + GtkCssProvider
+                  |
+                  v
+Niri / Wayland + Kira Core / IPC / Linux
 ```
 
-**Это целевая архитектура, пока не рабочая сборка.** Существующие `crates/kira-shell`, `frontend/`, npm, WebKitGTK и GSAP унаследованы от V1 и временно сохраняются как работающий миграционный базис. Их наличие не означает отказ от решения V2. Удалять их следует после проверенной нативной замены.
+**Статус реализации:** унаследованный V1 Shell пока использует Rust + GTK/WebKitGTK + Svelte. `mlua` ещё не подключён к Cargo Workspace; Lua UI API и GTK runtime не написаны. Существующие Rust/JS исходники и lockfiles оставлены для миграции и регрессионных тестов. Успешная сборка V1 не доказывает работоспособности V2.
 
-## Основные документы
+## Документы
 
-- [Архитектура V2](docs/V2_ARCHITECTURE.md)
-- [Lua Language v0.2](docs/V2_LANGUAGE.md) — удобные `ui.*` виджеты и типизированное состояние.
-- [Lua Style DSL](docs/V2_STYLES.md) — темы, токены, композиция, GTK-состояния без препроцессоров.
-- [ADR-0001: Lua → Rust → GTK](docs/adr/0001-lua-rust-gtk.md)
-- [План миграции](docs/V2_MIGRATION.md)
-- [Ревью и очистка](docs/V2_REVIEW.md)
-- [Lua-пример counter](examples/v2/counter.lua) и [его Lua-тема](examples/v2/styles.lua) — **ещё не исполняются**.
-- [Правила работы с веткой V2](AGENTS.md)
+- [Архитектура V2](docs/V2_ARCHITECTURE.md) — ответственность Lua, mlua, Rust, GTK и жизненный цикл.
+- [Runtime Lua UI API](docs/V2_LANGUAGE.md) — функции, виджеты, события, state, модули.
+- [Lua Style API](docs/V2_STYLES.md) — темы и переиспользуемые стили без внешних препроцессоров.
+- [ADR-0002](docs/adr/0002-embedded-lua-mlua.md) — действующее архитектурное решение; [ADR-0001](docs/adr/0001-lua-rust-gtk.md) отменён.
+- [План миграции](docs/V2_MIGRATION.md) · [Текущий статус/ревью](docs/V2_REVIEW.md).
+- [Пример виджета](examples/v2/counter.lua) · [пример темы](examples/v2/styles.lua) · [правила разработки](AGENTS.md).
 
-## Что есть в репозитории сейчас
+## Пример запуска в будущем
 
-| Часть | Текущая реализация | Цель V2 |
-| --- | --- | --- |
-| `kira-core`, `kira-ipc` | Rust и типизированный IPC | Сохранить |
-| `kira-shell` | GTK4 хост с WebKitGTK | Нативные GTK4-виджеты |
-| `frontend/` | Svelte 5 / TypeScript / Vite | Заменить Lua UI-исходниками |
-| `kira-lua-compiler` | **Отсутствует** | Добавить Rust-компилятор |
-| `ui/` | **Отсутствует** | Lua-компоненты и стили |
-| Nix/Cargo/CI | Пока собирают и проверяют V1 | Мигрировать поэтапно |
+```lua
+local ui = require("kira.ui")
+local theme = require("styles")
+local count = ui.state(0)
 
-## Проверки унаследованного V1
+return ui.box {
+  orientation = "vertical", spacing = 12,
+  style = theme.panel,
+  ui.text { text = ui.bind(count) },
+  ui.button {
+    text = "Добавить",
+    style = ui.compose(theme.control, theme.primary),
+    on_click = function()
+      count:set(count:get() + 1)
+    end,
+  },
+}
+```
+
+Это **исполняемый синтаксис Lua**, но он требует будущего модуля `kira.ui`, который зарегистрирует Rust-хост через `mlua`. Обычный `lua examples/v2/counter.lua` не запустится без этого хоста.
+
+## Существующие проверки V1
 
 ```sh
 nix develop --command task check
@@ -49,8 +59,6 @@ nix build
 nix develop --command task dev:preview
 ```
 
-Эти команды проверяют **только V1**, не компилятор нового UI. Подробные инструкции предыдущей реализации: [development](docs/DEVELOPMENT.md), [V1 specification](docs/SPECIFICATION.md), [preview](docs/PREVIEW.md).
+Пока они проверяют **унаследованную реализацию V1** и документацию, не Lua/GTK runtime. [Старый гайд разработки](docs/DEVELOPMENT.md), [старое ТЗ](docs/SPECIFICATION.md) и [preview](docs/PREVIEW.md) сохранены как справочники миграции.
 
-**Первая реальная цель V2:** `examples/v2/counter.lua` + `examples/v2/styles.lua` → AST → typed IR → сгенерированные Rust и GTK CSS → работающее нативное GTK4 окно с реакцией на нажатие. До этого функциональная готовность V2 не заявляется.
-
-Ветка `main` не затрагивается.
+`main` не изменяется; работа над V2 ведётся отдельно.

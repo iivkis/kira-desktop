@@ -1,44 +1,74 @@
-# Kira Lua UI Language v0.2
+# Kira Lua Runtime UI API — M1 contract
 
-**Статус:** будущий контракт M1, **компилятор пока не реализован**. [Стили только на Lua](V2_STYLES.md) · [архитектура](V2_ARCHITECTURE.md).
+**Статус:** проект публичного API будущего `mlua` GTK-хоста; **реализации ещё нет**.
+**Контекст:** [V2 architecture](V2_ARCHITECTURE.md) · [Lua styling](V2_STYLES.md) · [counter](../examples/v2/counter.lua).
 
-Lua — язык исходников виджетов, state, событий и оформления. Rust читает **статическое подмножество Lua 5.4** как AST, проверяет типы и генерирует native gtk4-rs + GTK CSS. `ui.box`, `ui.text`, `ui.button`, `ui.bind`, `ui.theme` являются **зарезервированными AST-формами**, не исполняемыми функциями Lua. Ни во время сборки, ни в готовом Shell нет Lua VM.
+## Главный принцип
 
-## Канонический UI-файл M1
+Это **настоящий Lua 5.4**, исполняемый через `mlua` внутри Rust-приложения. Разрешены `local`, функции, замыкания, арифметика, условия, циклы и разрешённые модули. Не нужен отдельный транслятор, специальный парсер DSL или кодогенерация Rust.
+
+`ui.box { ... }` синтаксически является обычным **вызовом Lua-функции**: Rust зарегистрирует эту функцию через `mlua::Lua::create_function`. Она возвращает `WidgetSpec` (объект, который знает Rust renderer). GTK widget физически создаётся в Rust на main thread.
+
+## Модули
+
+```lua
+local ui = require("kira.ui")
+local theme = require("styles")
+local count = ui.state(0)
+```
+
+`kira.ui` is the host-provided, versioned API module; `styles` is resolved by a controlled local module loader under a configured widget root. Arbitrary C modules, absolute paths, network dependencies and modules outside approved roots must not be loaded by that resolver. Import code is **executed once according to Lua require caching**, not statically parsed.
+
+## Виджеты M1
 
 ```lua
 return ui.box {
-  id = "counter", theme = "styles.lua",
-  direction = "column", gap = 12,
-  state = { count = 0 },
-  style = "panel",
+  id = "counter",
+  orientation = "vertical",
+  spacing = 12,
+  style = theme.panel,
 
-  ui.text { id = "count", text = ui.bind("count") },
+  ui.text { id = "count", text = ui.bind(count) },
   ui.button {
-    id = "add", text = "Добавить",
-    style = { "control", "primary", padding = 16 },
-    on_click = function(state)
-      state.count = state.count + 1
+    id = "add",
+    text = "Добавить",
+    on_click = function()
+      count:set(count:get() + 1)
     end,
   },
 }
 ```
 
-- Весь файл: комментарии и **ровно один** `return ui.box { ... }`; никакого динамического вычисления дерева. Дочерние `ui.*` виджеты задаются **позиционными** элементами Lua-таблицы в исходном порядке, без `children = {...}`.
-- `ui.box` → `gtk::Box`, `direction = "row" | "column"`, `gap` целое 0–128; `ui.text` → `gtk::Label`, `ui.button` → `gtk::Button`. Каждый виджет требует уникальный строковый `id`.
-- `text` принимает буквальную строку или `ui.bind("field")`; `on_click` допустим только для button. Любой неизвестный виджет, prop, token, вызов или тип даёт ошибку, не fallback в Lua runtime.
-- `state = { count = 0 }` определяет локальные типизированные поля на widget. Потомки видят state предка, затенение одноимённых state-полей запрещено. Тип выводится из literals: `i64/f64/bool/String`. `nil`, динамические таблицы и Option вне M1.
-- `ui.bind("count")` создаёт native dependency и обновление GTK property. Для `text` разрешены `String` и десятичное форматирование `i64`. Обновления UI выполняются в GTK main context.
-- `on_click = function(state) ... end` статически транслируется в GTK `clicked` callback. Поддержаны обращения к известным полям, ограниченная `i64` арифметика/присваивания и `if` с bool. Для целых используется wrapping в debug/release; нет циклов, произвольных функций, upvalues и прямых системных вызовов.
-- `theme = "styles.lua"` — буквальный путь в корне UI на второй Lua AST-файл `return ui.theme { ... }`. Правила `style = "panel"` или `style = { "control", "primary", padding = 16 }` описаны в [V2_STYLES.md](V2_STYLES.md). Токены и GTK states компилируются напрямую в GTK CSS **без Grass/Sass/SCSS/PostCSS/Tailwind**.
+- `ui.box{orientation="vertical"|"horizontal", spacing=integer>=0, children...}` → native `gtk::Box`.
+- `ui.text{text=string|Binding}` → native `gtk::Label`.
+- `ui.button{text=string|Binding, on_click=function, ...}` → native `gtk::Button`.
+- `id` is optional at the Lua level, but stable identifiers are recommended for debugging and reload. Children are ordinary positional elements in a Lua table, in order.
+- The host validates widget properties and reports Lua errors; it does not expose arbitrary raw GTK objects initially.
 
-## Безопасность и сборка
+## State и реактивность
 
-- Parse without executing Lua → AST with spans → schema/name/type validation → typed UI/style IR → Rust codegen + GTK CSS in Cargo `OUT_DIR`.
-- Никакого `require`, `dofile`, `load`, `os/io/debug`, `local`, metatables, globals, FFI, динамического table indexing и внешних CSS processors.
-- Файл темы ограничен input root с проверкой symlinks, сборка офлайн, генерация детерминирована при фиксированных исходниках и версии компилятора, ошибки `path:line:column`.
-- Сгенерированный Rust выполняется с правами Shell: проверка Lua не равна runtime sandbox. Все системные операции остаются за безопасным Rust API.
-- GTK CSS проверяется собственным `GtkCssProvider` в native тестах; все UI state updates выполняются в GTK main context.
-- Пример [counter.lua](../examples/v2/counter.lua) вместе с [styles.lua](../examples/v2/styles.lua) — M1 fixture. Native acceptance включает binding, click, tokens, composition, hover/disabled и отсутствие Lua VM.
+`ui.state(initial_value)` returns an observable **StateHandle**, implemented as Rust userdata with Lua `:get()` and `:set(value)` methods. M1 supports integer/number/string/boolean values; `:set` rejects incompatible changes. Observers see changes through `ui.bind(state)`. `ui.bind` produces a binding object passed to `text`; Rust observes the state and sets the GTK label on the UI thread.
 
-**Примеры пока не компилируются, это спецификация для реализации Rust-транслятора.**
+This uses **explicit set** instead of magic table field assignment: in ordinary Lua `__newindex` on a table does not intercept writes to keys that already exist. Avoid promising auto reactivity from `state.count = ...` on a plain Lua table.
+
+If a handler changes a state, the existing widget updates; no full tree rebuild is needed for a simple bound property. More complex reactive computed values and dynamic collections can be added later.
+
+## События и владение
+
+`on_click = function() ... end` remains a real Lua closure. Rust stores the function in the Lua VM registry or an owned equivalent for as long as the GTK widget and event subscription exist. `connect_clicked` routes to that function on GTK main thread. On teardown, unregister handlers and release registry references and state subscriptions. Avoid reference cycles between Lua callbacks and GTK widgets; test repetitive mount/unmount.
+
+Lua callbacks can throw `error(...)`, so Rust must handle `mlua::Error` without unwinding out of a GTK signal callback. Never block GTK main thread on OS/network IO inside Lua callbacks; system operations go through typed async Rust capabilities.
+
+## Доступ к системе
+
+Niri IPC, D-Bus, process spawning, display configuration and shell commands are not exposed raw to Lua. Later API might expose explicit permission-gated methods such as `kira.system.focus_workspace(id)` with validation in Rust; those are **not implemented as part of M1**.
+
+`mlua` is an embedding library, not a universal security sandbox. M1 scripts are trusted local code. Future third-party widgets need permission design and process isolation.
+
+## Проверки M1
+
+- Execute [counter](../examples/v2/counter.lua), not merely parse it; `require` loads host module and local theme.
+- Construct GTK4 widgets; click → Lua closure → observable StateHandle → bound GtkLabel.
+- Verify no unrelated GTK calls from non-main threads and no unhandled Lua panic.
+- Test invalid props, invalid state type, callback error recovery, missing module, non-existent theme, reload/teardown and memory/CPU budget.
+- GTK CSS/hover tested in native GTK runtime; no generated Rust or `kira-lua-compiler`.

@@ -1,130 +1,79 @@
-# Kira Desktop V2: Lua → Rust → GTK
+# Kira Desktop V2 — Lua + mlua + Rust + GTK4
 
-**Статус:** архитектурное решение принято 2026-11-07. **Реализация компилятора и перенос интерфейса ещё не выполнены.**
-**Целевая платформа:** NixOS, Linux, Niri / Wayland.
-**Источники решения:** [ADR-0001](adr/0001-lua-rust-gtk.md), [Lua Language v0.2](V2_LANGUAGE.md), [Lua Style DSL](V2_STYLES.md), [план миграции](V2_MIGRATION.md), [ревью](V2_REVIEW.md).
+**Статус:** архитектура принята; **runtime ещё не реализован**.
+**Приоритет:** [ADR-0002](adr/0002-embedded-lua-mlua.md) заменяет [ADR-0001](adr/0001-lua-rust-gtk.md).
+**API:** [Lua widgets](V2_LANGUAGE.md) · [Lua styles](V2_STYLES.md) · [Миграция](V2_MIGRATION.md).
 
-## 1. Концепция
+## Концепция
 
-Kira Desktop V2 — нативное рабочее окружение, где **Lua является исходным языком UI**: на Lua описываются **виджеты, стили, состояние, реакции на события и прикладная UI-логика**. Созданный на **Rust транслятор** проверяет Lua-исходники и **генерирует Rust-код на gtk4-rs** и необходимые нативные ресурсы (например, GTK CSS). Дальше обычный компилятор Rust собирает нативный бинарник.
+Kira Desktop V2 — NixOS-first desktop shell поверх Niri/Wayland, а не новый compositor. Пользовательские виджеты, темы, состояние и UI-логика пишутся на **обычном Lua 5.4**. Нативный Rust Shell **встраивает mlua** и выполняет Lua-файлы во время работы приложения.
 
-Это **трансляция при сборке ограниченного статически проверяемого подъязыка Lua**, а не перевод произвольной Lua-программы и не запуск Lua через встраиваемый интерпретатор во время работы Shell. Цель — единый декларативный UI-язык с компилируемыми обработчиками, без браузерного движка в целевом интерфейсе.
+Никакого компилятора Lua → Rust, AST/IR codegen для Lua и генерации `generated_ui.rs`. Lua не обязан быть статически ограниченным декларативным языком: поддерживаются локальные переменные, обычные функции/замыкания, условия, циклы и локальные модули в границах безопасности. При необходимости Lua может создавать новые элементы динамически через `ui` API.
 
-    ui/**/*.lua
-         |
-         v
-    kira-lua-compiler (Rust, build-time)
-         |
-         +--> Lua parser / AST
-         +--> validation + typed UI / state / event IR
-         +--> Rust codegen (gtk4-rs widgets; GTK layer-shell in native Shell)
-         +--> GTK CSS / static assets
-         |
-         v
-    Cargo + rustc + Nix/Crane
-         |
-         v
-    Native Kira Shell (Rust + GTK4 / Wayland)
-         |
-         +--> Kira Core (Rust, Tokio, typed IPC)
-         +--> Niri IPC / GIO / D-Bus / Linux
-
-На этапе V2 не предполагаются Svelte, WebKitGTK, JavaScript, TypeScript, Vite, Node.js-сервер, Tauri или GSAP в цепочке создания нового UI. Старые Svelte/WebKit компоненты остаются в ветке **только как миграционный исходник**, пока не заменены.
-
-## 2. Границы ответственности
-
-- **Lua UI source:** композиция компонентов, правила оформления, UI-state, события, локальная логика отображения, декларативные привязки.
-- **Rust translator:** синтаксический разбор Lua, статическая валидация, проверка доступных API и типов, нормализация в IR, детерминированная генерация Rust/GTK и диагностика с местоположением в Lua.
-- **Generated Rust/GTK:** построение widget tree, GTK CSS class/provider, связывание событий, применение состояния, нативная доступность и lifecycle. Генерация не требует Lua runtime.
-- **Hand-written Rust Shell:** Wayland layer-shell, window lifecycle, управление фокусом, интеграции GIO/D-Bus, ограниченные системные API, защита границы доверия.
-- **Hand-written Rust Core:** system state, Niri IPC, конфигурация и typed IPC. Существующие возможности можно повторно использовать при миграции.
-- **NixOS / Cargo:** воспроизводимая сборка, pinning зависимостей и генерируемого кода.
-
-Транслятор не должен подменять Niri или становиться самостоятельным композитором.
-
-## 3. Контракт Lua (будущий M1)
-
-**Lua — единственный исходный язык виджетов, логики и стилей.** Это статически проверяемое подмножество Lua 5.4, не полный исполняемый Lua. См. [UI Language v0.2](V2_LANGUAGE.md) и [Lua Style DSL](V2_STYLES.md).
-
-- `ui.box { ... }`, `ui.text { ... }`, `ui.button { ... }` создают декларативное дерево с позиционными дочерними элементами, вместо `Widget { kind = ... }`.
-- `state = { count = 0 }`, `ui.bind("count")` и `on_click = function(state) ... end` компилируются в typed Rust state, bindings и GTK callbacks.
-- `ui.theme { tokens = {...}, styles = {...} }` задаёт переиспользуемые Lua-стили, `style = "panel"` или `style = { "control", "primary", padding = 16 }` задаёт композицию.
-- `hover/active/disabled/focus_visible` компилируются в GTK CSS selectors. **Никаких SCSS/Sass, Grass, PostCSS, Tailwind и отдельных препроцессоров.** Уже существующий Rust Lua compiler сразу генерирует gtk4-rs и GTK CSS.
-- DSL-формы распознаются Rust-парсером по AST и никогда не выполняются как Lua-функции. Недопустимый API или AST-узел → диагностическая ошибка.
-
-## 4. Предлагаемая структура
-
-    crates/
-      kira-core/                  # сохраняется
-      kira-ipc/                   # сохраняется
-      kira-shell/                 # переписывается на нативные GTK-виджеты
-      kira-lua-compiler/          # НОВЫЙ Rust crate: CLI, parser, IR, validator, codegen
-      kira-ui-runtime/            # НОВЫЙ по необходимости: минимальные нативные GTK helpers
-    ui/
-      main.lua                    # исходный UI на Lua
-      widgets/*.lua
-      styles/*.lua
-    examples/v2/
-      counter.lua                 # иллюстрация планируемого синтаксиса
-
-Директории compiler/runtime/ui будут добавляться по мере реализации, а не считаются существующими. Начальные Lua-примеры лежат в [counter.lua](../examples/v2/counter.lua) и [styles.lua](../examples/v2/styles.lua); они **пока не собираются**.
-
-## 5. Пример замысла
-
-```lua
-ui.button {
-  id = "increment",
-  text = "Добавить",
-  style = { "control", "primary", padding = 16 },
-  on_click = function(state)
-    state.count = state.count + 1
-  end,
-}
+```text
+Lua scripts (widgets, theme, callbacks)
+       |
+       v
+mlua Lua 5.4 VM in Rust Shell
+       |
+       +--> ui API (registered Rust functions / userdata)
+       |      +--> WidgetSpec / StateHandle / StyleSpec
+       |      +--> GTK4 native builder on GTK main thread
+       |      +--> GtkCssProvider runtime style registry
+       |
+       +--> allowlisted high-level system capabilities
+       |
+       v
+Rust Shell (GTK4 + gtk4-layer-shell + GIO/D-Bus)
+       |
+       +--> Rust Core & kira-ipc --> Niri / Linux
 ```
 
-Компилятор генерирует `gtk::Button`, `connect_clicked`, native state/bindings и предвычисленный CSS-class. Правила и токены из [styles.lua](../examples/v2/styles.lua) непосредственно превращаются в GTK CSS. [counter.lua](../examples/v2/counter.lua) описывает канонический M1 fixture, **пока не исполняемый**.
+## Границы
 
-## 6. Компилятор: обязательные свойства
+**Lua:** UI composition, handlers, application state, conditional view logic, named styles and themes. `require("styles")` работает для разрешённых локальных модулей. `require("kira.ui")` возвращает Rust-реализованный UI API. Lua-код **действительно выполняется**, а не парсится как шаблон.
 
-- Все входные пути и зависимости перечислены явно; никакого скрытого выполнения Lua при генерации.
-- Собственный типизированный IR между парсером и генератором; не генерировать Rust шаблонной подстановкой непроверенного Lua-текста.
-- Отказ при неизвестном виджете, свойстве, событии, символе и нарушении типа.
-- Детерминированный вывод при одинаковом входе и версии компилятора (без timestamps, случайных имён и абсолютных путей), запись только в директорию сборки и возможность просмотреть сгенерированный Rust.
-- Ошибки с Lua path:line:column, описание проблемы и понятное исправление.
-- Устойчивость к некорректным входным файлам, лимиты размеров, глубины дерева, количества элементов и времени компиляции.
-- Никакого исполнения пользовательских shell-команд, произвольного Rust/GTK API и прямого Niri/D-Bus из виджетов.
-- Генерация безопасного API-слоя для системных действий через существующие валидируемые Rust-сервисы. Скомпилированный Rust выполняется с полномочиями Shell: проверка Lua-исходника не заменяет sandbox и не даёт произвольному UI коду системных прав.
-- Отдельные тесты parser → IR, IR → generated Rust, golden fixtures, негативные проверки и end-to-end сборка на NixOS.
-- Генерация должна поддерживать доступность: метки, клавиатуру, фокус, reduced motion, реальные офлайн/неизвестные состояния.
+**mlua host (Rust):** owns each VM, registers module loader and `kira.ui`, exposes `ui.box/text/button/state/bind/compose/theme`, keeps Lua functions alive while widgets exist, routes GUI signals to Lua, reports errors and cleans up on unmount. On M1 `ui.box/text/button` produce validated `WidgetSpec` representations (Rust userdata or internal spec objects) and the renderer materializes native GTK widgets. This approach avoids exposing unrestricted GTK internals to Lua.
 
-## 7. Стили и TENET Motion
+**GTK Shell (Rust):** GTK4/gtk4-layer-shell windows, native widget lifecycle, `GtkCssProvider`, focus, keyboard, accessibility, tray/notifications integration. Initial Lua VM and all GTK references are kept **on the GTK main thread**, with `mlua` built **without `send`**; no GTK userdata crosses thread boundaries. Background Core/IPC/Niri work delivers typed messages to the UI thread.
 
-Сохраняются **визуальные принципы** Kira Default и философия TENET: непрерывность, причинность, временная память и корректное завершение перехода.
+**Rust Core:** Niri integration, D-Bus/system operations, controlled capabilities, configuration safety; unchanged as architectural foundation.
 
-**Меняется реализация:** CSS предназначен для GTK4, а движок анимаций обязан быть нативным Rust/GTK. Требование GSAP из V1 не действует для нового UI. Не следует переносить WebKit-геометрию и JavaScript timelines буквально; прежде чем утверждать полное соответствие TENET, нужно спроектировать и протестировать GTK motion API. Пользовательские действия не откладываются ради анимации; учитываются клавиатура, фокус и reduced motion.
+**Nix/Cargo:** reproducible source and dependency resolution. Suggested future Cargo dependency for runtime crate or shell (after lockfile regeneration):
 
-## 8. Конфигурация и расширения
+```toml
+mlua = { version = "0.12", features = ["lua54", "vendored"] }
+```
 
-NixOS-first и KDL-конфигурация могут быть сохранены для системных настроек. **Lua становится языком компонентов и UI-логики**. Разные задачи имеют разные уровни владения: KDL/Nix управляют конфигурацией системы, Lua описывает нативный интерфейс, Rust выполняет разрешённые системные операции.
+Use a pinned, lockfile-resolved version. `vendored` bundles the Lua C library for reproducibility; an external system Lua 5.4 may be chosen after testing the Nix build. Neither option makes Lua-generated Rust.
 
-Динамическая установка или изменение Lua-виджетов **без пересборки** несовместимы с простым ahead-of-time кодогенератором. Все GTK-модификации должны выполняться на main context; данные Rust-сервисов доставляются туда через типизированные сообщения. Первая V2 требует перекомпиляции UI при изменении Lua; быстрый dev watch может запускать её автоматически. Hot reload без компиляции — отдельное исследование, а не обещанная функция.
+## Жизненный цикл виджета M1
 
-## 9. Критерии первой работающей V2
+1. GTK initializes on the application main thread.
+2. Rust creates an `mlua::Lua` VM with only the required standard libraries and a controlled module loader; registers `kira.ui`.
+3. Host executes the entry Lua module (e.g. `examples/v2/counter.lua`) and receives a `WidgetSpec` tree.
+4. Rust builds native `gtk::Box`, `gtk::Label`, `gtk::Button`; validates input properties and styles. It retains `mlua::Function` callbacks through the VM registry/owned handles while widgets live.
+5. GTK events call into Lua on the main thread. `ui.state(value):set(...)` updates the Rust-backed observable state and synchronizes all `ui.bind(state)` values. Lua is not re-evaluated in full for every click.
+6. Removing a view releases GTK signal connections, callback handles, subscriptions and VM registry references. Lua errors are caught/logged as widget errors, not allowed to panic/abort the GTK signal callback.
+7. Restarting/reloading Lua widgets happens after safe teardown, with rollback to the last working view where feasible; no guarantee of instantaneous code hot reload in M1.
 
-1. Новый Rust crate kira-lua-compiler парсит и валидирует минимум `ui.box`/`ui.text`/`ui.button`/`state`/`ui.bind`/`on_click` и `ui.theme` с токенами/композицией/GTK states.
-2. Исходный Lua counter компилируется в Rust GTK4 и работает без Lua VM, JS или WebKit.
-3. Ошибочный Lua даёт понятную ошибку, не произвольное выполнение кода.
-4. Компилированная GTK4 top bar запускается во вложенном Niri и получает реальные workspaces через Rust Core.
-5. Стандартные виджеты мигрируют постепенно; каждый перенос проверяется нативным Wayland smoke и регрессиями.
-6. Nix build поставляет нативный UI; сравниваются RSS/PSS, запуск, задержки и визуальная корректность со старым Shell.
-7. Только после достижения parity удаляются Svelte/WebKit/Node/Vite/GSAP и старая сборочная инфраструктура.
+## Стили
 
-## 10. Не делать
+**Lua themes and styles only**; no Sass, SCSS, Grass, Tailwind, PostCSS or separate preprocessor. At runtime the Rust bridge resolves token/style tables and emits **GTK CSS** from a strict supported-properties allowlist, caches styles, creates CSS classes and applies them to native widgets. Only GTK CSS is generated; **no Rust source** is generated. [Подробно](V2_STYLES.md).
 
-- Не объявлять написанные на Lua виджеты «работающими», пока нет компилятора и GTK runtime.
-- Не запускать arbitrary Lua на startup как скрытый обход архитектурного решения.
-- Не генерировать Rust командной конкатенацией непроверенных строк.
-- Не смешивать старый frontend в новую UI-архитектуру как постоянный второй стек.
-- Не переписывать main: вся миграция ведётся в ветке kira-desktop-v2.
+## Безопасность
 
-См. [миграционные этапы](V2_MIGRATION.md) и [запись архитектурного решения](adr/0001-lua-rust-gtk.md).
+The Lua VM is **not an OS sandbox**. M1 is for **trusted, locally installed UI scripts**. No implicit right to call arbitrary D-Bus/Niri, shell, Rust or GTK APIs. A trusted host-controlled module resolver, explicit capabilities and validated GTK property setters are required. Do not use unsafe `Lua::unsafe_new` or load arbitrary C modules for external plugins. Limit Lua VM memory and budget long-running callbacks/instruction use where supported; catch runtime errors and ensure they do not freeze the UI forever. Third-party untrusted widgets need **process isolation** and a separate threat model before being advertised as safe.
+
+## Что удаляется, а что остаётся
+
+- Отменяется создание `kira-lua-compiler`, статическая AST/IR/codegen архитектура и `generated_ui.rs`.
+- V1 `frontend/`, WebKit and JS code temporarily remain for behavior parity and legacy CI; they are not the new UI target.
+- NixOS-first, Kira Default, native GTK4 and TENET design principles remain. Native animation is a separate GTK/Rust effort, not GSAP.
+- Runtime Lua scripts can be edited without **компиляции Rust**; reloading modules/UI safely may still require a view restart.
+
+## Критерий первого M1
+
+`counter.lua` + `styles.lua` are executed by the mlua host in a GTK4 app: button click invokes a **Lua closure**, updates a `ui.state`, updates GTK label via `ui.bind`, applies a Lua theme and `:hover` style, and unloads without leaking handles. Verify no WebKit or JS in that native UI path. Before that, these files remain API design examples, not runnable in the current repository.
+
+No source or generated executable is a security boundary merely by using mlua.
