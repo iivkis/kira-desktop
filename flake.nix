@@ -86,6 +86,7 @@
           test -s ${./docs/V2_STYLES.md}
           test -s ${./examples/v2/styles.lua}
           test -s ${./docs/adr/0001-lua-rust-gtk.md}
+          test -s ${./docs/adr/0002-embedded-lua-mlua.md}
           test -s ${./nix/package.nix}
           test -s ${./Taskfile.yml}
           test -s ${./.github/workflows/ci.yml}

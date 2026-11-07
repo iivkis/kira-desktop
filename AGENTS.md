@@ -1,37 +1,32 @@
 # Kira Desktop V2 contributor and agent rules
 
-**Active architecture for branch kira-desktop-v2:** [docs/V2_ARCHITECTURE.md](docs/V2_ARCHITECTURE.md). Lua subset: [docs/V2_LANGUAGE.md](docs/V2_LANGUAGE.md). Lua styling: [docs/V2_STYLES.md](docs/V2_STYLES.md). Review: [docs/V2_REVIEW.md](docs/V2_REVIEW.md). Decision: [ADR-0001](docs/adr/0001-lua-rust-gtk.md). Migration: [docs/V2_MIGRATION.md](docs/V2_MIGRATION.md).
+**Current decision:** [ADR-0002: embedded Lua + mlua](docs/adr/0002-embedded-lua-mlua.md).
+**Reference:** [architecture](docs/V2_ARCHITECTURE.md) · [runtime Lua API](docs/V2_LANGUAGE.md) · [Lua styles](docs/V2_STYLES.md) · [migration](docs/V2_MIGRATION.md).
+**Superseded:** [ADR-0001 Lua-to-Rust compiler](docs/adr/0001-lua-rust-gtk.md) is for historical context only.
 
-## This branch's authoritative direction
+## Authoritative direction
 
-1. **Lua is the authoring language for widgets, styles, state and UI logic.** Produce a native GTK4 interface, not Svelte/HTML.
-2. **A compiler/transpiler written in Rust converts a validated Lua subset into Rust gtk4-rs code and GTK CSS/resources at build time.** Do not implement V2 by embedding a Lua VM to create widgets at runtime.
-3. Keep Linux, Niri, IPC, D-Bus, OS side effects, security and integration in trusted Rust. Generated UI must call only validated capabilities, never execute arbitrary OS commands.
-4. Keep NixOS-first reproducible builds, cargo lockfiles, deterministic generated output and typed error diagnostics.
-5. The current Svelte/WebKit sources, npm build and GSAP code were inherited from V1. They are **legacy migration baseline only**. Do not add new V2 features in them or assume green V1 CI validates V2.
-6. **No external CSS preprocessors** in native V2: no Sass/SCSS, Grass, PostCSS, Tailwind. Rust Lua compiler directly emits GTK CSS from `ui.theme`. Before the compiler exists, Lua examples and documents are specifications, **not runnable code**. Mark implementation status honestly.
-7. Do not remove V1 modules until replacement parity and native GTK/Niri tests have passed. Keep the default main branch unchanged.
+1. Widgets, state, callbacks and styles are **real Lua 5.4**, executed by `mlua` embedded in native Rust/GTK4 Shell at **runtime**.
+2. **Do not create a Lua-to-Rust compiler/transpiler**, codegen pipeline or "static Lua AST DSL". `ui.*` are actual Lua functions registered by the Rust host. Lua functions, closures, local variables and controlled `require` are allowed.
+3. Rust owns GTK widgets and Wayland layer surfaces, Niri, system resources, D-Bus, config safety and typed Core/IPC capabilities. Lua never receives raw unrestricted system or GTK access.
+4. Render native GTK4 widgets. Do not use Svelte, WebKitGTK, Tauri, JS or GSAP for **new V2 UI**. V1 code and dependencies stay only for regression/migration until replacement parity.
+5. Lua themes and styles are applied by a Rust-side **runtime GTK CSS bridge**. No Grass/SCSS/Sass/Tailwind/PostCSS build step in V2.
+6. Until `mlua` is added to Cargo and the host is built, all Lua code in `examples/v2` is **API-contract code, not runnable in the current project**. Do not claim otherwise.
 
-## Compiler implementation contract
+## Runtime bridge rules
 
-- Parse Lua source without executing it; implement only the statically analyzable syntax described in docs/V2_LANGUAGE.md. Syntactically valid Lua is not automatically supported.
-- Parse → AST → validated typed IR → Rust/GTK codegen. Never paste unchecked Lua strings into generated Rust or CSS.
-- Reject unsupported Lua features rather than quietly falling back to evaluation/interpreter mode.
-- Emit stable source diagnostics, limit memory/depth/input size and keep build results deterministic.
-- Cover parse, type validation, Rust emission, diagnostics, negative/security cases, Nix build and actual native GTK smoke.
-- Generated Rust is build output, not hand-maintained source; write to ignored build directories only.
-- GTK widgets and reactive state must be mutated in GTK main context; updates from OS workers use typed messages.
+- M1 `ui.box`, `ui.text` and `ui.button` build validated WidgetSpec objects, later mounted to native GTK by Rust on the GTK main thread.
+- `ui.state(value)` uses Rust-backed observable userdata with `:get()` and `:set(...)`. `ui.bind(state)` creates explicit update subscriptions; do not promise that plain Lua table-field writes are reactive.
+- Lua callbacks are real closures. Keep their `mlua::Function` references alive while GTK signals exist; release callbacks, subscriptions, and view resources on unmount. Catch/report `mlua::Error` inside GTK handlers without panic propagation.
+- Run Lua and GTK on GTK main thread initially; do not enable `mlua/send` without a carefully proven design. Off-thread Niri/Core data arrives via typed messages to GTK main context.
+- Use a controlled module loader, validated widget attributes, allowed GTK CSS style fields/states and approved system capabilities. Lua VM is **not a security sandbox**; M1 assumes trusted local widgets, not arbitrary downloaded plugins.
+- Restrict unsafe stdlibs/native C modules and impose sensible memory/execution budgets. Keep OS work off the GTK thread.
+- Reproducibility: when adding `mlua`, generate a **real** Cargo.lock update with Cargo and validate Nix linking (`lua54` + chosen vendored/system feature). Do not handwrite lockfile entries.
 
-## UI and design invariants
+## Design invariants
 
-- Retain Kira Default's Black/Prussian Blue/Orange/Alabaster Grey/White identity and truthfully reported system states.
-- GTK4 is now the actual widget renderer, not merely a WebKit host. Styling is GTK CSS generated from Lua styles.
-- Preserve accessibility, keyboard, focus, reduced motion and display safety rollback.
-- TENET principles remain a design goal; GSAP-specific mandatory rules of V1 **do not apply** to V2. A native Rust/GTK implementation and acceptance contract must be designed.
-- No speculative claim that compilation makes UI faster/lighter until measured.
+Keep Kira Default palette and TENET philosophy (causality, continuity, accessibility, reduced motion) but reimplement native GTK/Rust behavior; GSAP-specific V1 implementation is not required. Keep truthful state, keyboard focus, display safety rollback, and repeatable nested-Niri visual QA.
 
-## Working with the legacy implementation
+## Current implementation boundary
 
-Documents explicitly labeled **V1 migration reference** describe inherited Svelte/WebKit implementation and may conflict with the new V2 decision. For **new V2 work**, this file and docs/V2_ARCHITECTURE.md take precedence. Existing tests and code are retained until migration milestones are complete.
-
-Do not treat the initial architecture commit as completed compiler or widget migration.
+The existing repo still contains V1 Svelte/WebKit; its CI is a regression gate, **not** evidence that mlua GTK UI works. V1 guides are explicitly labeled as migration references. No changes to `main` while developing this branch.

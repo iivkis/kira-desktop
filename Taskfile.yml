@@ -17,7 +17,7 @@ tasks:
       - task: config:check
 
   v2:spec:check:
-    desc: Validate V2 documentation links/contract (does not test Lua compilation).
+    desc: Validate V2 mlua runtime API documentation and fixtures (not native GTK execution).
     cmds:
       - python3 -m unittest discover -s tests -p 'test_v2_spec.py'
 
@@ -38,6 +38,7 @@ tasks:
       - test -s docs/V2_MIGRATION.md
       - test -s docs/V2_REVIEW.md
       - test -s docs/adr/0001-lua-rust-gtk.md
+      - test -s docs/adr/0002-embedded-lua-mlua.md
       - test -s examples/v2/counter.lua
       - test -s docs/DESIGN_SYSTEM.md
       - test -s frontend/src/lib/themes/kira-default.css
