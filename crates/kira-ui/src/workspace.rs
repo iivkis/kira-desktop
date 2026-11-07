@@ -6,6 +6,8 @@ use std::rc::Rc;
 
 use gtk::prelude::*;
 
+use crate::flow_indicator::{FlowAxis, FlowIndicator, FlowStyle};
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct WorkspaceItem {
     pub id: String,
@@ -52,6 +54,7 @@ pub fn visible_workspaces(items: &[WorkspaceItem], max_items: usize) -> Vec<&Wor
 pub struct WorkspaceStrip {
     root: gtk::Box,
     buttons: gtk::Box,
+    selection_flow: FlowIndicator,
     status: gtk::Label,
     before: gtk::Label,
     after: gtk::Label,
@@ -72,7 +75,12 @@ impl WorkspaceStrip {
 
         let buttons = gtk::Box::new(gtk::Orientation::Horizontal, 4);
         buttons.add_css_class("workspace-strip");
-        root.append(&buttons);
+        let selection_flow = FlowIndicator::new(
+            &buttons.clone().upcast(),
+            FlowAxis::Horizontal,
+            FlowStyle::Fill,
+        );
+        root.append(&selection_flow);
 
         let after = gtk::Label::new(None);
         after.add_css_class("workspace-overflow");
@@ -81,6 +89,7 @@ impl WorkspaceStrip {
         Self {
             root,
             buttons,
+            selection_flow,
             status,
             before,
             after,
@@ -107,6 +116,7 @@ impl WorkspaceStrip {
         self.before.set_visible(active);
         self.after.set_visible(active);
         if !active {
+            self.selection_flow.clear();
             return;
         }
 
@@ -166,6 +176,7 @@ impl WorkspaceStrip {
         }
 
         let mut predecessor: Option<gtk::Widget> = None;
+        let mut focused: Option<gtk::Button> = None;
         for item in window.items {
             let existing = self.cache.borrow().get(&item.id).cloned();
             let button = if let Some(existing) = existing {
@@ -223,6 +234,9 @@ impl WorkspaceStrip {
                     button.remove_css_class(class);
                 }
             }
+            if item.focused {
+                focused = Some(button.clone());
+            }
             let in_position = match &predecessor {
                 Some(before) => before.next_sibling().as_ref() == Some(button.upcast_ref()),
                 None => self.buttons.first_child().as_ref() == Some(button.upcast_ref()),
@@ -232,6 +246,11 @@ impl WorkspaceStrip {
                     .reorder_child_after(&button, predecessor.as_ref());
             }
             predecessor = Some(button.upcast());
+        }
+        if let Some(button) = focused {
+            self.selection_flow.retarget(button.upcast_ref());
+        } else {
+            self.selection_flow.clear();
         }
     }
 }
