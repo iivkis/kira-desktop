@@ -17,7 +17,7 @@
 | Top Bar (`App.svelte`) | Partial | Native KIRA brand/workspace/clock composition is closer; still missing tray, Core health, warning inspector and full keyboard/status semantics |
 | Workspace Preview | Partial | Correct source-derived continuous focused window, hidden urgent counters, active/output flags and tests; animated flow/scroll and pending state still missing |
 | Launcher | Partial | Source-derived description search, ranking, result limit, icon metadata, keyboard navigation and tests; source-equivalent selection rail, popout and TENET reveal still missing |
-| Calendar | Partial | Native `kira-ui::Calendar` now has six-row Monday-first eight-column ISO week grid, neighboring-month selection, full year/month/day navigation, live clock, Today and ISO clipboard feedback. Native GtkDrawingArea renders the original four saved inverted flight coordinates, but digit-by-digit rolls, synchronized grid stagger, detached SkyMap and proven visual/motion parity remain missing |
+| Calendar | Partial | Native `kira-ui::Calendar` has a six-row Monday-first eight-column ISO week grid, neighboring-month selection, navigation, live clock, Today and ISO clipboard feedback. Native GtkDrawingArea replays saved inverted fragment coordinates; the new 400ms `ClockDigits` exchanges individual numerals. Grid stagger, full clock juggle, detached SkyMap and paired visual/motion proof remain missing |
 | Sky Map | Missing | 74KB astronomical catalog, date/location/time controls, horizon drawing and 420ms sidereal interpolation |
 | System Monitor | Partial | Basic native telemetry/processes, but not original disk/swap cards, hardware disclosure, filtering/sorting, copy report, chart context or animation |
 | System Charts | Missing | Original true 500ms CPU/RAM gauges + history, correct axes/data cadence and reduced-motion behavior |
@@ -47,7 +47,7 @@ The canonical `main` timeline is not merely a fade: it contains a contact point,
 | Notification card | `NotificationCard.svelte` | 180ms `y:12px → 0` and `opacity:0 → 1`, `power2.out`, cancelled on disposal |
 | System Charts | `SystemCharts.svelte` | Valid sample history and bounded gauges; no animation overshoot beyond measured values |
 
-**Native progress:** `kira-ui::motion` now contains the original Gregorian-calendar four-flight vectors and forward/inverted temporal math with unit tests, plus a GTK drawing-area clock/grid fragment animation. **None of the overall widget animations is verified as identical yet.** A spring easing formula or a generic `GtkRevealer` transition alone is not evidence of TENET equivalence. Keep motion declarative and reusable inside `kira-ui`, not as GTK widget code duplicated in `kira-shell`.
+**Native progress:** `kira-ui::motion` contains the calendar four-flight vectors, dual time, a 400ms digit exchange model and one reversible popup master cursor (540ms source at 1.44× speed). `ClockDigits` renders live per-digit old/new tracks, and `PopupClip` drives a GSK reveal of a fixed Wayland window with a remembered reverse/interrupt cursor. The source's popup content spring/stagger/INVERTED decorative traces and full clock juggle are not yet implemented in GTK; cross-popup switching currently settles immediately. **None of the overall widget animations is verified as identical yet.** A spring easing formula or a generic `GtkRevealer` transition alone is not evidence of TENET equivalence. Keep motion declarative and reusable inside `kira-ui`, not as GTK widget code duplicated in `kira-shell`.
 
 ## Mandatory acceptance before saying “identical”
 
