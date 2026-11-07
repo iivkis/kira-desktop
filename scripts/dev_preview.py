@@ -191,7 +191,7 @@ def run_preview(
         )
 
         environment = os.environ.copy()
-        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW", "KIRA_UI_DIR", "KIRA_CONFIG_FILE"):
+        for key in ("NIRI_SOCKET", "NIRI_CONFIG", "KIRA_CORE_SOCKET", "KIRA_PREVIEW", "KIRA_CONFIG_FILE"):
             environment.pop(key, None)
 
         validation = subprocess.run(
@@ -259,11 +259,11 @@ def run_preview(
             )
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
-            if True:  # Native interactive preview
+            if True:  # Only the interactive native mode is currently supported
                 print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
                 print("[preview] Edit this file to hot-reload the bar; invalid KDL retains last valid config.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
-            if True:  # Native interactive preview
+            if True:  # Only the interactive native mode is currently supported
                 print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
                 print("[preview] Alt+Ctrl+1/2 moves the focused window without changing the focused workspace; Alt+1/2 switches.", flush=True)
                 print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)

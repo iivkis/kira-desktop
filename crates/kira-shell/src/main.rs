@@ -7,7 +7,7 @@ use std::time::Duration;
 
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
-use kira_ipc::{ConfigState, RpcRequest, UiConfig, WorkspaceState, PROTOCOL_VERSION};
+use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
 
 const BAR_HEIGHT: i32 = 42;
 const POPUP_GAP: i32 = 12;
@@ -57,7 +57,11 @@ fn redraw_workspaces(container: &gtk::Box, state: &WorkspaceState, config: &UiCo
         container.append(&offline);
         return;
     }
-    for workspace in state.workspaces.iter().take(usize::from(config.max_workspaces)) {
+    for workspace in state
+        .workspaces
+        .iter()
+        .take(usize::from(config.max_workspaces))
+    {
         let title = if config.show_names {
             workspace
                 .name
@@ -104,9 +108,10 @@ fn render_applications(list: &gtk::Box, applications: &[gtk::gio::AppInfo], quer
     }
     let needle = query.trim().to_lowercase();
     let mut count = 0;
-    for app in applications.iter().filter(|app| {
-        app.should_show() && app.display_name().to_lowercase().contains(&needle)
-    }) {
+    for app in applications
+        .iter()
+        .filter(|app| app.should_show() && app.display_name().to_lowercase().contains(&needle))
+    {
         if count >= 100 {
             break;
         }
@@ -173,23 +178,29 @@ fn system_view() -> gtk::Box {
     std::thread::spawn(move || {
         let memory = std::fs::read_to_string("/proc/meminfo")
             .ok()
-            .and_then(|raw| raw.lines().find(|line| line.starts_with("MemAvailable:")).map(str::to_owned))
+            .and_then(|raw| {
+                raw.lines()
+                    .find(|line| line.starts_with("MemAvailable:"))
+                    .map(str::to_owned)
+            })
             .unwrap_or_else(|| "ОЗУ: недоступно".to_owned());
         let load = std::fs::read_to_string("/proc/loadavg")
             .ok()
-            .and_then(|raw| raw.split_whitespace().take(3).collect::<Vec<_>>().join(" ").into())
+            .map(|raw| raw.split_whitespace().take(3).collect::<Vec<_>>().join(" "))
             .unwrap_or_else(|| "недоступно".to_owned());
         let _ = sender.send(format!("Нагрузка (1/5/15 мин): {load}\n{memory}"));
     });
-    gtk::glib::timeout_add_local(Duration::from_millis(100), move || match receiver.try_recv() {
-        Ok(snapshot) => {
-            info.set_text(&snapshot);
-            gtk::glib::ControlFlow::Break
-        }
-        Err(mpsc::TryRecvError::Empty) => gtk::glib::ControlFlow::Continue,
-        Err(mpsc::TryRecvError::Disconnected) => {
-            info.set_text("Данные недоступны");
-            gtk::glib::ControlFlow::Break
+    gtk::glib::timeout_add_local(Duration::from_millis(100), move || {
+        match receiver.try_recv() {
+            Ok(snapshot) => {
+                info.set_text(&snapshot);
+                gtk::glib::ControlFlow::Break
+            }
+            Err(mpsc::TryRecvError::Empty) => gtk::glib::ControlFlow::Continue,
+            Err(mpsc::TryRecvError::Disconnected) => {
+                info.set_text("Данные недоступны");
+                gtk::glib::ControlFlow::Break
+            }
         }
     });
     content
@@ -286,7 +297,9 @@ fn toggle_popup(
         gtk::glib::Propagation::Proceed
     });
 
-    popup.borrow_mut().replace((kind.to_owned(), window.clone()));
+    popup
+        .borrow_mut()
+        .replace((kind.to_owned(), window.clone()));
     window.present();
 }
 
@@ -297,23 +310,27 @@ fn start_core_subscriptions(sender: mpsc::Sender<CoreUpdate>) {
     };
     let workspaces_sender = sender.clone();
     let workspaces_socket = socket.clone();
-    std::thread::spawn(move || loop {
-        let result = kira_ipc::client::subscribe_workspaces(&workspaces_socket, |state| {
-            let _ = workspaces_sender.send(CoreUpdate::Workspaces(state));
-        });
-        let _ = workspaces_sender.send(CoreUpdate::Workspaces(WorkspaceState::default()));
-        if let Err(error) = result {
-            eprintln!("kira-shell: workspace stream disconnected: {error}");
+    std::thread::spawn(move || {
+        loop {
+            let result = kira_ipc::client::subscribe_workspaces(&workspaces_socket, |state| {
+                let _ = workspaces_sender.send(CoreUpdate::Workspaces(state));
+            });
+            let _ = workspaces_sender.send(CoreUpdate::Workspaces(WorkspaceState::default()));
+            if let Err(error) = result {
+                eprintln!("kira-shell: workspace stream disconnected: {error}");
+            }
+            std::thread::sleep(Duration::from_millis(750));
         }
-        std::thread::sleep(Duration::from_millis(750));
     });
-    std::thread::spawn(move || loop {
-        if let Err(error) = kira_ipc::client::subscribe_config(&socket, |state| {
-            let _ = sender.send(CoreUpdate::Config(state));
-        }) {
-            eprintln!("kira-shell: config stream disconnected: {error}");
+    std::thread::spawn(move || {
+        loop {
+            if let Err(error) = kira_ipc::client::subscribe_config(&socket, |state| {
+                let _ = sender.send(CoreUpdate::Config(state));
+            }) {
+                eprintln!("kira-shell: config stream disconnected: {error}");
+            }
+            std::thread::sleep(Duration::from_millis(750));
         }
-        std::thread::sleep(Duration::from_millis(750));
     });
 }
 
@@ -348,8 +365,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     actions.set_margin_end(12);
     let clock = gtk::Label::new(Some("--:--"));
     clock.add_css_class("clock");
-    let popup: Rc<RefCell<Option<(String, gtk::ApplicationWindow)>>> =
-        Rc::new(RefCell::new(None));
+    let popup: Rc<RefCell<Option<(String, gtk::ApplicationWindow)>>> = Rc::new(RefCell::new(None));
     let config = Rc::new(RefCell::new(UiConfig::default()));
     for (kind, symbol, accessible) in [
         ("launcher", "⌕", "Запуск приложений"),
@@ -389,7 +405,9 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         *config.borrow_mut() = next.config;
                         title.set_text(&config.borrow().title);
                         if next.error.is_some() {
-                            title.set_tooltip_text(Some("Ошибка KDL. Сохранена предыдущая конфигурация."));
+                            title.set_tooltip_text(Some(
+                                "Ошибка KDL. Сохранена предыдущая конфигурация.",
+                            ));
                             title.add_css_class("config-error");
                         } else {
                             title.set_tooltip_text(None);

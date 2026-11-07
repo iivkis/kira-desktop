@@ -1,11 +1,7 @@
 /target/
-/frontend/node_modules/
-/frontend/dist/
 /result
 *.swp
 .DS_Store
 /artifacts/visual-qa/
-
-# Python bytecode and interpreter caches (all directories)
 __pycache__/
 *.py[cod]
