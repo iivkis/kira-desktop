@@ -5,6 +5,7 @@ pub mod calendar;
 pub mod calendar_model;
 pub mod clock_digits;
 pub mod displays;
+pub mod flow_indicator;
 pub mod launcher;
 pub mod motion;
 pub mod popup;
@@ -16,6 +17,7 @@ pub mod workspace;
 pub use bar::{Bar, action_button};
 pub use calendar::Calendar;
 pub use calendar_model::{CivilDate, DayState, current_local_date, month_grid};
+pub use flow_indicator::{FlowAxis, FlowIndicator, FlowRect, FlowStyle};
 pub use displays::{
     DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings,
 };
