@@ -1,14 +1,18 @@
 //! Reusable, compositor-agnostic GTK4 presentation components for Kira.
 //! No Core IPC, Niri commands, filesystem mutations or process execution.
 pub mod bar;
+pub mod displays;
 pub mod launcher;
 pub mod popup;
+pub mod system;
 pub mod workspace;
 
 pub use bar::{Bar, action_button};
+pub use displays::{DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings};
 pub use launcher::{ApplicationEntry, Launcher, filter_applications};
 pub use popup::{PopupHost, PopupKind};
 pub use workspace::{WorkspaceItem, WorkspaceStrip, visible_workspaces};
+pub use system::{GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels, top_processes};
 
 use gtk::prelude::*;
 
@@ -56,4 +60,14 @@ impl InfoPanel {
     pub fn set_details(&self, content: &str) {
         self.details.set_text(content);
     }
+}
+
+/// A reusable settings composition without binding the UI crate to Core/Niri.
+pub fn settings_page(summary: &gtk::Widget, displays: &gtk::Widget) -> gtk::Widget {
+    let root = gtk::Box::new(gtk::Orientation::Vertical, 16);
+    root.append(summary);
+    let divider = gtk::Separator::new(gtk::Orientation::Horizontal);
+    root.append(&divider);
+    root.append(displays);
+    root.upcast()
 }

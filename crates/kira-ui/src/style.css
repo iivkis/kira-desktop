@@ -21,3 +21,14 @@ window.kira-popup { background: #14213d; color: #ffffff; }
 .section-title { font-size: 18px; font-weight: bold; color: #ffffff; }
 .kira-popup .app-row { padding: 10px; }
 .kira-popup calendar { background: #14213d; color: #ffffff; }
+
+/* Reusable system monitor and output editor; no desktop-only theme rules. */
+.system-metric { padding: 6px 4px; }
+.system-value { font-weight: bold; }
+.process-row { padding: 5px 4px; }
+.process-row:hover { background: #000000; }
+.display-output { background: #000000; padding: 12px; border-radius: 6px; }
+.display-output .section-title { font-size: 14px; }
+.display-status { color: #fca311; font-weight: bold; }
+.display-settings checkbutton { color: #ffffff; }
+.display-settings spinbutton, .display-settings dropdown { color: #ffffff; }
