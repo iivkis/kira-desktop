@@ -18,14 +18,14 @@ const MAX_SOURCE: u64 = 1_048_576;
 /// Determine active user config path. A custom --config override not exported
 /// in NIRI_CONFIG cannot be detected, and must be handled manually.
 fn root() -> Result<PathBuf, String> {
-    if let Ok(value) = env::var("NIRI_CONFIG") {
-        if !value.is_empty() {
-            let path = PathBuf::from(value);
-            if !path.is_absolute() {
-                return Err("NIRI_CONFIG должен содержать абсолютный путь".into());
-            }
-            return Ok(path);
+    if let Ok(value) = env::var("NIRI_CONFIG")
+        && !value.is_empty()
+    {
+        let path = PathBuf::from(value);
+        if !path.is_absolute() {
+            return Err("NIRI_CONFIG должен содержать абсолютный путь".into());
         }
+        return Ok(path);
     }
     let config = env::var_os("XDG_CONFIG_HOME")
         .map(PathBuf::from)
@@ -67,9 +67,9 @@ fn managed_dir() -> Result<PathBuf, String> {
 }
 
 fn resolve_include(parent: &Path, raw: &str) -> Result<PathBuf, String> {
-    if raw.starts_with("~/") {
+    if let Some(stripped) = raw.strip_prefix("~/") {
         let home = env::var_os("HOME").ok_or("HOME не определён")?;
-        return Ok(PathBuf::from(home).join(&raw[2..]));
+        return Ok(PathBuf::from(home).join(stripped));
     }
     let target = PathBuf::from(raw);
     Ok(if target.is_absolute() {
@@ -355,11 +355,11 @@ pub(crate) fn save(desired: &[Desired]) -> Result<(), String> {
         return Err("config.kdl изменён во время сохранения. Повторите действие.".into());
     }
     atomic(&fragment, &new_fragment)?;
-    if count == 0 {
-        if let Err(e) = atomic(&config, &new_root) {
-            rollback_file(&fragment, previous_fragment.as_deref());
-            return Err(e);
-        }
+    if count == 0
+        && let Err(e) = atomic(&config, &new_root)
+    {
+        rollback_file(&fragment, previous_fragment.as_deref());
+        return Err(e);
     }
     if let Err(error) = validate_config(&config) {
         rollback_file(&fragment, previous_fragment.as_deref());

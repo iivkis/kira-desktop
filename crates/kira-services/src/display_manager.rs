@@ -80,10 +80,16 @@ impl Model {
     }
 
     pub fn poll(&self) -> Vec<Event> {
-        // Never block GTK. Limit messages consumed per frame.
+        // Bounded nonblocking poll; any GTK consumer remains responsive.
         (0..6)
             .filter_map(|_| self.receiver.try_recv().ok())
             .collect()
+    }
+}
+
+impl Default for Model {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -525,11 +531,11 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 }
             }
             Request::Revert(id) => {
-                if pending.as_ref().is_some_and(|p| p.0 == id) {
-                    if let Some((_, before, _)) = pending.take() {
-                        staged = None;
-                        revert(&before, &events);
-                    }
+                if pending.as_ref().is_some_and(|p| p.0 == id)
+                    && let Some((_, before, _)) = pending.take()
+                {
+                    staged = None;
+                    revert(&before, &events);
                 }
             }
             Request::Save => {

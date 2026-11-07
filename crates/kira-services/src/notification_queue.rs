@@ -131,7 +131,7 @@ impl NotificationQueue {
         let mut changed = false;
         if !can_show {
             if !self.showing.is_empty() {
-                let items: Vec<_> = self.showing.drain(..).collect();
+                let items = std::mem::take(&mut self.showing);
                 for item in items.into_iter().rev() {
                     self.waiting.push_front(Waiting {
                         notice: item.notice,
@@ -161,22 +161,22 @@ impl NotificationQueue {
             }
         }
         self.showing = kept;
-        if self.showing.len() < MAX_VISIBLE {
-            if let Some(head) = self.waiting.front() {
-                // The 1.5s gap begins when the previous card actually paints,
-                // not when an invisible GTK/WebKit host admits it.
-                let interval_ok = self.showing.last().is_none_or(|item| {
-                    item.since
-                        .is_some_and(|since| now.saturating_duration_since(since) >= ADMISSION_GAP)
+        if self.showing.len() < MAX_VISIBLE
+            && let Some(head) = self.waiting.front()
+        {
+            // The 1.5s gap begins when the previous card actually paints,
+            // not when a hidden native notification host admits it.
+            let interval_ok = self.showing.last().is_none_or(|item| {
+                item.since
+                    .is_some_and(|since| now.saturating_duration_since(since) >= ADMISSION_GAP)
+            });
+            if now >= head.eligible_at && interval_ok {
+                let entry = self.waiting.pop_front().expect("FIFO head");
+                self.showing.push(Showing {
+                    notice: entry.notice,
+                    since: None,
                 });
-                if now >= head.eligible_at && interval_ok {
-                    let entry = self.waiting.pop_front().expect("FIFO head");
-                    self.showing.push(Showing {
-                        notice: entry.notice,
-                        since: None,
-                    });
-                    changed = true;
-                }
+                changed = true;
             }
         }
         changed
@@ -436,8 +436,10 @@ mod tests {
     #[test]
     fn allocator_skips_known_ids_even_after_history_overflows() {
         let t = Instant::now();
-        let mut q = NotificationQueue::default();
-        q.next_id = 41;
+        let mut q = NotificationQueue {
+            next_id: 41,
+            ..Default::default()
+        };
         let mut n = notice(42);
         n.persistent = true;
         q.push(n, t);

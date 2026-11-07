@@ -44,9 +44,8 @@ impl PulseSampler {
             .and_then(|next| {
                 let value = self.previous_cpu.and_then(|prev| cpu_usage(prev, next));
                 self.previous_cpu = Some(next);
-                Some(value)
-            })
-            .flatten();
+                value
+            });
         let mut snapshot = Snapshot::default();
         if let Ok(text) = fs::read_to_string(memory_path) {
             parse_memory(&text, &mut snapshot);
