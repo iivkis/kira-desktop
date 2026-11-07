@@ -22,13 +22,14 @@
 | Component | Input | Output | Notes |
 | --- | --- | --- | --- |
 | `Bar` | GTK Application, focus intent handler | 42px layer-shell top bar; title, clock and action slots | Exposes compact density class |
-| `WorkspaceStrip` | Plain workspace items, connected status, limit, names toggle | Opaque workspace focus intent | Reuses stable GTK buttons; always shows focused workspace |
+| `WorkspaceStrip` | Plain workspace items, connected status, limit, names toggle | Opaque workspace focus intent | Reuses stable GTK buttons; one retained horizontal selection fill; graphical parity unverified |
 | `Launcher` | Ordered `ApplicationEntry { id, name }` | Launch intent by desktop app ID | Async discovery and launch remain Shell/service responsibilities |
 | `PopupHost` | Popup kind and view factory | One visible transient; Escape and hide handling | Preserves widget tree between hide/show; detached mode still pending |
 | `InfoPanel` | Heading, current detail text | Native accessible read-only summary | Text updated without recreating widget |
 | `SystemMonitor` | Typed metrics, GPU readings, bounded process list | Overview / Processes pages with queryable tab selection | Pure sorting/format tests; data sampling belongs to service worker |
 | `DisplaySettings` | Typed output/mode descriptions, transaction phase and persistence status | Refresh, Apply(draft), Confirm(id), Revert(id), Save intents | Native 15-second countdown; host can disable mutations; no Niri command or raw JSON in library |
-| `Calendar` | Local live date/time, optional ISO-date copy intent | Native editable six-row Monday-first 8-column ISO week grid, month/year/day navigation, Today, ISO date + feedback | Dates/ISO tests ported from main; 400ms digits, 380ms click flights/26ms stagger, 440ms month compositor and 520ms inverse selected-day traces are native. Persistent selection indicator, detached SkyMap and paired visual proof pending |
+| `Calendar` | Local live date/time, optional ISO-date copy intent | Native editable six-row Monday-first 8-column ISO week grid, month/year/day navigation, Today, ISO date + feedback | Dates/ISO tests ported from main; 400ms digits, 380ms click flights/26ms stagger, 440ms month compositor and 520ms inverse selected-day traces are native. A retained selection fill is wired; detached SkyMap and paired visual proof pending |
+| `FlowIndicator` | Measured GTK target geometry, axis (horizontal/both), fill or rail style | One 420ms `back.out(1.18)` indicator retargeted from its actual in-flight rect; 120ms monotone opacity and reduced-motion settling | Used by Calendar, Launcher and Workspaces; frame/motion evidence still required |
 | `MotionToken` / `CalendarFragmentScene` / `ClockDigits` / `PopupTimeline` / `PopupSection` | Event-lifetime cursor, per-digit 400ms history, source section stagger and recorded four-flight paths | Frame-clock digit exchange and saved-sector click juggling, source-timed GSK month compositor, measured-day inverse fragments, GSK-clipped reversible popup, GTK section transforms and saved INVERTED traces | Reduced-motion settling and basic interruption modeled; nested-Niri motion, focus and geometry acceptance remain unverified |
 
 ## Guardrails and acceptance

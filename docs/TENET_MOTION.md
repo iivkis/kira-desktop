@@ -24,6 +24,10 @@ Honor `gtk-enable-animations` / reduced-motion preferences where available, prov
 
 The previously rejected hover optical lens, pixel distortion, forced glow and cursor warp are not restored. WebKit DOM transforms, GSAP timelines, CSS keyframes and ECharts animation are **not** implementation contracts for the native branch.
 
+## Native selection flow (unverified)
+
+`kira-ui::FlowIndicator` owns one persistent, non-interactive GSK selection surface, with 420ms `back.out(1.18)` geometry and 120ms opacity. GTK retains the actual current rectangle during retargeting, draws under date/workspace buttons or as the launcher left rail, and honours reduced motion via `MotionToken`. All content and focus still belong to the original GTK buttons. Compilation and headless tests are not proof of pixel or animation parity.
+
 ## Acceptance
 
 For each animated scene document its intent, contact event, original recorded history, cancellation/reset path, accessibility fallback and lifecycle cleanup. Test repeated clicks, interruption, widget closure, screen scale changes and reduced motion in an isolated nested Niri session. No assertion of finished TENET quality without visual review.

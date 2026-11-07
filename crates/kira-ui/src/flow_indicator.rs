@@ -128,15 +128,15 @@ mod imp {
             if style == FlowStyle::Fill
                 && let Some(rect) = marker
             {
-                    snapshot.append_color(
-                        &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
-                        &gtk::graphene::Rect::new(
-                            rect.x,
-                            rect.y,
-                            rect.width.max(0.0),
-                            rect.height.max(0.0),
-                        ),
-                    );
+                snapshot.append_color(
+                    &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
+                    &gtk::graphene::Rect::new(
+                        rect.x,
+                        rect.y,
+                        rect.width.max(0.0),
+                        rect.height.max(0.0),
+                    ),
+                );
             }
             if let Some(child) = self.child.borrow().as_ref() {
                 self.obj().snapshot_child(child, snapshot);
@@ -144,10 +144,10 @@ mod imp {
             if style == FlowStyle::Rail
                 && let Some(rect) = marker
             {
-                    snapshot.append_color(
-                        &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
-                        &gtk::graphene::Rect::new(rect.x, rect.y, 3.0, rect.height.max(0.0)),
-                    );
+                snapshot.append_color(
+                    &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
+                    &gtk::graphene::Rect::new(rect.x, rect.y, 3.0, rect.height.max(0.0)),
+                );
             }
         }
     }

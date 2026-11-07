@@ -23,7 +23,7 @@
 ## Still missing or unverified
 
 - The digit roll, click juggling and calendar compositor models now have independent Rust tests, but no paired frame sequences demonstrate that their rendered GTK geometry and timing match `main`.
-- The persistent selected-day spring indicator (`tenetFlowIndicator`), plus source-complete popup interruption and reverse-switching semantics, remain missing. Native popup clip, seam, section spring/stagger and saved traces are implemented, but their visual placement, accessibility and rapid-switching behavior are unverified.
+- The original `tenetFlowIndicator` 420ms selection spring is ported as a retained GTK indicator beneath real day buttons, using the visible in-flight rect on interruption. Its true pixel geometry, keyboard/focus behavior, reduced-motion settling and frame-by-frame comparison are not yet recorded. Source-complete popup switching remains missing. Native clip, seam, sections and traces also require graphical acceptance.
 - Native standalone/detached Calendar and accompanying 74KB catalog `SkyMap`; fullscreen/accessible observatory is not implemented.
 - A paired native/WebKit recording with the same date, animation flags, locale, font, resolution, scale and Wayland environment. No pixel-perfect or temporal equivalence certificate exists.
 
