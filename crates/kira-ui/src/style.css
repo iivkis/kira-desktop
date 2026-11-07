@@ -30,7 +30,8 @@ window.kira-popup { background: transparent; color: #ffffff; }
   color: #e5e5e5;
 }
 .kira-bar button.workspace.active { background: #14213d; color: #ffffff; }
-.kira-bar button.workspace.selected { background: #fca311; color: #000000; }
+.kira-bar button.workspace.selected { background: transparent; color: #000000; }
+.kira-bar .flow-moving button.workspace.selected { color: #ffffff; }
 .kira-bar button.workspace.urgent { border: 1px solid #fca311; }
 .kira-bar .workspace-overflow { color: #e5e5e5; font-size: 10px; font-weight: 700; }
 .kira-bar .workspace-overflow.urgent { color: #fca311; }
@@ -57,7 +58,7 @@ window.kira-popup { background: transparent; color: #ffffff; }
   min-height: 58px; padding: 7px 10px; background: #14213d;
   border-radius: 0; margin: 2px 0;
 }
-.kira-popup .launcher .app-row.selected { border-left: 3px solid #fca311; background: #000000; }
+.kira-popup .launcher .app-row.selected { border-left: 0; background: #000000; }
 .kira-popup .launcher .app-row.selected .app-name { color: #fca311; }
 .kira-popup .launcher .app-icon { min-width: 36px; min-height: 36px; }
 .kira-popup .launcher .app-name { font-size: 14px; font-weight: 700; color: #ffffff; }
@@ -86,16 +87,18 @@ window.kira-popup { background: transparent; color: #ffffff; }
   color: #e5e5e5; background: #000000; font-size: 12px;
   border-right: 1px solid #e5e5e5; min-height: 32px;
 }
+.kira-calendar .calendar-grid { background: #14213d; }
 .kira-calendar button.calendar-day {
-  background: #14213d; color: #ffffff; font-size: 13px;
+  background: transparent; color: #ffffff; font-size: 13px;
   font-weight: 700; border: 0; border-radius: 0;
   min-height: 32px; min-width: 32px; padding: 0;
 }
 .kira-calendar button.calendar-day.outside { color: #e5e5e5; opacity: 0.65; }
 .kira-calendar button.calendar-day.today { border-bottom: 2px solid #fca311; }
 .kira-calendar button.calendar-day.selected {
-  background: #fca311; color: #000000; font-weight: 900; opacity: 1;
+  background: transparent; color: #000000; font-weight: 900; opacity: 1;
 }
+.kira-calendar .flow-moving button.calendar-day.selected { color: #ffffff; }
 .kira-calendar button.calendar-day:hover:not(.selected) { background: #000000; color: #fca311; }
 .kira-calendar .calendar-footer { padding: 12px 20px; border-top: 1px solid #e5e5e5; }
 .kira-calendar .calendar-selected-title { font-weight: 900; font-size: 15px; }
