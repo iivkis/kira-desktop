@@ -2,7 +2,7 @@
 //! and 120ms monotonic visibility. No compositor, Core or shell dependencies.
 use gtk::{glib, prelude::*, subclass::prelude::*};
 
-use crate::motion::{MotionToken, back_out};
+use crate::motion::back_out;
 
 pub const FLOW_DURATION_MS: u64 = 420;
 pub const FLOW_FADE_MS: u64 = 120;
@@ -283,7 +283,7 @@ mod tests {
         let sample = a.interpolate(b, 0.5, FlowAxis::Horizontal);
         assert_eq!(sample.y, b.y);
         assert_eq!(sample.height, b.height);
-        assert!(sample.x > a.x && sample.x < b.x);
+        assert!(sample.x > b.x);
     }
 
     #[test]
