@@ -23,7 +23,10 @@ impl DigitCell {
         slot.add_css_class("calendar-digit-slot");
         // An invisible real GTK label, not a fixed-width pixel measurement,
         // determines the slot width and height at the current font/scale.
-        let reserve = gtk::Label::new(Some("8"));
+        let reserve = gtk::Label::builder()
+            .label("8")
+            .accessible_role(gtk::AccessibleRole::Presentation)
+            .build();
         reserve.add_css_class("calendar-digit");
         reserve.set_opacity(0.0);
         slot.set_child(Some(&reserve));
@@ -31,11 +34,16 @@ impl DigitCell {
         layer.set_halign(gtk::Align::Fill);
         layer.set_valign(gtk::Align::Fill);
         slot.add_overlay(&layer);
-        let live = gtk::Label::new(Some("0"));
+        let live = gtk::Label::builder()
+            .label("0")
+            .accessible_role(gtk::AccessibleRole::Presentation)
+            .build();
         live.add_css_class("calendar-digit");
         live.set_halign(gtk::Align::Start);
         live.set_valign(gtk::Align::Start);
-        let ghost = gtk::Label::new(None);
+        let ghost = gtk::Label::builder()
+            .accessible_role(gtk::AccessibleRole::Presentation)
+            .build();
         ghost.add_css_class("calendar-digit");
         ghost.add_css_class("muted");
         ghost.set_halign(gtk::Align::Start);
@@ -118,7 +126,10 @@ impl ClockDigits {
         let mut digits = Vec::with_capacity(8);
         for symbol in "00:00:00".chars() {
             if symbol == ':' {
-                let colon = gtk::Label::new(Some(":"));
+                let colon = gtk::Label::builder()
+                    .label(":")
+                    .accessible_role(gtk::AccessibleRole::Presentation)
+                    .build();
                 colon.add_css_class("calendar-digit");
                 root.append(&colon);
                 digits.push(None);
