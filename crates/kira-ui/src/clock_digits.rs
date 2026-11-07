@@ -34,6 +34,9 @@ impl DigitCell {
         layer.set_halign(gtk::Align::Fill);
         layer.set_valign(gtk::Align::Fill);
         slot.add_overlay(&layer);
+        // Moving old/new glyphs must not change the slot's requisition.
+        slot.set_measure_overlay(&layer, false);
+        slot.set_clip_overlay(&layer, true);
         let live = gtk::Label::builder()
             .label("0")
             .accessible_role(gtk::AccessibleRole::Presentation)
