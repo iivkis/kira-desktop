@@ -1,8 +1,5 @@
 name: Nix package (nightly / manual)
 
-# GTK/WebKit native libraries and a full Nix/Crane release rebuild are far
-# too expensive to run on every PR. Use Actions -> Nix package -> Run
-# workflow (select the branch), or rely on the nightly check on main.
 on:
   workflow_dispatch:
   schedule:
@@ -11,28 +8,15 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: nix-package-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   package:
-    name: Build full Nix release package
+    name: Build native GTK4 Nix package
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Optional shared binary cache
-        if: ${{ vars.KIRA_CACHIX_NAME != '' }}
-        uses: cachix/cachix-action@v17
-        with:
-          name: ${{ vars.KIRA_CACHIX_NAME }}
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      # The Nix build already compiles the frontend, Core and GTK/WebKit Shell.
-      # Do not additionally rebuild the same crates with cargo check and
-      # three separate cargo test invocations in different profiles.
-      - name: Build packaged Core, Shell and Svelte frontend
+      - name: Build Rust-only package
         run: nix build .#default -L

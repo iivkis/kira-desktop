@@ -148,10 +148,7 @@ def print_log_changes(path: Path, offset: int, label: str) -> int:
 def run_preview(
     package: Path,
     bin_dir: Path | None = None,
-    ui_dir: Path | None = None,
     debug: bool = False,
-    qa_output_dir: Path | None = None,
-    qa_smoke: bool = False,
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
@@ -172,13 +169,6 @@ def run_preview(
     for binary in binaries.values():
         if not binary.is_file() or not os.access(binary, os.X_OK):
             raise PreviewError(f"Missing {binary}; build the preview binaries first")
-
-    if bin_dir is not None and ui_dir is None:
-        raise PreviewError("Debug preview requires --ui-dir with compiled frontend assets")
-    if ui_dir is not None:
-        ui_dir = ui_dir.resolve()
-        if not (ui_dir / "index.html").is_file():
-            raise PreviewError(f"Missing {ui_dir / 'index.html'}; run 'task frontend:build'")
 
     with tempfile.TemporaryDirectory(prefix="kira-preview-") as directory:
         temp = Path(directory)
@@ -256,8 +246,6 @@ def run_preview(
                 "KIRA_PREVIEW": "1",
                 "KIRA_CONFIG_FILE": str(active_config),
             })
-            if ui_dir is not None:
-                isolated["KIRA_UI_DIR"] = str(ui_dir)
             # Future Niri IPC consumers must use the child compositor's socket.
             if isinstance(nested_niri_socket, str) and nested_niri_socket:
                 parent_niri_socket = os.environ.get("NIRI_SOCKET")
@@ -271,37 +259,14 @@ def run_preview(
             )
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
-            if not qa_smoke and qa_output_dir is None:
+            if True:  # Native interactive preview
                 print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
                 print("[preview] Edit this file to hot-reload the bar; invalid KDL retains last valid config.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
-            if not qa_smoke and qa_output_dir is None:
+            if True:  # Native interactive preview
                 print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
                 print("[preview] Alt+Ctrl+1/2 moves the focused window without changing the focused workspace; Alt+1/2 switches.", flush=True)
                 print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)
-
-            if qa_smoke or qa_output_dir is not None:
-                from qa_visual import capture, verify_smoke
-                try:
-                    if qa_output_dir is not None:
-                        print("[preview] OPT-IN VISUAL CAPTURE: nested Niri will change scales and save four PNGs.", flush=True)
-                        evidence = capture(
-                            niri_path, isolated, os.environ.get("NIRI_SOCKET"),
-                            logs["shell"], socket_file, qa_output_dir,
-                            packaged=(bin_dir is None),
-                        )
-                        print(f"[preview] QA evidence captured: {evidence}", flush=True)
-                        print("[preview] Visual review is still pending.", flush=True)
-                    else:
-                        print("[preview] READ-ONLY QA: checking Niri, Core and Svelte without changing scale or taking screenshots.", flush=True)
-                        state, output = verify_smoke(
-                            niri_path, isolated, os.environ.get("NIRI_SOCKET"),
-                            logs["shell"], socket_file,
-                        )
-                        print(f"[preview] QA smoke PASS: nested output={output}; Core={state['status']}; WebKit/Svelte DOM verified.", flush=True)
-                except Exception as error:
-                    raise PreviewError(f"QA smoke/capture failed: {error}") from error
-                return
 
             while True:
                 if debug:
@@ -342,10 +307,10 @@ def run_preview(
                 shell_log = logs["shell"].read_text(
                     encoding="utf-8", errors="replace"
                 ) if logs["shell"].exists() else ""
-                if "Svelte entrypoint mounted" not in shell_log:
+                if shell_log.strip():
                     tail = log_tail(logs["shell"])
                     if tail:
-                        print(f"[preview] Shell diagnostics (UI mount not confirmed):\n{tail}", file=sys.stderr)
+                        print(f"[preview] Shell diagnostics (native diagnostics):\n{tail}", file=sys.stderr)
 
             print("[preview] Preview processes stopped; temporary files cleaned up.", flush=True)
 
@@ -374,11 +339,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Isolated nested-Niri Kira Desktop preview")
     parser.add_argument("--package-dir", type=Path, default=Path("result"))
     parser.add_argument("--bin-dir", type=Path, help="Cargo debug binaries directory")
-    parser.add_argument("--ui-dir", type=Path, help="Compiled frontend assets directory")
-    parser.add_argument("--debug", action="store_true", help="Stream Core and WebKit Shell logs")
-    qa_mode = parser.add_mutually_exclusive_group()
-    qa_mode.add_argument("--qa-smoke", action="store_true", help="Read-only Niri/Core/Svelte smoke, no screenshots or scaling")
-    qa_mode.add_argument("--qa-output-dir", type=Path, help="Explicit opt-in: change Niri scale and save PNGs with grim")
+    parser.add_argument("--debug", action="store_true", help="Stream Core and native GTK Shell logs")
     parser.add_argument("--validate-config", action="store_true")
     parser.add_argument("mode", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("ready_path", nargs="?", help=argparse.SUPPRESS)
@@ -390,7 +351,7 @@ def main() -> int:
         elif args.mode == "report" and args.ready_path and args.nonce:
             report_ready(Path(args.ready_path), args.nonce)
         elif args.mode is None:
-            run_preview(args.package_dir, args.bin_dir, args.ui_dir, args.debug, args.qa_output_dir, args.qa_smoke)
+            run_preview(args.package_dir, args.bin_dir, args.debug)
         else:
             parser.error("Unknown preview mode")
     except PreviewError as error:

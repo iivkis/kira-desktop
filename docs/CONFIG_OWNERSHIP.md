@@ -56,7 +56,7 @@ unrecognized KDL, or a user-maintained configuration block.
     Kira if an ownership conflict is detected. The UI must show the conflict,
     not claim settings were permanently saved.
 12. Preview mode uses exactly the same component as detached Niri window;
-    native state is generation-scoped to the active Settings WebView lease.
+    native state is generation-scoped to the active Settings GTK controller.
 
 ## File contract
 

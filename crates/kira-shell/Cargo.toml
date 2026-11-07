@@ -7,6 +7,5 @@ license.workspace = true
 [dependencies]
 gtk = { package = "gtk4", version = "0.11", features = ["v4_10"] }
 gtk4-layer-shell = "0.8.1"
-webkit6 = "0.6.1"
 kira-ipc = { path = "../kira-ipc" }
 serde_json.workspace = true
