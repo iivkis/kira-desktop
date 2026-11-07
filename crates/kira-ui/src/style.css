@@ -67,7 +67,7 @@ window.kira-popup { background: transparent; color: #ffffff; }
 .kira-calendar { background: #000000; color: #ffffff; }
 .kira-calendar .calendar-heading { background: #000000; padding: 16px 20px 12px; }
 .kira-calendar .calendar-clock { font-weight: 900; font-size: 36px; color: #ffffff; }
-.kira-calendar .calendar-digit { font-weight: 900; font-size: 36px; color: #ffffff; }
+.kira-calendar .calendar-digit { font-weight: 900; font-size: 36px; color: #ffffff; font-variant-numeric: tabular-nums; }
 .kira-calendar .calendar-digit.muted { color: #e5e5e5; }
 .kira-calendar .calendar-clock-play { padding: 0; min-height: 45px; }
 .kira-calendar .calendar-section { background: #14213d; padding: 14px 16px 12px; }
