@@ -39,7 +39,9 @@ pub struct TenetScroll {
     adjustment: gtk::Adjustment,
     motion: MotionToken,
     internal: Rc<Cell<bool>>,
+    pending: Rc<Cell<Option<f64>>>,
     handler: Option<gtk::glib::SignalHandlerId>,
+    unmap_handler: Option<gtk::glib::SignalHandlerId>,
 }
 
 impl TenetScroll {
@@ -48,10 +50,31 @@ impl TenetScroll {
         let internal = Rc::new(Cell::new(false));
         let token = motion.clone();
         let writing = internal.clone();
+        let pending = Rc::new(Cell::new(None));
+        let pending_manual = pending.clone();
         let adjustment = window.vadjustment();
         let handler = adjustment.connect_value_changed(move |_| {
             if !writing.get() {
+                // The user's actual adjustment wins immediately over the
+                // decorative destination, including before the next tick.
                 token.cancel();
+                pending_manual.set(None);
+            }
+        });
+        let unmap_motion = motion.clone();
+        let unmap_pending = pending.clone();
+        let unmap_writing = internal.clone();
+        let weak_adjustment = adjustment.downgrade();
+        let unmap_handler = window.connect_unmap(move |_| {
+            // Hidden GTK windows do not tick. Keep the requested factual
+            // scroll target and clear its in-flight animation on unmap.
+            unmap_motion.cancel();
+            if let Some(destination) = unmap_pending.replace(None)
+                && let Some(adjustment) = weak_adjustment.upgrade()
+            {
+                unmap_writing.set(true);
+                adjustment.set_value(destination);
+                unmap_writing.set(false);
             }
         });
         Self {
@@ -59,14 +82,17 @@ impl TenetScroll {
             adjustment,
             motion,
             internal,
+            pending,
             handler: Some(handler),
+            unmap_handler: Some(unmap_handler),
         }
     }
 
     pub fn ensure_visible(&self, target: &gtk::Widget, animate: bool) {
         // The old destination must stop even if this target has no layout yet.
         self.motion.cancel();
-        let adjustment = self.window.vadjustment();
+        self.pending.set(None);
+        let adjustment = self.adjustment.clone();
         let viewport = adjustment.page_size();
         let Some(bounds) = target.compute_bounds(&self.window) else {
             return;
@@ -85,8 +111,10 @@ impl TenetScroll {
         if (destination - current).abs() < 1.0 {
             return;
         }
+        self.pending.set(Some(destination));
         let weak_adjustment = adjustment.downgrade();
         let writing = self.internal.clone();
+        let pending_complete = self.pending.clone();
         let widget: gtk::Widget = self.window.clone().upcast();
         self.motion.run(
             &widget,
@@ -103,7 +131,7 @@ impl TenetScroll {
                     writing.set(false);
                 }
             },
-            || {},
+            move || pending_complete.set(None),
         );
     }
 
@@ -111,7 +139,8 @@ impl TenetScroll {
     /// previous query's scrolling state for the next filtered list.
     pub fn scroll_to_start(&self) {
         self.motion.cancel();
-        let adjustment = self.window.vadjustment();
+        self.pending.set(None);
+        let adjustment = self.adjustment.clone();
         self.internal.set(true);
         adjustment.set_value(adjustment.lower());
         self.internal.set(false);
@@ -119,6 +148,7 @@ impl TenetScroll {
 
     pub fn cancel(&self) {
         self.motion.cancel();
+        self.pending.set(None);
     }
 }
 
@@ -129,6 +159,9 @@ impl Drop for TenetScroll {
             // The ScrolledWindow can replace its adjustment; always disconnect
             // from the exact GObject that originally owned this handler.
             self.adjustment.disconnect(handler);
+        }
+        if let Some(handler) = self.unmap_handler.take() {
+            self.window.disconnect(handler);
         }
     }
 }

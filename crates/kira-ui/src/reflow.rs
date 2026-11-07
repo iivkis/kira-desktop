@@ -58,6 +58,14 @@ mod imp {
     }
 
     impl WidgetImpl for ReflowRow {
+        fn unmap(&self) {
+            // GTK stops tick callbacks for hidden surfaces. Drop the painted
+            // displacement now so reopening cannot revive a stale FLIP frame.
+            self.motion.cancel();
+            self.offset.set(ReflowOffset::default());
+            self.parent_unmap();
+        }
+
         fn measure(&self, orientation: gtk::Orientation, for_size: i32) -> (i32, i32, i32, i32) {
             self.child
                 .borrow()
@@ -172,14 +180,23 @@ pub struct ReflowScope {
     container: gtk::Widget,
     generation: Rc<Cell<u64>>,
     active_rows: RefCell<Vec<glib::WeakRef<ReflowRow>>>,
+    mapped_handler: Option<glib::SignalHandlerId>,
 }
 
 impl ReflowScope {
     pub fn new(container: &gtk::Widget) -> Self {
+        let generation = Rc::new(Cell::new(0_u64));
+        let token = generation.clone();
+        let mapped_handler = container.connect_unmap(move |_| {
+            // An unmapped widget will not receive the second allocation
+            // tick. Reopening must not replay an obsolete pending FLIP.
+            token.set(token.get().wrapping_add(1));
+        });
         Self {
             container: container.clone(),
-            generation: Rc::new(Cell::new(0)),
+            generation,
             active_rows: RefCell::new(Vec::new()),
+            mapped_handler: Some(mapped_handler),
         }
     }
 
@@ -274,6 +291,9 @@ impl ReflowScope {
 impl Drop for ReflowScope {
     fn drop(&mut self) {
         self.cancel();
+        if let Some(handler) = self.mapped_handler.take() {
+            self.container.disconnect(handler);
+        }
     }
 }
 

@@ -49,7 +49,7 @@ In an existing local Wayland session (never on the active desktop's Niri KDL):
 | Disconnect/reconnect | Hide the strip and show it again; stale FLIP offsets do not reappear |
 | Calendar | Change selected day and month and replay clock digits; no stale focus/contact or scrambled selected-day layer |
 | Reduced motion | Disable GTK animations in the **isolated session**, then repeat; factual state updates immediately and every retained FLIP row settles without stale offsets |
-| Popup lifecycle | Open/close, Escape, resize, switch quickly during a 340ms list transition; only one transient popup, no retained disposed widget or stale transform |
+| Popup lifecycle | Open/close, Escape, resize, switch quickly during 340ms FLIP, 420ms selection, or 340ms scroll; remapping must not revive an old tick, stale geometry or painted offset |
 
 ## Review threshold
 

@@ -105,6 +105,18 @@ mod imp {
     }
 
     impl WidgetImpl for FlowIndicator {
+        fn unmap(&self) {
+            // GTK does not tick hidden surfaces. Forget the last frame while
+            // retaining the selected target, so a remap measures fresh bounds
+            // and paints the factual selection without a zombie spring.
+            self.motion.cancel();
+            self.current.set(None);
+            self.destination.set(None);
+            self.opacity.set(0.0);
+            self.obj().remove_css_class("flow-moving");
+            self.parent_unmap();
+        }
+
         fn measure(&self, orientation: gtk::Orientation, for_size: i32) -> (i32, i32, i32, i32) {
             self.child
                 .borrow()
