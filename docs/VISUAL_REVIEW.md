@@ -1,5 +1,7 @@
 # Kira Desktop — visual design review (historical, 2026-11-01)
 
+> **V1 / справочник для миграции.** Документ описывает прежнюю реализацию Svelte/WebKit. Новая архитектура определяется [V2](V2_ARCHITECTURE.md) и [контрактом Lua](V2_LANGUAGE.md). Принципы безопасности и визуального дизайна полезны при переносе, но требования GSAP/WebKit не распространяются на нативный GTK UI.
+
 > Historical audit for the earlier GTK Calendar/Launcher design. The current
 > `main` branch uses Svelte 5 widgets and has newer design decisions in
 > [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) and [UI_NOISE_REVIEW.md](UI_NOISE_REVIEW.md).

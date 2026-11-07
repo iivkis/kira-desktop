@@ -1,5 +1,7 @@
 # Kira Desktop · System Tray
 
+> **V1 / справочник для миграции.** Документ описывает прежнюю реализацию Svelte/WebKit. Новая архитектура определяется [V2](V2_ARCHITECTURE.md) и [контрактом Lua](V2_LANGUAGE.md). Принципы безопасности и визуального дизайна полезны при переносе, но требования GSAP/WebKit не распространяются на нативный GTK UI.
+
 **Status:** first implementation in `feat/status-tray-foundation`. Native Niri session
 acceptance and cross-surface drag motion are still to be verified.
 

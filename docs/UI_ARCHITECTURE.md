@@ -1,5 +1,7 @@
 # UI architecture: Rust host, Svelte 5 widgets
 
+> **V1 / справочник для миграции.** Документ описывает прежнюю реализацию Svelte/WebKit. Новая архитектура определяется [V2](V2_ARCHITECTURE.md) и [контрактом Lua](V2_LANGUAGE.md). Принципы безопасности и визуального дизайна полезны при переносе, но требования GSAP/WebKit не распространяются на нативный GTK UI.
+
 The architecture contract in [SPECIFICATION.md](SPECIFICATION.md) is explicit:
 **all built-in and third-party widgets are authored in Svelte 5**. GTK4,
 gtk4-layer-shell and WebKitGTK provide native Wayland surfaces and a trusted

@@ -1,5 +1,7 @@
 # Developing Kira Desktop
 
+> **V1 / справочник для миграции.** Документ описывает прежнюю реализацию Svelte/WebKit. Новая архитектура определяется [V2](V2_ARCHITECTURE.md) и [контрактом Lua](V2_LANGUAGE.md). Принципы безопасности и визуального дизайна полезны при переносе, но требования GSAP/WebKit не распространяются на нативный GTK UI.
+
 ## If Settings says RESTART KIRA SHELL, or pop-out does not work
 
 The UI and the running Rust GTK Shell must come from the **same build**.

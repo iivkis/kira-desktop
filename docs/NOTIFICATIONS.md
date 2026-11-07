@@ -1,5 +1,7 @@
 # Kira Desktop: notifications (draft implementation)
 
+> **V1 / справочник для миграции.** Документ описывает прежнюю реализацию Svelte/WebKit. Новая архитектура определяется [V2](V2_ARCHITECTURE.md) и [контрактом Lua](V2_LANGUAGE.md). Принципы безопасности и визуального дизайна полезны при переносе, но требования GSAP/WebKit не распространяются на нативный GTK UI.
+
 **Status:** experimental implementation in PR #66. Not released; nested-Niri visual QA remains mandatory.
 
 ## Contract

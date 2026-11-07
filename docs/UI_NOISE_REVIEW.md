@@ -1,5 +1,7 @@
 # Kira Desktop — visual noise review
 
+> **V1 / справочник для миграции.** Документ описывает прежнюю реализацию Svelte/WebKit. Новая архитектура определяется [V2](V2_ARCHITECTURE.md) и [контрактом Lua](V2_LANGUAGE.md). Принципы безопасности и визуального дизайна полезны при переносе, но требования GSAP/WebKit не распространяются на нативный GTK UI.
+
 Date: 2026-11-03  
 Scope: Top Bar, Launcher, Calendar, detached sky atlas, System Monitor, Settings, display configuration.  
 Method: audit of the live Svelte surface hierarchy, UI copy, visual treatments and keyboard/ARIA contracts against KISS, DRY and the Kira Default neo-brutalist palette. Screenshots provided in design review illustrate the baseline; nested-Niri visual acceptance remains outstanding.

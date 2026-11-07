@@ -1,5 +1,7 @@
 # Kira Desktop: KDL configuration (first functional profile)
 
+> **V1 / справочник для миграции.** Документ описывает прежнюю реализацию Svelte/WebKit. Новая архитектура определяется [V2](V2_ARCHITECTURE.md) и [контрактом Lua](V2_LANGUAGE.md). Принципы безопасности и визуального дизайна полезны при переносе, но требования GSAP/WebKit не распространяются на нативный GTK UI.
+
 Kira Core owns configuration parsing and validation. The GUI only receives
 **validated, read-only state**. The first profile intentionally accepts a
 limited set of KDL nodes/properties; **it is not yet a full KDL 2.0 parser**.
