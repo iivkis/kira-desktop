@@ -205,6 +205,52 @@ pub fn clock_juggle_frame(flight: ClockFlight, progress: f64) -> ClockJuggleFram
     }
 }
 
+/// Frozen main calendar grid's forward compositor track: 440ms geometry,
+/// 200ms opacity and one shared recorded contact point for INVERTED traces.
+pub const CALENDAR_GRID_DURATION_MS: u64 = 440;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct CalendarGridFrame {
+    pub x: f64,
+    pub y: f64,
+    pub scale: f64,
+    pub opacity: f64,
+}
+
+pub fn calendar_grid_frame(progress: f64, direction: i32) -> CalendarGridFrame {
+    let t = bounded(progress);
+    let eased = back_out(t, 1.18);
+    let fade = (t * 440.0 / 200.0).min(1.0);
+    let faded = 1.0 - (1.0 - fade).powi(2);
+    CalendarGridFrame {
+        x: 8.0 * if direction < 0 { -1.0 } else { 1.0 } * (1.0 - eased),
+        y: 2.0 * (1.0 - eased),
+        scale: 0.991 + 0.009 * eased,
+        opacity: 0.94 + 0.06 * faded,
+    }
+}
+
+/// Rewinds main's 520ms power3.out fragment flights, staggered by 25ms,
+/// along the same 440ms forward master cursor. No new flight is generated.
+pub fn calendar_grid_trace_frame(
+    progress: f64,
+    direction: i32,
+    index: usize,
+) -> PopupTraceFrame {
+    let flights = calendar_flights(direction);
+    let flight = flights[index % flights.len()];
+    let inverted_cursor = 1.0 - bounded(progress);
+    let flight_ms = inverted_cursor * (520.0 + 25.0 * 3.0);
+    let local = ((flight_ms - index.min(3) as f64 * 25.0) / 520.0).clamp(0.0, 1.0);
+    let extent = 1.0 - (1.0 - local).powi(3);
+    PopupTraceFrame {
+        x: flight.x * extent,
+        y: flight.y * extent,
+        rotation: flight.rotation * extent,
+        opacity: 0.85 * extent,
+    }
+}
+
 /// One popup master cursor is retained for entrance, dismissal and reopening.
 /// The source master runs 540ms at timescale 1.44, giving 375ms on screen.
 /// The cursor's direction changes without rebuilding any keyframe or geometry.
@@ -643,6 +689,41 @@ mod tests {
                 assert!((outbound.rotation - inbound.rotation).abs() < 1e-9);
                 assert!((outbound.scale - inbound.scale).abs() < 1e-9);
                 assert!((outbound.opacity - inbound.opacity).abs() < 1e-9);
+            }
+        }
+    }
+
+    #[test]
+    fn calendar_grid_forward_surface_settles_and_respects_direction() {
+        let initial = calendar_grid_frame(0.0, 1);
+        assert_eq!(initial.x, 8.0);
+        assert_eq!(initial.y, 2.0);
+        assert_eq!(initial.scale, 0.991);
+        assert_eq!(initial.opacity, 0.94);
+        let end = calendar_grid_frame(1.0, -1);
+        assert_eq!(end.x, 0.0);
+        assert_eq!(end.y, 0.0);
+        assert_eq!(end.scale, 1.0);
+        assert_eq!(end.opacity, 1.0);
+        for p in [0.0, 0.16, 0.55, 0.9, 1.0] {
+            assert_eq!(calendar_grid_frame(p, 1).x, -calendar_grid_frame(p, -1).x);
+        }
+    }
+
+    #[test]
+    fn calendar_grid_inverted_traces_return_to_saved_contact() {
+        for direction in [-1, 1] {
+            for i in 0..4 {
+                let source = calendar_flights(direction)[i];
+                let start = calendar_grid_trace_frame(0.0, direction, i);
+                let end = calendar_grid_trace_frame(1.0, direction, i);
+                assert_eq!(start.x, source.x);
+                assert_eq!(start.y, source.y);
+                assert_eq!(start.rotation, source.rotation);
+                assert_eq!(start.opacity, 0.85);
+                assert_eq!(end.x, 0.0);
+                assert_eq!(end.y, 0.0);
+                assert_eq!(end.opacity, 0.0);
             }
         }
     }
