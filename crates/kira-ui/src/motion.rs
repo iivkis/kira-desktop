@@ -122,6 +122,89 @@ pub fn clock_digit_frame(progress: f64) -> DigitFrame {
     }
 }
 
+/// Exact flight contract from frozen main's clock-flight.ts: eight angular
+/// sectors, one remembered route per numeral per click. No GTK dependency.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ClockFlight {
+    pub sector: usize,
+    pub x: f64,
+    pub y: f64,
+    pub rotation: f64,
+    pub scale: f64,
+    pub opacity: f64,
+}
+
+pub const CLOCK_JUGGLE_FLIGHT_MS: f64 = 380.0;
+pub const CLOCK_JUGGLE_STAGGER_MS: f64 = 26.0;
+
+pub fn next_clock_flights(
+    count: usize,
+    previous: &[ClockFlight],
+    mut random: impl FnMut() -> f64,
+) -> Vec<ClockFlight> {
+    let unit = || -> f64 {
+        let sample = random();
+        if sample.is_finite() {
+            sample.clamp(0.0, f64::from_bits(0x3fef_ffff_ffff_ffff))
+        } else {
+            0.0
+        }
+    };
+    let mut unit = unit;
+    let mut used = [false; 8];
+    let mut flights = Vec::with_capacity(count.min(32));
+    for index in 0..count.min(32) {
+        let old = previous.get(index).map(|flight| flight.sector);
+        let mut sectors: Vec<usize> = (0..8)
+            .filter(|sector| !used[*sector] && old != Some(*sector))
+            .collect();
+        if sectors.is_empty() {
+            sectors = (0..8).filter(|sector| old != Some(*sector)).collect();
+        }
+        let selected = (unit() * sectors.len() as f64) as usize;
+        let sector = sectors[selected.min(sectors.len() - 1)];
+        used[sector] = true;
+        let angle = (sector as f64 + 0.16 + unit() * 0.68)
+            * std::f64::consts::FRAC_PI_4;
+        let distance = 24.0 + unit() * 23.0;
+        let sign = if unit() < 0.5 { -1.0 } else { 1.0 };
+        let spin = sign * (32.0 + unit() * 73.0);
+        flights.push(ClockFlight {
+            sector,
+            x: angle.cos() * distance,
+            y: angle.sin() * distance,
+            rotation: spin,
+            scale: 0.64 + unit() * 0.20,
+            opacity: 0.48 + unit() * 0.29,
+        });
+    }
+    flights
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ClockJuggleFrame {
+    pub x: f64,
+    pub y: f64,
+    pub rotation: f64,
+    pub scale: f64,
+    pub opacity: f64,
+}
+
+/// A single 380ms+stagger history runs forward then backwards, with no
+/// reroll at the turnaround. progress=0 and progress=1 both mean 'settled'.
+pub fn clock_juggle_frame(flight: ClockFlight, progress: f64) -> ClockJuggleFrame {
+    let t = bounded(progress);
+    let half = if t <= 0.5 { t * 2.0 } else { (1.0 - t) * 2.0 };
+    let eased = 1.0 - (1.0 - half).powi(3);
+    ClockJuggleFrame {
+        x: flight.x * eased,
+        y: flight.y * eased,
+        rotation: flight.rotation * eased,
+        scale: 1.0 + (flight.scale - 1.0) * eased,
+        opacity: 1.0 + (flight.opacity - 1.0) * eased,
+    }
+}
+
 /// One popup master cursor is retained for entrance, dismissal and reopening.
 /// The source master runs 540ms at timescale 1.44, giving 375ms on screen.
 /// The cursor's direction changes without rebuilding any keyframe or geometry.
@@ -520,6 +603,42 @@ mod tests {
             assert!((f.outgoing_opacity - (1.0 - p).powi(3)).abs() < 1e-10);
         }
         assert_eq!(clock_digit_frame(f64::NAN), clock_digit_frame(0.0));
+    }
+
+    #[test]
+    fn click_flights_avoid_repeat_sectors_even_with_identical_random() {
+        let first = next_clock_flights(6, &[], || 0.5);
+        assert_eq!(first.len(), 6);
+        for (index, flight) in first.iter().enumerate() {
+            assert!(flight.sector < 8);
+            assert!(first[..index].iter().all(|old| old.sector != flight.sector));
+            assert!((0.64..=0.84).contains(&flight.scale));
+            assert!((0.48..=0.77).contains(&flight.opacity));
+            assert!((24.0..=47.0).contains(&flight.x.hypot(flight.y)));
+        }
+        let second = next_clock_flights(6, &first, || 0.5);
+        for (a, b) in first.iter().zip(second.iter()) {
+            assert_ne!(a.sector, b.sector);
+        }
+        assert_eq!(next_clock_flights(0, &first, || 0.5).len(), 0);
+        assert_eq!(next_clock_flights(100, &first, || 0.5).len(), 32);
+    }
+
+    #[test]
+    fn clock_juggle_reverse_reuses_identical_geometry() {
+        let flights = next_clock_flights(6, &[], || 0.2);
+        for flight in flights {
+            let initial = clock_juggle_frame(flight, 0.0);
+            let returned = clock_juggle_frame(flight, 1.0);
+            assert_eq!(initial, returned);
+            assert_eq!(initial.x, 0.0);
+            assert_eq!(initial.scale, 1.0);
+            assert_eq!(initial.opacity, 1.0);
+            assert_eq!(clock_juggle_frame(flight, 0.5).x, flight.x);
+            for t in [0.1, 0.25, 0.4] {
+                assert_eq!(clock_juggle_frame(flight, t), clock_juggle_frame(flight, 1.0 - t));
+            }
+        }
     }
 
     #[test]
