@@ -9,6 +9,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, mpsc};
 use std::time::Duration;
 
+use crate::display_bridge::decode_outputs;
 use gtk::prelude::*;
 use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
