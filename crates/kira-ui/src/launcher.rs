@@ -225,6 +225,7 @@ impl Launcher {
 
         let query_row = gtk::Box::new(gtk::Orientation::Horizontal, 4);
         let search = gtk::SearchEntry::new();
+        search.add_css_class("launcher-contact");
         search.set_placeholder_text(Some("Поиск приложений…"));
         search.set_hexpand(true);
         search.update_property(&[gtk::accessible::Property::Label("Поиск приложений")]);
