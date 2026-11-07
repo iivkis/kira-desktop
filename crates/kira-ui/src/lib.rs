@@ -1,13 +1,19 @@
 //! Reusable, compositor-agnostic GTK4 presentation components for Kira.
 //! No Core IPC, Niri commands, filesystem mutations or process execution.
 pub mod bar;
+pub mod calendar;
+pub mod calendar_model;
 pub mod displays;
 pub mod launcher;
+pub mod motion;
 pub mod popup;
 pub mod system;
 pub mod workspace;
 
 pub use bar::{Bar, action_button};
+pub use calendar::Calendar;
+pub use calendar_model::{CivilDate, DayState, month_grid, current_local_date};
+pub use motion::{MotionToken, CalendarFragmentScene, TimeDirection, calendar_flights, dual_time};
 pub use displays::{
     DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings,
 };
@@ -35,10 +41,6 @@ pub fn install_style() {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
     }
-}
-
-pub fn calendar_view() -> gtk::Widget {
-    gtk::Calendar::new().upcast()
 }
 
 /// A reusable read-only information panel. Its text can be updated independently

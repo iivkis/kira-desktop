@@ -28,7 +28,8 @@
 | `InfoPanel` | Heading, current detail text | Native accessible read-only summary | Text updated without recreating widget |
 | `SystemMonitor` | Typed metrics, GPU readings, bounded process list | Overview / Processes pages with queryable tab selection | Pure sorting/format tests; data sampling belongs to service worker |
 | `DisplaySettings` | Typed output/mode descriptions, transaction phase and persistence status | Refresh, Apply(draft), Confirm(id), Revert(id), Save intents | Native 15-second countdown; host can disable mutations; no Niri command or raw JSON in library |
-| `calendar_view` | None | Native GTK Calendar | Rich calendar/sky view future work |
+| `Calendar` | Local live date/time, optional ISO-date copy intent | Native editable six-row Monday-first 8-column ISO week grid, month/year/day navigation, Today, ISO date + feedback | Dates/ISO tests ported from main; GTK DrawingArea replay of saved TENET fragment coordinates, remaining clock-digit/section choreography and detached SkyMap pending |
+| `MotionToken` / `CalendarFragmentScene` | Event-lifetime cursor and recorded four-flight paths | Reusable frame-clock animation and INVERTED decorative return | Native GTK settings honour reduced motion; no fake date/data animation |
 
 ## Guardrails and acceptance
 

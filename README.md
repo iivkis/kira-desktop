@@ -6,11 +6,12 @@ Kira Desktop is a Rust-native, NixOS-first desktop shell for the **Niri/Wayland*
 
 **Parity is currently blocked: 0/15 built-in surfaces fully verified against main, including animation.** The [audited parity contract](docs/MAIN_WIDGET_PARITY.md) records the source baseline and outstanding evidence. Source-level model parity is not pixel/temporal parity.
 
-**The native-gtk branch is an experimental migration, not feature parity with main.** The native Top Bar, Niri workspaces, calendar and launcher compose reusable `kira-ui` components. The next G2 increment adds a native System Monitor (real CPU/RAM/GPU overview and on-demand process list) and a **preview-only** Settings display editor connected to Niri's Apply → 15s Confirm/Rollback → explicit Save transaction. The watchdog is still in the Shell process; normal desktop sessions allow observation only until a Core-owned rollback supervisor exists. Full graphical acceptance, tray, notifications, rich charts and detached windows are **not** finished.
+**The native-gtk branch is an experimental migration, not feature parity with main.** The native Top Bar, Niri workspaces, a custom ISO-week calendar, and launcher compose reusable `kira-ui` components. The next G2 increment adds a native System Monitor (real CPU/RAM/GPU overview and on-demand process list) and a **preview-only** Settings display editor connected to Niri's Apply → 15s Confirm/Rollback → explicit Save transaction. The watchdog is still in the Shell process; normal desktop sessions allow observation only until a Core-owned rollback supervisor exists. Full graphical acceptance, tray, notifications, rich charts and detached windows are **not** finished.
 
 ## Start here
 
 - [Source-anchored widget parity audit vs main (content, interactions, animation)](docs/MAIN_WIDGET_PARITY.md)
+- [Native Calendar parity and temporal-motion acceptance](docs/CALENDAR_NATIVE_PARITY.md)
 - [Machine-readable widget parity ledger](docs/MAIN_WIDGET_PARITY.json)
 - [Kira UI: reusable component-first development contract](docs/KIRA_UI.md)
 - [Native G2 manual acceptance checklist](docs/ACCEPTANCE_NATIVE_G2.md)

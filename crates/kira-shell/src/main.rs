@@ -14,7 +14,7 @@ use gtk::prelude::*;
 use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
-    ApplicationEntry, Bar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading, InfoPanel,
+    ApplicationEntry, Bar, Calendar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading, InfoPanel,
     Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor, SystemOverview,
     WorkspaceItem,
 };
@@ -314,6 +314,12 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let state = Rc::new(RefCell::new(WorkspaceState::default()));
     let applications = Rc::new(RefCell::new(Vec::<ApplicationEntry>::new()));
     let launcher: Rc<RefCell<Option<Launcher>>> = Rc::new(RefCell::new(None));
+    let calendar = Rc::new(Calendar::new(|iso| {
+        let display = gtk::gdk::Display::default()
+            .ok_or_else(|| "Недоступен буфер обмена Wayland".to_owned())?;
+        display.clipboard().set_text(&iso);
+        Ok(())
+    }));
     let system = Rc::new(SystemMonitor::new());
     let settings = Rc::new(InfoPanel::new(
         "Настройки Kira",
@@ -346,6 +352,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     ] {
         let popup = popup.clone();
         let launcher = launcher.clone();
+        let calendar = calendar.clone();
         let applications = applications.clone();
         let system = system.clone();
         let settings_content = settings_content.clone();
@@ -368,7 +375,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         })
                         .widget()
                 }
-                PopupKind::Calendar => kira_ui::calendar_view(),
+                PopupKind::Calendar => calendar.widget(),
                 PopupKind::System => system.widget(),
                 PopupKind::Settings => settings_content.clone(),
             });

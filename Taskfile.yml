@@ -26,6 +26,10 @@ tasks:
       - test -s docs/ACCEPTANCE_NATIVE_G2.md
       - test -s docs/MAIN_WIDGET_PARITY.md
       - test -s docs/MAIN_WIDGET_PARITY.json
+      - test -s docs/CALENDAR_NATIVE_PARITY.md
+      - test -s crates/kira-ui/src/calendar.rs
+      - test -s crates/kira-ui/src/calendar_model.rs
+      - test -s crates/kira-ui/src/motion.rs
       - python3 scripts/check_widget_parity.py
       - test -s crates/kira-ui/src/system.rs
       - test -s crates/kira-ui/src/displays.rs

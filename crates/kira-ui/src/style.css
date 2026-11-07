@@ -61,7 +61,47 @@ window.kira-popup { background: #000000; color: #ffffff; }
 .kira-popup .launcher .app-icon { min-width: 36px; min-height: 36px; }
 .kira-popup .launcher .app-name { font-size: 14px; font-weight: 700; color: #ffffff; }
 .kira-popup .launcher .app-description { font-size: 12px; color: #e5e5e5; }
-.kira-popup calendar { background: #14213d; color: #ffffff; }
+/* Real editorial calendar, 8 columns incl. ISO weeks, six stable rows.
+   No stock GtkCalendar: selected, today and adjacent days are independent. */
+.kira-calendar { background: #000000; color: #ffffff; }
+.kira-calendar .calendar-heading { background: #000000; padding: 16px 20px 12px; }
+.kira-calendar .calendar-clock { font-weight: 900; font-size: 36px; color: #ffffff; }
+.kira-calendar .calendar-clock-play { padding: 0; min-height: 45px; }
+.kira-calendar .calendar-section { background: #14213d; padding: 14px 16px 12px; }
+.kira-calendar .calendar-month { font-weight: 900; font-size: 21px; }
+.kira-calendar .calendar-nav {
+  background: #000000; border: 1px solid #e5e5e5;
+  min-height: 36px; min-width: 36px; padding: 0;
+  color: #ffffff; font-size: 17px;
+}
+.kira-calendar .calendar-nav:disabled { opacity: 0.35; }
+.kira-calendar .calendar-week-header, .kira-calendar .calendar-weekday {
+  color: #e5e5e5; background: #000000; font-size: 12px;
+  font-weight: 700; min-height: 28px; border-bottom: 1px solid #e5e5e5;
+}
+.kira-calendar .calendar-week-number {
+  color: #e5e5e5; background: #000000; font-size: 12px;
+  border-right: 1px solid #e5e5e5; min-height: 32px;
+}
+.kira-calendar button.calendar-day {
+  background: #14213d; color: #ffffff; font-size: 13px;
+  font-weight: 700; border: 0; border-radius: 0;
+  min-height: 32px; min-width: 32px; padding: 0;
+}
+.kira-calendar button.calendar-day.outside { color: #e5e5e5; opacity: 0.65; }
+.kira-calendar button.calendar-day.today { border-bottom: 2px solid #fca311; }
+.kira-calendar button.calendar-day.selected {
+  background: #fca311; color: #000000; font-weight: 900; opacity: 1;
+}
+.kira-calendar button.calendar-day:hover:not(.selected) { background: #000000; color: #fca311; }
+.kira-calendar .calendar-footer { padding: 12px 20px; border-top: 1px solid #e5e5e5; }
+.kira-calendar .calendar-selected-title { font-weight: 900; font-size: 15px; }
+.kira-calendar .calendar-iso { font-size: 12px; color: #e5e5e5; }
+.kira-calendar .calendar-footer-action {
+  color: #fca311; font-size: 12px; font-weight: 800; background: #000000;
+}
+.kira-calendar .calendar-feedback { color: #fca311; font-size: 11px; }
+
 
 /* Reusable system monitor and output editor; no desktop-only theme rules. */
 .system-metric { padding: 6px 4px; }

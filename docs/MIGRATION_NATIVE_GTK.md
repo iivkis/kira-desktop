@@ -54,6 +54,13 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 - GTK must remain responsive to stalled Core, slow application discovery and metric sampling.
 - Remove old code **when it has an identified native replacement or is explicitly no longer a shipping feature**. Missing features must stay listed, rather than being recreated deceptively.
 
+## Calendar content recovery and native temporal groundwork
+
+- Replaced stock GTK Calendar with reusable `kira-ui::Calendar`: faithful six-row Monday-first eight-column grid with ISO week numbers, adjacent-month dates, live clock, local day labels, month/year navigation and ISO clipboard intent.
+- Pure `calendar_model` tests replicate main's Gregorian/ISO edge cases, year 1..9999 bounds, DST-safe civil arithmetic and selection identity.
+- `kira-ui::motion` adds reusable interruptible frame-clock timing, reduced-motion handling and a native GtkDrawingArea replay of main's four deterministic inverted calendar fragment paths. The full GSAP spring/stagger/clock-digit and popup master scene is **not** yet equivalent or graphically validated.
+- Detached SkyMap, GSK parity, pixel comparison and matched motion sequences remain G3/G4 acceptance items. See [CALENDAR_NATIVE_PARITY.md](CALENDAR_NATIVE_PARITY.md).
+
 ## G2 increment: native monitoring and displays
 
 - **kira-ui first:** reusable `SystemMonitor` and `DisplaySettings` receive only typed view models and emit explicit intents. UI models have isolated tests for missing values, ordering/bounds and display confirmation timing.

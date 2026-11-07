@@ -120,16 +120,20 @@
         "sha": "124f0d2024583c6b9367fc2b420412af138b7616"
       },
       "target_files": [
-        "crates/kira-ui/src/lib.rs"
+        "crates/kira-ui/src/calendar.rs",
+        "crates/kira-ui/src/calendar_model.rs",
+        "crates/kira-ui/src/motion.rs",
+        "crates/kira-shell/src/main.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [
-        "Editorial calendar 8-column ISO week grid, date selection, month and year navigation",
-        "Copy date feedback, live clock and custom clock digit controls, detached observatory"
+        "Custom Monday-first six-row, eight-column ISO-week grid, valid adjacent-month dates and independent selected/current/outside state",
+        "Localized live clock, -12/-1/+1/+12 navigation with year bounds, day arrows/Home/PageUp/PageDown+Ctrl, Today and ISO clipboard feedback",
+        "Still missing: detached SkyMap observatory, exact live digit exchange, window controls and full animated selection rail"
       ],
       "animation_requirements": [
-        "TENET reversible calendar scene and 0.4s clock digit inversion",
-        "Month transition 0.38s with 26ms stagger; reduced motion"
+        "Native event-memory model reuses main's four calendar fragment coordinates and inverted clock/grid trace scene on GtkDrawingArea",
+        "Still required: individual 0.4s clock digit crossflight, 0.38s/26ms staggered calendar grid, full TENET master reversible popup reveal/dismissal and reduced-motion visual evidence"
       ],
       "verified": {
         "content": false,
