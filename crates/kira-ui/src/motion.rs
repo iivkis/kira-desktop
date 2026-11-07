@@ -292,6 +292,13 @@ impl MotionToken {
             if token.generation.get() != generation {
                 return gtk::glib::ControlFlow::Break;
             }
+            if !animations_enabled() {
+                step(1.0);
+                if let Some(complete) = completed.borrow_mut().take() {
+                    complete();
+                }
+                return gtk::glib::ControlFlow::Break;
+            }
             let cursor =
                 (started.elapsed().as_secs_f64() * 1000.0 / duration_ms as f64).clamp(0.0, 1.0);
             step(cursor);
