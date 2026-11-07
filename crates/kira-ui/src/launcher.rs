@@ -5,6 +5,8 @@ use std::rc::Rc;
 
 use gtk::prelude::*;
 
+use crate::flow_indicator::{FlowAxis, FlowIndicator, FlowStyle};
+
 const MAX_DISPLAYED: usize = 80;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -93,6 +95,7 @@ pub fn matching_apps_label(number: usize) -> String {
 
 struct LauncherState {
     list: gtk::Box,
+    selection_flow: FlowIndicator,
     search: gtk::SearchEntry,
     count: gtk::Label,
     status: gtk::Label,
@@ -108,6 +111,7 @@ impl LauncherState {
         let rows = self.rows.borrow();
         if rows.is_empty() {
             self.selected.set(0);
+            self.selection_flow.clear();
             return;
         }
         let next = index.min(rows.len() - 1);
@@ -119,6 +123,9 @@ impl LauncherState {
             }
         }
         self.selected.set(next);
+        if let Some(button) = rows.get(next) {
+            self.selection_flow.retarget(button.upcast_ref());
+        }
     }
 
     fn render(&self) {
@@ -247,7 +254,12 @@ impl Launcher {
         scroll.set_max_content_height(480);
         scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
         let list = gtk::Box::new(gtk::Orientation::Vertical, 2);
-        scroll.set_child(Some(&list));
+        let selection_flow = FlowIndicator::new(
+            &list.clone().upcast(),
+            FlowAxis::Both,
+            FlowStyle::Rail,
+        );
+        scroll.set_child(Some(&selection_flow));
         root.append(&scroll);
 
         let status = gtk::Label::new(None);
@@ -258,6 +270,7 @@ impl Launcher {
 
         let state = Rc::new(LauncherState {
             list,
+            selection_flow,
             search: search.clone(),
             count,
             status,
