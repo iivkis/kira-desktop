@@ -2,7 +2,7 @@
 
 **Ветка:** `kira-desktop-v2` · **Статус:** архитектура принята, Lua → Rust/GTK транслятор ещё не реализован.
 
-Kira Desktop V2 — нативная оболочка для **NixOS / Niri / Wayland**. Виджеты, стили, состояние и UI-логику автор пишет на **Lua**. Транслятор на **Rust** разбирает ограниченный Lua 5.4 DSL, проверяет его и генерирует **Rust/gtk4-rs + GTK CSS**. Обычный компилятор Rust собирает нативный интерфейс без Lua VM и WebKit.
+Kira Desktop V2 — нативная оболочка для **NixOS / Niri / Wayland**. Виджеты, стили, состояние и UI-логику автор пишет на **Lua**. Транслятор на **Rust** разбирает ограниченный Lua 5.4 DSL и генерирует **Rust/gtk4-rs + GTK CSS напрямую без внешних CSS-препроцессоров**. Обычный компилятор Rust собирает нативный интерфейс без Lua VM и WebKit.
 
 ```text
 Lua widget / style / state / event handlers
@@ -22,11 +22,12 @@ Native GTK4 Shell → Rust Core → Niri / Linux
 ## Основные документы
 
 - [Архитектура V2](docs/V2_ARCHITECTURE.md)
-- [Контракт Lua Language v0](docs/V2_LANGUAGE.md) — точные ограничения языка, типы и GTK CSS.
+- [Lua Language v0.2](docs/V2_LANGUAGE.md) — удобные `ui.*` виджеты и типизированное состояние.
+- [Lua Style DSL](docs/V2_STYLES.md) — темы, токены, композиция, GTK-состояния без препроцессоров.
 - [ADR-0001: Lua → Rust → GTK](docs/adr/0001-lua-rust-gtk.md)
 - [План миграции](docs/V2_MIGRATION.md)
 - [Ревью и очистка](docs/V2_REVIEW.md)
-- [Lua-пример counter](examples/v2/counter.lua) — **ещё не исполняется**.
+- [Lua-пример counter](examples/v2/counter.lua) и [его Lua-тема](examples/v2/styles.lua) — **ещё не исполняются**.
 - [Правила работы с веткой V2](AGENTS.md)
 
 ## Что есть в репозитории сейчас
@@ -50,6 +51,6 @@ nix develop --command task dev:preview
 
 Эти команды проверяют **только V1**, не компилятор нового UI. Подробные инструкции предыдущей реализации: [development](docs/DEVELOPMENT.md), [V1 specification](docs/SPECIFICATION.md), [preview](docs/PREVIEW.md).
 
-**Первая реальная цель V2:** `examples/v2/counter.lua` → AST → typed IR → сгенерированные Rust и GTK CSS → работающее нативное GTK4 окно с реакцией на нажатие. До этого функциональная готовность V2 не заявляется.
+**Первая реальная цель V2:** `examples/v2/counter.lua` + `examples/v2/styles.lua` → AST → typed IR → сгенерированные Rust и GTK CSS → работающее нативное GTK4 окно с реакцией на нажатие. До этого функциональная готовность V2 не заявляется.
 
 Ветка `main` не затрагивается.

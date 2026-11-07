@@ -20,14 +20,15 @@
 
 ### M1 — Lua compiler MVP
 
-Normative source subset and type/state/event semantics: [V2_LANGUAGE.md](V2_LANGUAGE.md). The Lua syntax proposal remains **non-executable** until the native end-to-end build passes.
+Normative UI syntax: [V2_LANGUAGE.md](V2_LANGUAGE.md). Lua-only styles: [V2_STYLES.md](V2_STYLES.md). The Lua syntax proposal remains **non-executable** until the native end-to-end build passes.
 
 - Add crates/kira-lua-compiler Rust CLI and fixture-based tests.
 - Parse the proposed statically analyzable Lua v0 subset into AST then a typed UI IR.
-- Generate deterministic Rust source and GTK CSS for Box, Label, Button.
+- Generate deterministic gtk4-rs for `ui.box`/`ui.text`/`ui.button` and GTK CSS directly from Lua styles, with no separate CSS preprocessors.
 - Generate compiled state bindings and simple on_click logic.
 - Negative tests: invalid widget, unsupported Lua semantics, unknown API, invalid state access, source diagnostics.
-- Build and run examples/v2/counter.lua as a native GTK application without any Lua interpreter.
+- Compile examples/v2/counter.lua together with examples/v2/styles.lua into a native GTK app without a Lua interpreter or CSS preprocessors.
+- Test token resolution, named style reuse, composition precedence, local overrides and GTK hover/disabled.
 - Verify generated Rust is deterministic and GTK CSS is produced exclusively from allowlisted Lua style fields.
 - Test matching integer arithmetic semantics in debug and release.
 
@@ -61,7 +62,7 @@ Normative source subset and type/state/event semantics: [V2_LANGUAGE.md](V2_LANG
 | UI language | Lua | Svelte/TypeScript legacy exists |
 | Translator | Rust kira-lua-compiler | Not created |
 | Rendering | gtk4-rs native | GTK hosts WebKit legacy |
-| Style | Lua Style → GTK CSS | Tailwind/CSS WebKit legacy |
+| Style | Lua `ui.theme` → GTK CSS from the same Rust compiler | Tailwind/CSS WebKit legacy |
 | UI logic | Lua handlers → Rust closures/state | Svelte event handlers legacy |
 | System services | Rust Core/Shell + IPC | Existing starting point |
 | Packaging | Nix + Cargo | Existing pipeline must change |

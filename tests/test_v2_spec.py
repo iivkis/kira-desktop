@@ -6,8 +6,9 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 V2_FILES = (
     "README.md", "AGENTS.md", "docs/V2_ARCHITECTURE.md",
-    "docs/V2_LANGUAGE.md", "docs/V2_MIGRATION.md", "docs/V2_REVIEW.md",
+    "docs/V2_LANGUAGE.md", "docs/V2_STYLES.md", "docs/V2_MIGRATION.md", "docs/V2_REVIEW.md",
     "docs/adr/0001-lua-rust-gtk.md", "examples/v2/counter.lua",
+    "examples/v2/styles.lua",
 )
 V1_DOCS = (
     "docs/CONFIG.md", "docs/CONFIG_OWNERSHIP.md", "docs/DESIGN_SYSTEM.md",
@@ -54,11 +55,19 @@ class V2DocsContract(unittest.TestCase):
     def test_counter_is_marked_unimplemented(self):
         counter = (ROOT / "examples/v2/counter.lua").read_text(encoding="utf-8")
         self.assertIn("NOT YET COMPILABLE", counter)
-        for token in ('return Widget {', 'State {', 'kind = "Box"',
-                      'kind = "Label"', 'kind = "Button"', 'Bind("count")',
+        for token in ('return ui.box {', 'ui.text {', 'ui.button {',
+                      'ui.bind("count")', 'theme = "styles.lua"',
+                      'style = { "control", "primary", padding = 16 }',
                       'state.count = state.count + 1'):
             with self.subTest(token=token):
                 self.assertIn(token, counter)
+
+    def test_lua_style_dsl_fixture(self):
+        src = (ROOT / "examples/v2/styles.lua").read_text(encoding="utf-8")
+        for item in ('return ui.theme {', 'tokens = {', 'styles = {',
+                     'hover = {', 'disabled = {', 'background = "$accent"'):
+            with self.subTest(item=item):
+                self.assertIn(item, src)
 
     def test_compiler_not_claimed_complete(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

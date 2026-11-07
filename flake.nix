@@ -83,6 +83,8 @@
           test -s ${./docs/SPECIFICATION.md}
           test -s ${./docs/V2_ARCHITECTURE.md}
           test -s ${./docs/V2_LANGUAGE.md}
+          test -s ${./docs/V2_STYLES.md}
+          test -s ${./examples/v2/styles.lua}
           test -s ${./docs/adr/0001-lua-rust-gtk.md}
           test -s ${./nix/package.nix}
           test -s ${./Taskfile.yml}

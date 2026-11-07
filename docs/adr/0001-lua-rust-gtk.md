@@ -12,11 +12,13 @@ Kira Desktop V1 renders its UI in Svelte/WebKitGTK while Rust handles Linux serv
 ## Decision
 
 1. Write Kira Desktop widgets, styles, interactive state and UI logic in Lua.
-2. Implement a Rust-based source-to-source translator/compiler which parses a validated, statically analyzable Lua subset, emits Rust + gtk4-rs, and generates any required GTK CSS/resources.
+2. Implement a Rust translator which validates a restricted Lua subset and directly emits native gtk4-rs and GTK CSS without any separate CSS preprocessor.
 3. Compile generated Rust into a native GTK4 Wayland Shell. No Lua VM or browser engine is required in the final V2 UI process.
 4. Keep Rust for trusted OS/system services, Niri integration and constrained APIs.
 5. Keep NixOS-first reproducible delivery and retain Kira's visual identity.
 6. Treat the existing Svelte/WebKit code as transitional legacy, not a coequal ongoing UI target.
+
+7. Use ergonomic `ui.*` and `ui.theme` Lua DSL with reusable tokens/styles and GTK state selectors. No Sass/SCSS, Grass, PostCSS or Tailwind in native V2. See [style contract](../V2_STYLES.md).
 
 ## Why
 

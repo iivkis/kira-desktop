@@ -1,6 +1,6 @@
 # Kira Desktop V2 contributor and agent rules
 
-**Active architecture for branch kira-desktop-v2:** [docs/V2_ARCHITECTURE.md](docs/V2_ARCHITECTURE.md). Lua subset: [docs/V2_LANGUAGE.md](docs/V2_LANGUAGE.md). Review: [docs/V2_REVIEW.md](docs/V2_REVIEW.md). Decision: [ADR-0001](docs/adr/0001-lua-rust-gtk.md). Migration: [docs/V2_MIGRATION.md](docs/V2_MIGRATION.md).
+**Active architecture for branch kira-desktop-v2:** [docs/V2_ARCHITECTURE.md](docs/V2_ARCHITECTURE.md). Lua subset: [docs/V2_LANGUAGE.md](docs/V2_LANGUAGE.md). Lua styling: [docs/V2_STYLES.md](docs/V2_STYLES.md). Review: [docs/V2_REVIEW.md](docs/V2_REVIEW.md). Decision: [ADR-0001](docs/adr/0001-lua-rust-gtk.md). Migration: [docs/V2_MIGRATION.md](docs/V2_MIGRATION.md).
 
 ## This branch's authoritative direction
 
@@ -9,7 +9,7 @@
 3. Keep Linux, Niri, IPC, D-Bus, OS side effects, security and integration in trusted Rust. Generated UI must call only validated capabilities, never execute arbitrary OS commands.
 4. Keep NixOS-first reproducible builds, cargo lockfiles, deterministic generated output and typed error diagnostics.
 5. The current Svelte/WebKit sources, npm build and GSAP code were inherited from V1. They are **legacy migration baseline only**. Do not add new V2 features in them or assume green V1 CI validates V2.
-6. Before the compiler exists, Lua examples and documents are specifications, **not runnable code**. Mark implementation status honestly.
+6. **No external CSS preprocessors** in native V2: no Sass/SCSS, Grass, PostCSS, Tailwind. Rust Lua compiler directly emits GTK CSS from `ui.theme`. Before the compiler exists, Lua examples and documents are specifications, **not runnable code**. Mark implementation status honestly.
 7. Do not remove V1 modules until replacement parity and native GTK/Niri tests have passed. Keep the default main branch unchanged.
 
 ## Compiler implementation contract
