@@ -81,6 +81,9 @@
       checks = forAllSystems (pkgs: {
         repository-spec = pkgs.runCommand "kira-desktop-spec-check" { } ''
           test -s ${./docs/SPECIFICATION.md}
+          test -s ${./docs/V2_ARCHITECTURE.md}
+          test -s ${./docs/V2_LANGUAGE.md}
+          test -s ${./docs/adr/0001-lua-rust-gtk.md}
           test -s ${./nix/package.nix}
           test -s ${./Taskfile.yml}
           test -s ${./.github/workflows/ci.yml}

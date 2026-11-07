@@ -20,12 +20,16 @@
 
 ### M1 — Lua compiler MVP
 
+Normative source subset and type/state/event semantics: [V2_LANGUAGE.md](V2_LANGUAGE.md). The Lua syntax proposal remains **non-executable** until the native end-to-end build passes.
+
 - Add crates/kira-lua-compiler Rust CLI and fixture-based tests.
 - Parse the proposed statically analyzable Lua v0 subset into AST then a typed UI IR.
 - Generate deterministic Rust source and GTK CSS for Box, Label, Button.
 - Generate compiled state bindings and simple on_click logic.
 - Negative tests: invalid widget, unsupported Lua semantics, unknown API, invalid state access, source diagnostics.
 - Build and run examples/v2/counter.lua as a native GTK application without any Lua interpreter.
+- Verify generated Rust is deterministic and GTK CSS is produced exclusively from allowlisted Lua style fields.
+- Test matching integer arithmetic semantics in debug and release.
 
 ### M2 — native Shell proof of concept
 
@@ -63,6 +67,10 @@
 | Packaging | Nix + Cargo | Existing pipeline must change |
 | Motion | Native Rust/GTK TENET | GSAP legacy |
 | WebView/Node/Vite | Not in final V2 UI | Present only during migration |
+
+## Repository hygiene
+
+The generated V1 `.repospool` snapshot, ignore specification and publication workflow are removed from this **V2 branch**. The V1 implementation code, runtime dependencies, tests and Nix pipeline remain for parity checks. See [V2 review](V2_REVIEW.md).
 
 ## Validation rule
 

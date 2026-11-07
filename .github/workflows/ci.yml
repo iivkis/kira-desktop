@@ -1,11 +1,13 @@
 name: CI
 
+# V2 branch continues legacy Core/Svelte regression CI and adds V2 document checks;
+# it does not prove the Lua compiler works until that component exists.
 # PRs run only the fast Core + Svelte checks. A branch push that already
 # has a PR must not launch the same tests again.
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, kira-desktop-v2]
 
 permissions:
   contents: read

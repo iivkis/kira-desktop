@@ -9,3 +9,7 @@
 # Python bytecode and interpreter caches (all directories)
 __pycache__/
 *.py[cod]
+
+# Generated snapshots and future native UI compiler output
+/.repospool
+/generated/

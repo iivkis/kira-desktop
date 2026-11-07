@@ -10,10 +10,16 @@ tasks:
     desc: Validate structure, Core/IPC and frontend (native GTK shell checked separately).
     cmds:
       - task: spec:check
+      - task: v2:spec:check
       - task: fmt
       - task: lint
       - task: test
       - task: config:check
+
+  v2:spec:check:
+    desc: Validate V2 documentation links/contract (does not test Lua compilation).
+    cmds:
+      - python3 -m unittest discover -s tests -p 'test_v2_spec.py'
 
   config:check:
     desc: Validate the sample KDL 2.0 config with the actual Core CLI.
@@ -25,6 +31,12 @@ tasks:
     cmds:
       - test -s README.md
       - test -s docs/SPECIFICATION.md
+      - test -s docs/V2_ARCHITECTURE.md
+      - test -s docs/V2_LANGUAGE.md
+      - test -s docs/V2_MIGRATION.md
+      - test -s docs/V2_REVIEW.md
+      - test -s docs/adr/0001-lua-rust-gtk.md
+      - test -s examples/v2/counter.lua
       - test -s docs/DESIGN_SYSTEM.md
       - test -s frontend/src/lib/themes/kira-default.css
       - test -s frontend/src/lib/themes/kira-default.ts

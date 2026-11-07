@@ -27,9 +27,10 @@ Kira Desktop V1 renders its UI in Svelte/WebKitGTK while Rust handles Linux serv
 
 ## Consequences
 
-- A real compiler must be designed: parser, typed IR, validation, Rust codegen, diagnostics and test fixtures.
+- A real compiler must be designed: parser, typed IR, validation, Rust codegen, diagnostics and test fixtures. The M1 contract uses an intentionally restricted Lua 5.4 DSL; see [Lua Language v0](../V2_LANGUAGE.md).
 - Arbitrary dynamic Lua semantics do not map transparently onto static Rust. Initial V2 accepts a documented Lua subset and rejects unsupported constructs.
 - Build-time translation implies recompilation for widget changes; runtime plugin loading and truly instantaneous hot reload are not guaranteed.
+- The generated Rust binary has the Shell's OS privileges. Parsing Lua without executing it does **not** create a runtime sandbox; the translator must enforce explicit capabilities.
 - GTK does not provide the same CSS/DOM/GSAP semantics as WebKit. The visual system and TENET motion must be reimplemented natively.
 - Performance and memory benefits are goals to measure, not proven properties.
 - During migration, V1 production sources and tests remain until native parity is verified.
