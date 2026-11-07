@@ -1,259 +1,54 @@
 # Kira Desktop
 
-**Status:** v0.1 Draft, working foundation, **not yet an MVP desktop environment**.
+**Status: native-gtk transition, experimental. Not a production desktop environment.**
 
-Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust owns system capabilities, Svelte 5 owns the UI and KDL will define layouts.
+Kira Desktop is a Rust-native, NixOS-first desktop shell for the **Niri/Wayland** compositor. Its application interface is built from **GTK4 widgets and GTK CSS**. There is no WebKit, browser runtime, Svelte bundle, JavaScript bridge, or embedded web UI in the target architecture.
 
-- [Technical specification (Russian)](docs/SPECIFICATION.md)
-- [Development guide](docs/DEVELOPMENT.md)
-- [Kira Default design system](docs/DESIGN_SYSTEM.md)
-- [TENET Motion System · required animation standard](docs/TENET_MOTION.md)
-- [CI checks](.github/workflows/ci.yml)
-- [Native Nix build checks](.github/workflows/nix.yml)
-- [Visual QA / packaged Shell smoke-test guide](docs/QA_VISUAL.md)
+**The native-gtk branch is a migration baseline, not feature parity with main.** The first milestone brings up native Top Bar, Niri workspaces, calendar, launcher and a minimal system/settings surface. The former Svelte layouts, charting, rich tray and notification presentation are not yet ported. Do not describe them as finished.
 
-## Implemented foundation
+## Start here
 
-| Component | Current capabilities |
-| --- | --- |
-| `crates/kira-ipc` | JSON-RPC 2.0 contracts, bounded Unix socket client, unit tests |
-| `crates/kira-core` | Tokio daemon exposing `ping` and `get_state` over a configurable user-owned Unix socket |
-| `crates/kira-shell` | GTK4/WebKitGTK 6 layer-shell host with a WebKit-to-Rust-to-Core bridge and a native Gio application Launcher |
-| `frontend/` | Svelte 5, Tailwind CSS v4 via Vite, shared Kira Default design tokens, editorial Top Bar and Svelte Launcher/Calendar/System/Settings widgets, typed Core/workspace SDK, Vitest |
-| `Taskfile.yml` | Shared commands for development and CI |
-| `flake.nix`, `nix/package.nix` | Nix development shell and installable packaged Core/Shell/frontend |
-| `Cargo.lock`, `flake.lock`, `frontend/package-lock.json` | Locked dependencies for reproducibility |
+- [Native architecture and philosophy](docs/ARCHITECTURE_NATIVE.md)
+- [Migration plan, removed stack and acceptance](docs/MIGRATION_NATIVE_GTK.md)
+- [UI ownership contract](docs/UI_ARCHITECTURE.md)
+- [Design system](docs/DESIGN_SYSTEM.md)
+- [TENET motion principles](docs/TENET_MOTION.md)
+- [Configuration ownership](docs/CONFIG_OWNERSHIP.md)
+- [Supported KDL config](docs/CONFIG.md)
 
-## Safe nested preview on NixOS
+## Technology and ownership
 
-The recommended development entry point runs a **separate, windowed Niri** with
-its own Kira Core socket and isolated Niri config, without replacing your current
-desktop session:
+| Layer | Technology | Owns |
+| --- | --- | --- |
+| Kira Core | Rust, Tokio | Niri EventStream, KDL validation, subscriptions and bounded IPC actions |
+| Kira IPC | Unix sockets, JSON-RPC 2.0 | Stable typed messages and connection health |
+| Kira Shell | Rust, GTK4, gtk4-layer-shell, GIO | Native widgets, Wayland surfaces, focus, UI state, application launch |
+| Rendering | GTK4 CSS, GTK/GDK/GSK | The native visual tree, accessibility, drawing and effects |
+| Packaging | Nix flake, Crane, Cargo | Reproducible Rust package and development environment |
 
-```sh
-nix develop --command task dev:preview
-```
+GTK is **the UI**, not a frame wrapped around a web page. Niri remains the window manager, not an in-process compositor. Configuration is declarative-first and fail-closed.
 
-The default preview uses `cargo build --locked` and a local Vite build. Cargo
-reuses `target/debug` between runs, avoiding a full Nix release rebuild after
-each Rust or Svelte edit. On first run, WebKitGTK Rust bindings must still
-compile. For the packaged release build instead, use:
+## Development
 
-```sh
-nix develop --command task dev:preview:release
-```
+On NixOS inside a Wayland session:
 
-To reopen a previously built development preview with **no build step**,
-use `task dev:preview:run` inside `nix develop`.
-
-Close the window with **Alt+Shift+Q** (inside nested Niri) or press **Ctrl+C** in
-the launching terminal. This only stops preview-owned processes. No `nixos-rebuild
-switch`, global `pkill`, systemd manipulation or modification of
-`~/.config/niri` is involved.
-
-See [safe preview guide (Russian)](docs/PREVIEW.md). The preview lifecycle is
-tested with mock Niri/Core/Shell processes in CI, but the first visual smoke test
-on your GPU and Niri session must still be performed locally.
-
-## Quick start on NixOS
-
-Ensure Niri and a working Wayland session are available, then:
-
-```sh
-git clone https://github.com/iivkis/kira-desktop.git
-cd kira-desktop
-nix build
-```
-
-Run these in **separate terminals** inside the Niri session:
-
-```sh
-./result/bin/kira-core
-```
-
-```sh
-./result/bin/kira-shell
-```
-
-For development and tests:
-
-```sh
+~~~sh
 nix develop
-npm ci --prefix frontend
 task check
 task shell:check
 task build
-```
+~~~
 
-Nix CI on Linux has successfully compiled the native Shell, built the package and run the Rust tests. **The top bar was manually rendered successfully inside a nested Niri window**; a full desktop session and packaged-system installation still require additional testing.
+For an isolated nested Niri preview, run:
 
-## Compact source context for agents (RepoSpool)
+~~~sh
+nix develop --command task dev:preview
+~~~
 
-[`.repospool`](.repospool) is a **generated**, deterministic
-`REPOSPOOL/1.0` snapshot of committed UTF-8 sources. It provides a compact
-file/line index, the original selected file bytes, and the pinned source
-commit. It does not guess code semantics or replace GitHub source links.
+Do not run the Shell as a replacement for your live desktop until native Niri, focus, scale and input acceptance has been completed. The preview must never rewrite the host's Niri config.
 
-[`.repospoolignore`](.repospoolignore) keeps the snapshot focused on Core,
-IPC, Shell, Svelte, Nix, tests, CI and the design specification. Dependency
-lockfiles, local build/cache outputs, the bootstrap lockfile workflow and
-historical preview troubleshooting are omitted **only from the snapshot**,
-not from the repository. Missing context can still be read directly from GitHub.
+## Migration guarantee
 
-On each `main` source commit,
-[`Publish RepoSpool context`](.github/workflows/publish-repospool.yml)
-regenerates and verifies the snapshot using a pinned upstream RepoSpool
-revision, then publishes it in a separate artifact-only commit. Accordingly,
-the `C` source revision inside `.repospool` can differ from the current
-`main` HEAD by that publication commit. Verify origin and revision before
-using it to make repository changes.
+The main branch preserves the existing WebKit implementation. This branch deliberately removes its **architectural authority and packaging dependency**. System adapters will be ported to native UI by explicit milestones, not reintroduced through a hidden browser or a generic command bridge.
 
-To generate or verify locally with the upstream CLI:
-
-```sh
-nix run github:iivkis/repospool -- generate .
-nix run github:iivkis/repospool -- verify --artifact .repospool --repo .
-```
-
-
-## Pull request checks
-
-The CI workflow reports two stable jobs on pull requests: **Core + Svelte checks**
-and **Native Shell check**. The second job invokes
-`nix develop .#ci --command cargo check --locked -p kira-shell --all-targets`
-when Rust Shell/IPC code, Cargo/Nix dependencies, or the CI configuration changes.
-Unrelated UI/docs-only PRs skip the native dependency setup without leaving a
-missing check status. The slim `.#ci` dev shell excludes the compositor and
-visual-preview tools; Nix binary inputs come from its configured caches, and
-GitHub Actions caches the Rust dependencies. The full Nix release package remains
-on its separate nightly/manual workflow.
-
-To **enforce** the native job on protected branches, require the status check
-`Native Shell check` in the repository's branch protection/ruleset, alongside
-`Core + Svelte checks`.
-
-## IPC subscription liveness
-
-Core pushes workspace and validated KDL config updates immediately when they change.
-If nothing changes, it sends a read-only JSON-RPC heartbeat every **5 seconds**
-on each subscription using the same request id and the distinct
-`{"heartbeat":true}` result. Heartbeats do **not** repeat workspace/config
-snapshots or generate browser events. Shell's blocking IPC workers use a
-**15-second socket read timeout**: a connected but unresponsive Core causes
-the existing reconnect loop to run, mark workspaces offline, and retry. The
-last valid config is retained while reconnecting. The heartbeat is internal
-to the Core/Shell protocol, not part of the WebKit JS allowlist.
-
-## Incremental and release build caching
-
-- **Local Rust development:** `nix develop` sets up persistent `sccache`
-  (and Cargo still reuses `target/debug`), so recompilation can reuse compiler
-  outputs between development runs.
-- **Reproducible release:** `nix build .#default` uses Crane to cache compiled
-  third-party Rust crates separately from application code and separately from
-  the frontend. Changing Svelte should not rebuild Rust; changing a Rust
-  source file should not rebuild GTK/WebKit Rust crates.
-- **Fresh CI machines:** an optional shared Cachix binary cache can be enabled
-  through repository settings. Without it, cached artifacts persist only
-  locally in each machine's Nix store. See
-  [build cache guide](docs/DEVELOPMENT.md#build-caching-and-release-iteration).
-
-A new dependency-cache derivation must be compiled once on the first build;
-changing `Cargo.lock`, manifests, toolchain, native libraries or relevant
-Nix inputs may legitimately invalidate the cache.
-
-## Default theme: Black, Prussian Blue and Orange
-
-The built-in **Kira Default** dark theme uses five fully opaque colors:
-
-`#000000ff` Black · `#14213dff` Prussian Blue · `#fca311ff` Orange ·
-`#e5e5e5ff` Alabaster Grey · `#ffffffff` White.
-
-These colors drive the Svelte Top Bar, Launcher, Calendar, System Monitor, Settings,
-offline sky atlas and pre-mount WebKit loading screen. GTK is the native
-Wayland window host, not a second widget design system. Black is the background, Prussian Blue makes structured
-surfaces, Orange marks focus and selection, Alabaster Grey is secondary text,
-and White is primary text. Selected Orange surfaces use **Black** text for
-contrast. Semantic tokens derive from the five canonical palette values;
-custom KDL theme overrides remain a future feature. See the
-[design system](docs/DESIGN_SYSTEM.md) for exact mappings and WCAG checks.
-The current built-in interface uses a single Russian presentation locale;
-internationalization controls remain future work.
-
-## Validated KDL settings (Stage 2 draft)
-
-Kira Core can read `~/.config/kira-desktop/config.kdl` (or an absolute
-`KIRA_CONFIG_FILE` override), validate a **small, documented KDL profile**
-and hot-reload UI settings without restarting the compositor, Core or Shell.
-Settings include compact Top Bar spacing, center title, clock seconds,
-workspace names and maximum visible workspace chips. If an edit is invalid,
-the previous valid config stays active and the Top Bar shows `CONFIG !`.
-
-Copy the [sample configuration](config/kira.kdl.example), validate a file
-with `kira-core --check-config /absolute/path/config.kdl`, and read the
-[supported KDL syntax and safe preview guide](docs/CONFIG.md).
-
-The current KDL profile deliberately **does not implement full KDL grammar**,
-arbitrary commands, Niri actions or external modules. The independent Niri
-preview generates a temporary editable Kira config for experimentation.
-
-## Real Niri workspaces (Stage 1 draft)
-
-The Top Bar obtains **real Niri workspace state** through
-`NIRI_SOCKET` → Rust Core `EventStream` → typed `get_workspaces` JSON-RPC →
-GTK WebKit bridge → Svelte. Workspace IDs are strings (safe for Niri's u64),
-and focus, visibility and urgency are separate flags. Clicking a workspace
-chip sends only the validated Niri `FocusWorkspace` action by stable ID;
-keyboard shortcuts continue to work independently.
-
-With no Niri IPC connection, the UI shows `NIRI OFFLINE` instead of fake
-workspaces. The Core reconnects automatically after disconnection.
-A persistent read-only Core→Shell subscription now pushes changed workspace
-snapshots as typed WebKit `kira:workspaces` events, so the Svelte UI updates
-without the old 1.5-second polling delay.
-
-To test the actual Niri workspace integration without modifying the host:
-
-```sh
-nix develop --command task qa:visual:fast
-```
-
-The QA smoke now waits for a workspace snapshot from the child compositor
-through Core, in addition to the existing WebKit/Svelte verification. This
-does not capture the screen or copy to the clipboard. Read more in
-[the development guide](docs/DEVELOPMENT.md#read-only-niri-workspaces-stage-1-first-increment).
-
-## Visual QA before Niri IPC integration
-
-Run **read-only** packaged Niri/Core/Svelte smoke on a graphical
-NixOS/Wayland session (no screenshots, scale changes or clipboard writes):
-
-```sh
-nix develop --command task qa:visual:release
-```
-
-To **explicitly opt in** to capturing 100%, 125%, 150% and 200% scales:
-
-```sh
-nix develop --command task qa:visual:capture:release
-```
-
-Capture uses `grim` bound to the nested Wayland display, **not** the Niri
-screenshot action (which also copies to clipboard). PNGs and manifests are
-stored locally in ignored `artifacts/visual-qa/`. Automated capture and CI
-are not substitutes for a real visual review. See
-[visual QA guide](docs/QA_VISUAL.md) for scope and acceptance criteria.
-
-## Current limitations
-
-The panel communicates with Core through typed IPC, shows live Niri workspaces and supports a narrowly scoped mouse-focus action. Full KDL grammar, custom theme loading, docks and third-party widgets remain future milestones.
-
-This project is not ready to replace a working desktop environment.
-
-## System Settings
-
-The gear icon in the Top Bar opens **Kira Settings**. Settings starts as a fixed 600px-wide popup with a section selector; the header's pop-out button promotes the same live WebView to a normal Niri window, where navigation moves to a permanent sidebar. The first implemented page, **About System**, reads the host's OS, kernel, CPU, RAM, session and Shell version from native Linux sources. Other sections are clearly marked as upcoming. The panel is read-only and reports unavailable fields instead of inventing values.
-
-## Multiple displays
-
-**Settings → Displays** configures the current Niri session using the compositor's real connected-output list. Select screens, arrange them on the map, change resolution/refresh rate, scale, orientation, VRR and on/off state. Apply uses a 15-second safety confirmation with automatic rollback. After confirmation, **Save to config** can persist the settings in a separate owned KDL include. The system refuses to overwrite Nix-owned configs, existing `output` definitions or manually changed generated files. See [configuration ownership and transaction rules](docs/CONFIG_OWNERSHIP.md). Niri's native output API does not provide desktop mirroring.
+Kira Default uses Black, Prussian Blue, Orange, Alabaster Grey and White. The Top Bar reserves **42 logical pixels**. Accurate data, reduced motion, keyboard operation and bounded resource use take precedence over visual effects.

@@ -1,103 +1,27 @@
-# Kira Desktop contributor and agent rules
+# Kira Desktop: native-gtk contributor contract
 
-## TENET Motion System (mandatory for ALL animation work)
+**Architecture decision:** [docs/ARCHITECTURE_NATIVE.md](docs/ARCHITECTURE_NATIVE.md) is normative for the native-gtk branch. [docs/MIGRATION_NATIVE_GTK.md](docs/MIGRATION_NATIVE_GTK.md) records stage gates, feature gaps and removal policy.
 
-**Read [docs/TENET_MOTION.md](docs/TENET_MOTION.md) before creating, editing,
-reviewing or replacing any animation** in any Kira Desktop widget, surface or
-component. It is the normative motion specification, not optional inspiration.
-This includes GSAP effects, ECharts transitions, GTK/native visual motion,
-hover/focus reactions, animated data readouts, and future widgets.
+## One native presentation stack
 
-The five required laws are **Reverse Causality, Dual Time Flow, Physical
-Continuity, Temporal Memory, and Causal Consistency**. In addition, **flow and
-elastic continuity are mandatory for every moving selection, highlight, widget
-entrance and component transition**: a shared visual element must travel from
-its current geometry to the next, never blink between separate instances.
-Keep GSAP transitions interruptible and spring settling restrained.
-For each animation:
+- Built-in views and future trusted widget views use **Rust + GTK4**. Prefer GTK widgets, CSS and accessible GObject properties. Use GDK/GSK or GtkDrawingArea only when stock widgets cannot express the design.
+- **No WebKitGTK, Svelte, Vite, Tailwind, JavaScript, GSAP, ECharts or web widget pool.** Do not restore them as a shortcut, temporary renderer, test harness or second UI framework.
+- GTK4 + gtk4-layer-shell own native Wayland panels and transient overlays; regular windows remain Niri-managed xdg-toplevels. Keep 42px Top Bar exclusive zone and prevent overlays reserving extra space.
+- Core owns Niri integration and KDL validation. Shell owns presentation, focus and lifecycle, and calls typed, bounded Core/GIO adapters. Never expose arbitrary shell commands or broad filesystem writes to widget code.
+- Never block GTK's main context with socket IO, process enumeration or slow metrics. Workers exchange owned data; only GTK main-context code touches GTK objects.
+- The single visible transient popup rule remains. Detached ordinary windows are independent and must survive switching the transient popup. Recreating GTK state during a reparent is not acceptable if state preservation is a requirement.
+- Preserve the observed/config/managed/session ownership boundary in [docs/CONFIG_OWNERSHIP.md](docs/CONFIG_OWNERSHIP.md). Apply, Confirm and Save are different operations; invalid or externally owned configuration fails closed.
 
-- Choose FORWARD (+1), INVERTED (-1), or a synchronized DUAL scene **by
-  event sequence**, never by merely reversing the CSS direction or axis.
-  Simple functional feedback may remain FORWARD; do not invert everything.
-- For an inverted effect, record one event's **original states, paths, easing,
-  impacts, and secondary traces**. Reverse that exact history. A new user
-  interaction may randomize a new event, but the *return* must not reroll it.
-- Keep both time flows anchored to one real contact/activation point and
-  restore exact final geometry with no stuck fragments or jumps. Handle
-  interruptions, repeat clicks, Escape, unmount and motion changes.
-- Keep all actual actions, time displays, telemetry, focus, keyboard behavior,
-  and accessibility truthful and immediate. Respect reduced motion and
-  use only the approved Kira palette.
-- In PR notes, identify the timeline directions, contact event, recorded
-  trajectory and reset path. Test playback/restore, repeated clicks,
-  reduced motion, lifecycle cleanup and the offline WebKit bundle. Verify
-  native visual behavior in nested Niri when available.
+## Visual and motion contracts
 
-Existing animations are reviewed against this contract **when touched**;
-do not claim an unreviewed legacy animation already complies.
+- Read [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) and [docs/TENET_MOTION.md](docs/TENET_MOTION.md) before changing UI, themes or animation.
+- Use only canonical Kira colors (#000000, #14213d, #fca311, #e5e5e5, #ffffff) for the built-in Kira Default theme. Preserve contrast, visible focus, keyboard navigation, accessible names and real-time data correctness.
+- TENET is about causal consistency, continuity, reversible trajectories and temporal memory, **not** a JS animation framework requirement. Stage GTK animation changes after basic functionality, and respect reduced motion.
+- Do not resurrect the rejected hover distortion/lens experiment.
 
-## Hover interaction policy
+## Quality gates
 
-The optional hover pixel-distortion/lens experiment was deliberately
-removed after visual review. Do **not** reintroduce the SVG displacement
-filter, pseudo-lens, glow or cursor-tracked warp as a default for clickable
-controls. Ordinary accessible hover/focus styling remains supported.
-Future hover motion requires a new explicit design request and visual
-acceptance, in addition to the TENET motion principles.
-
-## Visual stack (mandatory)
-
-- **Apache ECharts** is the project's charting library for all new or redesigned
-  charts, gauges, trends and quantitative visualizations. Do not hand-draw charts
-  with ad-hoc CSS bars, SVG paths or an additional charting library.
-  Prefer tree-shakable `echarts/core` imports, register only required modules
-  and choose SVG rendering for compact WebKitGTK overlays.
-- **GSAP** is the project's JavaScript animation library. Use it for deliberate
-  motion such as entry transitions, numeric emphasis and state changes rather
-  than introducing a second JS animation framework or complex CSS keyframes.
-- Respect `prefers-reduced-motion` everywhere, and retain accessible labels,
-  meaningful numeric fallback text, keyboard focus and functional no-motion UI.
-  Never animate fake data into a chart or replace missing sensor data with zero.
-- **WebView Pool:** Read [docs/WEBVIEW_POOL.md](docs/WEBVIEW_POOL.md) before
-  modifying native popup lifecycle, scheduling or rotation. Start exactly one
-  inert warm host; acquire additional popup hosts only on demand, up to the
-  fixed cap. Never recycle an active lease for a different widget. A
-  user-requested pop-out may reparent its SAME active WebView into a regular
-  Niri window without remounting or losing Svelte state. Keep at most one
-  transient popup, but allow independently detached Niri windows to coexist.
-  Opening another widget must never close or remount a detached one; repeated
-  requests for its kind focus the existing window. Wait for the transient
-  popup's reverse-close acknowledgement before replacing it. Calendar/System/
-  Settings use the right dock; Launcher is top-centered at 20% of the logical
-  output height. Reuse one hot idle view, retire surplus idle views after 45 seconds,
-  and reject stale generation-scoped UI commands.
-- **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
-  ECharts and GSAP effects on mount, resize charts when geometry changes,
-  dispose chart instances, kill GSAP tweens and detach observers on unmount.
-  Never create unmanaged timers, background data polling or repeated listeners.
-- **Offline WebKit constraint:** The packaged frontend is a single
-  self-contained HTML document. All npm code is bundled locally, with no CDN,
-  runtime fetches, unexpected JS chunks or external stylesheets. Keep
-  `frontend/scripts/inline-assets.mjs` and its tests passing.
-- Retain the canonical five-color Kira palette in
-  `frontend/src/lib/themes/kira-default.css`, the 42px top bar, and the
-  locked-down Rust/GIO ↔ WebKit bridge. Charts are read-only presentation.
-
-## Ownership rules for settings (mandatory)
-
-Read [docs/CONFIG_OWNERSHIP.md](docs/CONFIG_OWNERSHIP.md) before changing
-any configuration writer or adding editable Settings pages. Explicit source
-ownership, read-back of observed state, independent Apply/Confirm/Save,
-fail-closed KDL conflicts, generation-scoped native commands and atomic writes
-are required. Do not rewrite Nix-generated configs or merge Niri multipart
-`output` blocks as if they were fields. New settings adapters must not
-receive a general shell or filesystem write bridge.
-
-## Build and review
-
-Changes to runtime JS dependencies require updates to both
-`frontend/package.json` and `frontend/package-lock.json`, plus the
-frontend Nix dependency hash in `nix/package.nix`. Run `task check`,
-`task frontend:build` and (for frontend lock updates) `nix build .#frontend`.
-Test supported and unavailable metrics, bounded history, reduced motion,
-and open/close cleanup. Visual-QA check the popup in isolated nested Niri.
+- `cargo fmt --all -- --check`; `cargo clippy --locked --workspace --all-targets -- -D warnings`; `cargo test --locked --workspace --all-targets`.
+- `task check`, `task shell:check` and `nix build .#default` where native dependencies and Nix are available.
+- Manual nested Niri validation for multi-output, focus, keyboard input, fractional scaling, pop-up lifecycle and all motion. CI is not proof of native graphical correctness.
+- Missing parity must be named in the migration plan, not faked or hidden. No browser-related test requirements apply after browser components are removed.
