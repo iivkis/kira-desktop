@@ -519,38 +519,48 @@ pub struct CalendarFragmentScene {
     progress: Rc<Cell<f64>>,
     active: Rc<Cell<bool>>,
     direction: Rc<Cell<i32>>,
+    contact: Rc<Cell<Option<(f64, f64)>>>,
     motion: MotionToken,
 }
 
 impl CalendarFragmentScene {
     pub fn new() -> Self {
         let area = gtk::DrawingArea::new();
-        area.set_content_width(200);
-        area.set_content_height(56);
+        area.set_halign(gtk::Align::Fill);
+        area.set_valign(gtk::Align::Fill);
         area.set_can_target(false);
         let progress = Rc::new(Cell::new(0.0));
         let active = Rc::new(Cell::new(false));
         let direction = Rc::new(Cell::new(1));
+        let contact = Rc::new(Cell::new(None));
         {
             let progress = progress.clone();
             let active = active.clone();
             let direction = direction.clone();
-            area.set_draw_func(move |_, cr, width, height| {
+            let contact = contact.clone();
+            area.set_draw_func(move |_, cr, _, _| {
                 if !active.get() {
                     return;
                 }
-                let inverted = temporal_progress(progress.get(), TimeDirection::Inverted);
-                let contacts = calendar_flights(direction.get());
-                let opacity = 0.13 * inverted * (1.0 - progress.get() * 0.5);
-                cr.set_source_rgba(0.988, 0.639, 0.067, opacity);
-                for flight in contacts {
+                let Some((cx, cy)) = contact.get() else {
+                    return;
+                };
+                for index in 0..4 {
+                    let trace =
+                        calendar_grid_trace_frame(progress.get(), direction.get(), index);
+                    if trace.opacity <= 0.0 {
+                        continue;
+                    }
                     let _ = cr.save();
-                    cr.translate(
-                        f64::from(width) * 0.5 + inverted * flight.x,
-                        f64::from(height) * 0.5 + inverted * flight.y,
-                    );
-                    cr.rotate((inverted * flight.rotation).to_radians());
-                    cr.rectangle(-5.0, -1.0, 10.0, 2.0);
+                    cr.translate(cx + trace.x, cy + trace.y);
+                    cr.rotate(trace.rotation.to_radians());
+                    if index % 2 == 0 {
+                        cr.set_source_rgba(0.988, 0.639, 0.067, trace.opacity);
+                    } else {
+                        cr.set_source_rgba(0.898, 0.898, 0.898, trace.opacity);
+                    }
+                    let scale = trace.opacity / 0.85;
+                    cr.rectangle(-2.0 * scale, -2.0 * scale, 4.0 * scale, 4.0 * scale);
                     let _ = cr.fill();
                     let _ = cr.restore();
                 }
@@ -561,6 +571,7 @@ impl CalendarFragmentScene {
             progress,
             active,
             direction,
+            contact,
             motion: MotionToken::default(),
         }
     }
@@ -569,23 +580,44 @@ impl CalendarFragmentScene {
         self.area.clone().upcast()
     }
 
-    pub fn play(&self, direction: i32) {
+    /// The actual selected day is the interaction's sole remembered contact.
+    /// No speculative center-of-grid animation if GTK has no measured bounds.
+    pub fn play_at(&self, direction: i32, target: &gtk::Widget) {
+        self.motion.cancel();
+        self.active.set(false);
+        if !self.area.is_mapped() {
+            return;
+        }
+        let Some(bounds) = target.compute_bounds(&self.area) else {
+            return;
+        };
+        if bounds.width() <= 0.0 || bounds.height() <= 0.0 {
+            return;
+        }
+        self.contact.set(Some((
+            f64::from(bounds.x() + bounds.width() / 2.0),
+            f64::from(bounds.y() + bounds.height() / 2.0),
+        )));
         self.direction.set(direction);
         self.active.set(true);
         let progress = self.progress.clone();
         let active = self.active.clone();
-        let area = self.area.clone();
-        let finished_area = self.area.clone();
+        let area = self.area.downgrade();
+        let finished_area = self.area.downgrade();
         self.motion.run(
             &self.area.clone().upcast(),
-            520,
+            CALENDAR_GRID_DURATION_MS,
             move |cursor| {
                 progress.set(cursor);
-                area.queue_draw();
+                if let Some(area) = area.upgrade() {
+                    area.queue_draw();
+                }
             },
             move || {
                 active.set(false);
-                finished_area.queue_draw();
+                if let Some(area) = finished_area.upgrade() {
+                    area.queue_draw();
+                }
             },
         );
     }
