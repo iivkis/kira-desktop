@@ -88,6 +88,169 @@ pub fn back_out(progress: f64, overshoot: f64) -> f64 {
     1.0 + (overshoot + 1.0) * u.powi(3) + overshoot * u.powi(2)
 }
 
+
+/** Equivalent of main's 400ms per-digit INVERTED entry. Coordinates are
+ * expressed as a fraction of the measured digit height, not hardcoded pixels.
+ * The outgoing and incoming tracks share one normalized cursor. */
+pub const CLOCK_DIGIT_DURATION_MS: u64 = 400;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct DigitFrame {
+    pub outgoing_y: f64,
+    pub outgoing_opacity: f64,
+    pub incoming_y: f64,
+    pub incoming_opacity: f64,
+}
+
+fn bounded(progress: f64) -> f64 {
+    if progress.is_finite() {
+        progress.clamp(0.0, 1.0)
+    } else {
+        0.0
+    }
+}
+
+pub fn clock_digit_frame(progress: f64) -> DigitFrame {
+    let p = bounded(progress);
+    // Main: outgoing power3.out, incoming reverse of power3.out.
+    let outbound = 1.0 - (1.0 - p).powi(3);
+    let inbound = p.powi(3);
+    DigitFrame {
+        outgoing_y: -0.85 * outbound,
+        outgoing_opacity: 1.0 - outbound,
+        incoming_y: 0.85 * (1.0 - inbound),
+        incoming_opacity: inbound,
+    }
+}
+
+/// One popup master cursor is retained for entrance, dismissal and reopening.
+/// The source master runs 540ms at timescale 1.44, giving 375ms on screen.
+/// The cursor's direction changes without rebuilding any keyframe or geometry.
+pub const POPUP_MASTER_DURATION_MS: f64 = 375.0;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PopupPhase {
+    Hidden,
+    Opening,
+    Visible,
+    Closing,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct PopupTimeline {
+    progress: f64,
+    phase: PopupPhase,
+}
+
+impl Default for PopupTimeline {
+    fn default() -> Self {
+        Self {
+            progress: 0.0,
+            phase: PopupPhase::Hidden,
+        }
+    }
+}
+
+impl PopupTimeline {
+    pub fn progress(&self) -> f64 {
+        self.progress
+    }
+
+    pub fn phase(&self) -> PopupPhase {
+        self.phase
+    }
+
+    pub fn open(&mut self) {
+        self.phase = if self.progress >= 1.0 {
+            PopupPhase::Visible
+        } else {
+            PopupPhase::Opening
+        };
+    }
+
+    pub fn close(&mut self) {
+        self.phase = if self.progress <= 0.0 {
+            PopupPhase::Hidden
+        } else {
+            PopupPhase::Closing
+        };
+    }
+
+    pub fn settle(&mut self) {
+        self.progress = match self.phase {
+            PopupPhase::Hidden | PopupPhase::Closing => 0.0,
+            PopupPhase::Opening | PopupPhase::Visible => 1.0,
+        };
+        self.phase = if self.progress == 0.0 {
+            PopupPhase::Hidden
+        } else {
+            PopupPhase::Visible
+        };
+    }
+
+    pub fn advance_ms(&mut self, delta_ms: f64) {
+        let delta = if delta_ms.is_finite() {
+            delta_ms.max(0.0) / POPUP_MASTER_DURATION_MS
+        } else {
+            0.0
+        };
+        match self.phase {
+            PopupPhase::Opening => {
+                self.progress = (self.progress + delta).min(1.0);
+                if self.progress >= 1.0 {
+                    self.phase = PopupPhase::Visible;
+                }
+            }
+            PopupPhase::Closing => {
+                self.progress = (self.progress - delta).max(0.0);
+                if self.progress <= 0.0 {
+                    self.phase = PopupPhase::Hidden;
+                }
+            }
+            PopupPhase::Hidden | PopupPhase::Visible => {}
+        }
+    }
+
+    pub fn frame(&self, direction: i32) -> PopupFrame {
+        popup_frame(self.progress, direction)
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct PopupFrame {
+    /// Fraction of the fixed Wayland surface revealed by the compositor clip.
+    pub clip: f64,
+    /// Position of the moving seam as fraction of the panel's height.
+    pub seam: f64,
+    pub seam_opacity: f64,
+    /// Fraction of the original 9px section offset left at this instant.
+    pub section_offset: f64,
+    pub section_scale: f64,
+    pub section_opacity: f64,
+}
+
+pub fn popup_frame(progress: f64, direction: i32) -> PopupFrame {
+    let t = bounded(progress);
+    let ms = 540.0 * t;
+    let clip = cubic_in_out(t);
+    // The source seam first fades in after 25ms and fades out at 370ms.
+    let in_progress = ((ms - 25.0) / 90.0).clamp(0.0, 1.0);
+    let out_progress = ((ms - 370.0) / 170.0).clamp(0.0, 1.0);
+    let seam_opacity = 0.82 * (1.0 - (1.0 - in_progress).powi(2))
+        * (1.0 - out_progress.powi(2));
+    let section_p = (ms / 440.0).clamp(0.0, 1.0);
+    let spring = back_out(section_p, 1.22);
+    let fade_p = (ms / 220.0).clamp(0.0, 1.0);
+    PopupFrame {
+        clip,
+        seam: if direction < 0 { 1.0 - clip } else { clip },
+        seam_opacity,
+        section_offset: 1.0 - spring,
+        section_scale: 0.988 + 0.012 * spring,
+        section_opacity: 0.94 + 0.06 * (1.0 - (1.0 - fade_p).powi(2)),
+    }
+}
+
 fn animations_enabled() -> bool {
     gtk::Settings::default()
         .is_none_or(|settings| settings.property::<bool>("gtk-enable-animations"))
@@ -101,6 +264,12 @@ pub struct MotionToken {
 }
 
 impl MotionToken {
+    /// Invalidate in-flight callbacks before replacing a scene. The caller
+    /// owns resetting decorative widgets to the factual final state.
+    pub fn cancel(&self) {
+        self.generation.set(self.generation.get().wrapping_add(1));
+    }
+
     pub fn run(
         &self,
         widget: &gtk::Widget,
@@ -282,6 +451,63 @@ mod tests {
             assert_eq!(right[i].y, left[i].y);
             assert_eq!(right[i].rotation, left[i].rotation);
         }
+    }
+
+
+    #[test]
+    fn individual_digits_retrace_main_outbound_history() {
+        assert_eq!(clock_digit_frame(0.0).outgoing_y, 0.0);
+        assert_eq!(clock_digit_frame(0.0).incoming_y, 0.85);
+        assert_eq!(clock_digit_frame(1.0).incoming_y, 0.0);
+        assert_eq!(clock_digit_frame(1.0).outgoing_opacity, 0.0);
+        for p in [0.0_f64, 0.05, 0.25, 0.5, 0.95, 1.0] {
+            let f = clock_digit_frame(p);
+            assert!((f.incoming_y - 0.85 * (1.0 - p.powi(3))).abs() < 1e-10);
+            assert!((f.outgoing_opacity - (1.0 - p).powi(3)).abs() < 1e-10);
+        }
+        assert_eq!(clock_digit_frame(f64::NAN), clock_digit_frame(0.0));
+    }
+
+    #[test]
+    fn popup_reuses_one_cursor_under_rapid_direction_changes() {
+        let mut timeline = PopupTimeline::default();
+        timeline.open();
+        timeline.advance_ms(150.0);
+        assert_eq!(timeline.phase(), PopupPhase::Opening);
+        assert!((timeline.progress() - 0.4).abs() < 1e-9);
+        let frame_at_turn = timeline.frame(1);
+        timeline.close();
+        assert_eq!(timeline.frame(1), frame_at_turn);
+        timeline.advance_ms(37.5);
+        assert!((timeline.progress() - 0.3).abs() < 1e-9);
+        timeline.open();
+        assert!((timeline.progress() - 0.3).abs() < 1e-9);
+        timeline.advance_ms(262.5);
+        assert_eq!(timeline.phase(), PopupPhase::Visible);
+        assert_eq!(timeline.progress(), 1.0);
+        timeline.close();
+        timeline.advance_ms(375.0);
+        assert_eq!(timeline.phase(), PopupPhase::Hidden);
+        assert_eq!(timeline.progress(), 0.0);
+    }
+
+    #[test]
+    fn popup_frame_keeps_reverse_geometry_and_reduced_motion_endpoints() {
+        let f = popup_frame(0.0, 1);
+        assert_eq!(f.clip, 0.0);
+        assert_eq!(f.section_scale, 0.988);
+        assert_eq!(popup_frame(1.0, 1).clip, 1.0);
+        for p in [0.0, 0.12, 0.33, 0.61, 1.0] {
+            assert_eq!(popup_frame(p, 1), popup_frame(p, 1));
+            assert!((popup_frame(p, 1).seam + popup_frame(p, -1).seam - 1.0).abs() < 1e-9);
+        }
+        let mut timeline = PopupTimeline::default();
+        timeline.open();
+        timeline.settle();
+        assert_eq!(timeline.phase(), PopupPhase::Visible);
+        timeline.close();
+        timeline.settle();
+        assert_eq!(timeline.phase(), PopupPhase::Hidden);
     }
 
     #[test]
