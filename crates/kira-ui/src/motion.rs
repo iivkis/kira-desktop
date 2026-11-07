@@ -421,7 +421,7 @@ pub fn popup_trace_frame(progress: f64, direction: i32, index: usize) -> PopupTr
     }
 }
 
-fn animations_enabled() -> bool {
+pub(crate) fn animations_enabled() -> bool {
     gtk::Settings::default()
         .is_none_or(|settings| settings.property::<bool>("gtk-enable-animations"))
 }

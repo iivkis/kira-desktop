@@ -1,13 +1,13 @@
 //! Retained-key GTK FLIP: record the *painted* location of existing rows,
 //! mutate their real layout, then animate surviving identities from that saved
 //! location to the new one. Decorative movement never delays user intent.
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::rc::Rc;
 
 use gtk::{glib, prelude::*, subclass::prelude::*};
 
-use crate::motion::back_out;
+use crate::motion::{animations_enabled, back_out};
 
 pub const REFLOW_DURATION_MS: u64 = 340;
 pub const REFLOW_MAX_ROWS: usize = 24;
@@ -171,6 +171,7 @@ pub struct ReflowSnapshot {
 pub struct ReflowScope {
     container: gtk::Widget,
     generation: Rc<Cell<u64>>,
+    active_rows: RefCell<Vec<glib::WeakRef<ReflowRow>>>,
 }
 
 impl ReflowScope {
@@ -178,10 +179,21 @@ impl ReflowScope {
         Self {
             container: container.clone(),
             generation: Rc::new(Cell::new(0)),
+            active_rows: RefCell::new(Vec::new()),
         }
     }
 
     pub fn capture(&self, ordered: &[(String, ReflowRow)]) -> ReflowSnapshot {
+        // A second input supersedes any pending layout tick, but surviving
+        // rows must keep their last painted transform for continuous FLIP.
+        self.invalidate_pending();
+        if !animations_enabled() {
+            self.cancel();
+            for (_, row) in ordered {
+                row.settle();
+            }
+            return ReflowSnapshot::default();
+        }
         let mut positions = HashMap::new();
         if self.container.is_mapped() {
             for (key, row) in ordered.iter().take(REFLOW_MAX_ROWS) {
@@ -198,9 +210,12 @@ impl ReflowScope {
     /// frame ticks allow the new box allocation to be measured once, without
     /// running an idle polling loop or blocking the GTK main context.
     pub fn play(&self, snapshot: ReflowSnapshot, current: &[(String, ReflowRow)]) {
-        let generation = self.generation.get().wrapping_add(1);
-        self.generation.set(generation);
-        if snapshot.positions.is_empty() || !self.container.is_mapped() {
+        self.invalidate_pending();
+        let generation = self.generation.get();
+        self.active_rows
+            .replace(current.iter().map(|(_, row)| row.downgrade()).collect());
+        if snapshot.positions.is_empty() || !self.container.is_mapped() || !animations_enabled() {
+            self.cancel();
             return;
         }
         let rows: Vec<_> = current
@@ -213,6 +228,7 @@ impl ReflowScope {
             })
             .collect();
         if rows.is_empty() {
+            self.cancel();
             return;
         }
         let weak_container = self.container.downgrade();
@@ -239,8 +255,19 @@ impl ReflowScope {
         });
     }
 
-    pub fn cancel(&self) {
+    fn invalidate_pending(&self) {
         self.generation.set(self.generation.get().wrapping_add(1));
+    }
+
+    /// Cancel both pending layout callbacks and active physical transforms.
+    /// A hidden/destroyed widget must never reappear with a stale displacement.
+    pub fn cancel(&self) {
+        self.invalidate_pending();
+        for row in self.active_rows.borrow_mut().drain(..) {
+            if let Some(row) = row.upgrade() {
+                row.settle();
+            }
+        }
     }
 }
 

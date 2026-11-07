@@ -190,7 +190,7 @@ impl LauncherState {
     /// not sensor motion; they settle their existing GTK buttons immediately.
     fn render(&self, animate: bool) {
         let prior = self.visible_ids.borrow().clone();
-        self.scroll_motion.scroll_to_start();
+        // Capture the old *painted* positions before changing scroll or list.
         let previous = if animate && animate_launcher_filter(prior.len()) {
             let cache = self.cache.borrow();
             let ordered: Vec<_> = prior
@@ -206,6 +206,9 @@ impl LauncherState {
             None
         };
 
+        // The new filter selects its first row; do not retain the prior
+        // query's scroll position or its in-flight navigation destination.
+        self.scroll_motion.scroll_to_start();
         let query = self.search.text().to_string();
         let found = filter_applications(&self.applications.borrow(), &query, usize::MAX);
         self.count
