@@ -1,36 +1,24 @@
--- Kira Desktop V2: proposed Lua UI syntax (NOT YET COMPILABLE).
--- The future Rust translator will statically parse this limited subset;
--- it must NOT run arbitrary Lua or embed a Lua VM in the GTK shell.
-
-return Widget {
+-- Kira Desktop V2 / ergonomic Lua UI DSL (NOT YET COMPILABLE).
+-- Rust translates ui.* static AST forms to GTK, with no Lua VM.
+return ui.box {
   id = "counter",
-  kind = "Box",
-  orientation = "vertical",
-  spacing = 12,
+  theme = "styles.lua",
+  direction = "column", gap = 12,
+  state = { count = 0 },
+  style = "panel",
 
-  style = Style {
-    background = "#14213d",
-    color = "#ffffff",
-    padding = 16,
+  ui.text {
+    id = "value",
+    text = ui.bind("count"),
+    style = "counter_value",
   },
 
-  state = State {
-    count = 0,
-  },
-
-  children = {
-    Widget {
-      id = "count",
-      kind = "Label",
-      text = Bind("count"),
-    },
-    Widget {
-      id = "increment",
-      kind = "Button",
-      text = "Добавить",
-      on_click = function(state)
-        state.count = state.count + 1
-      end,
-    },
+  ui.button {
+    id = "increment",
+    text = "Добавить",
+    style = { "control", "primary", padding = 16 },
+    on_click = function(state)
+      state.count = state.count + 1
+    end,
   },
 }
