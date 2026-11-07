@@ -98,7 +98,8 @@ impl Bar {
 
     pub fn set_compact(&self, compact: bool) {
         self.compact.set(compact);
-        self.title.set_visible(!compact && self.title.text() != "KIRA DESKTOP");
+        self.title
+            .set_visible(!compact && self.title.text() != "KIRA DESKTOP");
         if compact {
             self.window.add_css_class("compact");
         } else {

@@ -122,12 +122,29 @@ impl WorkspaceStrip {
             String::new()
         });
         for (label, count, urgent, side) in [
-            (&self.before, window.before, window.before_urgent, "предыдущих"),
-            (&self.after, window.after, window.after_urgent, "последующих"),
+            (
+                &self.before,
+                window.before,
+                window.before_urgent,
+                "предыдущих",
+            ),
+            (
+                &self.after,
+                window.after,
+                window.after_urgent,
+                "последующих",
+            ),
         ] {
-            label.set_tooltip_text((count > 0).then(|| {
-                format!("{count} {side} рабочих пространств скрыто{}", if urgent { " · срочные" } else { "" })
-            }).as_deref());
+            label.set_tooltip_text(
+                (count > 0)
+                    .then(|| {
+                        format!(
+                            "{count} {side} рабочих пространств скрыто{}",
+                            if urgent { " · срочные" } else { "" }
+                        )
+                    })
+                    .as_deref(),
+            );
             if urgent {
                 label.add_css_class("urgent");
             } else {
@@ -135,8 +152,13 @@ impl WorkspaceStrip {
             }
         }
         let retained: HashSet<&str> = window.items.iter().map(|item| item.id.as_str()).collect();
-        let stale: Vec<_> = self.cache.borrow().keys()
-            .filter(|id| !retained.contains(id.as_str())).cloned().collect();
+        let stale: Vec<_> = self
+            .cache
+            .borrow()
+            .keys()
+            .filter(|id| !retained.contains(id.as_str()))
+            .cloned()
+            .collect();
         for id in stale {
             if let Some(button) = self.cache.borrow_mut().remove(&id) {
                 self.buttons.remove(&button);
@@ -155,20 +177,46 @@ impl WorkspaceStrip {
                 let on_focus = self.on_focus.clone();
                 button.connect_clicked(move |_| on_focus(id.clone()));
                 self.buttons.append(&button);
-                self.cache.borrow_mut().insert(item.id.clone(), button.clone());
+                self.cache
+                    .borrow_mut()
+                    .insert(item.id.clone(), button.clone());
                 button
             };
-            let name = item.name.as_deref().filter(|value| !value.is_empty())
-                .map(str::to_owned).unwrap_or_else(|| item.index.to_string());
-            button.set_label(if show_names { &name } else { &item.index.to_string() });
-            let on_output = item.output.as_deref().map_or(String::new(), |output| format!(" на экране {output}"));
-            let state = if item.focused { " (в фокусе)" } else if item.active { " (активно)" } else { "" };
-            let urgent = if item.urgent { " (требует внимания)" } else { "" };
-            button.set_tooltip_text(Some(&format!("Пространство {name}{on_output}{state}{urgent}")));
+            let name = item
+                .name
+                .as_deref()
+                .filter(|value| !value.is_empty())
+                .map(str::to_owned)
+                .unwrap_or_else(|| item.index.to_string());
+            let index_label = item.index.to_string();
+            button.set_label(if show_names { &name } else { &index_label });
+            let on_output = item
+                .output
+                .as_deref()
+                .map_or(String::new(), |output| format!(" на экране {output}"));
+            let state = if item.focused {
+                " (в фокусе)"
+            } else if item.active {
+                " (активно)"
+            } else {
+                ""
+            };
+            let urgent = if item.urgent {
+                " (требует внимания)"
+            } else {
+                ""
+            };
+            button.set_tooltip_text(Some(&format!(
+                "Пространство {name}{on_output}{state}{urgent}"
+            )));
             button.update_property(&[gtk::accessible::Property::Label(&format!(
                 "Переключиться на пространство {name}{on_output}{urgent}"
             ))]);
-            for (class, enabled) in [("selected", item.focused), ("active", item.active), ("urgent", item.urgent)] {
+            for (class, enabled) in [
+                ("selected", item.focused),
+                ("active", item.active),
+                ("urgent", item.urgent),
+            ] {
                 if enabled {
                     button.add_css_class(class);
                 } else {
@@ -180,7 +228,8 @@ impl WorkspaceStrip {
                 None => self.buttons.first_child().as_ref() == Some(button.upcast_ref()),
             };
             if !in_position {
-                self.buttons.reorder_child_after(&button, predecessor.as_ref());
+                self.buttons
+                    .reorder_child_after(&button, predecessor.as_ref());
             }
             predecessor = Some(button.upcast());
         }
@@ -193,8 +242,13 @@ mod tests {
 
     fn item(index: u8, focused: bool, urgent: bool) -> WorkspaceItem {
         WorkspaceItem {
-            id: index.to_string(), index, name: (index == 3).then(|| "edit".into()),
-            output: Some("DP-1".into()), active: focused, focused, urgent,
+            id: index.to_string(),
+            index,
+            name: (index == 3).then(|| "edit".into()),
+            output: Some("DP-1".into()),
+            active: focused,
+            focused,
+            urgent,
         }
     }
 
@@ -202,7 +256,10 @@ mod tests {
     fn main_contiguous_window_and_real_hidden_counts() {
         let entries: Vec<_> = (1..=6).map(|i| item(i, i == 5, false)).collect();
         let view = visible_workspace_window(&entries, 3);
-        assert_eq!(view.items.iter().map(|w| w.id.as_str()).collect::<Vec<_>>(), ["3", "4", "5"]);
+        assert_eq!(
+            view.items.iter().map(|w| w.id.as_str()).collect::<Vec<_>>(),
+            ["3", "4", "5"]
+        );
         assert_eq!((view.before, view.after), (2, 1));
         assert!(!view.before_urgent && !view.after_urgent);
     }
@@ -211,7 +268,10 @@ mod tests {
     fn main_hidden_urgent_is_reported_both_sides() {
         let entries: Vec<_> = (1..=6).map(|i| item(i, i == 4, i == 1 || i == 6)).collect();
         let view = visible_workspace_window(&entries, 2);
-        assert_eq!(view.items.iter().map(|w| w.index).collect::<Vec<_>>(), [3, 4]);
+        assert_eq!(
+            view.items.iter().map(|w| w.index).collect::<Vec<_>>(),
+            [3, 4]
+        );
         assert_eq!((view.before, view.after), (2, 2));
         assert!(view.before_urgent && view.after_urgent);
     }

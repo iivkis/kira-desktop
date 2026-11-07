@@ -29,29 +29,40 @@ pub fn filter_applications(
         return apps.iter().take(limit).cloned().collect();
     }
     let joined = terms.join(" ");
-    let mut ranked: Vec<_> = apps.iter().enumerate().filter_map(|(index, app)| {
-        let name = app.name.to_lowercase();
-        let haystack = format!("{} {}", name, app.description.to_lowercase());
-        if !terms.iter().all(|term| haystack.contains(term)) {
-            return None;
-        }
-        let rank = if name == joined {
-            0
-        } else if name.starts_with(&joined) {
-            1
-        } else if name.split_whitespace().any(|part| part.starts_with(&joined)) {
-            2
-        } else if name.contains(&joined) {
-            3
-        } else if terms.iter().all(|term| name.contains(term)) {
-            4
-        } else {
-            5
-        };
-        Some((rank, index, app))
-    }).collect();
+    let mut ranked: Vec<_> = apps
+        .iter()
+        .enumerate()
+        .filter_map(|(index, app)| {
+            let name = app.name.to_lowercase();
+            let haystack = format!("{} {}", name, app.description.to_lowercase());
+            if !terms.iter().all(|term| haystack.contains(term)) {
+                return None;
+            }
+            let rank = if name == joined {
+                0
+            } else if name.starts_with(&joined) {
+                1
+            } else if name
+                .split_whitespace()
+                .any(|part| part.starts_with(&joined))
+            {
+                2
+            } else if name.contains(&joined) {
+                3
+            } else if terms.iter().all(|term| name.contains(term)) {
+                4
+            } else {
+                5
+            };
+            Some((rank, index, app))
+        })
+        .collect();
     ranked.sort_by_key(|(rank, index, _)| (*rank, *index));
-    ranked.into_iter().take(limit).map(|(_, _, app)| app.clone()).collect()
+    ranked
+        .into_iter()
+        .take(limit)
+        .map(|(_, _, app)| app.clone())
+        .collect()
 }
 
 pub fn next_launcher_selection(current: usize, count: usize, direction: i8) -> usize {
@@ -117,7 +128,8 @@ impl LauncherState {
         self.rows.borrow_mut().clear();
         let query = self.search.text().to_string();
         let found = filter_applications(&self.applications.borrow(), &query, usize::MAX);
-        self.count.set_visible(self.loaded.get() && !query.trim().is_empty());
+        self.count
+            .set_visible(self.loaded.get() && !query.trim().is_empty());
         self.count.set_text(&matching_apps_label(found.len()));
 
         for app in found.iter().take(MAX_DISPLAYED) {
@@ -125,7 +137,9 @@ impl LauncherState {
             button.add_css_class("app-row");
             button.set_halign(gtk::Align::Fill);
             let item = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-            let icon = app.icon.as_deref()
+            let icon = app
+                .icon
+                .as_deref()
                 .and_then(|value| gtk::gio::Icon::for_string(value).ok())
                 .map(|icon| gtk::Image::from_gicon(&icon))
                 .unwrap_or_else(|| gtk::Image::from_icon_name("application-x-executable-symbolic"));
@@ -173,7 +187,8 @@ impl LauncherState {
             self.list.append(&empty);
         } else if found.len() > MAX_DISPLAYED {
             let more = gtk::Label::new(Some(&format!(
-                "Показаны первые {} приложений. Уточните поиск для остальных.", MAX_DISPLAYED
+                "Показаны первые {} приложений. Уточните поиск для остальных.",
+                MAX_DISPLAYED
             )));
             more.set_xalign(0.0);
             more.add_css_class("muted");
@@ -184,7 +199,9 @@ impl LauncherState {
 
     fn launch_selected(&self) {
         let filtered = filter_applications(
-            &self.applications.borrow(), &self.search.text(), MAX_DISPLAYED,
+            &self.applications.borrow(),
+            &self.search.text(),
+            MAX_DISPLAYED,
         );
         if let Some(app) = filtered.get(self.selected.get()) {
             (self.on_launch)(app.id.clone());
@@ -239,8 +256,14 @@ impl Launcher {
         root.append(&status);
 
         let state = Rc::new(LauncherState {
-            list, search: search.clone(), count, status, applications: RefCell::new(Vec::new()),
-            rows: RefCell::new(Vec::new()), selected: Cell::new(0), loaded: Cell::new(false),
+            list,
+            search: search.clone(),
+            count,
+            status,
+            applications: RefCell::new(Vec::new()),
+            rows: RefCell::new(Vec::new()),
+            selected: Cell::new(0),
+            loaded: Cell::new(false),
             on_launch: Rc::new(on_launch),
         });
         search.connect_search_changed({
@@ -319,7 +342,10 @@ mod tests {
 
     fn app(id: &str, name: &str, description: &str) -> ApplicationEntry {
         ApplicationEntry {
-            id: id.into(), name: name.into(), description: description.into(), icon: None,
+            id: id.into(),
+            name: name.into(),
+            description: description.into(),
+            icon: None,
         }
     }
 
@@ -333,7 +359,10 @@ mod tests {
         assert_eq!(filter_applications(&apps, "fire", 80)[0].id, "7");
         assert_eq!(filter_applications(&apps, "browse folders", 80)[0].id, "2");
         assert_eq!(filter_applications(&apps, "WEB BROWSER", 80)[0].id, "7");
-        assert_eq!(filter_applications(&apps, "terminal command", 80)[0].id, "21");
+        assert_eq!(
+            filter_applications(&apps, "terminal command", 80)[0].id,
+            "21"
+        );
         assert!(filter_applications(&apps, "unavailable", 80).is_empty());
         assert_eq!(filter_applications(&apps, "", 80), apps);
     }
@@ -349,8 +378,10 @@ mod tests {
             app("15", "Cool Browser", "Browser tool"),
         ];
         assert_eq!(
-            filter_applications(&apps, "browser", 80).iter()
-                .map(|a| a.id.as_str()).collect::<Vec<_>>(),
+            filter_applications(&apps, "browser", 80)
+                .iter()
+                .map(|a| a.id.as_str())
+                .collect::<Vec<_>>(),
             ["12", "10", "14", "13", "15", "11"]
         );
         assert_eq!(filter_applications(&apps, "browser editor", 80)[0].id, "14");

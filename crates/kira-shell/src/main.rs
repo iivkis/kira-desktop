@@ -88,8 +88,13 @@ fn start_application_discovery(sender: mpsc::Sender<ShellUpdate>) {
                 app.id().map(|id| ApplicationEntry {
                     id: id.to_string(),
                     name: app.display_name().to_string(),
-                    description: app.description().map_or_else(String::new, |value| value.to_string()),
-                    icon: app.icon().and_then(|icon| icon.to_string()).map(|value| value.to_string()),
+                    description: app
+                        .description()
+                        .map_or_else(String::new, |value| value.to_string()),
+                    icon: app
+                        .icon()
+                        .and_then(|icon| icon.to_string())
+                        .map(|value| value.to_string()),
                 })
             })
             .collect();
@@ -367,7 +372,8 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 PopupKind::System => system.widget(),
                 PopupKind::Settings => settings_content.clone(),
             });
-            if kind == PopupKind::Launcher && popup.is_active(PopupKind::Launcher)
+            if kind == PopupKind::Launcher
+                && popup.is_active(PopupKind::Launcher)
                 && let Some(launcher) = launcher.borrow().as_ref()
             {
                 launcher.focus_search();
