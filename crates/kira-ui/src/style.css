@@ -87,7 +87,7 @@ window.kira-popup { background: transparent; color: #ffffff; }
   color: #e5e5e5; background: #000000; font-size: 12px;
   border-right: 1px solid #e5e5e5; min-height: 32px;
 }
-.kira-calendar .calendar-grid { background: #14213d; }
+.kira-calendar .calendar-grid { background: transparent; }
 .kira-calendar button.calendar-day {
   background: transparent; color: #ffffff; font-size: 13px;
   font-weight: 700; border: 0; border-radius: 0;
