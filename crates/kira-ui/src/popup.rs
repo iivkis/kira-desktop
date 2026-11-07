@@ -29,7 +29,11 @@ fn layout_for(kind: PopupKind, width: i32, height: i32) -> (i32, i32, i32) {
         PopupKind::Launcher => (height / 5).max(BAR_HEIGHT + GAP),
         _ => BAR_HEIGHT + GAP,
     };
-    let nominal_width = if kind == PopupKind::Settings { 600 } else { 420 };
+    let nominal_width = if kind == PopupKind::Settings {
+        600
+    } else {
+        420
+    };
     let width = nominal_width.min((width - GAP * 2).max(160));
     let usable_height = (height - top - GAP).max(160);
     (width, top, usable_height)
@@ -37,7 +41,11 @@ fn layout_for(kind: PopupKind, width: i32, height: i32) -> (i32, i32, i32) {
 
 impl PopupHost {
     pub fn new(app: &gtk::Application) -> Self {
-        Self { app: app.clone(), windows: RefCell::new(HashMap::new()), active: Rc::new(Cell::new(None)) }
+        Self {
+            app: app.clone(),
+            windows: RefCell::new(HashMap::new()),
+            active: Rc::new(Cell::new(None)),
+        }
     }
 
     pub fn is_active(&self, kind: PopupKind) -> bool {

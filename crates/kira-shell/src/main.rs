@@ -36,13 +36,17 @@ fn request_focus(id: String) {
 }
 
 fn workspace_items(state: &WorkspaceState) -> Vec<WorkspaceItem> {
-    state.workspaces.iter().map(|workspace| WorkspaceItem {
-        id: workspace.id.clone(),
-        index: workspace.idx,
-        name: workspace.name.clone(),
-        focused: workspace.is_focused,
-        urgent: workspace.is_urgent,
-    }).collect()
+    state
+        .workspaces
+        .iter()
+        .map(|workspace| WorkspaceItem {
+            id: workspace.id.clone(),
+            index: workspace.idx,
+            name: workspace.name.clone(),
+            focused: workspace.is_focused,
+            urgent: workspace.is_urgent,
+        })
+        .collect()
 }
 
 fn current_clock(show_seconds: bool) -> String {
@@ -100,19 +104,24 @@ fn start_metrics(sender: mpsc::Sender<ShellUpdate>) {
         let mut sampler = kira_services::system_metrics::PulseSampler::default();
         loop {
             let pulse = sampler.sample();
-            let cpu = pulse.cpu_percent
+            let cpu = pulse
+                .cpu_percent
                 .map(|value| format!("{value}%"))
                 .unwrap_or_else(|| "недоступно".to_owned());
-            let memory = pulse.memory_available_kib
+            let memory = pulse
+                .memory_available_kib
                 .map(|kib| format!("{:.1} GiB доступно", kib as f64 / 1024.0 / 1024.0))
                 .unwrap_or_else(|| "недоступно".to_owned());
             let load = std::fs::read_to_string("/proc/loadavg")
                 .ok()
                 .map(|raw| raw.split_whitespace().take(3).collect::<Vec<_>>().join(" "))
                 .unwrap_or_else(|| "недоступно".to_owned());
-            if sender.send(ShellUpdate::Metrics(format!(
-                "CPU: {cpu}\nОЗУ: {memory}\nНагрузка (1/5/15 мин): {load}"
-            ))).is_err() {
+            if sender
+                .send(ShellUpdate::Metrics(format!(
+                    "CPU: {cpu}\nОЗУ: {memory}\nНагрузка (1/5/15 мин): {load}"
+                )))
+                .is_err()
+            {
                 return;
             }
             std::thread::sleep(Duration::from_secs(2));
@@ -127,23 +136,27 @@ fn start_core_subscriptions(sender: mpsc::Sender<ShellUpdate>) {
     };
     let workspaces_sender = sender.clone();
     let workspaces_socket = socket.clone();
-    std::thread::spawn(move || loop {
-        let result = kira_ipc::client::subscribe_workspaces(&workspaces_socket, |state| {
-            let _ = workspaces_sender.send(ShellUpdate::Workspaces(state));
-        });
-        let _ = workspaces_sender.send(ShellUpdate::Workspaces(WorkspaceState::default()));
-        if let Err(error) = result {
-            eprintln!("kira-shell: workspace stream disconnected: {error}");
+    std::thread::spawn(move || {
+        loop {
+            let result = kira_ipc::client::subscribe_workspaces(&workspaces_socket, |state| {
+                let _ = workspaces_sender.send(ShellUpdate::Workspaces(state));
+            });
+            let _ = workspaces_sender.send(ShellUpdate::Workspaces(WorkspaceState::default()));
+            if let Err(error) = result {
+                eprintln!("kira-shell: workspace stream disconnected: {error}");
+            }
+            std::thread::sleep(Duration::from_millis(750));
         }
-        std::thread::sleep(Duration::from_millis(750));
     });
-    std::thread::spawn(move || loop {
-        if let Err(error) = kira_ipc::client::subscribe_config(&socket, |state| {
-            let _ = sender.send(ShellUpdate::Config(state));
-        }) {
-            eprintln!("kira-shell: config stream disconnected: {error}");
+    std::thread::spawn(move || {
+        loop {
+            if let Err(error) = kira_ipc::client::subscribe_config(&socket, |state| {
+                let _ = sender.send(ShellUpdate::Config(state));
+            }) {
+                eprintln!("kira-shell: config stream disconnected: {error}");
+            }
+            std::thread::sleep(Duration::from_millis(750));
         }
-        std::thread::sleep(Duration::from_millis(750));
     });
 }
 
@@ -160,7 +173,10 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let applications = Rc::new(RefCell::new(Vec::<ApplicationEntry>::new()));
     let launcher: Rc<RefCell<Option<Launcher>>> = Rc::new(RefCell::new(None));
     let metrics = Rc::new(InfoPanel::new("Система", "Загрузка данных"));
-    let settings = Rc::new(InfoPanel::new("Настройки Kira", &settings_summary(&config.borrow())));
+    let settings = Rc::new(InfoPanel::new(
+        "Настройки Kira",
+        &settings_summary(&config.borrow()),
+    ));
 
     let (sender, receiver) = mpsc::channel::<ShellUpdate>();
     start_core_subscriptions(sender.clone());
@@ -183,14 +199,17 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
             popup.toggle(kind, || match kind {
                 PopupKind::Launcher => {
                     let mut handle = launcher.borrow_mut();
-                    handle.get_or_insert_with(|| {
-                        let sender = sender.clone();
-                        let view = Launcher::new(move |id| launch_application(id, sender.clone()));
-                        if !applications.borrow().is_empty() {
-                            view.set_applications(applications.borrow().clone());
-                        }
-                        view
-                    }).widget()
+                    handle
+                        .get_or_insert_with(|| {
+                            let sender = sender.clone();
+                            let view =
+                                Launcher::new(move |id| launch_application(id, sender.clone()));
+                            if !applications.borrow().is_empty() {
+                                view.set_applications(applications.borrow().clone());
+                            }
+                            view
+                        })
+                        .widget()
                 }
                 PopupKind::Calendar => kira_ui::calendar_view(),
                 PopupKind::System => metrics.widget(),
@@ -200,7 +219,12 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     }
     bar.finish_actions();
 
-    bar.workspaces.update(false, &[], usize::from(config.borrow().max_workspaces), config.borrow().show_names);
+    bar.workspaces.update(
+        false,
+        &[],
+        usize::from(config.borrow().max_workspaces),
+        config.borrow().show_names,
+    );
 
     gtk::glib::timeout_add_local(Duration::from_millis(100), {
         let bar = bar.clone();
@@ -231,7 +255,9 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         bar.set_compact(current.compact);
                         settings.set_details(&settings_summary(&current));
                         if next.error.is_some() {
-                            bar.title.set_tooltip_text(Some("Ошибка KDL. Сохранена предыдущая конфигурация."));
+                            bar.title.set_tooltip_text(Some(
+                                "Ошибка KDL. Сохранена предыдущая конфигурация.",
+                            ));
                             bar.title.add_css_class("config-error");
                         } else {
                             bar.title.set_tooltip_text(None);
@@ -264,7 +290,8 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
             gtk::glib::ControlFlow::Continue
         }
     });
-    bar.clock.set_text(&current_clock(config.borrow().show_seconds));
+    bar.clock
+        .set_text(&current_clock(config.borrow().show_seconds));
     gtk::glib::timeout_add_local(Duration::from_secs(1), {
         let config = config.clone();
         let clock = bar.clock.clone();

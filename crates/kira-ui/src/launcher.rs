@@ -10,7 +10,11 @@ pub struct ApplicationEntry {
     pub name: String,
 }
 
-pub fn filter_applications(apps: &[ApplicationEntry], query: &str, limit: usize) -> Vec<ApplicationEntry> {
+pub fn filter_applications(
+    apps: &[ApplicationEntry],
+    query: &str,
+    limit: usize,
+) -> Vec<ApplicationEntry> {
     let needle = query.trim().to_lowercase();
     apps.iter()
         .filter(|app| app.name.to_lowercase().contains(&needle))
@@ -85,7 +89,13 @@ impl Launcher {
         // Store callback on the GTK widget as the actual item buttons' click connection
         // by rebuilding the results when the search model changes.
         // A dedicated immutable callback is retained in the search signal closure.
-        Self { root, list, search, status, applications }
+        Self {
+            root,
+            list,
+            search,
+            status,
+            applications,
+        }
     }
 
     pub fn set_applications(&self, apps: Vec<ApplicationEntry>) {
@@ -111,9 +121,18 @@ mod tests {
     #[test]
     fn filter_matches_and_bounds_results() {
         let apps = vec![
-            ApplicationEntry { id: "one".into(), name: "Terminal".into() },
-            ApplicationEntry { id: "two".into(), name: "Text Editor".into() },
-            ApplicationEntry { id: "three".into(), name: "Terminal 2".into() },
+            ApplicationEntry {
+                id: "one".into(),
+                name: "Terminal".into(),
+            },
+            ApplicationEntry {
+                id: "two".into(),
+                name: "Text Editor".into(),
+            },
+            ApplicationEntry {
+                id: "three".into(),
+                name: "Terminal 2".into(),
+            },
         ];
         assert_eq!(filter_applications(&apps, "TERMINAL", 1)[0].id, "one");
         assert_eq!(filter_applications(&apps, "terminal", 10).len(), 2);

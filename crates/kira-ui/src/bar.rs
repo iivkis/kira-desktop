@@ -44,7 +44,13 @@ impl Bar {
         clock.add_css_class("clock");
         layout.set_end_widget(Some(&actions));
         window.set_child(Some(&layout));
-        Self { window, workspaces, title, clock, actions }
+        Self {
+            window,
+            workspaces,
+            title,
+            clock,
+            actions,
+        }
     }
 
     pub fn add_action(&self, symbol: &str, label: &str, on_click: impl Fn() + 'static) {
@@ -64,7 +70,11 @@ impl Bar {
     }
 }
 
-pub fn action_button(symbol: &str, description: &str, on_click: impl Fn() + 'static) -> gtk::Button {
+pub fn action_button(
+    symbol: &str,
+    description: &str,
+    on_click: impl Fn() + 'static,
+) -> gtk::Button {
     let button = gtk::Button::with_label(symbol);
     button.add_css_class("bar-action");
     button.set_tooltip_text(Some(description));

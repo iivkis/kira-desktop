@@ -44,7 +44,13 @@ impl WorkspaceStrip {
         root.append(&offline);
         let buttons = gtk::Box::new(gtk::Orientation::Horizontal, 4);
         root.append(&buttons);
-        Self { root, buttons, offline, cache: RefCell::new(HashMap::new()), on_focus: Rc::new(on_focus) }
+        Self {
+            root,
+            buttons,
+            offline,
+            cache: RefCell::new(HashMap::new()),
+            on_focus: Rc::new(on_focus),
+        }
     }
 
     pub fn widget(&self) -> gtk::Widget {
@@ -60,8 +66,13 @@ impl WorkspaceStrip {
 
         let selected = visible_workspaces(items, limit);
         let retained: HashSet<&str> = selected.iter().map(|item| item.id.as_str()).collect();
-        let stale: Vec<String> = self.cache.borrow().keys()
-            .filter(|id| !retained.contains(id.as_str())).cloned().collect();
+        let stale: Vec<String> = self
+            .cache
+            .borrow()
+            .keys()
+            .filter(|id| !retained.contains(id.as_str()))
+            .cloned()
+            .collect();
         for id in stale {
             if let Some(button) = self.cache.borrow_mut().remove(&id) {
                 self.buttons.remove(&button);
@@ -80,7 +91,9 @@ impl WorkspaceStrip {
                 let on_focus = self.on_focus.clone();
                 button.connect_clicked(move |_| on_focus(id.clone()));
                 self.buttons.append(&button);
-                self.cache.borrow_mut().insert(item.id.clone(), button.clone());
+                self.cache
+                    .borrow_mut()
+                    .insert(item.id.clone(), button.clone());
                 button
             };
             let label = if show_names {
@@ -106,7 +119,8 @@ impl WorkspaceStrip {
                 None => self.buttons.first_child().as_ref() == Some(button.upcast_ref()),
             };
             if !in_position {
-                self.buttons.reorder_child_after(&button, predecessor.as_ref());
+                self.buttons
+                    .reorder_child_after(&button, predecessor.as_ref());
             }
             predecessor = Some(button.upcast());
         }
@@ -118,14 +132,23 @@ mod tests {
     use super::*;
 
     fn item(id: &str, focused: bool) -> WorkspaceItem {
-        WorkspaceItem { id: id.to_owned(), index: id.parse().unwrap(), name: None, focused, urgent: false }
+        WorkspaceItem {
+            id: id.to_owned(),
+            index: id.parse().unwrap(),
+            name: None,
+            focused,
+            urgent: false,
+        }
     }
 
     #[test]
     fn focused_workspace_is_visible_after_limit() {
         let workspaces = vec![item("1", false), item("2", false), item("3", true)];
         let visible = visible_workspaces(&workspaces, 2);
-        assert_eq!(visible.iter().map(|w| w.id.as_str()).collect::<Vec<_>>(), ["1", "3"]);
+        assert_eq!(
+            visible.iter().map(|w| w.id.as_str()).collect::<Vec<_>>(),
+            ["1", "3"]
+        );
     }
 
     #[test]
