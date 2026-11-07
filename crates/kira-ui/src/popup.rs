@@ -349,6 +349,7 @@ impl PopupHost {
             overlay.add_overlay(&seam);
             overlay.set_measure_overlay(&seam, false);
             let clip = PopupClip::new(&overlay.upcast());
+            clip.set_direction(1);
             clip.set_fraction(0.0);
             window.set_child(Some(&clip));
             let view = Rc::new(PopupView {
