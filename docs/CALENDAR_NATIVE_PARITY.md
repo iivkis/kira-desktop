@@ -20,8 +20,8 @@
 
 ## Still missing or unverified
 
-- Main's per-digit 400ms crossflight with the original saved `clock-flight.ts` sector memory and interruption policy. Current GTK clock displays correct seconds but its decorative motion is not equivalent.
-- Full 380ms selected-day/month grid movement, 26ms stagger, spring-selected indicator, and shared 540ms popup master clip/seam/reverse sequence.
+- Native 400ms digit-by-digit old/new crossflight is implemented using the source easing directions, but still lacks the original `clock-flight.ts` click-juggle sector memory and independently captured motion equivalence.
+- Full 380ms selected-day/month grid movement, 26ms stagger, spring-selected indicator, and the popup's content spring/stagger/INVERTED traces. The GTK popup now has a source-timed, reversible GSK clip and seam; paired frame recordings and all sections remain outstanding.
 - Native standalone/detached Calendar and accompanying 74KB catalog `SkyMap`; fullscreen/accessible observatory is not implemented.
 - A paired native/WebKit recording with the same date, animation flags, locale, font, resolution, scale and Wayland environment. No pixel-perfect or temporal equivalence certificate exists.
 
