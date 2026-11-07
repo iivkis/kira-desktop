@@ -195,7 +195,10 @@ impl ReflowScope {
         let rows: Vec<_> = current
             .iter()
             .filter_map(|(key, row)| {
-                snapshot.positions.get(key).map(|old| (row.downgrade(), *old))
+                snapshot
+                    .positions
+                    .get(key)
+                    .map(|old| (row.downgrade(), *old))
             })
             .collect();
         if rows.is_empty() {
@@ -203,13 +206,13 @@ impl ReflowScope {
         }
         let weak_container = self.container.downgrade();
         let token = self.generation.clone();
-        let mut ticks = 0;
+        let ticks = Cell::new(0);
         self.container.add_tick_callback(move |_, _| {
             if token.get() != generation {
                 return gtk::glib::ControlFlow::Break;
             }
-            ticks += 1;
-            if ticks < 2 {
+            ticks.set(ticks.get() + 1);
+            if ticks.get() < 2 {
                 return gtk::glib::ControlFlow::Continue;
             }
             if let Some(container) = weak_container.upgrade() {
@@ -244,8 +247,14 @@ mod tests {
     fn recorded_path_starts_at_old_painted_coordinates_and_lands_exactly() {
         let before = ReflowOffset { x: 25.0, y: 150.0 };
         let after = ReflowOffset { x: 90.0, y: 35.0 };
-        assert_eq!(reflow_offset(before, after, 0.0), ReflowOffset { x: -65.0, y: 115.0 });
-        assert_eq!(reflow_offset(before, after, 1.0), ReflowOffset { x: 0.0, y: 0.0 });
+        assert_eq!(
+            reflow_offset(before, after, 0.0),
+            ReflowOffset { x: -65.0, y: 115.0 }
+        );
+        assert_eq!(
+            reflow_offset(before, after, 1.0),
+            ReflowOffset { x: 0.0, y: 0.0 }
+        );
     }
 
     #[test]
@@ -262,10 +271,10 @@ mod tests {
         let first = ReflowOffset { x: 100.0, y: 0.0 };
         let next = ReflowOffset { x: 30.0, y: 0.0 };
         let visible = reflow_offset(old, first, 0.25);
-        let painted = ReflowOffset { x: first.x + visible.x, y: first.y + visible.y };
-        assert_eq!(
-            reflow_offset(painted, next, 0.0).x,
-            painted.x - next.x,
-        );
+        let painted = ReflowOffset {
+            x: first.x + visible.x,
+            y: first.y + visible.y,
+        };
+        assert_eq!(reflow_offset(painted, next, 0.0).x, painted.x - next.x,);
     }
 }

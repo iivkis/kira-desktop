@@ -263,8 +263,7 @@ impl WorkspaceStrip {
                 None => self.buttons.first_child().as_ref() == Some(row.upcast_ref()),
             };
             if !in_position {
-                self.buttons
-                    .reorder_child_after(&row, predecessor.as_ref());
+                self.buttons.reorder_child_after(&row, predecessor.as_ref());
             }
             predecessor = Some(row.upcast());
         }

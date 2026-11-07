@@ -123,20 +123,41 @@ mod tests {
 
     #[test]
     fn nearest_visible_does_not_scroll_if_row_is_already_visible() {
-        assert_eq!(nearest_visible_offset(20.0, 100.0, 25.0, 80.0, 0.0, 500.0), 20.0);
+        assert_eq!(
+            nearest_visible_offset(20.0, 100.0, 25.0, 80.0, 0.0, 500.0),
+            20.0
+        );
     }
 
     #[test]
     fn nearest_visible_scrolls_minimally_in_both_directions() {
-        assert_eq!(nearest_visible_offset(80.0, 100.0, 20.0, 40.0, 0.0, 500.0), 20.0);
-        assert_eq!(nearest_visible_offset(80.0, 100.0, 170.0, 215.0, 0.0, 500.0), 115.0);
+        assert_eq!(
+            nearest_visible_offset(80.0, 100.0, 20.0, 40.0, 0.0, 500.0),
+            20.0
+        );
+        assert_eq!(
+            nearest_visible_offset(80.0, 100.0, 170.0, 215.0, 0.0, 500.0),
+            115.0
+        );
     }
 
     #[test]
     fn nearest_visible_clamps_to_real_adjustment_limits() {
-        assert_eq!(nearest_visible_offset(0.0, 100.0, -20.0, 0.0, 0.0, 500.0), 0.0);
-        assert_eq!(nearest_visible_offset(370.0, 100.0, 490.0, 535.0, 0.0, 500.0), 400.0);
-        assert_eq!(nearest_visible_offset(13.0, 0.0, 100.0, 140.0, 0.0, 500.0), 13.0);
-        assert_eq!(nearest_visible_offset(13.0, 100.0, f64::NAN, 140.0, 0.0, 500.0), 13.0);
+        assert_eq!(
+            nearest_visible_offset(0.0, 100.0, -20.0, 0.0, 0.0, 500.0),
+            0.0
+        );
+        assert_eq!(
+            nearest_visible_offset(370.0, 100.0, 490.0, 535.0, 0.0, 500.0),
+            400.0
+        );
+        assert_eq!(
+            nearest_visible_offset(13.0, 0.0, 100.0, 140.0, 0.0, 500.0),
+            13.0
+        );
+        assert_eq!(
+            nearest_visible_offset(13.0, 100.0, f64::NAN, 140.0, 0.0, 500.0),
+            13.0
+        );
     }
 }

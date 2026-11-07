@@ -184,11 +184,7 @@ impl LauncherState {
             let cache = self.cache.borrow();
             let ordered: Vec<_> = prior
                 .iter()
-                .filter_map(|key| {
-                    cache
-                        .get(key)
-                        .map(|(_, row, _)| (key.clone(), row.clone()))
-                })
+                .filter_map(|key| cache.get(key).map(|(_, row, _)| (key.clone(), row.clone())))
                 .collect();
             Some(self.reflow.capture(&ordered))
         } else {
@@ -239,10 +235,9 @@ impl LauncherState {
             let (button, row) = if let Some((button, row, model)) = cached {
                 if model != *app {
                     update_app_row(&button, app);
-                    self.cache.borrow_mut().insert(
-                        app.id.clone(),
-                        (button.clone(), row.clone(), app.clone()),
-                    );
+                    self.cache
+                        .borrow_mut()
+                        .insert(app.id.clone(), (button.clone(), row.clone(), app.clone()));
                 }
                 (button, row)
             } else {
@@ -255,10 +250,9 @@ impl LauncherState {
                 button.connect_clicked(move |_| (launch)(id.clone()));
                 let row = ReflowRow::new(&button.clone().upcast());
                 self.list.append(&row);
-                self.cache.borrow_mut().insert(
-                    app.id.clone(),
-                    (button.clone(), row.clone(), app.clone()),
-                );
+                self.cache
+                    .borrow_mut()
+                    .insert(app.id.clone(), (button.clone(), row.clone(), app.clone()));
                 (button, row)
             };
             let in_position = match &predecessor {
@@ -266,8 +260,7 @@ impl LauncherState {
                 None => self.list.first_child().as_ref() == Some(row.upcast_ref()),
             };
             if !in_position {
-                self.list
-                    .reorder_child_after(&row, predecessor.as_ref());
+                self.list.reorder_child_after(&row, predecessor.as_ref());
             }
             predecessor = Some(row.clone().upcast());
             visible.push((app.id.clone(), row));
