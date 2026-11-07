@@ -108,6 +108,7 @@ pub struct ClockDigits {
     digits: Rc<Vec<Option<DigitCell>>>,
     initialized: Cell<bool>,
     text: RefCell<String>,
+    settings_handler: Option<(gtk::Settings, gtk::glib::SignalHandlerId)>,
 }
 
 impl ClockDigits {
@@ -128,9 +129,9 @@ impl ClockDigits {
             }
         }
         let digits = Rc::new(digits);
-        if let Some(settings) = gtk::Settings::default() {
+        let settings_handler = gtk::Settings::default().map(|settings| {
             let weak = Rc::downgrade(&digits);
-            settings.connect_notify_local(Some("gtk-enable-animations"), move |settings, _| {
+            let handler = settings.connect_notify_local(Some("gtk-enable-animations"), move |settings, _| {
                 if !settings.property::<bool>("gtk-enable-animations")
                     && let Some(digits) = weak.upgrade()
                 {
@@ -139,12 +140,14 @@ impl ClockDigits {
                     }
                 }
             });
-        }
+            (settings, handler)
+        });
         Self {
             root,
             digits,
             initialized: Cell::new(false),
             text: RefCell::new(String::new()),
+            settings_handler,
         }
     }
 
@@ -176,6 +179,15 @@ impl ClockDigits {
         for cell in self.digits.iter().flatten() {
             cell.reset();
         }
+    }
+}
+
+impl Drop for ClockDigits {
+    fn drop(&mut self) {
+        if let Some((settings, handler)) = self.settings_handler.take() {
+            settings.disconnect(handler);
+        }
+        self.clear_motion();
     }
 }
 
