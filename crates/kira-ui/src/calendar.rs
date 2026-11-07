@@ -54,7 +54,11 @@ impl State {
 
     fn focus_selected(&self) {
         let selected = self.selected.get();
-        if let Some(index) = self.dates.borrow().iter().position(|date| *date == Some(selected))
+        if let Some(index) = self
+            .dates
+            .borrow()
+            .iter()
+            .position(|date| *date == Some(selected))
             && let Some(button) = self.days.get(index)
         {
             button.grab_focus();
@@ -65,7 +69,9 @@ impl State {
         let selected = self.selected.get();
         let today = self.today.get();
         self.title.set_text(&format!(
-            "{} {}", MONTHS[usize::from(selected.month - 1)], selected.year
+            "{} {}",
+            MONTHS[usize::from(selected.month - 1)],
+            selected.year
         ));
         self.selected_title.set_text(&selected.short_label());
         self.selected_iso.set_text(&selected.iso());
@@ -80,9 +86,8 @@ impl State {
         let mut dates = self.dates.borrow_mut();
         for (week_index, week) in grid.iter().enumerate() {
             let week_number = week[0].map(|day| day.iso_week().1);
-            self.weeks[week_index].set_text(
-                &week_number.map_or_else(String::new, |number| format!("{number:02}")),
-            );
+            self.weeks[week_index]
+                .set_text(&week_number.map_or_else(String::new, |number| format!("{number:02}")));
             for (day_index, day) in week.iter().enumerate() {
                 let index = week_index * 7 + day_index;
                 dates[index] = *day;
@@ -94,9 +99,15 @@ impl State {
                     button.set_tooltip_text(Some(&date.full_label()));
                     button.update_property(&[gtk::accessible::Property::Label(&date.full_label())]);
                     for (class, active) in [
-                        ("selected", state.selected), ("today", state.today), ("outside", state.outside),
+                        ("selected", state.selected),
+                        ("today", state.today),
+                        ("outside", state.outside),
                     ] {
-                        if active { button.add_css_class(class); } else { button.remove_css_class(class); }
+                        if active {
+                            button.add_css_class(class);
+                        } else {
+                            button.remove_css_class(class);
+                        }
                     }
                 } else {
                     button.set_visible(false);
@@ -124,11 +135,13 @@ impl State {
         match (self.copy)(iso.clone()) {
             Ok(()) => {
                 self.copy_button.set_label("СКОПИРОВАНО");
-                self.feedback.set_text(&format!("Дата {iso} передана в буфер обмена"));
+                self.feedback
+                    .set_text(&format!("Дата {iso} передана в буфер обмена"));
             }
             Err(error) => {
                 self.copy_button.set_label("КОПИРОВАТЬ");
-                self.feedback.set_text(&format!("НЕ УДАЛОСЬ СКОПИРОВАТЬ: {error}"));
+                self.feedback
+                    .set_text(&format!("НЕ УДАЛОСЬ СКОПИРОВАТЬ: {error}"));
             }
         }
     }
@@ -148,8 +161,8 @@ fn labeled_button(label: &str, tooltip: &str) -> gtk::Button {
 
 impl Calendar {
     pub fn new(copy: impl Fn(String) -> Result<(), String> + 'static) -> Self {
-        let today = current_local_date()
-            .expect("a supported local civil date (year 1..9999) is required");
+        let today =
+            current_local_date().expect("a supported local civil date (year 1..9999) is required");
         let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
         root.add_css_class("kira-calendar");
 
@@ -161,7 +174,8 @@ impl Calendar {
         let clock_button = gtk::Button::new();
         clock_button.add_css_class("calendar-clock-play");
         clock_button.set_tooltip_text(Some("Анимировать цифры часов"));
-        clock_button.update_property(&[gtk::accessible::Property::Label("Анимировать цифры часов")]);
+        clock_button
+            .update_property(&[gtk::accessible::Property::Label("Анимировать цифры часов")]);
         clock_button.set_child(Some(&clock));
         let clock_scene = Rc::new(CalendarFragmentScene::new());
         let clock_overlay = gtk::Overlay::new();
@@ -250,7 +264,10 @@ impl Calendar {
         today_button.set_hexpand(true);
         today_button.set_halign(gtk::Align::Start);
         footer_actions.append(&today_button);
-        let copy_button = labeled_button("КОПИРОВАТЬ", "Скопировать выбранную дату в формате ISO 8601");
+        let copy_button = labeled_button(
+            "КОПИРОВАТЬ",
+            "Скопировать выбранную дату в формате ISO 8601",
+        );
         copy_button.add_css_class("calendar-footer-action");
         footer_actions.append(&copy_button);
         footer.append(&footer_actions);
@@ -262,17 +279,30 @@ impl Calendar {
         root.append(&footer);
 
         let state = Rc::new(State {
-            days, dates: RefCell::new(vec![None; 42]), weeks, selected: Cell::new(today),
-            today: Cell::new(today), title, date_today, clock, selected_title, selected_iso,
-            feedback, copy_button: copy_button.clone(), navigation,
-            grid_scene, copy: Rc::new(copy),
+            days,
+            dates: RefCell::new(vec![None; 42]),
+            weeks,
+            selected: Cell::new(today),
+            today: Cell::new(today),
+            title,
+            date_today,
+            clock,
+            selected_title,
+            selected_iso,
+            feedback,
+            copy_button: copy_button.clone(),
+            navigation,
+            grid_scene,
+            copy: Rc::new(copy),
         });
 
         for (step, button) in &state.navigation {
             let weak = Rc::downgrade(&state);
             let step = *step;
             button.connect_clicked(move |_| {
-                if let Some(state) = weak.upgrade() { state.move_months(step); }
+                if let Some(state) = weak.upgrade() {
+                    state.move_months(step);
+                }
             });
         }
         for (index, button) in state.days.iter().enumerate() {
@@ -280,7 +310,9 @@ impl Calendar {
             button.connect_clicked(move |_| {
                 if let Some(state) = weak.upgrade() {
                     let date = state.dates.borrow().get(index).copied().flatten();
-                    if let Some(date) = date { state.choose(date); }
+                    if let Some(date) = date {
+                        state.choose(date);
+                    }
                 }
             });
             let key = gtk::EventControllerKey::new();
@@ -302,10 +334,16 @@ impl Calendar {
                     state.choose(state.today.get());
                     state.focus_selected();
                 } else if keyval == gtk::gdk::Key::Page_Up || keyval == gtk::gdk::Key::Page_Down {
-                    let direction = if keyval == gtk::gdk::Key::Page_Up { -1 } else { 1 };
+                    let direction = if keyval == gtk::gdk::Key::Page_Up {
+                        -1
+                    } else {
+                        1
+                    };
                     let increment = if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
                         12
-                    } else { 1 };
+                    } else {
+                        1
+                    };
                     state.move_months(direction * increment);
                 } else {
                     return gtk::glib::Propagation::Proceed;
@@ -326,7 +364,9 @@ impl Calendar {
         copy_button.connect_clicked({
             let weak = Rc::downgrade(&state);
             move |_| {
-                if let Some(state) = weak.upgrade() { state.copy_selected(); }
+                if let Some(state) = weak.upgrade() {
+                    state.copy_selected();
+                }
             }
         });
         clock_button.connect_clicked(move |_| clock_scene.play(1));

@@ -14,9 +14,9 @@ use gtk::prelude::*;
 use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
-    ApplicationEntry, Bar, Calendar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading, InfoPanel,
-    Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor, SystemOverview,
-    WorkspaceItem,
+    ApplicationEntry, Bar, Calendar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading,
+    InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor,
+    SystemOverview, WorkspaceItem,
 };
 
 enum ShellUpdate {

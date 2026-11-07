@@ -12,8 +12,7 @@ pub mod workspace;
 
 pub use bar::{Bar, action_button};
 pub use calendar::Calendar;
-pub use calendar_model::{CivilDate, DayState, month_grid, current_local_date};
-pub use motion::{MotionToken, CalendarFragmentScene, TimeDirection, calendar_flights, dual_time};
+pub use calendar_model::{CivilDate, DayState, current_local_date, month_grid};
 pub use displays::{
     DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings,
 };

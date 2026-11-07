@@ -17,8 +17,10 @@ pub struct DayState {
 
 impl CivilDate {
     pub fn new(year: i32, month: u8, day: u8) -> Option<Self> {
-        if !(1..=9999).contains(&year) || !(1..=12).contains(&month)
-            || day == 0 || day > days_in_month(year, month)
+        if !(1..=9999).contains(&year)
+            || !(1..=12).contains(&month)
+            || day == 0
+            || day > days_in_month(year, month)
         {
             return None;
         }
@@ -61,41 +63,87 @@ impl CivilDate {
     }
 
     pub fn day_of_year(self) -> u16 {
-        (days_from_civil(self) - days_from_civil(Self {
-            year: self.year, month: 1, day: 1,
-        }) + 1) as u16
+        (days_from_civil(self)
+            - days_from_civil(Self {
+                year: self.year,
+                month: 1,
+                day: 1,
+            })
+            + 1) as u16
     }
 
-    pub fn state(self, selected: Self, today: Self, visible_year: i32, visible_month: u8) -> DayState {
+    pub fn state(
+        self,
+        selected: Self,
+        today: Self,
+        visible_year: i32,
+        visible_month: u8,
+    ) -> DayState {
         DayState {
-            date: self, today: self == today, selected: self == selected,
+            date: self,
+            today: self == today,
+            selected: self == selected,
             outside: self.year != visible_year || self.month != visible_month,
         }
     }
 
     pub fn short_label(self) -> String {
-        format!("{} {}, {}", WEEKDAYS_LONG[self.weekday() as usize],
-            self.day, MONTH_GENITIVE[usize::from(self.month - 1)])
+        format!(
+            "{} {}, {}",
+            WEEKDAYS_LONG[self.weekday() as usize],
+            self.day,
+            MONTH_GENITIVE[usize::from(self.month - 1)]
+        )
     }
 
     pub fn full_label(self) -> String {
-        format!("{} {} {} {} г.", WEEKDAYS_LONG[self.weekday() as usize],
-            self.day, MONTH_GENITIVE[usize::from(self.month - 1)], self.year)
+        format!(
+            "{} {} {} {} г.",
+            WEEKDAYS_LONG[self.weekday() as usize],
+            self.day,
+            MONTH_GENITIVE[usize::from(self.month - 1)],
+            self.year
+        )
     }
 }
 
 pub const WEEKDAYS: [&str; 7] = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
 pub const WEEKDAYS_LONG: [&str; 7] = [
-    "понедельник", "вторник", "среда", "четверг",
-    "пятница", "суббота", "воскресенье",
+    "понедельник",
+    "вторник",
+    "среда",
+    "четверг",
+    "пятница",
+    "суббота",
+    "воскресенье",
 ];
 pub const MONTHS: [&str; 12] = [
-    "январь", "февраль", "март", "апрель", "май", "июнь",
-    "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",
+    "январь",
+    "февраль",
+    "март",
+    "апрель",
+    "май",
+    "июнь",
+    "июль",
+    "август",
+    "сентябрь",
+    "октябрь",
+    "ноябрь",
+    "декабрь",
 ];
 pub const MONTH_GENITIVE: [&str; 12] = [
-    "января", "февраля", "марта", "апреля", "мая", "июня",
-    "июля", "августа", "сентября", "октября", "ноября", "декабря",
+    "января",
+    "февраля",
+    "марта",
+    "апреля",
+    "мая",
+    "июня",
+    "июля",
+    "августа",
+    "сентября",
+    "октября",
+    "ноября",
+    "декабря",
 ];
 
 pub fn days_in_month(year: i32, month: u8) -> u8 {
@@ -130,7 +178,11 @@ fn civil_from_days(serial: i64) -> Option<CivilDate> {
     let d = doy - (153 * mp + 2) / 5 + 1;
     let m = mp + if mp < 10 { 3 } else { -9 };
     y += i64::from(m <= 2);
-    CivilDate::new(i32::try_from(y).ok()?, u8::try_from(m).ok()?, u8::try_from(d).ok()?)
+    CivilDate::new(
+        i32::try_from(y).ok()?,
+        u8::try_from(m).ok()?,
+        u8::try_from(d).ok()?,
+    )
 }
 
 /// Exactly six Monday-first rows with real adjacent-month dates.
@@ -144,7 +196,11 @@ pub fn month_grid(year: i32, month: u8) -> Option<[[Option<CivilDate>; 7]; 6]> {
 
 pub fn current_local_date() -> Option<CivilDate> {
     let now = gtk::glib::DateTime::now_local().ok()?;
-    CivilDate::new(now.year(), u8::try_from(now.month()).ok()?, u8::try_from(now.day_of_month()).ok()?)
+    CivilDate::new(
+        now.year(),
+        u8::try_from(now.month()).ok()?,
+        u8::try_from(now.day_of_month()).ok()?,
+    )
 }
 
 #[cfg(test)]

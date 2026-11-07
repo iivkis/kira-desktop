@@ -43,10 +43,26 @@ pub fn dual_time(progress: f64) -> (f64, f64) {
 pub fn calendar_flights(direction: i32) -> [Flight; 4] {
     let sign = if direction < 0 { -1.0 } else { 1.0 };
     [
-        Flight { x: -39.0 * sign, y: -18.0, rotation: -65.0 },
-        Flight { x: 31.0 * sign, y: 29.0, rotation: 42.0 },
-        Flight { x: -14.0 * sign, y: 40.0, rotation: 80.0 },
-        Flight { x: 37.0 * sign, y: -32.0, rotation: -35.0 },
+        Flight {
+            x: -39.0 * sign,
+            y: -18.0,
+            rotation: -65.0,
+        },
+        Flight {
+            x: 31.0 * sign,
+            y: 29.0,
+            rotation: 42.0,
+        },
+        Flight {
+            x: -14.0 * sign,
+            y: 40.0,
+            rotation: 80.0,
+        },
+        Flight {
+            x: 37.0 * sign,
+            y: -32.0,
+            rotation: -35.0,
+        },
     ]
 }
 
@@ -67,9 +83,8 @@ pub fn back_out(progress: f64, overshoot: f64) -> f64 {
 }
 
 fn animations_enabled() -> bool {
-    gtk::Settings::default().is_none_or(|settings| {
-        settings.property::<bool>("gtk-enable-animations")
-    })
+    gtk::Settings::default()
+        .is_none_or(|settings| settings.property::<bool>("gtk-enable-animations"))
 }
 
 /// One generation per surface: starting a new motion invalidates the old tick.
@@ -102,8 +117,8 @@ impl MotionToken {
             if token.generation.get() != generation {
                 return gtk::glib::ControlFlow::Break;
             }
-            let cursor = (started.elapsed().as_secs_f64() * 1000.0
-                / duration_ms as f64).clamp(0.0, 1.0);
+            let cursor =
+                (started.elapsed().as_secs_f64() * 1000.0 / duration_ms as f64).clamp(0.0, 1.0);
             step(cursor);
             if cursor >= 1.0 {
                 if let Some(complete) = complete.take() {
@@ -181,7 +196,13 @@ impl CalendarFragmentScene {
                 }
             });
         }
-        Self { area, progress, active, direction, motion: MotionToken::default() }
+        Self {
+            area,
+            progress,
+            active,
+            direction,
+            motion: MotionToken::default(),
+        }
     }
 
     pub fn widget(&self) -> gtk::Widget {
