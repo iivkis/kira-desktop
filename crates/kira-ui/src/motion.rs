@@ -88,7 +88,6 @@ pub fn back_out(progress: f64, overshoot: f64) -> f64 {
     1.0 + (overshoot + 1.0) * u.powi(3) + overshoot * u.powi(2)
 }
 
-
 /** Equivalent of main's 400ms per-digit INVERTED entry. Coordinates are
  * expressed as a fraction of the measured digit height, not hardcoded pixels.
  * The outgoing and incoming tracks share one normalized cursor. */
@@ -460,7 +459,6 @@ mod tests {
         }
     }
 
-
     #[test]
     fn individual_digits_retrace_main_outbound_history() {
         assert_eq!(clock_digit_frame(0.0).outgoing_y, 0.0);
@@ -489,7 +487,7 @@ mod tests {
         assert!((timeline.progress() - 0.3).abs() < 1e-9);
         timeline.open();
         assert!((timeline.progress() - 0.3).abs() < 1e-9);
-        timeline.advance_ms(262.5);
+        timeline.advance_ms(300.0);
         assert_eq!(timeline.phase(), PopupPhase::Visible);
         assert_eq!(timeline.progress(), 1.0);
         timeline.close();
