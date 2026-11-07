@@ -90,28 +90,38 @@ impl DigitCell {
         }
         self.ghost.set_text(&previous.to_string());
         let height = self.slot.height().max(self.live.height()).max(1) as f64;
-        let layer = self.layer.clone();
-        let live = self.live.clone();
-        let ghost = self.ghost.clone();
-        let cleanup_layer = self.layer.clone();
-        let cleanup_live = self.live.clone();
-        let cleanup_ghost = self.ghost.clone();
+        let layer = self.layer.downgrade();
+        let live = self.live.downgrade();
+        let ghost = self.ghost.downgrade();
+        let cleanup_layer = self.layer.downgrade();
+        let cleanup_live = self.live.downgrade();
+        let cleanup_ghost = self.ghost.downgrade();
         let surface: gtk::Widget = self.slot.clone().upcast();
         self.motion.run(
             &surface,
             CLOCK_DIGIT_DURATION_MS,
             move |progress| {
                 let sample = clock_digit_frame(progress);
-                layer.move_(&live, 0.0, sample.incoming_y * height);
-                layer.move_(&ghost, 0.0, sample.outgoing_y * height);
-                live.set_opacity(sample.incoming_opacity);
-                ghost.set_opacity(sample.outgoing_opacity);
+                if let (Some(layer), Some(live), Some(ghost)) =
+                    (layer.upgrade(), live.upgrade(), ghost.upgrade())
+                {
+                    layer.move_(&live, 0.0, sample.incoming_y * height);
+                    layer.move_(&ghost, 0.0, sample.outgoing_y * height);
+                    live.set_opacity(sample.incoming_opacity);
+                    ghost.set_opacity(sample.outgoing_opacity);
+                }
             },
             move || {
-                cleanup_layer.move_(&cleanup_live, 0.0, 0.0);
-                cleanup_layer.move_(&cleanup_ghost, 0.0, 0.0);
-                cleanup_live.set_opacity(1.0);
-                cleanup_ghost.set_opacity(0.0);
+                if let (Some(layer), Some(live), Some(ghost)) = (
+                    cleanup_layer.upgrade(),
+                    cleanup_live.upgrade(),
+                    cleanup_ghost.upgrade(),
+                ) {
+                    layer.move_(&live, 0.0, 0.0);
+                    layer.move_(&ghost, 0.0, 0.0);
+                    live.set_opacity(1.0);
+                    ghost.set_opacity(0.0);
+                }
             },
         );
     }
@@ -151,7 +161,9 @@ impl ClockDigits {
             }
         }
         let digits = Rc::new(digits);
+        let juggle_motion = MotionToken::default();
         let settings_handler = gtk::Settings::default().map(|settings| {
+            let jog = juggle_motion.clone();
             let weak = Rc::downgrade(&digits);
             let handler = settings.connect_notify_local(
                 Some("gtk-enable-animations"),
@@ -159,8 +171,11 @@ impl ClockDigits {
                     if !settings.property::<bool>("gtk-enable-animations")
                         && let Some(digits) = weak.upgrade()
                     {
+                        jog.cancel();
                         for cell in digits.iter().flatten() {
                             cell.reset();
+                            cell.slot.set_overflow(gtk::Overflow::Hidden);
+                            cell.slot.set_clip_overlay(&cell.layer, true);
                         }
                     }
                 },
@@ -172,7 +187,7 @@ impl ClockDigits {
             digits,
             initialized: Cell::new(false),
             text: RefCell::new(String::new()),
-            juggle_motion: MotionToken::default(),
+            juggle_motion,
             previous_flights: RefCell::new(Vec::new()),
             juggle_nonce: Cell::new(0),
             settings_handler,
@@ -209,6 +224,8 @@ impl ClockDigits {
         for cell in self.digits.iter().flatten() {
             cell.layer.set_child_transform(&cell.live, None);
             cell.live.set_opacity(1.0);
+            cell.slot.set_overflow(gtk::Overflow::Hidden);
+            cell.slot.set_clip_overlay(&cell.layer, true);
         }
     }
 
@@ -243,11 +260,23 @@ impl ClockDigits {
 
         // Weak widget handles prevent a frame-clock callback from keeping
         // the entire GTK clock tree alive after its owner has been dropped.
+        // The digit's normal clip is only disabled for this bounded click
+        // scene. Re-enable on cancel/complete, including reduced motion.
+        for cell in self.digits.iter().flatten() {
+            cell.slot.set_overflow(gtk::Overflow::Visible);
+            cell.slot.set_clip_overlay(&cell.layer, false);
+        }
         let handles: Vec<_> = self
             .digits
             .iter()
             .flatten()
-            .map(|cell| (cell.layer.downgrade(), cell.live.downgrade()))
+            .map(|cell| {
+                (
+                    cell.slot.downgrade(),
+                    cell.layer.downgrade(),
+                    cell.live.downgrade(),
+                )
+            })
             .collect();
         let on_finish = handles.clone();
         let half_ms = CLOCK_JUGGLE_FLIGHT_MS
@@ -264,7 +293,7 @@ impl ClockDigits {
                 } else {
                     total_ms - elapsed
                 };
-                for (index, (layer, live)) in handles.iter().enumerate() {
+                for (index, (_, layer, live)) in handles.iter().enumerate() {
                     let (Some(layer), Some(live)) = (layer.upgrade(), live.upgrade()) else {
                         continue;
                     };
@@ -287,10 +316,14 @@ impl ClockDigits {
                 }
             },
             move || {
-                for (layer, live) in &on_finish {
-                    if let (Some(layer), Some(live)) = (layer.upgrade(), live.upgrade()) {
+                for (slot, layer, live) in &on_finish {
+                    if let (Some(slot), Some(layer), Some(live)) =
+                        (slot.upgrade(), layer.upgrade(), live.upgrade())
+                    {
                         layer.set_child_transform(&live, None);
                         live.set_opacity(1.0);
+                        slot.set_overflow(gtk::Overflow::Hidden);
+                        slot.set_clip_overlay(&layer, true);
                     }
                 }
             },
