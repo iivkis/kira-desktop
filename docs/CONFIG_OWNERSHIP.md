@@ -1,6 +1,6 @@
 # Kira configuration ownership and transactions
 
-**Status:** normative design contract. First working adapter: Settings → Displays / Niri.
+**Status:** normative design contract and migration target. The old display adapter existed on main; native-gtk has not yet restored its GTK Settings implementation.
 
 ## Goal
 
@@ -128,7 +128,7 @@ existing output blocks remain separate features.
 
 ### Verification
 
-Run \`task check\`, \`task frontend:build\`, the bundled browser smoke tests,
+After porting the native display adapter, run \`task check\`, \`task shell:check\`,
 and a nested Niri session to test: writable user KDL, symlinked Nix config with
 explicit include, external edits, missing fragment, invalid KDL,
 partial commit/rollback, a disconnected monitor, and a 15-second timeout.

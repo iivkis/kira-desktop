@@ -27,6 +27,8 @@ jobs:
           cargo fmt --all -- --check
           cargo clippy --locked -p kira-core -p kira-ipc --all-targets -- -D warnings
           cargo test --locked -p kira-core -p kira-ipc --all-targets
+      - name: Validate native preview Python syntax
+        run: python3 -m py_compile scripts/dev_preview.py
       - name: Verify removed web frontend
         run: |
           test ! -e frontend/package.json

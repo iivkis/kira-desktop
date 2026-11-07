@@ -97,7 +97,7 @@ fn make_button(symbol: &str, description: &str, on_click: impl Fn() + 'static) -
     let button = gtk::Button::with_label(symbol);
     button.add_css_class("bar-action");
     button.set_tooltip_text(Some(description));
-    button.set_accessible_name(Some(description));
+    button.update_property(&[gtk::accessible::Property::Label(description)]);
     button.connect_clicked(move |_| on_click());
     button
 }
@@ -139,7 +139,7 @@ fn launcher_view() -> gtk::Box {
     let root = gtk::Box::new(gtk::Orientation::Vertical, 12);
     let search = gtk::SearchEntry::new();
     search.set_placeholder_text(Some("Найти приложение"));
-    search.set_accessible_name(Some("Поиск приложений"));
+    search.update_property(&[gtk::accessible::Property::Label("Поиск приложений")]);
     root.append(&search);
 
     let scroll = gtk::ScrolledWindow::new();

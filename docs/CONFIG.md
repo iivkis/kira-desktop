@@ -108,12 +108,11 @@ The preview reads it but never modifies it.
 ## Internal data flow
 
 `config.kdl` → Core bounded parser + last-good watcher →
-`get_config` / internal `subscribe_config` → Shell worker thread →
-WebKit `kira:config` CustomEvent → typed Svelte SDK → live components.
+internal `subscribe_config` → Shell worker thread → GTK main-context
+delivery → native GTK view controller.
 
-The `subscribe_config` method is private to the Core Unix socket and is
-**not** exposed via the WebKit JSON-RPC allowlist. Only `get_config`
-is available to the UI, along with the existing read-only methods.
+`subscribe_config` is a read-only Core Unix socket method, not a UI
+capability. A GTK widget never receives a raw socket or Niri command.
 Changing config cannot invoke Niri `Action`. Existing workspaces remain
 connected even if the config becomes invalid.
 

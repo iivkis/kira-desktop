@@ -259,14 +259,12 @@ def run_preview(
             )
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
-            if True:  # Only the interactive native mode is currently supported
-                print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
-                print("[preview] Edit this file to hot-reload the bar; invalid KDL retains last valid config.", flush=True)
+            print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
+            print("[preview] Edit this file to hot-reload the bar; invalid KDL retains last valid config.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
-            if True:  # Only the interactive native mode is currently supported
-                print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
-                print("[preview] Alt+Ctrl+1/2 moves the focused window without changing the focused workspace; Alt+1/2 switches.", flush=True)
-                print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)
+            print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
+            print("[preview] Alt+Ctrl+1/2 moves the focused window without changing the focused workspace; Alt+1/2 switches.", flush=True)
+            print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)
 
             while True:
                 if debug:
@@ -310,7 +308,7 @@ def run_preview(
                 if shell_log.strip():
                     tail = log_tail(logs["shell"])
                     if tail:
-                        print(f"[preview] Shell diagnostics (native diagnostics):\n{tail}", file=sys.stderr)
+                        print(f"[preview] Native Shell diagnostics:\n{tail}", file=sys.stderr)
 
             print("[preview] Preview processes stopped; temporary files cleaned up.", flush=True)
 
