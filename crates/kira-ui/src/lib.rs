@@ -3,6 +3,7 @@
 pub mod bar;
 pub mod calendar;
 pub mod calendar_model;
+pub mod clock_digits;
 pub mod displays;
 pub mod launcher;
 pub mod motion;
