@@ -1,103 +1,36 @@
-# Kira Desktop contributor and agent rules
+# Kira Desktop V2 contributor and agent rules
 
-## TENET Motion System (mandatory for ALL animation work)
+**Active architecture for branch kira-desktop-v2:** [docs/V2_ARCHITECTURE.md](docs/V2_ARCHITECTURE.md). Decision: [ADR-0001](docs/adr/0001-lua-rust-gtk.md). Migration: [docs/V2_MIGRATION.md](docs/V2_MIGRATION.md).
 
-**Read [docs/TENET_MOTION.md](docs/TENET_MOTION.md) before creating, editing,
-reviewing or replacing any animation** in any Kira Desktop widget, surface or
-component. It is the normative motion specification, not optional inspiration.
-This includes GSAP effects, ECharts transitions, GTK/native visual motion,
-hover/focus reactions, animated data readouts, and future widgets.
+## This branch's authoritative direction
 
-The five required laws are **Reverse Causality, Dual Time Flow, Physical
-Continuity, Temporal Memory, and Causal Consistency**. In addition, **flow and
-elastic continuity are mandatory for every moving selection, highlight, widget
-entrance and component transition**: a shared visual element must travel from
-its current geometry to the next, never blink between separate instances.
-Keep GSAP transitions interruptible and spring settling restrained.
-For each animation:
+1. **Lua is the authoring language for widgets, styles, state and UI logic.** Produce a native GTK4 interface, not Svelte/HTML.
+2. **A compiler/transpiler written in Rust converts a validated Lua subset into Rust gtk4-rs code and GTK CSS/resources at build time.** Do not implement V2 by embedding a Lua VM to create widgets at runtime.
+3. Keep Linux, Niri, IPC, D-Bus, OS side effects, security and integration in trusted Rust. Generated UI must call only validated capabilities, never execute arbitrary OS commands.
+4. Keep NixOS-first reproducible builds, cargo lockfiles, deterministic generated output and typed error diagnostics.
+5. The current Svelte/WebKit sources, npm build and GSAP code were inherited from V1. They are **legacy migration baseline only**. Do not add new V2 features in them or assume green V1 CI validates V2.
+6. Before the compiler exists, Lua examples and documents are specifications, **not runnable code**. Mark implementation status honestly.
+7. Do not remove V1 modules until replacement parity and native GTK/Niri tests have passed. Keep the default main branch unchanged.
 
-- Choose FORWARD (+1), INVERTED (-1), or a synchronized DUAL scene **by
-  event sequence**, never by merely reversing the CSS direction or axis.
-  Simple functional feedback may remain FORWARD; do not invert everything.
-- For an inverted effect, record one event's **original states, paths, easing,
-  impacts, and secondary traces**. Reverse that exact history. A new user
-  interaction may randomize a new event, but the *return* must not reroll it.
-- Keep both time flows anchored to one real contact/activation point and
-  restore exact final geometry with no stuck fragments or jumps. Handle
-  interruptions, repeat clicks, Escape, unmount and motion changes.
-- Keep all actual actions, time displays, telemetry, focus, keyboard behavior,
-  and accessibility truthful and immediate. Respect reduced motion and
-  use only the approved Kira palette.
-- In PR notes, identify the timeline directions, contact event, recorded
-  trajectory and reset path. Test playback/restore, repeated clicks,
-  reduced motion, lifecycle cleanup and the offline WebKit bundle. Verify
-  native visual behavior in nested Niri when available.
+## Compiler implementation contract
 
-Existing animations are reviewed against this contract **when touched**;
-do not claim an unreviewed legacy animation already complies.
+- Parse Lua source without executing it; support and document a statically analyzable subset.
+- Parse → AST → validated typed IR → Rust/GTK codegen. Never paste unchecked Lua strings into generated Rust or CSS.
+- Reject unsupported Lua features rather than quietly falling back to evaluation/interpreter mode.
+- Emit stable source diagnostics, limit memory/depth/input size and keep build results deterministic.
+- Cover parse, type validation, Rust emission, diagnostics, negative/security cases, Nix build and actual native GTK smoke.
+- Generated Rust is build output, not hand-maintained source.
 
-## Hover interaction policy
+## UI and design invariants
 
-The optional hover pixel-distortion/lens experiment was deliberately
-removed after visual review. Do **not** reintroduce the SVG displacement
-filter, pseudo-lens, glow or cursor-tracked warp as a default for clickable
-controls. Ordinary accessible hover/focus styling remains supported.
-Future hover motion requires a new explicit design request and visual
-acceptance, in addition to the TENET motion principles.
+- Retain Kira Default's Black/Prussian Blue/Orange/Alabaster Grey/White identity and truthfully reported system states.
+- GTK4 is now the actual widget renderer, not merely a WebKit host. Styling is GTK CSS generated from Lua styles.
+- Preserve accessibility, keyboard, focus, reduced motion and display safety rollback.
+- TENET principles remain a design goal; GSAP-specific mandatory rules of V1 **do not apply** to V2. A native Rust/GTK implementation and acceptance contract must be designed.
+- No speculative claim that compilation makes UI faster/lighter until measured.
 
-## Visual stack (mandatory)
+## Working with the legacy implementation
 
-- **Apache ECharts** is the project's charting library for all new or redesigned
-  charts, gauges, trends and quantitative visualizations. Do not hand-draw charts
-  with ad-hoc CSS bars, SVG paths or an additional charting library.
-  Prefer tree-shakable `echarts/core` imports, register only required modules
-  and choose SVG rendering for compact WebKitGTK overlays.
-- **GSAP** is the project's JavaScript animation library. Use it for deliberate
-  motion such as entry transitions, numeric emphasis and state changes rather
-  than introducing a second JS animation framework or complex CSS keyframes.
-- Respect `prefers-reduced-motion` everywhere, and retain accessible labels,
-  meaningful numeric fallback text, keyboard focus and functional no-motion UI.
-  Never animate fake data into a chart or replace missing sensor data with zero.
-- **WebView Pool:** Read [docs/WEBVIEW_POOL.md](docs/WEBVIEW_POOL.md) before
-  modifying native popup lifecycle, scheduling or rotation. Start exactly one
-  inert warm host; acquire additional popup hosts only on demand, up to the
-  fixed cap. Never recycle an active lease for a different widget. A
-  user-requested pop-out may reparent its SAME active WebView into a regular
-  Niri window without remounting or losing Svelte state. Keep at most one
-  transient popup, but allow independently detached Niri windows to coexist.
-  Opening another widget must never close or remount a detached one; repeated
-  requests for its kind focus the existing window. Wait for the transient
-  popup's reverse-close acknowledgement before replacing it. Calendar/System/
-  Settings use the right dock; Launcher is top-centered at 20% of the logical
-  output height. Reuse one hot idle view, retire surplus idle views after 45 seconds,
-  and reject stale generation-scoped UI commands.
-- **Lifecycle matters:** WebKit widgets mount only while requested. Instantiate
-  ECharts and GSAP effects on mount, resize charts when geometry changes,
-  dispose chart instances, kill GSAP tweens and detach observers on unmount.
-  Never create unmanaged timers, background data polling or repeated listeners.
-- **Offline WebKit constraint:** The packaged frontend is a single
-  self-contained HTML document. All npm code is bundled locally, with no CDN,
-  runtime fetches, unexpected JS chunks or external stylesheets. Keep
-  `frontend/scripts/inline-assets.mjs` and its tests passing.
-- Retain the canonical five-color Kira palette in
-  `frontend/src/lib/themes/kira-default.css`, the 42px top bar, and the
-  locked-down Rust/GIO ↔ WebKit bridge. Charts are read-only presentation.
+The old README sections and docs/SPECIFICATION.md, docs/UI_ARCHITECTURE.md, docs/TENET_MOTION.md describe V1 and may conflict with this V2 decision. For **new V2 work**, this file and docs/V2_ARCHITECTURE.md take precedence. Existing tests and code are retained until migration milestones are complete.
 
-## Ownership rules for settings (mandatory)
-
-Read [docs/CONFIG_OWNERSHIP.md](docs/CONFIG_OWNERSHIP.md) before changing
-any configuration writer or adding editable Settings pages. Explicit source
-ownership, read-back of observed state, independent Apply/Confirm/Save,
-fail-closed KDL conflicts, generation-scoped native commands and atomic writes
-are required. Do not rewrite Nix-generated configs or merge Niri multipart
-`output` blocks as if they were fields. New settings adapters must not
-receive a general shell or filesystem write bridge.
-
-## Build and review
-
-Changes to runtime JS dependencies require updates to both
-`frontend/package.json` and `frontend/package-lock.json`, plus the
-frontend Nix dependency hash in `nix/package.nix`. Run `task check`,
-`task frontend:build` and (for frontend lock updates) `nix build .#frontend`.
-Test supported and unavailable metrics, bounded history, reduced motion,
-and open/close cleanup. Visual-QA check the popup in isolated nested Niri.
+Do not treat the initial architecture commit as completed compiler or widget migration.

@@ -1,5 +1,25 @@
 # Kira Desktop
 
+## V2 architecture direction (branch: kira-desktop-v2)
+
+**Decision accepted 2026-11-07. Translation/compiler NOT yet implemented.**
+
+The V2 UI architecture is **Lua → Rust transpiler (written in Rust) → native Rust/GTK4**. Widgets, styles, interactive state and UI logic are authored in Lua. A build-time Rust compiler validates a documented Lua subset and generates gtk4-rs code plus GTK CSS. The output is compiled to native GTK/Wayland; the target V2 UI does **not** use Svelte, WebKitGTK, JavaScript or an embedded Lua interpreter.
+
+Rust remains responsible for trusted system capabilities, Niri, IPC, GIO and D-Bus. NixOS-first and Kira visual identity remain.
+
+- [V2 architecture and source-language contract](docs/V2_ARCHITECTURE.md)
+- [ADR-0001: accepted architectural decision](docs/adr/0001-lua-rust-gtk.md)
+- [Migration stages and acceptance criteria](docs/V2_MIGRATION.md)
+- [Lua UI example: proposal only, not executable yet](examples/v2/counter.lua)
+- [V2 contributor rules](AGENTS.md)
+
+**Important:** Existing source files, tests and build instructions below describe the inherited **V1 Rust + Svelte/WebKit implementation**, retained for incremental migration. A successful V1 build **does not** demonstrate that the V2 compiler works. See the V2 docs for authoritative direction.
+
+---
+
+## Legacy V1 implementation (migration baseline)
+
 **Status:** v0.1 Draft, working foundation, **not yet an MVP desktop environment**.
 
 Kira Desktop is a modular, declarative, NixOS-first shell for Niri/Wayland. Rust owns system capabilities, Svelte 5 owns the UI and KDL will define layouts.
