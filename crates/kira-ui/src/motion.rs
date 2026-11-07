@@ -78,7 +78,13 @@ pub fn cubic_in_out(position: f64) -> f64 {
 /// GSAP back.out(overshoot) used for selected surface settling.
 /// Geometry is allowed to overshoot; factual readout values never are.
 pub fn back_out(progress: f64, overshoot: f64) -> f64 {
-    let u = progress.clamp(0.0, 1.0) - 1.0;
+    if !progress.is_finite() || progress <= 0.0 {
+        return 0.0;
+    }
+    if progress >= 1.0 {
+        return 1.0;
+    }
+    let u = progress - 1.0;
     1.0 + (overshoot + 1.0) * u.powi(3) + overshoot * u.powi(2)
 }
 
