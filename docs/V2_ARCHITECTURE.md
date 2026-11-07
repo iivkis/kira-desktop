@@ -1,79 +1,81 @@
-# Kira Desktop V2 — Lua + mlua + Rust + GTK4
+# Kira V2 architecture — Kira Engine + Kira Desktop
 
-**Статус:** архитектура принята; **runtime ещё не реализован**.
-**Приоритет:** [ADR-0002](adr/0002-embedded-lua-mlua.md) заменяет [ADR-0001](adr/0001-lua-rust-gtk.md).
-**API:** [Lua widgets](V2_LANGUAGE.md) · [Lua styles](V2_STYLES.md) · [Миграция](V2_MIGRATION.md).
+**Статус:** принято в [ADR-0003](adr/0003-kira-engine-desktop-split.md), **runtime не реализован**.
+**Основная спецификация границы:** [ENGINE_DESKTOP.md](ENGINE_DESKTOP.md).
+**Другие решения:** [mlua ADR-0002](adr/0002-embedded-lua-mlua.md) (действует); [ADR-0001](adr/0001-lua-rust-gtk.md) (отменён).
+**API:** [Lua UI](V2_LANGUAGE.md) · [Lua Styles](V2_STYLES.md) · [Migration](V2_MIGRATION.md).
 
-## Концепция
+## 1. Продукты
 
-Kira Desktop V2 — NixOS-first desktop shell поверх Niri/Wayland, а не новый compositor. Пользовательские виджеты, темы, состояние и UI-логика пишутся на **обычном Lua 5.4**. Нативный Rust Shell **встраивает mlua** и выполняет Lua-файлы во время работы приложения.
+**Kira Engine:** независимый фреймворк для обычных GTK4 приложений на Lua 5.4. **Rust + mlua + GTK4**. Встроенная Lua VM исполняет обычный Lua-код (local, функции, замыкания, require через controlled loader). Rust регистрирует реальные Lua функции `kira.ui`, принимает WidgetSpec, монтирует GTK-виджеты, управляет state/bind, signal callbacks, lifecycle, темами через GtkCssProvider и ошибками Lua. **Engine не знает Niri и Kira Desktop.**
 
-Никакого компилятора Lua → Rust, AST/IR codegen для Lua и генерации `generated_ui.rs`. Lua не обязан быть статически ограниченным декларативным языком: поддерживаются локальные переменные, обычные функции/замыкания, условия, циклы и локальные модули в границах безопасности. При необходимости Lua может создавать новые элементы динамически через `ui` API.
+**Kira Desktop:** отдельная NixOS/Niri/Wayland оболочка **на Engine**. Она создаёт Shell окна с gtk4-layer-shell, подключает Niri IPC, Core, системные сервисы, конфигурацию, разрешённые возможности через `kira.desktop` и реализует свои Lua widgets поверх Engine UI API. **Desktop зависит от Engine, не наоборот.**
 
 ```text
-Lua scripts (widgets, theme, callbacks)
-       |
-       v
-mlua Lua 5.4 VM in Rust Shell
-       |
-       +--> ui API (registered Rust functions / userdata)
-       |      +--> WidgetSpec / StateHandle / StyleSpec
-       |      +--> GTK4 native builder on GTK main thread
-       |      +--> GtkCssProvider runtime style registry
-       |
-       +--> allowlisted high-level system capabilities
-       |
-       v
-Rust Shell (GTK4 + gtk4-layer-shell + GIO/D-Bus)
-       |
-       +--> Rust Core & kira-ipc --> Niri / Linux
+Ordinary Lua GTK app               Kira Desktop Lua widgets
+         |                                     |
+         +-----------------+-------------------+
+                           v
+                     KIRA ENGINE
+                  mlua + Rust + GTK4
+             state, WidgetSpec, signals, CSS
+                           ^
+                           |
+                  Kira Desktop Rust host
+            layer-shell, Niri, Core/IPC, Linux
 ```
 
-## Границы
+В диаграмме Desktop host использует Engine для UI, а подключает системные capability providers снаружи. В отличие от Tauri здесь нет WebView, фронтенда JS или HTML. Это **Tauri-подобное framework vs application разделение**, не реализация Tauri.
 
-**Lua:** UI composition, handlers, application state, conditional view logic, named styles and themes. `require("styles")` работает для разрешённых локальных модулей. `require("kira.ui")` возвращает Rust-реализованный UI API. Lua-код **действительно выполняется**, а не парсится как шаблон.
+## 2. Владение и направление зависимостей
 
-**mlua host (Rust):** owns each VM, registers module loader and `kira.ui`, exposes `ui.box/text/button/state/bind/compose/theme`, keeps Lua functions alive while widgets exist, routes GUI signals to Lua, reports errors and cleans up on unmount. On M1 `ui.box/text/button` produce validated `WidgetSpec` representations (Rust userdata or internal spec objects) and the renderer materializes native GTK widgets. This approach avoids exposing unrestricted GTK internals to Lua.
+Планируемая Cargo структура:
 
-**GTK Shell (Rust):** GTK4/gtk4-layer-shell windows, native widget lifecycle, `GtkCssProvider`, focus, keyboard, accessibility, tray/notifications integration. Initial Lua VM and all GTK references are kept **on the GTK main thread**, with `mlua` built **without `send`**; no GTK userdata crosses thread boundaries. Background Core/IPC/Niri work delivers typed messages to the UI thread.
-
-**Rust Core:** Niri integration, D-Bus/system operations, controlled capabilities, configuration safety; unchanged as architectural foundation.
-
-**Nix/Cargo:** reproducible source and dependency resolution. Suggested future Cargo dependency for runtime crate or shell (after lockfile regeneration):
-
-```toml
-mlua = { version = "0.12", features = ["lua54", "vendored"] }
+```text
+crates/kira-engine/          # NEW reusable library: Rust+mlua+GTK4
+crates/kira-desktop/         # NEW application: depends on kira-engine
+crates/kira-core/            # current desktop system service
+crates/kira-ipc/             # current desktop IPC
+crates/kira-shell/           # current V1 legacy reference only
+ui/desktop/                  # NEW Lua shell widget sources
+examples/v2/counter.lua     # generic Engine fixture (not Desktop-specific)
+examples/v2/styles.lua
 ```
 
-Use a pinned, lockfile-resolved version. `vendored` bundles the Lua C library for reproducibility; an external system Lua 5.4 may be chosen after testing the Nix build. Neither option makes Lua-generated Rust.
+Каталоги `crates/kira-engine`, `crates/kira-desktop` и `ui/desktop` **ещё не существуют**. Не переименовывать существующий V1 `kira-shell` в `kira-engine`: его WebKit и слой Niri не должны оказаться в базовом Engine. Добавлять новый crate только с реализацией.
 
-## Жизненный цикл виджета M1
+**Разрешено:** `kira-desktop → kira-engine` и `kira-desktop → kira-core/kira-ipc`.
+**Запрещено:** `kira-engine → kira-desktop/kira-core/kira-ipc/niri/gtk4-layer-shell` на уровне универсального Engine runtime.
 
-1. GTK initializes on the application main thread.
-2. Rust creates an `mlua::Lua` VM with only the required standard libraries and a controlled module loader; registers `kira.ui`.
-3. Host executes the entry Lua module (e.g. `examples/v2/counter.lua`) and receives a `WidgetSpec` tree.
-4. Rust builds native `gtk::Box`, `gtk::Label`, `gtk::Button`; validates input properties and styles. It retains `mlua::Function` callbacks through the VM registry/owned handles while widgets live.
-5. GTK events call into Lua on the main thread. `ui.state(value):set(...)` updates the Rust-backed observable state and synchronizes all `ui.bind(state)` values. Lua is not re-evaluated in full for every click.
-6. Removing a view releases GTK signal connections, callback handles, subscriptions and VM registry references. Lua errors are caught/logged as widget errors, not allowed to panic/abort the GTK signal callback.
-7. Restarting/reloading Lua widgets happens after safe teardown, with rollback to the last working view where feasible; no guarantee of instantaneous code hot reload in M1.
+Desktop-specific возможности инжектируются снаружи через версионированный Rust host/capability interface, доступный только при создании Engine внутри Desktop.
 
-## Стили
+## 3. Lua runtime и GTK
 
-**Lua themes and styles only**; no Sass, SCSS, Grass, Tailwind, PostCSS or separate preprocessor. At runtime the Rust bridge resolves token/style tables and emits **GTK CSS** from a strict supported-properties allowlist, caches styles, creates CSS classes and applies them to native widgets. Only GTK CSS is generated; **no Rust source** is generated. [Подробно](V2_STYLES.md).
+1. Generic GTK app host или Desktop host создаёт `Kira Engine` instance на GTK main thread.
+2. Engine создаёт `mlua::Lua` с контролируемой средой, на M1 без `send`, регистрирует `kira.ui` и ограниченный module loader.
+3. App Lua code выполняется через mlua и вызывает Rust-реализованные `ui.box`, `ui.text`, `ui.button`, `ui.state`, `ui.bind`, `ui.theme`, `ui.compose`. Это **функции реального Lua**, не AST DSL.
+4. Engine монтирует WidgetSpec в native GTK4; хранит Lua callbacks и subscriptions пока view существует, обрабатывает Gtk signals и освобождает ресурсы при unmount.
+5. Бэкграунд-сервисы Desktop передают typed messages в GTK main context, а не трогают GTK/Lua из worker thread.
+6. Lua styles валидируются Engine и преобразуются **во время исполнения** в GTK CSS для `GtkCssProvider`; никаких Sass/Grass/PostCSS/Tailwind и Lua→Rust генерации.
 
-## Безопасность
+## 4. Lua API уровни
 
-The Lua VM is **not an OS sandbox**. M1 is for **trusted, locally installed UI scripts**. No implicit right to call arbitrary D-Bus/Niri, shell, Rust or GTK APIs. A trusted host-controlled module resolver, explicit capabilities and validated GTK property setters are required. Do not use unsafe `Lua::unsafe_new` or load arbitrary C modules for external plugins. Limit Lua VM memory and budget long-running callbacks/instruction use where supported; catch runtime errors and ensure they do not freeze the UI forever. Third-party untrusted widgets need **process isolation** and a separate threat model before being advertised as safe.
+**`require("kira.ui")`** (Engine): standalone-совместимые виджеты, layout, events, state, binding, styles, lifecycle. Работает и без Desktop.
 
-## Что удаляется, а что остаётся
+**`require("kira.desktop")`** (Desktop): optional module с разрешёнными OS/Niri действиями и state sources через Desktop Rust/Core API. Его нет в обычном Engine app. Уточнить реальные функции перед реализацией; не обещать API, который не существует.
 
-- Отменяется создание `kira-lua-compiler`, статическая AST/IR/codegen архитектура и `generated_ui.rs`.
-- V1 `frontend/`, WebKit and JS code temporarily remain for behavior parity and legacy CI; they are not the new UI target.
-- NixOS-first, Kira Default, native GTK4 and TENET design principles remain. Native animation is a separate GTK/Rust effort, not GSAP.
-- Runtime Lua scripts can be edited without **компиляции Rust**; reloading modules/UI safely may still require a view restart.
+Rust Desktop host также управляет focus, keyboard navigation, layer-shell, popup geometry, display safety, accessibility и нативным motion. Никакого нового compositor.
 
-## Критерий первого M1
+## 5. Доверие и производительность
 
-`counter.lua` + `styles.lua` are executed by the mlua host in a GTK4 app: button click invokes a **Lua closure**, updates a `ui.state`, updates GTK label via `ui.bind`, applies a Lua theme and `:hover` style, and unloads without leaking handles. Verify no WebKit or JS in that native UI path. Before that, these files remain API design examples, not runnable in the current repository.
+`mlua` не является изоляцией от OS. M1 рассчитан на **доверенные локальные Lua-файлы**. Lua loader не должен предоставлять arbitrary C modules, raw D-Bus, файловые пути вне root, system commands или unrestricted GTK objects. В будущем непроверенные плагины потребуют изоляции отдельным процессом.
 
-No source or generated executable is a security boundary merely by using mlua.
+GTK UI и Lua callbacks должны исполняться в GTK main context. Ошибка Lua handler не должна ронять сигнал GTK: catch/report, dispose lifecycle refs, budget execution/memory. Встроенная Lua VM имеет стоимость по памяти, измерять её, а не обещать чудеса. Hot reload после safe teardown требует отдельной реализации.
+
+## 6. Acceptance milestones
+
+**Engine-alone M1:** `examples/v2/counter.lua` + `styles.lua` запускаются в **обычном** GTK Application без Niri/desktop; GTK Button вызывает настоящую Lua closure, Rust-backed state меняет label и Lua style применяется. Нет WebKit, Svelte и Lua→Rust транслятора.
+
+**Desktop M2:** тот же Engine создаёт Lua-based bar/popup внутри GTK layer-shell в nested Niri. Workspace data попадают через Desktop `kira.desktop` provider; Engine не импортирует Niri. Проверить typed IPC, focus, масштаб, keyboard, multi-output и teardown.
+
+**Delivery:** Nix/Cargo packaging со встроенным mlua (Lua 5.4); независимая проверка dependency graph Engine и regression tests Desktop. Legacy V1 code сохраняется только до parity. Существующие green CI **не** доказывают новую архитектуру.

@@ -1,47 +1,44 @@
-# Kira Desktop V2
+# Kira Engine + Kira Desktop (V2)
 
-**Ветка:** `kira-desktop-v2` · **Статус:** новая архитектура принята; интеграция `mlua` и GTK Lua API ещё не реализованы.
+**Ветка:** `kira-desktop-v2` · **Статус:** архитектура зафиксирована, **Kira Engine ещё не реализован**. Унаследованная V1 пока остаётся в репозитории.
 
-Kira Desktop — модульная оболочка для **NixOS / Niri / Wayland**. **Виджеты, стили и UI-логика пишутся на настоящем Lua 5.4, который Rust исполняет через [mlua](https://docs.rs/mlua/)**. Rust отвечает за GTK4/Wayland, Niri IPC, D-Bus, безопасность и системные сервисы. Никакого самописного транслятора Lua → Rust и генерации Rust-кода из Lua.
+В проекте два самостоятельных слоя:
+
+**Kira Engine** — универсальный нативный движок/фреймворк **Rust + mlua (Lua 5.4) + GTK4** для создания GTK-приложений на Lua. Engine предоставляет `kira.ui`: виджеты, реактивное состояние, обработчики, стили и жизненный цикл. Lua исполняется внутри Rust-процесса; **никакого Lua→Rust-транслятора и WebView**.
+
+**Kira Desktop** — **рабочее окружение, построенное на Kira Engine**, с Niri/Wayland, layer-shell, панелями, лаунчером, настройками и интеграцией Linux. Desktop зависит от Engine и добавляет контролируемый `kira.desktop` API, не меняя универсальную часть движка.
 
 ```text
-Lua widgets + Lua theme + callbacks
-                  |
-                  v
-mlua (embedded Lua VM in Rust GTK Shell)
-                  |
-                  v
-Rust ui bridge -> native gtk4-rs widgets + GtkCssProvider
-                  |
-                  v
-Niri / Wayland + Kira Core / IPC / Linux
+Lua GTK app ----> KIRA ENGINE <---- KIRA DESKTOP Lua widgets
+                     |                      |
+            Rust / mlua / GTK4          Desktop Rust host
+            state / UI / CSS           Niri / Wayland / Core / IPC
 ```
 
-**Статус реализации:** унаследованный V1 Shell пока использует Rust + GTK/WebKitGTK + Svelte. `mlua` ещё не подключён к Cargo Workspace; Lua UI API и GTK runtime не написаны. Существующие Rust/JS исходники и lockfiles оставлены для миграции и регрессионных тестов. Успешная сборка V1 не доказывает работоспособности V2.
+**Строгое правило:** Kira Engine не зависит от Kira Desktop, Niri, `kira-core` или `gtk4-layer-shell` и должен запускать обычное GTK-приложение самостоятельно. Desktop использует движок как библиотеку. Это похоже на разделение **Tauri framework / Tauri app**, только вместо WebView у нас **Lua + GTK4**.
 
-## Документы
+## Архитектура и решения
 
-- [Архитектура V2](docs/V2_ARCHITECTURE.md) — ответственность Lua, mlua, Rust, GTK и жизненный цикл.
-- [Runtime Lua UI API](docs/V2_LANGUAGE.md) — функции, виджеты, события, state, модули.
-- [Lua Style API](docs/V2_STYLES.md) — темы и переиспользуемые стили без внешних препроцессоров.
-- [ADR-0002](docs/adr/0002-embedded-lua-mlua.md) — действующее архитектурное решение; [ADR-0001](docs/adr/0001-lua-rust-gtk.md) отменён.
-- [План миграции](docs/V2_MIGRATION.md) · [Текущий статус/ревью](docs/V2_REVIEW.md).
-- [Пример виджета](examples/v2/counter.lua) · [пример темы](examples/v2/styles.lua) · [правила разработки](AGENTS.md).
+- [Kira Engine vs Kira Desktop](docs/ENGINE_DESKTOP.md) — **основной контракт** независимости, API и владения.
+- [ADR-0003](docs/adr/0003-kira-engine-desktop-split.md) — решение о разделении Engine/Desktop.
+- [V2 architecture](docs/V2_ARCHITECTURE.md) — полная схема runtime.
+- [ADR-0002](docs/adr/0002-embedded-lua-mlua.md) — решение запускать Lua через mlua; [ADR-0001](docs/adr/0001-lua-rust-gtk.md) исторически отменён.
+- [Lua UI API](docs/V2_LANGUAGE.md) · [Lua Style API](docs/V2_STYLES.md).
+- [План миграции](docs/V2_MIGRATION.md) · [ревью](docs/V2_REVIEW.md) · [AGENTS.md](AGENTS.md).
 
-## Пример запуска в будущем
+## Generic Engine example
+
+Примеры [counter.lua](examples/v2/counter.lua) и [styles.lua](examples/v2/styles.lua) **не знают о Niri или Desktop** и станут первыми тестами автономного Kira Engine:
 
 ```lua
 local ui = require("kira.ui")
-local theme = require("styles")
 local count = ui.state(0)
 
 return ui.box {
-  orientation = "vertical", spacing = 12,
-  style = theme.panel,
+  orientation = "vertical",
   ui.text { text = ui.bind(count) },
   ui.button {
     text = "Добавить",
-    style = ui.compose(theme.control, theme.primary),
     on_click = function()
       count:set(count:get() + 1)
     end,
@@ -49,16 +46,18 @@ return ui.box {
 }
 ```
 
-Это **исполняемый синтаксис Lua**, но он требует будущего модуля `kira.ui`, который зарегистрирует Rust-хост через `mlua`. Обычный `lua examples/v2/counter.lua` не запустится без этого хоста.
+Это реальный синтаксис Lua, но `kira.ui` пока не зарегистрирован: примеры **ещё не работают**.
 
-## Существующие проверки V1
+## Статус репозитория
 
-```sh
-nix develop --command task check
-nix build
-nix develop --command task dev:preview
-```
+| Компонент | Сейчас | Целевой V2 |
+| --- | --- | --- |
+| `crates/kira-engine` | **Отсутствует** | Общий Rust/mlua/GTK4 runtime |
+| `crates/kira-desktop` | **Отсутствует** | Desktop binary на Engine |
+| `ui/desktop` | **Отсутствует** | Lua-виджеты оболочки |
+| `crates/kira-core`, `kira-ipc` | Rust legacy используется | Desktop-side backend |
+| `crates/kira-shell`, `frontend/` | GTK/WebKit + Svelte V1 | Сохранить для миграции, затем убрать |
 
-Пока они проверяют **унаследованную реализацию V1** и документацию, не Lua/GTK runtime. [Старый гайд разработки](docs/DEVELOPMENT.md), [старое ТЗ](docs/SPECIFICATION.md) и [preview](docs/PREVIEW.md) сохранены как справочники миграции.
+Пока `task check`, `nix build` и существующий CI проверяют V1 и документацию, а **не работающий Engine**. Все новые crates будут добавляться только вместе с кодом, корректным Cargo.lock и реальной проверкой GTK.
 
-`main` не изменяется; работа над V2 ведётся отдельно.
+Работа ведётся в `kira-desktop-v2`; `main` не меняется.
