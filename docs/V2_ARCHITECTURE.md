@@ -1,6 +1,6 @@
 # Kira V2 architecture — Kira Engine + Kira Desktop
 
-**Статус:** принято в [ADR-0003](adr/0003-kira-engine-desktop-split.md), **runtime не реализован**.
+**Статус:** принято в [ADR-0003](adr/0003-kira-engine-desktop-split.md), **runtime ещё не реализован**.
 **Основная спецификация границы:** [ENGINE_DESKTOP.md](ENGINE_DESKTOP.md).
 **Другие решения:** [mlua ADR-0002](adr/0002-embedded-lua-mlua.md) (действует); [ADR-0001](adr/0001-lua-rust-gtk.md) (отменён).
 **API:** [Lua UI](V2_LANGUAGE.md) · [Lua Styles](V2_STYLES.md) · [Migration](V2_MIGRATION.md).
