@@ -5,7 +5,7 @@ use gtk::{glib, prelude::*, subclass::prelude::*};
 mod imp {
     use std::cell::{Cell, RefCell};
 
-    use gtk::{prelude::*, subclass::prelude::*};
+    use gtk::{glib, prelude::*, subclass::prelude::*};
 
     #[derive(Default)]
     pub struct PopupClip {
