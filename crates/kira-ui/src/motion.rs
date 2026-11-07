@@ -2,7 +2,7 @@
 //! The four calendar flight coordinates and two-time model are ported
 //! unchanged from main's calendar-tenet-model.ts. Rendering uses GDK/Cairo,
 //! no WebKit, GSAP, DOM, or fake telemetry.
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::time::Instant;
 
@@ -112,7 +112,7 @@ impl MotionToken {
         step(0.0);
         let started = Instant::now();
         let token = self.clone();
-        let mut complete = Some(complete);
+        let completed = Rc::new(RefCell::new(Some(complete)));
         widget.add_tick_callback(move |_, _| {
             if token.generation.get() != generation {
                 return gtk::glib::ControlFlow::Break;
@@ -121,7 +121,8 @@ impl MotionToken {
                 (started.elapsed().as_secs_f64() * 1000.0 / duration_ms as f64).clamp(0.0, 1.0);
             step(cursor);
             if cursor >= 1.0 {
-                if let Some(complete) = complete.take() {
+                let callback = completed.borrow_mut().take();
+                if let Some(complete) = callback {
                     complete();
                 }
                 gtk::glib::ControlFlow::Break
