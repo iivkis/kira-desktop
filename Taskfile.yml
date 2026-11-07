@@ -23,6 +23,10 @@ tasks:
       - test -s docs/SPECIFICATION.md
       - test -s docs/DESIGN_SYSTEM.md
       - test -s crates/kira-shell/src/main.rs
+      - test -s docs/ACCEPTANCE_NATIVE_G2.md
+      - test -s crates/kira-ui/src/system.rs
+      - test -s crates/kira-ui/src/displays.rs
+      - test -s crates/kira-shell/src/display_bridge.rs
       - test -s crates/kira-ui/src/lib.rs
       - test -s crates/kira-ui/src/style.css
       - test -s crates/kira-services/src/lib.rs

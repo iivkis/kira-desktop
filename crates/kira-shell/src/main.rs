@@ -1,21 +1,32 @@
 //! Desktop composition root: Core subscriptions and trusted services -> reusable kira-ui.
 //! All GTK widget trees, CSS and transient window semantics are owned by kira-ui.
 
+mod display_bridge;
+
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::sync::mpsc;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, mpsc};
 use std::time::Duration;
 
 use gtk::prelude::*;
 use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
-use kira_ui::{ApplicationEntry, Bar, InfoPanel, Launcher, PopupHost, PopupKind, WorkspaceItem};
+use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
+use kira_ui::{
+    ApplicationEntry, Bar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading,
+    InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor,
+    SystemOverview, WorkspaceItem,
+};
+use crate::display_bridge::decode_outputs;
 
 enum ShellUpdate {
     Workspaces(WorkspaceState),
     Config(ConfigState),
     Applications(Vec<ApplicationEntry>),
     ApplicationLaunch(Result<(), String>),
-    Metrics(String),
+    SystemOverview(SystemOverview),
+    Processes(ProcessList),
+    ProcessError(String),
 }
 
 fn request_focus(id: String) {
@@ -60,7 +71,7 @@ fn current_clock(show_seconds: bool) -> String {
 
 fn settings_summary(config: &UiConfig) -> String {
     format!(
-        "Заголовок: {}\nКомпактная панель: {}\nСекунды в часах: {}\n\nРедактор дисплеев и сохранение KDL ещё не перенесены.",
+        "Заголовок: {}\nКомпактная панель: {}\nСекунды в часах: {}\n\nРедактор настроек Kira KDL ещё не перенесён. Настройка дисплеев находится ниже.",
         config.title, config.compact, config.show_seconds
     )
 }
@@ -99,34 +110,120 @@ fn launch_application(id: String, sender: mpsc::Sender<ShellUpdate>) {
     });
 }
 
-fn start_metrics(sender: mpsc::Sender<ShellUpdate>) {
+/// Heavy Linux telemetry and /proc process scans never run on the GTK thread.
+/// Processes are enumerated only while their tab is visible to the user.
+fn start_system_sampler(
+    sender: mpsc::Sender<ShellUpdate>,
+    system_visible: Arc<AtomicBool>,
+    processes_visible: Arc<AtomicBool>,
+) {
     std::thread::spawn(move || {
-        let mut sampler = kira_services::system_metrics::PulseSampler::default();
+        let mut metrics = kira_services::system_metrics::Sampler::default();
+        let mut processes = kira_services::process_monitor::ProcessSampler::default();
         loop {
-            let pulse = sampler.sample();
-            let cpu = pulse
-                .cpu_percent
-                .map(|value| format!("{value}%"))
-                .unwrap_or_else(|| "недоступно".to_owned());
-            let memory = pulse
-                .memory_available_kib
-                .map(|kib| format!("{:.1} GiB доступно", kib as f64 / 1024.0 / 1024.0))
-                .unwrap_or_else(|| "недоступно".to_owned());
-            let load = std::fs::read_to_string("/proc/loadavg")
-                .ok()
-                .map(|raw| raw.split_whitespace().take(3).collect::<Vec<_>>().join(" "))
-                .unwrap_or_else(|| "недоступно".to_owned());
-            if sender
-                .send(ShellUpdate::Metrics(format!(
-                    "CPU: {cpu}\nОЗУ: {memory}\nНагрузка (1/5/15 мин): {load}"
-                )))
-                .is_err()
-            {
-                return;
+            if system_visible.load(Ordering::Relaxed) {
+                let snapshot = metrics.sample();
+                let overview = SystemOverview {
+                    cpu_percent: snapshot.cpu_percent,
+                    cpu_temperature_c: snapshot.cpu_temperature_c,
+                    memory_total_kib: snapshot.memory_total_kib,
+                    memory_available_kib: snapshot.memory_available_kib,
+                    load: snapshot.load,
+                    uptime_seconds: snapshot.uptime_seconds,
+                    battery_percent: snapshot.battery_percent,
+                    battery_charging: snapshot.battery_charging,
+                    gpu: snapshot.gpus.into_iter().map(|gpu| GpuReading {
+                        name: gpu.label,
+                        utilization_percent: gpu.utilization_percent,
+                        temperature_c: gpu.temperature_c,
+                    }).collect(),
+                };
+                if sender.send(ShellUpdate::SystemOverview(overview)).is_err() {
+                    return;
+                }
+                if processes_visible.load(Ordering::Relaxed) {
+                    let event = match processes.sample() {
+                        Ok(snapshot) => ShellUpdate::Processes(ProcessList {
+                            rows: snapshot.rows.into_iter().map(|process| ProcessItem {
+                                pid: process.pid,
+                                name: process.name,
+                                cpu_percent: process.cpu_percent,
+                                rss_kib: process.rss_kib,
+                                pss_kib: process.pss_kib,
+                            }).collect(),
+                            total: snapshot.total,
+                            truncated: snapshot.truncated,
+                        }),
+                        Err(error) => ShellUpdate::ProcessError(format!("Не удалось прочитать процессы: {error}")),
+                    };
+                    if sender.send(event).is_err() {
+                        return;
+                    }
+                }
             }
             std::thread::sleep(Duration::from_secs(2));
         }
     });
+}
+
+fn send_display_intent(model: &DisplayModel, intent: DisplayIntent) {
+    match intent {
+        DisplayIntent::Refresh => model.refresh(),
+        DisplayIntent::Apply(choices) => {
+            let request = choices.into_iter().map(|output| {
+                serde_json::json!({
+                    "connector": output.connector,
+                    "enabled": output.enabled,
+                    "mode": output.mode,
+                    "scale": output.scale,
+                    "transform": output.transform,
+                    "x": output.x,
+                    "y": output.y,
+                    "vrr": output.vrr,
+                })
+            }).collect::<Vec<_>>();
+            model.apply(serde_json::Value::Array(request));
+        }
+        DisplayIntent::Confirm(id) => model.confirm(id),
+        DisplayIntent::Revert(id) => model.revert(id),
+        DisplayIntent::Save => model.save(),
+    }
+}
+
+fn handle_display_event(display: &DisplaySettings, event: DisplayEvent) {
+    display.set_persistence(event.persistence);
+    if let Some(error) = event.error {
+        display.set_phase(DisplayPhase::Error(error));
+        return;
+    }
+    match event.state {
+        "ready" | "reverted" | "saved" => {
+            let Some(snapshot) = event.outputs else {
+                display.set_phase(DisplayPhase::Error("Niri не вернул состояние дисплеев".into()));
+                return;
+            };
+            match decode_outputs(&snapshot) {
+                Ok(outputs) => {
+                    display.set_outputs(outputs);
+                    display.set_phase(match event.state {
+                        "saved" => DisplayPhase::Saved,
+                        "reverted" => DisplayPhase::Reverted,
+                        _ => DisplayPhase::Ready,
+                    });
+                }
+                Err(error) => display.set_phase(DisplayPhase::Error(error)),
+            }
+        }
+        "pending" => match (event.pending_id, event.deadline_unix_ms) {
+            (Some(id), Some(deadline_unix_ms)) => {
+                display.set_phase(DisplayPhase::Pending { id, deadline_unix_ms });
+            }
+            _ => display.set_phase(DisplayPhase::Error("Нет данных для подтверждения дисплеев".into())),
+        },
+        "confirmed" => display.set_phase(DisplayPhase::Confirmed),
+        "error" => display.set_phase(DisplayPhase::Error("Ошибка настроек дисплеев".into())),
+        _ => display.set_phase(DisplayPhase::Error("Неизвестное состояние дисплеев".into())),
+    }
 }
 
 fn start_core_subscriptions(sender: mpsc::Sender<ShellUpdate>) {
@@ -172,16 +269,24 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let state = Rc::new(RefCell::new(WorkspaceState::default()));
     let applications = Rc::new(RefCell::new(Vec::<ApplicationEntry>::new()));
     let launcher: Rc<RefCell<Option<Launcher>>> = Rc::new(RefCell::new(None));
-    let metrics = Rc::new(InfoPanel::new("Система", "Загрузка данных"));
+    let system = Rc::new(SystemMonitor::new());
     let settings = Rc::new(InfoPanel::new(
         "Настройки Kira",
         &settings_summary(&config.borrow()),
     ));
+    let display_model = Rc::new(DisplayModel::new());
+    let displays = Rc::new(DisplaySettings::new({
+        let model = display_model.clone();
+        move |intent| send_display_intent(&model, intent)
+    }));
+    let settings_content = kira_ui::settings_page(&settings.widget(), &displays.widget());
 
     let (sender, receiver) = mpsc::channel::<ShellUpdate>();
+    let system_visible = Arc::new(AtomicBool::new(false));
+    let processes_visible = Arc::new(AtomicBool::new(false));
     start_core_subscriptions(sender.clone());
     start_application_discovery(sender.clone());
-    start_metrics(sender.clone());
+    start_system_sampler(sender.clone(), system_visible.clone(), processes_visible.clone());
 
     for (kind, symbol, label) in [
         (PopupKind::Launcher, "⌕", "Запуск приложений"),
@@ -192,8 +297,10 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let popup = popup.clone();
         let launcher = launcher.clone();
         let applications = applications.clone();
-        let metrics = metrics.clone();
-        let settings = settings.clone();
+        let system = system.clone();
+        let settings_content = settings_content.clone();
+        let displays = displays.clone();
+        let display_model = display_model.clone();
         let sender = sender.clone();
         bar.add_action(symbol, label, move || {
             popup.toggle(kind, || match kind {
@@ -212,9 +319,21 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         .widget()
                 }
                 PopupKind::Calendar => kira_ui::calendar_view(),
-                PopupKind::System => metrics.widget(),
-                PopupKind::Settings => settings.widget(),
+                PopupKind::System => system.widget(),
+                PopupKind::Settings => settings_content.clone(),
             });
+            if kind == PopupKind::Settings && popup.is_active(PopupKind::Settings) {
+                // Keep an explicit Confirm/Save transaction alive across view switches.
+                if !matches!(
+                    displays.phase(),
+                    DisplayPhase::Pending { .. } | DisplayPhase::Confirmed
+                        | DisplayPhase::Applying | DisplayPhase::Confirming
+                        | DisplayPhase::Saving | DisplayPhase::Reverting
+                ) {
+                    displays.set_phase(DisplayPhase::Loading);
+                    display_model.refresh();
+                }
+            }
         });
     }
     bar.finish_actions();
@@ -232,9 +351,26 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let state = state.clone();
         let applications = applications.clone();
         let launcher = launcher.clone();
-        let metrics = metrics.clone();
+        let system = system.clone();
         let settings = settings.clone();
+        let popup = popup.clone();
+        let system_visible = system_visible.clone();
+        let processes_visible = processes_visible.clone();
+        let display_model = display_model.clone();
+        let displays = displays.clone();
         move || {
+            let active_system = popup.is_active(PopupKind::System);
+            system_visible.store(active_system, Ordering::Relaxed);
+            processes_visible.store(active_system && system.processes_selected(), Ordering::Relaxed);
+            // Hiding an unconfirmed Settings popup (including Escape) asks the
+            // trusted Niri worker to rollback immediately; its watchdog remains
+            // authoritative if the request is delayed or the shell crashes.
+            if !popup.is_active(PopupKind::Settings)
+                && let Some(id) = displays.pending_id()
+            {
+                displays.set_phase(DisplayPhase::Reverting);
+                display_model.revert(id);
+            }
             // Avoid holding the GTK main thread indefinitely during event bursts.
             for update in receiver.try_iter().take(64) {
                 match update {
@@ -284,8 +420,13 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                             });
                         }
                     }
-                    ShellUpdate::Metrics(snapshot) => metrics.set_details(&snapshot),
+                    ShellUpdate::SystemOverview(snapshot) => system.set_overview(&snapshot),
+                    ShellUpdate::Processes(snapshot) => system.set_processes(&snapshot),
+                    ShellUpdate::ProcessError(error) => system.set_process_error(&error),
                 }
+            }
+            for event in display_model.poll() {
+                handle_display_event(&displays, event);
             }
             gtk::glib::ControlFlow::Continue
         }

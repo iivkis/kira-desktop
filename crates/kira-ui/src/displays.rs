@@ -64,6 +64,10 @@ pub fn can_apply(choices: &[DisplayChoice]) -> bool {
     !choices.is_empty()
         && choices.iter().any(|item| item.enabled)
         && choices.len() <= 8
+        && {
+            let mut connectors = std::collections::HashSet::new();
+            choices.iter().all(|item| connectors.insert(item.connector.as_str()))
+        }
         && choices.iter().all(|item| {
             !item.connector.is_empty()
                 && !item.mode.is_empty()
@@ -323,6 +327,18 @@ impl DisplaySettings {
         self.controls.set_phase(phase);
     }
 
+    pub fn phase(&self) -> DisplayPhase {
+        self.controls.phase.borrow().clone()
+    }
+
+    /// Lets the host request rollback when the settings popup becomes hidden.
+    pub fn pending_id(&self) -> Option<u64> {
+        match &*self.controls.phase.borrow() {
+            DisplayPhase::Pending { id, .. } => Some(*id),
+            _ => None,
+        }
+    }
+
     pub fn set_persistence(&self, status: &str) {
         self.controls.persistence.set_text(&format!("Владение конфигурацией: {status}"));
     }
@@ -467,6 +483,12 @@ mod tests {
         choice.mode = "1920x1080@60.000".into();
         choice.x = 32001;
         assert!(!can_apply(&[choice]));
+    }
+
+    #[test]
+    fn duplicate_connectors_are_not_applicable() {
+        let first = DisplayChoice::from(&output());
+        assert!(!can_apply(&[first.clone(), first]));
     }
 
     #[test]

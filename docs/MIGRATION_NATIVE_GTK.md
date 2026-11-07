@@ -50,6 +50,13 @@ Do not remove Core/IPC protocols, native system adapters or declarative config o
 - GTK must remain responsive to stalled Core, slow application discovery and metric sampling.
 - Remove old code **when it has an identified native replacement or is explicitly no longer a shipping feature**. Missing features must stay listed, rather than being recreated deceptively.
 
+## G2 increment: native monitoring and displays
+
+- **kira-ui first:** reusable `SystemMonitor` and `DisplaySettings` receive only typed view models and emit explicit intents. UI models have isolated tests for missing values, ordering/bounds and display confirmation timing.
+- **Trusted adapters:** `kira-services` supplies CPU/memory/GPU metrics, bounded `/proc` process sampling, and the previously recovered Niri output worker with atomic configuration ownership, explicit Confirm and a 15-second watchdog rollback.
+- **Desktop composition:** `kira-shell` samples metrics only while the System popup is visible, enumerates processes only on the Processes page, and routes display choices via the trusted worker. Closing a pending Settings popup requests early rollback; the Niri worker retains its independent watchdog.
+- **Still gated:** multi-monitor positioning, live output hotplug, failure/rollback under interrupted Niri, KDL/Nix ownership conflicts, scaling/accessibility and nested graphical acceptance. The feature is experimental until [ACCEPTANCE_NATIVE_G2.md](ACCEPTANCE_NATIVE_G2.md) passes.
+
 ## Current caveat
 
-Creating a native bootstrap is **not equivalent** to porting all Svelte functionality. Tray, notification visuals, detached windows, rich calendar/sky atlas, detailed process monitor and display transaction UI are independent acceptance items. Track them before merging to main. Recovered backend policies do not constitute feature parity. Multi-monitor popup positioning remains an acceptance item. The original source remains in main for comparison and careful extraction of native adapters.
+Creating a native bootstrap is **not equivalent** to porting all Svelte functionality. Tray, notification visuals, detached windows, rich calendar/sky atlas, native chart parity, and *graphical acceptance* of the new process-monitor and display transaction UI remain separate acceptance items. Track them before merging to main. Recovered backend policies do not constitute feature parity. Multi-monitor popup positioning remains an acceptance item. The original source remains in main for comparison and careful extraction of native adapters.

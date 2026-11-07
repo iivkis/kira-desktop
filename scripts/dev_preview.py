@@ -145,6 +145,39 @@ def print_log_changes(path: Path, offset: int, label: str) -> int:
     return current
 
 
+def isolated_shell_environment(
+    environment: dict[str, str],
+    nested_display: str,
+    nested_niri_socket: str | None,
+    parent_niri_socket: str | None,
+    temp: Path,
+    config: Path,
+    socket_file: Path,
+    active_config: Path,
+) -> dict[str, str]:
+    """Bind display actions and any KDL writes to *only* the nested preview."""
+    if not nested_niri_socket:
+        raise PreviewError("Nested Niri did not report its IPC socket; refusing unsafe preview")
+    path = Path(nested_niri_socket)
+    if not path.is_absolute() or not path.is_socket():
+        raise PreviewError("Nested Niri IPC socket is missing or not a Unix socket")
+    if parent_niri_socket and path.resolve() == Path(parent_niri_socket).resolve():
+        raise PreviewError("Nested Niri reported the parent compositor IPC socket")
+    isolated_config = temp / "xdg-config"
+    isolated_config.mkdir(mode=0o700, parents=True, exist_ok=True)
+    isolated = environment.copy()
+    isolated.update({
+        "WAYLAND_DISPLAY": nested_display,
+        "NIRI_SOCKET": nested_niri_socket,
+        "NIRI_CONFIG": str(config),
+        "XDG_CONFIG_HOME": str(isolated_config),
+        "KIRA_CORE_SOCKET": str(socket_file),
+        "KIRA_PREVIEW": "1",
+        "KIRA_CONFIG_FILE": str(active_config),
+    })
+    return isolated
+
+
 def run_preview(
     package: Path,
     bin_dir: Path | None = None,
@@ -239,19 +272,11 @@ def run_preview(
             nested, nested_niri_socket = await_ready(nested_ready, niri, "nested Wayland socket")
             print(f"[preview] Nested display: {nested}; parent: {parent_display}", flush=True)
 
-            isolated = environment.copy()
-            isolated.update({
-                "WAYLAND_DISPLAY": nested,
-                "KIRA_CORE_SOCKET": str(socket_file),
-                "KIRA_PREVIEW": "1",
-                "KIRA_CONFIG_FILE": str(active_config),
-            })
-            # Future Niri IPC consumers must use the child compositor's socket.
-            if isinstance(nested_niri_socket, str) and nested_niri_socket:
-                parent_niri_socket = os.environ.get("NIRI_SOCKET")
-                if parent_niri_socket and Path(nested_niri_socket).resolve() == Path(parent_niri_socket).resolve():
-                    raise PreviewError("Nested Niri reported the parent Niri IPC socket")
-                isolated["NIRI_SOCKET"] = nested_niri_socket
+            isolated = isolated_shell_environment(
+                environment, nested, nested_niri_socket,
+                os.environ.get("NIRI_SOCKET"), temp, config, socket_file,
+                active_config,
+            )
             core = launch("core", [str(binaries["core"])], isolated)
             await_ready(
                 lambda: True if ready_socket(socket_file) else None,
@@ -260,6 +285,8 @@ def run_preview(
             shell = launch("shell", [str(binaries["shell"])], isolated)
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
             print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
+            print(f"[preview] Isolated Niri KDL: {config}", flush=True)
+            print(f"[preview] Isolated display ownership: {isolated['XDG_CONFIG_HOME']}/niri", flush=True)
             print("[preview] Edit this file to hot-reload the bar; invalid KDL retains last valid config.", flush=True)
             print("[preview] Alt+Shift+Q closes the nested Niri window.", flush=True)
             print("[preview] Nested Mod=Alt: Alt+T opens foot; Alt+1/2/3 switches workspace.", flush=True)
