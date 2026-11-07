@@ -16,12 +16,14 @@
 - One local-clock source refreshed every second. Selection remains stable while today and clock advance.
 - Buttons for previous/next year and month; arrow keys ±1/±7, Home=today, PageUp/PageDown ±month, Ctrl+PageUp/PageDown ±year.
 - Today action, selected-date label and ISO 8601 copy intent routed from `kira-ui` to the native Wayland/GDK clipboard via `kira-shell`. Failed clipboard availability is reported, never papered over.
-- Native reversible-time `dual_time`, deterministic `calendar_flights`, `GtkDrawingArea` INVERTED fragments and frame-clock tick invalidation. The GTK global animation setting disables decorative movement; content updates are not delayed.
+- Native reversible-time `dual_time`, deterministic `calendar_flights`, and a `GtkDrawingArea` scene anchored to the measured selected-day contact. Frame-clock tick cancellation and GTK reduced-motion settling never delay factual date changes.
+- Native per-digit 400ms crossflight and source-equivalent six-sector click juggling with 380ms flights, 26ms stagger and saved reverse histories.
+- Month change uses the pinned `main` 440ms `back.out(1.18)` compositor surface. The paired INVERTED four-fragment trace retains its 520ms `power3.out` flight, 25ms stagger and original contact coordinates.
 
 ## Still missing or unverified
 
-- Native 400ms digit-by-digit old/new crossflight and `clock-flight.ts` click-juggle six-sector memory are ported. A click records six separate trajectories and rewinds the same 380ms plus 26ms stagger in reverse. Paired motion captures and user-visible equivalence remain unverified.
-- Full 380ms selected-day/month grid movement, 26ms stagger and spring-selected indicator. Native popup now has a reversible master clip, seam, staged GTK section spring/stagger and four recorded INVERTED trajectories, but their visual placement, accessibility, rapid switching and frame parity are still unverified.
+- The digit roll, click juggling and calendar compositor models now have independent Rust tests, but no paired frame sequences demonstrate that their rendered GTK geometry and timing match `main`.
+- The persistent selected-day spring indicator (`tenetFlowIndicator`), plus source-complete popup interruption and reverse-switching semantics, remain missing. Native popup clip, seam, section spring/stagger and saved traces are implemented, but their visual placement, accessibility and rapid-switching behavior are unverified.
 - Native standalone/detached Calendar and accompanying 74KB catalog `SkyMap`; fullscreen/accessible observatory is not implemented.
 - A paired native/WebKit recording with the same date, animation flags, locale, font, resolution, scale and Wayland environment. No pixel-perfect or temporal equivalence certificate exists.
 
