@@ -1,4 +1,7 @@
-//! Reusable 42px Wayland bar surface and generic action buttons.
+//! Reusable 42px Wayland bar composition. Layout follows main's left
+//! launcher brand, workspace strip, optional title and right controls/clock.
+use std::cell::Cell;
+
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
 
@@ -11,7 +14,10 @@ pub struct Bar {
     pub workspaces: WorkspaceStrip,
     pub title: gtk::Label,
     pub clock: gtk::Label,
+    brand: gtk::Button,
+    clock_button: gtk::Button,
     actions: gtk::Box,
+    compact: Cell<bool>,
 }
 
 impl Bar {
@@ -29,39 +35,70 @@ impl Bar {
         window.set_anchor(Edge::Right, true);
         window.set_exclusive_zone(BAR_HEIGHT);
 
-        let layout = gtk::CenterBox::new();
-        let workspaces = WorkspaceStrip::new(on_workspace);
-        workspaces.widget().set_margin_start(12);
-        layout.set_start_widget(Some(&workspaces.widget()));
+        let layout = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        layout.add_css_class("bar-layout");
 
+        let brand = gtk::Button::with_label("KIRA");
+        brand.set_width_request(96);
+        brand.add_css_class("brand-button");
+        brand.set_tooltip_text(Some("Открыть приложения"));
+        brand.update_property(&[gtk::accessible::Property::Label("Открыть меню приложений")]);
+        layout.append(&brand);
+
+        let center = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+        center.add_css_class("bar-center");
+        center.set_hexpand(true);
+        let workspaces = WorkspaceStrip::new(on_workspace);
+        center.append(&workspaces.widget());
         let title = gtk::Label::new(Some("KIRA DESKTOP"));
         title.add_css_class("bar-title");
-        layout.set_center_widget(Some(&title));
+        title.set_visible(false);
+        center.append(&title);
+        layout.append(&center);
 
-        let actions = gtk::Box::new(gtk::Orientation::Horizontal, 3);
-        actions.set_margin_end(12);
+        let right = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+        right.add_css_class("bar-right");
+        let actions = gtk::Box::new(gtk::Orientation::Horizontal, 4);
+        right.append(&actions);
+
+        let clock_button = gtk::Button::new();
+        clock_button.add_css_class("clock-button");
+        clock_button.set_tooltip_text(Some("Открыть календарь"));
+        clock_button.update_property(&[gtk::accessible::Property::Label("Открыть календарь")]);
         let clock = gtk::Label::new(Some("--:--"));
         clock.add_css_class("clock");
-        layout.set_end_widget(Some(&actions));
+        clock_button.set_child(Some(&clock));
+        right.append(&clock_button);
+        layout.append(&right);
+
         window.set_child(Some(&layout));
         Self {
             window,
             workspaces,
             title,
             clock,
+            brand,
+            clock_button,
             actions,
+            compact: Cell::new(false),
         }
+    }
+
+    pub fn set_launcher_action(&self, on_click: impl Fn() + 'static) {
+        self.brand.connect_clicked(move |_| on_click());
+    }
+
+    pub fn set_calendar_action(&self, on_click: impl Fn() + 'static) {
+        self.clock_button.connect_clicked(move |_| on_click());
     }
 
     pub fn add_action(&self, symbol: &str, label: &str, on_click: impl Fn() + 'static) {
         self.actions.append(&action_button(symbol, label, on_click));
     }
 
-    pub fn finish_actions(&self) {
-        self.actions.append(&self.clock);
-    }
-
     pub fn set_compact(&self, compact: bool) {
+        self.compact.set(compact);
+        self.title.set_visible(!compact && self.title.text() != "KIRA DESKTOP");
         if compact {
             self.window.add_css_class("compact");
         } else {

@@ -1,25 +1,66 @@
-/* Canonical Kira Default GTK4 theme. All reusable UI styling is owned here. */
+/* Kira Default GTK4. Five canonical colors from main's kira-default.css:
+   Black #000000 · Prussian Blue #14213d · Orange #fca311
+   Alabaster Grey #e5e5e5 · White #ffffff.
+   Visual and motion equivalence are NOT yet certified; see widget parity audit. */
 window.kira-bar { background: #000000; color: #ffffff; }
-window.kira-popup { background: #14213d; color: #ffffff; }
+window.kira-popup { background: #000000; color: #ffffff; }
+
 .kira-bar button, .kira-popup button {
-  background: #14213d; color: #ffffff; border: 0; border-radius: 6px;
-  min-height: 28px; padding: 0 9px;
+  color: #ffffff; background: transparent; border: 0; border-radius: 2px;
+  min-height: 29px; padding: 0 8px;
 }
-.kira-bar button:hover, .kira-popup button:hover { color: #fca311; }
+.kira-bar button:hover, .kira-popup button:hover { background: #14213d; color: #fca311; }
 .kira-bar button:focus-visible, .kira-popup button:focus-visible {
   outline: 2px solid #fca311; outline-offset: 1px;
 }
-.kira-bar button.selected { background: #fca311; color: #000000; }
-.kira-bar button.urgent { border: 1px solid #fca311; }
-.kira-bar.compact button { min-height: 26px; padding: 0 5px; }
-.kira-bar.compact .workspace { margin: 0; }
-.bar-title { color: #ffffff; font-weight: 750; letter-spacing: 2px; }
-.clock { font-weight: bold; padding-left: 10px; font-variant-numeric: tabular-nums; }
+.kira-bar .brand-button {
+  background: #14213d; color: #ffffff; border-radius: 0;
+  border-right: 1px solid #e5e5e5; font-weight: 900; letter-spacing: 2px;
+  min-height: 42px; padding: 0 13px;
+}
+.kira-bar .brand-button:hover { color: #fca311; }
+.kira-bar .bar-center {
+  background: #000000; padding: 0 12px;
+}
+.kira-bar .bar-right { background: #14213d; padding: 0 12px; }
+.kira-bar button.workspace {
+  min-height: 29px; min-width: 31px; padding: 0 10px;
+  font-size: 11px; font-weight: 800; border-radius: 2px;
+  color: #e5e5e5;
+}
+.kira-bar button.workspace.active { background: #14213d; color: #ffffff; }
+.kira-bar button.workspace.selected { background: #fca311; color: #000000; }
+.kira-bar button.workspace.urgent { border: 1px solid #fca311; }
+.kira-bar .workspace-overflow { color: #e5e5e5; font-size: 10px; font-weight: 700; }
+.kira-bar .workspace-overflow.urgent { color: #fca311; }
+.kira-bar.compact .brand-button { min-width: 78px; padding: 0 8px; }
+.kira-bar.compact .bar-center { padding: 0 8px; }
+.kira-bar.compact .bar-right { padding: 0 8px; }
+.kira-bar.compact button.workspace { min-width: 29px; padding: 0 6px; }
+.kira-bar .bar-title { color: #e5e5e5; font-size: 11px; font-weight: 700; }
+.kira-bar .clock { color: #ffffff; font-size: 13px; font-weight: 800; }
+.kira-bar .clock-button { min-height: 34px; }
 .muted, .offline { color: #e5e5e5; }
-.offline { font-weight: bold; }
+.offline { font-weight: 700; font-size: 10px; }
 .config-error { color: #fca311; }
-.section-title { font-size: 18px; font-weight: bold; color: #ffffff; }
-.kira-popup .app-row { padding: 10px; }
+.section-title {
+  font-size: 21px; font-weight: 900; color: #ffffff;
+}
+.kira-popup .launcher { background: #000000; }
+.kira-popup .launcher .section-title {
+  font-size: 25px; border-left: 2px solid #fca311;
+  padding-left: 12px;
+}
+.kira-popup .launcher entry { background: #000000; color: #ffffff; }
+.kira-popup .launcher .app-row {
+  min-height: 58px; padding: 7px 10px; background: #14213d;
+  border-radius: 0; margin: 2px 0;
+}
+.kira-popup .launcher .app-row.selected { border-left: 3px solid #fca311; background: #000000; }
+.kira-popup .launcher .app-row.selected .app-name { color: #fca311; }
+.kira-popup .launcher .app-icon { min-width: 36px; min-height: 36px; }
+.kira-popup .launcher .app-name { font-size: 14px; font-weight: 700; color: #ffffff; }
+.kira-popup .launcher .app-description { font-size: 12px; color: #e5e5e5; }
 .kira-popup calendar { background: #14213d; color: #ffffff; }
 
 /* Reusable system monitor and output editor; no desktop-only theme rules. */

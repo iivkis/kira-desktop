@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "baseline": {
+    "branch": "main",
+    "commit": "305139949f49176487ef9759fc32c228eadff408",
+    "MotionSource": {
+      "path": "frontend/src/lib/motion.ts",
+      "sha": "3ff737758a717dbc79dd724e07a0b836d3ec08ca"
+    },
+    "calendarMotionSource": {
+      "path": "frontend/src/lib/calendar-tenet-motion.ts",
+      "sha": "54ba0af1eb5b20eefca7d448a8d1a1427483b111"
+    },
+    "themeSource": {
+      "path": "frontend/src/lib/themes/kira-default.css",
+      "sha": "8a2c573add5769d2c044661312717e97e60b6c8b"
+    }
+  },
+  "acceptance": "Matching logic and palette is not evidence of pixel or temporal equivalence. Every component needs equivalent content/interaction, recorded pixel comparison and paired frame-sequence evidence at target scale and reduced-motion.",
+  "widgets": [
+    {
+      "id": "top-bar",
+      "source": {
+        "path": "frontend/src/App.svelte",
+        "sha": "c993d7ad03ccf51a1f391fc305d8921b10a11a05"
+      },
+      "target_files": [
+        "crates/kira-ui/src/bar.rs",
+        "crates/kira-shell/src/main.rs"
+      ],
+      "state": "partial",
+      "content_and_interaction_requirements": [
+        "Brand/launcher zone, workspaces, tray, system health, warning inspector, settings, clickable local clock",
+        "Exact 42px height and compact density"
+      ],
+      "animation_requirements": [
+        "Shared TENET flow indicator and native hover focus feedback",
+        "Warning panel keyboard/focus continuity"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "workspaces",
+      "source": {
+        "path": "frontend/src/lib/components/WorkspacePreview.svelte",
+        "sha": "d90402a8f07c3e45c51c63550937e4538f1cb10a"
+      },
+      "target_files": [
+        "crates/kira-ui/src/workspace.rs"
+      ],
+      "state": "partial",
+      "content_and_interaction_requirements": [
+        "Continuous focused window and honest before/after urgent counts",
+        "Output/active/focused/urgent semantics; pending focus state"
+      ],
+      "animation_requirements": [
+        "Selection rail 0.42s back.out(1.18), scroll 0.34s power3.out",
+        "Reduced-motion and interruption reset"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "launcher",
+      "source": {
+        "path": "frontend/src/lib/components/LauncherWidget.svelte",
+        "sha": "6b364f14619fcbf732a65ba16992fda3e150b792"
+      },
+      "target_files": [
+        "crates/kira-ui/src/launcher.rs"
+      ],
+      "state": "partial",
+      "content_and_interaction_requirements": [
+        "Ranked multi-token search by name and description; GIO ID preserved",
+        "App icon and description, first 80 rows, loading/empty/clear/error states",
+        "Arrow Up/Down, Enter, Escape, popout"
+      ],
+      "animation_requirements": [
+        "Widget reveal 0.54s shell, section stagger 35ms, back.out(1.22) 0.44s",
+        "Selection flow/FLIP 0.42s/0.34s and reversible dismissal"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "calendar",
+      "source": {
+        "path": "frontend/src/lib/components/CalendarWidget.svelte",
+        "sha": "124f0d2024583c6b9367fc2b420412af138b7616"
+      },
+      "target_files": [
+        "crates/kira-ui/src/lib.rs"
+      ],
+      "state": "partial",
+      "content_and_interaction_requirements": [
+        "Editorial calendar 8-column ISO week grid, date selection, month and year navigation",
+        "Copy date feedback, live clock and custom clock digit controls, detached observatory"
+      ],
+      "animation_requirements": [
+        "TENET reversible calendar scene and 0.4s clock digit inversion",
+        "Month transition 0.38s with 26ms stagger; reduced motion"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "sky-map",
+      "source": {
+        "path": "frontend/src/lib/components/SkyMap.svelte",
+        "sha": "ca521f156aa752f0a8c0f2457f6068d8fb43cc26"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Actual astronomical catalog, constellations, location and time inputs",
+        "Horizon projection and accessible observations"
+      ],
+      "animation_requirements": [
+        "0.42s sidereal-time interpolation, interruption and reduced motion"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "system-monitor",
+      "source": {
+        "path": "frontend/src/lib/components/SystemWidget.svelte",
+        "sha": "656a219d38569b648d15c19d65a32100510d8f0f"
+      },
+      "target_files": [
+        "crates/kira-ui/src/system.rs"
+      ],
+      "state": "partial",
+      "content_and_interaction_requirements": [
+        "Overview with disk, swap, temperature, battery, GPU and system disclosure",
+        "Process search, sorting by name/PID/CPU/RSS/PSS, report copy and freshness"
+      ],
+      "animation_requirements": [
+        "TENET panel arrival and disclosure",
+        "Staged content reveal and FLIP process rows"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "system-charts",
+      "source": {
+        "path": "frontend/src/lib/components/SystemCharts.svelte",
+        "sha": "c7f6dd5ee3b99328a50738d1113bd9b1ff1ee902"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Real 500ms CPU/RAM history, gauges, time domain and adaptive axes",
+        "No fabricated points or overshoot outside measured values"
+      ],
+      "animation_requirements": [
+        "True chart interpolation and reduced-motion; original ECharts visual parity"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "system-health",
+      "source": {
+        "path": "frontend/src/lib/components/SystemHealth.svelte",
+        "sha": "75389413b18e1a5c9cbaec87dd59501eec9ff0ba"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Health classification from Core/Niri and fresh metrics, tooltips and status",
+        "Accessible warning/health affordance"
+      ],
+      "animation_requirements": [
+        "Readout pulse with truthful state and reduced motion"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "settings",
+      "source": {
+        "path": "frontend/src/lib/components/SettingsWidget.svelte",
+        "sha": "e0b0aa60ea740ac7a35d24ce63b726c178f0f6f1"
+      },
+      "target_files": [
+        "crates/kira-ui/src/lib.rs",
+        "crates/kira-ui/src/displays.rs"
+      ],
+      "state": "partial",
+      "content_and_interaction_requirements": [
+        "Responsive About/Displays navigation and OS/device facts",
+        "Detached 220px sidebar, unavailable section labels and close/popout semantics"
+      ],
+      "animation_requirements": [
+        "Editable page flow indicator and reveal with reversible dismissal"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "display-settings",
+      "source": {
+        "path": "frontend/src/lib/components/DisplaySettings.svelte",
+        "sha": "19ad3a50dbc4d8110713847ec1f7fa48cb749d14"
+      },
+      "target_files": [
+        "crates/kira-ui/src/displays.rs"
+      ],
+      "state": "partial",
+      "content_and_interaction_requirements": [
+        "Output diagram with drag-to-position, selected monitor and controls",
+        "15-second confirmation overlay, manual Apply/Confirm/Revert/Save, ownership validation"
+      ],
+      "animation_requirements": [
+        "Continuous monitor map interactions and confirmation motion; reduced motion"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "tray-bar",
+      "source": {
+        "path": "frontend/src/lib/components/TrayBar.svelte",
+        "sha": "4904704ee4aca89a99d75e409e9d5ba4113a0c8e"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Live StatusNotifier icons, max four visible and overflow count",
+        "Primary and secondary activation, needs-attention status"
+      ],
+      "animation_requirements": [
+        "Continuous selection and overflow entrance"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "tray-widget",
+      "source": {
+        "path": "frontend/src/lib/components/TrayWidget.svelte",
+        "sha": "b3ad22354d10027695c8ec0fa5273096212530da"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Pinned/unpinned items and native D-Bus menu hierarchy",
+        "Secondary click and menu actions, keyboard dismissal"
+      ],
+      "animation_requirements": [
+        "Reversible popup reveal and FLIP reflow"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "notifications",
+      "source": {
+        "path": "frontend/src/lib/components/NotificationHost.svelte",
+        "sha": "e0b7c5d89bec66ff9467b5a7166c5f40e592fedc"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Queued bounded notification cards and click-through region, multiple outputs",
+        "Arrival ACK, FIFO and urgency; truthful close, actions and timeouts"
+      ],
+      "animation_requirements": [
+        "Reversible notification arrival and removal, bounded stagger"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "notification-card",
+      "source": {
+        "path": "frontend/src/lib/components/NotificationCard.svelte",
+        "sha": "6bc4c088406a782af3bc6f4841e23fa4d23c741d"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Sender, title, body, close/open intents and accessible labels",
+        "No user-generated markup injection"
+      ],
+      "animation_requirements": [
+        "0.18s y=12px opacity 0→1 power2.out, same-path reversal"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    },
+    {
+      "id": "window-controls",
+      "source": {
+        "path": "frontend/src/lib/components/WindowControls.svelte",
+        "sha": "9bb1ec684e8862c006757c6797268396a88e44ec"
+      },
+      "target_files": [],
+      "state": "missing",
+      "content_and_interaction_requirements": [
+        "Popup close and Niri-managed detached window controls",
+        "State preservation across detach/reattach and error reporting"
+      ],
+      "animation_requirements": [
+        "Reversible close using one master timeline"
+      ],
+      "verified": {
+        "content": false,
+        "interaction": false,
+        "motion": false,
+        "pixels": false
+      },
+      "evidence": {
+        "contract_tests": [],
+        "screen_capture": [],
+        "motion_capture": [],
+        "review": []
+      }
+    }
+  ]
+}

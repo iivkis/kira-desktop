@@ -10,6 +10,13 @@
 4. **Only then** wire library components to Core/services in `crates/kira-shell`. Shell is a composition root, never a second component framework.
 5. Complete component tests, Nix build and nested Niri graphical acceptance. See [docs/KIRA_UI.md](docs/KIRA_UI.md).
 
+## Mandatory main widget parity gate
+
+- The frozen reference is `main` at `305139949f49176487ef9759fc32c228eadff408`. Read [docs/MAIN_WIDGET_PARITY.md](docs/MAIN_WIDGET_PARITY.md) and the machine-readable [widget ledger](docs/MAIN_WIDGET_PARITY.json) before changing any built-in widget.
+- Preserve **every source widget's content, states, interactions, data freshness, keyboard focus and TENET animation**, including the complete reverse paths and reduced-motion resets. Port to reusable `kira-ui` first, not `kira-shell`.
+- `python3 scripts/check_widget_parity.py` is required in CI. Never claim “identical” or mark a widget `verified` without independently recorded contract tests, matched visual captures and paired motion frame sequences. The check prevents unsupported claims; it is **not** a screenshot validator.
+- The current ledger says **0 of 15 verified**. Keep failed/missing widgets explicit, especially Calendar/SkyMap, SystemCharts, Tray, Notifications and WindowControls. Do not substitute a generic fade or GtkCalendar for the original TENET content.
+
 ## One native presentation stack
 
 - Built-in views and future trusted widget views use **Rust + GTK4**. Prefer GTK widgets, CSS and accessible GObject properties. Use GDK/GSK or GtkDrawingArea only when stock widgets cannot express the design.
@@ -33,4 +40,4 @@
 - `cargo fmt --all -- --check`; `cargo clippy --locked --workspace --all-targets -- -D warnings`; `cargo test --locked --workspace --all-targets`. A shell test run with 0 tests is insufficient: test `kira-ui` and `kira-services` models.
 - `task check`, `task shell:check` and `nix build .#default` where native dependencies and Nix are available.
 - Manual nested Niri validation for multi-output, focus, keyboard input, fractional scaling, pop-up lifecycle and all motion. CI is not proof of native graphical correctness.
-- Missing parity must be named in the migration plan, not faked or hidden. No browser-related test requirements apply after browser components are removed.
+- Missing parity must be named in the migration plan and pinned ledger, not faked or hidden. No browser-related test requirements apply after browser components are removed.

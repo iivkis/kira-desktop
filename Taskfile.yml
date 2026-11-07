@@ -24,6 +24,9 @@ tasks:
       - test -s docs/DESIGN_SYSTEM.md
       - test -s crates/kira-shell/src/main.rs
       - test -s docs/ACCEPTANCE_NATIVE_G2.md
+      - test -s docs/MAIN_WIDGET_PARITY.md
+      - test -s docs/MAIN_WIDGET_PARITY.json
+      - python3 scripts/check_widget_parity.py
       - test -s crates/kira-ui/src/system.rs
       - test -s crates/kira-ui/src/displays.rs
       - test -s crates/kira-shell/src/display_bridge.rs

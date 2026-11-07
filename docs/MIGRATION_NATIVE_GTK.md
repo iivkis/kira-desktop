@@ -30,6 +30,10 @@ Do not remove Core/IPC protocols, native system adapters or declarative config o
 
 **Phase 3: desktop composition.** Wire tested components to typed Core / service data in `kira-shell`. Verify Nix, focus, geometry, keyboard and Niri behavior.
 
+## Strict main widget parity
+
+See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](MAIN_WIDGET_PARITY.json): at this stage **0 of 15 built-in surfaces meet all content, interaction, animation and pixel-parity gates**. Workspace windowing and Launcher search now port model behavior and more of main's content to reusable GTK; they still lack the original TENET scenes and measured graphical equality. Never describe the migration as widget-identical based on Cargo, CSS palette or static screenshot alone. Every component needs paired screenshots and frame-sequence evidence against frozen main.
+
 ## Gates
 
 1. **G0 Architecture reset:** native contract and migration gaps documented; obsolete UI ownership rules withdrawn. No misleading WebKit-first README.

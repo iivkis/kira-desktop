@@ -54,6 +54,8 @@ fn workspace_items(state: &WorkspaceState) -> Vec<WorkspaceItem> {
             id: workspace.id.clone(),
             index: workspace.idx,
             name: workspace.name.clone(),
+            output: workspace.output.clone(),
+            active: workspace.is_active,
             focused: workspace.is_focused,
             urgent: workspace.is_urgent,
         })
@@ -86,6 +88,8 @@ fn start_application_discovery(sender: mpsc::Sender<ShellUpdate>) {
                 app.id().map(|id| ApplicationEntry {
                     id: id.to_string(),
                     name: app.display_name().to_string(),
+                    description: app.description().map_or_else(String::new, |value| value.to_string()),
+                    icon: app.icon().and_then(|icon| icon.to_string()).map(|value| value.to_string()),
                 })
             })
             .collect();
@@ -343,7 +347,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let displays = displays.clone();
         let display_model = display_model.clone();
         let sender = sender.clone();
-        bar.add_action(symbol, label, move || {
+        let on_click = move || {
             popup.toggle(kind, || match kind {
                 PopupKind::Launcher => {
                     let mut handle = launcher.borrow_mut();
@@ -363,6 +367,11 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 PopupKind::System => system.widget(),
                 PopupKind::Settings => settings_content.clone(),
             });
+            if kind == PopupKind::Launcher && popup.is_active(PopupKind::Launcher)
+                && let Some(launcher) = launcher.borrow().as_ref()
+            {
+                launcher.focus_search();
+            }
             if kind == PopupKind::Settings && popup.is_active(PopupKind::Settings) {
                 // Keep an explicit Confirm/Save transaction alive across view switches.
                 if !matches!(
@@ -378,9 +387,13 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                     display_model.refresh();
                 }
             }
-        });
+        };
+        match kind {
+            PopupKind::Launcher => bar.set_launcher_action(on_click),
+            PopupKind::Calendar => bar.set_calendar_action(on_click),
+            _ => bar.add_action(symbol, label, on_click),
+        }
     }
-    bar.finish_actions();
 
     bar.workspaces.update(
         false,

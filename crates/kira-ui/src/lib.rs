@@ -11,13 +11,13 @@ pub use bar::{Bar, action_button};
 pub use displays::{
     DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings,
 };
-pub use launcher::{ApplicationEntry, Launcher, filter_applications};
+pub use launcher::{ApplicationEntry, Launcher, filter_applications, matching_apps_label, next_launcher_selection};
 pub use popup::{PopupHost, PopupKind};
 pub use system::{
     GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels,
     top_processes,
 };
-pub use workspace::{WorkspaceItem, WorkspaceStrip, visible_workspaces};
+pub use workspace::{WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspaces, visible_workspace_window};
 
 use gtk::prelude::*;
 
