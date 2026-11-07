@@ -9,9 +9,11 @@ pub mod flow_indicator;
 pub mod launcher;
 pub mod motion;
 pub mod popup;
+pub mod reflow;
 mod popup_clip;
 mod popup_section;
 pub mod system;
+pub mod tenet_scroll;
 pub mod workspace;
 
 pub use bar::{Bar, action_button};
@@ -25,10 +27,12 @@ pub use launcher::{
     ApplicationEntry, Launcher, filter_applications, matching_apps_label, next_launcher_selection,
 };
 pub use popup::{PopupHost, PopupKind};
+pub use reflow::{ReflowOffset, ReflowRow, ReflowScope, ReflowSnapshot};
 pub use system::{
     GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels,
     top_processes,
 };
+pub use tenet_scroll::TenetScroll;
 pub use workspace::{
     WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspace_window, visible_workspaces,
 };

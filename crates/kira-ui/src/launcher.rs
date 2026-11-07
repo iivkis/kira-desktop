@@ -1,11 +1,14 @@
 //! Launcher content and search semantics ported from main's LauncherWidget
 //! and launcher-model.ts. No application discovery or process execution here.
 use std::cell::{Cell, RefCell};
+use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
 use gtk::prelude::*;
 
 use crate::flow_indicator::{FlowAxis, FlowIndicator, FlowStyle};
+use crate::reflow::{ReflowRow, ReflowScope};
+use crate::tenet_scroll::TenetScroll;
 
 const MAX_DISPLAYED: usize = 80;
 
@@ -93,9 +96,51 @@ pub fn matching_apps_label(number: usize) -> String {
     format!("{number} {noun}")
 }
 
+/// Reuse the same button and callbacks for a stable application identity.
+/// Rebuild only if the trusted GIO catalogue actually changed its metadata.
+fn update_app_row(button: &gtk::Button, app: &ApplicationEntry) {
+    let item = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    let icon = app
+        .icon
+        .as_deref()
+        .and_then(|value| gtk::gio::Icon::for_string(value).ok())
+        .map(|icon| gtk::Image::from_gicon(&icon))
+        .unwrap_or_else(|| gtk::Image::from_icon_name("application-x-executable-symbolic"));
+    icon.set_pixel_size(32);
+    icon.add_css_class("app-icon");
+    item.append(&icon);
+
+    let text = gtk::Box::new(gtk::Orientation::Vertical, 3);
+    text.set_hexpand(true);
+    let title = gtk::Label::new(Some(&app.name));
+    title.set_xalign(0.0);
+    title.set_ellipsize(gtk::pango::EllipsizeMode::End);
+    title.add_css_class("app-name");
+    text.append(&title);
+    if !app.description.trim().is_empty() {
+        let description = gtk::Label::new(Some(app.description.trim()));
+        description.set_xalign(0.0);
+        description.set_ellipsize(gtk::pango::EllipsizeMode::End);
+        description.set_max_width_chars(44);
+        description.add_css_class("app-description");
+        text.append(&description);
+    }
+    item.append(&text);
+    button.set_child(Some(&item));
+    button.set_tooltip_text(Some(if app.description.trim().is_empty() {
+        &app.name
+    } else {
+        &app.description
+    }));
+}
+
 struct LauncherState {
     list: gtk::Box,
     selection_flow: FlowIndicator,
+    reflow: ReflowScope,
+    scroll_motion: TenetScroll,
+    cache: RefCell<HashMap<String, (gtk::Button, ReflowRow, ApplicationEntry)>>,
+    visible_ids: RefCell<Vec<String>>,
     search: gtk::SearchEntry,
     count: gtk::Label,
     status: gtk::Label,
@@ -124,62 +169,108 @@ impl LauncherState {
         }
         self.selected.set(next);
         if let Some(button) = rows.get(next) {
-            self.selection_flow.retarget(button.upcast_ref());
+            if let Some(row) = button.parent() {
+                self.selection_flow.retarget(&row);
+            }
+            self.scroll_motion.ensure_visible(button.upcast_ref(), true);
         }
     }
 
-    fn render(&self) {
-        while let Some(child) = self.list.first_child() {
-            self.list.remove(&child);
-        }
-        self.rows.borrow_mut().clear();
+    /// Source FLIP only on a user filter action. Catalog updates are factual,
+    /// not sensor motion; they settle their existing GTK buttons immediately.
+    fn render(&self, animate: bool) {
+        let prior = self.visible_ids.borrow().clone();
+        let previous = if animate && !prior.is_empty() {
+            let cache = self.cache.borrow();
+            let ordered: Vec<_> = prior
+                .iter()
+                .filter_map(|key| {
+                    cache
+                        .get(key)
+                        .map(|(_, row, _)| (key.clone(), row.clone()))
+                })
+                .collect();
+            Some(self.reflow.capture(&ordered))
+        } else {
+            self.reflow.cancel();
+            for (_, row, _) in self.cache.borrow().values() {
+                row.settle();
+            }
+            None
+        };
+
         let query = self.search.text().to_string();
         let found = filter_applications(&self.applications.borrow(), &query, usize::MAX);
         self.count
             .set_visible(self.loaded.get() && !query.trim().is_empty());
         self.count.set_text(&matching_apps_label(found.len()));
 
-        for app in found.iter().take(MAX_DISPLAYED) {
-            let button = gtk::Button::new();
-            button.add_css_class("app-row");
-            button.set_halign(gtk::Align::Fill);
-            let item = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-            let icon = app
-                .icon
-                .as_deref()
-                .and_then(|value| gtk::gio::Icon::for_string(value).ok())
-                .map(|icon| gtk::Image::from_gicon(&icon))
-                .unwrap_or_else(|| gtk::Image::from_icon_name("application-x-executable-symbolic"));
-            icon.set_pixel_size(32);
-            icon.add_css_class("app-icon");
-            item.append(&icon);
-
-            let text = gtk::Box::new(gtk::Orientation::Vertical, 3);
-            text.set_hexpand(true);
-            let title = gtk::Label::new(Some(&app.name));
-            title.set_xalign(0.0);
-            title.set_ellipsize(gtk::pango::EllipsizeMode::End);
-            title.add_css_class("app-name");
-            text.append(&title);
-            if !app.description.trim().is_empty() {
-                let description = gtk::Label::new(Some(app.description.trim()));
-                description.set_xalign(0.0);
-                description.set_ellipsize(gtk::pango::EllipsizeMode::End);
-                description.set_max_width_chars(44);
-                description.add_css_class("app-description");
-                text.append(&description);
+        // Keep stable keyed rows, including the real input controllers.
+        let wanted: HashSet<&str> = found
+            .iter()
+            .take(MAX_DISPLAYED)
+            .map(|app| app.id.as_str())
+            .collect();
+        let stale: Vec<_> = self
+            .cache
+            .borrow()
+            .keys()
+            .filter(|key| !wanted.contains(key.as_str()))
+            .cloned()
+            .collect();
+        for key in stale {
+            if let Some((_, row, _)) = self.cache.borrow_mut().remove(&key) {
+                self.list.remove(&row);
             }
-            item.append(&text);
-            button.set_child(Some(&item));
-            button.set_tooltip_text(Some(if app.description.trim().is_empty() {
-                &app.name
+        }
+        let mut child = self.list.first_child();
+        while let Some(widget) = child {
+            child = widget.next_sibling();
+            if !widget.is::<ReflowRow>() {
+                self.list.remove(&widget);
+            }
+        }
+
+        self.rows.borrow_mut().clear();
+        let mut predecessor: Option<gtk::Widget> = None;
+        let mut visible = Vec::new();
+        for app in found.iter().take(MAX_DISPLAYED) {
+            let cached = self.cache.borrow().get(&app.id).cloned();
+            let (button, row) = if let Some((button, row, model)) = cached {
+                if model != *app {
+                    update_app_row(&button, app);
+                    self.cache.borrow_mut().insert(
+                        app.id.clone(),
+                        (button.clone(), row.clone(), app.clone()),
+                    );
+                }
+                (button, row)
             } else {
-                &app.description
-            }));
-            let launch = self.on_launch.clone();
-            let id = app.id.clone();
-            button.connect_clicked(move |_| (launch)(id.clone()));
-            self.list.append(&button);
+                let button = gtk::Button::new();
+                button.add_css_class("app-row");
+                button.set_halign(gtk::Align::Fill);
+                update_app_row(&button, app);
+                let launch = self.on_launch.clone();
+                let id = app.id.clone();
+                button.connect_clicked(move |_| (launch)(id.clone()));
+                let row = ReflowRow::new(&button.clone().upcast());
+                self.list.append(&row);
+                self.cache.borrow_mut().insert(
+                    app.id.clone(),
+                    (button.clone(), row.clone(), app.clone()),
+                );
+                (button, row)
+            };
+            let in_position = match &predecessor {
+                Some(before) => before.next_sibling().as_ref() == Some(row.upcast_ref()),
+                None => self.list.first_child().as_ref() == Some(row.upcast_ref()),
+            };
+            if !in_position {
+                self.list
+                    .reorder_child_after(&row, predecessor.as_ref());
+            }
+            predecessor = Some(row.clone().upcast());
+            visible.push((app.id.clone(), row));
             self.rows.borrow_mut().push(button);
         }
         if found.is_empty() {
@@ -201,7 +292,12 @@ impl LauncherState {
             more.add_css_class("muted");
             self.list.append(&more);
         }
+        self.visible_ids
+            .replace(visible.iter().map(|(id, _)| id.clone()).collect());
         self.select(0);
+        if let Some(snapshot) = previous {
+            self.reflow.play(snapshot, &visible);
+        }
     }
 
     fn launch_selected(&self) {
@@ -254,9 +350,11 @@ impl Launcher {
         scroll.set_max_content_height(480);
         scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
         let list = gtk::Box::new(gtk::Orientation::Vertical, 2);
+        let reflow = ReflowScope::new(&list.clone().upcast());
         let selection_flow =
             FlowIndicator::new(&list.clone().upcast(), FlowAxis::Both, FlowStyle::Rail);
         scroll.set_child(Some(&selection_flow));
+        let scroll_motion = TenetScroll::new(&scroll);
         root.append(&scroll);
 
         let status = gtk::Label::new(None);
@@ -268,6 +366,10 @@ impl Launcher {
         let state = Rc::new(LauncherState {
             list,
             selection_flow,
+            reflow,
+            scroll_motion,
+            cache: RefCell::new(HashMap::new()),
+            visible_ids: RefCell::new(Vec::new()),
             search: search.clone(),
             count,
             status,
@@ -282,7 +384,7 @@ impl Launcher {
             move |_| {
                 if let Some(state) = weak.upgrade() {
                     state.status.set_text("");
-                    state.render();
+                    state.render(true);
                 }
             }
         });
@@ -324,14 +426,14 @@ impl Launcher {
             }
         });
         search.add_controller(key);
-        state.render();
+        state.render(false);
         Self { root, state }
     }
 
     pub fn set_applications(&self, apps: Vec<ApplicationEntry>) {
         *self.state.applications.borrow_mut() = apps;
         self.state.loaded.set(true);
-        self.state.render();
+        self.state.render(false);
     }
 
     pub fn set_status(&self, status: &str) {

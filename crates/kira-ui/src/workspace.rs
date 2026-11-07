@@ -7,6 +7,7 @@ use std::rc::Rc;
 use gtk::prelude::*;
 
 use crate::flow_indicator::{FlowAxis, FlowIndicator, FlowStyle};
+use crate::reflow::{ReflowRow, ReflowScope};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct WorkspaceItem {
@@ -55,10 +56,12 @@ pub struct WorkspaceStrip {
     root: gtk::Box,
     buttons: gtk::Box,
     selection_flow: FlowIndicator,
+    reflow: ReflowScope,
+    visible_ids: RefCell<Vec<String>>,
     status: gtk::Label,
     before: gtk::Label,
     after: gtk::Label,
-    cache: RefCell<HashMap<String, gtk::Button>>,
+    cache: RefCell<HashMap<String, (gtk::Button, ReflowRow)>>,
     on_focus: Rc<dyn Fn(String)>,
 }
 
@@ -75,6 +78,7 @@ impl WorkspaceStrip {
 
         let buttons = gtk::Box::new(gtk::Orientation::Horizontal, 4);
         buttons.add_css_class("workspace-strip");
+        let reflow = ReflowScope::new(&buttons.clone().upcast());
         let selection_flow = FlowIndicator::new(
             &buttons.clone().upcast(),
             FlowAxis::Horizontal,
@@ -90,6 +94,8 @@ impl WorkspaceStrip {
             root,
             buttons,
             selection_flow,
+            reflow,
+            visible_ids: RefCell::new(Vec::new()),
             status,
             before,
             after,
@@ -117,10 +123,24 @@ impl WorkspaceStrip {
         self.after.set_visible(active);
         if !active {
             self.selection_flow.clear();
+            self.reflow.cancel();
+            self.visible_ids.borrow_mut().clear();
             return;
         }
 
         let window = visible_workspace_window(items, limit);
+        let next_ids: Vec<String> = window.items.iter().map(|item| item.id.clone()).collect();
+        let previous_ids = self.visible_ids.borrow().clone();
+        let capture = if previous_ids != next_ids && !previous_ids.is_empty() {
+            let cache = self.cache.borrow();
+            let before: Vec<_> = previous_ids
+                .iter()
+                .filter_map(|key| cache.get(key).map(|(_, row)| (key.clone(), row.clone())))
+                .collect();
+            Some(self.reflow.capture(&before))
+        } else {
+            None
+        };
         self.before.set_text(&if window.before > 0 {
             format!("−{}", window.before)
         } else {
@@ -170,16 +190,16 @@ impl WorkspaceStrip {
             .cloned()
             .collect();
         for id in stale {
-            if let Some(button) = self.cache.borrow_mut().remove(&id) {
-                self.buttons.remove(&button);
+            if let Some((_, row)) = self.cache.borrow_mut().remove(&id) {
+                self.buttons.remove(&row);
             }
         }
 
         let mut predecessor: Option<gtk::Widget> = None;
-        let mut focused: Option<gtk::Button> = None;
+        let mut focused: Option<ReflowRow> = None;
         for item in window.items {
             let existing = self.cache.borrow().get(&item.id).cloned();
-            let button = if let Some(existing) = existing {
+            let (button, row) = if let Some(existing) = existing {
                 existing
             } else {
                 let button = gtk::Button::new();
@@ -187,11 +207,12 @@ impl WorkspaceStrip {
                 let id = item.id.clone();
                 let on_focus = self.on_focus.clone();
                 button.connect_clicked(move |_| on_focus(id.clone()));
-                self.buttons.append(&button);
+                let row = ReflowRow::new(&button.clone().upcast());
+                self.buttons.append(&row);
                 self.cache
                     .borrow_mut()
-                    .insert(item.id.clone(), button.clone());
-                button
+                    .insert(item.id.clone(), (button.clone(), row.clone()));
+                (button, row)
             };
             let name = item
                 .name
@@ -235,22 +256,31 @@ impl WorkspaceStrip {
                 }
             }
             if item.focused {
-                focused = Some(button.clone());
+                focused = Some(row.clone());
             }
             let in_position = match &predecessor {
-                Some(before) => before.next_sibling().as_ref() == Some(button.upcast_ref()),
-                None => self.buttons.first_child().as_ref() == Some(button.upcast_ref()),
+                Some(before) => before.next_sibling().as_ref() == Some(row.upcast_ref()),
+                None => self.buttons.first_child().as_ref() == Some(row.upcast_ref()),
             };
             if !in_position {
                 self.buttons
-                    .reorder_child_after(&button, predecessor.as_ref());
+                    .reorder_child_after(&row, predecessor.as_ref());
             }
-            predecessor = Some(button.upcast());
+            predecessor = Some(row.upcast());
         }
-        if let Some(button) = focused {
-            self.selection_flow.retarget(button.upcast_ref());
+        if let Some(row) = focused {
+            self.selection_flow.retarget(row.upcast_ref());
         } else {
             self.selection_flow.clear();
+        }
+        self.visible_ids.replace(next_ids.clone());
+        if let Some(snapshot) = capture {
+            let cache = self.cache.borrow();
+            let after: Vec<_> = next_ids
+                .iter()
+                .filter_map(|key| cache.get(key).map(|(_, row)| (key.clone(), row.clone())))
+                .collect();
+            self.reflow.play(snapshot, &after);
         }
     }
 }

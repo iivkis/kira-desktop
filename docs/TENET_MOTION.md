@@ -28,6 +28,12 @@ The previously rejected hover optical lens, pixel distortion, forced glow and cu
 
 `kira-ui::FlowIndicator` owns one persistent, non-interactive GSK selection surface, with 420ms `back.out(1.18)` geometry and 120ms opacity. GTK retains the actual current rectangle during retargeting, draws under date/workspace buttons or as the launcher left rail, and honours reduced motion via `MotionToken`. All content and focus still belong to the original GTK buttons. Compilation and headless tests are not proof of pixel or animation parity.
 
+## Native keyed FLIP and scroll (unverified)
+
+`kira-ui::ReflowRow` retains an actual GTK child/button and controller under a GTK allocation transform. `ReflowScope` records the painted origins of the first 24 stable-key rows and, after the new GTK layout, replays the saved difference over 340ms using `back.out(1.14)`. Pruned rows never receive imaginary movements; new content and the real selected model update immediately. Launcher uses reflow only for explicit search/filter input, not new GIO catalogue readings; WorkspaceStrip only for changed visible workspace ordering.
+
+`kira-ui::TenetScroll` uses the real adjustment and target bounds to calculate the nearest visible position, then animates 340ms `power3.out`. Starting a new navigation samples the current adjustment; manual scroll cancels the track. Both obey GTK reduced-motion settling. Native nested-Niri recordings remain the acceptance gate.
+
 ## Acceptance
 
 For each animated scene document its intent, contact event, original recorded history, cancellation/reset path, accessibility fallback and lifecycle cleanup. Test repeated clicks, interruption, widget closure, screen scale changes and reduced motion in an isolated nested Niri session. No assertion of finished TENET quality without visual review.
