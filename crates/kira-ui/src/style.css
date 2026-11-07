@@ -1,4 +1,4 @@
-/* Native Kira Default: five canonical colors, no browser styles. */
+/* Canonical Kira Default GTK4 theme. All reusable UI styling is owned here. */
 window.kira-bar { background: #000000; color: #ffffff; }
 window.kira-popup { background: #14213d; color: #ffffff; }
 .kira-bar button, .kira-popup button {
@@ -11,6 +11,8 @@ window.kira-popup { background: #14213d; color: #ffffff; }
 }
 .kira-bar button.selected { background: #fca311; color: #000000; }
 .kira-bar button.urgent { border: 1px solid #fca311; }
+.kira-bar.compact button { min-height: 26px; padding: 0 5px; }
+.kira-bar.compact .workspace { margin: 0; }
 .bar-title { color: #ffffff; font-weight: 750; letter-spacing: 2px; }
 .clock { font-weight: bold; padding-left: 10px; font-variant-numeric: tabular-nums; }
 .muted, .offline { color: #e5e5e5; }
@@ -19,4 +21,3 @@ window.kira-popup { background: #14213d; color: #ffffff; }
 .section-title { font-size: 18px; font-weight: bold; color: #ffffff; }
 .kira-popup .app-row { padding: 10px; }
 .kira-popup calendar { background: #14213d; color: #ffffff; }
-.kira-popup calendar:selected { background: #fca311; color: #000000; }

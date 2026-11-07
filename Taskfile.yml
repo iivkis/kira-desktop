@@ -23,7 +23,9 @@ tasks:
       - test -s docs/SPECIFICATION.md
       - test -s docs/DESIGN_SYSTEM.md
       - test -s crates/kira-shell/src/main.rs
-      - test -s crates/kira-shell/src/style.css
+      - test -s crates/kira-ui/src/lib.rs
+      - test -s crates/kira-ui/src/style.css
+      - test -s crates/kira-services/src/lib.rs
       - test ! -e frontend/package.json
       - "! grep -q 'webkit6' crates/kira-shell/Cargo.toml"
 
@@ -48,10 +50,11 @@ tasks:
       - cargo run --locked -p kira-core -- --check-config "{{.ROOT_DIR}}/config/kira.kdl.example"
 
   shell:check:
-    desc: Compile all GTK4 Shell test targets in nix develop.
+    desc: Check reusable kira-ui/services and desktop integration inside nix develop.
     cmds:
-      - cargo check --locked -p kira-shell --all-targets
-      - cargo test --locked -p kira-shell --bin kira-shell
+      - cargo check --locked --workspace --all-targets
+      - cargo clippy --locked -p kira-ui -p kira-services -p kira-shell --all-targets -- -D warnings
+      - cargo test --locked -p kira-ui -p kira-services -p kira-shell --all-targets
 
   core:run:
     cmds:

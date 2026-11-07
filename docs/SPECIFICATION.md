@@ -8,7 +8,7 @@ Kira Desktop — модульная нативная оболочка рабоч
 
 ## 2. Обязательный стек
 
-- Rust 2024, Cargo workspace: kira-core, kira-ipc, kira-shell.
+- Rust 2024, Cargo workspace: kira-core, kira-ipc, kira-services, kira-ui, kira-shell.
 - GTK4 + gtk4-layer-shell, GIO, GDK/GSK, CSS: единственная визуальная платформа.
 - Tokio: асинхронные сервисы Core; Unix socket + JSON-RPC 2.0: типизированный протокол.
 - Niri/Wayland: композитор, источники workspace/output state и оконная модель.
@@ -21,7 +21,11 @@ Kira Desktop — модульная нативная оболочка рабоч
 
 **Kira IPC** фиксирует контракты, ограничения размера сообщения, тайм-ауты, reconnect и типизированные ошибки.
 
-**Kira Shell** создаёт нативный GTK4 Top Bar, отдельные popup surfaces, обычные Niri-managed окна, UI-контроллеры и GIO/Linux системные адаптеры. GTK не блокируется IO. Все объекты GTK принадлежат главному потоку.
+**Kira UI (`kira-ui`)** создаёт переиспользуемые GTK4-компоненты, popup surfaces, визуальные состояния и API доступности. Разрабатывается и тестируется **до** интеграции в Desktop и не зависит от IPC, Niri или системных служб.
+
+**Kira Services (`kira-services`)** хранит GTK-независимые модели: метрики, операции с мониторами, безопасность сохранения конфигурации и политику уведомлений.
+
+**Kira Shell** соединяет готовые `kira-ui` компоненты с событиями Core и системными адаптерами. Сам не дублирует библиотеку компонентов. GTK не блокируется IO. Все объекты GTK принадлежат главному потоку.
 
 ## 4. Поверхности и жизненный цикл
 
@@ -42,5 +46,7 @@ Top Bar: 42 логических px, Layer Top, якоря top/left/right, exclu
 ## 7. Инженерная приемка
 
 Cargo fmt, Clippy и tests, Nix-native build, nested Niri smoke. Доказать корректность мониторов и fractional scaling в живом окружении. Не считать зелёный unit test проверкой Wayland-графики. Переход разбит на gate-этапы, а недостающие функции перечислены в [MIGRATION_NATIVE_GTK.md](MIGRATION_NATIVE_GTK.md).
+
+**Порядок реализации:** `kira-ui` (публичный API, модель, доступность, тесты) → `kira-services`/Core (данные и доверенные операции) → `kira-shell` (композиция) → nested Niri smoke.
 
 **Архитектурное правило:** системная логика принадлежит Rust Core/адаптерам; представление принадлежит GTK4; границы доверия принадлежат явно определённым API.

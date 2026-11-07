@@ -8,6 +8,7 @@ Kira Desktop is a Rust-native, NixOS-first desktop shell for the **Niri/Wayland*
 
 ## Start here
 
+- [Kira UI: reusable component-first development contract](docs/KIRA_UI.md)
 - [Native architecture and philosophy](docs/ARCHITECTURE_NATIVE.md)
 - [Migration plan, removed stack and acceptance](docs/MIGRATION_NATIVE_GTK.md)
 - [UI ownership contract](docs/UI_ARCHITECTURE.md)
@@ -22,9 +23,13 @@ Kira Desktop is a Rust-native, NixOS-first desktop shell for the **Niri/Wayland*
 | --- | --- | --- |
 | Kira Core | Rust, Tokio | Niri EventStream, KDL validation, subscriptions and bounded IPC actions |
 | Kira IPC | Unix sockets, JSON-RPC 2.0 | Stable typed messages and connection health |
-| Kira Shell | Rust, GTK4, gtk4-layer-shell, GIO | Native widgets, Wayland surfaces, focus, UI state, application launch |
-| Rendering | GTK4 CSS, GTK/GDK/GSK | The native visual tree, accessibility, drawing and effects |
+| Kira UI (`kira-ui`) | Rust, GTK4, gtk4-layer-shell, GTK CSS | Reusable bar, workspace strip, launcher, popups, accessibility |
+| Kira Services (`kira-services`) | Rust, native Linux adapters | Reusable system models: metrics, display transactions, notification policy |
+| Kira Shell (`kira-shell`) | Rust, GIO, typed IPC | Composes kira-ui and trusted services; no duplicate widget implementation |
+| Rendering | GTK4 CSS, GTK/GDK/GSK | Native drawing, input, accessibility and visual effects |
 | Packaging | Nix flake, Crane, Cargo | Reproducible Rust package and development environment |
+
+**Mandatory development order: design and test a reusable `kira-ui` component first, then assemble Kira Desktop from it in `kira-shell`.** See [docs/KIRA_UI.md](docs/KIRA_UI.md).
 
 GTK is **the UI**, not a frame wrapped around a web page. Niri remains the window manager, not an in-process compositor. Configuration is declarative-first and fail-closed.
 
@@ -36,7 +41,7 @@ On NixOS inside a Wayland session:
 nix develop
 task check
 task shell:check
-task build
+task nix:build
 ~~~
 
 For an isolated nested Niri preview, run:

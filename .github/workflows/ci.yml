@@ -43,7 +43,10 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check GTK4 Shell and Rust tests
+      - name: Check reusable GTK4 UI, services and desktop integration
         run: |
-          nix develop .#ci --command cargo check --locked -p kira-shell --all-targets
-          nix develop .#ci --command cargo test --locked -p kira-shell --bin kira-shell
+          nix develop .#ci --command cargo check --locked --workspace --all-targets
+          nix develop .#ci --command cargo clippy --locked -p kira-ui -p kira-services -p kira-shell --all-targets -- -D warnings
+          nix develop .#ci --command cargo test --locked -p kira-ui -p kira-services -p kira-shell --all-targets
+      - name: Build distributable Nix package with embedded GTK CSS
+        run: nix build .#default -L

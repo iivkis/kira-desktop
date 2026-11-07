@@ -6,7 +6,8 @@
 
 Kira Desktop is **a desktop shell, not a website deployed to a desktop**.
 
-1. **Native by default.** GTK4 owns the widget tree, painting, input, accessibility, focus and lifecycle. No embedded browser is permitted on the shell UI path.
+1. **UI library before desktop.** Design, test and stabilize a reusable `kira-ui` GTK4 component before using it to implement a Kira Desktop feature. This is a mandatory engineering sequence.
+2. **Native by default.** GTK4 owns the widget tree, painting, input, accessibility, focus and lifecycle. No embedded browser is permitted on the shell UI path.
 2. **Niri is the compositor.** Kira does not replace Niri or implement its own window manager. It integrates using documented Niri interfaces over an isolated Core service.
 3. **Rust is the authority.** Domain state, validation, service adapters and UI controllers have explicit owners. UI widgets display state and issue typed intents, not commands.
 4. **Declarative-first.** NixOS/Home Manager/user KDL remain the source of truth until an explicit managed or session transaction is authorized. No silent mutation of foreign config.
@@ -22,12 +23,13 @@ Niri / Wayland compositor
    ↑         ↑
    │ Niri IPC│        GTK4 + gtk4-layer-shell / GDK / GSK
    │         │               ↑ native state, commands
-Kira Core (Rust/Tokio) ← typed JSON-RPC → Kira Shell (Rust/GTK4/GIO)
-   │                                       │
-   └ KDL validation / Niri streams        ├ Top Bar / workspaces
-                                           ├ Calendar / Launcher
-                                           ├ Settings / System / Tray
-                                           └ Notifications / detached windows
+Kira Core (Rust/Tokio) ← typed JSON-RPC → kira-shell (composition)
+   │                                       │       │
+   └ KDL validation / Niri streams        ├ kira-services: independent native adapters
+                                           └ kira-ui: reusable GTK components
+                                                 ├ Bar / workspaces / launcher
+                                                 ├ Calendar / system / settings
+                                                 └ Popups / detached windows (future)
 ```
 
 | Responsibility | Owner | Boundary |
@@ -35,12 +37,17 @@ Kira Core (Rust/Tokio) ← typed JSON-RPC → Kira Shell (Rust/GTK4/GIO)
 | Niri EventStream, workspace truth | Core | Typed snapshots, bounded focus request |
 | KDL parse/hot reload/validation | Core | Last-known-good state; error surfaced in Shell |
 | Protocol and reconnect semantics | kira-ipc | Unix socket, bounded JSON-RPC, 5s heartbeat / 15s timeout |
-| GTK view state, controls, geometry | Shell | Main-thread GTK object ownership |
-| Application discovery/launch | Shell GIO adapter | Application identities, never interpolated shell commands |
-| Display changes | Shell trusted Niri adapter | Validate, Apply, Confirm, Save with rollback |
-| Metrics and notifications | Shell Linux/GIO adapters | Read only where possible; bounded, rate-limited, honest |
+| GTK view state, controls, geometry | kira-ui | Reusable presentation contracts; no Core IPC or Niri authority |
+| Composition | kira-shell | Typed data mapping, routing and application lifecycle |
+| Application discovery/launch | Shell trusted GIO worker | Application identities, never interpolated shell commands |
+| Display changes | kira-services trusted adapter | Validate, Apply, Confirm, Save with rollback |
+| Metrics and notification policy | kira-services | GTK-independent, bounded and testable models |
 | Theme and accessibility | GTK CSS, widgets, a11y | Canonical palette, focus, keyboard, reduced motion |
 | Charts and specialized visuals | GtkDrawingArea or GSK renderer | Sampled data remain separate from animation state |
+
+## Component-first construction contract
+
+**Order: `kira-ui` public API and standalone GTK view → `kira-ui` model tests → trusted `kira-services` / Core integration → `kira-shell` composition → Niri graphical acceptance.** Desktop-only GTK widget trees are forbidden where a reusable component belongs. `kira-ui` has no dependency on `kira-shell`, `kira-services`, `kira-ipc` or the compositor. See [KIRA_UI.md](KIRA_UI.md).
 
 ## Window contract
 

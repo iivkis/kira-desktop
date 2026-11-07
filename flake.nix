@@ -42,6 +42,9 @@
         repository-spec = pkgs.runCommand "kira-native-spec-check" { } ''
           test -s ${./docs/ARCHITECTURE_NATIVE.md}
           test -s ${./docs/MIGRATION_NATIVE_GTK.md}
+          test -s ${./crates/kira-ui/src/lib.rs}
+          test -s ${./crates/kira-ui/src/style.css}
+          test -s ${./crates/kira-services/src/lib.rs}
           test -s ${./crates/kira-shell/src/main.rs}
           touch "$out"
         '';

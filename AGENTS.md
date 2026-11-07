@@ -2,11 +2,19 @@
 
 **Architecture decision:** [docs/ARCHITECTURE_NATIVE.md](docs/ARCHITECTURE_NATIVE.md) is normative for the native-gtk branch. [docs/MIGRATION_NATIVE_GTK.md](docs/MIGRATION_NATIVE_GTK.md) records stage gates, feature gaps and removal policy.
 
+## Mandatory UI-first development rule
+
+1. Specify reusable GTK component APIs, states, accessibility and tests in `crates/kira-ui` **before** implementing the desktop feature.
+2. Build and test the GTK component without Core or Niri. Components consume plain view models and emit typed intent callbacks. No `kira-ipc`, app discovery, process execution or Niri commands in `kira-ui`.
+3. Keep trusted system models and native adapters in `crates/kira-services` or Core, independently of GTK; preserve tested existing Rust policies.
+4. **Only then** wire library components to Core/services in `crates/kira-shell`. Shell is a composition root, never a second component framework.
+5. Complete component tests, Nix build and nested Niri graphical acceptance. See [docs/KIRA_UI.md](docs/KIRA_UI.md).
+
 ## One native presentation stack
 
 - Built-in views and future trusted widget views use **Rust + GTK4**. Prefer GTK widgets, CSS and accessible GObject properties. Use GDK/GSK or GtkDrawingArea only when stock widgets cannot express the design.
 - **No WebKitGTK, Svelte, Vite, Tailwind, JavaScript, GSAP, ECharts or web widget pool.** Do not restore them as a shortcut, temporary renderer, test harness or second UI framework.
-- GTK4 + gtk4-layer-shell own native Wayland panels and transient overlays; regular windows remain Niri-managed xdg-toplevels. Keep 42px Top Bar exclusive zone and prevent overlays reserving extra space.
+- Reusable kira-ui components, not kira-shell ad-hoc widgets, own GTK4 + gtk4-layer-shell native Wayland panels and transient overlays; regular windows remain Niri-managed xdg-toplevels. Keep 42px Top Bar exclusive zone and prevent overlays reserving extra space.
 - Core owns Niri integration and KDL validation. Shell owns presentation, focus and lifecycle, and calls typed, bounded Core/GIO adapters. Never expose arbitrary shell commands or broad filesystem writes to widget code.
 - Never block GTK's main context with socket IO, process enumeration or slow metrics. Workers exchange owned data; only GTK main-context code touches GTK objects.
 - The single visible transient popup rule remains. Detached ordinary windows are independent and must survive switching the transient popup. Recreating GTK state during a reparent is not acceptable if state preservation is a requirement.
@@ -21,7 +29,7 @@
 
 ## Quality gates
 
-- `cargo fmt --all -- --check`; `cargo clippy --locked --workspace --all-targets -- -D warnings`; `cargo test --locked --workspace --all-targets`.
+- `cargo fmt --all -- --check`; `cargo clippy --locked --workspace --all-targets -- -D warnings`; `cargo test --locked --workspace --all-targets`. A shell test run with 0 tests is insufficient: test `kira-ui` and `kira-services` models.
 - `task check`, `task shell:check` and `nix build .#default` where native dependencies and Nix are available.
 - Manual nested Niri validation for multi-output, focus, keyboard input, fractional scaling, pop-up lifecycle and all motion. CI is not proof of native graphical correctness.
 - Missing parity must be named in the migration plan, not faked or hidden. No browser-related test requirements apply after browser components are removed.

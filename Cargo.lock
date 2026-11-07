@@ -493,13 +493,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "kira-services"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "kira-shell"
 version = "0.1.0"
 dependencies = [
  "gtk4",
- "gtk4-layer-shell",
  "kira-ipc",
+ "kira-services",
+ "kira-ui",
  "serde_json",
+]
+
+[[package]]
+name = "kira-ui"
+version = "0.1.0"
+dependencies = [
+ "gtk4",
+ "gtk4-layer-shell",
 ]
 
 [[package]]

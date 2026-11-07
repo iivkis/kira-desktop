@@ -22,14 +22,23 @@ The former UI ownership contract ("every widget must be Svelte") conflicts with 
 
 Do not remove Core/IPC protocols, native system adapters or declarative config ownership merely because their former presentation was browser-based.
 
+## Mandatory build order
+
+**Phase 1: kira-ui first.** Specify and implement reusable GTK4 components and typed view models, callbacks, CSS, accessibility and tests. Desktop-specific widget trees must never precede these components. This library must work without Core or Niri.
+
+**Phase 2: trusted services.** Recover renderer-independent Rust models and adapters from `main` in `kira-services` or Core; retain their regression tests. Display management, config ownership, notification queue and system metrics are restored as modules, but are not yet all wired to visible UI.
+
+**Phase 3: desktop composition.** Wire tested components to typed Core / service data in `kira-shell`. Verify Nix, focus, geometry, keyboard and Niri behavior.
+
 ## Gates
 
 1. **G0 Architecture reset:** native contract and migration gaps documented; obsolete UI ownership rules withdrawn. No misleading WebKit-first README.
-2. **G1 Native launchable shell:** a GTK4 Top Bar with 42px exclusive zone, real workspace subscription, safe action dispatch, native clock, Launcher/Calendar and visible offline state. Build Rust and Nix without WebKit/npm.
-3. **G2 Feature recovery:** migrate system metrics, process monitor, settings, Niri outputs Apply/Confirm/Save, StatusNotifier tray and freedesktop notifications into native GTK. Each feature retains safety and owns one controller.
-4. **G3 Window semantics:** one transient overlay, independent detached windows, widget-state preservation, interruption/cancellation, focus, multi-monitor geometry.
-5. **G4 Visual fidelity:** canonical design tokens, native charts and TENET timelines, reduced motion, visual regression and scaling acceptance at 100/125/150/200%.
-6. **G5 Shipping:** Nix build, packaged isolated nested Niri smoke, documented feature parity, accessibility and memory/perf comparison to main. No blanket release claim before these pass.
+2. **G1 Reusable UI foundation:** `kira-ui` public APIs, shared theme, stable state and independent tests, built before Desktop.
+3. **G1.5 Native launchable shell:** a GTK4 Top Bar with 42px exclusive zone, real workspace subscription, safe action dispatch, native clock, Launcher/Calendar and visible offline state. Build Rust and Nix without WebKit/npm.
+4. **G2 Feature recovery:** migrate system metrics, process monitor, settings, Niri outputs Apply/Confirm/Save, StatusNotifier tray and freedesktop notifications into native GTK. Each feature retains safety and owns one controller.
+5. **G3 Window semantics:** one transient overlay, independent detached windows, widget-state preservation, interruption/cancellation, focus, multi-monitor geometry.
+6. **G4 Visual fidelity:** canonical design tokens, native charts and TENET timelines, reduced motion, visual regression and scaling acceptance at 100/125/150/200%.
+7. **G5 Shipping:** Nix build, packaged isolated nested Niri smoke, documented feature parity, accessibility and memory/perf comparison to main. No blanket release claim before these pass.
 
 ## Non-negotiable behavior
 
@@ -43,4 +52,4 @@ Do not remove Core/IPC protocols, native system adapters or declarative config o
 
 ## Current caveat
 
-Creating a native bootstrap is **not equivalent** to porting all Svelte functionality. Tray, notification visuals, detached windows, rich calendar/sky atlas, detailed process monitor and display transaction UI are independent acceptance items. Track them before merging to main. The original source remains in main for comparison and careful extraction of native adapters.
+Creating a native bootstrap is **not equivalent** to porting all Svelte functionality. Tray, notification visuals, detached windows, rich calendar/sky atlas, detailed process monitor and display transaction UI are independent acceptance items. Track them before merging to main. Recovered backend policies do not constitute feature parity. Multi-monitor popup positioning remains an acceptance item. The original source remains in main for comparison and careful extraction of native adapters.

@@ -3,6 +3,8 @@ resolver = "2"
 members = [
   "crates/kira-ipc",
   "crates/kira-core",
+  "crates/kira-services",
+  "crates/kira-ui",
   "crates/kira-shell",
 ]
 
@@ -16,7 +18,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1", features = ["full"] }
 
-# Debug symbols are expensive for GTK/WebKit bindings and not required for
+# Debug symbols are expensive for GTK bindings and not required for
 # routine visual preview. Incremental compilation stays enabled by default.
 [profile.dev]
 debug = 0

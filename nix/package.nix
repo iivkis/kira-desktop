@@ -26,7 +26,10 @@ let
 
   rustSrc = lib.cleanSourceWith {
     src = ../.;
-    filter = craneLib.filterCargoSources;
+    # Include GTK CSS embedded by kira-ui via include_str! in Rust.
+    filter = path: type:
+      craneLib.filterCargoSources path type
+      || builtins.baseNameOf path == "style.css";
   };
   commonRustArgs = {
     src = rustSrc;
