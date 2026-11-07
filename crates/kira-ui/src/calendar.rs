@@ -275,11 +275,8 @@ impl Calendar {
             }
         }
         let grid_scene = Rc::new(CalendarFragmentScene::new());
-        let selection_flow = FlowIndicator::new(
-            &grid.clone().upcast(),
-            FlowAxis::Both,
-            FlowStyle::Fill,
-        );
+        let selection_flow =
+            FlowIndicator::new(&grid.clone().upcast(), FlowAxis::Both, FlowStyle::Fill);
         let grid_surface = PopupSection::calendar_grid(&selection_flow.clone().upcast());
         let grid_overlay = gtk::Overlay::new();
         grid_overlay.set_child(Some(&grid_surface));

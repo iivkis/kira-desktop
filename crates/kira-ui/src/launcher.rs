@@ -254,11 +254,8 @@ impl Launcher {
         scroll.set_max_content_height(480);
         scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
         let list = gtk::Box::new(gtk::Orientation::Vertical, 2);
-        let selection_flow = FlowIndicator::new(
-            &list.clone().upcast(),
-            FlowAxis::Both,
-            FlowStyle::Rail,
-        );
+        let selection_flow =
+            FlowIndicator::new(&list.clone().upcast(), FlowAxis::Both, FlowStyle::Rail);
         scroll.set_child(Some(&selection_flow));
         root.append(&scroll);
 

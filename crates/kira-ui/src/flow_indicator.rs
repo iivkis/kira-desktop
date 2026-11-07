@@ -125,8 +125,9 @@ mod imp {
             let marker = self.current.get();
             let opacity = f64::from(self.opacity.get()).clamp(0.0, 1.0) as f32;
             let style = self.style.get();
-            if style == FlowStyle::Fill {
-                if let Some(rect) = marker {
+            if style == FlowStyle::Fill
+                && let Some(rect) = marker
+            {
                     snapshot.append_color(
                         &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
                         &gtk::graphene::Rect::new(
@@ -136,18 +137,17 @@ mod imp {
                             rect.height.max(0.0),
                         ),
                     );
-                }
             }
             if let Some(child) = self.child.borrow().as_ref() {
                 self.obj().snapshot_child(child, snapshot);
             }
-            if style == FlowStyle::Rail {
-                if let Some(rect) = marker {
+            if style == FlowStyle::Rail
+                && let Some(rect) = marker
+            {
                     snapshot.append_color(
                         &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
                         &gtk::graphene::Rect::new(rect.x, rect.y, 3.0, rect.height.max(0.0)),
                     );
-                }
             }
         }
     }
@@ -195,10 +195,7 @@ impl FlowIndicator {
         else {
             return;
         };
-        let Some(rect) = target
-            .compute_bounds(self)
-            .and_then(FlowRect::from_bounds)
-        else {
+        let Some(rect) = target.compute_bounds(self).and_then(FlowRect::from_bounds) else {
             // On the first unmapped frame the real layout does not exist.
             // Keep the target reference and retry at the next allocation.
             return;
@@ -238,9 +235,12 @@ impl FlowIndicator {
             FLOW_DURATION_MS,
             move |progress| {
                 if let Some(indicator) = step_view.upgrade() {
-                    indicator.imp().current.set(Some(start.interpolate(rect, progress, axis)));
-                    let fade = (progress * FLOW_DURATION_MS as f64 / FLOW_FADE_MS as f64)
-                        .clamp(0.0, 1.0);
+                    indicator
+                        .imp()
+                        .current
+                        .set(Some(start.interpolate(rect, progress, axis)));
+                    let fade =
+                        (progress * FLOW_DURATION_MS as f64 / FLOW_FADE_MS as f64).clamp(0.0, 1.0);
                     let opacity = f64::from(from_opacity)
                         + (1.0 - f64::from(from_opacity)) * (1.0 - (1.0 - fade).powi(2));
                     indicator.imp().opacity.set(opacity as f32);
@@ -264,7 +264,12 @@ mod tests {
     use super::*;
 
     fn rect(x: f32, y: f32, width: f32, height: f32) -> FlowRect {
-        FlowRect { x, y, width, height }
+        FlowRect {
+            x,
+            y,
+            width,
+            height,
+        }
     }
 
     #[test]

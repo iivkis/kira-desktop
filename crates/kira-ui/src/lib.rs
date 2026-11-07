@@ -17,10 +17,10 @@ pub mod workspace;
 pub use bar::{Bar, action_button};
 pub use calendar::Calendar;
 pub use calendar_model::{CivilDate, DayState, current_local_date, month_grid};
-pub use flow_indicator::{FlowAxis, FlowIndicator, FlowRect, FlowStyle};
 pub use displays::{
     DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings,
 };
+pub use flow_indicator::{FlowAxis, FlowIndicator, FlowRect, FlowStyle};
 pub use launcher::{
     ApplicationEntry, Launcher, filter_applications, matching_apps_label, next_launcher_selection,
 };
