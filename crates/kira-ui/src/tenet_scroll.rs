@@ -36,6 +36,7 @@ pub fn nearest_visible_offset(
 
 pub struct TenetScroll {
     window: gtk::ScrolledWindow,
+    adjustment: gtk::Adjustment,
     motion: MotionToken,
     internal: Rc<Cell<bool>>,
     handler: Option<gtk::glib::SignalHandlerId>,
@@ -47,13 +48,15 @@ impl TenetScroll {
         let internal = Rc::new(Cell::new(false));
         let token = motion.clone();
         let writing = internal.clone();
-        let handler = window.vadjustment().connect_value_changed(move |_| {
+        let adjustment = window.vadjustment();
+        let handler = adjustment.connect_value_changed(move |_| {
             if !writing.get() {
                 token.cancel();
             }
         });
         Self {
             window: window.clone(),
+            adjustment,
             motion,
             internal,
             handler: Some(handler),
@@ -61,6 +64,8 @@ impl TenetScroll {
     }
 
     pub fn ensure_visible(&self, target: &gtk::Widget, animate: bool) {
+        // The old destination must stop even if this target has no layout yet.
+        self.motion.cancel();
         let adjustment = self.window.vadjustment();
         let viewport = adjustment.page_size();
         let Some(bounds) = target.compute_bounds(&self.window) else {
@@ -77,7 +82,6 @@ impl TenetScroll {
             adjustment.lower(),
             adjustment.upper(),
         );
-        self.motion.cancel();
         if (destination - current).abs() < 1.0 {
             return;
         }
@@ -103,6 +107,16 @@ impl TenetScroll {
         );
     }
 
+    /// Search resets selection to row zero immediately. Do not use the
+    /// previous query's scrolling state for the next filtered list.
+    pub fn scroll_to_start(&self) {
+        self.motion.cancel();
+        let adjustment = self.window.vadjustment();
+        self.internal.set(true);
+        adjustment.set_value(adjustment.lower());
+        self.internal.set(false);
+    }
+
     pub fn cancel(&self) {
         self.motion.cancel();
     }
@@ -112,7 +126,9 @@ impl Drop for TenetScroll {
     fn drop(&mut self) {
         self.cancel();
         if let Some(handler) = self.handler.take() {
-            self.window.vadjustment().disconnect(handler);
+            // The ScrolledWindow can replace its adjustment; always disconnect
+            // from the exact GObject that originally owned this handler.
+            self.adjustment.disconnect(handler);
         }
     }
 }
@@ -126,6 +142,18 @@ mod tests {
         assert_eq!(
             nearest_visible_offset(20.0, 100.0, 25.0, 80.0, 0.0, 500.0),
             20.0
+        );
+    }
+
+    #[test]
+    fn nearest_visible_preserves_scroll_if_everything_fits() {
+        assert_eq!(
+            nearest_visible_offset(0.0, 480.0, 70.0, 105.0, 0.0, 400.0),
+            0.0
+        );
+        assert_eq!(
+            nearest_visible_offset(150.0, 100.0, 160.0, 199.0, 0.0, 500.0),
+            150.0
         );
     }
 

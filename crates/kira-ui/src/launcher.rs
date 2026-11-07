@@ -11,6 +11,12 @@ use crate::reflow::{ReflowRow, ReflowScope};
 use crate::tenet_scroll::TenetScroll;
 
 const MAX_DISPLAYED: usize = 80;
+const MAX_ANIMATED_FILTER_ROWS: usize = 20;
+
+/// Main intentionally skips FLIP on broad result sets to keep typing responsive.
+pub fn animate_launcher_filter(visible_before: usize) -> bool {
+    (1..=MAX_ANIMATED_FILTER_ROWS).contains(&visible_before)
+}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ApplicationEntry {
@@ -127,6 +133,7 @@ fn update_app_row(button: &gtk::Button, app: &ApplicationEntry) {
     }
     item.append(&text);
     button.set_child(Some(&item));
+    button.set_hexpand(true);
     button.set_tooltip_text(Some(if app.description.trim().is_empty() {
         &app.name
     } else {
@@ -152,7 +159,7 @@ struct LauncherState {
 }
 
 impl LauncherState {
-    fn select(&self, index: usize) {
+    fn select(&self, index: usize, scroll: bool) {
         let rows = self.rows.borrow();
         if rows.is_empty() {
             self.selected.set(0);
@@ -168,11 +175,14 @@ impl LauncherState {
             }
         }
         self.selected.set(next);
-        if let Some(button) = rows.get(next) {
-            if let Some(row) = button.parent() {
-                self.selection_flow.retarget(&row);
+        if let Some(button) = rows.get(next)
+            && let Some(row) = button.parent()
+        {
+            self.selection_flow.retarget(&row);
+            if scroll {
+                // Use the stable layout row, not its animated child transform.
+                self.scroll_motion.ensure_visible(&row, true);
             }
-            self.scroll_motion.ensure_visible(button.upcast_ref(), true);
         }
     }
 
@@ -180,7 +190,8 @@ impl LauncherState {
     /// not sensor motion; they settle their existing GTK buttons immediately.
     fn render(&self, animate: bool) {
         let prior = self.visible_ids.borrow().clone();
-        let previous = if animate && !prior.is_empty() {
+        self.scroll_motion.scroll_to_start();
+        let previous = if animate && animate_launcher_filter(prior.len()) {
             let cache = self.cache.borrow();
             let ordered: Vec<_> = prior
                 .iter()
@@ -287,7 +298,7 @@ impl LauncherState {
         }
         self.visible_ids
             .replace(visible.iter().map(|(id, _)| id.clone()).collect());
-        self.select(0);
+        self.select(0, false);
         if let Some(snapshot) = previous {
             self.reflow.play(snapshot, &visible);
         }
@@ -343,6 +354,7 @@ impl Launcher {
         scroll.set_max_content_height(480);
         scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
         let list = gtk::Box::new(gtk::Orientation::Vertical, 2);
+        list.set_hexpand(true);
         let reflow = ReflowScope::new(&list.clone().upcast());
         let selection_flow =
             FlowIndicator::new(&list.clone().upcast(), FlowAxis::Both, FlowStyle::Rail);
@@ -414,7 +426,7 @@ impl Launcher {
                     return gtk::glib::Propagation::Proceed;
                 };
                 let next = next_launcher_selection(state.selected.get(), count, direction);
-                state.select(next);
+                state.select(next, true);
                 gtk::glib::Propagation::Stop
             }
         });
@@ -453,6 +465,15 @@ mod tests {
             description: description.into(),
             icon: None,
         }
+    }
+
+    #[test]
+    fn broad_launcher_search_does_not_start_decorative_flip() {
+        assert!(!animate_launcher_filter(0));
+        assert!(animate_launcher_filter(1));
+        assert!(animate_launcher_filter(20));
+        assert!(!animate_launcher_filter(21));
+        assert!(!animate_launcher_filter(MAX_DISPLAYED));
     }
 
     #[test]

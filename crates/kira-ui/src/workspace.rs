@@ -124,6 +124,11 @@ impl WorkspaceStrip {
         if !active {
             self.selection_flow.clear();
             self.reflow.cancel();
+            // A stopped compositor must never leave an in-flight paint offset
+            // on reusable workspace buttons when Niri reconnects.
+            for (_, row) in self.cache.borrow().values() {
+                row.settle();
+            }
             self.visible_ids.borrow_mut().clear();
             return;
         }

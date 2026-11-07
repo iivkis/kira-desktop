@@ -92,6 +92,10 @@ impl ReflowRow {
     pub fn new(child: &gtk::Widget) -> Self {
         let row: Self = glib::Object::new();
         row.imp().child.replace(Some(child.clone()));
+        row.set_hexpand(child.hexpand());
+        row.set_vexpand(child.vexpand());
+        row.set_halign(child.halign());
+        row.set_valign(child.valign());
         child.set_parent(&row);
         row
     }
@@ -112,8 +116,14 @@ impl ReflowRow {
         self.queue_allocate();
     }
 
-    pub fn settle(&self) {
+    /// Freeze at the current rendered transform before a second user action.
+    /// The old tick callback must not move the row while GTK reorders it.
+    pub fn freeze(&self) {
         self.imp().motion.cancel();
+    }
+
+    pub fn settle(&self) {
+        self.freeze();
         self.move_offset(ReflowOffset { x: 0.0, y: 0.0 });
     }
 
@@ -177,6 +187,7 @@ impl ReflowScope {
             for (key, row) in ordered.iter().take(REFLOW_MAX_ROWS) {
                 if let Some(origin) = row.painted_origin(&self.container) {
                     positions.insert(key.clone(), origin);
+                    row.freeze();
                 }
             }
         }

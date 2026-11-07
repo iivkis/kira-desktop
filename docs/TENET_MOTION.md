@@ -30,9 +30,9 @@ The previously rejected hover optical lens, pixel distortion, forced glow and cu
 
 ## Native keyed FLIP and scroll (unverified)
 
-`kira-ui::ReflowRow` retains an actual GTK child/button and controller under a GTK allocation transform. `ReflowScope` records the painted origins of the first 24 stable-key rows and, after the new GTK layout, replays the saved difference over 340ms using `back.out(1.14)`. Pruned rows never receive imaginary movements; new content and the real selected model update immediately. Launcher uses reflow only for explicit search/filter input, not new GIO catalogue readings; WorkspaceStrip only for changed visible workspace ordering.
+`kira-ui::ReflowRow` retains an actual GTK child/button and controller under a GTK allocation transform. `ReflowScope` records the painted origins of the first 24 stable-key rows and, after the new GTK layout, replays the saved difference over 340ms using `back.out(1.14)`. Pruned rows never receive imaginary movements; new content and the real selected model update immediately. Launcher uses reflow only for explicit search/filter input when the previous result set contains 1–20 entries, not new GIO catalogue readings; a second interaction freezes each surviving row at its last painted coordinates. WorkspaceStrip only restages changed visible workspace ordering and clears stale offsets when disconnected.
 
-`kira-ui::TenetScroll` uses the real adjustment and target bounds to calculate the nearest visible position, then animates 340ms `power3.out`. Starting a new navigation samples the current adjustment; manual scroll cancels the track. Both obey GTK reduced-motion settling. Native nested-Niri recordings remain the acceptance gate.
+`kira-ui::TenetScroll` uses the real adjustment and target bounds to calculate the nearest visible position, then animates 340ms `power3.out`. Starting a new navigation samples the current adjustment and the stable layout row rather than its moving child transform; manual scroll cancels the track. Both obey GTK reduced-motion settling. Native nested-Niri recordings remain the acceptance gate. A host-side, opt-in `scripts/capture_native_motion.py` records timestamped PNGs strictly from a verified nested socket, never the parent display. See [NATIVE_MOTION_ACCEPTANCE.md](NATIVE_MOTION_ACCEPTANCE.md); no paired captures have been reviewed.
 
 ## Acceptance
 
