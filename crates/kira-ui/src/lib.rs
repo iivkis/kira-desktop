@@ -8,11 +8,16 @@ pub mod system;
 pub mod workspace;
 
 pub use bar::{Bar, action_button};
-pub use displays::{DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings};
+pub use displays::{
+    DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings,
+};
 pub use launcher::{ApplicationEntry, Launcher, filter_applications};
 pub use popup::{PopupHost, PopupKind};
+pub use system::{
+    GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels,
+    top_processes,
+};
 pub use workspace::{WorkspaceItem, WorkspaceStrip, visible_workspaces};
-pub use system::{GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels, top_processes};
 
 use gtk::prelude::*;
 

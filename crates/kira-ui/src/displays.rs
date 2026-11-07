@@ -7,7 +7,14 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use gtk::prelude::*;
 
 const TRANSFORMS: [&str; 8] = [
-    "normal", "90", "180", "270", "flipped", "flipped-90", "flipped-180", "flipped-270",
+    "normal",
+    "90",
+    "180",
+    "270",
+    "flipped",
+    "flipped-90",
+    "flipped-180",
+    "flipped-270",
 ];
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -66,7 +73,9 @@ pub fn can_apply(choices: &[DisplayChoice]) -> bool {
         && choices.len() <= 8
         && {
             let mut connectors = std::collections::HashSet::new();
-            choices.iter().all(|item| connectors.insert(item.connector.as_str()))
+            choices
+                .iter()
+                .all(|item| connectors.insert(item.connector.as_str()))
         }
         && choices.iter().all(|item| {
             !item.connector.is_empty()
@@ -138,7 +147,10 @@ impl Controls {
     fn edited(&self, index: usize, update: impl FnOnce(&mut DisplayChoice)) {
         if let Some(item) = self.choices.borrow_mut().get_mut(index) {
             update(item);
-            if matches!(*self.phase.borrow(), DisplayPhase::Confirmed | DisplayPhase::Saved) {
+            if matches!(
+                *self.phase.borrow(),
+                DisplayPhase::Confirmed | DisplayPhase::Saved
+            ) {
                 *self.phase.borrow_mut() = DisplayPhase::Ready;
             }
             self.sync();
@@ -152,7 +164,9 @@ impl Controls {
             DisplayPhase::Loading => "Чтение настроек дисплеев…".to_owned(),
             DisplayPhase::Ready => "Изменения не применены".to_owned(),
             DisplayPhase::Applying => "Применение временной конфигурации…".to_owned(),
-            DisplayPhase::Pending { deadline_unix_ms, .. } => {
+            DisplayPhase::Pending {
+                deadline_unix_ms, ..
+            } => {
                 let remaining = seconds_left(*deadline_unix_ms, now);
                 if remaining == 0 {
                     "Ожидание автоматического отката Niri…".to_owned()
@@ -161,7 +175,9 @@ impl Controls {
                 }
             }
             DisplayPhase::Confirming => "Подтверждение конфигурации…".to_owned(),
-            DisplayPhase::Confirmed => "Подтверждено. Для записи в KDL нажмите «Сохранить»".to_owned(),
+            DisplayPhase::Confirmed => {
+                "Подтверждено. Для записи в KDL нажмите «Сохранить»".to_owned()
+            }
             DisplayPhase::Reverting => "Возвращаются предыдущие настройки…".to_owned(),
             DisplayPhase::Reverted => "Восстановлены предыдущие настройки".to_owned(),
             DisplayPhase::Saving => "Проверка владельца и сохранение KDL…".to_owned(),
@@ -171,16 +187,24 @@ impl Controls {
         self.status.set_text(&message);
         let editing = matches!(
             *phase,
-            DisplayPhase::Ready | DisplayPhase::Confirmed | DisplayPhase::Reverted
-                | DisplayPhase::Saved | DisplayPhase::Error(_)
+            DisplayPhase::Ready
+                | DisplayPhase::Confirmed
+                | DisplayPhase::Reverted
+                | DisplayPhase::Saved
+                | DisplayPhase::Error(_)
         );
         self.outputs.set_sensitive(editing);
         self.refresh.set_sensitive(editing);
-        self.apply.set_sensitive(editing && can_apply(&self.choices.borrow()));
-        self.save.set_sensitive(matches!(*phase, DisplayPhase::Confirmed));
+        self.apply
+            .set_sensitive(editing && can_apply(&self.choices.borrow()));
+        self.save
+            .set_sensitive(matches!(*phase, DisplayPhase::Confirmed));
         match &*phase {
-            DisplayPhase::Pending { deadline_unix_ms, .. } => {
-                self.confirm.set_sensitive(seconds_left(*deadline_unix_ms, now) > 0);
+            DisplayPhase::Pending {
+                deadline_unix_ms, ..
+            } => {
+                self.confirm
+                    .set_sensitive(seconds_left(*deadline_unix_ms, now) > 0);
                 self.revert.set_sensitive(true);
             }
             _ => {
@@ -203,7 +227,10 @@ impl Controls {
             }
             "confirm" => {
                 let phase = self.phase.borrow().clone();
-                if let DisplayPhase::Pending { id, deadline_unix_ms } = phase
+                if let DisplayPhase::Pending {
+                    id,
+                    deadline_unix_ms,
+                } = phase
                     && seconds_left(deadline_unix_ms, now_millis()) > 0
                 {
                     self.set_phase(DisplayPhase::Confirming);
@@ -252,7 +279,7 @@ impl DisplaySettings {
         root.append(&title);
 
         let explanation = gtk::Label::new(Some(
-            "Сначала примените, затем подтвердите в течение 15 секунд. Запись в KDL выполняется только отдельным сохранением."
+            "Сначала примените, затем подтвердите в течение 15 секунд. Запись в KDL выполняется только отдельным сохранением.",
         ));
         explanation.set_xalign(0.0);
         explanation.set_wrap(true);
@@ -285,7 +312,14 @@ impl DisplaySettings {
         root.append(&buttons);
 
         let controls = Rc::new(Controls {
-            outputs, status, persistence, refresh, apply, confirm, revert, save,
+            outputs,
+            status,
+            persistence,
+            refresh,
+            apply,
+            confirm,
+            revert,
+            save,
             choices: RefCell::new(Vec::new()),
             phase: RefCell::new(DisplayPhase::Loading),
             on_intent: Rc::new(on_intent),
@@ -340,7 +374,9 @@ impl DisplaySettings {
     }
 
     pub fn set_persistence(&self, status: &str) {
-        self.controls.persistence.set_text(&format!("Владение конфигурацией: {status}"));
+        self.controls
+            .persistence
+            .set_text(&format!("Владение конфигурацией: {status}"));
     }
 
     pub fn set_outputs(&self, outputs: Vec<DisplayOutput>) {
@@ -353,7 +389,8 @@ impl DisplaySettings {
             section.add_css_class("display-output");
 
             let name = gtk::Label::new(Some(&format!(
-                "{} · {}", output.connector, output.description
+                "{} · {}",
+                output.connector, output.description
             )));
             name.add_css_class("section-title");
             name.set_xalign(0.0);
@@ -370,13 +407,25 @@ impl DisplaySettings {
                 }
             });
 
-            let names = output.modes.iter().map(|mode| mode.label.as_str()).collect::<Vec<_>>();
+            let names = output
+                .modes
+                .iter()
+                .map(|mode| mode.label.as_str())
+                .collect::<Vec<_>>();
             let mode = gtk::DropDown::from_strings(&names);
-            let selected = output.modes.iter().position(|item| item.id == output.mode).unwrap_or(0);
+            let selected = output
+                .modes
+                .iter()
+                .position(|item| item.id == output.mode)
+                .unwrap_or(0);
             mode.set_selected(selected as u32);
             mode.set_sensitive(!names.is_empty());
             section.append(&labeled_field("Разрешение и частота", &mode));
-            let ids = output.modes.iter().map(|item| item.id.clone()).collect::<Vec<_>>();
+            let ids = output
+                .modes
+                .iter()
+                .map(|item| item.id.clone())
+                .collect::<Vec<_>>();
             let weak = Rc::downgrade(&self.controls);
             mode.connect_selected_notify(move |select| {
                 if let Some(mode) = ids.get(select.selected() as usize)
@@ -398,7 +447,10 @@ impl DisplaySettings {
             });
 
             let orientation = gtk::DropDown::from_strings(&TRANSFORMS);
-            let selected = TRANSFORMS.iter().position(|transform| *transform == output.transform).unwrap_or(0);
+            let selected = TRANSFORMS
+                .iter()
+                .position(|transform| *transform == output.transform)
+                .unwrap_or(0);
             orientation.set_selected(selected as u32);
             section.append(&labeled_field("Ориентация", &orientation));
             let weak = Rc::downgrade(&self.controls);
@@ -455,10 +507,20 @@ mod tests {
 
     fn output() -> DisplayOutput {
         DisplayOutput {
-            connector: "DP-1".into(), description: "Monitor".into(), enabled: true,
-            modes: vec![DisplayMode { id: "1920x1080@60.000".into(), label: "1920×1080 · 60Hz".into() }],
-            mode: "1920x1080@60.000".into(), scale: 1.0, transform: "normal".into(),
-            x: 0, y: 0, vrr: false, vrr_supported: false,
+            connector: "DP-1".into(),
+            description: "Monitor".into(),
+            enabled: true,
+            modes: vec![DisplayMode {
+                id: "1920x1080@60.000".into(),
+                label: "1920×1080 · 60Hz".into(),
+            }],
+            mode: "1920x1080@60.000".into(),
+            scale: 1.0,
+            transform: "normal".into(),
+            x: 0,
+            y: 0,
+            vrr: false,
+            vrr_supported: false,
         }
     }
 

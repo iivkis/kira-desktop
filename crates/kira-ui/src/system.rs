@@ -46,7 +46,10 @@ pub struct ProcessList {
 pub fn top_processes(rows: &[ProcessItem], limit: usize) -> Vec<&ProcessItem> {
     let mut selected: Vec<_> = rows.iter().collect();
     selected.sort_by(|a, b| {
-        match (a.cpu_percent.filter(|v| v.is_finite()), b.cpu_percent.filter(|v| v.is_finite())) {
+        match (
+            a.cpu_percent.filter(|v| v.is_finite()),
+            b.cpu_percent.filter(|v| v.is_finite()),
+        ) {
             (Some(a), Some(b)) => b.partial_cmp(&a).unwrap_or(Ordering::Equal),
             (Some(_), None) => Ordering::Less,
             (None, Some(_)) => Ordering::Greater,
@@ -67,7 +70,8 @@ fn percent(value: Option<u8>) -> String {
 }
 
 fn temperature(value: Option<f64>) -> String {
-    value.filter(|value| value.is_finite())
+    value
+        .filter(|value| value.is_finite())
         .map_or_else(|| "недоступно".into(), |value| format!("{value:.1} °C"))
 }
 
@@ -78,20 +82,47 @@ pub fn overview_labels(value: &SystemOverview) -> Vec<String> {
         }
         _ => "недоступно".into(),
     };
-    let load = value.load.filter(|v| v.iter().all(|n| n.is_finite() && *n >= 0.0))
-        .map_or_else(|| "недоступно".into(), |v| format!("{:.2} / {:.2} / {:.2}", v[0], v[1], v[2]));
-    let uptime = value.uptime_seconds
-        .map_or_else(|| "недоступно".into(), |seconds| format!("{} ч {} мин", seconds / 3600, (seconds % 3600) / 60));
+    let load = value
+        .load
+        .filter(|v| v.iter().all(|n| n.is_finite() && *n >= 0.0))
+        .map_or_else(
+            || "недоступно".into(),
+            |v| format!("{:.2} / {:.2} / {:.2}", v[0], v[1], v[2]),
+        );
+    let uptime = value.uptime_seconds.map_or_else(
+        || "недоступно".into(),
+        |seconds| format!("{} ч {} мин", seconds / 3600, (seconds % 3600) / 60),
+    );
     let battery = value.battery_percent.map_or_else(
         || "недоступно".into(),
-        |level| format!("{level}%{}", if value.battery_charging == Some(true) { " · зарядка" } else { "" }),
+        |level| {
+            format!(
+                "{level}%{}",
+                if value.battery_charging == Some(true) {
+                    " · зарядка"
+                } else {
+                    ""
+                }
+            )
+        },
     );
     let gpu = if value.gpu.is_empty() {
         "недоступно".into()
     } else {
-        value.gpu.iter().take(3).map(|gpu| {
-            format!("{}: {} / {}", gpu.name, percent(gpu.utilization_percent), temperature(gpu.temperature_c))
-        }).collect::<Vec<_>>().join("\n")
+        value
+            .gpu
+            .iter()
+            .take(3)
+            .map(|gpu| {
+                format!(
+                    "{}: {} / {}",
+                    gpu.name,
+                    percent(gpu.utilization_percent),
+                    temperature(gpu.temperature_c)
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("\n")
     };
     vec![
         percent(value.cpu_percent),
@@ -129,7 +160,15 @@ impl SystemMonitor {
 
         let overview = gtk::Box::new(gtk::Orientation::Vertical, 5);
         let mut readings = Vec::new();
-        for label in ["CPU", "Температура CPU", "Оперативная память", "Нагрузка (1/5/15)", "Аптайм", "Батарея", "GPU"] {
+        for label in [
+            "CPU",
+            "Температура CPU",
+            "Оперативная память",
+            "Нагрузка (1/5/15)",
+            "Аптайм",
+            "Батарея",
+            "GPU",
+        ] {
             let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
             row.add_css_class("system-metric");
             let name = gtk::Label::new(Some(label));
@@ -149,7 +188,8 @@ impl SystemMonitor {
         pages.add_titled(&overview, Some("overview"), "Обзор");
 
         let process_page = gtk::Box::new(gtk::Orientation::Vertical, 8);
-        let process_summary = gtk::Label::new(Some("Список процессов появится после открытия вкладки"));
+        let process_summary =
+            gtk::Label::new(Some("Список процессов появится после открытия вкладки"));
         process_summary.add_css_class("muted");
         process_summary.set_xalign(0.0);
         process_summary.set_wrap(true);
@@ -164,7 +204,13 @@ impl SystemMonitor {
         pages.add_titled(&process_page, Some("processes"), "Процессы");
 
         root.append(&pages);
-        Self { root, pages, readings, process_summary, processes }
+        Self {
+            root,
+            pages,
+            readings,
+            process_summary,
+            processes,
+        }
     }
 
     pub fn widget(&self) -> gtk::Widget {
@@ -185,8 +231,13 @@ impl SystemMonitor {
         while let Some(child) = self.processes.first_child() {
             self.processes.remove(&child);
         }
-        let suffix = if snapshot.truncated { " (список ограничен)" } else { "" };
-        self.process_summary.set_text(&format!("Процессов: {}{suffix}", snapshot.total));
+        let suffix = if snapshot.truncated {
+            " (список ограничен)"
+        } else {
+            ""
+        };
+        self.process_summary
+            .set_text(&format!("Процессов: {}{suffix}", snapshot.total));
         for item in top_processes(&snapshot.rows, MAX_VISIBLE_PROCESSES) {
             let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
             row.add_css_class("process-row");
@@ -196,13 +247,17 @@ impl SystemMonitor {
             name.set_max_width_chars(24);
             name.set_tooltip_text(Some(&item.name));
             row.append(&name);
-            let cpu = item.cpu_percent.filter(|x| x.is_finite())
+            let cpu = item
+                .cpu_percent
+                .filter(|x| x.is_finite())
                 .map_or_else(|| "CPU —".into(), |x| format!("{x:.1}%"));
             let cpu_label = gtk::Label::new(Some(&cpu));
             cpu_label.set_width_chars(7);
             cpu_label.set_xalign(1.0);
             row.append(&cpu_label);
-            let mem = item.pss_kib.or(item.rss_kib)
+            let mem = item
+                .pss_kib
+                .or(item.rss_kib)
                 .map_or_else(|| "ОЗУ —".into(), gib);
             let mem_label = gtk::Label::new(Some(&mem));
             mem_label.set_xalign(1.0);
@@ -230,13 +285,30 @@ mod tests {
     use super::*;
 
     fn row(pid: u32, cpu: Option<f64>) -> ProcessItem {
-        ProcessItem { pid, name: "sample".into(), cpu_percent: cpu, rss_kib: None, pss_kib: None }
+        ProcessItem {
+            pid,
+            name: "sample".into(),
+            cpu_percent: cpu,
+            rss_kib: None,
+            pss_kib: None,
+        }
     }
 
     #[test]
     fn top_processes_sort_known_cpu_before_missing_and_bound_output() {
-        let rows = [row(1, None), row(2, Some(2.0)), row(3, Some(8.0)), row(4, Some(f64::NAN))];
-        assert_eq!(top_processes(&rows, 2).iter().map(|p| p.pid).collect::<Vec<_>>(), [3, 2]);
+        let rows = [
+            row(1, None),
+            row(2, Some(2.0)),
+            row(3, Some(8.0)),
+            row(4, Some(f64::NAN)),
+        ];
+        assert_eq!(
+            top_processes(&rows, 2)
+                .iter()
+                .map(|p| p.pid)
+                .collect::<Vec<_>>(),
+            [3, 2]
+        );
         assert_eq!(top_processes(&rows, 0).len(), 0);
     }
 

@@ -13,11 +13,10 @@ use gtk::prelude::*;
 use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
-    ApplicationEntry, Bar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading,
-    InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor,
-    SystemOverview, WorkspaceItem,
+    ApplicationEntry, Bar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading, InfoPanel,
+    Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor, SystemOverview,
+    WorkspaceItem,
 };
-use crate::display_bridge::decode_outputs;
 
 enum ShellUpdate {
     Workspaces(WorkspaceState),
@@ -132,11 +131,15 @@ fn start_system_sampler(
                     uptime_seconds: snapshot.uptime_seconds,
                     battery_percent: snapshot.battery_percent,
                     battery_charging: snapshot.battery_charging,
-                    gpu: snapshot.gpus.into_iter().map(|gpu| GpuReading {
-                        name: gpu.label,
-                        utilization_percent: gpu.utilization_percent,
-                        temperature_c: gpu.temperature_c,
-                    }).collect(),
+                    gpu: snapshot
+                        .gpus
+                        .into_iter()
+                        .map(|gpu| GpuReading {
+                            name: gpu.label,
+                            utilization_percent: gpu.utilization_percent,
+                            temperature_c: gpu.temperature_c,
+                        })
+                        .collect(),
                 };
                 if sender.send(ShellUpdate::SystemOverview(overview)).is_err() {
                     return;
@@ -144,17 +147,23 @@ fn start_system_sampler(
                 if processes_visible.load(Ordering::Relaxed) {
                     let event = match processes.sample() {
                         Ok(snapshot) => ShellUpdate::Processes(ProcessList {
-                            rows: snapshot.rows.into_iter().map(|process| ProcessItem {
-                                pid: process.pid,
-                                name: process.name,
-                                cpu_percent: process.cpu_percent,
-                                rss_kib: process.rss_kib,
-                                pss_kib: process.pss_kib,
-                            }).collect(),
+                            rows: snapshot
+                                .rows
+                                .into_iter()
+                                .map(|process| ProcessItem {
+                                    pid: process.pid,
+                                    name: process.name,
+                                    cpu_percent: process.cpu_percent,
+                                    rss_kib: process.rss_kib,
+                                    pss_kib: process.pss_kib,
+                                })
+                                .collect(),
                             total: snapshot.total,
                             truncated: snapshot.truncated,
                         }),
-                        Err(error) => ShellUpdate::ProcessError(format!("Не удалось прочитать процессы: {error}")),
+                        Err(error) => ShellUpdate::ProcessError(format!(
+                            "Не удалось прочитать процессы: {error}"
+                        )),
                     };
                     if sender.send(event).is_err() {
                         return;
@@ -170,18 +179,21 @@ fn send_display_intent(model: &DisplayModel, intent: DisplayIntent) {
     match intent {
         DisplayIntent::Refresh => model.refresh(),
         DisplayIntent::Apply(choices) => {
-            let request = choices.into_iter().map(|output| {
-                serde_json::json!({
-                    "connector": output.connector,
-                    "enabled": output.enabled,
-                    "mode": output.mode,
-                    "scale": output.scale,
-                    "transform": output.transform,
-                    "x": output.x,
-                    "y": output.y,
-                    "vrr": output.vrr,
+            let request = choices
+                .into_iter()
+                .map(|output| {
+                    serde_json::json!({
+                        "connector": output.connector,
+                        "enabled": output.enabled,
+                        "mode": output.mode,
+                        "scale": output.scale,
+                        "transform": output.transform,
+                        "x": output.x,
+                        "y": output.y,
+                        "vrr": output.vrr,
+                    })
                 })
-            }).collect::<Vec<_>>();
+                .collect::<Vec<_>>();
             model.apply(serde_json::Value::Array(request));
         }
         DisplayIntent::Confirm(id) => model.confirm(id),
@@ -199,7 +211,9 @@ fn handle_display_event(display: &DisplaySettings, event: DisplayEvent) {
     match event.state {
         "ready" | "reverted" | "saved" => {
             let Some(snapshot) = event.outputs else {
-                display.set_phase(DisplayPhase::Error("Niri не вернул состояние дисплеев".into()));
+                display.set_phase(DisplayPhase::Error(
+                    "Niri не вернул состояние дисплеев".into(),
+                ));
                 return;
             };
             match decode_outputs(&snapshot) {
@@ -216,9 +230,14 @@ fn handle_display_event(display: &DisplaySettings, event: DisplayEvent) {
         }
         "pending" => match (event.pending_id, event.deadline_unix_ms) {
             (Some(id), Some(deadline_unix_ms)) => {
-                display.set_phase(DisplayPhase::Pending { id, deadline_unix_ms });
+                display.set_phase(DisplayPhase::Pending {
+                    id,
+                    deadline_unix_ms,
+                });
             }
-            _ => display.set_phase(DisplayPhase::Error("Нет данных для подтверждения дисплеев".into())),
+            _ => display.set_phase(DisplayPhase::Error(
+                "Нет данных для подтверждения дисплеев".into(),
+            )),
         },
         "confirmed" => display.set_phase(DisplayPhase::Confirmed),
         "error" => display.set_phase(DisplayPhase::Error("Ошибка настроек дисплеев".into())),
@@ -286,7 +305,11 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let processes_visible = Arc::new(AtomicBool::new(false));
     start_core_subscriptions(sender.clone());
     start_application_discovery(sender.clone());
-    start_system_sampler(sender.clone(), system_visible.clone(), processes_visible.clone());
+    start_system_sampler(
+        sender.clone(),
+        system_visible.clone(),
+        processes_visible.clone(),
+    );
 
     for (kind, symbol, label) in [
         (PopupKind::Launcher, "⌕", "Запуск приложений"),
@@ -326,9 +349,12 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 // Keep an explicit Confirm/Save transaction alive across view switches.
                 if !matches!(
                     displays.phase(),
-                    DisplayPhase::Pending { .. } | DisplayPhase::Confirmed
-                        | DisplayPhase::Applying | DisplayPhase::Confirming
-                        | DisplayPhase::Saving | DisplayPhase::Reverting
+                    DisplayPhase::Pending { .. }
+                        | DisplayPhase::Confirmed
+                        | DisplayPhase::Applying
+                        | DisplayPhase::Confirming
+                        | DisplayPhase::Saving
+                        | DisplayPhase::Reverting
                 ) {
                     displays.set_phase(DisplayPhase::Loading);
                     display_model.refresh();
@@ -361,7 +387,10 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         move || {
             let active_system = popup.is_active(PopupKind::System);
             system_visible.store(active_system, Ordering::Relaxed);
-            processes_visible.store(active_system && system.processes_selected(), Ordering::Relaxed);
+            processes_visible.store(
+                active_system && system.processes_selected(),
+                Ordering::Relaxed,
+            );
             // Hiding an unconfirmed Settings popup (including Escape) asks the
             // trusted Niri worker to rollback immediately; its watchdog remains
             // authoritative if the request is delayed or the shell crashes.

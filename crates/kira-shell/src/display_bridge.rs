@@ -15,7 +15,11 @@ fn mode(value: &Value) -> Option<DisplayMode> {
     }
     Some(DisplayMode {
         id: format!("{width}x{height}@{}.{:03}", refresh / 1000, refresh % 1000),
-        label: format!("{width}×{height} · {}.{:03} Hz", refresh / 1000, refresh % 1000),
+        label: format!(
+            "{width}×{height} · {}.{:03} Hz",
+            refresh / 1000,
+            refresh % 1000
+        ),
     })
 }
 
@@ -34,7 +38,9 @@ fn normalized_transform(source: &str) -> Option<&'static str> {
 }
 
 fn coordinate(logical: &Value, key: &str) -> Result<i32, String> {
-    let raw = logical[key].as_i64().ok_or_else(|| format!("Нет координаты {key}"))?;
+    let raw = logical[key]
+        .as_i64()
+        .ok_or_else(|| format!("Нет координаты {key}"))?;
     let value = i32::try_from(raw).map_err(|_| "Координата выходит за пределы i32")?;
     if !(-32000..=32000).contains(&value) {
         return Err("Координата за пределами Niri".into());
@@ -49,11 +55,16 @@ pub fn decode_outputs(value: &Value) -> Result<Vec<DisplayOutput>, String> {
     }
     let mut views = Vec::new();
     for entry in source {
-        let connector = entry["connector"].as_str().ok_or("Не указан коннектор дисплея")?;
+        let connector = entry["connector"]
+            .as_str()
+            .ok_or("Не указан коннектор дисплея")?;
         if connector.is_empty() || connector.len() > 128 {
             return Err("Некорректное имя коннектора дисплея".into());
         }
-        if views.iter().any(|out: &DisplayOutput| out.connector == connector) {
+        if views
+            .iter()
+            .any(|out: &DisplayOutput| out.connector == connector)
+        {
             return Err("Повтор коннектора дисплея".into());
         }
         let modes_raw = entry["modes"].as_array().ok_or("Нет режимов дисплея")?;
@@ -62,7 +73,9 @@ pub fn decode_outputs(value: &Value) -> Result<Vec<DisplayOutput>, String> {
         }
         let modes = modes_raw.iter().filter_map(mode).collect::<Vec<_>>();
         if modes.is_empty() {
-            return Err(format!("Дисплей {connector} не сообщает поддерживаемых режимов"));
+            return Err(format!(
+                "Дисплей {connector} не сообщает поддерживаемых режимов"
+            ));
         }
         let preferred = entry["current_mode"]
             .as_u64()
@@ -79,7 +92,9 @@ pub fn decode_outputs(value: &Value) -> Result<Vec<DisplayOutput>, String> {
         let logical = &entry["logical"];
         let enabled = !logical.is_null();
         let (scale, transform, x, y) = if enabled {
-            let scale = logical["scale"].as_f64().ok_or("Не указан масштаб дисплея")?;
+            let scale = logical["scale"]
+                .as_f64()
+                .ok_or("Не указан масштаб дисплея")?;
             if !scale.is_finite() || !(0.5..=4.0).contains(&scale) {
                 return Err("Масштаб дисплея не поддерживается".into());
             }
@@ -87,7 +102,12 @@ pub fn decode_outputs(value: &Value) -> Result<Vec<DisplayOutput>, String> {
                 .as_str()
                 .and_then(normalized_transform)
                 .ok_or("Неподдерживаемая ориентация дисплея")?;
-            (scale, transform.to_owned(), coordinate(logical, "x")?, coordinate(logical, "y")?)
+            (
+                scale,
+                transform.to_owned(),
+                coordinate(logical, "x")?,
+                coordinate(logical, "y")?,
+            )
         } else {
             (1.0, "normal".to_owned(), 0, 0)
         };
@@ -100,7 +120,11 @@ pub fn decode_outputs(value: &Value) -> Result<Vec<DisplayOutput>, String> {
             .join(" ");
         views.push(DisplayOutput {
             connector: connector.to_owned(),
-            description: if description.is_empty() { "Неизвестный монитор".into() } else { description.chars().take(120).collect() },
+            description: if description.is_empty() {
+                "Неизвестный монитор".into()
+            } else {
+                description.chars().take(120).collect()
+            },
             enabled,
             modes,
             mode: preferred.id,
