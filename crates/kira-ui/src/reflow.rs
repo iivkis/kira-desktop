@@ -92,8 +92,8 @@ impl ReflowRow {
     pub fn new(child: &gtk::Widget) -> Self {
         let row: Self = glib::Object::new();
         row.imp().child.replace(Some(child.clone()));
-        row.set_hexpand(child.hexpand());
-        row.set_vexpand(child.vexpand());
+        row.set_hexpand(child.compute_expand(gtk::Orientation::Horizontal));
+        row.set_vexpand(child.compute_expand(gtk::Orientation::Vertical));
         row.set_halign(child.halign());
         row.set_valign(child.valign());
         child.set_parent(&row);

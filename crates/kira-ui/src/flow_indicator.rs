@@ -167,8 +167,8 @@ impl FlowIndicator {
         indicator.imp().child.replace(Some(child.clone()));
         // A GTK wrapper must preserve the contained grid/list's expansion and
         // alignment contract, not silently turn Fill into a narrow requisition.
-        indicator.set_hexpand(child.hexpand());
-        indicator.set_vexpand(child.vexpand());
+        indicator.set_hexpand(child.compute_expand(gtk::Orientation::Horizontal));
+        indicator.set_vexpand(child.compute_expand(gtk::Orientation::Vertical));
         indicator.set_halign(child.halign());
         indicator.set_valign(child.valign());
         child.set_parent(&indicator);
