@@ -214,7 +214,7 @@ mod tests {
     fn main_independent_today_selected_and_adjacent_states() {
         let today = date(2026, 11, 2);
         let selected = date(2026, 11, 4);
-        assert_eq!(today.state(selected, today, 2026, 11).today, true);
+        assert!(today.state(selected, today, 2026, 11).today);
         assert!(!today.state(selected, today, 2026, 11).selected);
         assert!(date(2026, 10, 31).state(selected, today, 2026, 11).outside);
         assert!(today.state(today, today, 2026, 11).selected);
