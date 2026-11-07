@@ -47,9 +47,7 @@ impl State {
             } else {
                 1
             };
-            if date.month != previous.month || date.year != previous.year {
-                self.grid_surface.play_calendar_grid(direction);
-            }
+            let changed_month = date.month != previous.month || date.year != previous.year;
             let index = self
                 .dates
                 .borrow()
@@ -59,6 +57,11 @@ impl State {
                 && let Some(button) = self.days.get(index)
             {
                 self.grid_scene.play_at(direction, &button.clone().upcast());
+            }
+            if changed_month {
+                // Contact geometry is captured before the compositor surface
+                // begins its spring from the original 8px/2px position.
+                self.grid_surface.play_calendar_grid(direction);
             }
         }
     }
