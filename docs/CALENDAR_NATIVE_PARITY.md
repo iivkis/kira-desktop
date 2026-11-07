@@ -20,7 +20,7 @@
 
 ## Still missing or unverified
 
-- Native 400ms digit-by-digit old/new crossflight is implemented using the source easing directions, but still lacks the original `clock-flight.ts` click-juggle sector memory and independently captured motion equivalence.
+- Native 400ms digit-by-digit old/new crossflight and `clock-flight.ts` click-juggle six-sector memory are ported. A click records six separate trajectories and rewinds the same 380ms plus 26ms stagger in reverse. Paired motion captures and user-visible equivalence remain unverified.
 - Full 380ms selected-day/month grid movement, 26ms stagger and spring-selected indicator. Native popup now has a reversible master clip, seam, staged GTK section spring/stagger and four recorded INVERTED trajectories, but their visual placement, accessibility, rapid switching and frame parity are still unverified.
 - Native standalone/detached Calendar and accompanying 74KB catalog `SkyMap`; fullscreen/accessible observatory is not implemented.
 - A paired native/WebKit recording with the same date, animation flags, locale, font, resolution, scale and Wayland environment. No pixel-perfect or temporal equivalence certificate exists.
