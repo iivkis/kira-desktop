@@ -142,15 +142,18 @@ impl ClockDigits {
         let digits = Rc::new(digits);
         let settings_handler = gtk::Settings::default().map(|settings| {
             let weak = Rc::downgrade(&digits);
-            let handler = settings.connect_notify_local(Some("gtk-enable-animations"), move |settings, _| {
-                if !settings.property::<bool>("gtk-enable-animations")
-                    && let Some(digits) = weak.upgrade()
-                {
-                    for cell in digits.iter().flatten() {
-                        cell.reset();
+            let handler = settings.connect_notify_local(
+                Some("gtk-enable-animations"),
+                move |settings, _| {
+                    if !settings.property::<bool>("gtk-enable-animations")
+                        && let Some(digits) = weak.upgrade()
+                    {
+                        for cell in digits.iter().flatten() {
+                            cell.reset();
+                        }
                     }
-                }
-            });
+                },
+            );
             (settings, handler)
         });
         Self {
