@@ -9,6 +9,7 @@ use gtk::prelude::*;
 use crate::calendar_model::{CivilDate, MONTHS, WEEKDAYS, current_local_date, month_grid};
 use crate::clock_digits::ClockDigits;
 use crate::motion::CalendarFragmentScene;
+use crate::popup_section::PopupSection;
 
 type CopyDate = Rc<dyn Fn(String) -> Result<(), String>>;
 
@@ -28,6 +29,7 @@ struct State {
     copy_button: gtk::Button,
     navigation: Vec<(i32, gtk::Button)>,
     grid_scene: Rc<CalendarFragmentScene>,
+    grid_surface: PopupSection,
     copy: CopyDate,
 }
 
@@ -45,6 +47,9 @@ impl State {
             } else {
                 1
             };
+            if date.month != previous.month || date.year != previous.year {
+                self.grid_surface.play_calendar_grid(direction);
+            }
             let index = self
                 .dates
                 .borrow()
@@ -257,8 +262,9 @@ impl Calendar {
             }
         }
         let grid_scene = Rc::new(CalendarFragmentScene::new());
+        let grid_surface = PopupSection::calendar_grid(&grid.clone().upcast());
         let grid_overlay = gtk::Overlay::new();
-        grid_overlay.set_child(Some(&grid));
+        grid_overlay.set_child(Some(&grid_surface));
         let traces = grid_scene.widget();
         grid_overlay.add_overlay(&traces);
         grid_overlay.set_measure_overlay(&traces, false);
@@ -315,6 +321,7 @@ impl Calendar {
             copy_button: copy_button.clone(),
             navigation,
             grid_scene,
+            grid_surface,
             copy: Rc::new(copy),
         });
 
