@@ -7,6 +7,7 @@ use std::time::Duration;
 use gtk::prelude::*;
 
 use crate::calendar_model::{CivilDate, MONTHS, WEEKDAYS, current_local_date, month_grid};
+use crate::clock_digits::ClockDigits;
 use crate::motion::CalendarFragmentScene;
 
 type CopyDate = Rc<dyn Fn(String) -> Result<(), String>>;
@@ -19,7 +20,8 @@ struct State {
     today: Cell<CivilDate>,
     title: gtk::Label,
     date_today: gtk::Label,
-    clock: gtk::Label,
+    clock: ClockDigits,
+    clock_button: gtk::Button,
     selected_title: gtk::Label,
     selected_iso: gtk::Label,
     feedback: gtk::Label,
@@ -119,7 +121,11 @@ impl State {
     fn refresh_clock(&self) {
         if let Ok(now) = gtk::glib::DateTime::now_local() {
             if let Ok(clock) = now.format("%H:%M:%S") {
-                self.clock.set_text(&clock);
+                self.clock.set_time(&clock);
+                let accessible = format!("Анимировать цифры часов, текущее время {clock}");
+                self.clock_button.update_property(&[
+                    gtk::accessible::Property::Label(&accessible),
+                ]);
             }
             if let Some(today) = current_local_date() {
                 if self.today.replace(today) != today {
@@ -168,15 +174,13 @@ impl Calendar {
 
         let header = gtk::Box::new(gtk::Orientation::Vertical, 4);
         header.add_css_class("calendar-heading");
-        let clock = gtk::Label::new(Some("--:--:--"));
-        clock.add_css_class("calendar-clock");
-        clock.set_xalign(0.0);
+        let clock = ClockDigits::new();
         let clock_button = gtk::Button::new();
         clock_button.add_css_class("calendar-clock-play");
         clock_button.set_tooltip_text(Some("Анимировать цифры часов"));
         clock_button
             .update_property(&[gtk::accessible::Property::Label("Анимировать цифры часов")]);
-        clock_button.set_child(Some(&clock));
+        clock_button.set_child(Some(&clock.widget()));
         let clock_scene = Rc::new(CalendarFragmentScene::new());
         let clock_overlay = gtk::Overlay::new();
         clock_overlay.set_child(Some(&clock_button));
@@ -287,6 +291,7 @@ impl Calendar {
             title,
             date_today,
             clock,
+            clock_button: clock_button.clone(),
             selected_title,
             selected_iso,
             feedback,
