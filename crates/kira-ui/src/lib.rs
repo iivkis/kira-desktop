@@ -9,6 +9,7 @@ pub mod launcher;
 pub mod motion;
 pub mod popup;
 mod popup_clip;
+mod popup_section;
 pub mod system;
 pub mod workspace;
 
