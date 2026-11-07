@@ -181,11 +181,7 @@ impl Calendar {
         clock_button
             .update_property(&[gtk::accessible::Property::Label("Анимировать цифры часов")]);
         clock_button.set_child(Some(&clock.widget()));
-        let clock_scene = Rc::new(CalendarFragmentScene::new());
-        let clock_overlay = gtk::Overlay::new();
-        clock_overlay.set_child(Some(&clock_button));
-        clock_overlay.add_overlay(&clock_scene.widget());
-        header.append(&clock_overlay);
+        header.append(&clock_button);
         let date_today = gtk::Label::new(None);
         date_today.set_xalign(0.0);
         date_today.add_css_class("muted");
@@ -374,7 +370,14 @@ impl Calendar {
                 }
             }
         });
-        clock_button.connect_clicked(move |_| clock_scene.play(1));
+        clock_button.connect_clicked({
+            let weak = Rc::downgrade(&state);
+            move |_| {
+                if let Some(state) = weak.upgrade() {
+                    state.clock.play_juggle();
+                }
+            }
+        });
         state.render();
         state.refresh_clock();
         gtk::glib::timeout_add_local(Duration::from_secs(1), {
