@@ -1,140 +1,420 @@
-//! GTK4/WebKitGTK host and bounded JSON-RPC bridge to the Core daemon.
+//! Native GTK4/Wayland shell. No browser runtime or JavaScript bridge.
 
-mod calendar;
-mod config_layers;
-mod display_manager;
-mod launcher;
-mod native_ui;
-mod notification_layout;
-mod notification_queue;
-mod notifications;
-mod popup_layout;
-mod process_monitor;
-mod renderer_recovery;
-mod system_info;
-mod system_metrics;
-mod system_panel;
-mod tray;
-mod tray_menu;
-mod webview_pool;
-use std::cell::{Cell, RefCell};
-use std::env;
-use std::path::{Path, PathBuf};
+use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 use gtk::prelude::*;
-use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, RpcResponse, WorkspaceState};
-use webkit6::prelude::*;
+use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+use kira_ipc::{ConfigState, RpcRequest, UiConfig, WorkspaceState, PROTOCOL_VERSION};
 
 const BAR_HEIGHT: i32 = 42;
-const MAX_BRIDGE_MESSAGE_BYTES: usize = 4096;
+const POPUP_GAP: i32 = 12;
 
-/// Only the GTK main loop dispatches JS events; the worker threads contain
-/// no GTK/WebKit handles.
-enum ShellDelivery {
-    Rpc(String),
+enum CoreUpdate {
     Workspaces(WorkspaceState),
     Config(ConfigState),
-    CoreAvailability(bool),
-    Metrics(system_metrics::Snapshot),
 }
 
-fn ui_index() -> PathBuf {
-    let directory = env::var_os("KIRA_UI_DIR")
-        .map(PathBuf::from)
-        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../frontend/dist"));
-    directory.join("index.html")
-}
-
-// Never allow navigation away from the self-contained UI document.
-fn permitted_ui_page(requested_uri: &str) -> bool {
-    requested_uri == "about:blank"
-}
-
-fn core_socket() -> Option<PathBuf> {
-    kira_ipc::core_socket_path().ok()
-}
-
-/// Expose read-only Core queries and one explicit, checked focus-workspace action.
-fn process_message(message: &str, socket: Option<&Path>) -> RpcResponse {
-    let request = match serde_json::from_str::<RpcRequest>(message) {
-        Ok(value) => value,
-        Err(_) => return RpcResponse::failure(None, -32700, "Invalid JSON-RPC message"),
-    };
-    if request.jsonrpc != PROTOCOL_VERSION {
-        return RpcResponse::failure(Some(request.id), -32600, "Invalid JSON-RPC version");
-    }
-    if !matches!(
-        request.method.as_str(),
-        "ping" | "get_state" | "get_workspaces" | "get_config" | "focus_workspace"
-    ) {
-        return RpcResponse::failure(Some(request.id), -32601, "Method not allowed");
-    }
-    match socket {
-        Some(path) => kira_ipc::client::call(path, &request).unwrap_or_else(|_| {
-            RpcResponse::failure(Some(request.id), -32000, "Kira Core unavailable")
-        }),
-        None => RpcResponse::failure(Some(request.id), -32000, "XDG_RUNTIME_DIR is not set"),
+fn install_style() {
+    let provider = gtk::CssProvider::new();
+    provider.load_from_data(include_str!("style.css"));
+    if let Some(display) = gtk::gdk::Display::default() {
+        gtk::style_context_add_provider_for_display(
+            &display,
+            &provider,
+            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+        );
     }
 }
 
-/// Opt-in worker: no GTK objects cross thread boundaries. We deliberately
-/// avoid collecting global-process PSS continuously while the UI is idle.
-fn start_memory_probe() {
-    if !env::var("KIRA_MEMORY_PROBE").is_ok_and(|value| value == "1") {
-        return;
-    }
-    std::thread::spawn(|| {
-        // Let the delayed popup prewarm complete before the first sample.
-        std::thread::sleep(Duration::from_secs(5));
-        loop {
-            match process_monitor::shell_tree_memory(std::process::id()) {
-                Ok(sample) => {
-                    let mib = |kib: Option<u64>| {
-                        kib.map(|value| format!("{:.1}", value as f64 / 1024.0))
-                            .unwrap_or_else(|| "unknown".to_owned())
-                    };
-                    eprintln!(
-                        "kira-shell memory: scope=process-tree processes={} rss_mib={} pss_mib={} truncated={}",
-                        sample.processes,
-                        mib(sample.rss_kib),
-                        mib(sample.pss_kib),
-                        sample.truncated
-                    );
-                }
-                Err(error) => eprintln!("kira-shell memory: sampling unavailable: {error}"),
+fn request_focus(id: String) {
+    // A widget never gets a generic Niri command. Core validates this ID
+    // against its current snapshot before issuing the fixed FocusWorkspace action.
+    std::thread::spawn(move || {
+        if let Ok(path) = kira_ipc::core_socket_path() {
+            let request = RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.to_owned(),
+                id: 1,
+                method: "focus_workspace".to_owned(),
+                params: Some(serde_json::json!({ "id": id })),
+            };
+            if let Err(error) = kira_ipc::client::call(&path, &request) {
+                eprintln!("kira-shell: workspace focus request failed: {error}");
             }
-            std::thread::sleep(Duration::from_secs(10));
         }
     });
 }
 
-fn main() {
-    let index = ui_index();
-    if !index.is_file() {
-        eprintln!(
-            "Kira UI assets not found: {}. Run 'task frontend:build' first or set KIRA_UI_DIR.",
-            index.display()
-        );
-        std::process::exit(1);
+fn redraw_workspaces(container: &gtk::Box, state: &WorkspaceState, config: &UiConfig) {
+    while let Some(child) = container.first_child() {
+        container.remove(&child);
+    }
+    if !state.connected {
+        let offline = gtk::Label::new(Some("NIRI OFFLINE"));
+        offline.add_css_class("offline");
+        container.append(&offline);
+        return;
+    }
+    for workspace in state.workspaces.iter().take(usize::from(config.max_workspaces)) {
+        let title = if config.show_names {
+            workspace
+                .name
+                .clone()
+                .unwrap_or_else(|| workspace.idx.to_string())
+        } else {
+            workspace.idx.to_string()
+        };
+        let button = gtk::Button::with_label(&title);
+        button.add_css_class("workspace");
+        if workspace.is_focused {
+            button.add_css_class("selected");
+        } else if workspace.is_urgent {
+            button.add_css_class("urgent");
+        }
+        button.set_tooltip_text(Some(&format!("Workspace {}", workspace.idx)));
+        let id = workspace.id.clone();
+        button.connect_clicked(move |_| request_focus(id.clone()));
+        container.append(&button);
+    }
+}
+
+fn current_clock(show_seconds: bool) -> String {
+    let format = if show_seconds { "%H:%M:%S" } else { "%H:%M" };
+    gtk::glib::DateTime::now_local()
+        .ok()
+        .and_then(|time| time.format(format).ok())
+        .map(|time| time.to_string())
+        .unwrap_or_else(|| "--:--".to_owned())
+}
+
+fn make_button(symbol: &str, description: &str, on_click: impl Fn() + 'static) -> gtk::Button {
+    let button = gtk::Button::with_label(symbol);
+    button.add_css_class("bar-action");
+    button.set_tooltip_text(Some(description));
+    button.set_accessible_name(Some(description));
+    button.connect_clicked(move |_| on_click());
+    button
+}
+
+fn render_applications(list: &gtk::Box, applications: &[gtk::gio::AppInfo], query: &str) {
+    while let Some(child) = list.first_child() {
+        list.remove(&child);
+    }
+    let needle = query.trim().to_lowercase();
+    let mut count = 0;
+    for app in applications.iter().filter(|app| {
+        app.should_show() && app.display_name().to_lowercase().contains(&needle)
+    }) {
+        if count >= 100 {
+            break;
+        }
+        count += 1;
+        let button = gtk::Button::with_label(&app.display_name());
+        button.add_css_class("app-row");
+        button.set_halign(gtk::Align::Fill);
+        button.set_tooltip_text(Some(&app.display_name()));
+        let app = app.clone();
+        button.connect_clicked(move |_| {
+            if let Err(error) = app.launch(&[], None::<&gtk::gio::AppLaunchContext>) {
+                eprintln!("kira-shell: failed to launch application: {error}");
+            }
+        });
+        list.append(&button);
+    }
+    if count == 0 {
+        let empty = gtk::Label::new(Some("Приложений не найдено"));
+        empty.add_css_class("muted");
+        list.append(&empty);
+    }
+}
+
+fn launcher_view() -> gtk::Box {
+    let root = gtk::Box::new(gtk::Orientation::Vertical, 12);
+    let search = gtk::SearchEntry::new();
+    search.set_placeholder_text(Some("Найти приложение"));
+    search.set_accessible_name(Some("Поиск приложений"));
+    root.append(&search);
+
+    let scroll = gtk::ScrolledWindow::new();
+    scroll.set_min_content_height(280);
+    scroll.set_max_content_height(520);
+    scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+    let list = gtk::Box::new(gtk::Orientation::Vertical, 4);
+    scroll.set_child(Some(&list));
+    root.append(&scroll);
+
+    let mut applications = gtk::gio::AppInfo::all();
+    applications.sort_by_key(|app| app.display_name().to_lowercase());
+    let applications = Rc::new(applications);
+    render_applications(&list, &applications, "");
+    search.connect_search_changed(move |entry| {
+        render_applications(&list, &applications, &entry.text());
+    });
+    root
+}
+
+fn system_view() -> gtk::Box {
+    let content = gtk::Box::new(gtk::Orientation::Vertical, 12);
+    let heading = gtk::Label::new(Some("Система"));
+    heading.add_css_class("section-title");
+    content.append(&heading);
+
+    let info = gtk::Label::new(Some("Загрузка данных"));
+    info.set_xalign(0.0);
+    info.set_wrap(true);
+    info.add_css_class("muted");
+    content.append(&info);
+
+    // Only short reads of procfs; no fake values and no background browser.
+    // This initial view is a read-only migration baseline, not the old charts.
+    let (sender, receiver) = mpsc::channel::<String>();
+    std::thread::spawn(move || {
+        let memory = std::fs::read_to_string("/proc/meminfo")
+            .ok()
+            .and_then(|raw| raw.lines().find(|line| line.starts_with("MemAvailable:")).map(str::to_owned))
+            .unwrap_or_else(|| "ОЗУ: недоступно".to_owned());
+        let load = std::fs::read_to_string("/proc/loadavg")
+            .ok()
+            .and_then(|raw| raw.split_whitespace().take(3).collect::<Vec<_>>().join(" ").into())
+            .unwrap_or_else(|| "недоступно".to_owned());
+        let _ = sender.send(format!("Нагрузка (1/5/15 мин): {load}\n{memory}"));
+    });
+    gtk::glib::timeout_add_local(Duration::from_millis(100), move || match receiver.try_recv() {
+        Ok(snapshot) => {
+            info.set_text(&snapshot);
+            gtk::glib::ControlFlow::Break
+        }
+        Err(mpsc::TryRecvError::Empty) => gtk::glib::ControlFlow::Continue,
+        Err(mpsc::TryRecvError::Disconnected) => {
+            info.set_text("Данные недоступны");
+            gtk::glib::ControlFlow::Break
+        }
+    });
+    content
+}
+
+fn popup_content(kind: &str, config: &UiConfig) -> gtk::Widget {
+    match kind {
+        "calendar" => {
+            let calendar = gtk::Calendar::new();
+            calendar.upcast()
+        }
+        "launcher" => launcher_view().upcast(),
+        "system" => system_view().upcast(),
+        _ => {
+            let box_view = gtk::Box::new(gtk::Orientation::Vertical, 12);
+            let title = gtk::Label::new(Some("Настройки Kira"));
+            title.add_css_class("section-title");
+            box_view.append(&title);
+            let detail = gtk::Label::new(Some(&format!(
+                "Заголовок: {}\nКомпактная панель: {}\nСекунды в часах: {}\n\nРедактор дисплеев и сохранение KDL ещё не перенесены.",
+                config.title, config.compact, config.show_seconds
+            )));
+            detail.set_wrap(true);
+            detail.set_xalign(0.0);
+            box_view.append(&detail);
+            box_view.upcast()
+        }
+    }
+}
+
+fn popup_top_margin(kind: &str) -> i32 {
+    if kind != "launcher" {
+        return BAR_HEIGHT + POPUP_GAP;
+    }
+    let output_height = gtk::gdk::Display::default()
+        .and_then(|display| display.monitors().item(0))
+        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+        .map(|monitor| monitor.geometry().height())
+        .unwrap_or(800);
+    (output_height / 5).max(BAR_HEIGHT + POPUP_GAP)
+}
+
+fn toggle_popup(
+    app: &gtk::Application,
+    kind: &str,
+    popup: &Rc<RefCell<Option<(String, gtk::ApplicationWindow)>>>,
+    config: &UiConfig,
+) {
+    // Keep the popup identity and lifetime independent of GTK widget contents.
+    if let Some((previous_kind, previous_window)) = popup.borrow_mut().take() {
+        previous_window.close();
+        if previous_kind == kind {
+            return;
+        }
     }
 
-    // Production assets are inlined into index.html. WebKit loads one
-    // self-contained document without external script or stylesheet requests.
-    let html = std::fs::read_to_string(&index).unwrap_or_else(|error| {
-        eprintln!(
-            "kira-shell: failed to read UI HTML {}: {error}",
-            index.display()
-        );
-        std::process::exit(1);
+    let window = gtk::ApplicationWindow::new(app);
+    window.set_title(Some("Kira Desktop"));
+    window.set_decorated(false);
+    window.set_resizable(false);
+    window.add_css_class("kira-popup");
+    window.init_layer_shell();
+    window.set_namespace(Some("kira-desktop-popup"));
+    window.set_layer(Layer::Top);
+    window.set_anchor(Edge::Top, true);
+    window.set_exclusive_zone(0);
+    window.set_keyboard_mode(KeyboardMode::OnDemand);
+    window.set_margin(Edge::Top, popup_top_margin(kind));
+    if kind == "launcher" {
+        window.set_anchor(Edge::Left, false);
+        window.set_anchor(Edge::Right, false);
+    } else {
+        window.set_anchor(Edge::Right, true);
+        window.set_margin(Edge::Right, POPUP_GAP);
+    }
+    window.set_default_size(if kind == "settings" { 600 } else { 420 }, -1);
+
+    let frame = gtk::Box::new(gtk::Orientation::Vertical, 14);
+    frame.set_margin_top(18);
+    frame.set_margin_bottom(18);
+    frame.set_margin_start(18);
+    frame.set_margin_end(18);
+    frame.append(&popup_content(kind, config));
+    window.set_child(Some(&frame));
+
+    let weak_popup = Rc::downgrade(popup);
+    window.connect_close_request(move |_| {
+        if let Some(popup) = weak_popup.upgrade() {
+            // The state may already have been taken by a toggle operation.
+            if popup.try_borrow_mut().is_ok() {
+                popup.borrow_mut().take();
+            }
+        }
+        gtk::glib::Propagation::Proceed
     });
 
-    // A nested preview must not activate another GTK application with the same ID
-    // already running in the user's primary desktop session.
-    let flags = if env::var_os("KIRA_PREVIEW").is_some() {
+    popup.borrow_mut().replace((kind.to_owned(), window.clone()));
+    window.present();
+}
+
+fn start_core_subscriptions(sender: mpsc::Sender<CoreUpdate>) {
+    let Ok(socket) = kira_ipc::core_socket_path() else {
+        eprintln!("kira-shell: no XDG_RUNTIME_DIR, Niri state will remain offline");
+        return;
+    };
+    let workspaces_sender = sender.clone();
+    let workspaces_socket = socket.clone();
+    std::thread::spawn(move || loop {
+        let result = kira_ipc::client::subscribe_workspaces(&workspaces_socket, |state| {
+            let _ = workspaces_sender.send(CoreUpdate::Workspaces(state));
+        });
+        let _ = workspaces_sender.send(CoreUpdate::Workspaces(WorkspaceState::default()));
+        if let Err(error) = result {
+            eprintln!("kira-shell: workspace stream disconnected: {error}");
+        }
+        std::thread::sleep(Duration::from_millis(750));
+    });
+    std::thread::spawn(move || loop {
+        if let Err(error) = kira_ipc::client::subscribe_config(&socket, |state| {
+            let _ = sender.send(CoreUpdate::Config(state));
+        }) {
+            eprintln!("kira-shell: config stream disconnected: {error}");
+        }
+        std::thread::sleep(Duration::from_millis(750));
+    });
+}
+
+fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::ApplicationWindow>>>) {
+    if let Some(window) = primary.borrow().as_ref() {
+        window.present();
+        return;
+    }
+    install_style();
+    let bar = gtk::ApplicationWindow::new(app);
+    bar.set_title(Some("Kira Desktop"));
+    bar.set_decorated(false);
+    bar.set_default_size(800, BAR_HEIGHT);
+    bar.add_css_class("kira-bar");
+    bar.init_layer_shell();
+    bar.set_namespace(Some("kira-desktop"));
+    bar.set_layer(Layer::Top);
+    bar.set_anchor(Edge::Top, true);
+    bar.set_anchor(Edge::Left, true);
+    bar.set_anchor(Edge::Right, true);
+    bar.set_exclusive_zone(BAR_HEIGHT);
+
+    let layout = gtk::CenterBox::new();
+    let workspace_box = gtk::Box::new(gtk::Orientation::Horizontal, 4);
+    workspace_box.set_margin_start(12);
+    layout.set_start_widget(Some(&workspace_box));
+    let title = gtk::Label::new(Some("KIRA DESKTOP"));
+    title.add_css_class("bar-title");
+    layout.set_center_widget(Some(&title));
+
+    let actions = gtk::Box::new(gtk::Orientation::Horizontal, 3);
+    actions.set_margin_end(12);
+    let clock = gtk::Label::new(Some("--:--"));
+    clock.add_css_class("clock");
+    let popup: Rc<RefCell<Option<(String, gtk::ApplicationWindow)>>> =
+        Rc::new(RefCell::new(None));
+    let config = Rc::new(RefCell::new(UiConfig::default()));
+    for (kind, symbol, accessible) in [
+        ("launcher", "⌕", "Запуск приложений"),
+        ("calendar", "▦", "Календарь"),
+        ("system", "◈", "Система"),
+        ("settings", "⚙", "Настройки"),
+    ] {
+        let app = app.clone();
+        let popup = popup.clone();
+        let config = config.clone();
+        actions.append(&make_button(symbol, accessible, move || {
+            toggle_popup(&app, kind, &popup, &config.borrow());
+        }));
+    }
+    actions.append(&clock);
+    layout.set_end_widget(Some(&actions));
+    bar.set_child(Some(&layout));
+
+    let state = Rc::new(RefCell::new(WorkspaceState::default()));
+    redraw_workspaces(&workspace_box, &state.borrow(), &config.borrow());
+
+    let (sender, receiver) = mpsc::channel::<CoreUpdate>();
+    start_core_subscriptions(sender);
+    gtk::glib::timeout_add_local(Duration::from_millis(100), {
+        let workspace_box = workspace_box.clone();
+        let title = title.clone();
+        let state = state.clone();
+        let config = config.clone();
+        move || {
+            while let Ok(update) = receiver.try_recv() {
+                match update {
+                    CoreUpdate::Workspaces(next) => {
+                        *state.borrow_mut() = next;
+                        redraw_workspaces(&workspace_box, &state.borrow(), &config.borrow());
+                    }
+                    CoreUpdate::Config(next) => {
+                        *config.borrow_mut() = next.config;
+                        title.set_text(&config.borrow().title);
+                        if next.error.is_some() {
+                            title.set_tooltip_text(Some("Ошибка KDL. Сохранена предыдущая конфигурация."));
+                            title.add_css_class("config-error");
+                        } else {
+                            title.set_tooltip_text(None);
+                            title.remove_css_class("config-error");
+                        }
+                        redraw_workspaces(&workspace_box, &state.borrow(), &config.borrow());
+                    }
+                }
+            }
+            gtk::glib::ControlFlow::Continue
+        }
+    });
+    gtk::glib::timeout_add_local(Duration::from_secs(1), {
+        let config = config.clone();
+        move || {
+            clock.set_text(&current_clock(config.borrow().show_seconds));
+            gtk::glib::ControlFlow::Continue
+        }
+    });
+    *primary.borrow_mut() = Some(bar.clone());
+    bar.present();
+}
+
+fn main() {
+    let flags = if std::env::var_os("KIRA_PREVIEW").is_some() {
         gtk::gio::ApplicationFlags::NON_UNIQUE
     } else {
         gtk::gio::ApplicationFlags::empty()
@@ -143,413 +423,7 @@ fn main() {
         .application_id("dev.kira.Desktop")
         .flags(flags)
         .build();
-    // GApplication may deliver repeated activate signals to the primary
-    // process (including a second kira-shell invocation). Reuse the existing
-    // layer-shell bar instead of duplicating contexts, IPC workers and timers.
-    let primary_bar: Rc<RefCell<Option<gtk::ApplicationWindow>>> = Rc::new(RefCell::new(None));
-    app.connect_activate(move |app| {
-        if let Some(window) = primary_bar.borrow().as_ref() {
-            window.present();
-            return;
-        }
-        let window = gtk::ApplicationWindow::new(app);
-        primary_bar.replace(Some(window.clone()));
-        start_memory_probe();
-        window.set_title(Some("Kira Desktop"));
-        window.set_decorated(false);
-        window.set_default_size(800, BAR_HEIGHT);
-
-        window.init_layer_shell();
-        window.set_namespace(Some("kira-desktop"));
-        window.set_layer(Layer::Top);
-        window.set_anchor(Edge::Top, true);
-        window.set_anchor(Edge::Left, true);
-        window.set_anchor(Edge::Right, true);
-        window.set_exclusive_zone(BAR_HEIGHT);
-
-        // One WebKit context for the trusted Top Bar and every pooled overlay.
-        // Each WebView still has its own UserContentManager and fixed IPC handlers.
-        // Sharing a context does not force WebKit to share renderer processes.
-        let context = webkit6::WebContext::new();
-        // The bundled UI is a single, navigation-locked HTML document whose
-        // JS and CSS are inlined. Keep WebKit's document caches minimal.
-        // Configure BEFORE creating the Top Bar or prewarming overlay views:
-        // both use this shared context.
-        context.set_cache_model(webkit6::CacheModel::DocumentViewer);
-        let manager = webkit6::UserContentManager::new();
-        let view = webkit6::WebView::builder()
-            .web_context(&context)
-            .user_content_manager(&manager)
-            .build();
-        view.set_background_color(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
-
-        // GTK and WebKit are not Send: socket IO runs on workers, UI updates
-        // return to the GTK main loop through this channel.
-        let (sender, receiver) = mpsc::channel::<ShellDelivery>();
-        let socket = core_socket();
-        let latest_metrics = Rc::new(RefCell::new(system_metrics::Snapshot::default()));
-        let core_online = Rc::new(Cell::new(false));
-        let niri_online = Rc::new(Cell::new(false));
-
-        // Only cheap read-only kernel files are sampled off the GTK thread.
-        // The monitor stops when the UI receiver has been dropped.
-        let metrics_tx = sender.clone();
-        std::thread::spawn(move || {
-            let mut sampler = system_metrics::Sampler::default();
-            loop {
-                if metrics_tx.send(ShellDelivery::Metrics(sampler.sample())).is_err() {
-                    break;
-                }
-                std::thread::sleep(Duration::from_secs(2));
-            }
-        });
-
-        // One long-lived, read-only Core subscription. Core receives Niri
-        // EventStream and immediately forwards changed snapshots to this
-        // worker, avoiding the previous 1.5-second Svelte polling lag.
-        if let Some(path) = socket.clone() {
-            let updates = sender.clone();
-            std::thread::spawn(move || {
-                loop {
-                    let result = kira_ipc::client::subscribe_workspaces(&path, |state| {
-                        let _ = updates.send(ShellDelivery::CoreAvailability(true));
-                        let _ = updates.send(ShellDelivery::Workspaces(state));
-                    });
-                    // Never show stale status after a Core stream disconnect.
-                    let _ = updates.send(ShellDelivery::CoreAvailability(false));
-                    let _ = updates.send(ShellDelivery::Workspaces(WorkspaceState::default()));
-                    if let Err(error) = result {
-                        eprintln!("kira-shell: Core workspace stream disconnected: {error}");
-                    }
-                    std::thread::sleep(Duration::from_millis(750));
-                }
-            });
-        }
-        // Core owns config validation and last-known-good rollback. A second
-        // independent read-only stream forwards updates to the trusted page.
-        if let Some(path) = socket.clone() {
-            let updates = sender.clone();
-            std::thread::spawn(move || {
-                loop {
-                    let result = kira_ipc::client::subscribe_config(&path, |state| {
-                        let _ = updates.send(ShellDelivery::Config(state));
-                    });
-                    if let Err(error) = result {
-                        eprintln!("kira-shell: Core config stream disconnected: {error}");
-                    }
-                    // Retain the last valid UI settings while Core reconnects.
-                    std::thread::sleep(Duration::from_millis(750));
-                }
-            });
-        }
-        manager.connect_script_message_received(Some("kira"), move |_, value| {
-            let message = value.to_string().to_string();
-            let id = serde_json::from_str::<RpcRequest>(&message).ok().map(|r| r.id);
-            let sender = sender.clone();
-            let socket = socket.clone();
-            std::thread::spawn(move || {
-                let response = if message.len() > MAX_BRIDGE_MESSAGE_BYTES {
-                    RpcResponse::failure(id, -32600, "Bridge message too large")
-                } else {
-                    process_message(&message, socket.as_deref())
-                };
-                if let Ok(serialized) = serde_json::to_string(&response) {
-                    let _ = sender.send(ShellDelivery::Rpc(serialized));
-                }
-            });
-        });
-        assert!(manager.register_script_message_handler("kira", None));
-        manager.connect_script_message_received(Some("kiraDiagnostics"), |_, value| {
-            eprintln!("kira-shell [ui]: {}", value.to_string());
-        });
-        assert!(manager.register_script_message_handler("kiraDiagnostics", None));
-
-        // A dedicated fixed-purpose message from the trusted, navigation-locked
-        // local UI. Never forward launcher requests to Core or execute JS text.
-        let launcher_application = app.clone();
-        let launcher_html = html.clone();
-        let launcher_context = context.clone();
-        manager.connect_script_message_received(Some("kiraLauncher"), move |_, value| {
-            if value.to_string() == "open" {
-                calendar::open_launcher(&launcher_application, &launcher_html, &launcher_context);
-            }
-        });
-        assert!(manager.register_script_message_handler("kiraLauncher", None));
-
-        // Separate, fixed-purpose UI control. Never interpret arbitrary JS
-        // messages or expand the Core JSON-RPC method allowlist.
-        let calendar_application = app.clone();
-        let calendar_html = html.clone();
-        let calendar_context = context.clone();
-        manager.connect_script_message_received(Some("kiraCalendar"), move |_, value| {
-            if value.to_string() == "toggle" {
-                calendar::toggle(&calendar_application, &calendar_html, &calendar_context);
-            }
-        });
-        assert!(manager.register_script_message_handler("kiraCalendar", None));
-
-        // Fixed-purpose system diagnostics toggle. GTK samples the kernel
-        // read-only; the page can neither supply metric values nor commands.
-        let system_app = app.clone();
-        let system_context = context.clone();
-        let system_stats = latest_metrics.clone();
-        let system_core = core_online.clone();
-        let system_niri = niri_online.clone();
-        let system_html = html.clone();
-        manager.connect_script_message_received(Some("kiraSystem"), move |_, value| {
-            if value.to_string() == "toggle" {
-                calendar::toggle_system(
-                    &system_app,
-                    &system_html,
-                    &system_context,
-                    system_stats.clone(),
-                    system_core.clone(),
-                    system_niri.clone(),
-                );
-            }
-        });
-        assert!(manager.register_script_message_handler("kiraSystem", None));
-
-        // Settings is a trusted read-only surface. Only a fixed toggle command
-        // is accepted; the renderer cannot request arbitrary system queries.
-        let settings_app = app.clone();
-        let settings_html = html.clone();
-        let settings_context = context.clone();
-        manager.connect_script_message_received(Some("kiraSettings"), move |_, value| {
-            if value.to_string() == "toggle" {
-                calendar::toggle_settings(&settings_app, &settings_html, &settings_context);
-            }
-        });
-        assert!(manager.register_script_message_handler("kiraSettings", None));
-
-        // Dedicated SNI tray bridge: only toggle, snapshot and bounded
-        // numeric Activate requests. The popup's pin actions are separately
-        // scoped to its current lease generation by calendar.rs.
-        let tray_app = app.clone();
-        let tray_html = html.clone();
-        let tray_context = context.clone();
-        manager.connect_script_message_received(Some("kiraTray"), move |_, value| {
-            let command = value.to_string();
-            if command == "toggle" {
-                tray::clear_menu();
-                calendar::toggle_tray(&tray_app, &tray_html, &tray_context);
-            } else {
-                // The app-owned canonical menu is rendered in the existing
-                // Kira tray overlay; do not attempt to open another GTK host.
-                if let Some((action, raw)) = command.split_once(':') {
-                    if matches!(action, "activate" | "secondary") {
-                        if let Ok(id) = raw.parse::<u32>() {
-                            if id != 0 && tray::has_menu_popup(id, action) {
-                                calendar::show_tray(&tray_app, &tray_html, &tray_context);
-                            }
-                        }
-                    }
-                }
-                tray::handle(&command);
-            }
-        });
-        assert!(manager.register_script_message_handler("kiraTray", None));
-
-        view.connect_load_failed(|_, event, uri, error| {
-            eprintln!("kira-shell: WebKit load failed ({event:?}) for {uri}: {error}");
-            false
-        });
-        // The WebKit child can die while the GTK layer-shell window stays
-        // alive. Reload the original trusted HTML after a bounded backoff;
-        // never recreate the IPC/GTK handlers or silently navigate elsewhere.
-        let bar_document = html.clone();
-        let recovery = Rc::new(RefCell::new(renderer_recovery::RendererRecovery::default()));
-        view.connect_web_process_terminated(move |webview, reason| {
-            use renderer_recovery::RetryDecision;
-            match recovery.borrow_mut().on_terminated(Instant::now()) {
-                RetryDecision::After(delay) => {
-                    eprintln!(
-                        "kira-shell: Top Bar WebKit renderer terminated ({reason:?}); retrying in {} ms",
-                        delay.as_millis()
-                    );
-                    let weak_view = webview.downgrade();
-                    let document = bar_document.clone();
-                    let recovery = recovery.clone();
-                    gtk::glib::timeout_add_local_once(delay, move || {
-                        recovery.borrow_mut().retry_started();
-                        if let Some(webview) = weak_view.upgrade()
-                            && webview.root().is_some()
-                        {
-                            webview.load_html(&document, None);
-                        }
-                    });
-                }
-                RetryDecision::AlreadyPending => {
-                    eprintln!("kira-shell: Top Bar renderer recovery already scheduled");
-                }
-                RetryDecision::Exhausted => {
-                    eprintln!(
-                        "kira-shell: Top Bar renderer crashed repeatedly; restart kira-shell to recover"
-                    );
-                }
-            }
-        });
-        view.connect_load_changed(|webview, event| {
-            if event == webkit6::LoadEvent::Finished {
-                let webview = webview.clone();
-                gtk::glib::timeout_add_local_once(Duration::from_millis(1500), move || {
-                    webview.evaluate_javascript(
-                        "if (!document.querySelector('main[data-kira-ui-root]')) { throw new Error('Svelte UI did not mount; ' + 'boot=' + JSON.stringify(window.__kiraBoot || {}) + '; readyState=' + document.readyState + '; scripts=' + document.scripts.length); }",
-                        None,
-                        None,
-                        None::<&gtk::gio::Cancellable>,
-                        |result| {
-                            if let Err(error) = result {
-                                eprintln!("kira-shell: UI rendering check failed: {error}");
-                            } else {
-                                eprintln!("kira-shell: Svelte panel DOM verified");
-                            }
-                        },
-                    );
-                });
-            }
-        });
-
-        let webview = view.clone();
-        gtk::glib::timeout_add_local(Duration::from_millis(30), move || {
-            while let Ok(delivery) = receiver.try_recv() {
-                // Double encoding ensures payload content cannot become JS.
-                let (event, payload) = match delivery {
-                    ShellDelivery::Rpc(serialized) => ("kira:rpc", serialized),
-                    ShellDelivery::Workspaces(state) => {
-                        niri_online.set(state.connected);
-                        let Ok(serialized) = serde_json::to_string(&state) else {
-                            continue;
-                        };
-                        ("kira:workspaces", serialized)
-                    }
-                    ShellDelivery::Config(state) => {
-                        let Ok(serialized) = serde_json::to_string(&state) else {
-                            continue;
-                        };
-                        ("kira:config", serialized)
-                    }
-                    ShellDelivery::CoreAvailability(online) => {
-                        core_online.set(online);
-                        continue;
-                    }
-                    ShellDelivery::Metrics(mut snapshot) => {
-                        // Gio queries the current root filesystem from the GTK
-                        // thread, while /proc reads happen off-thread.
-                        if let Some((total, available)) = system_panel::disk() {
-                            snapshot.root_total_kib = Some(total);
-                            snapshot.root_available_kib = Some(available);
-                        }
-                        *latest_metrics.borrow_mut() = snapshot.clone();
-                        ("kira:system-metrics", snapshot.as_json().to_string())
-                    }
-                };
-                if let Ok(encoded) = serde_json::to_string(&payload) {
-                    let script = format!(
-                        "window.dispatchEvent(new CustomEvent('{event}', {{ detail: JSON.parse({encoded}) }}));"
-                    );
-                    webview.evaluate_javascript(
-                        &script,
-                        None,
-                        None,
-                        None::<&gtk::gio::Cancellable>,
-                        |result| {
-                            if let Err(error) = result {
-                                eprintln!("Kira bridge delivery error: {error}");
-                            }
-                        },
-                    );
-                }
-            }
-            gtk::glib::ControlFlow::Continue
-        });
-
-        native_ui::restrict_webview_navigation(&view);
-        eprintln!("kira-shell: loading self-contained HTML using WebKit load_html()");
-        view.load_html(&html, None);
-        window.set_child(Some(&view));
-        window.present();
-        // Native SNI ownership and WebKit updates stay within this process.
-        tray::start(&view);
-        // Own the user's session notification bus without replacing another
-        // daemon. The toast WebView is allocated on the first actual event.
-        notifications::start(app, &html, &context);
-
-        // Warm the inert Calendar WebView with the SAME WebContext as Top Bar.
-        // The popup stays unmapped until requested; initial startup is not
-        // blocked by the Calendar's JS initialization.
-        let calendar_app = app.clone();
-        let calendar_source = html.clone();
-        let warm_context = context.clone();
-        gtk::glib::timeout_add_local_once(Duration::from_millis(200), move || {
-            calendar::prewarm(&calendar_app, &calendar_source, &warm_context);
-        });
-    });
+    let primary = Rc::new(RefCell::new(None));
+    app.connect_activate(move |app| activate(app, &primary));
     app.run();
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn rejects_unsupported_method_without_core_connection() {
-        let result = process_message(r#"{"jsonrpc":"2.0","id":9,"method":"execute_shell"}"#, None);
-        assert_eq!(result.error.unwrap().code, -32601);
-    }
-
-    #[test]
-    fn allows_read_only_workspace_method_but_reports_missing_core() {
-        let result = process_message(
-            r#"{"jsonrpc":"2.0","id":7,"method":"get_workspaces"}"#,
-            None,
-        );
-        assert_eq!(result.error.unwrap().code, -32000);
-    }
-
-    #[test]
-    fn allows_read_only_config_but_rejects_writes() {
-        let response = process_message(r#"{"jsonrpc":"2.0","id":8,"method":"get_config"}"#, None);
-        assert_eq!(response.error.unwrap().code, -32000);
-        let response = process_message(r#"{"jsonrpc":"2.0","id":9,"method":"set_config"}"#, None);
-        assert_eq!(response.error.unwrap().code, -32601);
-        let response = process_message(
-            r#"{"jsonrpc":"2.0","id":10,"method":"subscribe_config"}"#,
-            None,
-        );
-        assert_eq!(response.error.unwrap().code, -32601);
-    }
-
-    #[test]
-    fn allows_exact_focus_action_only_but_not_generic_niri_actions() {
-        let focus = process_message(
-            r#"{"jsonrpc":"2.0","id":4,"method":"focus_workspace","params":{"id":"2"}}"#,
-            None,
-        );
-        // Accepted by the bridge, unavailable only because Core is absent.
-        assert_eq!(focus.error.unwrap().code, -32000);
-        for method in ["niri_action", "move_window", "focus_window", "set_config"] {
-            let request = format!(r#"{{"jsonrpc":"2.0","id":5,"method":"{method}"}}"#);
-            let result = process_message(&request, None);
-            assert_eq!(result.error.unwrap().code, -32601);
-        }
-    }
-
-    #[test]
-    fn navigation_is_restricted_to_exact_ui_document() {
-        assert!(permitted_ui_page("about:blank"));
-        for uri in [
-            "https://evil.example/",
-            "kira-ui://app/index.html",
-            "file:///etc/passwd",
-        ] {
-            assert!(!permitted_ui_page(uri));
-        }
-    }
-
-    #[test]
-    fn reports_missing_core() {
-        let result = process_message(r#"{"jsonrpc":"2.0","id":3,"method":"ping"}"#, None);
-        assert_eq!(result.error.unwrap().code, -32000);
-    }
 }
