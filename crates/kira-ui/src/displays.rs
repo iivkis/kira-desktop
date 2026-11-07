@@ -1,6 +1,6 @@
 //! Reusable GTK4 display editor. All privileged operations are caller-owned.
 //! User intents are typed; there is no Niri process, JSON or filesystem access here.
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
@@ -135,6 +135,7 @@ struct Controls {
     save: gtk::Button,
     choices: RefCell<Vec<DisplayChoice>>,
     phase: RefCell<DisplayPhase>,
+    editing_enabled: Cell<bool>,
     on_intent: Rc<dyn Fn(DisplayIntent)>,
 }
 
@@ -194,7 +195,13 @@ impl Controls {
             DisplayPhase::Saved => "Настройки сохранены в управляемый KDL".to_owned(),
             DisplayPhase::Error(message) => format!("Ошибка: {message}"),
         };
-        self.status.set_text(&message);
+        if self.editing_enabled.get() {
+            self.status.set_text(&message);
+        } else {
+            self.status.set_text(&format!(
+                "{message}\nТолько просмотр: управление дисплеями разрешено в изолированном превью."
+            ));
+        }
         let editing = matches!(
             *phase,
             DisplayPhase::Ready
@@ -203,12 +210,13 @@ impl Controls {
                 | DisplayPhase::Saved
                 | DisplayPhase::Error(_)
         );
-        self.outputs.set_sensitive(editing);
+        let mutating = editing && self.editing_enabled.get();
+        self.outputs.set_sensitive(mutating);
         self.refresh.set_sensitive(editing);
         self.apply
-            .set_sensitive(editing && can_apply(&self.choices.borrow()));
+            .set_sensitive(mutating && can_apply(&self.choices.borrow()));
         self.save
-            .set_sensitive(matches!(*phase, DisplayPhase::Confirmed));
+            .set_sensitive(self.editing_enabled.get() && matches!(*phase, DisplayPhase::Confirmed));
         match &*phase {
             DisplayPhase::Pending {
                 deadline_unix_ms, ..
@@ -231,7 +239,7 @@ impl Controls {
                 self.set_phase(DisplayPhase::Loading);
                 (self.on_intent)(DisplayIntent::Refresh);
             }
-            "apply" if can_apply(&self.choices.borrow()) => {
+            "apply" if self.editing_enabled.get() && can_apply(&self.choices.borrow()) => {
                 let choices = self.choices.borrow().clone();
                 self.set_phase(DisplayPhase::Applying);
                 (self.on_intent)(DisplayIntent::Apply(choices));
@@ -255,7 +263,7 @@ impl Controls {
                     (self.on_intent)(DisplayIntent::Revert(id));
                 }
             }
-            "save" if can_save => {
+            "save" if self.editing_enabled.get() && can_save => {
                 self.set_phase(DisplayPhase::Saving);
                 (self.on_intent)(DisplayIntent::Save);
             }
@@ -333,6 +341,7 @@ impl DisplaySettings {
             save,
             choices: RefCell::new(Vec::new()),
             phase: RefCell::new(DisplayPhase::Loading),
+            editing_enabled: Cell::new(true),
             on_intent: Rc::new(on_intent),
         });
         for (button, action) in [
@@ -366,6 +375,13 @@ impl DisplaySettings {
 
     pub fn widget(&self) -> gtk::Widget {
         self.root.clone().upcast()
+    }
+
+    /// Hosts may restrict mutation while the transaction watchdog is not
+    /// supervised outside the UI process. Read-only refresh remains available.
+    pub fn set_editing_enabled(&self, enabled: bool) {
+        self.controls.editing_enabled.set(enabled);
+        self.controls.sync();
     }
 
     pub fn set_phase(&self, phase: DisplayPhase) {

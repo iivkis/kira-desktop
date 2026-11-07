@@ -22,9 +22,12 @@ unrecognized KDL, or a user-maintained configuration block.
    overwrite it. The editor builds a draft from live output data, never from
    guessed hardware capabilities.
 2. **Apply** updates the session through typed native commands. Displays require
-   15-second confirmation; timeout or a disconnected worker triggers the
-   independent watchdog rollback. Hiding Settings requests an early revert
-   from the native Shell; a crashed UI cannot cancel the watchdog. It does *not* change persistent files.
+   15-second confirmation; the worker performs best-effort rollback on timeout
+   **while the Shell process is alive**. Hiding Settings requests an early revert.
+   Terminating the Shell process also terminates this watchdog, so the current
+   native-gtk implementation disables output mutations outside the isolated
+   preview. Production use requires a Core-owned or external crash-resilient
+   rollback supervisor; a shell worker is not such a supervisor. It does *not* change persistent files.
 3. **Confirm** authorizes the session state, not persistence.
 4. **Save to config** is a separate user action, available only for the last
    Niri-confirmed, still-current display configuration. Backend re-reads output

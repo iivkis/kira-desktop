@@ -176,7 +176,23 @@ fn start_system_sampler(
     });
 }
 
+fn display_mutations_enabled() -> bool {
+    // The 15s watchdog currently lives in the shell process. Until it moves
+    // into Core, never mutate the live user's outputs from the normal desktop.
+    // This flag is a migration safety interlock, not a privilege boundary.
+    std::env::var_os("KIRA_PREVIEW").is_some()
+}
+
 fn send_display_intent(model: &DisplayModel, intent: DisplayIntent) {
+    if !display_mutations_enabled()
+        && matches!(
+            &intent,
+            DisplayIntent::Apply(_) | DisplayIntent::Confirm(_) | DisplayIntent::Save
+        )
+    {
+        eprintln!("kira-shell: live display mutation is disabled until Core owns rollback");
+        return;
+    }
     match intent {
         DisplayIntent::Refresh => model.refresh(),
         DisplayIntent::Apply(choices) => {
@@ -299,6 +315,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let model = display_model.clone();
         move |intent| send_display_intent(&model, intent)
     }));
+    displays.set_editing_enabled(display_mutations_enabled());
     let settings_content = kira_ui::settings_page(&settings.widget(), &displays.widget());
 
     let (sender, receiver) = mpsc::channel::<ShellUpdate>();

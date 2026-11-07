@@ -54,8 +54,8 @@ Do not remove Core/IPC protocols, native system adapters or declarative config o
 
 - **kira-ui first:** reusable `SystemMonitor` and `DisplaySettings` receive only typed view models and emit explicit intents. UI models have isolated tests for missing values, ordering/bounds and display confirmation timing.
 - **Trusted adapters:** `kira-services` supplies CPU/memory/GPU metrics, bounded `/proc` process sampling, and the previously recovered Niri output worker with atomic configuration ownership, explicit Confirm and a 15-second watchdog rollback.
-- **Desktop composition:** `kira-shell` samples metrics only while the System popup is visible, enumerates processes only on the Processes page, and routes display choices via the trusted worker. Closing a pending Settings popup requests early rollback; the Niri worker retains its independent watchdog.
-- **Still gated:** multi-monitor positioning, live output hotplug, failure/rollback under interrupted Niri, KDL/Nix ownership conflicts, scaling/accessibility and nested graphical acceptance. The feature is experimental until [ACCEPTANCE_NATIVE_G2.md](ACCEPTANCE_NATIVE_G2.md) passes.
+- **Desktop composition:** `kira-shell` samples metrics only while the System popup is visible, enumerates processes only on the Processes page, and routes display choices via the trusted worker. Closing a pending Settings popup requests early rollback; the worker's timeout continues independently of GTK responsiveness, but **not independently of the Shell process**. Mutations are disabled outside the controlled preview until a Core/external supervisor can guarantee rollback after Shell termination.
+- **Still gated:** out-of-process rollback after Shell crash (blocking production mutation), multi-monitor positioning, live output hotplug, failure/rollback under interrupted Niri, KDL/Nix ownership conflicts, scaling/accessibility and nested graphical acceptance. The feature is experimental until [ACCEPTANCE_NATIVE_G2.md](ACCEPTANCE_NATIVE_G2.md) passes.
 
 ## Current caveat
 

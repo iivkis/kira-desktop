@@ -22,12 +22,14 @@ The preview must report a nested Wayland display, a **separate nested NIRI_SOCKE
 
 ## Displays: transactional contract
 
+- [ ] In the normal (non-preview) desktop session, Settings can refresh outputs but **Apply/Confirm/Save are disabled** until process-external rollback exists. In official nested preview, the same reusable widget allows these mutation actions.
 - [ ] Open **Настройки → Дисплеи** and refresh; only Niri-advertised connectors/modes/VRR capabilities are offered. No input causes a Niri command during mere selection.
 - [ ] Confirm that Apply is disabled if all monitors are disabled, the mode list is empty, or a value is outside accepted bounds.
 - [ ] In nested Niri, make one harmless reversible change (e.g. small scale adjustment); press **Применить**. The UI shows a real countdown, with separate **Подтвердить** and **Откатить** buttons. No KDL file is written yet.
 - [ ] Do not confirm: after 15 seconds the trusted worker rolls the output state back. Reopen Settings and refresh. The old state must be observed.
 - [ ] Apply again and press **Откатить**: state returns without waiting for the timeout.
-- [ ] Apply and close the popup (Escape or switch to another popup) while confirmation is pending: the Shell requests early revert; the independent watchdog must still undo changes if the Shell is killed.
+- [ ] Apply and close the popup (Escape or switch to another popup) while confirmation is pending: the Shell requests early revert and the worker executes it while alive.
+- [ ] **Known blocker: Shell-process death.** The 15-second worker lives in the Shell process; SIGKILL prevents its rollback. Do not claim crash-safe display transactions or enable production mutation until a Core-owned/external supervisor survives a killed Shell and proves rollback in nested Niri.
 - [ ] Apply and press **Подтвердить**: session state remains changed; the editor then separately offers **Сохранить**.
 - [ ] Press **Сохранить**: if ownership allows it, only temporary preview-managed KDL is changed, **not the live user's config**. Confirm the temporary receipt and output fragment are created only inside the preview sandbox.
 - [ ] Test a managed KDL conflict and a read-only/Nix-generated root in a throwaway test environment: Save fails closed and reports why. It must not rewrite foreign includes/output sections.

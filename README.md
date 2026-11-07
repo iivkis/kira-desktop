@@ -4,7 +4,7 @@
 
 Kira Desktop is a Rust-native, NixOS-first desktop shell for the **Niri/Wayland** compositor. Its application interface is built from **GTK4 widgets and GTK CSS**. There is no WebKit, browser runtime, Svelte bundle, JavaScript bridge, or embedded web UI in the target architecture.
 
-**The native-gtk branch is an experimental migration, not feature parity with main.** The native Top Bar, Niri workspaces, calendar and launcher compose reusable `kira-ui` components. The next G2 increment adds a native System Monitor (real CPU/RAM/GPU overview and on-demand process list) and a Settings display editor connected to Niri's Apply → 15s Confirm/Rollback → explicit Save transaction. Full graphical acceptance, tray, notifications, rich charts and detached windows are **not** finished.
+**The native-gtk branch is an experimental migration, not feature parity with main.** The native Top Bar, Niri workspaces, calendar and launcher compose reusable `kira-ui` components. The next G2 increment adds a native System Monitor (real CPU/RAM/GPU overview and on-demand process list) and a **preview-only** Settings display editor connected to Niri's Apply → 15s Confirm/Rollback → explicit Save transaction. The watchdog is still in the Shell process; normal desktop sessions allow observation only until a Core-owned rollback supervisor exists. Full graphical acceptance, tray, notifications, rich charts and detached windows are **not** finished.
 
 ## Start here
 

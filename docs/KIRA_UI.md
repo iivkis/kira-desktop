@@ -27,7 +27,7 @@
 | `PopupHost` | Popup kind and view factory | One visible transient; Escape and hide handling | Preserves widget tree between hide/show; detached mode still pending |
 | `InfoPanel` | Heading, current detail text | Native accessible read-only summary | Text updated without recreating widget |
 | `SystemMonitor` | Typed metrics, GPU readings, bounded process list | Overview / Processes pages with queryable tab selection | Pure sorting/format tests; data sampling belongs to service worker |
-| `DisplaySettings` | Typed output/mode descriptions, transaction phase and persistence status | Refresh, Apply(draft), Confirm(id), Revert(id), Save intents | Native 15-second countdown; no Niri command or raw JSON in library |
+| `DisplaySettings` | Typed output/mode descriptions, transaction phase and persistence status | Refresh, Apply(draft), Confirm(id), Revert(id), Save intents | Native 15-second countdown; host can disable mutations; no Niri command or raw JSON in library |
 | `calendar_view` | None | Native GTK Calendar | Rich calendar/sky view future work |
 
 ## Guardrails and acceptance
@@ -35,3 +35,5 @@
 No WebKit fallback, browser runtime, direct shell execution or arbitrary command execution in UI. Component callbacks express intent only. Kira UI stays independent of the actual compositor and Core transport. Native does not mean secure plugin isolation; third-party native widgets remain out of scope.
 
 The native System Monitor and DisplaySettings GTK views are now wired to their existing Rust services, but **passing headless Cargo tests does not demonstrate real Niri display transactions or visual parity**. See [ACCEPTANCE_NATIVE_G2.md](ACCEPTANCE_NATIVE_G2.md) for mandatory nested graphical scenarios. StatusNotifier tray, native notification presentation, multi-output popup positioning, detached windows, reduced-motion TENET animations, richer launcher performance and packaged Niri smoke remain explicit work.
+
+**Live-output safety gate:** `kira-shell` disables Apply/Confirm/Save outside the controlled nested preview. A 15s worker timeout survives GTK main-thread stalls, but not termination of the entire Shell process. Before enabling production display changes, move the watchdog to Core or a separate supervisor and test process-death rollback. Setting `KIRA_PREVIEW` manually is **not** a security boundary; use only the verified nested preview script.

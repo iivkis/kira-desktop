@@ -18,6 +18,7 @@
 - Core owns Niri integration and KDL validation. Shell owns presentation, focus and lifecycle, and calls typed, bounded Core/GIO adapters. Never expose arbitrary shell commands or broad filesystem writes to widget code.
 - Never block GTK's main context with socket IO, process enumeration or slow metrics. Workers exchange owned data; only GTK main-context code touches GTK objects.
 - The single visible transient popup rule remains. Detached ordinary windows are independent and must survive switching the transient popup. Recreating GTK state during a reparent is not acceptable if state preservation is a requirement.
+- Output mutations are preview-only until a Core-owned or external watchdog can rollback even if the entire Shell process exits. Do not mistake a Shell worker thread for crash isolation. Never weaken this gate to claim feature parity.
 - Preserve the observed/config/managed/session ownership boundary in [docs/CONFIG_OWNERSHIP.md](docs/CONFIG_OWNERSHIP.md). Apply, Confirm and Save are different operations; invalid or externally owned configuration fails closed.
 
 ## Visual and motion contracts
