@@ -21,7 +21,6 @@ pub enum PopupKind {
     Settings,
 }
 
-#[derive(Clone)]
 struct PopupView {
     window: gtk::ApplicationWindow,
     clip: PopupClip,
@@ -121,7 +120,7 @@ impl PopupView {
 
 pub struct PopupHost {
     app: gtk::Application,
-    windows: RefCell<HashMap<PopupKind, PopupView>>,
+    windows: RefCell<HashMap<PopupKind, Rc<PopupView>>>,
     active: Rc<Cell<Option<PopupKind>>>,
 }
 
@@ -234,28 +233,32 @@ impl PopupHost {
             let clip = PopupClip::new(&overlay.upcast());
             clip.set_fraction(0.0);
             window.set_child(Some(&clip));
-            let view = PopupView {
+            let view = Rc::new(PopupView {
                 window: window.clone(),
                 clip,
                 seam,
                 timeline,
                 motion: MotionToken::default(),
-            };
+            });
 
             let active = self.active.clone();
-            let closing_view = view.clone();
+            let weak = Rc::downgrade(&view);
             window.connect_close_request(move |_| {
-                closing_view.close();
-                active.set(None);
+                if let Some(view) = weak.upgrade() {
+                    view.close();
+                    active.set(None);
+                }
                 gtk::glib::Propagation::Stop
             });
             let active = self.active.clone();
-            let closing_view = view.clone();
+            let weak = Rc::downgrade(&view);
             let key = gtk::EventControllerKey::new();
             key.connect_key_pressed(move |_, keyval, _, _| {
                 if keyval == gtk::gdk::Key::Escape {
-                    closing_view.close();
-                    active.set(None);
+                    if let Some(view) = weak.upgrade() {
+                        view.close();
+                        active.set(None);
+                    }
                     gtk::glib::Propagation::Stop
                 } else {
                     gtk::glib::Propagation::Proceed
