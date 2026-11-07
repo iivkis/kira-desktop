@@ -56,7 +56,7 @@ impl PopupHost {
     pub fn toggle(&self, kind: PopupKind, make_view: impl FnOnce() -> gtk::Widget) {
         if let Some(previous) = self.active.replace(None) {
             if let Some(window) = self.windows.borrow().get(&previous) {
-                window.hide();
+                window.set_visible(false);
             }
             if previous == kind {
                 return;
@@ -107,7 +107,7 @@ impl PopupHost {
 
             let active = self.active.clone();
             window.connect_close_request(move |window| {
-                window.hide();
+                window.set_visible(false);
                 active.set(None);
                 gtk::glib::Propagation::Stop
             });
@@ -116,7 +116,7 @@ impl PopupHost {
             let key = gtk::EventControllerKey::new();
             key.connect_key_pressed(move |_, keyval, _, _| {
                 if keyval == gtk::gdk::Key::Escape {
-                    escape_window.hide();
+                    escape_window.set_visible(false);
                     active.set(None);
                     gtk::glib::Propagation::Stop
                 } else {

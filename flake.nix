@@ -28,7 +28,7 @@
         };
         ci = pkgs.mkShell {
           packages = with pkgs; [
-            cargo rustc pkg-config gtk4 gtk4-layer-shell
+            cargo rustc clippy pkg-config gtk4 gtk4-layer-shell
           ];
         };
       });

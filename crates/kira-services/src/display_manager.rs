@@ -453,7 +453,6 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
             }
             Err(RecvTimeoutError::Disconnected) => {
                 if let Some((_, before, _)) = pending.take() {
-                    staged = None;
                     revert(&before, &events);
                 }
                 break;

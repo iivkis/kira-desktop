@@ -295,7 +295,7 @@ fn rollback_file(path: &Path, previous: Option<&str>) {
 /// The GUI writes only this opt-in file. The first successful save appends one
 /// explicit include *only* if config.kdl is a regular user-owned file and has
 /// no output blocks. Nix-generated roots are never changed.
-pub fn save(desired: &[Desired]) -> Result<(), String> {
+pub(crate) fn save(desired: &[Desired]) -> Result<(), String> {
     let config = root()?;
     let base = read_source(&config)?;
     let dir = managed_dir()?;

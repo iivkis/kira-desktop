@@ -25,7 +25,6 @@ pub fn filter_applications(
 
 pub struct Launcher {
     root: gtk::Box,
-    list: gtk::Box,
     search: gtk::SearchEntry,
     status: gtk::Label,
     applications: Rc<RefCell<Vec<ApplicationEntry>>>,
@@ -91,7 +90,6 @@ impl Launcher {
         // A dedicated immutable callback is retained in the search signal closure.
         Self {
             root,
-            list,
             search,
             status,
             applications,
