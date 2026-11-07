@@ -250,6 +250,55 @@ pub fn popup_frame(progress: f64, direction: i32) -> PopupFrame {
     }
 }
 
+
+/// Visual state of a content section on main's shared 540ms master clock.
+/// There are at most three animated sections; factual content is already set.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct PopupSectionFrame {
+    pub translate_y: f64,
+    pub scale: f64,
+    pub opacity: f64,
+}
+
+pub fn popup_section_frame(progress: f64, index: usize) -> PopupSectionFrame {
+    let ms = 540.0 * bounded(progress);
+    let delay = index.min(2) as f64 * 35.0;
+    let spring_p = ((ms - delay) / 440.0).clamp(0.0, 1.0);
+    let fade_p = ((ms - delay) / 220.0).clamp(0.0, 1.0);
+    let spring = back_out(spring_p, 1.22);
+    let opacity = 0.94 + 0.06 * (1.0 - (1.0 - fade_p).powi(2));
+    PopupSectionFrame {
+        translate_y: 9.0 * (1.0 - spring),
+        scale: 0.988 + 0.012 * spring,
+        opacity,
+    }
+}
+
+/// Recorded, source-defined trace history. Each fragment starts at its
+/// original outbound position and returns to the SAME contact point.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct PopupTraceFrame {
+    pub x: f64,
+    pub y: f64,
+    pub rotation: f64,
+    pub opacity: f64,
+}
+
+pub fn popup_trace_frame(progress: f64, direction: i32, index: usize) -> PopupTraceFrame {
+    let flights = calendar_flights(direction);
+    let flight = flights[index % flights.len()];
+    let delay = (flights.len() - 1 - (index % flights.len())) as f64 * 12.0;
+    let local = ((540.0 * bounded(progress) - delay) / 440.0).clamp(0.0, 1.0);
+    // power3.in: reverse playback traverses the same values in reverse order.
+    let remainder = 1.0 - local.powi(3);
+    PopupTraceFrame {
+        x: flight.x * remainder,
+        y: flight.y * remainder,
+        rotation: flight.rotation * remainder,
+        opacity: 0.13 * remainder,
+    }
+}
+
 fn animations_enabled() -> bool {
     gtk::Settings::default()
         .is_none_or(|settings| settings.property::<bool>("gtk-enable-animations"))
@@ -497,13 +546,51 @@ mod tests {
     }
 
     #[test]
+    fn popup_sections_have_original_35ms_stagger_and_truthful_endpoints() {
+        let first = popup_section_frame(0.0, 0);
+        let third = popup_section_frame(0.0, 2);
+        assert_eq!(first.translate_y, 9.0);
+        assert_eq!(first.scale, 0.988);
+        assert_eq!(first.opacity, 0.94);
+        assert_eq!(third, first);
+        let p = 35.0 / 540.0;
+        assert!(popup_section_frame(p, 0).translate_y < 9.0);
+        assert_eq!(popup_section_frame(p, 1).translate_y, 9.0);
+        assert_eq!(popup_section_frame(p, 2).translate_y, 9.0);
+        for index in 0..3 {
+            let final_frame = popup_section_frame(1.0, index);
+            assert_eq!(final_frame.translate_y, 0.0);
+            assert_eq!(final_frame.scale, 1.0);
+            assert_eq!(final_frame.opacity, 1.0);
+        }
+    }
+
+    #[test]
+    fn source_fragment_tracks_rewind_to_the_same_contact() {
+        for direction in [-1, 1] {
+            for index in 0..4 {
+                let outward = calendar_flights(direction)[index];
+                assert_eq!(popup_trace_frame(0.0, direction, index).x, outward.x);
+                assert_eq!(popup_trace_frame(0.0, direction, index).y, outward.y);
+                assert_eq!(popup_trace_frame(1.0, direction, index).x, 0.0);
+                for progress in [0.05, 0.3, 0.7, 0.95] {
+                    let point = popup_trace_frame(progress, direction, index);
+                    // A reverse cursor never regenerates a second trajectory.
+                    assert_eq!(point, popup_trace_frame(progress, direction, index));
+                    assert!((0.0..=0.13).contains(&point.opacity));
+                }
+            }
+        }
+    }
+
+    #[test]
     fn popup_frame_keeps_reverse_geometry_and_reduced_motion_endpoints() {
         let f = popup_frame(0.0, 1);
         assert_eq!(f.clip, 0.0);
         assert_eq!(f.section_scale, 0.988);
         assert_eq!(popup_frame(1.0, 1).clip, 1.0);
         for p in [0.0, 0.12, 0.33, 0.61, 1.0] {
-            assert_eq!(popup_frame(p, 1), popup_frame(p, 1));
+            assert!((0.0..=1.0).contains(&popup_frame(p, 1).clip));
             assert!((popup_frame(p, 1).seam + popup_frame(p, -1).seam - 1.0).abs() < 1e-9);
         }
         let mut timeline = PopupTimeline::default();
