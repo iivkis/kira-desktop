@@ -8,8 +8,11 @@ use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
 use crate::bar::BAR_HEIGHT;
-use crate::motion::{MotionToken, POPUP_MASTER_DURATION_MS, PopupTimeline};
+use crate::motion::{
+    MotionToken, POPUP_MASTER_DURATION_MS, PopupTimeline, popup_trace_frame,
+};
 use crate::popup_clip::PopupClip;
+use crate::popup_section::PopupSection;
 
 const GAP: i32 = 12;
 
@@ -25,6 +28,8 @@ struct PopupView {
     window: gtk::ApplicationWindow,
     clip: PopupClip,
     seam: gtk::DrawingArea,
+    sections: Vec<PopupSection>,
+    contact: Rc<Cell<Option<(f64, f64)>>>,
     timeline: Rc<RefCell<PopupTimeline>>,
     motion: MotionToken,
 }
@@ -33,6 +38,9 @@ impl PopupView {
     fn render(&self) {
         let frame = self.timeline.borrow().frame(1);
         self.clip.set_fraction(frame.clip);
+        for section in &self.sections {
+            section.set_progress(self.timeline.borrow().progress());
+        }
         self.seam.queue_draw();
     }
 
@@ -49,6 +57,9 @@ impl PopupView {
             timeline.progress()
         };
         if opening {
+            if start <= 0.0 {
+                self.contact.set(None);
+            }
             self.window.present();
         }
         self.render();
@@ -58,9 +69,11 @@ impl PopupView {
         let timeline = self.timeline.clone();
         let weak_clip = self.clip.downgrade();
         let weak_seam = self.seam.downgrade();
+        let sections = self.sections.clone();
         let completed_timeline = self.timeline.clone();
         let completed_clip = self.clip.downgrade();
         let completed_seam = self.seam.downgrade();
+        let completed_sections = self.sections.clone();
         let completed_window = self.window.downgrade();
         let widget: gtk::Widget = self.clip.clone().upcast();
         self.motion.run(
@@ -77,6 +90,9 @@ impl PopupView {
                 if let Some(clip) = weak_clip.upgrade() {
                     clip.set_fraction(frame.clip);
                 }
+                for section in &sections {
+                    section.set_progress(timeline.borrow().progress());
+                }
                 if let Some(seam) = weak_seam.upgrade() {
                     seam.queue_draw();
                 }
@@ -89,6 +105,9 @@ impl PopupView {
                 };
                 if let Some(clip) = completed_clip.upgrade() {
                     clip.set_fraction(frame.clip);
+                }
+                for section in &completed_sections {
+                    section.set_progress(completed_timeline.borrow().progress());
                 }
                 if let Some(seam) = completed_seam.upgrade() {
                     seam.queue_draw();
@@ -137,6 +156,58 @@ fn layout_for(kind: PopupKind, width: i32, height: i32) -> (i32, i32, i32) {
     let width = nominal_width.min((width - GAP * 2).max(160));
     let usable_height = (height - top - GAP).max(160);
     (width, top, usable_height)
+}
+
+
+/// Decorate, but never recreate, up to three original view sections.
+/// The original widgets and their controllers survive opening, closing
+/// and subsequent state updates. Siblings keep their original order.
+fn stage_sections(view: &gtk::Widget) -> Vec<PopupSection> {
+    let Some(root) = view.downcast_ref::<gtk::Box>() else {
+        return Vec::new();
+    };
+    let mut children = Vec::new();
+    let mut current = root.first_child();
+    while let Some(widget) = current {
+        current = widget.next_sibling();
+        children.push(widget);
+    }
+    for child in &children {
+        root.remove(child);
+    }
+    let mut staged = Vec::new();
+    for (index, child) in children.into_iter().enumerate() {
+        if index < 3 {
+            let section = PopupSection::new(&child, index);
+            root.append(&section);
+            staged.push(section);
+        } else {
+            root.append(&child);
+        }
+    }
+    staged
+}
+
+/// Stable editorial contact: clock for Calendar, search for Launcher,
+/// heading for other views. Never derive a new contact during a reversal.
+fn contact_widget(root: &gtk::Widget) -> gtk::Widget {
+    fn find_class(root: &gtk::Widget, class: &str) -> Option<gtk::Widget> {
+        if root.has_css_class(class) {
+            return Some(root.clone());
+        }
+        let mut current = root.first_child();
+        while let Some(child) = current {
+            current = child.next_sibling();
+            if let Some(found) = find_class(&child, class) {
+                return Some(found);
+            }
+        }
+        None
+    }
+    ["calendar-clock-play", "launcher-contact", "section-title"]
+        .into_iter()
+        .find_map(|class| find_class(root, class))
+        .unwrap_or_else(|| root.clone())
 }
 
 impl PopupHost {
@@ -203,7 +274,10 @@ impl PopupHost {
             frame.set_margin_bottom(18);
             frame.set_margin_start(18);
             frame.set_margin_end(18);
-            frame.append(&make_view());
+            let view_widget = make_view();
+            let sections = stage_sections(&view_widget);
+            let contact_widget = contact_widget(&view_widget);
+            frame.append(&view_widget);
             let scroll = gtk::ScrolledWindow::new();
             scroll.add_css_class("kira-popup-surface");
             scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
@@ -216,20 +290,64 @@ impl PopupHost {
             overlay.set_child(Some(&scroll));
             let seam = gtk::DrawingArea::new();
             seam.set_can_target(false);
+            seam.set_halign(gtk::Align::Fill);
+            seam.set_valign(gtk::Align::Fill);
+            let contact = Rc::new(Cell::new(None::<(f64, f64)>));
             seam.set_draw_func({
                 let timeline = timeline.clone();
-                move |_, cr, width, height| {
-                    let frame = timeline.borrow().frame(1);
-                    if frame.seam_opacity <= 0.0 {
+                let contact = contact.clone();
+                let target = contact_widget.downgrade();
+                move |area, cr, width, height| {
+                    if width <= 0 || height <= 0 {
                         return;
                     }
-                    let y = frame.seam * f64::from((height - 2).max(0));
-                    cr.set_source_rgba(0.988, 0.639, 0.067, frame.seam_opacity);
-                    cr.rectangle(0.0, y, f64::from(width), 1.0);
-                    let _ = cr.fill();
+                    let frame = timeline.borrow().frame(1);
+                    if frame.seam_opacity > 0.0 {
+                        let y = frame.seam * f64::from((height - 2).max(0));
+                        cr.set_source_rgba(0.988, 0.639, 0.067, frame.seam_opacity);
+                        cr.rectangle(0.0, y, f64::from(width), 1.0);
+                        let _ = cr.fill();
+                    }
+                    let origin = contact.get().or_else(|| {
+                        target.upgrade().and_then(|widget| {
+                            widget.compute_bounds(area).and_then(|bounds| {
+                                if bounds.width() > 0.0 && bounds.height() > 0.0 {
+                                    let point = (
+                                        f64::from(bounds.x() + bounds.width() / 2.0),
+                                        f64::from(bounds.y() + bounds.height() / 2.0),
+                                    );
+                                    contact.set(Some(point));
+                                    Some(point)
+                                } else {
+                                    None
+                                }
+                            })
+                        })
+                    });
+                    let Some((x, y)) = origin else {
+                        return;
+                    };
+                    for index in 0..4 {
+                        let trace = popup_trace_frame(timeline.borrow().progress(), 1, index);
+                        if trace.opacity <= 0.0 {
+                            continue;
+                        }
+                        let _ = cr.save();
+                        cr.translate(x + trace.x, y + trace.y);
+                        cr.rotate(trace.rotation.to_radians());
+                        if index % 2 == 0 {
+                            cr.set_source_rgba(0.988, 0.639, 0.067, trace.opacity);
+                        } else {
+                            cr.set_source_rgba(0.898, 0.898, 0.898, trace.opacity);
+                        }
+                        cr.rectangle(-6.0, -0.5, 12.0, 1.0);
+                        let _ = cr.fill();
+                        let _ = cr.restore();
+                    }
                 }
             });
             overlay.add_overlay(&seam);
+            overlay.set_measure_overlay(&seam, false);
             let clip = PopupClip::new(&overlay.upcast());
             clip.set_fraction(0.0);
             window.set_child(Some(&clip));
@@ -237,6 +355,8 @@ impl PopupHost {
                 window: window.clone(),
                 clip,
                 seam,
+                sections,
+                contact,
                 timeline,
                 motion: MotionToken::default(),
             });
