@@ -502,13 +502,12 @@ impl TrayUi {
                     .find(|entry| entry.button.has_focus())
                     .map(|entry| entry.id);
                 let selected = menu_focus_target(&enabled, current, direction);
-                let button = selected.and_then(|id| {
+                selected.and_then(|id| {
                     actions
                         .iter()
                         .find(|entry| entry.id == id)
                         .map(|entry| entry.button.clone())
-                });
-                button
+                })
             };
             if let Some(button) = target {
                 button.grab_focus();
@@ -739,9 +738,7 @@ impl TrayUi {
     }
 
     pub fn update(&self, state: &TrayState) {
-        if *self.state.borrow() == *state
-            && self.rendered_budget.get() == self.bar_budget.get()
-        {
+        if *self.state.borrow() == *state && self.rendered_budget.get() == self.bar_budget.get() {
             return;
         }
         *self.state.borrow_mut() = state.clone();
@@ -957,9 +954,14 @@ mod tests {
     #[test]
     fn responsive_icon_budget_matches_frozen_main_and_never_invents_items() {
         assert_eq!(MAX_BAR_ICONS, 6);
-        for (width, budget) in [(360, 2), (699, 2), (700, 4),
-            (1099, 4), (1100, 6), (1920, 6)]
-        {
+        for (width, budget) in [
+            (360, 2),
+            (699, 2),
+            (700, 4),
+            (1099, 4),
+            (1100, 6),
+            (1920, 6),
+        ] {
             assert_eq!(tray_budget_for_width(width), budget);
         }
         let state = TrayState {

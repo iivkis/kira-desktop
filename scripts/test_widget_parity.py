@@ -35,7 +35,10 @@ class ParityInventoryTests(unittest.TestCase):
 
     def test_missing_component_cannot_pretend_to_be_verified(self):
         document = copy.deepcopy(self.document)
-        missing = next(w for w in document["widgets"] if w["state"] == "missing")
+        # Exercise a synthetic missing target. A fully implemented but
+        # unverified migration may legitimately have no 'missing' widgets.
+        missing = document["widgets"][0]
+        missing["target_files"] = []
         missing["state"] = "verified"
         violations = validate(document, ROOT)
         self.assertTrue(any("without target" in error for error in violations), violations)
