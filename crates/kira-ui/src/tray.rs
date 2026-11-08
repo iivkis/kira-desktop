@@ -114,10 +114,13 @@ pub fn menu_page(items: &[TrayMenuEntry], navigation: &[i32]) -> Option<Vec<Tray
             return None;
         }
         let mut parent_index = None;
-        for index in start..end {
-            let entry = &items[index];
+        for (index, entry) in items.iter().enumerate().take(end).skip(start) {
             if entry.depth == depth && entry.id == *parent_id {
-                if parent_index.is_some() || !entry.has_children || !entry.enabled || entry.separator {
+                if parent_index.is_some()
+                    || !entry.has_children
+                    || !entry.enabled
+                    || entry.separator
+                {
                     return None;
                 }
                 parent_index = Some(index);
@@ -138,11 +141,13 @@ pub fn menu_page(items: &[TrayMenuEntry], navigation: &[i32]) -> Option<Vec<Tray
             return None;
         }
     }
-    Some(items[start..end]
-        .iter()
-        .filter(|entry| entry.depth == depth)
-        .cloned()
-        .collect())
+    Some(
+        items[start..end]
+            .iter()
+            .filter(|entry| entry.depth == depth)
+            .cloned()
+            .collect(),
+    )
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -479,7 +484,10 @@ impl TrayUi {
         };
         let entries = menu_page(&menu.items, &menu.navigation).unwrap_or_default();
         let heading = menu.navigation.last().and_then(|id| {
-            menu.items.iter().find(|entry| entry.id == *id).map(|entry| entry.label.as_str())
+            menu.items
+                .iter()
+                .find(|entry| entry.id == *id)
+                .map(|entry| entry.label.as_str())
         });
         self.header_title.set_text(heading.unwrap_or(&menu.title));
         for entry in entries.iter().take(80) {
@@ -673,9 +681,30 @@ mod tests {
             entry(5, 0, false),
             entry(6, 0, true),
         ];
-        assert_eq!(menu_page(&entries, &[]).unwrap().iter().map(|item| item.id).collect::<Vec<_>>(), vec![1, 5, 6]);
-        assert_eq!(menu_page(&entries, &[1]).unwrap().iter().map(|item| item.id).collect::<Vec<_>>(), vec![2, 3]);
-        assert_eq!(menu_page(&entries, &[1, 3]).unwrap().iter().map(|item| item.id).collect::<Vec<_>>(), vec![4]);
+        assert_eq!(
+            menu_page(&entries, &[])
+                .unwrap()
+                .iter()
+                .map(|item| item.id)
+                .collect::<Vec<_>>(),
+            vec![1, 5, 6]
+        );
+        assert_eq!(
+            menu_page(&entries, &[1])
+                .unwrap()
+                .iter()
+                .map(|item| item.id)
+                .collect::<Vec<_>>(),
+            vec![2, 3]
+        );
+        assert_eq!(
+            menu_page(&entries, &[1, 3])
+                .unwrap()
+                .iter()
+                .map(|item| item.id)
+                .collect::<Vec<_>>(),
+            vec![4]
+        );
         // A lazy parent remains a valid empty menu until AboutToShow.
         assert_eq!(menu_page(&entries, &[6]).unwrap().len(), 0);
         assert!(menu_page(&entries, &[5]).is_none());

@@ -386,7 +386,8 @@ impl NotificationHost {
 
         *self.current.borrow_mut() = cards.to_vec();
         self.root.set_opacity(0.0);
-        self.window.set_opacity(if exiting.is_empty() { 0.0 } else { 1.0 });
+        self.window
+            .set_opacity(if exiting.is_empty() { 0.0 } else { 1.0 });
         self.clear_input();
         self.window.set_default_size(layout.width, layout.height);
         while let Some(child) = self.root.first_child() {
@@ -410,9 +411,12 @@ impl NotificationHost {
                     opacity
                 })
                 .unwrap_or(1.0);
-            let y = old_layout.height - INNER_MARGIN - old_layout.card_height
+            let y = old_layout.height
+                - INNER_MARGIN
+                - old_layout.card_height
                 - index as i32 * (old_layout.card_height + GAP);
-            self.leaving.put(&frame, f64::from(INNER_MARGIN), f64::from(y));
+            self.leaving
+                .put(&frame, f64::from(INNER_MARGIN), f64::from(y));
             let layer = self.leaving.clone();
             let moving = frame.clone();
             let completed_layer = self.leaving.clone();
@@ -455,7 +459,9 @@ impl NotificationHost {
             content.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
             frame.put(&content, 0.0, 0.0);
             self.root.append(&frame);
-            self.visible_frames.borrow_mut().insert(notice.id, frame.clone());
+            self.visible_frames
+                .borrow_mut()
+                .insert(notice.id, frame.clone());
             // Existing IDs do not replay their entrance when a different
             // notification arrives or a slow application replaces its text.
             if !old_ids.contains(&notice.id) {
@@ -598,7 +604,10 @@ mod tests {
         let previous = [notice(1), notice(2), notice(3)];
         let next = [notice(1), notice(3)];
         let painted = HashSet::from([1, 2]);
-        assert_eq!(departing_toasts(&previous, &next, &painted, true), vec![(2, 1)]);
+        assert_eq!(
+            departing_toasts(&previous, &next, &painted, true),
+            vec![(2, 1)]
+        );
         assert!(departing_toasts(&previous, &next, &painted, false).is_empty());
         assert!(departing_toasts(&previous, &previous, &painted, true).is_empty());
         assert!(departing_toasts(&previous, &[], &HashSet::new(), true).is_empty());
