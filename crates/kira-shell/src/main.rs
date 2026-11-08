@@ -305,7 +305,7 @@ fn display_mutations_enabled() -> bool {
     // A separate process now owns the 15s rollback deadline; production
     // mutations remain disabled until an actual nested Shell-kill acceptance.
     // This flag is a migration safety interlock, not a privilege boundary.
-    std::env::var_os("KIRA_PREVIEW").is_some()
+    std::env::var("KIRA_PREVIEW").as_deref() == Ok("1")
 }
 
 fn send_display_intent(model: &DisplayModel, intent: DisplayIntent, supervised: bool) {

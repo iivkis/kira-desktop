@@ -111,7 +111,21 @@ impl Model {
                     break;
                 }
             }
-            let _ = child.wait();
+            let result = child.wait();
+            // Surface a terminated supervisor as a real error instead of
+            // leaving the GTK editor stuck in an endless Applying state.
+            let diagnostic = match result {
+                Ok(status) => format!("Display supervisor exited: {status}"),
+                Err(error) => format!("Display supervisor wait failed: {error}"),
+            };
+            let _ = events.send(Event {
+                state: "error",
+                outputs: None,
+                pending_id: None,
+                deadline_unix_ms: None,
+                error: Some(diagnostic),
+                persistence: "manual",
+            });
         });
         Ok(Self { sender, receiver })
     }
@@ -243,7 +257,7 @@ fn event_from_wire(value: serde_json::Value) -> Option<Event> {
 /// existing worker drains queued commands and reverts the pending preview.
 /// The authoritative monotonic 15-second deadline remains in this process.
 pub fn run_supervisor_stdio() -> i32 {
-    if std::env::var_os("KIRA_PREVIEW").is_none() {
+    if std::env::var("KIRA_PREVIEW").as_deref() != Ok("1") {
         eprintln!("display supervisor: non-preview mode denied");
         return 2;
     }
@@ -481,12 +495,31 @@ fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
                 .find(|m| m["is_preferred"] == true)
                 .or(modes.first())
         });
-        let mode = current
-            .or(fallback)
-            .and_then(mode_id)
-            .ok_or("Невозможно определить режим дисплея")?;
         let enabled = !logical.is_null();
-        let scale = logical["scale"].as_f64().unwrap_or(1.0);
+        // A live output must report its current mode. Falling back to a
+        // preferred mode would make a later rollback restore an invented one.
+        let mode = if enabled {
+            current.and_then(mode_id)
+        } else {
+            current.or(fallback).and_then(mode_id)
+        }
+        .ok_or("Невозможно определить текущий режим дисплея")?;
+        let (scale, x, y) = if enabled {
+            let scale = logical["scale"]
+                .as_f64()
+                .filter(|value| value.is_finite() && (0.5..=4.0).contains(value))
+                .ok_or("Niri не сообщил безопасный текущий масштаб")?;
+            let coordinate = |key: &str| {
+                logical[key]
+                    .as_i64()
+                    .and_then(|value| i32::try_from(value).ok())
+                    .filter(|value| (-32000..=32000).contains(value))
+                    .ok_or_else(|| format!("Niri не сообщил безопасную координату {key}"))
+            };
+            (scale, coordinate("x")?, coordinate("y")?)
+        } else {
+            (1.0, 0, 0)
+        };
         // Unknown rotations cannot be silently restored as "normal":
         // rollback must preserve the original orientation or refuse to apply.
         let transform = if enabled {
@@ -504,8 +537,8 @@ fn baseline(outputs: &serde_json::Value) -> Result<Vec<Desired>, String> {
             mode,
             scale,
             transform,
-            x: logical["x"].as_i64().unwrap_or(0) as i32,
-            y: logical["y"].as_i64().unwrap_or(0) as i32,
+            x,
+            y,
             vrr: output["vrr_enabled"] == true,
         });
     }
@@ -916,6 +949,33 @@ mod tests {
         assert!(baseline(&current).is_err());
         current[0]["logical"]["transform"] = json!("Flipped90");
         assert_eq!(baseline(&current).unwrap()[0].transform, "flipped-90");
+    }
+
+    #[test]
+    fn refuses_missing_or_overflowing_live_baseline_instead_of_faking_rollback() {
+        let source = outputs();
+        assert_eq!(baseline(&source).unwrap()[0].scale, 1.0);
+        for (field, value) in [
+            ("x", json!(i64::MAX)),
+            ("x", serde_json::Value::Null),
+            ("y", json!(-32001)),
+            ("scale", serde_json::Value::Null),
+            ("scale", json!(0.0)),
+            ("scale", json!(4.5)),
+        ] {
+            let mut invalid = source.clone();
+            invalid[0]["logical"][field] = value;
+            assert!(baseline(&invalid).is_err(), "Accepted invalid {field}");
+        }
+        let mut missing_current_mode = source.clone();
+        missing_current_mode[0]["current_mode"] = serde_json::Value::Null;
+        assert!(baseline(&missing_current_mode).is_err());
+        // Disabled outputs have no logical geometry, but their advertised
+        // preferred mode is still valid for a future explicit enable.
+        let mut disabled = source;
+        disabled[0]["logical"] = serde_json::Value::Null;
+        disabled[0]["current_mode"] = serde_json::Value::Null;
+        assert!(!baseline(&disabled).unwrap()[0].enabled);
     }
 
     #[test]
