@@ -90,8 +90,19 @@ does not delay or restart the queue's D-Bus dwell. Existing IDs do not
 replay the entrance on unrelated changes. `MotionToken` cancels
 superseded frame-clock callbacks and reduced motion settles immediately.
 
-**Still outstanding:** inverse dismissal, compositor-calibrated paint
-acknowledgment, independent per-output placement, focus/a11y/collision QA,
-and paired frame/time/pixel evidence. Until these are reviewed, both
+**Inverse dismissal:** when a previously painted ID leaves the queue,
+the same real GTK frame is reparented to a non-targetable overlay and
+moves backward along the identical 12px path, with inverse power2 timing
+and alpha 1→0 over 180ms. Early dismissal starts from the card's
+observed intermediate opacity/position rather than jumping to the fully
+shown start. Removing the logical D-Bus ID and releasing its input region
+are immediate, independent of this visual exit. A covered popup, changed
+monitor geometry or hidden surface suppresses the departure instantly.
+Superseded outgoing frames are cancelled and removed, with no ghost
+notifications or new permanent polling.
+
+**Still outstanding:** compositor-calibrated paint acknowledgment,
+independent per-output placement, focus/a11y/collision QA and paired
+frame/time/pixel evidence; no native movement is visually certified. Until these are reviewed, both
 `notifications` and `notification-card` remain **partial**, with no
 `verified` flag set.

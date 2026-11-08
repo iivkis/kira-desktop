@@ -26,9 +26,10 @@ especially `docs/TRAY_DESIGN.md`, `TrayBar.svelte`, `TrayWidget.svelte`,
 - The Shell accepts only typed `TrayIntent::Activate`,
   `TrayIntent::Secondary`, `TrayIntent::TogglePin`,
   `TrayIntent::MenuClick(handle, leaf_id)`,
-  `TrayIntent::MenuExpand(handle, parent_id)` and `TrayIntent::DismissMenu` from
-  the UI. A menu click is accepted only when the saved unique-owner/path
-  session still exists and the requested ID is a unique, enabled leaf.
+  `TrayIntent::MenuExpand(handle, parent_id)`, `TrayIntent::MenuBack`
+  and `TrayIntent::DismissMenu` from the UI. Menu leaf/parent intents are
+  permitted only when a unique enabled item is on the **currently displayed
+  navigation page** of the live owner's menu. Hidden branch IDs cannot fire.
   Methods target the verified **unique owner** of the registered SNI item,
   not a caller-controlled destination/path. Actions are fixed to
   `Activate(0,0)` or `ContextMenu(0,0)`, with fixed
@@ -59,8 +60,15 @@ root rereads only when the revision is newer and the parent ID is known.
 A `children-display=submenu` entry is actionable even before its child
 nodes load: the trusted Shell validates a unique enabled parent, then calls
 `AboutToShow(parent_id)` followed by bounded `GetLayout(0)`. Deeper
-than three levels, cascading submenus and persistent expansion/collapse
-state remain future work.
+than three levels and additional floating cascading submenus still remain
+future work. **Native page navigation now exists** in the one pooled popup:
+the bounded preorder tree is projected to direct children, unique enabled
+parent IDs form a maximum three-level navigation path, a lazy page remains
+empty until the validated owner's `AboutToShow/GetLayout` response, and
+`MenuBack` pops one level before returning to the tray list. Escape
+in the embedded menu shares that back behavior. An app deleting a parent
+during `LayoutUpdated` automatically returns to the deepest surviving
+valid ancestor. Closing the popup invalidates outstanding async replies.
 IconPixmap is supported with a bounded, renderer-local RGBA GDK texture;
 OverlayIcon composition and multi-resolution selection beyond the nearest
 24px frame remain missing.

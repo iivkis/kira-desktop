@@ -256,3 +256,17 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
   background: #000000; color: #fca311;
 }
 .kira-popup .tray-menu-entry:disabled { opacity: 0.4; }
+
+/* One real nested dbusmenu page inside the existing pooled popup. */
+.kira-popup .tray-menu-group {
+  background: transparent;
+  color: #fca311;
+  text-align: left;
+  min-height: 36px;
+  border-radius: 2px;
+}
+.kira-popup .tray-menu-group:hover,
+.kira-popup .tray-menu-group:focus-visible {
+  background: #000000;
+  outline: 1px solid #fca311;
+}

@@ -68,6 +68,7 @@ struct MenuSession {
     title: String,
     layout_version: u32,
     entries: Vec<TrayMenuEntry>,
+    navigation: Vec<i32>,
 }
 
 impl MenuSession {
@@ -80,6 +81,7 @@ impl MenuSession {
             handle: self.handle,
             title: self.title.clone(),
             items: self.entries.clone(),
+            navigation: self.navigation.clone(),
         }
     }
 }
@@ -1097,6 +1099,13 @@ impl Service {
                     }
                     active.layout_version = version;
                     active.entries = entries;
+                    // Removed parent entries never leave us on an orphaned
+                    // submenu page after LayoutUpdated/GetLayout.
+                    while !active.navigation.is_empty()
+                        && kira_ui::tray::menu_page(&active.entries, &active.navigation).is_none()
+                    {
+                        active.navigation.pop();
+                    }
                 } else if fallback {
                     let mut created = menu;
                     created.layout_version = version;
@@ -1166,6 +1175,7 @@ impl Service {
             title: item.title.clone(),
             layout_version: 0,
             entries: Vec::new(),
+            navigation: Vec::new(),
         };
         self.request_menu_layout(menu, self.menu_serial.get(), Some(0), true);
     }
@@ -1175,7 +1185,13 @@ impl Service {
             .current_menu
             .borrow()
             .as_ref()
-            .filter(|menu| menu.handle == handle && tray_menu::expandable(&menu.entries, id))
+            .filter(|menu| {
+                menu.handle == handle
+                    && menu.navigation.len() < 3
+                    && tray_menu::expandable(&menu.entries, id)
+                    && kira_ui::tray::menu_page(&menu.entries, &menu.navigation)
+                        .is_some_and(|page| page.iter().any(|entry| entry.id == id))
+            })
             .cloned();
         let Some(menu) = menu else {
             return;
@@ -1186,7 +1202,32 @@ impl Service {
         }
         let serial = self.menu_serial.get().wrapping_add(1);
         self.menu_serial.set(serial);
+        if let Some(active) = self.current_menu.borrow_mut().as_mut() {
+            if !active.same_target(&menu) {
+                return;
+            }
+            active.navigation.push(id);
+        }
+        self.publish_menu();
         self.request_menu_layout(menu, serial, Some(id), false);
+    }
+
+    fn menu_back(&self) {
+        if self.current_menu.borrow().is_none() {
+            return;
+        }
+        self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
+        let had_parent = {
+            let mut current = self.current_menu.borrow_mut();
+            current
+                .as_mut()
+                .is_some_and(|menu| menu.navigation.pop().is_some())
+        };
+        if had_parent {
+            self.publish_menu();
+        } else {
+            self.clear_menu();
+        }
     }
 
     fn refresh_menu_after_action(self: &Rc<Self>, menu: MenuSession, serial: u64) {
@@ -1200,7 +1241,12 @@ impl Service {
             .current_menu
             .borrow()
             .as_ref()
-            .filter(|menu| menu.handle == handle && tray_menu::clickable(&menu.entries, id))
+            .filter(|menu| {
+                menu.handle == handle
+                    && tray_menu::clickable(&menu.entries, id)
+                    && kira_ui::tray::menu_page(&menu.entries, &menu.navigation)
+                        .is_some_and(|page| page.iter().any(|entry| entry.id == id))
+            })
             .cloned();
         let Some(menu) = selected else {
             return;
@@ -1244,6 +1290,10 @@ impl Service {
             self.clear_menu();
             return;
         }
+        if matches!(intent, TrayIntent::MenuBack) {
+            self.menu_back();
+            return;
+        }
         if let TrayIntent::MenuClick(handle, id) = intent {
             self.menu_click(handle, id);
             return;
@@ -1256,9 +1306,8 @@ impl Service {
             TrayIntent::Activate(id) | TrayIntent::Secondary(id) | TrayIntent::TogglePin(id) => id,
             TrayIntent::MenuClick(_, _)
             | TrayIntent::MenuExpand(_, _)
-            | TrayIntent::DismissMenu => {
-                return;
-            }
+            | TrayIntent::MenuBack
+            | TrayIntent::DismissMenu => return,
         };
         let item = self
             .items

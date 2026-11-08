@@ -2,7 +2,7 @@
 //! surface. No D-Bus, IPC, WebKit or access to external application commands.
 //! A frame is acknowledged only after two real mapped GTK frame ticks.
 use std::cell::{Cell, RefCell};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
 use gtk::cairo::{RectangleInt, Region};
@@ -19,6 +19,7 @@ pub const INNER_MARGIN: i32 = 8;
 pub const GAP: i32 = 8;
 pub const MIN_CARD_HEIGHT: i32 = 58;
 pub const TOAST_ENTRY_MS: u64 = 180;
+pub const TOAST_EXIT_MS: u64 = 180;
 
 /// Pinned main source: y=12→0, alpha=0→1 in 180ms power2.out.
 /// The actual paint-gated dwell starts independently of this decoration.
@@ -30,6 +31,51 @@ pub fn toast_entry_frame(progress: f64) -> (f64, f64) {
     };
     let remaining = (1.0 - time).powi(2);
     (12.0 * remaining, 1.0 - remaining)
+}
+
+/// Inverted *same-path* departure. It is the exact reverse of the
+/// 12px/alpha arrival, not an unrelated fade or generic GTK transition.
+pub fn toast_exit_frame(progress: f64) -> (f64, f64) {
+    toast_exit_from_opacity(progress, 1.0)
+}
+
+/// The actual GTK content may be halfway through its entrance when it is
+/// dismissed. Reverse from its observed opacity/contact point, instead of
+/// snapping to a fictional fully opaque start frame.
+pub fn toast_exit_from_opacity(progress: f64, opacity: f64) -> (f64, f64) {
+    let time = if progress.is_finite() {
+        progress.clamp(0.0, 1.0)
+    } else {
+        1.0
+    };
+    let alpha = if opacity.is_finite() {
+        opacity.clamp(0.0, 1.0)
+    } else {
+        1.0
+    };
+    let cursor = (1.0 - alpha).sqrt();
+    let remaining = (cursor + (1.0 - cursor) * time).powi(2);
+    (12.0 * remaining, 1.0 - remaining)
+}
+
+/// Only a genuinely displayed ID that leaves the new queue snapshot may
+/// animate out. A replaced card, hidden/unmapped host or changed output
+/// geometry must not create a fake notification or keep intercepting input.
+pub fn departing_toasts(
+    previous: &[NotificationView],
+    next: &[NotificationView],
+    painted: &HashSet<u32>,
+    geometry_unchanged: bool,
+) -> Vec<(u32, usize)> {
+    if !geometry_unchanged {
+        return Vec::new();
+    }
+    previous
+        .iter()
+        .enumerate()
+        .filter(|(_, item)| painted.contains(&item.id) && !next.iter().any(|new| new.id == item.id))
+        .map(|(index, item)| (item.id, index))
+        .collect()
 }
 
 struct CardEntrance {
@@ -224,6 +270,10 @@ fn card(
 pub struct NotificationHost {
     pub window: gtk::ApplicationWindow,
     root: gtk::Box,
+    leaving: gtk::Fixed,
+    visible_frames: RefCell<HashMap<u32, gtk::Fixed>>,
+    painted_ids: RefCell<HashSet<u32>>,
+    suppress_departure: Cell<bool>,
     layout: Cell<ToastLayout>,
     current: RefCell<Vec<NotificationView>>,
     revision: Rc<Cell<u64>>,
@@ -263,7 +313,17 @@ impl NotificationHost {
         root.set_margin_end(INNER_MARGIN);
         root.set_margin_top(INNER_MARGIN);
         root.set_margin_bottom(INNER_MARGIN);
-        window.set_child(Some(&root));
+        let layers = gtk::Overlay::new();
+        layers.set_child(Some(&root));
+        let leaving = gtk::Fixed::new();
+        leaving.set_halign(gtk::Align::Fill);
+        leaving.set_valign(gtk::Align::Fill);
+        leaving.set_hexpand(true);
+        leaving.set_vexpand(true);
+        leaving.set_can_target(false);
+        leaving.set_overflow(gtk::Overflow::Hidden);
+        layers.add_overlay(&leaving);
+        window.set_child(Some(&layers));
         window.set_opacity(0.0);
         gtk::prelude::WidgetExt::realize(&window);
         let surface = window.surface()?;
@@ -274,6 +334,10 @@ impl NotificationHost {
         Some(Self {
             window,
             root,
+            leaving,
+            visible_frames: RefCell::new(HashMap::new()),
+            painted_ids: RefCell::new(HashSet::new()),
+            suppress_departure: Cell::new(false),
             layout: Cell::new(layout),
             current: RefCell::new(Vec::new()),
             revision: Rc::new(Cell::new(0)),
@@ -294,24 +358,86 @@ impl NotificationHost {
             return;
         }
         self.revision.set(self.revision.get().wrapping_add(1));
-        self.layout.set(layout);
-        let old_ids: HashSet<_> = self
-            .current
-            .borrow()
-            .iter()
-            .map(|notice| notice.id)
-            .collect();
+        let old_layout = self.layout.replace(layout);
+        let previous = self.current.borrow().clone();
+        let painted = self.painted_ids.replace(HashSet::new());
+        let departures = departing_toasts(
+            &previous,
+            cards,
+            &painted,
+            old_layout == layout && !self.suppress_departure.get(),
+        );
+        let old_ids: HashSet<_> = previous.iter().map(|notice| notice.id).collect();
         for token in self.active_motion.borrow_mut().drain(..) {
             token.cancel();
         }
         self.pending_entrances.borrow_mut().clear();
+
+        // A superseded exit never survives into the next snapshot. Reuse
+        // actual old GTK frames for departure, not a copied image/ghost.
+        while let Some(child) = self.leaving.first_child() {
+            self.leaving.remove(&child);
+        }
+        let mut available = std::mem::take(&mut *self.visible_frames.borrow_mut());
+        let exiting = departures
+            .into_iter()
+            .filter_map(|(id, index)| available.remove(&id).map(|frame| (index, frame)))
+            .collect::<Vec<_>>();
+
         *self.current.borrow_mut() = cards.to_vec();
-        self.window.set_opacity(0.0);
+        self.root.set_opacity(0.0);
+        self.window.set_opacity(if exiting.is_empty() { 0.0 } else { 1.0 });
         self.clear_input();
         self.window.set_default_size(layout.width, layout.height);
         while let Some(child) = self.root.first_child() {
             self.root.remove(&child);
         }
+
+        // The old surface's *already-painted* cards leave along the
+        // reversed entrance path. They are not targetable and do not
+        // hold the Freedesktop notification ID or its input region.
+        for (index, frame) in exiting {
+            frame.set_can_target(false);
+            // An interrupted entrance left this child's *real* opacity
+            // and position at an intermediate contact point. Transfer that
+            // pose to the outgoing container before reversing the path.
+            let start_alpha = frame
+                .first_child()
+                .map(|child| {
+                    let opacity = child.opacity();
+                    frame.move_(&child, 0.0, 0.0);
+                    child.set_opacity(1.0);
+                    opacity
+                })
+                .unwrap_or(1.0);
+            let y = old_layout.height - INNER_MARGIN - old_layout.card_height
+                - index as i32 * (old_layout.card_height + GAP);
+            self.leaving.put(&frame, f64::from(INNER_MARGIN), f64::from(y));
+            let layer = self.leaving.clone();
+            let moving = frame.clone();
+            let completed_layer = self.leaving.clone();
+            let completed_frame = frame.clone();
+            let window = self.window.clone();
+            let root = self.root.clone();
+            let motion = MotionToken::default();
+            motion.run(
+                &self.leaving.clone().upcast(),
+                TOAST_EXIT_MS,
+                move |progress| {
+                    let (offset, alpha) = toast_exit_from_opacity(progress, start_alpha);
+                    layer.move_(&moving, f64::from(INNER_MARGIN), f64::from(y) + offset);
+                    moving.set_opacity(alpha);
+                },
+                move || {
+                    completed_layer.remove(&completed_frame);
+                    if completed_layer.first_child().is_none() && root.opacity() == 0.0 {
+                        window.set_opacity(0.0);
+                    }
+                },
+            );
+            self.active_motion.borrow_mut().push(motion);
+        }
+
         if cards.is_empty() {
             return;
         }
@@ -329,6 +455,7 @@ impl NotificationHost {
             content.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
             frame.put(&content, 0.0, 0.0);
             self.root.append(&frame);
+            self.visible_frames.borrow_mut().insert(notice.id, frame.clone());
             // Existing IDs do not replay their entrance when a different
             // notification arrives or a slow application replaces its text.
             if !old_ids.contains(&notice.id) {
@@ -379,6 +506,8 @@ impl NotificationHost {
         }
         if let Some(surface) = self.window.surface() {
             surface.set_input_region(Some(&toast_hit_region(self.layout.get(), ids.len())));
+            self.painted_ids.replace(ids.iter().copied().collect());
+            self.root.set_opacity(1.0);
             self.window.set_opacity(1.0);
             for entrance in self.pending_entrances.borrow_mut().drain(..) {
                 // All input is already scoped to painted toast rectangles.
@@ -417,7 +546,20 @@ impl NotificationHost {
     }
 
     pub fn hide(&self) {
+        // A modal popup or lost monitor requires immediate, input-free
+        // suppression, not a departing toast drawn on top of that popup.
+        self.suppress_departure.set(true);
         self.set_cards(self.layout.get(), &[]);
+        self.suppress_departure.set(false);
+        for token in self.active_motion.borrow_mut().drain(..) {
+            token.cancel();
+        }
+        while let Some(child) = self.leaving.first_child() {
+            self.leaving.remove(&child);
+        }
+        self.root.set_opacity(0.0);
+        self.window.set_opacity(0.0);
+        self.clear_input();
     }
 
     pub fn is_renderable(&self) -> bool {
@@ -438,6 +580,28 @@ mod tests {
             critical: false,
             actions: vec![("default".into(), "Open".into())],
         }
+    }
+
+    #[test]
+    fn inverted_departure_uses_the_same_contact_path() {
+        assert_eq!(toast_exit_frame(0.0), (0.0, 1.0));
+        assert_eq!(toast_exit_frame(0.5), (3.0, 0.75));
+        assert_eq!(toast_exit_frame(1.0), (12.0, 0.0));
+        assert_eq!(toast_exit_frame(f64::NAN), (12.0, 0.0));
+        let (offset, alpha) = toast_exit_from_opacity(0.0, 0.75);
+        assert_eq!((offset, alpha), (3.0, 0.75));
+        assert_eq!(toast_exit_from_opacity(1.0, 0.75), (12.0, 0.0));
+    }
+
+    #[test]
+    fn only_painted_removed_ids_qualify_for_inverse_motion() {
+        let previous = [notice(1), notice(2), notice(3)];
+        let next = [notice(1), notice(3)];
+        let painted = HashSet::from([1, 2]);
+        assert_eq!(departing_toasts(&previous, &next, &painted, true), vec![(2, 1)]);
+        assert!(departing_toasts(&previous, &next, &painted, false).is_empty());
+        assert!(departing_toasts(&previous, &previous, &painted, true).is_empty());
+        assert!(departing_toasts(&previous, &[], &HashSet::new(), true).is_empty());
     }
 
     #[test]

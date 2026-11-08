@@ -74,6 +74,7 @@ pub enum TrayIntent {
     TogglePin(u32),
     MenuClick(u32, i32),
     MenuExpand(u32, i32),
+    MenuBack,
     DismissMenu,
 }
 
@@ -96,6 +97,52 @@ pub struct TrayMenu {
     pub handle: u32,
     pub title: String,
     pub items: Vec<TrayMenuEntry>,
+    /// Path of validated unique parent IDs within the same D-Bus menu.
+    pub navigation: Vec<i32>,
+}
+
+/// Project a bounded preorder menu tree into exactly one native page.
+/// The root has depth 0; each subsequent path component must be a unique,
+/// enabled direct child of the preceding parent. A lazy but still empty
+/// submenu is valid and yields an empty page until the service refreshes it.
+pub fn menu_page(items: &[TrayMenuEntry], navigation: &[i32]) -> Option<Vec<TrayMenuEntry>> {
+    let mut start = 0;
+    let mut end = items.len();
+    let mut depth = 0u8;
+    for parent_id in navigation {
+        if *parent_id <= 0 {
+            return None;
+        }
+        let mut parent_index = None;
+        for index in start..end {
+            let entry = &items[index];
+            if entry.depth == depth && entry.id == *parent_id {
+                if parent_index.is_some() || !entry.has_children || !entry.enabled || entry.separator {
+                    return None;
+                }
+                parent_index = Some(index);
+            }
+        }
+        // A duplicate ID, even in a separate branch, cannot become a
+        // privileged destination through an apparently unique local page.
+        if items.iter().filter(|entry| entry.id == *parent_id).count() != 1 {
+            return None;
+        }
+        let position = parent_index?;
+        start = position + 1;
+        end = (start..end)
+            .find(|&index| items[index].depth <= depth)
+            .unwrap_or(end);
+        depth = depth.checked_add(1)?;
+        if depth > 3 {
+            return None;
+        }
+    }
+    Some(items[start..end]
+        .iter()
+        .filter(|entry| entry.depth == depth)
+        .cloned()
+        .collect())
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -297,6 +344,7 @@ pub struct TrayUi {
     menu_page: gtk::Box,
     menu_list: gtk::Box,
     current_menu: RefCell<Option<TrayMenu>>,
+    keyboard_menu: Rc<RefCell<bool>>,
     state: RefCell<TrayState>,
     on_intent: Rc<dyn Fn(TrayIntent)>,
     on_toggle: ToggleHandler,
@@ -353,8 +401,21 @@ impl TrayUi {
         popup.append(&menu_page);
 
         let on_intent: Rc<dyn Fn(TrayIntent)> = Rc::new(on_intent);
+        let keyboard_menu = Rc::new(RefCell::new(false));
+        let escape = gtk::EventControllerKey::new();
+        let menu_open = keyboard_menu.clone();
+        let on_escape = on_intent.clone();
+        escape.connect_key_pressed(move |_, key, _, _| {
+            if key == gtk::gdk::Key::Escape && *menu_open.borrow() {
+                on_escape(TrayIntent::MenuBack);
+                gtk::glib::Propagation::Stop
+            } else {
+                gtk::glib::Propagation::Proceed
+            }
+        });
+        popup.add_controller(escape);
         let dismiss = on_intent.clone();
-        back.connect_clicked(move |_| dismiss(TrayIntent::DismissMenu));
+        back.connect_clicked(move |_| dismiss(TrayIntent::MenuBack));
 
         let on_toggle: ToggleHandler = Rc::new(RefCell::new(None));
         for button in [&overflow, &close] {
@@ -378,6 +439,7 @@ impl TrayUi {
             menu_page,
             menu_list,
             current_menu: RefCell::new(None),
+            keyboard_menu,
             state: RefCell::new(TrayState::default()),
             on_intent,
             on_toggle,
@@ -405,6 +467,7 @@ impl TrayUi {
             return;
         }
         *self.current_menu.borrow_mut() = menu.clone();
+        *self.keyboard_menu.borrow_mut() = menu.is_some();
         while let Some(child) = self.menu_list.first_child() {
             self.menu_list.remove(&child);
         }
@@ -414,8 +477,12 @@ impl TrayUi {
             self.header_title.set_text("Скрытые значки");
             return;
         };
-        self.header_title.set_text("Меню приложения");
-        for entry in menu.items.iter().take(80) {
+        let entries = menu_page(&menu.items, &menu.navigation).unwrap_or_default();
+        let heading = menu.navigation.last().and_then(|id| {
+            menu.items.iter().find(|entry| entry.id == *id).map(|entry| entry.label.as_str())
+        });
+        self.header_title.set_text(heading.unwrap_or(&menu.title));
+        for entry in entries.iter().take(80) {
             if entry.separator {
                 let line = gtk::Separator::new(gtk::Orientation::Horizontal);
                 self.menu_list.append(&line);
@@ -428,7 +495,7 @@ impl TrayUi {
                 let group = gtk::Button::with_label(&format!("▸ {}", entry.label));
                 group.set_halign(gtk::Align::Fill);
                 group.set_sensitive(entry.enabled);
-                group.set_margin_start(i32::from(entry.depth) * 12 + 8);
+                group.set_margin_start(8);
                 group.add_css_class("tray-menu-group");
                 let handle = menu.handle;
                 let id = entry.id;
@@ -449,7 +516,7 @@ impl TrayUi {
             button.set_halign(gtk::Align::Fill);
             button.set_hexpand(true);
             button.set_sensitive(entry.enabled);
-            button.set_margin_start(i32::from(entry.depth) * 12 + 8);
+            button.set_margin_start(8);
             button.add_css_class("tray-menu-entry");
             let handle = menu.handle;
             let id = entry.id;
@@ -457,8 +524,8 @@ impl TrayUi {
             button.connect_clicked(move |_| on_intent(TrayIntent::MenuClick(handle, id)));
             self.menu_list.append(&button);
         }
-        if menu.items.is_empty() {
-            let empty = gtk::Label::new(Some("У приложения пока нет доступных действий"));
+        if entries.is_empty() {
+            let empty = gtk::Label::new(Some("В этом разделе нет доступных действий"));
             empty.add_css_class("muted");
             self.menu_list.append(&empty);
         }
@@ -581,6 +648,49 @@ mod tests {
             status,
             pinned,
         }
+    }
+
+    fn entry(id: i32, depth: u8, has_children: bool) -> TrayMenuEntry {
+        TrayMenuEntry {
+            id,
+            label: format!("Item {id}"),
+            depth,
+            enabled: true,
+            separator: false,
+            checked: false,
+            radio: false,
+            has_children,
+        }
+    }
+
+    #[test]
+    fn native_menu_navigation_displays_only_direct_children() {
+        let entries = vec![
+            entry(1, 0, true),
+            entry(2, 1, false),
+            entry(3, 1, true),
+            entry(4, 2, false),
+            entry(5, 0, false),
+            entry(6, 0, true),
+        ];
+        assert_eq!(menu_page(&entries, &[]).unwrap().iter().map(|item| item.id).collect::<Vec<_>>(), vec![1, 5, 6]);
+        assert_eq!(menu_page(&entries, &[1]).unwrap().iter().map(|item| item.id).collect::<Vec<_>>(), vec![2, 3]);
+        assert_eq!(menu_page(&entries, &[1, 3]).unwrap().iter().map(|item| item.id).collect::<Vec<_>>(), vec![4]);
+        // A lazy parent remains a valid empty menu until AboutToShow.
+        assert_eq!(menu_page(&entries, &[6]).unwrap().len(), 0);
+        assert!(menu_page(&entries, &[5]).is_none());
+        assert!(menu_page(&entries, &[3]).is_none());
+        assert!(menu_page(&entries, &[1, 6]).is_none());
+        assert!(menu_page(&entries, &[0]).is_none());
+    }
+
+    #[test]
+    fn duplicate_and_disabled_parent_ids_fail_closed() {
+        let mut entries = vec![entry(1, 0, true), entry(2, 1, false), entry(1, 0, true)];
+        assert!(menu_page(&entries, &[1]).is_none());
+        entries.pop();
+        entries[0].enabled = false;
+        assert!(menu_page(&entries, &[1]).is_none());
     }
 
     #[test]
