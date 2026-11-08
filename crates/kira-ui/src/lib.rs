@@ -129,4 +129,3 @@ impl InfoPanel {
         self.details.set_text(content);
     }
 }
-
