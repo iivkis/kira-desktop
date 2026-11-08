@@ -51,6 +51,14 @@ quality. Preserve the console transcript for manual acceptance.
 - [ ] Disconnect Niri during Apply, during pending confirmation and during Save: observe error handling and best-effort rollback; never report success without verification.
 - [ ] Modify a confirmed selection before saving: Save becomes disabled until another Apply and Confirm. Reopen a confirmed settings view: session confirmation should not be silently repeated.
 
+## Detached native window acceptance
+
+- [ ] Detach Calendar, Launcher, System and Settings with **Отделить** and confirm each becomes a decorated, independently movable and resizable Wayland window. Clicking the same Top Bar item must raise the existing detached window, not create another GTK controller.
+- [ ] Change Calendar selection, Launcher search text and System page in their detached windows. Switch to other transients, attach again and reopen: date, query, scrolling and widget identities must survive.
+- [ ] Close a detached window using its window-manager control: it should reattach invisibly, preserve state and reopen from the bar. Try rapid attach/detach and Escape, including keyboard focus and screen-reader labels.
+- [ ] Keep a detached System window open: continuous sampling should stay active only while the view is visible. A detached Settings view with an unconfirmed display Apply must still roll back when closed.
+- [ ] Inspect fractional scaling, focus, monitor geometry, clipping, reduced motion and transient overlap in real nested Niri. Tray remains pooled; detached tray cascades are not implemented or accepted.
+
 ## Visual / input and release gates
 
 - [ ] Keyboard navigation, tab order, Escape, visible focus, screen-reader labels and scrolling work on both pages.
