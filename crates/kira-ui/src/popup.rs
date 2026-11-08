@@ -522,8 +522,10 @@ impl PopupHost {
                     if let Some(view) = weak.upgrade() {
                         let detached = view.detached.borrow().is_some();
                         if detached {
-                            view.reattach(true);
-                            active.set(Some(kind));
+                            // Reattach to the hidden pool. If another popup
+                            // is active, showing this one here would violate
+                            // the single-transient contract. The bar opens it.
+                            view.reattach(false);
                         } else {
                             view.detach(&app, kind, &active);
                         }
