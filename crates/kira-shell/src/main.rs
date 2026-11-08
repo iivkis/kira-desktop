@@ -308,14 +308,14 @@ fn display_mutations_enabled() -> bool {
     std::env::var_os("KIRA_PREVIEW").is_some()
 }
 
-fn send_display_intent(model: &DisplayModel, intent: DisplayIntent) {
-    if !display_mutations_enabled()
+fn send_display_intent(model: &DisplayModel, intent: DisplayIntent, supervised: bool) {
+    if !(display_mutations_enabled() && supervised)
         && matches!(
             &intent,
             DisplayIntent::Apply(_) | DisplayIntent::Confirm(_) | DisplayIntent::Save
         )
     {
-        eprintln!("kira-shell: live display mutation is disabled until Core owns rollback");
+        eprintln!("kira-shell: display mutation requires an isolated external rollback worker");
         return;
     }
     match intent {
@@ -496,7 +496,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let display_model = Rc::new(display_model);
     let displays = Rc::new(DisplaySettings::new({
         let model = display_model.clone();
-        move |intent| send_display_intent(&model, intent)
+        move |intent| send_display_intent(&model, intent, external_rollback)
     }));
     displays.set_editing_enabled(display_mutations_enabled() && external_rollback);
     let settings_content = kira_ui::settings_page(&settings.widget(), &displays.widget());
