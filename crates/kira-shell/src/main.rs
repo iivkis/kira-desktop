@@ -18,8 +18,9 @@ use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceSta
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
     ApplicationEntry, Bar, Calendar, ChartSample, CoreStatus, DisplayIntent, DisplayPhase,
-    DisplaySettings, GpuReading, HealthMetrics, InfoPanel, Launcher, PopupHost, PopupKind,
-    ProcessItem, ProcessList, SystemHealth, SystemMonitor, SystemOverview, TrayUi, WorkspaceItem,
+    DisplaySettings, GpuReading, HealthMetrics, Launcher, PopupHost, PopupKind,
+    ProcessItem, ProcessList, SettingsAbout, SettingsPanel, SystemHealth, SystemMonitor,
+    SystemOverview, TrayUi, WorkspaceItem,
 };
 
 enum ShellUpdate {
@@ -33,6 +34,7 @@ enum ShellUpdate {
     SystemPulse(ChartSample),
     Processes(ProcessList),
     ProcessError(String),
+    SettingsAbout(SettingsAbout),
 }
 
 /// Core availability is a real read-only RPC result, not inferred from
@@ -150,11 +152,40 @@ fn current_clock(show_seconds: bool) -> String {
         .unwrap_or_else(|| "--:--".to_owned())
 }
 
-fn settings_summary(config: &UiConfig) -> String {
-    format!(
-        "Заголовок: {}\nКомпактная панель: {}\nСекунды в часах: {}\n\nРедактор настроек Kira KDL ещё не перенесён. Настройка дисплеев находится ниже.",
-        config.title, config.compact, config.show_seconds
-    )
+/// Translate trusted bounded Linux facts to the public UI snapshot. No
+/// kernel/proc reads or JSON parsing occur in GTK callbacks.
+fn decode_settings_about(value: &serde_json::Value) -> SettingsAbout {
+    fn string(value: &serde_json::Value, key: &str) -> Option<String> {
+        value.get(key)
+            .and_then(serde_json::Value::as_str)
+            .map(str::trim)
+            .filter(|text| !text.is_empty())
+            .map(|text| text.chars().take(160).collect())
+    }
+    SettingsAbout {
+        os_name: string(value, "os_name"),
+        kernel: string(value, "kernel"),
+        architecture: string(value, "architecture"),
+        hostname: string(value, "hostname"),
+        cpu_model: string(value, "cpu_model"),
+        cpu_threads: value.get("cpu_threads")
+            .and_then(serde_json::Value::as_u64)
+            .and_then(|count| usize::try_from(count).ok())
+            .filter(|count| *count > 0),
+        memory_total_kib: value.get("memory_total_kib")
+            .and_then(serde_json::Value::as_u64)
+            .filter(|count| *count > 0),
+        session: string(value, "session"),
+        // A service crate's package version is not necessarily the Shell's.
+        shell_version: Some(env!("CARGO_PKG_VERSION").to_owned()),
+    }
+}
+
+fn refresh_settings_about(sender: mpsc::Sender<ShellUpdate>) {
+    std::thread::spawn(move || {
+        let facts = kira_services::system_info::about_snapshot();
+        let _ = sender.send(ShellUpdate::SettingsAbout(decode_settings_about(&facts)));
+    });
 }
 
 /// Discover applications on a worker, converting GIO objects into Send-safe metadata.
@@ -504,10 +535,6 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         display.clipboard().set_text(&report);
         Ok(())
     });
-    let settings = Rc::new(InfoPanel::new(
-        "Настройки Kira",
-        &settings_summary(&config.borrow()),
-    ));
     let (display_model, external_rollback) = if display_mutations_enabled() {
         match DisplayModel::supervised() {
             Ok(model) => (model, true),
@@ -525,7 +552,15 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         move |intent| send_display_intent(&model, intent, external_rollback)
     }));
     displays.set_editing_enabled(display_mutations_enabled() && external_rollback);
-    let settings_content = kira_ui::settings_page(&settings.widget(), &displays.widget());
+    let settings = Rc::new(SettingsPanel::new(&displays.widget()));
+    popup.set_detach_handler(PopupKind::Settings, {
+        let settings = Rc::downgrade(&settings);
+        move |detached| {
+            if let Some(settings) = settings.upgrade() {
+                settings.set_detached(detached);
+            }
+        }
+    });
 
     let (sender, receiver) = mpsc::channel::<ShellUpdate>();
     let system_visible = Arc::new(AtomicBool::new(false));
@@ -556,7 +591,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let calendar = calendar.clone();
         let applications = applications.clone();
         let system = system.clone();
-        let settings_content = settings_content.clone();
+        let settings = settings.clone();
         let tray_ui = tray_ui.clone();
         let displays = displays.clone();
         let display_model = display_model.clone();
@@ -579,7 +614,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 }
                 PopupKind::Calendar => calendar.widget(),
                 PopupKind::System => system.widget(),
-                PopupKind::Settings => settings_content.clone(),
+                PopupKind::Settings => settings.widget(),
                 PopupKind::Tray => tray_ui.popup_widget(),
             });
             if kind == PopupKind::Launcher
@@ -589,6 +624,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 launcher.focus_search();
             }
             if kind == PopupKind::Settings && popup.is_active(PopupKind::Settings) {
+                refresh_settings_about(sender.clone());
                 // Keep an explicit Confirm/Save transaction alive across view switches.
                 if !matches!(
                     displays.phase(),
@@ -630,13 +666,13 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let launcher = launcher.clone();
         let system = system.clone();
         let health = health.clone();
-        let settings = settings.clone();
         let popup = popup.clone();
         let system_visible = system_visible.clone();
         let processes_visible = processes_visible.clone();
         let pulse_visible = pulse_visible.clone();
         let display_model = display_model.clone();
         let displays = displays.clone();
+        let settings = settings.clone();
         let mut previously_obstructed = false;
         move || {
             // The bar may span a different monitor after hotplug; use the
@@ -698,7 +734,6 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         let current = config.borrow();
                         bar.title.set_text(&current.title);
                         bar.set_compact(current.compact);
-                        settings.set_details(&settings_summary(&current));
                         if next.error.is_some() {
                             bar.title.set_tooltip_text(Some(
                                 "Ошибка KDL. Сохранена предыдущая конфигурация.",
@@ -755,6 +790,9 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         if popup.is_active(PopupKind::System) && system.processes_selected() {
                             system.set_process_error(&error);
                         }
+                    }
+                    ShellUpdate::SettingsAbout(snapshot) => {
+                        settings.set_about(&snapshot);
                     }
                 }
             }
@@ -822,4 +860,24 @@ mod tests {
         let error = kira_ipc::RpcResponse::failure(Some(74), -32601, "not found");
         assert_eq!(parse_core_probe(error).0, CoreStatus::Unavailable);
     }
+    #[test]
+    fn settings_about_adapter_bounds_and_preserves_missing_fields() {
+        let source = serde_json::json!({
+            "os_name": "TestOS",
+            "cpu_threads": 8,
+            "memory_total_kib": 2097152,
+            "session": "",
+            "hostname": 123,
+            "shell_version": "untrusted service version"
+        });
+        let about = decode_settings_about(&source);
+        assert_eq!(about.os_name.as_deref(), Some("TestOS"));
+        assert_eq!(about.cpu_threads, Some(8));
+        assert_eq!(about.memory_total_kib, Some(2_097_152));
+        assert!(about.session.is_none());
+        assert!(about.hostname.is_none());
+        assert_eq!(about.shell_version.as_deref(), Some(env!("CARGO_PKG_VERSION")));
+        assert_eq!(decode_settings_about(&serde_json::json!({})).memory_total_kib, None);
+    }
+
 }
