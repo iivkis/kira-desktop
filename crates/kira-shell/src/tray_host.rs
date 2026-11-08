@@ -10,7 +10,6 @@ use std::rc::Rc;
 
 use gtk::gio;
 use gtk::glib::{self, variant::ToVariant};
-use gtk::prelude::*;
 
 use kira_ui::{TrayIntent, TrayItem, TrayState, TrayStatus};
 
@@ -128,7 +127,11 @@ fn valid_icon_name(value: &str) -> bool {
 }
 
 fn clean(value: &str, limit: usize) -> String {
-    value.chars().filter(|ch| !ch.is_control()).take(limit).collect()
+    value
+        .chars()
+        .filter(|ch| !ch.is_control())
+        .take(limit)
+        .collect()
 }
 
 fn pin_identity(registration: &str, id: &str) -> String {
@@ -151,8 +154,7 @@ fn pin_path() -> Option<PathBuf> {
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
         .or_else(|| {
-            std::env::var_os("HOME")
-                .map(|home| PathBuf::from(home).join(".local").join("state"))
+            std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("state"))
         })?;
     Some(state.join("kira-desktop").join("tray-pins.json"))
 }
@@ -165,7 +167,10 @@ fn load_pins() -> HashSet<String> {
         return HashSet::new();
     };
     let mut content = Vec::new();
-    if file.take(MAX_PIN_BYTES as u64 + 1).read_to_end(&mut content).is_err()
+    if file
+        .take(MAX_PIN_BYTES as u64 + 1)
+        .read_to_end(&mut content)
+        .is_err()
         || content.len() > MAX_PIN_BYTES
     {
         return HashSet::new();
@@ -184,9 +189,9 @@ fn save_pins(pins: &HashSet<String>) -> std::io::Result<()> {
     let path = pin_path().ok_or_else(|| {
         std::io::Error::new(std::io::ErrorKind::NotFound, "No XDG state directory")
     })?;
-    let parent = path.parent().ok_or_else(|| {
-        std::io::Error::new(std::io::ErrorKind::NotFound, "No pin directory")
-    })?;
+    let parent = path
+        .parent()
+        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "No pin directory"))?;
     fs::create_dir_all(parent)?;
     let mut values = pins.iter().cloned().collect::<Vec<_>>();
     values.sort_unstable();
@@ -239,63 +244,65 @@ impl Service {
         let properties = Rc::downgrade(self);
         let result = connection
             .register_object(WATCHER_PATH, &info)
-            .method_call(move |connection, sender, _, _, method, params, invocation| {
-                let Some(service) = methods.upgrade() else {
-                    invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.Failed",
-                        "SNI watcher stopped",
-                    );
-                    return;
-                };
-                if !service.owns_watcher.get() {
-                    invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.Failed",
-                        "SNI watcher not owned",
-                    );
-                    return;
-                }
-                match method {
-                    "RegisterStatusNotifierItem" => {
-                        let registration =
-                            params.child_value(0).get::<String>().unwrap_or_default();
-                        let Some(sender) = sender else {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.DBus.Error.InvalidArgs",
-                                "Missing D-Bus sender",
-                            );
-                            return;
-                        };
-                        service.register_item_request(
-                            &connection,
-                            registration,
-                            sender.to_string(),
-                            invocation,
+            .method_call(
+                move |connection, sender, _, _, method, params, invocation| {
+                    let Some(service) = methods.upgrade() else {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "SNI watcher stopped",
                         );
+                        return;
+                    };
+                    if !service.owns_watcher.get() {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "SNI watcher not owned",
+                        );
+                        return;
                     }
-                    "RegisterStatusNotifierHost" => {
-                        let host = params.child_value(0).get::<String>().unwrap_or_default();
-                        if !valid_bus_name(&host) {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.DBus.Error.InvalidArgs",
-                                "Invalid SNI host name",
+                    match method {
+                        "RegisterStatusNotifierItem" => {
+                            let registration =
+                                params.child_value(0).get::<String>().unwrap_or_default();
+                            let Some(sender) = sender else {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.InvalidArgs",
+                                    "Missing D-Bus sender",
+                                );
+                                return;
+                            };
+                            service.register_item_request(
+                                &connection,
+                                registration,
+                                sender.to_string(),
+                                invocation,
                             );
-                            return;
                         }
-                        invocation.return_value(None);
-                        let _ = connection.emit_signal(
-                            None,
-                            WATCHER_PATH,
-                            WATCHER_IFACE,
-                            "StatusNotifierHostRegistered",
-                            None,
-                        );
+                        "RegisterStatusNotifierHost" => {
+                            let host = params.child_value(0).get::<String>().unwrap_or_default();
+                            if !valid_bus_name(&host) {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.InvalidArgs",
+                                    "Invalid SNI host name",
+                                );
+                                return;
+                            }
+                            invocation.return_value(None);
+                            let _ = connection.emit_signal(
+                                None,
+                                WATCHER_PATH,
+                                WATCHER_IFACE,
+                                "StatusNotifierHostRegistered",
+                                None,
+                            );
+                        }
+                        _ => invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.UnknownMethod",
+                            "Unknown watcher method",
+                        ),
                     }
-                    _ => invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.UnknownMethod",
-                        "Unknown watcher method",
-                    ),
-                }
-            })
+                },
+            )
             .property(move |_, _, _, _, property| {
                 let Some(service) = properties.upgrade() else {
                     return false.to_variant();
@@ -402,10 +409,8 @@ impl Service {
                         invocation,
                     );
                 } else {
-                    invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.Failed",
-                        "Watcher stopped",
-                    );
+                    invocation
+                        .return_dbus_error("org.freedesktop.DBus.Error.Failed", "Watcher stopped");
                 }
             },
         );
@@ -437,16 +442,11 @@ impl Service {
     }
 
     fn insert_item(self: &Rc<Self>, registration: &str, bus: &str, path: &str) -> bool {
-        if !valid_bus_name(bus)
-            || !valid_object_path(path)
-            || registration.len() > 240
-        {
+        if !valid_bus_name(bus) || !valid_object_path(path) || registration.len() > 240 {
             return false;
         }
         let mut items = self.items.borrow_mut();
-        if items.len() >= MAX_ITEMS
-            || items.iter().any(|item| item.registration == registration)
-        {
+        if items.len() >= MAX_ITEMS || items.iter().any(|item| item.registration == registration) {
             return false;
         }
         let handle = self.next_handle.get();
@@ -527,6 +527,8 @@ impl Service {
             return;
         };
         let weak = Rc::downgrade(self);
+        let callback_owner = owner.clone();
+        let callback_path = path.clone();
         connection.call(
             Some(&owner),
             &path,
@@ -548,8 +550,12 @@ impl Service {
                     return;
                 }
                 let props = glib::VariantDict::new(Some(&reply.child_value(0)));
-                let id = props.lookup_value("Id", None).and_then(|v| v.get::<String>());
-                let title = props.lookup_value("Title", None).and_then(|v| v.get::<String>());
+                let id = props
+                    .lookup_value("Id", None)
+                    .and_then(|v| v.get::<String>());
+                let title = props
+                    .lookup_value("Title", None)
+                    .and_then(|v| v.get::<String>());
                 let icon_name = props
                     .lookup_value("IconName", None)
                     .and_then(|v| v.get::<String>());
@@ -569,7 +575,9 @@ impl Service {
                     _ => TrayStatus::Active,
                 };
                 let icon = (if status == TrayStatus::NeedsAttention {
-                    attention_icon.filter(|name| valid_icon_name(name)).or(icon_name)
+                    attention_icon
+                        .filter(|name| valid_icon_name(name))
+                        .or(icon_name)
                 } else {
                     icon_name
                 })
@@ -578,8 +586,8 @@ impl Service {
                 let Some(item) = items.iter_mut().find(|item| {
                     item.handle == handle
                         && item.refresh_serial == revision
-                        && item.owner_unique.as_deref() == Some(owner.as_str())
-                        && item.path == path
+                        && item.owner_unique.as_deref() == Some(callback_owner.as_str())
+                        && item.path == callback_path
                 }) else {
                     return;
                 };
@@ -605,6 +613,9 @@ impl Service {
         );
     }
 
+    // The pinned GIO API still exposes signal_subscribe here. Its callback
+    // signature is fixed; newer Gio's alternate API will be adopted separately.
+    #[allow(deprecated)]
     fn install_observers(self: &Rc<Self>, connection: &gio::DBusConnection) {
         let weak = Rc::downgrade(self);
         connection.signal_subscribe(
@@ -621,14 +632,19 @@ impl Service {
                 if service.owns_watcher.get() {
                     return;
                 }
+                // StatusNotifierHostRegistered has no parameters. Never
+                // index its empty tuple when monitoring the watcher interface.
+                if !matches!(
+                    member,
+                    "StatusNotifierItemRegistered" | "StatusNotifierItemUnregistered"
+                ) || params.n_children() == 0
+                {
+                    return;
+                }
                 if let Some(registration) = params.child_value(0).get::<String>() {
                     match member {
-                        "StatusNotifierItemRegistered" => {
-                            service.register_external(&registration);
-                        }
-                        "StatusNotifierItemUnregistered" => {
-                            service.unregister(&registration);
-                        }
+                        "StatusNotifierItemRegistered" => service.register_external(&registration),
+                        "StatusNotifierItemUnregistered" => service.unregister(&registration),
                         _ => {}
                     }
                 }
@@ -650,7 +666,9 @@ impl Service {
                 let old = params.child_value(1).get::<String>().unwrap_or_default();
                 let new = params.child_value(2).get::<String>().unwrap_or_default();
                 if name == WATCHER && !service.owns_watcher.get() {
-                    service.external_revision.set(service.external_revision.get().wrapping_add(1));
+                    service
+                        .external_revision
+                        .set(service.external_revision.get().wrapping_add(1));
                     service.available.set(false);
                     service.items.borrow_mut().clear();
                     service.publish();
@@ -671,7 +689,10 @@ impl Service {
             None,
             gio::DBusSignalFlags::NONE,
             move |_, sender, path, _, method, _| {
-                if !matches!(method, "NewTitle" | "NewIcon" | "NewStatus" | "NewAttentionIcon") {
+                if !matches!(
+                    method,
+                    "NewTitle" | "NewIcon" | "NewStatus" | "NewAttentionIcon"
+                ) {
                     return;
                 }
                 if let Some(service) = weak.upgrade() {
@@ -914,13 +935,17 @@ pub fn start(on_update: impl Fn(TrayState) + 'static) {
         // A nested compositor may share the parent session bus; never
         // seize its SNI watcher. Host registration is not ownership.
         let weak = Rc::downgrade(&service);
-        gio::bus_get(gio::BusType::Session, None::<&gio::Cancellable>, move |reply| {
-            if let (Some(service), Ok(connection)) = (weak.upgrade(), reply) {
-                service.install_observers(&connection);
-                service.connection.replace(Some(connection));
-                service.adopt_external();
-            }
-        });
+        gio::bus_get(
+            gio::BusType::Session,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                if let (Some(service), Ok(connection)) = (weak.upgrade(), reply) {
+                    service.install_observers(&connection);
+                    service.connection.replace(Some(connection));
+                    service.adopt_external();
+                }
+            },
+        );
         return;
     }
 
@@ -991,8 +1016,10 @@ mod tests {
             parse_registration(":1.22/StatusNotifierItem"),
             Some((":1.22".into(), "/StatusNotifierItem".into()))
         );
-        assert_eq!(parse_registration("org.kde.App"),
-            Some(("org.kde.App".into(), "/StatusNotifierItem".into())));
+        assert_eq!(
+            parse_registration("org.kde.App"),
+            Some(("org.kde.App".into(), "/StatusNotifierItem".into()))
+        );
         assert_eq!(parse_registration("org.bad/../unsafe"), None);
     }
 

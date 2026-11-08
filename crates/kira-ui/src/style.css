@@ -228,11 +228,11 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
 .kira-popup .tray-list { background: #14213d; padding: 10px; }
 .kira-popup .tray-row { min-height: 44px; }
 .kira-popup .tray-row-activate { min-width: 120px; padding: 6px; }
-.kira-popup .tray-row togglebutton {
+.kira-popup .tray-row .tray-pin {
   color: #e5e5e5; min-height: 30px; min-width: 30px;
   border: 0; border-radius: 2px; background: #000000;
 }
-.kira-popup .tray-row togglebutton:checked {
+.kira-popup .tray-row .tray-pin.pinned {
   background: #fca311; color: #000000;
 }
 .kira-popup .tray-attention { color: #fca311; }

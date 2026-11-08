@@ -96,11 +96,7 @@ fn icon(item: &TrayItem, size: i32) -> gtk::Widget {
     }
 }
 
-fn connect_secondary(
-    button: &gtk::Button,
-    id: u32,
-    on_intent: Rc<dyn Fn(TrayIntent)>,
-) {
+fn connect_secondary(button: &gtk::Button, id: u32, on_intent: Rc<dyn Fn(TrayIntent)>) {
     let click = gtk::GestureClick::new();
     click.set_button(3);
     click.connect_pressed(move |_, _, _, _| on_intent(TrayIntent::Secondary(id)));
@@ -224,13 +220,13 @@ impl TrayUi {
             connect_secondary(&button, id, self.on_intent.clone());
             self.icons.append(&button);
         }
-        self.overflow.set_tooltip_text(Some(&format!(
-            "Скрытых значков: {}",
-            view.overflow_count
-        )));
-        self.overflow.update_property(&[gtk::accessible::Property::Label(
-            &format!("Открыть трей, скрытых значков: {}", view.overflow_count),
-        )]);
+        self.overflow
+            .set_tooltip_text(Some(&format!("Скрытых значков: {}", view.overflow_count)));
+        self.overflow
+            .update_property(&[gtk::accessible::Property::Label(&format!(
+                "Открыть трей, скрытых значков: {}",
+                view.overflow_count
+            ))]);
         if view.overflow_attention {
             self.overflow.add_css_class("needs-attention");
         } else {
@@ -280,15 +276,22 @@ impl TrayUi {
             activate.connect_clicked(move |_| on_intent(TrayIntent::Activate(id)));
             connect_secondary(&activate, id, self.on_intent.clone());
             row.append(&activate);
-            let pin = gtk::ToggleButton::with_label("★");
-            pin.set_active(item.pinned);
-            pin.update_property(&[gtk::accessible::Property::Label(
-                &format!(
-                    "{} {}",
-                    if item.pinned { "Открепить" } else { "Закрепить" },
-                    item.title
-                ),
-            )]);
+            // Pin controls are intents, not optimistic GtkToggleButtons.
+            // The source state changes only after trusted durable persistence.
+            let pin = gtk::Button::with_label(if item.pinned { "★" } else { "☆" });
+            pin.add_css_class("tray-pin");
+            if item.pinned {
+                pin.add_css_class("pinned");
+            }
+            pin.update_property(&[gtk::accessible::Property::Label(&format!(
+                "{} {}",
+                if item.pinned {
+                    "Открепить"
+                } else {
+                    "Закрепить"
+                },
+                item.title
+            ))]);
             pin.set_tooltip_text(Some(if item.pinned {
                 "Убрать в трей"
             } else {
@@ -328,7 +331,10 @@ mod tests {
             ],
         };
         let model = tray_bar_model(&state, 1);
-        assert_eq!(model.visible.iter().map(|x| x.handle).collect::<Vec<_>>(), vec![1]);
+        assert_eq!(
+            model.visible.iter().map(|x| x.handle).collect::<Vec<_>>(),
+            vec![1]
+        );
         assert_eq!(model.overflow_count, 2);
         assert!(model.overflow_attention);
         assert_eq!(tray_bar_model(&state, 5).overflow_count, 1);
@@ -338,7 +344,10 @@ mod tests {
     fn empty_or_passive_items_never_claim_running_icons() {
         let state = TrayState {
             available: false,
-            items: vec![item(0, TrayStatus::Active, true), item(5, TrayStatus::Passive, true)],
+            items: vec![
+                item(0, TrayStatus::Active, true),
+                item(5, TrayStatus::Passive, true),
+            ],
         };
         let model = tray_bar_model(&state, MAX_BAR_ICONS);
         assert!(model.visible.is_empty());

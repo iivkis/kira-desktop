@@ -57,9 +57,7 @@ pub use system_health::{
     CoreStatus, HealthMetrics, HealthPhase, HealthSummary, SystemHealth, classify_health,
 };
 pub use tenet_scroll::TenetScroll;
-pub use tray::{
-    TrayBarModel, TrayIntent, TrayItem, TrayState, TrayStatus, TrayUi, tray_bar_model,
-};
+pub use tray::{TrayBarModel, TrayIntent, TrayItem, TrayState, TrayStatus, TrayUi, tray_bar_model};
 pub use workspace::{
     WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspace_window, visible_workspaces,
 };
