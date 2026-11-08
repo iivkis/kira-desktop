@@ -67,7 +67,7 @@ quality. Preserve the console transcript for manual acceptance.
 - [ ] Focus a Launcher search entry and enter a query, detach then raise the same window via the bar and reattach. Focus restoration must never hijack another popup during rapid switching. Test Escape, focus-visible and screen-reader names on both layer-shell and detached windows.
 - [ ] With a real SNI fixture and an open nested app menu, detach Tray and activate another transient. Click the Top Bar overflow: the same decorated Tray window must raise, with the same owner-validated checked/radio state. Its own × must close, never raise. Test Attach and WM close: reopen via bar and confirm exactly one pooled transient.
 - [ ] In a real owner-scoped D-Bus menu, test Up/Down, Home/End, Right on a submenu, Left/Escape for its parent, and Enter on enabled leaves. Rapid LayoutUpdated and app unregistration must not leave a stale focused action or invoke a missing owner's ID.
-- [ ] Inspect fractional scaling, focus, monitor geometry, clipping, reduced motion and transient overlap in real nested Niri. Independent floating Tray menu cascades are not implemented or accepted.
+- [ ] Inspect fractional scaling, focus, monitor geometry, clipping, reduced motion and transient overlap in real nested Niri. Native side-anchored Tray menu cascades are implemented but not accepted: verify real Wayland popup placement, focus, submenu mouse access, detach/reattach, owner changes and every Left/Escape path.
 
 ## Visual / input and release gates
 
