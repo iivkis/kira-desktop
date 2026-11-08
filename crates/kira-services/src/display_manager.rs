@@ -1,6 +1,7 @@
 //! Bounded Niri output management: fixed argv, no shell, and watchdog rollback.
 //! Persistent changes require explicit ownership and native confirmation.
-use std::io::Read;
+use std::io::{BufRead, BufReader, Read, Write};
+use std::os::unix::process::CommandExt;
 use std::process::{Command, Stdio};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread;
@@ -14,6 +15,7 @@ const NIRI_MAX_OUTPUT_BYTES: usize = 256 * 1024;
 const NIRI_MAX_ERROR_BYTES: usize = 8 * 1024;
 const MAX_OUTPUTS: usize = 8;
 const MAX_MODES: usize = 80;
+const MAX_WIRE_BYTES: usize = 512 * 1024;
 
 #[derive(Debug, Clone)]
 pub(crate) struct Desired {
@@ -59,6 +61,58 @@ impl Model {
         Self { sender, receiver }
     }
 
+
+    /// Own a complete transaction in a separate process group. If the GTK
+    /// Shell is SIGKILLed, stdin closes but this worker still owns rollback.
+    /// Never fall back to in-process Apply if this spawn fails.
+    pub fn supervised() -> Result<Self, String> {
+        if std::env::var_os("KIRA_PREVIEW").is_none() {
+            return Err("External display mutation is preview-only".into());
+        }
+        let executable = std::env::current_exe()
+            .map_err(|error| format!("No supervisor executable: {error}"))?;
+        let mut child = Command::new(executable)
+            .arg("--display-supervisor")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::inherit())
+            // The nested preview kills the Shell's process group at exit.
+            .process_group(0)
+            .spawn()
+            .map_err(|error| format!("Cannot start display supervisor: {error}"))?;
+        let input = child.stdin.take().ok_or("No supervisor command pipe")?;
+        let output = child.stdout.take().ok_or("No supervisor response pipe")?;
+        let (sender, requests) = mpsc::channel::<Request>();
+        let (events, receiver) = mpsc::channel::<Event>();
+        thread::spawn(move || {
+            let mut stream = input;
+            for request in requests {
+                let Ok(mut message) = serde_json::to_vec(&request_wire(request)) else {
+                    return;
+                };
+                message.push(b'\n');
+                if stream.write_all(&message).and_then(|()| stream.flush()).is_err() {
+                    return;
+                }
+            }
+        });
+        thread::spawn(move || {
+            let mut stream = BufReader::new(output);
+            while let Ok(Some(line)) = read_wire_line(&mut stream) {
+                let Some(event) = serde_json::from_slice(&line)
+                    .ok()
+                    .and_then(event_from_wire) else {
+                    break;
+                };
+                if events.send(event).is_err() {
+                    break;
+                }
+            }
+            let _ = child.wait();
+        });
+        Ok(Self { sender, receiver })
+    }
+
     pub fn refresh(&self) {
         let _ = self.sender.send(Request::Refresh);
     }
@@ -85,6 +139,136 @@ impl Model {
             .filter_map(|_| self.receiver.try_recv().ok())
             .collect()
     }
+}
+
+
+/// Bounded newline frames. A partial or oversized command is a disconnect,
+/// not an invitation to parse arbitrary bytes or keep a preview pending.
+fn read_wire_line(reader: &mut impl BufRead) -> std::io::Result<Option<Vec<u8>>> {
+    let mut line = Vec::new();
+    loop {
+        let available = reader.fill_buf()?;
+        if available.is_empty() {
+            return if line.is_empty() {
+                Ok(None)
+            } else {
+                Err(std::io::Error::from(std::io::ErrorKind::UnexpectedEof))
+            };
+        }
+        let newline = available.iter().position(|byte| *byte == b'\n');
+        let count = newline.map_or(available.len(), |index| index + 1);
+        if line.len() + count > MAX_WIRE_BYTES {
+            return Err(std::io::Error::from(std::io::ErrorKind::InvalidData));
+        }
+        line.extend_from_slice(&available[..count]);
+        reader.consume(count);
+        if newline.is_some() {
+            return Ok(Some(line));
+        }
+    }
+}
+
+fn request_wire(request: Request) -> serde_json::Value {
+    match request {
+        Request::Refresh => serde_json::json!({"kind":"refresh"}),
+        Request::Apply(value) => serde_json::json!({"kind":"apply","value":value}),
+        Request::Confirm(id) => serde_json::json!({"kind":"confirm","id":id}),
+        Request::Revert(id) => serde_json::json!({"kind":"revert","id":id}),
+        Request::Save => serde_json::json!({"kind":"save"}),
+    }
+}
+
+fn request_from_wire(value: serde_json::Value) -> Option<Request> {
+    match value.get("kind")?.as_str()? {
+        "refresh" => Some(Request::Refresh),
+        "apply" => Some(Request::Apply(value.get("value")?.as_array().map(|_| value["value"].clone())?)),
+        "confirm" => Some(Request::Confirm(value.get("id")?.as_u64()?)),
+        "revert" => Some(Request::Revert(value.get("id")?.as_u64()?)),
+        "save" => Some(Request::Save),
+        _ => None,
+    }
+}
+
+fn event_wire(event: Event) -> serde_json::Value {
+    serde_json::json!({
+        "state":event.state,
+        "outputs":event.outputs,
+        "pending_id":event.pending_id,
+        "deadline_unix_ms":event.deadline_unix_ms,
+        "error":event.error,
+        "persistence":event.persistence
+    })
+}
+
+fn event_from_wire(value: serde_json::Value) -> Option<Event> {
+    let state = match value.get("state")?.as_str()? {
+        "ready" => "ready",
+        "pending" => "pending",
+        "confirmed" => "confirmed",
+        "reverted" => "reverted",
+        "saved" => "saved",
+        "error" => "error",
+        _ => return None,
+    };
+    let persistence = match value.get("persistence")?.as_str()? {
+        "manual" => "manual",
+        "managed" => "managed",
+        "uninitialized" => "uninitialized",
+        "conflict" => "conflict",
+        _ => return None,
+    };
+    Some(Event {
+        state,
+        persistence,
+        outputs: value.get("outputs").filter(|item| !item.is_null()).cloned(),
+        pending_id: value.get("pending_id").and_then(serde_json::Value::as_u64),
+        deadline_unix_ms: value.get("deadline_unix_ms").and_then(serde_json::Value::as_u64),
+        error: value.get("error").and_then(serde_json::Value::as_str).map(str::to_owned),
+    })
+}
+
+/// Child executable mode, before GTK initialization. When stdin closes, the
+/// existing worker drains queued commands and reverts the pending preview.
+/// The authoritative monotonic 15-second deadline remains in this process.
+pub fn run_supervisor_stdio() -> i32 {
+    if std::env::var_os("KIRA_PREVIEW").is_none() {
+        eprintln!("display supervisor: non-preview mode denied");
+        return 2;
+    }
+    let (commands, requests) = mpsc::channel::<Request>();
+    let (events, responses) = mpsc::channel::<Event>();
+    let input = thread::spawn(move || {
+        let mut stream = BufReader::new(std::io::stdin());
+        while let Ok(Some(line)) = read_wire_line(&mut stream) {
+            let Some(request) = serde_json::from_slice(&line)
+                .ok()
+                .and_then(request_from_wire) else {
+                break;
+            };
+            if commands.send(request).is_err() {
+                break;
+            }
+        }
+        // EOF, malformed frames and oversized input all drop the sender.
+    });
+    let output = thread::spawn(move || {
+        let stdout = std::io::stdout();
+        let mut stream = stdout.lock();
+        for event in responses {
+            let Ok(mut message) = serde_json::to_vec(&event_wire(event)) else {
+                break;
+            };
+            message.push(b'\n');
+            if stream.write_all(&message).and_then(|()| stream.flush()).is_err() {
+                // A closed reader is not permission to skip the rollback.
+                break;
+            }
+        }
+    });
+    run(requests, events);
+    let _ = input.join();
+    let _ = output.join();
+    0
 }
 
 impl Default for Model {
@@ -593,6 +777,34 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn supervisor_protocol_rejects_arbitrary_commands_and_invalid_frames() {
+        let mut valid = std::io::Cursor::new(b"{\\\"kind\\\":\\\"confirm\\\",\\\"id\\\":19}\\n".to_vec());
+        let frame = read_wire_line(&mut valid).unwrap().unwrap();
+        assert!(matches!(
+            request_from_wire(serde_json::from_slice(&frame).unwrap()),
+            Some(Request::Confirm(19))
+        ));
+        assert!(request_from_wire(serde_json::json!({"kind":"exec","cmd":"sh"})).is_none());
+        assert!(request_from_wire(serde_json::json!({"kind":"confirm","id":-1})).is_none());
+        let mut partial = std::io::Cursor::new(b"{\\\"kind\\\":\\\"save\\\"}".to_vec());
+        assert!(read_wire_line(&mut partial).is_err());
+        let mut oversized = std::io::Cursor::new(vec![b'x'; MAX_WIRE_BYTES + 1]);
+        assert!(read_wire_line(&mut oversized).is_err());
+        let pending = Event {
+            state: "pending",
+            outputs: Some(serde_json::json!([{"connector":"DP-1"}])),
+            pending_id: Some(7),
+            deadline_unix_ms: Some(1234),
+            error: None,
+            persistence: "manual",
+        };
+        let restored = event_from_wire(event_wire(pending)).unwrap();
+        assert_eq!(restored.state, "pending");
+        assert_eq!(restored.pending_id, Some(7));
+        assert_eq!(restored.deadline_unix_ms, Some(1234));
+    }
 
     #[test]
     fn oversized_niri_output_is_bounded_before_parsing() {
