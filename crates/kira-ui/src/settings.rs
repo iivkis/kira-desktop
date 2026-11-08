@@ -48,9 +48,7 @@ impl SettingsSection {
     }
 
     pub fn from_id(id: &str) -> Option<Self> {
-        ALL_SECTIONS
-            .into_iter()
-            .find(|section| section.id() == id)
+        ALL_SECTIONS.into_iter().find(|section| section.id() == id)
     }
 }
 
@@ -135,7 +133,9 @@ pub fn settings_field(snapshot: Option<&SettingsAbout>, field: &str) -> String {
         "architecture" => settings_value(snapshot.architecture.as_deref()),
         "hostname" => settings_value(snapshot.hostname.as_deref()),
         "cpu_model" => settings_value(snapshot.cpu_model.as_deref()),
-        "cpu_threads" => snapshot.cpu_threads.filter(|n| *n > 0)
+        "cpu_threads" => snapshot
+            .cpu_threads
+            .filter(|n| *n > 0)
             .map_or_else(|| UNAVAILABLE.to_owned(), |n| n.to_string()),
         "memory" => format_installed_memory(snapshot.memory_total_kib),
         "session" => settings_value(snapshot.session.as_deref()),
@@ -158,7 +158,10 @@ struct Navigation {
 impl Navigation {
     fn sync_layout(&self) {
         let visible = settings_sidebar_visible(self.detached.get(), self.viewport_width.get());
-        if !visible && self.sidebar.is_visible() && self.buttons.iter().any(|button| button.has_focus()) {
+        if !visible
+            && self.sidebar.is_visible()
+            && self.buttons.iter().any(|button| button.has_focus())
+        {
             // A focused sidebar must not disappear underneath keyboard users.
             self.dropdown.grab_focus();
         }
@@ -170,7 +173,11 @@ impl Navigation {
         let selected = settings_destination(self.selected.get(), requested);
         self.selected.set(selected);
         self.stack.set_visible_child_name(selected.id());
-        let index = if selected == SettingsSection::About { 0 } else { 1 };
+        let index = if selected == SettingsSection::About {
+            0
+        } else {
+            1
+        };
         if self.dropdown.selected() != index {
             self.dropdown.set_selected(index);
         }
@@ -181,11 +188,14 @@ impl Navigation {
             } else {
                 button.remove_css_class("selected");
             }
-            button.update_property(&[gtk::accessible::Property::Description(
-                if active { "Текущий раздел" } else { "Перейти в раздел" },
-            )]);
+            button.update_property(&[gtk::accessible::Property::Description(if active {
+                "Текущий раздел"
+            } else {
+                "Перейти в раздел"
+            })]);
         }
-        self.indicator.retarget(&self.buttons[index as usize].clone().upcast());
+        self.indicator
+            .retarget(&self.buttons[index as usize].clone().upcast());
     }
 }
 
@@ -223,7 +233,10 @@ impl SettingsPanel {
         unavailable_header.add_css_class("settings-planned-heading");
         unavailable_header.set_xalign(0.0);
         sidebar_content.append(&unavailable_header);
-        for section in ALL_SECTIONS.into_iter().filter(|section| !section.available()) {
+        for section in ALL_SECTIONS
+            .into_iter()
+            .filter(|section| !section.available())
+        {
             let label = gtk::Label::new(Some(section.label()));
             label.set_xalign(0.0);
             label.add_css_class("settings-planned");
@@ -337,7 +350,8 @@ impl SettingsPanel {
             indicator,
         });
         for (index, section) in [SettingsSection::About, SettingsSection::Displays]
-            .into_iter().enumerate()
+            .into_iter()
+            .enumerate()
         {
             let weak = Rc::downgrade(&navigation);
             navigation.buttons[index].connect_clicked(move |_| {
@@ -349,7 +363,11 @@ impl SettingsPanel {
         let weak = Rc::downgrade(&navigation);
         navigation.dropdown.connect_selected_notify(move |picker| {
             if let Some(nav) = weak.upgrade() {
-                let section = if picker.selected() == 0 { "about" } else { "displays" };
+                let section = if picker.selected() == 0 {
+                    "about"
+                } else {
+                    "displays"
+                };
                 nav.select(section);
             }
         });
@@ -362,7 +380,12 @@ impl SettingsPanel {
         });
         navigation.sync_layout();
         navigation.select(SettingsSection::About.id());
-        Self { root, navigation, os_name, fields }
+        Self {
+            root,
+            navigation,
+            os_name,
+            fields,
+        }
     }
 
     pub fn widget(&self) -> gtk::Widget {
@@ -384,7 +407,8 @@ impl SettingsPanel {
     }
 
     pub fn set_about(&self, snapshot: &SettingsAbout) {
-        self.os_name.set_text(&settings_value(snapshot.os_name.as_deref()));
+        self.os_name
+            .set_text(&settings_value(snapshot.os_name.as_deref()));
         for (key, label) in &self.fields {
             label.set_text(&settings_field(Some(snapshot), key));
         }
@@ -399,12 +423,30 @@ mod tests {
     fn unavailable_destinations_never_replace_a_real_page() {
         assert_eq!(ALL_SECTIONS.len(), 5);
         assert_eq!(SettingsSection::About.id(), "about");
-        assert_eq!(settings_destination(SettingsSection::About, "appearance"), SettingsSection::About);
-        assert_eq!(settings_destination(SettingsSection::Displays, "devices"), SettingsSection::Displays);
-        assert_eq!(settings_destination(SettingsSection::About, "network"), SettingsSection::About);
-        assert_eq!(settings_destination(SettingsSection::About, "made-up"), SettingsSection::About);
-        assert_eq!(settings_destination(SettingsSection::About, "displays"), SettingsSection::Displays);
-        assert_eq!(settings_destination(SettingsSection::Displays, "about"), SettingsSection::About);
+        assert_eq!(
+            settings_destination(SettingsSection::About, "appearance"),
+            SettingsSection::About
+        );
+        assert_eq!(
+            settings_destination(SettingsSection::Displays, "devices"),
+            SettingsSection::Displays
+        );
+        assert_eq!(
+            settings_destination(SettingsSection::About, "network"),
+            SettingsSection::About
+        );
+        assert_eq!(
+            settings_destination(SettingsSection::About, "made-up"),
+            SettingsSection::About
+        );
+        assert_eq!(
+            settings_destination(SettingsSection::About, "displays"),
+            SettingsSection::Displays
+        );
+        assert_eq!(
+            settings_destination(SettingsSection::Displays, "about"),
+            SettingsSection::About
+        );
     }
 
     #[test]
@@ -433,13 +475,19 @@ mod tests {
         assert_eq!(format_installed_memory(Some(0)), UNAVAILABLE);
         assert_eq!(format_installed_memory(Some(512 * 1024)), "512 МиБ");
         assert_eq!(format_installed_memory(Some(1024 * 1024)), "1 ГиБ");
-        assert_eq!(format_installed_memory(Some(3 * 1024 * 1024 + 512 * 1024)), "3,5 ГиБ");
+        assert_eq!(
+            format_installed_memory(Some(3 * 1024 * 1024 + 512 * 1024)),
+            "3,5 ГиБ"
+        );
     }
 
     #[test]
     fn device_snapshots_do_not_change_current_section() {
         let selected = settings_destination(SettingsSection::About, "displays");
-        let info = SettingsAbout { hostname: Some("host".to_owned()), ..Default::default() };
+        let info = SettingsAbout {
+            hostname: Some("host".to_owned()),
+            ..Default::default()
+        };
         assert_eq!(settings_field(Some(&info), "hostname"), "host");
         assert_eq!(selected, SettingsSection::Displays);
     }
