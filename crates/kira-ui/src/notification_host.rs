@@ -622,6 +622,188 @@ impl NotificationHost {
     }
 }
 
+/// Output identity is the live GDK monitor object, never a numeric
+/// compositor index or a client-provided string. At most eight transparent
+/// hosts are retained, one per recently used output; only the active host
+/// may dispatch actions or paint acknowledgements.
+pub const MAX_RETAINED_TOAST_OUTPUTS: usize = 8;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ToastHostSelection {
+    Unchanged,
+    Changed,
+    Unavailable,
+}
+
+struct OutputToastHost {
+    id: u64,
+    monitor: gtk::gdk::Monitor,
+    host: NotificationHost,
+}
+
+/// Reusable multi-output GTK presentation controller. The trusted Shell
+/// chooses one physical destination for each snapshot: no duplicated D-Bus
+/// notification, painted lifetime or action across monitors. A rendered host
+/// retains its GTK window across repeat selections. Disappeared monitors
+/// are immediately closed with empty pointer regions.
+pub struct NotificationHostSet {
+    app: gtk::Application,
+    hosts: RefCell<Vec<OutputToastHost>>,
+    active: Rc<Cell<Option<u64>>>,
+    next_id: Cell<u64>,
+    on_intent: Rc<dyn Fn(NotificationIntent)>,
+    on_painted: Rc<dyn Fn(Vec<u32>)>,
+    on_ready: Rc<dyn Fn()>,
+}
+
+impl NotificationHostSet {
+    pub fn new(
+        app: &gtk::Application,
+        monitor: &gtk::gdk::Monitor,
+        layout: ToastLayout,
+        on_intent: impl Fn(NotificationIntent) + 'static,
+        on_painted: impl Fn(Vec<u32>) + 'static,
+        on_ready: impl Fn() + 'static,
+    ) -> Option<Self> {
+        let set = Self {
+            app: app.clone(),
+            hosts: RefCell::new(Vec::new()),
+            active: Rc::new(Cell::new(None)),
+            next_id: Cell::new(0),
+            on_intent: Rc::new(on_intent),
+            on_painted: Rc::new(on_painted),
+            on_ready: Rc::new(on_ready),
+        };
+        (set.select(monitor, layout) != ToastHostSelection::Unavailable).then_some(set)
+    }
+
+    pub fn select(
+        &self,
+        monitor: &gtk::gdk::Monitor,
+        layout: ToastLayout,
+    ) -> ToastHostSelection {
+        let mut hosts = self.hosts.borrow_mut();
+        if let Some(active) = self.active.get()
+            && hosts
+                .iter()
+                .any(|entry| entry.id == active && entry.monitor == *monitor)
+        {
+            return ToastHostSelection::Unchanged;
+        }
+        // Drop the old output's cards and input region before the next one
+        // can accept a pointer or acknowledge a frame.
+        if let Some(active) = self.active.replace(None)
+            && let Some(entry) = hosts.iter().find(|entry| entry.id == active)
+        {
+            entry.host.hide();
+        }
+        if let Some(entry) = hosts.iter().find(|entry| entry.monitor == *monitor) {
+            self.active.set(Some(entry.id));
+            return ToastHostSelection::Changed;
+        }
+        // Any output is eligible, but the number of live Wayland surfaces is
+        // capped. Eviction always clears input before closing the window.
+        if hosts.len() >= MAX_RETAINED_TOAST_OUTPUTS {
+            let evicted = hosts.remove(0);
+            evicted.host.hide();
+            evicted.host.window.close();
+        }
+        let id = self.next_id.get().wrapping_add(1).max(1);
+        self.next_id.set(id);
+        let active = self.active.clone();
+        let on_intent = self.on_intent.clone();
+        let intent = move |action| {
+            if active.get() == Some(id) {
+                on_intent(action);
+            }
+        };
+        let active = self.active.clone();
+        let on_painted = self.on_painted.clone();
+        let painted = move |ids| {
+            if active.get() == Some(id) {
+                on_painted(ids);
+            }
+        };
+        let Some(host) = NotificationHost::new(&self.app, monitor, layout, intent, painted)
+        else {
+            return ToastHostSelection::Unavailable;
+        };
+        let active = self.active.clone();
+        let on_ready = self.on_ready.clone();
+        host.window.connect_map(move |_| {
+            if active.get() == Some(id) {
+                let callback = on_ready.clone();
+                // Never re-enter Shell::sync while an output host is being
+                // created, selected or borrowed for its GTK map signal.
+                gtk::glib::idle_add_local_once(move || callback());
+            }
+        });
+        hosts.push(OutputToastHost {
+            id,
+            monitor: monitor.clone(),
+            host,
+        });
+        self.active.set(Some(id));
+        ToastHostSelection::Changed
+    }
+
+    /// Remove orphan Wayland surfaces immediately on GDK hotplug. Do not
+    /// preserve a detached input shape against a disconnected monitor.
+    /// Returns whether the selected painted destination was invalidated.
+    pub fn reconcile(&self, monitors: &[gtk::gdk::Monitor]) -> bool {
+        let mut hosts = self.hosts.borrow_mut();
+        let old_active = self.active.get();
+        hosts.retain(|entry| {
+            if monitors.iter().any(|monitor| *monitor == entry.monitor) {
+                true
+            } else {
+                entry.host.hide();
+                entry.host.window.close();
+                false
+            }
+        });
+        let lost = old_active.is_some_and(|id| !hosts.iter().any(|entry| entry.id == id));
+        if lost {
+            self.active.set(None);
+        }
+        lost
+    }
+
+    fn with_active<T>(&self, f: impl FnOnce(&NotificationHost) -> T) -> Option<T> {
+        let active = self.active.get()?;
+        self.hosts
+            .borrow()
+            .iter()
+            .find(|entry| entry.id == active)
+            .map(|entry| f(&entry.host))
+    }
+
+    pub fn is_renderable(&self) -> bool {
+        self.with_active(NotificationHost::is_renderable)
+            .unwrap_or(false)
+    }
+
+    pub fn reveal(&self, ids: &[u32]) -> bool {
+        self.with_active(|host| host.reveal(ids)).unwrap_or(false)
+    }
+
+    pub fn set_cards(&self, layout: ToastLayout, cards: &[NotificationView]) {
+        self.with_active(|host| host.set_cards(layout, cards));
+    }
+
+    pub fn hide(&self) {
+        self.with_active(NotificationHost::hide);
+    }
+
+    pub fn hide_all(&self) {
+        let mut hosts = self.hosts.borrow_mut();
+        self.active.set(None);
+        for entry in hosts.iter_mut() {
+            entry.host.hide();
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -635,6 +817,15 @@ mod tests {
             critical: false,
             actions: vec![("default".into(), "Open".into())],
         }
+    }
+
+    #[test]
+    fn output_host_pool_is_bounded_and_switching_has_explicit_reset_states() {
+        assert_eq!(MAX_RETAINED_TOAST_OUTPUTS, 8);
+        assert_ne!(ToastHostSelection::Changed, ToastHostSelection::Unchanged);
+        assert_ne!(ToastHostSelection::Unavailable, ToastHostSelection::Changed);
+        // A host cannot be constructed from made-up logical geometry.
+        assert!(toast_layout(239, 640, 640).is_none());
     }
 
     #[test]
