@@ -239,10 +239,7 @@ mod tests {
             capacity_reading(Some(1_000_000), Some(999_999)).headline,
             "<0.1%"
         );
-        assert_eq!(
-            capacity_reading(Some(1000), Some(995)).headline,
-            "0.5%"
-        );
+        assert_eq!(capacity_reading(Some(1000), Some(995)).headline, "0.5%");
         assert_eq!(capacity_reading(Some(1000), Some(0)).headline, "100%");
     }
 
