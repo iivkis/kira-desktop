@@ -18,8 +18,10 @@ const GAP: i32 = 12;
 // and its detachable toplevel lifetime, never supplied by untrusted IPC.
 type DetachHandler = Rc<dyn Fn(bool)>;
 
-fn supports_detach(kind: PopupKind) -> bool {
-    kind != PopupKind::Tray
+fn supports_detach(_kind: PopupKind) -> bool {
+    // Even native SNI menus have one retained GTK tree; a detached tray
+    // receives only validated owner-scoped intents from the Shell.
+    true
 }
 
 fn detached_title(kind: PopupKind) -> &'static str {
@@ -460,6 +462,31 @@ impl PopupHost {
         self.active.get() == Some(kind)
     }
 
+    /// Distinguish raising a detached window from dismissing the old
+    /// pooled layer-shell popup. Clients must not reset an active menu when
+    /// they only meant to present the independently detached tray.
+    pub fn is_detached(&self, kind: PopupKind) -> bool {
+        self.windows
+            .borrow()
+            .get(&kind)
+            .is_some_and(|view| view.detached.borrow().is_some())
+    }
+
+    /// Close the current presentation but keep its Rust/GTK controller tree.
+    /// Unlike toggle, dismiss never raises a detached xdg-toplevel.
+    pub fn dismiss(&self, kind: PopupKind) {
+        let view = self.windows.borrow().get(&kind).cloned();
+        let Some(view) = view else {
+            return;
+        };
+        if view.detached.borrow().is_some() {
+            view.reattach(false);
+        } else if self.active.get() == Some(kind) {
+            self.active.set(None);
+            view.close();
+        }
+    }
+
     /// Detaching a view does not pause its live model or pending Settings
     /// confirmation. Only the one shared transient counts for overlays.
     pub fn is_active(&self, kind: PopupKind) -> bool {
@@ -718,12 +745,13 @@ mod tests {
     }
 
     #[test]
-    fn detachable_native_windows_are_bounded_and_tray_stays_pooled() {
+    fn detachable_native_windows_are_bounded_including_tray() {
         for kind in [
             PopupKind::Launcher,
             PopupKind::Calendar,
             PopupKind::System,
             PopupKind::Settings,
+            PopupKind::Tray,
         ] {
             assert!(supports_detach(kind));
             let (width, height) = detached_size(kind, 600, 480);
@@ -731,6 +759,6 @@ mod tests {
             assert!((160..=456).contains(&height));
             assert!(detached_title(kind).starts_with("Kira"));
         }
-        assert!(!supports_detach(PopupKind::Tray));
+        assert!(supports_detach(PopupKind::Tray));
     }
 }
