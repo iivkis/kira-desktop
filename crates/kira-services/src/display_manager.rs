@@ -780,7 +780,7 @@ mod tests {
 
     #[test]
     fn supervisor_protocol_rejects_arbitrary_commands_and_invalid_frames() {
-        let mut valid = std::io::Cursor::new(b"{\\\"kind\\\":\\\"confirm\\\",\\\"id\\\":19}\\n".to_vec());
+        let mut valid = std::io::Cursor::new(br#"{"kind":"confirm","id":19}"#.iter().copied().chain([b'\n']).collect::<Vec<_>>());
         let frame = read_wire_line(&mut valid).unwrap().unwrap();
         assert!(matches!(
             request_from_wire(serde_json::from_slice(&frame).unwrap()),
@@ -788,7 +788,7 @@ mod tests {
         ));
         assert!(request_from_wire(serde_json::json!({"kind":"exec","cmd":"sh"})).is_none());
         assert!(request_from_wire(serde_json::json!({"kind":"confirm","id":-1})).is_none());
-        let mut partial = std::io::Cursor::new(b"{\\\"kind\\\":\\\"save\\\"}".to_vec());
+        let mut partial = std::io::Cursor::new(br#"{"kind":"save"}"#.to_vec());
         assert!(read_wire_line(&mut partial).is_err());
         let mut oversized = std::io::Cursor::new(vec![b'x'; MAX_WIRE_BYTES + 1]);
         assert!(read_wire_line(&mut oversized).is_err());
