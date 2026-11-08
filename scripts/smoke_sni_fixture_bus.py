@@ -22,6 +22,35 @@ from dev_preview import PreviewError
 from private_bus import PRIVATE_BUS_DIR, private_bus_config, run_session_arguments
 
 
+MENU_PATH = "/KiraAcceptanceMenu"
+MENU_IFACE = "com.canonical.dbusmenu"
+
+
+def menu_call(method: str, env: dict[str, str]) -> str:
+    # All method/argument pairs are fixed. Only the disposable fixture name
+    # on the separately attested D-Bus session may be contacted.
+    arguments = {
+        "GetLayout": ["0", "-1", "[]"],
+        "AboutToShow": ["20"],
+        "ClickLeaf": ["21", "clicked", "<int32 0>", "0"],
+        "ClickCheck": ["40", "clicked", "<int32 0>", "0"],
+    }
+    if method not in arguments:
+        raise PreviewError("Unapproved SNI menu test method")
+    actual = "Event" if method.startswith("Click") else method
+    result = subprocess.run(
+        [
+            "gdbus", "call", "--session", "--dest", SNI_FIXTURE,
+            "--object-path", MENU_PATH, "--method", f"{MENU_IFACE}.{actual}",
+            *arguments[method],
+        ],
+        env=env, text=True, capture_output=True, timeout=8, check=False,
+    )
+    if result.returncode:
+        raise PreviewError(f"Private SNI menu {method} failed: {result.stderr[:220]}")
+    return result.stdout.strip()
+
+
 def run_child(fixture: Path) -> None:
     verify_private_bus(os.environ)
     isolated = os.environ.copy()
@@ -72,12 +101,41 @@ def run_child(fixture: Path) -> None:
                 time.sleep(0.2)
             else:
                 raise PreviewError("No real SNI NeedsAttention state after NewStatus")
+            # GIO must really export a typed (u(ia{sv}av)) menu; checking
+            # only an SNI IconPixmap does not exercise a native cascade.
+            if MENU_PATH not in current:
+                raise PreviewError("SNI did not advertise a typed live menu object")
+            before = menu_call("GetLayout", isolated)
+            if not all(name in before for name in ("Open", "Tools", "Disabled", "Checkbox")):
+                raise PreviewError("Private GetLayout omitted real root menu entries")
+            result = menu_call("AboutToShow", isolated)
+            if "true" not in result.lower():
+                raise PreviewError("Lazy AboutToShow did not mutate the real menu")
+            after = menu_call("GetLayout", isolated)
+            if not all(name in after for name in ("Clear", "Advanced", "Deep")):
+                raise PreviewError("Real submenu did not appear after AboutToShow")
+            if menu_call("ClickLeaf", isolated) != "()":
+                raise PreviewError("Menu leaf Event returned an invalid reply")
+            if menu_call("ClickCheck", isolated) != "()":
+                raise PreviewError("Menu checkbox Event returned an invalid reply")
+            changed = menu_call("GetLayout", isolated)
+            if changed == after or "toggle-state" not in changed:
+                raise PreviewError("Real checkbox Event failed to update its menu layout")
             if not log.is_file():
                 raise PreviewError("Fixture never recorded name ownership")
             emitted = log.read_text(encoding="utf-8")
-            if "NameAcquired" not in emitted or "NeedsAttention" not in emitted:
-                raise PreviewError("Fixture emitted no true GIO status transition")
-            print("[sni-smoke] Private GIO StatusNotifierItem, pixmap, status: success")
+            if not all(
+                marker in emitted
+                for marker in (
+                    "NameAcquired", "NeedsAttention", "MenuAboutToShow:20",
+                    "MenuClick:21", "MenuClick:40",
+                )
+            ):
+                raise PreviewError("Fixture omitted a real SNI menu/status transition")
+            print(
+                "[sni-smoke] Private GIO SNI, pixmap/status and real "
+                "dbusmenu lazy hierarchy/actions: success"
+            )
         finally:
             if proc.poll() is None:
                 proc.terminate()
