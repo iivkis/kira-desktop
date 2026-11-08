@@ -44,8 +44,9 @@ pub use launcher::{
     ApplicationEntry, Launcher, filter_applications, matching_apps_label, next_launcher_selection,
 };
 pub use notification_host::{
-    NotificationHost, NotificationIntent, NotificationView, ToastLayout, bounded_notification,
-    toast_hit_region, toast_layout, toast_output_plan,
+    NotificationHost, NotificationHostSet, NotificationIntent, NotificationView, ToastHostSelection,
+    ToastLayout, bounded_notification, toast_hit_region, toast_layout, toast_output_plan,
+    toast_output_plan_unobstructed,
 };
 pub use popup::{PopupHost, PopupKind};
 pub use process_table::{
