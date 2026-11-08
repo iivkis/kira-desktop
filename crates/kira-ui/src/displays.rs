@@ -142,6 +142,7 @@ struct Controls {
     confirm: gtk::Button,
     revert: gtk::Button,
     save: gtk::Button,
+    reset: gtk::Button,
     choices: RefCell<Vec<DisplayChoice>>,
     phase: RefCell<DisplayPhase>,
     editing_enabled: Cell<bool>,
@@ -283,6 +284,7 @@ impl Controls {
         self.outputs.set_sensitive(mutating);
         self.update_map();
         self.refresh.set_sensitive(editing);
+        self.reset.set_sensitive(mutating);
         self.apply
             .set_sensitive(mutating && can_apply(&self.choices.borrow()));
         self.save
@@ -303,7 +305,7 @@ impl Controls {
         }
     }
 
-    fn submit(&self, action: &str) {
+    fn submit(self: &Rc<Self>, action: &str) {
         let can_save = *self.phase.borrow() == DisplayPhase::Confirmed;
         match action {
             "refresh" if !matches!(*self.phase.borrow(), DisplayPhase::Pending { .. }) => {
@@ -337,6 +339,13 @@ impl Controls {
             "save" if self.editing_enabled.get() && can_save => {
                 self.set_phase(DisplayPhase::Saving);
                 (self.on_intent)(DisplayIntent::Save);
+            }
+            "reset" if self.editing_allowed() => {
+                let observed = self.observed.borrow().clone();
+                // Native reset creates the editor controls from the same
+                // observed snapshot; it does not mutate the compositor.
+                self.set_outputs(observed);
+                self.set_phase(DisplayPhase::Ready);
             }
             _ => {}
         }
@@ -388,6 +397,33 @@ impl DisplaySettings {
         root.append(&persistence);
 
         let outputs = gtk::Box::new(gtk::Orientation::Vertical, 12);
+
+        let map_host = Rc::new(RefCell::new(std::rc::Weak::<Controls>::new()));
+        let map_target = map_host.clone();
+        let map = DisplayMap::new(move |intent| {
+            let Some(controls) = map_target.borrow().upgrade() else {
+                return;
+            };
+            match intent {
+                MapIntent::Select(index) => controls.select(index),
+                MapIntent::Move { index, x, y } => controls.move_output(index, x, y),
+            }
+        });
+        let map_heading = gtk::Label::new(Some("РАСПОЛОЖЕНИЕ · ПЕРЕТАЩИТЕ ЭКРАН"));
+        map_heading.add_css_class("display-map-heading");
+        map_heading.set_xalign(0.0);
+        root.append(&map_heading);
+        root.append(&map.widget());
+        let help = gtk::Label::new(Some(
+            "Выбор экрана: мышью или в списке. Перетаскивание и клавиши-стрелки изменяют координаты черновика. Niri может скорректировать пересечения.",
+        ));
+        help.add_css_class("muted");
+        help.set_xalign(0.0);
+        help.set_wrap(true);
+        root.append(&help);
+        let selectors = gtk::Box::new(gtk::Orientation::Vertical, 4);
+        selectors.add_css_class("display-selector-list");
+        root.append(&selectors);
         root.append(&outputs);
 
         let buttons = gtk::Box::new(gtk::Orientation::Horizontal, 5);
@@ -396,13 +432,21 @@ impl DisplaySettings {
         let confirm = gtk::Button::with_label("Подтвердить");
         let revert = gtk::Button::with_label("Откатить");
         let save = gtk::Button::with_label("Сохранить");
-        for button in [&refresh, &apply, &confirm, &revert, &save] {
+        let reset = gtk::Button::with_label("Сбросить черновик");
+        for button in [&refresh, &apply, &confirm, &revert, &save, &reset] {
             buttons.append(button);
         }
         root.append(&buttons);
 
         let controls = Rc::new(Controls {
             outputs,
+            selectors,
+            map,
+            observed: RefCell::new(Vec::new()),
+            selected: Cell::new(None),
+            sections: RefCell::new(Vec::new()),
+            selector_buttons: RefCell::new(Vec::new()),
+            coordinates: RefCell::new(Vec::new()),
             status,
             persistence,
             refresh,
@@ -410,17 +454,20 @@ impl DisplaySettings {
             confirm,
             revert,
             save,
+            reset,
             choices: RefCell::new(Vec::new()),
             phase: RefCell::new(DisplayPhase::Loading),
             editing_enabled: Cell::new(true),
             on_intent: Rc::new(on_intent),
         });
+        *map_host.borrow_mut() = Rc::downgrade(&controls);
         for (button, action) in [
             (&controls.refresh, "refresh"),
             (&controls.apply, "apply"),
             (&controls.confirm, "confirm"),
             (&controls.revert, "revert"),
             (&controls.save, "save"),
+            (&controls.reset, "reset"),
         ] {
             let weak = Rc::downgrade(&controls);
             button.connect_clicked(move |_| {
