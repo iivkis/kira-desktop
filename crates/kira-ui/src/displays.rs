@@ -6,6 +6,8 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use gtk::prelude::*;
 
+use crate::display_map::{DisplayMap, MapIntent};
+
 const TRANSFORMS: [&str; 8] = [
     "normal",
     "90",
@@ -126,6 +128,13 @@ fn now_millis() -> u64 {
 
 struct Controls {
     outputs: gtk::Box,
+    selectors: gtk::Box,
+    map: DisplayMap,
+    observed: RefCell<Vec<DisplayOutput>>,
+    selected: Cell<Option<usize>>,
+    sections: RefCell<Vec<gtk::Box>>,
+    selector_buttons: RefCell<Vec<gtk::Button>>,
+    coordinates: RefCell<Vec<(gtk::SpinButton, gtk::SpinButton)>>,
     status: gtk::Label,
     persistence: gtk::Label,
     refresh: gtk::Button,
@@ -145,7 +154,56 @@ impl Controls {
         self.sync();
     }
 
+    fn editing_allowed(&self) -> bool {
+        self.editing_enabled.get()
+            && matches!(
+                *self.phase.borrow(),
+                DisplayPhase::Ready
+                    | DisplayPhase::Confirmed
+                    | DisplayPhase::Reverted
+                    | DisplayPhase::Saved
+                    | DisplayPhase::Error(_)
+            )
+    }
+
+    fn select(&self, index: usize) {
+        if index >= self.choices.borrow().len() {
+            return;
+        }
+        self.selected.set(Some(index));
+        for (position, section) in self.sections.borrow().iter().enumerate() {
+            section.set_visible(position == index);
+        }
+        for (position, button) in self.selector_buttons.borrow().iter().enumerate() {
+            if position == index {
+                button.add_css_class("selected");
+            } else {
+                button.remove_css_class("selected");
+            }
+        }
+        self.update_map();
+    }
+
+    fn update_map(&self) {
+        self.map.sync(
+            &self.observed.borrow(),
+            &self.choices.borrow(),
+            self.selected.get(),
+            self.editing_allowed(),
+        );
+    }
+
+    fn move_output(&self, index: usize, x: i32, y: i32) {
+        self.edited(index, |item| {
+            item.x = x;
+            item.y = y;
+        });
+    }
+
     fn edited(&self, index: usize, update: impl FnOnce(&mut DisplayChoice)) {
+        if !self.editing_allowed() {
+            return;
+        }
         let changed = {
             let mut choices = self.choices.borrow_mut();
             if let Some(item) = choices.get_mut(index) {
@@ -164,6 +222,17 @@ impl Controls {
         );
         if reset_confirmed {
             *self.phase.borrow_mut() = DisplayPhase::Ready;
+        }
+        if let (Some(item), Some((x, y))) = (
+            self.choices.borrow().get(index).cloned(),
+            self.coordinates.borrow().get(index).cloned(),
+        ) {
+            if x.value_as_int() != item.x {
+                x.set_value(f64::from(item.x));
+            }
+            if y.value_as_int() != item.y {
+                y.set_value(f64::from(item.y));
+            }
         }
         self.sync();
     }
@@ -212,6 +281,7 @@ impl Controls {
         );
         let mutating = editing && self.editing_enabled.get();
         self.outputs.set_sensitive(mutating);
+        self.update_map();
         self.refresh.set_sensitive(editing);
         self.apply
             .set_sensitive(mutating && can_apply(&self.choices.borrow()));
@@ -221,8 +291,9 @@ impl Controls {
             DisplayPhase::Pending {
                 deadline_unix_ms, ..
             } => {
-                self.confirm
-                    .set_sensitive(seconds_left(*deadline_unix_ms, now) > 0);
+                self.confirm.set_sensitive(
+                    self.editing_enabled.get() && seconds_left(*deadline_unix_ms, now) > 0,
+                );
                 self.revert.set_sensitive(true);
             }
             _ => {
@@ -235,16 +306,16 @@ impl Controls {
     fn submit(&self, action: &str) {
         let can_save = *self.phase.borrow() == DisplayPhase::Confirmed;
         match action {
-            "refresh" => {
+            "refresh" if !matches!(*self.phase.borrow(), DisplayPhase::Pending { .. }) => {
                 self.set_phase(DisplayPhase::Loading);
                 (self.on_intent)(DisplayIntent::Refresh);
             }
-            "apply" if self.editing_enabled.get() && can_apply(&self.choices.borrow()) => {
+            "apply" if self.editing_allowed() && can_apply(&self.choices.borrow()) => {
                 let choices = self.choices.borrow().clone();
                 self.set_phase(DisplayPhase::Applying);
                 (self.on_intent)(DisplayIntent::Apply(choices));
             }
-            "confirm" => {
+            "confirm" if self.editing_enabled.get() => {
                 let phase = self.phase.borrow().clone();
                 if let DisplayPhase::Pending {
                     id,
