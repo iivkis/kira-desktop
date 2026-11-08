@@ -67,6 +67,12 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 - `kira-ui::SystemReport` adds the source's Overview copy action, sourced only from the latest measured `SystemOverview`, expiring after six seconds and on GTK unmap. CPU, temperature, RAM, SWAP, disk, load, uptime, battery and up to eight real GPU observations use a bounded, newline-sanitized report with explicit missingness; only Shell invokes the GDK clipboard. The same callback continues to serve the separately bounded process report.
 - Source-equivalent process FLIP trajectories, selected-sort indicator animation, 180px/scale layout and independent nested-Niri comparisons are not yet verified. `System Monitor` remains partial in the evidence ledger.
 
+## G2/G3 increment: real interactive native output layout
+
+- A composable `kira-ui::DisplayMap` uses only observed output metadata and typed draft values. It computes logical rectangles from advertised modes, scale, rotation, negative coordinates and actual viewport size; unadvertised modes are omitted rather than drawn as guessed hardware. Snapping selects the nearest matching 60-pixel neighbour edge deterministically, independent of enumeration order. Pointer dragging and keyboard arrows/Shift+arrows emit only bounded `MapIntent` values, never a Niri or filesystem command.
+- The retained `DisplaySettings` GTK widget now shows the selected monitor editor, provides separate accessible connector buttons (including disabled outputs), synchronizes dragged coordinates with X/Y spin fields, and can reset the entire draft to the last observed output snapshot. Controls cannot be edited while Apply/Confirm/Revert/Save is in flight. When the process-external display supervisor dies, Shell permanently disables mutation for that editor session instead of continuing with a dead command channel.
+- Actual Niri placement, hotplug, scaling, accessible focus order, pointer capture, source's confirmation alertdialog and synchronized TENET motion still require paired nested graphics acceptance. Full Display Settings parity is **not certified**. Production Apply/Confirm/Save remain disabled.
+
 ## G2 increment: native monitoring and displays
 
 - **kira-ui first:** reusable `SystemMonitor` and `DisplaySettings` receive only typed view models and emit explicit intents. UI models have isolated tests for missing values, ordering/bounds and display confirmation timing.

@@ -325,12 +325,15 @@
         "sha": "19ad3a50dbc4d8110713847ec1f7fa48cb749d14"
       },
       "target_files": [
-        "crates/kira-ui/src/displays.rs"
+        "crates/kira-ui/src/displays.rs",
+        "crates/kira-ui/src/display_map.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [
         "Output diagram with drag-to-position, selected monitor and controls",
-        "15-second confirmation overlay, manual Apply/Confirm/Revert/Save, ownership validation"
+        "15-second confirmation overlay, manual Apply/Confirm/Revert/Save, ownership validation",
+        "Native selected-output editor, retained index and map-positions via pure geometry, deterministic nearest-neighbour edge snapping, mouse dragging, keyboard arrow/Shift nudge and read-only selection are implemented; resetting draft does not invoke Niri",
+        "Supervisor termination demotes editor to read-only; pending confirmation countdown still exists. Matched graphical proof, confirmation focus/alertdialog and safe multi-output nested test remain outstanding"
       ],
       "animation_requirements": [
         "Continuous monitor map interactions and confirmation motion; reduced motion"
