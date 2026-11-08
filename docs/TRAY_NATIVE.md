@@ -151,3 +151,21 @@ source TENET frame motion and paired frozen-main screenshots. Those must be
 verified in the existing private-bus nested-Niri harness, never by taking
 ownership of the user's session bus. This increment does not change the
 0/15 verified parity status.
+
+## Extended private-bus protocol smoke
+
+The separately executable `kira-sni-acceptance` fixture now advertises an
+actual object-path-typed SNI `Menu` property and registers a real
+`com.canonical.dbusmenu` object on the **same unique D-Bus owner**. Its
+bounded root contains an enabled action, a lazy `children-display=submenu`
+branch with a nested leaf, a disabled entry, a checked entry and a
+separator. A real `AboutToShow(20)` populates the lazy branch and emits
+`LayoutUpdated`; real fixed `Event(clicked)` calls are logged and the
+checkbox changes its typed layout revision. The CI's isolated
+`smoke_sni_fixture_bus.py` probes these methods with `gdbus`. This
+tests private-bus transport and fixture behavior, not Kira's rendered
+GTK child-surface interaction with a real StatusNotifierHost.
+
+The fixture refuses a non-attested or ordinary user D-Bus bus and is
+never started with the production Shell. It cannot mutate outputs, KDL,
+host app menus or create a fabricated desktop screenshot.
