@@ -296,8 +296,7 @@
       "target_files": [
         "crates/kira-ui/src/settings.rs",
         "crates/kira-ui/src/displays.rs",
-        "crates/kira-shell/src/main.rs",
-        "crates/kira-services/src/system_info.rs"
+        "crates/kira-shell/src/main.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [
