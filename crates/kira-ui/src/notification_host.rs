@@ -126,7 +126,23 @@ pub fn toast_output_plan(
     outputs: &[(i32, i32)],
     preferred: Option<usize>,
 ) -> Option<(usize, ToastLayout)> {
+    toast_output_plan_unobstructed(outputs, preferred, &[])
+}
+
+/// Choose a safe, *unobstructed* live output. A pooled transient covers
+/// only its own output, not the whole desktop. The caller constructs the
+/// blocker mask from real compositor monitor identities. Missing mask
+/// entries are not blocked; unknown popup affinity must be rejected by the
+/// trusted caller before invoking this plan.
+pub fn toast_output_plan_unobstructed(
+    outputs: &[(i32, i32)],
+    preferred: Option<usize>,
+    blocked: &[bool],
+) -> Option<(usize, ToastLayout)> {
     let candidate = |index: usize| {
+        if blocked.get(index).copied().unwrap_or(false) {
+            return None;
+        }
         outputs.get(index).and_then(|&(width, height)| {
             toast_layout(width, height, height).map(|layout| (index, layout))
         })
@@ -697,6 +713,39 @@ mod tests {
         assert_eq!(layout.width, 336);
         assert_eq!(toast_output_plan(&outputs, Some(1)).unwrap().0, 1);
         assert_eq!(toast_output_plan(&outputs, None).unwrap().0, 0);
+    }
+
+    #[test]
+    fn output_plan_routes_around_an_actual_pooled_popup() {
+        let outputs = [(1920, 1080), (800, 600), (360, 640)];
+        assert_eq!(
+            toast_output_plan_unobstructed(&outputs, Some(1), &[false, true, false])
+                .unwrap()
+                .0,
+            0
+        );
+        assert_eq!(
+            toast_output_plan_unobstructed(&outputs, Some(0), &[true, true, false])
+                .unwrap()
+                .0,
+            2
+        );
+        assert_eq!(
+            toast_output_plan_unobstructed(&outputs, Some(0), &[true, true, true]),
+            None
+        );
+        assert_eq!(
+            toast_output_plan_unobstructed(&[(120, 500), (640, 480)], Some(0), &[true, false])
+                .unwrap()
+                .0,
+            1
+        );
+        assert_eq!(
+            toast_output_plan_unobstructed(&[(120, 500), (640, 480)], Some(1), &[true, false])
+                .unwrap()
+                .0,
+            1
+        );
     }
 
     #[test]
