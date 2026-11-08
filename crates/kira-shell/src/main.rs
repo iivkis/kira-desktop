@@ -2,6 +2,7 @@
 //! All GTK widget trees, CSS and transient window semantics are owned by kira-ui.
 
 mod display_bridge;
+mod notifications;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -467,6 +468,9 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         system_visible.clone(),
         processes_visible.clone(),
     );
+    // One real GIO Freedesktop service. Fail closed if a safe native toast
+    // surface cannot be built or another daemon already owns the bus name.
+    notifications::start(app, popup.clone());
 
     for (kind, symbol, label) in [
         (PopupKind::Launcher, "⌕", "Запуск приложений"),
@@ -558,7 +562,15 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let pulse_visible = pulse_visible.clone();
         let display_model = display_model.clone();
         let displays = displays.clone();
+        let mut previously_obstructed = false;
         move || {
+            let obstructed = [PopupKind::Calendar, PopupKind::System, PopupKind::Settings]
+                .into_iter()
+                .any(|kind| popup.is_active(kind));
+            if obstructed != previously_obstructed {
+                previously_obstructed = obstructed;
+                notifications::layout_changed();
+            }
             let active_system = popup.is_active(PopupKind::System);
             system_visible.store(active_system, Ordering::Relaxed);
             processes_visible.store(

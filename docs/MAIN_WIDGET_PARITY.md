@@ -26,8 +26,8 @@
 | Display Settings | Partial | Trusted Niri transactions retained; missing drag-and-drop output map, selected monitor/editor parity, confirmation overlay and animation. **Mutation remains preview-only until crash-safe rollback** |
 | Tray Bar | Missing | StatusNotifier icon identities, compact pinned icons, overflow and attention states |
 | Tray Widget | Missing | Pinned/hidden items, freedesktop menu tree, actions and FLIP |
-| Notification Host | Missing | True native toast windows, input region, queue admission/ACK, output placement |
-| Notification Card | Missing | Real sender/content/action/close card and 180ms entry/exit |
+| Notification Host | Partial | Real Freedesktop session D-Bus endpoint uses existing bounded 100-item native FIFO, 3 visible cards, 1.5s post-paint admission, 3s minimum painted dwell, replacement/close/action IDs and one-shot deadlines. A GTK4 shaped-input bottom-right layer-shell host is only acquired when supported and never steals the preview's host bus by default. Remaining: all-output placement and collision QA, same-path TENET entrance/exit motion, paired Niri captures |
+| Notification Card | Partial | Native plain-text app/title/body/critical indication, explicit close/default/secondary action buttons, bounded input and accessible labels; actions validated against the active D-Bus queue. Exact 180ms y=12px power2.out arrival, reverse removal and paired visual motion proof remain missing |
 | Window Controls | Missing | Detach/reattach without loss of controller state, close/popout feedback |
 
 **Result: 0 of 15 surfaces are verified fully equivalent**. Several behaviors have been ported and tested, but that is not a whole-widget pass. No actual paired GTK/WebKit screenshot and frame-by-frame motion evidence is attached.

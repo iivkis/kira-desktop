@@ -399,11 +399,15 @@
         "path": "frontend/src/lib/components/NotificationHost.svelte",
         "sha": "e0b7c5d89bec66ff9467b5a7166c5f40e592fedc"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/notification_host.rs",
+        "crates/kira-shell/src/notifications.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Queued bounded notification cards and click-through region, multiple outputs",
-        "Arrival ACK, FIFO and urgency; truthful close, actions and timeouts"
+        "Arrival ACK, FIFO and urgency; truthful close, actions and timeouts",
+        "Native GIO Freedesktop endpoint is fail-closed on unsafe display or existing owner, with source 100-item queue, three shaped GTK cards, frame-gated painted lifetime, real close/action signals. Output collision and interaction QA remain missing"
       ],
       "animation_requirements": [
         "Reversible notification arrival and removal, bounded stagger"
@@ -427,11 +431,15 @@
         "path": "frontend/src/lib/components/NotificationCard.svelte",
         "sha": "6bc4c088406a782af3bc6f4841e23fa4d23c741d"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/notification_host.rs",
+        "crates/kira-shell/src/notifications.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Sender, title, body, close/open intents and accessible labels",
-        "No user-generated markup injection"
+        "No user-generated markup injection",
+        "GTK plain-text card displays real sender, title/body, urgency and bounded action/close intents; source-equivalent 180ms motion and independently reviewed output not yet implemented"
       ],
       "animation_requirements": [
         "0.18s y=12px opacity 0→1 power2.out, same-path reversal"

@@ -9,6 +9,7 @@ pub mod displays;
 pub mod flow_indicator;
 pub mod launcher;
 pub mod motion;
+pub mod notification_host;
 pub mod popup;
 mod popup_clip;
 mod popup_section;
@@ -31,6 +32,10 @@ pub use displays::{
 pub use flow_indicator::{FlowAxis, FlowIndicator, FlowRect, FlowStyle};
 pub use launcher::{
     ApplicationEntry, Launcher, filter_applications, matching_apps_label, next_launcher_selection,
+};
+pub use notification_host::{
+    NotificationHost, NotificationIntent, NotificationView, ToastLayout, bounded_notification,
+    toast_hit_region, toast_layout,
 };
 pub use popup::{PopupHost, PopupKind};
 pub use process_table::{ProcessSort, ProcessTable, filter_sort_processes, process_report};
