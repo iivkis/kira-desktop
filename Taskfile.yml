@@ -38,6 +38,7 @@ tasks:
       - python3 scripts/check_widget_parity.py
       - test -s crates/kira-ui/src/system.rs
       - test -s crates/kira-ui/src/displays.rs
+      - test -s crates/kira-ui/src/display_map.rs
       - test -s crates/kira-shell/src/display_bridge.rs
       - test -s crates/kira-ui/src/lib.rs
       - test -s crates/kira-ui/src/style.css

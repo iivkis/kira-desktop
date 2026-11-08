@@ -371,3 +371,38 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
   border-color: #e5e5e5;
   opacity: 0.4;
 }
+
+/* Native, non-networked output layout diagram and selected output editor. */
+.display-settings .display-map-heading {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+}
+.display-settings .display-layout-map {
+  background: #000000;
+  border: 1px solid #e5e5e5;
+  min-height: 230px;
+}
+.display-settings .display-layout-map:focus-visible {
+  outline: 2px solid #fca311;
+  outline-offset: 2px;
+}
+.display-settings .display-selector-list {
+  background: #14213d;
+  padding: 5px;
+}
+.display-settings .display-selector {
+  border-left: 3px solid #e5e5e5;
+  color: #e5e5e5;
+  background: #000000;
+  text-align: left;
+  min-height: 32px;
+}
+.display-settings .display-selector.selected {
+  border-left-color: #fca311;
+  color: #fca311;
+  background: #14213d;
+}
+.display-settings button:disabled {
+  opacity: 0.4;
+}

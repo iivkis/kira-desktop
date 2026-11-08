@@ -348,6 +348,13 @@ fn send_display_intent(model: &DisplayModel, intent: DisplayIntent, supervised: 
 fn handle_display_event(display: &DisplaySettings, event: DisplayEvent) {
     display.set_persistence(event.persistence);
     if let Some(error) = event.error {
+        // A lost rollback supervisor is a terminal safety fault. Never leave
+        // Apply or Save enabled against a disconnected command channel.
+        if error.starts_with("Display supervisor exited:")
+            || error.starts_with("Display supervisor wait failed:")
+        {
+            display.set_editing_enabled(false);
+        }
         display.set_phase(DisplayPhase::Error(error));
         return;
     }
