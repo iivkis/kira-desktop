@@ -18,9 +18,9 @@ use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceSta
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
     ApplicationEntry, Bar, Calendar, ChartSample, CoreStatus, DisplayIntent, DisplayPhase,
-    DisplaySettings, GpuReading, HealthMetrics, Launcher, PopupHost, PopupKind,
-    ProcessItem, ProcessList, SettingsAbout, SettingsPanel, SystemHealth, SystemMonitor,
-    SystemOverview, TrayUi, WorkspaceItem,
+    DisplaySettings, GpuReading, HealthMetrics, Launcher, PopupHost, PopupKind, ProcessItem,
+    ProcessList, SettingsAbout, SettingsPanel, SystemHealth, SystemMonitor, SystemOverview, TrayUi,
+    WorkspaceItem,
 };
 
 enum ShellUpdate {
@@ -156,7 +156,8 @@ fn current_clock(show_seconds: bool) -> String {
 /// kernel/proc reads or JSON parsing occur in GTK callbacks.
 fn decode_settings_about(value: &serde_json::Value) -> SettingsAbout {
     fn string(value: &serde_json::Value, key: &str) -> Option<String> {
-        value.get(key)
+        value
+            .get(key)
             .and_then(serde_json::Value::as_str)
             .map(str::trim)
             .filter(|text| !text.is_empty())
@@ -168,11 +169,13 @@ fn decode_settings_about(value: &serde_json::Value) -> SettingsAbout {
         architecture: string(value, "architecture"),
         hostname: string(value, "hostname"),
         cpu_model: string(value, "cpu_model"),
-        cpu_threads: value.get("cpu_threads")
+        cpu_threads: value
+            .get("cpu_threads")
             .and_then(serde_json::Value::as_u64)
             .and_then(|count| usize::try_from(count).ok())
             .filter(|count| *count > 0),
-        memory_total_kib: value.get("memory_total_kib")
+        memory_total_kib: value
+            .get("memory_total_kib")
             .and_then(serde_json::Value::as_u64)
             .filter(|count| *count > 0),
         session: string(value, "session"),
@@ -876,8 +879,13 @@ mod tests {
         assert_eq!(about.memory_total_kib, Some(2_097_152));
         assert!(about.session.is_none());
         assert!(about.hostname.is_none());
-        assert_eq!(about.shell_version.as_deref(), Some(env!("CARGO_PKG_VERSION")));
-        assert_eq!(decode_settings_about(&serde_json::json!({})).memory_total_kib, None);
+        assert_eq!(
+            about.shell_version.as_deref(),
+            Some(env!("CARGO_PKG_VERSION"))
+        );
+        assert_eq!(
+            decode_settings_about(&serde_json::json!({})).memory_total_kib,
+            None
+        );
     }
-
 }
