@@ -193,15 +193,33 @@ def output_signature(outputs: object) -> dict[str, dict]:
         if "logical" not in output or "current_mode" not in output:
             raise PreviewError("Incomplete nested Niri output state")
         logical = output["logical"]
+        actual_mode = None
         if logical is not None:
             if not isinstance(logical, dict) or not all(
                 key in logical for key in ("scale", "transform", "x", "y")
             ):
                 raise PreviewError("Incomplete nested display geometry")
             logical = {key: logical[key] for key in ("scale", "transform", "x", "y")}
+            # An index alone is insufficient: modes can be reordered across
+            # hotplug. Compare the underlying resolution and mHz refresh.
+            modes = output.get("modes")
+            index = output["current_mode"]
+            if (not isinstance(modes, list) or len(modes) > 80
+                    or not isinstance(index, int) or isinstance(index, bool)
+                    or not 0 <= index < len(modes)):
+                raise PreviewError("No valid active mode for nested output")
+            mode = modes[index]
+            if not isinstance(mode, dict) or not all(
+                isinstance(mode.get(key), int) and not isinstance(mode[key], bool)
+                for key in ("width", "height", "refresh_rate")
+            ):
+                raise PreviewError("Malformed current nested display mode")
+            actual_mode = {
+                key: mode[key] for key in ("width", "height", "refresh_rate")
+            }
         signature[connector] = {
             "logical": logical,
-            "current_mode": output["current_mode"],
+            "mode": actual_mode,
             "vrr_enabled": output.get("vrr_enabled"),
         }
     if not any(item["logical"] is not None for item in signature.values()):

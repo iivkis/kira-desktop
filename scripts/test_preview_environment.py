@@ -55,6 +55,7 @@ class PreviewIsolationTests(unittest.TestCase):
     def test_crash_qa_signature_detects_real_output_changes(self):
         base = {"DP-1": {
             "current_mode": 0,
+            "modes": [{"width": 1920, "height": 1080, "refresh_rate": 60000}],
             "logical": {"scale": 1.0, "transform": "Normal", "x": 0, "y": 0},
             "vrr_enabled": False,
             "description": "Incidental metadata",
@@ -65,6 +66,10 @@ class PreviewIsolationTests(unittest.TestCase):
         base["DP-1"]["logical"]["scale"] = 1.25
         self.assertNotEqual(original, output_signature(base))
         base["DP-1"]["logical"]["scale"] = 1.0
+        self.assertEqual(original, output_signature(base))
+        base["DP-1"]["modes"][0]["refresh_rate"] = 59940
+        self.assertNotEqual(original, output_signature(base))
+        base["DP-1"]["modes"][0]["refresh_rate"] = 60000
         self.assertEqual(original, output_signature(base))
         base["HDMI-A-1"] = {
             "current_mode": 0, "logical": None, "vrr_enabled": False,
