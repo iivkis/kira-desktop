@@ -252,8 +252,7 @@
       },
       "target_files": [
         "crates/kira-ui/src/system_health.rs",
-        "crates/kira-shell/src/main.rs",
-        "crates/kira-services/src/system_metrics.rs"
+        "crates/kira-shell/src/main.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [

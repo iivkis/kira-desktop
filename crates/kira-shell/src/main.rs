@@ -673,6 +673,22 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     bar.window.present();
 }
 
+
+fn main() {
+    let flags = if std::env::var_os("KIRA_PREVIEW").is_some() {
+        gtk::gio::ApplicationFlags::NON_UNIQUE
+    } else {
+        gtk::gio::ApplicationFlags::empty()
+    };
+    let app = gtk::Application::builder()
+        .application_id("dev.kira.Desktop")
+        .flags(flags)
+        .build();
+    let primary = Rc::new(RefCell::new(None));
+    app.connect_activate(move |app| activate(app, &primary));
+    app.run();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -692,19 +708,4 @@ mod tests {
         let error = kira_ipc::RpcResponse::failure(Some(74), -32601, "not found");
         assert_eq!(parse_core_probe(error).0, CoreStatus::Unavailable);
     }
-}
-
-fn main() {
-    let flags = if std::env::var_os("KIRA_PREVIEW").is_some() {
-        gtk::gio::ApplicationFlags::NON_UNIQUE
-    } else {
-        gtk::gio::ApplicationFlags::empty()
-    };
-    let app = gtk::Application::builder()
-        .application_id("dev.kira.Desktop")
-        .flags(flags)
-        .build();
-    let primary = Rc::new(RefCell::new(None));
-    app.connect_activate(move |app| activate(app, &primary));
-    app.run();
 }
