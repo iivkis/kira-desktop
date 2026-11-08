@@ -76,7 +76,28 @@ GTK rows now retain their real `ReflowRow` identities across SNI updates,
 capture painted positions and run a source 340ms `back.out(1.14)` FLIP for
 up to 24 previously rendered rows. Reduced-motion and unmapped popups
 settle immediately. Responsive bar icon limits, cross-surface icon transfer,
-popout, pixel comparisons and source typography remain outstanding.
+pixel comparisons and source typography remain outstanding.
+
+## Retained detachable Tray and accessible native menus
+
+The same retained GTK Tray widget and live owner-verified SNI menu can now move
+between the pooled layer-shell popup and a decorated Niri-managed xdg-toplevel.
+The Top Bar's overflow button raises that existing detached window without
+dismissing its menu. The Tray's own × has a distinct close handler: it dismisses
+the menu and returns the GTK tree to the pool rather than re-raising it.
+Window-manager close, Attach and Escape keep the retained view model.
+
+Native bounded direct-child menu pages support Up/Down, Home/End, Right for an
+enabled submenu, and Left/Escape for returning to validated ancestors. A
+LayoutUpdated refresh preserves focus by the same enabled menu ID if still
+available, otherwise the first enabled action. Delayed focus restoration is
+guarded by GTK mapping and active-window checks to avoid stealing focus.
+The Shell still authorizes each numeric handle against its current D-Bus
+unique owner and menu session. UI never chooses an arbitrary D-Bus path.
+
+Missing: separate floating cascading popovers, nested Niri focus and D-Bus
+owner churn acceptance, responsive bar budgets, cross-surface icon motion,
+pixel comparisons and source typography. Headless tests do not certify parity.
 
 The acceptance-only command `python3 scripts/accept_nested.py --output
 /tmp/new-sni-evidence` launches a disposable GIO StatusNotifierItem on a

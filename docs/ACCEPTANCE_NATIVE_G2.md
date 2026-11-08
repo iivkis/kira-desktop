@@ -59,13 +59,15 @@ quality. Preserve the console transcript for manual acceptance.
 
 ## Detached native window acceptance
 
-- [ ] Detach Calendar, Launcher, System and Settings with **Отделить** and confirm each becomes a decorated, independently movable and resizable Wayland window. Clicking the same Top Bar item must raise the existing detached window, not create another GTK controller.
+- [ ] Detach Calendar, Launcher, System, Settings and Tray with **Отделить** and confirm each becomes a decorated, independently movable and resizable Wayland window. Clicking the same Top Bar item must raise the existing detached window, not create another GTK controller.
 - [ ] Change Calendar selection, Launcher search text and System page in their detached windows. Switch to other transients, attach again and reopen: date, query, scrolling and widget identities must survive.
 - [ ] Close a detached window using its window-manager control: it should reattach invisibly, preserve state and reopen from the bar. Try rapid attach/detach and Escape, including keyboard focus and screen-reader labels.
 - [ ] Keep a detached System window open: continuous sampling should stay active only while the view is visible. A detached Settings view with an unconfirmed display Apply must still roll back when closed.
 - [ ] On two monitors with different geometries, open Calendar and Settings from the Top Bar's actual output. Verify native popup monitor, width, top margin and scroll bounds match the bar's GDK surface. Switch outputs or hotplug before reopening: no stale forced monitor or off-screen popup. A detached xdg-toplevel remains compositor-positioned.
 - [ ] Focus a Launcher search entry and enter a query, detach then raise the same window via the bar and reattach. Focus restoration must never hijack another popup during rapid switching. Test Escape, focus-visible and screen-reader names on both layer-shell and detached windows.
-- [ ] Inspect fractional scaling, focus, monitor geometry, clipping, reduced motion and transient overlap in real nested Niri. Tray remains pooled; detached tray cascades are not implemented or accepted.
+- [ ] With a real SNI fixture and an open nested app menu, detach Tray and activate another transient. Click the Top Bar overflow: the same decorated Tray window must raise, with the same owner-validated checked/radio state. Its own × must close, never raise. Test Attach and WM close: reopen via bar and confirm exactly one pooled transient.
+- [ ] In a real owner-scoped D-Bus menu, test Up/Down, Home/End, Right on a submenu, Left/Escape for its parent, and Enter on enabled leaves. Rapid LayoutUpdated and app unregistration must not leave a stale focused action or invoke a missing owner's ID.
+- [ ] Inspect fractional scaling, focus, monitor geometry, clipping, reduced motion and transient overlap in real nested Niri. Independent floating Tray menu cascades are not implemented or accepted.
 
 ## Visual / input and release gates
 
