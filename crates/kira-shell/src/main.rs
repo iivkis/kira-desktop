@@ -470,6 +470,14 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         display.clipboard().set_text(&iso);
         Ok(())
     }));
+    popup.set_detach_handler(PopupKind::Calendar, {
+        let calendar = Rc::downgrade(&calendar);
+        move |detached| {
+            if let Some(calendar) = calendar.upgrade() {
+                calendar.set_detached(detached);
+            }
+        }
+    });
     let system = Rc::new(SystemMonitor::new());
     let health = Rc::new(SystemHealth::new());
     system.set_report_copy_handler(|report| {
