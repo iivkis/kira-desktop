@@ -19,6 +19,9 @@ pub mod system;
 pub mod system_charts;
 pub mod system_details;
 pub mod system_health;
+pub mod sky_catalog;
+pub mod sky_map;
+pub mod sky_model;
 pub mod tenet_scroll;
 pub mod tray;
 pub mod workspace;
@@ -41,6 +44,7 @@ pub use notification_host::{
 pub use popup::{PopupHost, PopupKind};
 pub use process_table::{ProcessSort, ProcessTable, filter_sort_processes, process_report};
 pub use reflow::{ReflowOffset, ReflowRow, ReflowScope, ReflowSnapshot};
+pub use sky_map::SkyMap;
 pub use system::{
     GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels,
     top_processes,

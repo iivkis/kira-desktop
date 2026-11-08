@@ -11,6 +11,7 @@ use crate::clock_digits::ClockDigits;
 use crate::flow_indicator::{FlowAxis, FlowIndicator, FlowStyle};
 use crate::motion::CalendarFragmentScene;
 use crate::popup_section::PopupSection;
+use crate::sky_map::SkyMap;
 
 type CopyDate = Rc<dyn Fn(String) -> Result<(), String>>;
 
@@ -32,6 +33,7 @@ struct State {
     grid_scene: Rc<CalendarFragmentScene>,
     grid_surface: PopupSection,
     selection_flow: FlowIndicator,
+    sky: Rc<SkyMap>,
     copy: CopyDate,
 }
 
@@ -105,6 +107,7 @@ impl State {
         ));
         self.selected_title.set_text(&selected.short_label());
         self.selected_iso.set_text(&selected.iso());
+        self.sky.set_date(selected);
 
         for (months, button) in &self.navigation {
             button.set_sensitive(selected.shift_month(*months).is_some());
@@ -192,6 +195,7 @@ impl State {
 pub struct Calendar {
     root: gtk::Box,
     state: Rc<State>,
+    sky_child: gtk::FlowBoxChild,
 }
 
 fn labeled_button(label: &str, tooltip: &str) -> gtk::Button {
@@ -207,6 +211,28 @@ impl Calendar {
             current_local_date().expect("a supported local civil date (year 1..9999) is required");
         let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
         root.add_css_class("kira-calendar");
+        // Detached Calendar wraps the atlas below its date rail on narrow
+        // windows. In the compact popup the sky child is never allocated.
+        let flow = gtk::FlowBox::new();
+        flow.set_homogeneous(false);
+        flow.set_selection_mode(gtk::SelectionMode::None);
+        flow.set_min_children_per_line(1);
+        flow.set_max_children_per_line(2);
+        flow.set_row_spacing(14);
+        flow.set_column_spacing(18);
+        flow.set_hexpand(true);
+        let rail = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        rail.add_css_class("calendar-rail");
+        rail.set_size_request(320, -1);
+        let rail_child = gtk::FlowBoxChild::new();
+        rail_child.set_child(Some(&rail));
+        flow.insert(&rail_child, -1);
+        let sky = SkyMap::new(today);
+        let sky_child = gtk::FlowBoxChild::new();
+        sky_child.set_child(Some(&sky.widget()));
+        sky_child.set_visible(false);
+        flow.insert(&sky_child, -1);
+        root.append(&flow);
 
         let header = gtk::Box::new(gtk::Orientation::Vertical, 4);
         header.add_css_class("calendar-heading");
@@ -222,7 +248,7 @@ impl Calendar {
         date_today.set_xalign(0.0);
         date_today.add_css_class("muted");
         header.append(&date_today);
-        root.append(&header);
+        rail.append(&header);
 
         let section = gtk::Box::new(gtk::Orientation::Vertical, 10);
         section.add_css_class("calendar-section");
@@ -285,7 +311,7 @@ impl Calendar {
         grid_overlay.set_measure_overlay(&traces, false);
         grid_overlay.set_clip_overlay(&traces, false);
         section.append(&grid_overlay);
-        root.append(&section);
+        rail.append(&section);
 
         let footer = gtk::Box::new(gtk::Orientation::Vertical, 8);
         footer.add_css_class("calendar-footer");
@@ -318,7 +344,7 @@ impl Calendar {
         feedback.set_xalign(0.0);
         feedback.set_wrap(true);
         footer.append(&feedback);
-        root.append(&footer);
+        rail.append(&footer);
 
         let state = Rc::new(State {
             days,
@@ -338,6 +364,7 @@ impl Calendar {
             grid_scene,
             grid_surface,
             selection_flow,
+            sky,
             copy: Rc::new(copy),
         });
 
@@ -435,7 +462,14 @@ impl Calendar {
                 }
             }
         });
-        Self { root, state }
+        Self { root, state, sky_child }
+    }
+
+    /// Only an independently detached Calendar gets the offline star atlas.
+    /// The original transient remains a lightweight date picker.
+    pub fn set_detached(&self, detached: bool) {
+        self.sky_child.set_visible(detached);
+        self.state.sky.set_visible(detached);
     }
 
     pub fn widget(&self) -> gtk::Widget {
