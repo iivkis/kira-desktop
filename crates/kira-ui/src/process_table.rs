@@ -440,7 +440,7 @@ mod tests {
             item(201, "Kira Shell", Some(3.0), None, None),
             item(300, "Renderer", Some(1.0), None, None),
         ];
-        let ids: Vec<_> = filter_sort_processes(&rows, "kIrA 20", ProcessSort::Cpu, 80)
+        let ids: Vec<_> = filter_sort_processes(&rows, "kIrA 201", ProcessSort::Cpu, 80)
             .iter()
             .map(|p| p.pid)
             .collect();
