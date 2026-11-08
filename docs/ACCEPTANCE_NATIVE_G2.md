@@ -15,8 +15,10 @@ The preview must report a nested Wayland display, a **separate nested NIRI_SOCKE
 ## System Monitor
 
 - [ ] Open **Система**: GTK Overview shows real sampled CPU, temperature (when supported), available/total memory, load, uptime, battery and GPU. Missing data are shown as unavailable, never zero.
-- [ ] Switch to **Процессы**: process entries report PID, name, host CPU share, and PSS or RSS. Sort by CPU, cap visible rows at 80, avoid extreme GTK churn.
-- [ ] Keep the popup on Overview or close it: `/proc` process enumeration is stopped. Reopening Processes resumes sampling without blocking keyboard/mouse input.
+- [ ] Switch to **Процессы**: each row shows real PID, process name, kernel state in tooltip and host CPU share, with unknown CPU/RSS/PSS explicitly missing rather than zero. Test column buttons (Name/PID/CPU/RSS/PSS) in **both ascending and descending directions**, stable PID tie-breaks and missing values always last.
+- [ ] With more than 180 matching processes, first show 36 rows. **ПОКАЗАТЬ ЕЩЁ** expands 36 at a time up to 180, never enumerating all into GTK. Filter or change sort: disclosure resets to 36. Copying a filtered/sorted process report is bounded at 180 rows and must preserve actual selected sort direction.
+- [ ] On **Обзор**, wait for a real worker measurement and copy **КОПИРОВАТЬ ОТЧЁТ** using the native GDK clipboard: compare CPU/RAM/SWAP/disk/load/uptime/battery/GPU against measured values; missing readings must remain unavailable and no more than eight GPUs/unsafe multiline names may be exported. Disable copy after 6 seconds without refresh, on unmap, or after failure; a new sample must reenable it.
+- [ ] Keep the popup on Overview or close it: `/proc` process enumeration stops. Reopening Processes resets the old snapshot and its 8-second timeout without recreating the controller; process events arriving while another view is active must not populate an invisible/stale table. Verify detached System continues sampling only while actually visible and on its Processes tab.
 - [ ] Disconnect or simulate missing `/proc` data: no fake values or process rows. Confirm resource usage is bounded with many processes.
 - [ ] Press Escape, reopen the popup and switch tabs: the selected view retains state and responds correctly.
 

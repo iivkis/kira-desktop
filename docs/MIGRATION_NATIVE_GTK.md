@@ -61,6 +61,12 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 - `kira-ui::motion` adds reusable interruptible frame-clock timing, reduced-motion handling and a native GtkDrawingArea replay of main's four deterministic inverted calendar fragment paths. The full GSAP spring/stagger/clock-digit and popup master scene is **not** yet equivalent or graphically validated.
 - The detached-only offline SkyMap now consumes the pinned Hipparcos/XHIP stars and d3-celestial line figures, through pure tested `sky_model` and reusable GTK/Cairo `SkyMap`. A responsive FlowBox shows it beside the original date rail in the native ~1040×720 Calendar toplevel and hides it in the compact popup. It shares the civil-date selection, requires explicit observer coordinates and local time, and animates interrupted sidereal movement on the GTK frame clock. Real nested-Niri visibility, high-DPI allocations, pixel comparison and matched motion sequences remain G3/G4 acceptance items. See [CALENDAR_NATIVE_PARITY.md](CALENDAR_NATIVE_PARITY.md) and [SKY_MAP.md](SKY_MAP.md).
 
+## G2/G3 increment: source-backed monitoring interactions
+
+- `kira-ui::ProcessTable` now follows the frozen main's five sortable process columns with reversible direction, real PID and Linux process state, stable unknown-last comparisons, 36-row progressive disclosure capped at 180 and separate eight-second freshness invalidation. A new tab session drops old rows, and Shell only accepts worker process messages while the System Processes tab is genuinely active.
+- `kira-ui::SystemReport` adds the source's Overview copy action, sourced only from the latest measured `SystemOverview`, expiring after six seconds and on GTK unmap. CPU, temperature, RAM, SWAP, disk, load, uptime, battery and up to eight real GPU observations use a bounded, newline-sanitized report with explicit missingness; only Shell invokes the GDK clipboard. The same callback continues to serve the separately bounded process report.
+- Source-equivalent process FLIP trajectories, selected-sort indicator animation, 180px/scale layout and independent nested-Niri comparisons are not yet verified. `System Monitor` remains partial in the evidence ledger.
+
 ## G2 increment: native monitoring and displays
 
 - **kira-ui first:** reusable `SystemMonitor` and `DisplaySettings` receive only typed view models and emit explicit intents. UI models have isolated tests for missing values, ordering/bounds and display confirmation timing.
