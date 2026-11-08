@@ -150,3 +150,29 @@ Unresolved: compositor-visible window occlusion by *detached* windows,
 per-output focus and hit-region mapping across hotplug, multiple simultaneous
 output hosts (currently one selected target), physical scaling, and paired
 main/native screenshots. No acceptance flags are changed by this model fix.
+
+### Retained per-output GTK host pool (implementation, not graphical acceptance)
+
+`kira-ui::NotificationHostSet` now owns up to eight **real GDK
+monitor-bound GTK layer-shell windows**, created on demand. It retains the
+current monitor's existing shaped-input surface, clears the previous
+surface before switching destinations and closes detached monitor windows on
+hotplug. One trusted queue and one Freedesktop D-Bus name still own all IDs;
+**exactly one selected output is permitted to render any given FIFO
+snapshot**. This is not broadcast-to-all-monitors and does not duplicate
+action buttons or desktop notifications.
+
+The routing model tests a mask of real pooled-transient occlusions. A
+right-docked Calendar/System/Settings/Tray transient blocks its real bar
+output; with another safe GDK monitor present, the active host moves to
+that output. Unknown bar monitor with an active pooled transient fails
+closed. Detached Niri-managed toplevels do not falsely suppress delivery.
+Every output change invalidates the previous action/paint callbacks and
+requeues the FIFO's visible entries, resetting their dwell until a matching
+new mapped frame is acknowledged. Hosts have a hard retained-window cap
+of eight and old monitor input regions are destroyed on disconnection.
+
+**Unverified:** real Niri Wayland target mapping, focused output policy,
+physical occlusion by detached windows, fractional scale/hotplug while
+a card is pressed, plus simultaneous independent per-output notification
+queues. No visual/TENET/pixel flags are set by this work.
