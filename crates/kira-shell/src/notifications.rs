@@ -12,7 +12,6 @@ use gtk::prelude::*;
 use kira_services::notification_queue::{DEFAULT_DWELL, Notice, NotificationQueue};
 use kira_ui::{
     NotificationHost, NotificationIntent, NotificationView, PopupHost, PopupKind, ToastLayout,
-    toast_layout,
 };
 
 const OBJECT_PATH: &str = "/org/freedesktop/Notifications";
