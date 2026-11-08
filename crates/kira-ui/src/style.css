@@ -459,3 +459,38 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
 .kira-settings .settings-field-value {
   font-size: 14px; font-weight: 700; color: #ffffff;
 }
+
+/* GTK4 popovers (independent Wayland child popups, NOT extra SNI owners).
+   Non-modal ancestors stay pointer-accessible; GTK flips the preferred
+   right-side placement where insufficient logical monitor space remains. */
+popover.tray-cascade-popover > contents {
+  background: #14213d;
+  color: #ffffff;
+  border: 1px solid #fca311;
+  border-radius: 2px;
+  padding: 5px;
+}
+popover.tray-cascade-popover .tray-cascade-content { background: #14213d; padding: 6px; }
+popover.tray-cascade-popover .tray-menu-list { background: #14213d; padding: 3px; }
+popover.tray-cascade-popover .tray-menu-back {
+  background: #000000; color: #e5e5e5;
+  border-radius: 0; min-height: 36px;
+  border-bottom: 1px solid #e5e5e5;
+}
+popover.tray-cascade-popover .tray-menu-entry,
+popover.tray-cascade-popover .tray-menu-group {
+  background: transparent; color: #ffffff;
+  min-height: 36px; padding: 4px 8px;
+  font-size: 12px; text-align: left; border-radius: 2px;
+}
+popover.tray-cascade-popover .tray-menu-group { color: #fca311; font-weight: 800; }
+popover.tray-cascade-popover .tray-menu-entry:hover,
+popover.tray-cascade-popover .tray-menu-group:hover {
+  background: #000000; color: #fca311;
+}
+popover.tray-cascade-popover .tray-menu-entry:focus-visible,
+popover.tray-cascade-popover .tray-menu-group:focus-visible,
+popover.tray-cascade-popover .tray-menu-back:focus-visible {
+  outline: 2px solid #fca311; outline-offset: -2px;
+}
+popover.tray-cascade-popover button:disabled { opacity: 0.4; }
