@@ -1,5 +1,6 @@
 """Fail-closed private D-Bus acceptance launcher, no graphics required."""
 from pathlib import Path
+import socket
 import sys
 import unittest
 
@@ -8,7 +9,7 @@ from dev_preview import PreviewError
 from accept_nested import (
     PARENT_BUS, TOKEN, acceptance_command, child_environment, verify_private_bus,
 )
-from private_bus import private_bus_config, run_session_arguments
+from private_bus import PRIVATE_BUS_DIR, private_bus_config, run_session_arguments
 
 
 class PrivateBusAcceptanceTests(unittest.TestCase):
@@ -23,6 +24,7 @@ class PrivateBusAcceptanceTests(unittest.TestCase):
             "KIRA_ISOLATED_SESSION_BUS": "1",
             "NIRI_SOCKET": "/real/niri.sock",
             "KIRA_CORE_SOCKET": "/real/core.sock",
+            PRIVATE_BUS_DIR: "/tmp/forged-private-dbus",
         }
 
     def test_parent_context_is_scrubbed_and_preserved(self):
@@ -33,23 +35,56 @@ class PrivateBusAcceptanceTests(unittest.TestCase):
         for key in (
             "KIRA_PREVIEW", "KIRA_SNI_PREVIEW", "KIRA_NOTIFICATIONS_PREVIEW",
             "KIRA_ISOLATED_SESSION_BUS", "NIRI_SOCKET", "KIRA_CORE_SOCKET",
+            PRIVATE_BUS_DIR,
         ):
             self.assertNotIn(key, child)
             self.assertIn(key, self.parent)
 
     def test_valid_fresh_bus_and_all_denied_shared_bus_cases(self):
-        candidate = child_environment(self.parent, "a" * 32)
-        candidate["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=/tmp/dbus-isolated"
-        verify_private_bus(candidate)
-        for changed in (
-            {"DBUS_SESSION_BUS_ADDRESS": self.parent["DBUS_SESSION_BUS_ADDRESS"]},
-            {"DBUS_SESSION_BUS_ADDRESS": ""},
-            {TOKEN: "not-a-token"},
-            {"KIRA_SNI_PREVIEW": "1"},
-            {"KIRA_NOTIFICATIONS_PREVIEW": "1"},
-        ):
-            with self.subTest(changed=changed), self.assertRaises(PreviewError):
-                verify_private_bus({**candidate, **changed})
+        with private_bus_config() as config, socket.socket(socket.AF_UNIX) as server:
+            sock = config.parent / "dbus-local-test"
+            server.bind(str(sock))
+            candidate = child_environment(self.parent, "a" * 32)
+            candidate[PRIVATE_BUS_DIR] = str(config.parent)
+            candidate["DBUS_SESSION_BUS_ADDRESS"] = (
+                f"unix:path={sock},guid=" + "a" * 32
+            )
+            verify_private_bus(candidate)
+            for changed in (
+                {"DBUS_SESSION_BUS_ADDRESS": self.parent["DBUS_SESSION_BUS_ADDRESS"]},
+                {"DBUS_SESSION_BUS_ADDRESS": ""},
+                {"DBUS_SESSION_BUS_ADDRESS": "unix:path=/tmp/other-bus"},
+                {"DBUS_SESSION_BUS_ADDRESS": candidate["DBUS_SESSION_BUS_ADDRESS"]
+                 + ";unix:path=/tmp/fallback"},
+                {TOKEN: "not-a-token"},
+                {PRIVATE_BUS_DIR: ""},
+                {PRIVATE_BUS_DIR: str(config.parent.parent)},
+                {"KIRA_SNI_PREVIEW": "1"},
+                {"KIRA_NOTIFICATIONS_PREVIEW": "1"},
+            ):
+                with self.subTest(changed=changed), self.assertRaises(PreviewError):
+                    verify_private_bus({**candidate, **changed})
+
+    def test_rejects_symlinked_socket_and_relaxed_directory_permissions(self):
+        with private_bus_config() as config, socket.socket(socket.AF_UNIX) as server:
+            sock = config.parent / "dbus-local-test"
+            server.bind(str(sock))
+            alias = config.parent / "dbus-alias"
+            alias.symlink_to(sock)
+            candidate = child_environment(self.parent, "b" * 32)
+            candidate[PRIVATE_BUS_DIR] = str(config.parent)
+            candidate["DBUS_SESSION_BUS_ADDRESS"] = f"unix:path={alias}"
+            with self.assertRaises(PreviewError):
+                verify_private_bus(candidate)
+
+            candidate["DBUS_SESSION_BUS_ADDRESS"] = f"unix:path={sock}"
+            config.parent.chmod(0o755)
+            try:
+                with self.assertRaises(PreviewError):
+                    verify_private_bus(candidate)
+            finally:
+                config.parent.chmod(0o700)
+            verify_private_bus(candidate)
 
     def test_missing_parent_wayland_or_invalid_nonce_fails(self):
         for env in (

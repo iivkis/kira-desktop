@@ -18,7 +18,10 @@ import subprocess
 import sys
 
 from dev_preview import PreviewError
-from private_bus import private_bus_config, run_session_arguments
+from private_bus import (
+    PRIVATE_BUS_DIR, private_bus_config, run_session_arguments,
+    verify_private_bus_socket,
+)
 
 TOKEN = "KIRA_ACCEPTANCE_TOKEN"
 PARENT_BUS = "KIRA_ACCEPTANCE_PARENT_BUS"
@@ -41,6 +44,7 @@ def child_environment(parent: dict[str, str], nonce: str) -> dict[str, str]:
         "KIRA_CORE_SOCKET",
         TOKEN,
         PARENT_BUS,
+        PRIVATE_BUS_DIR,
     ):
         env.pop(name, None)
     env[PARENT_BUS] = parent.get("DBUS_SESSION_BUS_ADDRESS", "")
@@ -59,6 +63,10 @@ def verify_private_bus(env: dict[str, str]) -> None:
         raise PreviewError("No isolated Unix D-Bus session address")
     if current == parent:
         raise PreviewError("Nested acceptance inherited the user's D-Bus bus; refusing")
+    try:
+        verify_private_bus_socket(env)
+    except ValueError as error:
+        raise PreviewError(str(error)) from error
     if env.get("KIRA_NOTIFICATIONS_PREVIEW") or env.get("KIRA_SNI_PREVIEW"):
         raise PreviewError("An inherited preview ownership override is forbidden")
 
@@ -103,6 +111,7 @@ def main() -> int:
         # activate an external user service, or create a socket outside its
         # mode-0700 throwaway directory.
         with private_bus_config() as config:
+            env[PRIVATE_BUS_DIR] = str(config.parent)
             command = acceptance_command(
                 Path(__file__).resolve().parent / "dev_preview.py",
                 args.package_dir.resolve(),

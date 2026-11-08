@@ -7,10 +7,16 @@ All operations remain scoped to the short-lived runner subprocess.
 from __future__ import annotations
 
 from contextlib import contextmanager
+import os
 from pathlib import Path
+import re
+import stat
 import tempfile
 from typing import Iterator
+from urllib.parse import unquote_to_bytes
 from xml.sax.saxutils import escape
+
+PRIVATE_BUS_DIR = "KIRA_ACCEPTANCE_PRIVATE_BUS_DIR"
 
 CONFIG = """<!DOCTYPE busconfig PUBLIC
  "-//freedesktop//DTD D-Bus Bus Configuration 1.0//EN"
@@ -46,3 +52,43 @@ def run_session_arguments(runner: str, config: Path) -> list[str]:
     if not config.is_file() or config.is_symlink():
         raise ValueError("A real, private D-Bus config file is required")
     return [runner, "--config-file=" + str(config), "--"]
+
+
+def verify_private_bus_socket(env: dict[str, str]) -> None:
+    """Check the actual socket, not merely a different-looking D-Bus address.
+
+    The acceptance-only bus must have a direct, owned socket inside the fresh
+    mode-0700 directory passed by its coordinator. Never trust a path alias,
+    abstract socket, multiple fallback addresses or a symlinked bus.
+    """
+    directory = env.get(PRIVATE_BUS_DIR, "")
+    if not directory:
+        raise ValueError("Missing private D-Bus directory")
+    root = Path(directory)
+    if not root.is_absolute():
+        raise ValueError("Private D-Bus directory must be absolute")
+    try:
+        root_stat = root.lstat()
+    except OSError as error:
+        raise ValueError("Private D-Bus directory does not exist") from error
+    if (not stat.S_ISDIR(root_stat.st_mode) or root_stat.st_uid != os.getuid()
+            or stat.S_IMODE(root_stat.st_mode) != 0o700):
+        raise ValueError("Private D-Bus directory must be an owned 0700 directory")
+
+    address = env.get("DBUS_SESSION_BUS_ADDRESS", "")
+    match = re.fullmatch(r"unix:path=([^,;]+)(?:,guid=[0-9A-Fa-f]{32})?", address)
+    if match is None:
+        raise ValueError("Private D-Bus requires one filesystem Unix socket")
+    raw_path = unquote_to_bytes(match.group(1))
+    if b"\x00" in raw_path:
+        raise ValueError("Invalid D-Bus socket path")
+    socket_path = Path(os.fsdecode(raw_path))
+    if (not socket_path.is_absolute() or socket_path.parent != root
+            or not socket_path.name.startswith("dbus-")):
+        raise ValueError("D-Bus socket is not directly inside the private directory")
+    try:
+        socket_stat = socket_path.lstat()
+    except OSError as error:
+        raise ValueError("Private D-Bus socket does not exist") from error
+    if not stat.S_ISSOCK(socket_stat.st_mode) or socket_stat.st_uid != os.getuid():
+        raise ValueError("Private D-Bus socket is not an owned Unix socket")

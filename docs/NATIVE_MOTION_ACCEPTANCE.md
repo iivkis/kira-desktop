@@ -42,8 +42,10 @@ The optional fully coordinated command below requires **an existing parent
 Wayland session**, `nix develop` (with `dbus-run-session`, `gdbus`, `grim`,
 Niri and GTK4) and `nix build .#default`. It is never run on headless CI.
 Unlike a plain preview, it constructs a **fresh private D-Bus session**
-before launching nested Niri or Kira and validates a 128-bit handshake plus
-a child-bus address different from the inherited parent bus. Production
+before launching nested Niri or Kira. Besides the 128-bit handshake and
+a distinct parent/child bus address, it checks that the live D-Bus address
+refers to an owned filesystem Unix socket directly in the coordinator's
+mode-0700 temporary directory (not an alias or fallback address). Production
 `main` and the user's active Niri, KDL, notification daemon, tray watcher,
 and XDG state are untouched.
 

@@ -19,7 +19,7 @@ import time
 from accept_nested import PARENT_BUS, TOKEN, verify_private_bus
 from acceptance_scenarios import SNI_FIXTURE, sni_property_get_all
 from dev_preview import PreviewError
-from private_bus import private_bus_config, run_session_arguments
+from private_bus import PRIVATE_BUS_DIR, private_bus_config, run_session_arguments
 
 
 def run_child(fixture: Path) -> None:
@@ -106,11 +106,12 @@ def main() -> int:
         env = os.environ.copy()
         parent = env.get("DBUS_SESSION_BUS_ADDRESS", "")
         for name in ("KIRA_PREVIEW", "KIRA_SNI_PREVIEW", "KIRA_NOTIFICATIONS_PREVIEW",
-                     "KIRA_ISOLATED_SESSION_BUS", TOKEN, PARENT_BUS):
+                     "KIRA_ISOLATED_SESSION_BUS", TOKEN, PARENT_BUS, PRIVATE_BUS_DIR):
             env.pop(name, None)
         env[PARENT_BUS] = parent
         env[TOKEN] = secrets.token_hex(16)
         with private_bus_config() as config:
+            env[PRIVATE_BUS_DIR] = str(config.parent)
             child = [
                 *run_session_arguments(bus_runner, config),
                 sys.executable, str(Path(__file__).resolve()),
