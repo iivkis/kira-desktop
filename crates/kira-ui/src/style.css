@@ -279,3 +279,46 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
   background: #000000;
   outline: 1px solid #fca311;
 }
+
+/* Offline Calendar observatory: visible only in independently detached mode. */
+.kira-popup .calendar-rail { background: #000000; }
+.kira-popup .sky-atlas {
+  background: #000000; color: #ffffff;
+  padding: 16px; min-width: 480px;
+}
+.kira-popup .sky-title {
+  color: #ffffff; font-size: 21px; font-weight: 800;
+  padding: 0 0 10px 10px;
+  border-left: 2px solid #fca311;
+}
+.kira-popup .sky-workbench {
+  background: #14213d;
+  padding: 14px;
+}
+.kira-popup .sky-example {
+  color: #fca311; font-size: 11px; font-weight: 700;
+}
+.kira-popup .sky-field-title {
+  color: #e5e5e5; font-size: 11px; font-weight: 700;
+}
+.kira-popup .sky-workbench entry {
+  background: #000000; color: #ffffff;
+  border: 1px solid #e5e5e5;
+  min-height: 30px; font-size: 13px;
+  padding: 4px 6px; border-radius: 2px;
+}
+.kira-popup .sky-workbench entry:focus-visible {
+  outline: 2px solid #fca311; outline-offset: 2px;
+}
+.kira-popup .sky-reset {
+  color: #fca311; background: #000000;
+  border: 1px solid #fca311; border-radius: 2px;
+  min-height: 34px;
+}
+.kira-popup .sky-disclaimer {
+  color: #e5e5e5; font-size: 11px;
+}
+.kira-popup .sky-horizon {
+  background: #14213d;
+  min-height: 270px;
+}
