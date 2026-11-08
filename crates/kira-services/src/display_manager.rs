@@ -57,7 +57,8 @@ impl Model {
     pub fn new() -> Self {
         let (sender, requests) = mpsc::channel();
         let (events, receiver) = mpsc::channel();
-        thread::spawn(move || run(requests, events));
+        // The in-process observer never accepts mutation requests.
+        thread::spawn(move || run(requests, events, false));
         Self { sender, receiver }
     }
 
@@ -281,7 +282,7 @@ pub fn run_supervisor_stdio() -> i32 {
             }
         }
     });
-    run(requests, events);
+    run(requests, events, true);
     let _ = input.join();
     let _ = output.join();
     0
@@ -624,7 +625,7 @@ fn deadline_expired(deadline: Instant, now: Instant) -> bool {
     now >= deadline
 }
 
-fn run(requests: Receiver<Request>, events: Sender<Event>) {
+fn run(requests: Receiver<Request>, events: Sender<Event>, allow_mutation: bool) {
     let mut next_id = 0_u64;
     let mut pending: Option<(u64, Vec<Desired>, Instant)> = None;
     let mut staged: Option<Vec<Desired>> = None;
@@ -664,6 +665,17 @@ fn run(requests: Receiver<Request>, events: Sender<Event>) {
                 break;
             }
         };
+        // A missing supervisor must not silently restore the older
+        // process-local Apply implementation. The fallback only observes.
+        if !allow_mutation && !matches!(&message, Request::Refresh) {
+            report(
+                &events,
+                "error",
+                None,
+                Some("Изменения дисплеев требуют отдельного процесса отката".into()),
+            );
+            continue;
+        }
         match message {
             Request::Refresh => {
                 if pending.is_none() {
