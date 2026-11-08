@@ -29,8 +29,8 @@ especially `docs/TRAY_DESIGN.md`, `TrayBar.svelte`, `TrayWidget.svelte`,
   `TrayIntent::MenuClick(handle, leaf_id)`,
   `TrayIntent::MenuExpand(handle, parent_id)`, `TrayIntent::MenuBack`
   and `TrayIntent::DismissMenu` from the UI. Menu leaf/parent intents are
-  permitted only when a unique enabled item is on the **currently displayed
-  navigation page** of the live owner's menu. Hidden branch IDs cannot fire.
+  permitted only when a globally unique enabled item is on an **actually
+  visible root/ancestor cascade page** of the live owner's menu. Hidden branch IDs cannot fire.
   Methods target the verified **unique owner** of the registered SNI item,
   not a caller-controlled destination/path. Actions are fixed to
   `Activate(0,0)` or `ContextMenu(0,0)`, with fixed
@@ -61,12 +61,12 @@ root rereads only when the revision is newer and the parent ID is known.
 A `children-display=submenu` entry is actionable even before its child
 nodes load: the trusted Shell validates a unique enabled parent, then calls
 `AboutToShow(parent_id)` followed by bounded `GetLayout(0)`. Deeper
-than three levels and additional floating cascading submenus still remain
-future work. **Native page navigation now exists** in the one pooled popup:
-the bounded preorder tree is projected to direct children, unique enabled
-parent IDs form a maximum three-level navigation path, a lazy page remains
-empty until the validated owner's `AboutToShow/GetLayout` response, and
-`MenuBack` pops one level before returning to the tray list. Escape
+than three levels remain unsupported. **Native floating GTK4 cascades now exist** in the one retained popup:
+the bounded preorder tree projects the root and every valid ancestor page
+into real side-anchored non-modal `GtkPopover` children. Unique enabled
+parent IDs form a maximum three-level path; a lazy page is empty until
+validated `AboutToShow/GetLayout` returns. `MenuBack` pops one level; the
+root Back dismisses the menu to show pinned/hidden items. Escape
 in the embedded menu shares that back behavior. An app deleting a parent
 during `LayoutUpdated` automatically returns to the deepest surviving
 valid ancestor. Closing the popup invalidates outstanding async replies.
@@ -91,7 +91,7 @@ dismissing its menu. The Tray's own × has a distinct close handler: it dismisse
 the menu and returns the GTK tree to the pool rather than re-raising it.
 Window-manager close, Attach and Escape keep the retained view model.
 
-Native bounded direct-child menu pages support Up/Down, Home/End, Right for an
+Native bounded cascading menu pages support Up/Down, Home/End, Right for an
 enabled submenu, and Left/Escape for returning to validated ancestors. A
 LayoutUpdated refresh preserves focus by the same enabled menu ID if still
 available, otherwise the first enabled action. Delayed focus restoration is
@@ -99,8 +99,9 @@ guarded by GTK mapping and active-window checks to avoid stealing focus.
 The Shell still authorizes each numeric handle against its current D-Bus
 unique owner and menu session. UI never chooses an arbitrary D-Bus path.
 
-Missing: separate floating cascading popovers, nested Niri focus and D-Bus
-owner churn acceptance, responsive bar budgets, cross-surface icon motion,
+Floating child popovers have been implemented but still need nested Niri focus,
+keyboard and hit-region checks, D-Bus owner churn acceptance, responsive
+bar geometry under fractional scaling, cross-surface icon motion,
 pixel comparisons and source typography. Headless tests do not certify parity.
 
 The acceptance-only command `python3 scripts/accept_nested.py --output
@@ -130,3 +131,23 @@ Capture paired frames and motion against the frozen main reference at
 360×640, 800×600 and 1920×1080, with fractional scaling and reduced
 motion. Neither `tray-bar` nor `tray-widget` may be marked verified
 before those comparisons and the missing menu/motion contracts are resolved.
+
+## Unreviewed GTK cascading menu increment
+
+The GTK implementation retains one Tray controller and one owner-scoped D-Bus
+menu session. It projects each validated parent path into its own anchored
+`GtkPopover` using a BoxLayout parent, chooses preferred Right positioning
+(with GTK edge flipping), keeps ancestors pointer-accessible, and unparents
+old child popovers deepest-first before replacing a menu layout. The Shell
+checks the current owner/menu pair, globally unique enabled IDs and membership
+in the visible ancestor pages before dispatching a leaf or expanding a sibling.
+The dedicated `kira-ui` tests cover orphan ancestors, duplicate IDs,
+disabled entries, sibling switching and visible ancestor leaf dispatch.
+
+**Still unaccepted:** genuine GTK Wayland child-surface placement, focus
+recovery after `LayoutUpdated`, Escape at every depth, detach/reattach,
+fractional scaling and clip boundaries, owner loss while a child is mapped,
+source TENET frame motion and paired frozen-main screenshots. Those must be
+verified in the existing private-bus nested-Niri harness, never by taking
+ownership of the user's session bus. This increment does not change the
+0/15 verified parity status.
