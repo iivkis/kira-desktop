@@ -131,6 +131,16 @@ fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)>
     Some((monitors[index].clone(), layout))
 }
 
+/// A detached xdg-toplevel is managed by Niri, not a pooled overlay.
+/// A transient popup only blocks a toast *on its own monitor*. Unknown
+/// monitor affinity fails closed until real GDK output data is available.
+fn toast_target_unobstructed(
+    right_transient_active: bool,
+    same_monitor_as_transient: Option<bool>,
+) -> bool {
+    !right_transient_active || same_monitor_as_transient == Some(false)
+}
+
 /// Never schedule an already-due FIFO deadline when the host is covered,
 /// unowned or unmapped. A real mapping/geometry/popup change resumes it.
 fn next_visible_deadline(
@@ -331,17 +341,19 @@ impl Service {
         }
     }
 
-    fn can_show(&self) -> bool {
-        // The right-side pooled popup has unknown compositor extents during
-        // its animation. Queue rather than overlap it with unreadable toasts.
-        ![
+    fn can_show_on(&self, target: &gtk::gdk::Monitor) -> bool {
+        // Only real pooled transients occlude their own output. Detached
+        // xdg-toplevels must not globally starve the notification FIFO.
+        let transient = [
             PopupKind::Calendar,
             PopupKind::System,
             PopupKind::Settings,
             PopupKind::Tray,
         ]
         .into_iter()
-        .any(|kind| self.popup.is_active(kind))
+        .any(|kind| self.popup.is_transient_active(kind));
+        let same_monitor = self.popup.bar_monitor().map(|bar| bar == *target);
+        toast_target_unobstructed(transient, same_monitor)
     }
 
     fn sync(self: &Rc<Self>) {
@@ -359,8 +371,9 @@ impl Service {
                 .borrow()
                 .as_ref()
                 .is_some_and(NotificationHost::is_renderable)
-            && layout.is_some()
-            && self.can_show();
+            && target
+                .as_ref()
+                .is_some_and(|(monitor, _)| self.can_show_on(monitor));
         let expired = {
             let mut queue = self.queue.borrow_mut();
             let previous = queue
@@ -586,6 +599,20 @@ mod tests {
             Some("1")
         ));
         assert!(preview_notifications_allowed(true, Some("1"), Some("1")));
+    }
+
+    #[test]
+    fn only_same_output_transient_occludes_notifications() {
+        // The current mapped bar and toast are on one output.
+        assert!(!toast_target_unobstructed(true, Some(true)));
+        // Unsafe/unknown monitor routing remains fail-closed.
+        assert!(!toast_target_unobstructed(true, None));
+        // A narrow bar output may force a genuinely different safe target.
+        assert!(toast_target_unobstructed(true, Some(false)));
+        // No transient means detached Niri-managed windows must not starve
+        // the queue, even before the bar has mapped.
+        assert!(toast_target_unobstructed(false, None));
+        assert!(toast_target_unobstructed(false, Some(true)));
     }
 
     #[test]
