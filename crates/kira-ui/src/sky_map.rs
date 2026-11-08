@@ -39,7 +39,7 @@ pub struct SkyMap {
     drawing: gtk::DrawingArea,
     message: gtk::Label,
     example: gtk::Label,
-    scene: RefCell<Scene>,
+    scene: Rc<RefCell<Scene>>,
     motion: MotionToken,
 }
 
@@ -138,7 +138,7 @@ impl SkyMap {
             drawing: drawing.clone(),
             message,
             example,
-            scene: RefCell::new(Scene {
+            scene: Rc::new(RefCell::new(Scene {
                 date,
                 latitude: GREENWICH_LAT.into(),
                 longitude: GREENWICH_LON.into(),
@@ -146,7 +146,7 @@ impl SkyMap {
                 current_latitude: 51.4779,
                 current_sidereal: 0.0,
                 painted: false,
-            }),
+            })),
             motion: MotionToken::default(),
         });
 
@@ -275,38 +275,27 @@ impl SkyMap {
             return;
         }
         let delta = shortest_sidereal_delta(initial_sidereal, sidereal);
-        let scene = Rc::new((
-            self.drawing.downgrade(),
-            self.scene.borrow().date,
-        ));
-        // A borrowed scene cannot outlive this method: capture only a weak
-        // GTK drawing reference, and use an owned Rc<Cell> animation target.
-        // Each new input cancels the old animation and starts from the last
-        // actually drawn value, never from a discarded target.
-        let display = Rc::new(std::cell::Cell::new((initial_latitude, initial_sidereal)));
-        let display_step = display.clone();
-        let weak = self.root.downgrade();
+        // Every frame mutates the same scene that Cairo paints. A new change
+        // cancels the prior tick and starts from its last *displayed* point.
+        let scene = self.scene.clone();
+        let area = self.drawing.downgrade();
         self.motion.run(
             &self.drawing.clone().upcast(),
             ANIMATION_MS,
             move |cursor| {
                 let eased = 1.0 - (1.0 - cursor).powi(3);
-                display_step.set((
-                    initial_latitude + (latitude - initial_latitude) * eased,
-                    initial_sidereal + delta * eased,
-                ));
-                if let Some(root) = weak.upgrade() {
-                    root.queue_draw();
+                {
+                    let mut current = scene.borrow_mut();
+                    current.current_latitude =
+                        initial_latitude + (latitude - initial_latitude) * eased;
+                    current.current_sidereal = initial_sidereal + delta * eased;
                 }
-                if let Some(area) = scene.0.upgrade() {
+                if let Some(area) = area.upgrade() {
                     area.queue_draw();
                 }
             },
             move || {},
         );
-        // The animation target is stored in the scene during each tick by
-        // the draw callback. A canceled tick will never overwrite a new input.
-        self.drawing.queue_draw();
     }
 
     fn paint(&self, cr: &gtk::cairo::Context, width: i32, height: i32) {
