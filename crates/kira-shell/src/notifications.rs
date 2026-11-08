@@ -152,8 +152,7 @@ fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)>
         let index = preferred?;
         blocked[index] = true;
     }
-    let (index, layout) =
-        kira_ui::toast_output_plan_unobstructed(&outputs, preferred, &blocked)?;
+    let (index, layout) = kira_ui::toast_output_plan_unobstructed(&outputs, preferred, &blocked)?;
     Some((monitors[index].clone(), layout))
 }
 
@@ -674,7 +673,10 @@ mod tests {
         queue.step(now + Duration::from_secs(1), false);
         assert_eq!(queue.painted_count(), 0);
         queue.step(now + Duration::from_secs(1), true);
-        assert_eq!(queue.visible().map(|notice| notice.id).collect::<Vec<_>>(), vec![42]);
+        assert_eq!(
+            queue.visible().map(|notice| notice.id).collect::<Vec<_>>(),
+            vec![42]
+        );
         assert_eq!(queue.painted_count(), 0);
         assert!(queue.mark_painted(now + Duration::from_secs(2), &[42]));
         assert_eq!(queue.painted_count(), 1);
