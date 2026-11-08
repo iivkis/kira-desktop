@@ -410,10 +410,12 @@
         "Native trusted 80-entry, 3-depth dbusmenu AboutToShow/GetLayout/Event(clicked) with unique enabled leaf checks, preserved checkbox/radio menu session after action and fallback ContextMenu; deeper lazy menus and graphical acceptance outstanding",
         "Owner-scoped LayoutUpdated and revision guards, enabled unique lazy-parent AboutToShow and 340ms retained GTK row FLIP implemented; deep popovers and graphical parity still missing",
         "One pooled GTK popup now navigates bounded direct children with MenuBack/Escape and validated owner-scoped submenu ID paths; disappeared ancestors retreat safely. Cascading popovers and paired Niri evidence still missing",
-        "Retained Tray now moves between pooled layer-shell and native decorated xdg-toplevel. Bar raises detached window without dropping the owner-validated SNI menu, while the distinct tray close action returns to the pool. Native Up/Down/Home/End/Right/Left/Escape keyboard navigation and stable enabled-ID focus after LayoutUpdated have pure tests, not graphical acceptance."
+        "Retained Tray now moves between pooled layer-shell and native decorated xdg-toplevel. Bar raises detached window without dropping the owner-validated SNI menu, while the distinct tray close action returns to the pool. Native Up/Down/Home/End/Right/Left/Escape keyboard navigation and stable enabled-ID focus after LayoutUpdated have pure tests, not graphical acceptance.",
+        "GTK4 native side-anchored non-modal Popover cascades now keep all verified ancestor menu pages mounted, open up to 3 owner-validated levels, and switch sibling branches from visible parents. Shell dispatch validates only globally unique enabled leaves on actually visible ancestor pages; disabled, duplicate, missing, or stale paths fail closed. Pure cascade/path tests exist; genuine Wayland popover layout/focus/pointer capture remains unreviewed."
       ],
       "animation_requirements": [
-        "Reversible popup reveal and FLIP reflow"
+        "Reversible popup reveal and FLIP reflow",
+        "Popover repositioning/entry/exit and interruption/reduced-motion need paired nested-Niri captures; no frame or pixel flags may be set from unit tests."
       ],
       "verified": {
         "content": false,
