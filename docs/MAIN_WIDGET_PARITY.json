@@ -367,7 +367,8 @@
         "Live StatusNotifier icons, max four visible and overflow count",
         "Primary and secondary activation, needs-attention status",
         "Native GTK bar shows registered StatusNotifierItem theme icon/label, pinned identity, live attention and bounded overflow from authenticated D-Bus item properties; pixmaps and responsive/visual parity remain outstanding",
-        "Native SNI a(iiay) IconPixmap and AttentionIconPixmap decode only bounded nearest-24px ARGB32 network-order frames, render RGBA GDK textures and prefer existing themed icons; live Niri pixmap acceptance outstanding"
+        "Native SNI a(iiay) IconPixmap and AttentionIconPixmap decode only bounded nearest-24px ARGB32 network-order frames, render RGBA GDK textures and prefer existing themed icons; live Niri pixmap acceptance outstanding",
+        "Mapped Top Bar width restores source 2/4/6 responsive visible pinned SNI icon thresholds; a pure model verifies overflow counts at the three ranges. Real screenshot/fractional scaling acceptance remains outstanding."
       ],
       "animation_requirements": [
         "Continuous selection and overflow entrance"

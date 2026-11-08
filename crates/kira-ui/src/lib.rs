@@ -75,7 +75,7 @@ pub use system_report::{
 pub use tenet_scroll::TenetScroll;
 pub use tray::{
     MenuNavigation, TrayBarModel, TrayIntent, TrayItem, TrayMenu, TrayMenuEntry, TrayPixmap,
-    TrayState, TrayStatus, TrayUi, menu_focus_target, tray_bar_model,
+    TrayState, TrayStatus, TrayUi, menu_focus_target, tray_bar_model, tray_budget_for_width,
 };
 pub use workspace::{
     WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspace_window, visible_workspaces,

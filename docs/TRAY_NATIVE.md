@@ -8,7 +8,8 @@ especially `docs/TRAY_DESIGN.md`, `TrayBar.svelte`, `TrayWidget.svelte`,
 ## Architecture and real data
 
 - `kira-ui::TrayUi` renders two reusable GTK4 widgets from one typed
-  `TrayState`: a compact 42px-bar strip with up to four pinned icons and an
+  `TrayState`: a compact 42px-bar strip with the frozen main's 2/4/6 pinned
+  icon budget at widths below 700, 700–1099 and 1100+ logical pixels, plus an
   overflow button; and a pooled native popup with the complete current list,
   pin controls and primary/secondary actions. StatusNotifier `Passive`
   items are excluded. `NeedsAttention` is derived only from a live item.
@@ -75,8 +76,11 @@ OverlayIcon composition and multi-resolution selection beyond the nearest
 GTK rows now retain their real `ReflowRow` identities across SNI updates,
 capture painted positions and run a source 340ms `back.out(1.14)` FLIP for
 up to 24 previously rendered rows. Reduced-motion and unmapped popups
-settle immediately. Responsive bar icon limits, cross-surface icon transfer,
-pixel comparisons and source typography remain outstanding.
+settle immediately. The bar now samples its mapped GTK width and applies the pinned source 2/4/6
+icon budget; overflow reflects only real SNI identities and attention.
+Dynamic available-space measurement beyond the source's width thresholds,
+cross-surface icon transfer, pixel comparisons and source typography remain
+outstanding.
 
 ## Retained detachable Tray and accessible native menus
 
