@@ -271,6 +271,7 @@ impl DisplayMap {
                 notify(MapIntent::Select(index));
             }
             if let Some(view) = view.upgrade() {
+                view.grab_focus();
                 view.queue_draw();
             }
         });
@@ -371,6 +372,11 @@ impl DisplayMap {
     ) {
         {
             let mut state = self.state.borrow_mut();
+            if state.outputs.as_slice() != outputs {
+                // Hotplug invalidates any in-flight pointer drag. Never send
+                // coordinates for a reused index that names a new connector.
+                state.drag = None;
+            }
             state.outputs = outputs.to_vec();
             state.choices = choices.to_vec();
             state.selected = selected;
@@ -527,7 +533,15 @@ mod tests {
         let mut choice = DisplayChoice::from(&output);
         choice.mode = "unadvertised".into();
         assert_eq!(logical_size(&output, &choice), None);
-        assert!(layout_rectangles(std::slice::from_ref(&output), std::slice::from_ref(&choice), 500.0, 230.0).is_empty());
+        assert!(
+            layout_rectangles(
+                std::slice::from_ref(&output),
+                std::slice::from_ref(&choice),
+                500.0,
+                230.0
+            )
+            .is_empty()
+        );
         assert_eq!(snap_position(&[output], &[choice], 0, 40, 0), None);
     }
 }

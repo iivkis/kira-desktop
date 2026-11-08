@@ -287,17 +287,16 @@ impl Controls {
                 | DisplayPhase::Saved
                 | DisplayPhase::Error(_)
         );
-        let mutating =
-            editing && self.editing_enabled.get() && !self.supervisor_lost.get();
+        let mutating = editing && self.editing_enabled.get() && !self.supervisor_lost.get();
         self.outputs.set_sensitive(mutating);
         self.update_map();
-        self.refresh.set_sensitive(editing && !self.supervisor_lost.get());
+        self.refresh
+            .set_sensitive(editing && !self.supervisor_lost.get());
         self.reset.set_sensitive(mutating);
         self.apply
             .set_sensitive(mutating && can_apply(&self.choices.borrow()));
-        self.save.set_sensitive(
-            mutating && matches!(*phase, DisplayPhase::Confirmed),
-        );
+        self.save
+            .set_sensitive(mutating && matches!(*phase, DisplayPhase::Confirmed));
         match &*phase {
             DisplayPhase::Pending {
                 deadline_unix_ms, ..
@@ -321,7 +320,8 @@ impl Controls {
         match action {
             "refresh"
                 if !self.supervisor_lost.get()
-                    && !matches!(*self.phase.borrow(), DisplayPhase::Pending { .. }) => {
+                    && !matches!(*self.phase.borrow(), DisplayPhase::Pending { .. }) =>
+            {
                 self.set_phase(DisplayPhase::Loading);
                 (self.on_intent)(DisplayIntent::Refresh);
             }
