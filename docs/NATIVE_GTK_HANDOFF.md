@@ -25,6 +25,10 @@
 5. Цвета Kira Default: `#000000`, `#14213d`, `#fca311`, `#e5e5e5`, `#ffffff`. Реальный keyboard focus, accessible labels, reduced motion, source-aligned TENET (обратимость, interruption-safe), а не произвольный fade.
 6. **Безопасность:** никогда не заменять живой Niri, KDL, пользовательский D-Bus daemon, tray watcher или notification service для теста. Для D-Bus acceptance нужен **отдельный** `dbus-run-session` / `scripts/accept_nested.py`. Не устанавливать preview-переменные владения шиной в нормальной host-сессии.
 
+## Продолжение после последнего подтверждённого CI 42506642002
+
+Следующая серия реальных коммитов после HEAD `e00b6dd63ca92a4e64b74f38b0a8c8bade401804` добавляет нативный Settings (в предыдущем этапе), активные side-anchored GTK Popover каскады Tray с owner-validated ancestor/sibling actions, и output-local suppression Notifications (pooled vs detached). Первые GTK unit/Clippy проверки этих изменений проходили; **повторно проверить CI именно последнего HEAD** перед выводом о зелёной сборке. Frozen main и все 15 `verified` по-прежнему не менялись. Live Wayland и парные кадры здесь не предоставлены. В частности, частичная headless D-Bus и model QA не подтверждают реальные GtkPopover child surfaces, focus и hit regions. Следующий исполнитель должен начать с этого незавершённого графического G3/G4 gate.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
