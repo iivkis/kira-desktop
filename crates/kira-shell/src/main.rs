@@ -302,8 +302,8 @@ fn start_pulse_sampler(sender: mpsc::Sender<ShellUpdate>, visible: Arc<AtomicBoo
 }
 
 fn display_mutations_enabled() -> bool {
-    // The 15s watchdog currently lives in the shell process. Until it moves
-    // into Core, never mutate the live user's outputs from the normal desktop.
+    // A separate process now owns the 15s rollback deadline; production
+    // mutations remain disabled until an actual nested Shell-kill acceptance.
     // This flag is a migration safety interlock, not a privilege boundary.
     std::env::var_os("KIRA_PREVIEW").is_some()
 }
@@ -482,12 +482,23 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         "Настройки Kira",
         &settings_summary(&config.borrow()),
     ));
-    let display_model = Rc::new(DisplayModel::new());
+    let (display_model, external_rollback) = if display_mutations_enabled() {
+        match DisplayModel::supervised() {
+            Ok(model) => (model, true),
+            Err(error) => {
+                eprintln!("kira-shell: display supervisor unavailable: {error}");
+                (DisplayModel::new(), false)
+            }
+        }
+    } else {
+        (DisplayModel::new(), false)
+    };
+    let display_model = Rc::new(display_model);
     let displays = Rc::new(DisplaySettings::new({
         let model = display_model.clone();
         move |intent| send_display_intent(&model, intent)
     }));
-    displays.set_editing_enabled(display_mutations_enabled());
+    displays.set_editing_enabled(display_mutations_enabled() && external_rollback);
     let settings_content = kira_ui::settings_page(&settings.widget(), &displays.widget());
 
     let (sender, receiver) = mpsc::channel::<ShellUpdate>();
@@ -734,6 +745,12 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
 }
 
 fn main() {
+    if std::env::args_os()
+        .skip(1)
+        .eq([std::ffi::OsString::from("--display-supervisor")])
+    {
+        std::process::exit(kira_services::display_manager::run_supervisor_stdio());
+    }
     let flags = if std::env::var_os("KIRA_PREVIEW").is_some() {
         gtk::gio::ApplicationFlags::NON_UNIQUE
     } else {
