@@ -708,5 +708,4 @@ mod tests {
         assert_eq!(toast_output_plan(&[(120, 600), (500, 100)], None), None);
         assert_eq!(toast_output_plan(&[], Some(0)), None);
     }
-
 }
