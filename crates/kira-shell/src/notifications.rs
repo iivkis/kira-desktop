@@ -64,8 +64,9 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
         .child_value(5)
         .get::<Vec<String>>()
         .unwrap_or_default();
-    let actions = raw_actions
-        .chunks_exact(2)
+    let (complete_actions, _) = raw_actions.as_chunks::<2>();
+    let actions = complete_actions
+        .iter()
         .take(8)
         .map(|pair| (bounded(pair[0].clone(), 128), bounded(pair[1].clone(), 128)))
         .collect();
@@ -117,6 +118,20 @@ fn current_layout() -> Option<ToastLayout> {
     let monitor = first.downcast::<gtk::gdk::Monitor>().ok()?;
     let rect = monitor.geometry();
     toast_layout(rect.width(), rect.height(), rect.height())
+}
+
+/// Never schedule an already-due FIFO deadline when the host is covered,
+/// unowned or unmapped. A real mapping/geometry/popup change resumes it.
+fn next_visible_deadline(
+    queue: &NotificationQueue,
+    now: Instant,
+    can_show: bool,
+) -> Option<Instant> {
+    if can_show {
+        queue.next_deadline(now)
+    } else {
+        None
+    }
 }
 
 struct Service {
@@ -353,13 +368,13 @@ impl Service {
                 host.hide();
             }
         }
-        self.schedule_deadline(now);
+        self.schedule_deadline(now, can_show);
     }
 
-    fn schedule_deadline(self: &Rc<Self>, now: Instant) {
+    fn schedule_deadline(self: &Rc<Self>, now: Instant, can_show: bool) {
         let revision = self.timer_revision.get().wrapping_add(1);
         self.timer_revision.set(revision);
-        let deadline = self.queue.borrow().next_deadline(now);
+        let deadline = next_visible_deadline(&self.queue.borrow(), now, can_show);
         if let Some(deadline) = deadline {
             let weak = Rc::downgrade(self);
             glib::timeout_add_local_once(deadline.saturating_duration_since(now), move || {
@@ -522,6 +537,27 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn hidden_fifo_never_schedules_a_busy_loop() {
+        let t = Instant::now();
+        let mut queue = NotificationQueue::default();
+        queue.push(
+            Notice {
+                id: 11,
+                app: "example".into(),
+                summary: "pending".into(),
+                body: String::new(),
+                actions: vec![],
+                critical: false,
+                persistent: false,
+                dwell: DEFAULT_DWELL,
+            },
+            t,
+        );
+        assert_eq!(next_visible_deadline(&queue, t, false), None);
+        assert_eq!(next_visible_deadline(&queue, t, true), Some(t));
+    }
 
     #[test]
     fn source_notification_timeout_and_replace_rules_are_kept() {
