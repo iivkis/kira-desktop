@@ -141,71 +141,69 @@ impl Service {
         let weak = Rc::downgrade(self);
         let registration = connection
             .register_object(OBJECT_PATH, &info)
-            .method_call(
-                move |_, _, _, _, method, params, invocation| {
-                    let Some(service) = weak.upgrade() else {
-                        invocation.return_dbus_error(
-                            "org.freedesktop.DBus.Error.Failed",
-                            "Notification host stopped",
-                        );
-                        return;
-                    };
-                    match method {
-                        "GetCapabilities" => {
-                            invocation.return_value(Some(
-                                &(vec!["body".to_owned(), "actions".to_owned()],).to_variant(),
-                            ));
-                        }
-                        "GetServerInformation" => {
-                            invocation.return_value(Some(
-                                &("Kira Desktop", "Kira", env!("CARGO_PKG_VERSION"), "1.3")
-                                    .to_variant(),
-                            ));
-                        }
-                        "Notify" => {
-                            if params.size() > 64 * 1024 {
-                                invocation.return_dbus_error(
-                                    "org.freedesktop.Notifications.Error.ExcessData",
-                                    "Notification payload exceeds 64 KiB",
-                                );
-                                return;
-                            }
-                            let (id, accepted) = {
-                                let mut queue = service.queue.borrow_mut();
-                                let notice = notice_from_params(&mut queue, &params);
-                                let id = notice.id;
-                                (id, queue.push(notice, Instant::now()))
-                            };
-                            if !accepted {
-                                invocation.return_dbus_error(
-                                    "org.freedesktop.Notifications.Error.QueueFull",
-                                    "Notification queue is full",
-                                );
-                                return;
-                            }
-                            invocation.return_value(Some(&(id,).to_variant()));
-                            service.sync();
-                        }
-                        "CloseNotification" => {
-                            let id = params.child_value(0).get::<u32>().unwrap_or(0);
-                            if service.queue.borrow_mut().close(id) {
-                                invocation.return_value(None);
-                                service.signal_closed(id, 3);
-                                service.sync();
-                            } else {
-                                invocation.return_dbus_error(
-                                    "org.freedesktop.Notifications.Error.InvalidId",
-                                    "Unknown notification ID",
-                                );
-                            }
-                        }
-                        _ => invocation.return_dbus_error(
-                            "org.freedesktop.DBus.Error.UnknownMethod",
-                            "Unsupported notification method",
-                        ),
+            .method_call(move |_, _, _, _, method, params, invocation| {
+                let Some(service) = weak.upgrade() else {
+                    invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.Failed",
+                        "Notification host stopped",
+                    );
+                    return;
+                };
+                match method {
+                    "GetCapabilities" => {
+                        invocation.return_value(Some(
+                            &(vec!["body".to_owned(), "actions".to_owned()],).to_variant(),
+                        ));
                     }
-                },
-            )
+                    "GetServerInformation" => {
+                        invocation.return_value(Some(
+                            &("Kira Desktop", "Kira", env!("CARGO_PKG_VERSION"), "1.3")
+                                .to_variant(),
+                        ));
+                    }
+                    "Notify" => {
+                        if params.size() > 64 * 1024 {
+                            invocation.return_dbus_error(
+                                "org.freedesktop.Notifications.Error.ExcessData",
+                                "Notification payload exceeds 64 KiB",
+                            );
+                            return;
+                        }
+                        let (id, accepted) = {
+                            let mut queue = service.queue.borrow_mut();
+                            let notice = notice_from_params(&mut queue, &params);
+                            let id = notice.id;
+                            (id, queue.push(notice, Instant::now()))
+                        };
+                        if !accepted {
+                            invocation.return_dbus_error(
+                                "org.freedesktop.Notifications.Error.QueueFull",
+                                "Notification queue is full",
+                            );
+                            return;
+                        }
+                        invocation.return_value(Some(&(id,).to_variant()));
+                        service.sync();
+                    }
+                    "CloseNotification" => {
+                        let id = params.child_value(0).get::<u32>().unwrap_or(0);
+                        if service.queue.borrow_mut().close(id) {
+                            invocation.return_value(None);
+                            service.signal_closed(id, 3);
+                            service.sync();
+                        } else {
+                            invocation.return_dbus_error(
+                                "org.freedesktop.Notifications.Error.InvalidId",
+                                "Unknown notification ID",
+                            );
+                        }
+                    }
+                    _ => invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.UnknownMethod",
+                        "Unsupported notification method",
+                    ),
+                }
+            })
             .build();
         if let Err(error) = registration {
             eprintln!("kira-shell: cannot register notification D-Bus endpoint: {error}");

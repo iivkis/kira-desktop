@@ -51,7 +51,9 @@ pub fn toast_layout(
 pub fn toast_hit_region(layout: ToastLayout, painted_count: usize) -> Region {
     let region = Region::create();
     for index in 0..painted_count.min(MAX_TOASTS) {
-        let y = layout.height - INNER_MARGIN - layout.card_height
+        let y = layout.height
+            - INNER_MARGIN
+            - layout.card_height
             - index as i32 * (layout.card_height + GAP);
         let rect = RectangleInt::new(
             INNER_MARGIN,
@@ -127,7 +129,8 @@ fn card(
     let close = gtk::Button::with_label("×");
     close.add_css_class("notification-close");
     close.update_property(&[gtk::accessible::Property::Label(&format!(
-        "Закрыть уведомление от {}", notice.app
+        "Закрыть уведомление от {}",
+        notice.app
     ))]);
     let id = notice.id;
     let action = intent.clone();
@@ -135,10 +138,7 @@ fn card(
     top.append(&close);
     root.append(&top);
 
-    let default_action = notice
-        .actions
-        .iter()
-        .any(|(key, _)| key == "default");
+    let default_action = notice.actions.iter().any(|(key, _)| key == "default");
     let summary = text_label(&notice.summary, "notification-title", 0.0);
     summary.set_hexpand(true);
     if default_action {
@@ -146,7 +146,8 @@ fn card(
         open.add_css_class("notification-open");
         open.set_child(Some(&summary));
         open.update_property(&[gtk::accessible::Property::Label(&format!(
-            "Открыть уведомление {} от {}", notice.summary, notice.app
+            "Открыть уведомление {} от {}",
+            notice.summary, notice.app
         ))]);
         let intent = intent.clone();
         let id = notice.id;
@@ -174,7 +175,12 @@ fn card(
     if extra_count > 0 {
         let actions = gtk::Box::new(gtk::Orientation::Horizontal, 8);
         actions.add_css_class("notification-actions");
-        for (key, label) in notice.actions.iter().filter(|(key, _)| key != "default").take(2) {
+        for (key, label) in notice
+            .actions
+            .iter()
+            .filter(|(key, _)| key != "default")
+            .take(2)
+        {
             let button = gtk::Button::with_label(label);
             button.add_css_class("notification-action");
             let id = notice.id;
@@ -234,7 +240,7 @@ impl NotificationHost {
         root.set_margin_bottom(INNER_MARGIN);
         window.set_child(Some(&root));
         window.set_opacity(0.0);
-        window.realize();
+        gtk::prelude::WidgetExt::realize(&window);
         let surface = window.surface()?;
         // Before any rendered frame, not even a single input pixel belongs
         // to an invisible host. Otherwise the 360px column hijacks clicks.
@@ -278,7 +284,8 @@ impl NotificationHost {
         self.root.append(&spacer);
         // The queue is oldest first. GTK children are top to bottom.
         for notice in cards.iter().rev() {
-            self.root.append(&card(notice, layout.card_height, self.on_intent.clone()));
+            self.root
+                .append(&card(notice, layout.card_height, self.on_intent.clone()));
         }
 
         let wanted = self.revision.get();
@@ -306,7 +313,12 @@ impl NotificationHost {
 
     pub fn reveal(&self, ids: &[u32]) -> bool {
         if !self.window.is_mapped()
-            || self.current.borrow().iter().map(|view| view.id).ne(ids.iter().copied())
+            || self
+                .current
+                .borrow()
+                .iter()
+                .map(|view| view.id)
+                .ne(ids.iter().copied())
         {
             return false;
         }
