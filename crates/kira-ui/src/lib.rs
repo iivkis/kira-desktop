@@ -22,6 +22,7 @@ pub mod system;
 pub mod system_charts;
 pub mod system_details;
 pub mod system_health;
+pub mod system_report;
 pub mod tenet_scroll;
 pub mod tray;
 pub mod workspace;
@@ -63,6 +64,9 @@ pub use system_details::{
 };
 pub use system_health::{
     CoreStatus, HealthMetrics, HealthPhase, HealthSummary, SystemHealth, classify_health,
+};
+pub use system_report::{
+    OVERVIEW_REPORT_FRESHNESS, SystemReport, format_overview_report, overview_snapshot_fresh,
 };
 pub use tenet_scroll::TenetScroll;
 pub use tray::{

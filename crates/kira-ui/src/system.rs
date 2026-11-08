@@ -10,6 +10,7 @@ use crate::process_table::ProcessTable;
 use crate::system_charts::{ChartSample, SystemCharts};
 use crate::system_details::SystemDetails;
 use crate::system_health::{HealthPhase, HealthSummary};
+use crate::system_report::SystemReport;
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct SystemOverview {
@@ -153,6 +154,7 @@ pub struct SystemMonitor {
     details: SystemDetails,
     charts: SystemCharts,
     capacity: CapacityCards,
+    report: SystemReport,
     process_table: Rc<ProcessTable>,
 }
 
@@ -183,6 +185,8 @@ impl SystemMonitor {
         overview.append(&capacity.widget());
         let details = SystemDetails::new();
         overview.append(&details.widget());
+        let report = SystemReport::new();
+        overview.append(&report.widget());
         let scroll = gtk::ScrolledWindow::new();
         scroll.add_css_class("system-overview-scroll");
         scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
@@ -213,6 +217,7 @@ impl SystemMonitor {
             details,
             charts,
             capacity,
+            report,
             process_table,
         }
     }
@@ -226,6 +231,7 @@ impl SystemMonitor {
     }
 
     pub fn set_overview(&self, overview: &SystemOverview) {
+        self.report.update(overview);
         self.details.update(overview);
         self.capacity.update(
             overview.root_total_kib,
@@ -271,7 +277,13 @@ impl SystemMonitor {
         &self,
         on_copy: impl Fn(String) -> Result<(), String> + 'static,
     ) {
-        self.process_table.set_copy_handler(on_copy);
+        let shared = Rc::new(on_copy);
+        self.report.set_copy_handler({
+            let shared = shared.clone();
+            move |report| shared(report)
+        });
+        self.process_table
+            .set_copy_handler(move |report| shared(report));
     }
 }
 
