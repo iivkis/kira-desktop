@@ -132,3 +132,21 @@ notification queue and D-Bus service are not recreated or preempted.
 This is **not** all-output acceptance: actual multi-output Niri geometry,
 host reanchor timing, focus and popup collisions, and physical/fractional
 pixel evidence still require an isolated compositor and paired main review.
+
+### Output-local collision gating (model-tested, not accepted)
+
+An active **pooled right-side transient** on the mapped Top Bar output now
+pauses toast presentation on that output, without assigning dwell or stealing
+input. If the chosen safe notification output is a different real GDK monitor,
+that unrelated transient does not suppress its cards. When the bar monitor
+cannot be identified and a transient is active, the plan fails closed. A
+**detached Niri-managed xdg-toplevel** is not a pooled popup: merely keeping
+Calendar, System, Settings or Tray detached must not starve the notification
+FIFO. The Shell uses `PopupHost::is_transient_active` rather than counting
+all detached windows as occlusions. Pure regression tests distinguish same,
+different, unknown and absent monitor/overlay states.
+
+Unresolved: compositor-visible window occlusion by *detached* windows,
+per-output focus and hit-region mapping across hotplug, multiple simultaneous
+output hosts (currently one selected target), physical scaling, and paired
+main/native screenshots. No acceptance flags are changed by this model fix.
