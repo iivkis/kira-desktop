@@ -11,8 +11,8 @@ use std::rc::Rc;
 use gtk::gio;
 use gtk::glib::{self, variant::ToVariant};
 
-use kira_ui::{TrayIntent, TrayItem, TrayMenu, TrayMenuEntry, TrayPixmap, TrayState, TrayStatus};
 use crate::tray_menu;
+use kira_ui::{TrayIntent, TrayItem, TrayMenu, TrayMenuEntry, TrayPixmap, TrayState, TrayStatus};
 
 const WATCHER: &str = "org.kde.StatusNotifierWatcher";
 const WATCHER_PATH: &str = "/StatusNotifierWatcher";
@@ -175,12 +175,9 @@ fn decode_pixmap(value: &glib::Variant) -> Option<TrayPixmap> {
             continue;
         }
         let distance = (width - 24).abs() + (height - 24).abs();
-        if best
-            .as_ref()
-            .is_none_or(|(_, previous, selected_width)| {
-                distance < *previous || (distance == *previous && width > *selected_width)
-            })
-        {
+        if best.as_ref().is_none_or(|(_, previous, selected_width)| {
+            distance < *previous || (distance == *previous && width > *selected_width)
+        }) {
             best = Some((index, distance, width));
         }
     }
@@ -646,9 +643,7 @@ impl Service {
                             .then(|| value.str().map(str::to_owned))
                             .flatten()
                     })
-                    .filter(|path| {
-                        valid_object_path(path) && !path.ends_with("/NO_DBUSMENU")
-                    });
+                    .filter(|path| valid_object_path(path) && !path.ends_with("/NO_DBUSMENU"));
                 let status = match status.as_deref() {
                     Some("Passive") => TrayStatus::Passive,
                     Some("NeedsAttention") => TrayStatus::NeedsAttention,
@@ -926,14 +921,17 @@ impl Service {
     }
 
     fn publish_menu(&self) {
-        let snapshot = self.current_menu.borrow().as_ref().map(MenuSession::snapshot);
+        let snapshot = self
+            .current_menu
+            .borrow()
+            .as_ref()
+            .map(MenuSession::snapshot);
         (self.on_menu)(snapshot);
     }
 
     /// Clears both the current menu and all outstanding async menu replies.
     fn clear_menu(&self) {
-        self.menu_serial
-            .set(self.menu_serial.get().wrapping_add(1));
+        self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
         if self.current_menu.borrow_mut().take().is_some() {
             self.publish_menu();
         }
@@ -1052,8 +1050,7 @@ impl Service {
                         {
                             return;
                         }
-                        let Some(entries) =
-                            reply.ok().as_ref().and_then(tray_menu::parse_layout)
+                        let Some(entries) = reply.ok().as_ref().and_then(tray_menu::parse_layout)
                         else {
                             // Legacy clients may only implement ContextMenu.
                             if let Some(item) = service.items.borrow().iter().find(|item| {
