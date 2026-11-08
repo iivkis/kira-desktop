@@ -40,6 +40,7 @@ pub fn menu_focus_target(
     enabled.get(target).copied()
 }
 
+#[derive(Clone)]
 struct MenuFocus {
     id: i32,
     button: gtk::Button,
@@ -771,8 +772,9 @@ impl TrayUi {
         self.popup.clone().upcast()
     }
 
-    /// A native menu is a separate state in the same pooled GTK popup, never
-    /// a second Wayland surface. Entries are always plain text, never markup.
+    /// Root menu controls stay in the retained GTK Tray tree. Each active
+    /// validated descendant is displayed in a native side-anchored popover,
+    /// not by replacing its parent page or creating another D-Bus client.
     pub fn set_menu(&self, menu: Option<TrayMenu>) {
         if *self.current_menu.borrow() == menu {
             return;
@@ -782,130 +784,160 @@ impl TrayUi {
             .borrow()
             .iter()
             .find(|entry| entry.button.has_focus())
-            .map(|entry| entry.id);
-        *self.current_menu.borrow_mut() = menu.clone();
-        *self.keyboard_menu.borrow_mut() = menu.is_some();
+            .map(|entry| (entry.id, entry.depth));
+        // Descendants are unparented deepest-first before any owner/menu
+        // refresh destroys their anchor buttons. This immediately drops
+        // stale Wayland pointer targets and keyboard action controls.
+        for popover in self.menu_popovers.borrow_mut().drain(..).rev() {
+            popover.popdown();
+            if popover.parent().is_some() {
+                popover.unparent();
+            }
+        }
         self.menu_focus.borrow_mut().clear();
         while let Some(child) = self.menu_list.first_child() {
             self.menu_list.remove(&child);
         }
+        *self.current_menu.borrow_mut() = menu.clone();
+        *self.keyboard_menu.borrow_mut() = menu.is_some();
         self.menu_page.set_visible(menu.is_some());
         self.list_scroll.set_visible(menu.is_none());
         let Some(menu) = menu else {
             self.header_title.set_text("Скрытые значки");
             return;
         };
-        let entries = menu_page(&menu.items, &menu.navigation).unwrap_or_default();
-        let heading = menu.navigation.last().and_then(|id| {
-            menu.items
+        self.header_title.set_text(&menu.title);
+
+        let Some(pages) = menu_cascade_pages(&menu.items, &menu.navigation) else {
+            let status = gtk::Label::new(Some("Меню обновилось: действия недоступны"));
+            status.add_css_class("muted");
+            self.menu_list.append(&status);
+            return;
+        };
+        let mut previous_rows =
+            append_menu_rows(&self.menu_list, &menu, &pages[0], 0, &self.on_intent);
+        let mut all_rows = previous_rows.clone();
+        for (depth, entries) in pages.iter().enumerate().skip(1) {
+            let Some(anchor) = previous_rows
                 .iter()
-                .find(|entry| entry.id == *id)
-                .map(|entry| entry.label.as_str())
-        });
-        self.header_title.set_text(heading.unwrap_or(&menu.title));
-        for entry in entries.iter().take(80) {
-            if entry.separator {
-                let line = gtk::Separator::new(gtk::Orientation::Horizontal);
-                self.menu_list.append(&line);
-                continue;
-            }
-            if entry.has_children {
-                // AboutToShow(parent_id) lets truly lazy apps populate
-                // submenus. The Shell revalidates the unique enabled parent
-                // and refreshes the same pooled menu, never a new surface.
-                let group = gtk::Button::with_label(&format!("▸ {}", entry.label));
-                group.set_halign(gtk::Align::Fill);
-                group.set_sensitive(entry.enabled);
-                group.set_margin_start(8);
-                group.add_css_class("tray-menu-group");
-                let handle = menu.handle;
-                let id = entry.id;
-                let on_intent = self.on_intent.clone();
-                group.connect_clicked(move |_| on_intent(TrayIntent::MenuExpand(handle, id)));
-                group.update_property(&[gtk::accessible::Property::Label(&format!(
-                    "Открыть подменю {}",
-                    entry.label,
-                ))]);
-                self.menu_list.append(&group);
-                self.menu_focus.borrow_mut().push(MenuFocus {
-                    id,
-                    button: group,
-                    submenu: true,
-                });
-                continue;
-            }
-            let button = gtk::Button::with_label(&format!(
-                "{}{}",
-                if entry.checked {
-                    if entry.radio { "● " } else { "✓ " }
-                } else {
-                    ""
-                },
-                entry.label
+                .find(|row| row.id == menu.navigation[depth - 1] && row.submenu)
+                .map(|row| row.anchor.clone())
+            else {
+                break; // Lost validated GTK anchor, never display orphan actions.
+            };
+
+            let container = gtk::Box::new(gtk::Orientation::Vertical, 6);
+            container.add_css_class("tray-cascade-content");
+            let heading = gtk::Button::with_label(&format!(
+                "‹ {}",
+                menu.items
+                    .iter()
+                    .find(|entry| entry.id == menu.navigation[depth - 1])
+                    .map(|entry| entry.label.as_str())
+                    .unwrap_or("Назад")
             ));
-            button.set_halign(gtk::Align::Fill);
-            button.set_hexpand(true);
-            button.set_sensitive(entry.enabled);
-            button.set_margin_start(8);
-            button.add_css_class("tray-menu-entry");
-            let handle = menu.handle;
-            let id = entry.id;
-            let on_intent = self.on_intent.clone();
-            button.connect_clicked(move |_| on_intent(TrayIntent::MenuClick(handle, id)));
-            button.update_property(&[gtk::accessible::Property::Label(&format!(
-                "{}{}",
-                entry.label,
-                if entry.checked {
-                    ", выбрано"
-                } else {
-                    ""
-                },
-            ))]);
-            self.menu_list.append(&button);
-            self.menu_focus.borrow_mut().push(MenuFocus {
-                id,
-                button,
-                submenu: false,
+            heading.add_css_class("tray-menu-back");
+            heading.update_property(&[gtk::accessible::Property::Label(
+                "Назад к родительскому меню",
+            )]);
+            let callback = self.on_intent.clone();
+            heading.connect_clicked(move |_| callback(TrayIntent::MenuBack));
+            container.append(&heading);
+            let scroll = gtk::ScrolledWindow::new();
+            scroll.set_size_request(220, -1);
+            scroll.set_max_content_height(400);
+            scroll.set_propagate_natural_height(true);
+            scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+            let list = gtk::Box::new(gtk::Orientation::Vertical, 2);
+            list.add_css_class("tray-menu-list");
+            let rows = append_menu_rows(&list, &menu, entries, depth, &self.on_intent);
+            scroll.set_child(Some(&list));
+            container.append(&scroll);
+
+            let popover = gtk::Popover::new();
+            popover.add_css_class("tray-cascade-popover");
+            popover.set_position(gtk::PositionType::Right);
+            popover.set_has_arrow(false);
+            // Non-modal: ancestors must remain interactive for real sibling
+            // changes; explicit key handlers own Left/Escape transitions.
+            popover.set_autohide(false);
+            popover.set_cascade_popdown(false);
+            popover.set_child(Some(&container));
+            popover.set_parent(&anchor);
+            install_menu_keys(
+                &popover.clone().upcast(),
+                self.keyboard_menu.clone(),
+                self.menu_focus.clone(),
+                self.on_intent.clone(),
+            );
+            self.menu_popovers.borrow_mut().push(popover);
+            all_rows.extend(rows.iter().cloned());
+            previous_rows = rows;
+        }
+        *self.menu_focus.borrow_mut() = all_rows;
+
+        // Every nested popover is opened only after its own parent maps.
+        // GTK will flip the preferred Right placement near an output edge.
+        // Detach/reattach also remaps the retained root, reopening the path.
+        let popovers = self.menu_popovers.borrow().clone();
+        for pair in popovers.windows(2) {
+            let next = pair[1].downgrade();
+            pair[0].connect_map(move |_| {
+                if let Some(next) = next.upgrade() {
+                    next.popup();
+                }
             });
         }
-        if entries.is_empty() {
-            let empty = gtk::Label::new(Some("В этом разделе нет доступных действий"));
-            empty.add_css_class("muted");
-            self.menu_list.append(&empty);
+        if self.popup.is_mapped()
+            && let Some(first) = popovers.first()
+        {
+            first.popup();
         }
-        // A live LayoutUpdated can rebuild controls while the user navigates.
-        // Return to the same enabled D-Bus ID if it survives, else first
-        // available control. Never focus a hidden or different active window.
+
+        // A live LayoutUpdated keeps the same enabled ID in the deepest
+        // visible page; a disappearing ID selects its first enabled peer.
+        let depth = menu.navigation.len();
         let focus = {
-            let menu = self.menu_focus.borrow();
-            let enabled = menu
+            let actions = self.menu_focus.borrow();
+            let enabled = actions
                 .iter()
-                .filter(|entry| entry.button.is_sensitive())
+                .filter(|entry| entry.depth == depth && entry.button.is_sensitive())
                 .map(|entry| entry.id)
                 .collect::<Vec<_>>();
-            let chosen = if previous_focus.is_some_and(|id| enabled.contains(&id)) {
-                previous_focus
+            let previous = previous_focus
+                .filter(|(_, page)| *page == depth)
+                .map(|(id, _)| id);
+            let chosen = if previous.is_some_and(|id| enabled.contains(&id)) {
+                previous
             } else {
                 menu_focus_target(&enabled, None, MenuNavigation::First)
             };
             chosen.and_then(|id| {
-                menu.iter()
-                    .find(|entry| entry.id == id)
+                actions
+                    .iter()
+                    .find(|entry| entry.id == id && entry.depth == depth)
                     .map(|entry| entry.button.clone())
             })
         };
         if let Some(button) = focus {
-            gtk::glib::idle_add_local_once(move || {
-                if button.is_mapped()
+            let root = self.popup.clone();
+            let activate = move || {
+                if root.is_mapped()
+                    && button.is_mapped()
                     && button.is_sensitive()
-                    && button
+                    && root
                         .root()
                         .and_then(|root| root.downcast::<gtk::Window>().ok())
                         .is_some_and(|window| window.is_active())
                 {
                     button.grab_focus();
                 }
-            });
+            };
+            if let Some(last) = popovers.last() {
+                last.connect_map(move |_| activate());
+            } else {
+                gtk::glib::idle_add_local_once(activate);
+            }
         }
     }
 
