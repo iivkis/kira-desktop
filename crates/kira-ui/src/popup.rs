@@ -14,6 +14,42 @@ use crate::popup_section::PopupSection;
 
 const GAP: i32 = 12;
 
+fn supports_detach(kind: PopupKind) -> bool {
+    kind != PopupKind::Tray
+}
+
+fn detached_title(kind: PopupKind) -> &'static str {
+    match kind {
+        PopupKind::Launcher => "Kira · Запуск приложений",
+        PopupKind::Calendar => "Kira · Календарь",
+        PopupKind::System => "Kira · Система",
+        PopupKind::Settings => "Kira · Настройки",
+        PopupKind::Tray => "Kira · Трей",
+    }
+}
+
+fn screen_geometry() -> (i32, i32) {
+    gtk::gdk::Display::default()
+        .and_then(|display| display.monitors().item(0))
+        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+        .map(|monitor| (monitor.geometry().width(), monitor.geometry().height()))
+        .unwrap_or((1280, 800))
+}
+
+fn detached_size(kind: PopupKind, screen_width: i32, screen_height: i32) -> (i32, i32) {
+    let (width, height) = match kind {
+        PopupKind::Settings => (680, 720),
+        PopupKind::System => (520, 700),
+        PopupKind::Launcher => (520, 600),
+        PopupKind::Calendar => (480, 600),
+        PopupKind::Tray => (420, 520),
+    };
+    (
+        width.min((screen_width - GAP * 2).max(160)),
+        height.min((screen_height - GAP * 2).max(160)),
+    )
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum PopupKind {
     Launcher,
@@ -31,6 +67,9 @@ struct PopupView {
     contact: Rc<Cell<Option<(f64, f64)>>>,
     timeline: Rc<RefCell<PopupTimeline>>,
     motion: MotionToken,
+    // Move one retained GTK clip tree between two distinct Wayland roles.
+    detached: RefCell<Option<gtk::ApplicationWindow>>,
+    detach_button: Option<gtk::Button>,
 }
 
 impl PopupView {
@@ -120,6 +159,91 @@ impl PopupView {
 
     fn close(&self) {
         self.transition(false);
+    }
+
+    /// Reparent the exact retained widget tree, without creating controllers.
+    fn reattach(&self, reopen: bool) {
+        let Some(detached) = self.detached.borrow_mut().take() else {
+            return;
+        };
+        detached.set_child(None::<&gtk::Widget>);
+        detached.destroy();
+        self.window.set_child(Some(&self.clip));
+        if let Some(button) = &self.detach_button {
+            button.set_label("Отделить");
+            button.set_tooltip_text(Some("Перенести виджет в отдельное окно"));
+            button.update_property(&[gtk::accessible::Property::Label(
+                "Отделить виджет в отдельное окно",
+            )]);
+        }
+        self.motion.cancel();
+        {
+            let mut timeline = self.timeline.borrow_mut();
+            timeline.close();
+            timeline.settle();
+        }
+        self.render();
+        self.contact.set(None);
+        self.window.set_visible(false);
+        if reopen {
+            self.transition(true);
+        }
+    }
+
+    fn detach(
+        self: &Rc<Self>,
+        app: &gtk::Application,
+        kind: PopupKind,
+        active: &Rc<Cell<Option<PopupKind>>>,
+    ) {
+        if self.detached.borrow().is_some() || !supports_detach(kind) {
+            return;
+        }
+        // A layer-shell window itself cannot become an xdg-toplevel.
+        // Settle the old reveal before changing the clip's GTK parent.
+        self.motion.cancel();
+        {
+            let mut timeline = self.timeline.borrow_mut();
+            timeline.open();
+            timeline.settle();
+        }
+        self.render();
+        self.clip.set_fraction(1.0);
+        self.window.set_child(None::<&gtk::Widget>);
+        self.window.set_visible(false);
+        if active.get() == Some(kind) {
+            active.set(None);
+        }
+
+        let detached = gtk::ApplicationWindow::new(app);
+        detached.set_title(Some(detached_title(kind)));
+        detached.set_decorated(true);
+        detached.set_resizable(true);
+        detached.add_css_class("kira-popup");
+        detached.add_css_class("kira-detached");
+        let (screen_width, screen_height) = screen_geometry();
+        let (width, height) = detached_size(kind, screen_width, screen_height);
+        detached.set_default_size(width, height);
+        detached.set_child(Some(&self.clip));
+        if let Some(button) = &self.detach_button {
+            button.set_label("Прикрепить");
+            button.set_tooltip_text(Some("Вернуть виджет на панель"));
+            button.update_property(&[gtk::accessible::Property::Label(
+                "Прикрепить виджет к панели",
+            )]);
+        }
+
+        let weak = Rc::downgrade(self);
+        detached.connect_close_request(move |_| {
+            // A window-manager close retains the original controller for
+            // the next Top Bar toggle. Nothing is reconstructed.
+            if let Some(view) = weak.upgrade() {
+                view.reattach(false);
+            }
+            gtk::glib::Propagation::Stop
+        });
+        self.detached.replace(Some(detached.clone()));
+        detached.present();
     }
 
     /// Switching to a different popup cannot leave two active layer-shell
