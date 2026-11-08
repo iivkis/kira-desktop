@@ -44,7 +44,7 @@ fn screen_geometry(monitor: Option<&gtk::gdk::Monitor>) -> (i32, i32) {
 
 fn detached_size(kind: PopupKind, screen_width: i32, screen_height: i32) -> (i32, i32) {
     let (width, height) = match kind {
-        PopupKind::Settings => (680, 720),
+        PopupKind::Settings => (900, 720),
         PopupKind::System => (520, 700),
         PopupKind::Launcher => (520, 600),
         PopupKind::Calendar => (1040, 720),
@@ -762,5 +762,13 @@ mod tests {
             assert!(detached_title(kind).starts_with("Kira"));
         }
         assert!(supports_detach(PopupKind::Tray));
+    }
+
+    #[test]
+    fn settings_detached_size_exposes_wide_sidebar_but_caps_small_outputs() {
+        // The Settings sidebar appears above 720 logical px. A 680px
+        // toplevel default kept it permanently hidden until manual resize.
+        assert_eq!(detached_size(PopupKind::Settings, 1920, 1080), (900, 720));
+        assert_eq!(detached_size(PopupKind::Settings, 600, 480), (576, 456));
     }
 }
