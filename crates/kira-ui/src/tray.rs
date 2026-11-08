@@ -489,7 +489,10 @@ impl TrayUi {
                     .map(|entry| entry.id);
                 let selected = menu_focus_target(&enabled, current, direction);
                 let button = selected.and_then(|id| {
-                    actions.iter().find(|entry| entry.id == id).map(|entry| entry.button.clone())
+                    actions
+                        .iter()
+                        .find(|entry| entry.id == id)
+                        .map(|entry| entry.button.clone())
                 });
                 button
             };
@@ -648,7 +651,11 @@ impl TrayUi {
             button.update_property(&[gtk::accessible::Property::Label(&format!(
                 "{}{}",
                 entry.label,
-                if entry.checked { ", выбрано" } else { "" },
+                if entry.checked {
+                    ", выбрано"
+                } else {
+                    ""
+                },
             ))]);
             self.menu_list.append(&button);
             self.menu_focus.borrow_mut().push(MenuFocus {
@@ -678,7 +685,9 @@ impl TrayUi {
                 menu_focus_target(&enabled, None, MenuNavigation::First)
             };
             chosen.and_then(|id| {
-                menu.iter().find(|entry| entry.id == id).map(|entry| entry.button.clone())
+                menu.iter()
+                    .find(|entry| entry.id == id)
+                    .map(|entry| entry.button.clone())
             })
         };
         if let Some(button) = focus {
@@ -831,13 +840,34 @@ mod tests {
     #[test]
     fn keyboard_menu_navigation_is_bounded_and_revisitable() {
         let enabled = [11, 13, 17];
-        assert_eq!(menu_focus_target(&enabled, None, MenuNavigation::First), Some(11));
-        assert_eq!(menu_focus_target(&enabled, None, MenuNavigation::Previous), Some(17));
-        assert_eq!(menu_focus_target(&enabled, Some(17), MenuNavigation::Next), Some(11));
-        assert_eq!(menu_focus_target(&enabled, Some(11), MenuNavigation::Previous), Some(17));
-        assert_eq!(menu_focus_target(&enabled, Some(11), MenuNavigation::Last), Some(17));
-        assert_eq!(menu_focus_target(&enabled, Some(13), MenuNavigation::Next), Some(17));
-        assert_eq!(menu_focus_target(&enabled, Some(99), MenuNavigation::Next), Some(11));
+        assert_eq!(
+            menu_focus_target(&enabled, None, MenuNavigation::First),
+            Some(11)
+        );
+        assert_eq!(
+            menu_focus_target(&enabled, None, MenuNavigation::Previous),
+            Some(17)
+        );
+        assert_eq!(
+            menu_focus_target(&enabled, Some(17), MenuNavigation::Next),
+            Some(11)
+        );
+        assert_eq!(
+            menu_focus_target(&enabled, Some(11), MenuNavigation::Previous),
+            Some(17)
+        );
+        assert_eq!(
+            menu_focus_target(&enabled, Some(11), MenuNavigation::Last),
+            Some(17)
+        );
+        assert_eq!(
+            menu_focus_target(&enabled, Some(13), MenuNavigation::Next),
+            Some(17)
+        );
+        assert_eq!(
+            menu_focus_target(&enabled, Some(99), MenuNavigation::Next),
+            Some(11)
+        );
         assert_eq!(menu_focus_target(&[], Some(11), MenuNavigation::Last), None);
     }
 
