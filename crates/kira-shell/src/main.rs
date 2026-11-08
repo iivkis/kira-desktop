@@ -440,13 +440,23 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let popup = popup.clone();
         tray_ui.set_toggle_handler(move || {
             if let Some(tray) = tray.upgrade() {
-                if tray.menu_open() {
+                if tray.menu_open() && !popup.is_detached(PopupKind::Tray) {
+                    // Pooled toggle dismisses its menu before closing. A bar
+                    // click while detached only raises the existing window:
+                    // its owner-validated D-Bus menu must survive that raise.
                     tray_host::dismiss_menu();
                 }
                 popup.toggle(PopupKind::Tray, || tray.popup_widget());
             }
         });
     }
+    tray_ui.set_close_handler({
+        let popup = popup.clone();
+        move || {
+            tray_host::dismiss_menu();
+            popup.dismiss(PopupKind::Tray);
+        }
+    });
     bar.add_action_widget(&tray_ui.bar_widget());
     tray_host::start(
         {
