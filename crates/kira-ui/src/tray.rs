@@ -6,6 +6,8 @@ use std::rc::Rc;
 
 use gtk::prelude::*;
 
+type ToggleHandler = Rc<RefCell<Option<Box<dyn Fn()>>>>;
+
 pub const MAX_BAR_ICONS: usize = 4;
 pub const MAX_TRAY_ITEMS: usize = 64;
 
@@ -113,7 +115,7 @@ pub struct TrayUi {
     list: gtk::Box,
     state: RefCell<TrayState>,
     on_intent: Rc<dyn Fn(TrayIntent)>,
-    on_toggle: Rc<RefCell<Option<Box<dyn Fn()>>>>,
+    on_toggle: ToggleHandler,
 }
 
 impl TrayUi {
@@ -149,7 +151,7 @@ impl TrayUi {
         scroll.set_child(Some(&list));
         popup.append(&scroll);
 
-        let on_toggle: Rc<RefCell<Option<Box<dyn Fn()>>>> = Rc::new(RefCell::new(None));
+        let on_toggle: ToggleHandler = Rc::new(RefCell::new(None));
         for button in [&overflow, &close] {
             let on_toggle = on_toggle.clone();
             button.connect_clicked(move |_| {
