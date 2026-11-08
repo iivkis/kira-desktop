@@ -1,4 +1,4 @@
-//! Reusable native CPU/RAM history. Each point is a real worker pulse, not
+//! Reusable native CPU/RAM/GPU history. Each point is a real worker pulse, not
 //! interpolation between slow system snapshots or a GTK frame-clock sample.
 use std::cell::RefCell;
 use std::collections::VecDeque;
@@ -10,6 +10,59 @@ use gtk::prelude::*;
 pub const MAX_PULSE_POINTS: usize = 120;
 pub const MAX_PULSE_AGE: Duration = Duration::from_secs(60);
 pub const PULSE_FRESHNESS: Duration = Duration::from_millis(2500);
+pub const GPU_FRESHNESS: Duration = Duration::from_secs(8);
+pub const GPU_ATTACH_LIMIT: Duration = Duration::from_millis(2500);
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct GpuObservation {
+    measured_at: Instant,
+    peak_percent: u8,
+}
+
+/// A slow GPU measurement belongs to exactly one subsequent *real* pulse.
+/// No synthetic intermediate GPU readings and no reuse after hide/reopen.
+#[derive(Default)]
+pub struct GpuPulseCoupler {
+    pending: Option<GpuObservation>,
+    last_observed_at: Option<Instant>,
+    last_valid_at: Option<Instant>,
+}
+
+impl GpuPulseCoupler {
+    pub fn observe(&mut self, measured_at: Instant, peak_percent: Option<u8>) {
+        if self.last_observed_at.is_some_and(|last| measured_at <= last) {
+            return;
+        }
+        self.last_observed_at = Some(measured_at);
+        self.pending = peak_percent
+            .filter(|value| *value <= 100)
+            .map(|value| GpuObservation {
+                measured_at,
+                peak_percent: value,
+            });
+        self.last_valid_at = self.pending.map(|point| point.measured_at);
+    }
+
+    pub fn take_for_pulse(&mut self, pulse_at: Instant) -> Option<u8> {
+        let pending = self.pending?;
+        if pulse_at < pending.measured_at {
+            return None;
+        }
+        self.pending = None;
+        (pulse_at.saturating_duration_since(pending.measured_at) <= GPU_ATTACH_LIMIT)
+            .then_some(pending.peak_percent)
+    }
+
+    pub fn is_fresh(&self, now: Instant) -> bool {
+        self.last_valid_at.is_some_and(|at| {
+            now >= at && now.saturating_duration_since(at) < GPU_FRESHNESS
+        })
+    }
+
+    pub fn reset(&mut self) {
+        *self = Self::default();
+    }
+}
 
 #[derive(Clone, Copy, Debug)]
 pub struct ChartSample {
@@ -24,6 +77,7 @@ pub struct ChartPoint {
     pub measured_at: Instant,
     pub cpu: Option<f64>,
     pub ram: Option<f64>,
+    pub gpu: Option<f64>,
 }
 
 fn memory_percent(total: Option<u64>, available: Option<u64>) -> Option<f64> {
@@ -41,6 +95,7 @@ impl From<ChartSample> for ChartPoint {
             measured_at: sample.measured_at,
             cpu: sample.cpu_percent.filter(|n| *n <= 100).map(f64::from),
             ram: memory_percent(sample.memory_total_kib, sample.memory_available_kib),
+            gpu: None,
         }
     }
 }
@@ -52,6 +107,10 @@ pub struct PulseHistory {
 
 impl PulseHistory {
     pub fn push(&mut self, sample: ChartSample) {
+        self.push_with_gpu(sample, None);
+    }
+
+    pub fn push_with_gpu(&mut self, sample: ChartSample, gpu_percent: Option<u8>) {
         if self
             .samples
             .back()
@@ -60,8 +119,14 @@ impl PulseHistory {
             // Never invent ordering or replace a real reading with an older one.
             return;
         }
-        self.samples.push_back(sample.into());
+        let mut point = ChartPoint::from(sample);
+        point.gpu = gpu_percent.filter(|value| *value <= 100).map(f64::from);
+        self.samples.push_back(point);
         self.prune(sample.measured_at);
+    }
+
+    pub fn clear(&mut self) {
+        self.samples.clear();
     }
 
     pub fn prune(&mut self, now: Instant) {
@@ -116,12 +181,14 @@ pub struct ActivityAxis {
 pub enum ActivityLane {
     Cpu,
     Ram,
+    Gpu,
 }
 
 fn reading(point: &ChartPoint, lane: ActivityLane) -> Option<f64> {
     let value = match lane {
         ActivityLane::Cpu => point.cpu,
         ActivityLane::Ram => point.ram,
+        ActivityLane::Gpu => point.gpu,
     }?;
     (value.is_finite() && (0.0..=100.0).contains(&value)).then_some(value)
 }
@@ -160,7 +227,7 @@ pub fn activity_axis(points: &[ChartPoint], lane: ActivityLane) -> ActivityAxis 
 pub fn measured_history_caption(points: &[ChartPoint]) -> String {
     let measured: Vec<_> = points
         .iter()
-        .filter(|point| point.cpu.is_some() || point.ram.is_some())
+        .filter(|point| point.cpu.is_some() || point.ram.is_some() || point.gpu.is_some())
         .collect();
     match measured.len() {
         0 => "Нет доступных замеров за последнюю минуту".into(),
@@ -179,7 +246,13 @@ fn meter_text(value: Option<f64>) -> String {
     value.map_or_else(|| "нет данных".into(), |n| format!("{n:.1}%"))
 }
 
-fn draw_history(cr: &gtk::cairo::Context, width: i32, height: i32, points: &[ChartPoint]) {
+fn draw_history(
+    cr: &gtk::cairo::Context,
+    width: i32,
+    height: i32,
+    points: &[ChartPoint],
+    show_gpu: bool,
+) {
     if width <= 80 || height <= 60 {
         return;
     }
@@ -192,11 +265,13 @@ fn draw_history(cr: &gtk::cairo::Context, width: i32, height: i32, points: &[Cha
         .map_or(0.5, |(start, end)| {
             end.saturating_duration_since(start).as_secs_f64().max(0.5)
         });
-    let lane_height = f64::from(height) * 0.5;
-    for (index, lane) in [ActivityLane::Cpu, ActivityLane::Ram]
-        .into_iter()
-        .enumerate()
-    {
+    let lanes: &[ActivityLane] = if show_gpu {
+        &[ActivityLane::Cpu, ActivityLane::Ram, ActivityLane::Gpu]
+    } else {
+        &[ActivityLane::Cpu, ActivityLane::Ram]
+    };
+    let lane_height = f64::from(height) / lanes.len() as f64;
+    for (index, &lane) in lanes.iter().enumerate() {
         let top = index as f64 * lane_height + 16.0;
         let bottom = (index as f64 + 1.0) * lane_height - 10.0;
         let axis = activity_axis(points, lane);
@@ -212,9 +287,11 @@ fn draw_history(cr: &gtk::cairo::Context, width: i32, height: i32, points: &[Cha
         match lane {
             ActivityLane::Cpu => cr.set_source_rgb(0.988, 0.639, 0.067),
             ActivityLane::Ram => cr.set_source_rgb(1.0, 1.0, 1.0),
+            ActivityLane::Gpu => cr.set_source_rgb(0.898, 0.898, 0.898),
         }
         let mut drawing = false;
         let mut last_xy = None;
+        let mut measured_count = 0usize;
         for point in points {
             if let (Some(first), Some(value)) = (first, reading(point, lane)) {
                 let x = left
@@ -233,7 +310,8 @@ fn draw_history(cr: &gtk::cairo::Context, width: i32, height: i32, points: &[Cha
                     cr.line_to(x, y);
                 }
                 last_xy = Some((x, y));
-            } else if drawing {
+                measured_count += 1;
+            } else if drawing && lane != ActivityLane::Gpu {
                 let _ = cr.stroke();
                 drawing = false;
             }
@@ -241,7 +319,7 @@ fn draw_history(cr: &gtk::cairo::Context, width: i32, height: i32, points: &[Cha
         if drawing {
             let _ = cr.stroke();
         }
-        if points.len() == 1
+        if measured_count == 1
             && let Some((x, y)) = last_xy
         {
             cr.arc(x, y, 2.5, 0.0, std::f64::consts::TAU);
@@ -252,12 +330,14 @@ fn draw_history(cr: &gtk::cairo::Context, width: i32, height: i32, points: &[Cha
 
 struct ChartState {
     history: RefCell<PulseHistory>,
+    gpu: RefCell<GpuPulseCoupler>,
     cpu_text: gtk::Label,
     ram_text: gtk::Label,
     cpu_bar: gtk::ProgressBar,
     ram_bar: gtk::ProgressBar,
     cpu_axis: gtk::Label,
     ram_axis: gtk::Label,
+    gpu_axis: gtk::Label,
     caption: gtk::Label,
     plot: gtk::DrawingArea,
 }
@@ -278,9 +358,15 @@ impl ChartState {
             label.set_text(&meter_text(value));
         }
         let points = history.recent(now);
+        let show_gpu = self.gpu.borrow().is_fresh(now);
+        self.gpu_axis.set_visible(show_gpu);
+        self.plot.set_content_height(if show_gpu { 296 } else { 202 });
         self.caption.set_text(&measured_history_caption(&points));
         let cpu_axis = activity_axis(&points, ActivityLane::Cpu);
         let ram_axis = activity_axis(&points, ActivityLane::Ram);
+        let gpu_axis = activity_axis(&points, ActivityLane::Gpu);
+        self.gpu_axis
+            .set_text(&format!("GPU {:.1}–{:.1}%", gpu_axis.min, gpu_axis.max));
         self.cpu_axis
             .set_text(&format!("CPU {:.1}–{:.1}%", cpu_axis.min, cpu_axis.max));
         self.ram_axis
@@ -334,10 +420,12 @@ impl SystemCharts {
         let axes = gtk::Box::new(gtk::Orientation::Horizontal, 12);
         let cpu_axis = gtk::Label::new(Some("CPU 0–100%"));
         let ram_axis = gtk::Label::new(Some("RAM 0–100%"));
-        cpu_axis.add_css_class("muted");
-        ram_axis.add_css_class("muted");
-        axes.append(&cpu_axis);
-        axes.append(&ram_axis);
+        let gpu_axis = gtk::Label::new(Some("GPU 0–100%"));
+        gpu_axis.set_visible(false);
+        for label in [&cpu_axis, &ram_axis, &gpu_axis] {
+            label.add_css_class("muted");
+            axes.append(label);
+        }
         root.append(&axes);
         let caption = gtk::Label::new(Some("Нет доступных замеров за последнюю минуту"));
         caption.add_css_class("muted");
@@ -346,20 +434,31 @@ impl SystemCharts {
         root.append(&caption);
         let state = Rc::new(ChartState {
             history: RefCell::new(PulseHistory::default()),
+            gpu: RefCell::new(GpuPulseCoupler::default()),
             cpu_text: meters[0].0.clone(),
             ram_text: meters[1].0.clone(),
             cpu_bar: meters[0].1.clone(),
             ram_bar: meters[1].1.clone(),
             cpu_axis,
             ram_axis,
+            gpu_axis,
             caption,
             plot: plot.clone(),
         });
         let weak = Rc::downgrade(&state);
         plot.set_draw_func(move |_, cr, width, height| {
             if let Some(state) = weak.upgrade() {
-                let points = state.history.borrow().recent(Instant::now());
-                draw_history(cr, width, height, &points);
+                let now = Instant::now();
+                let points = state.history.borrow().recent(now);
+                draw_history(cr, width, height, &points, state.gpu.borrow().is_fresh(now));
+            }
+        });
+        let weak = Rc::downgrade(&state);
+        root.connect_unmap(move |_| {
+            if let Some(state) = weak.upgrade() {
+                state.history.borrow_mut().clear();
+                state.gpu.borrow_mut().reset();
+                state.refresh();
             }
         });
         Self { root, state }
@@ -370,7 +469,8 @@ impl SystemCharts {
     }
 
     pub fn push_sample(&self, sample: ChartSample) {
-        self.state.history.borrow_mut().push(sample);
+        let gpu = self.state.gpu.borrow_mut().take_for_pulse(sample.measured_at);
+        self.state.history.borrow_mut().push_with_gpu(sample, gpu);
         self.state.refresh();
         // One-shot expiry callbacks, not an always-ticking UI timer. Older
         // callbacks cannot forge new readings; they only re-evaluate time.
@@ -382,6 +482,19 @@ impl SystemCharts {
                 }
             });
         }
+    }
+
+    /// The host may submit one actual GPU peak from its slower telemetry worker.
+    /// It is consumed only by the next time-ordered 500ms CPU/RAM pulse.
+    pub fn observe_gpu(&self, measured_at: Instant, peak_percent: Option<u8>) {
+        self.state.gpu.borrow_mut().observe(measured_at, peak_percent);
+        self.state.refresh();
+        let weak = Rc::downgrade(&self.state);
+        gtk::glib::timeout_add_local_once(GPU_FRESHNESS, move || {
+            if let Some(state) = weak.upgrade() {
+                state.refresh();
+            }
+        });
     }
 }
 
@@ -460,11 +573,13 @@ mod tests {
                 measured_at: t,
                 cpu: Some(99.9),
                 ram: Some(12.5),
+                gpu: None,
             },
             ChartPoint {
                 measured_at: t,
                 cpu: Some(100.0),
                 ram: Some(12.6),
+                gpu: None,
             },
         ];
         let cpu = activity_axis(&points, ActivityLane::Cpu);
@@ -492,5 +607,46 @@ mod tests {
         assert_eq!(memory_percent(Some(0), Some(0)), None);
         assert_eq!(memory_percent(Some(100), Some(101)), None);
         assert_eq!(memory_percent(Some(200), Some(100)), Some(50.0));
+    }
+
+    #[test]
+    fn gpu_attaches_once_to_a_real_later_pulse_and_never_fills_gaps() {
+        let t = Instant::now();
+        let mut coupler = GpuPulseCoupler::default();
+        let mut history = PulseHistory::default();
+        coupler.observe(t, Some(42));
+        assert!(coupler.is_fresh(t));
+        assert_eq!(coupler.take_for_pulse(t - Duration::from_millis(1)), None);
+        history.push_with_gpu(
+            sample(t + Duration::from_millis(500), Some(10), Some(300)),
+            coupler.take_for_pulse(t + Duration::from_millis(500)),
+        );
+        history.push_with_gpu(
+            sample(t + Duration::from_millis(1000), Some(11), Some(310)),
+            coupler.take_for_pulse(t + Duration::from_millis(1000)),
+        );
+        let data = history.recent(t + Duration::from_millis(1000));
+        assert_eq!(data.len(), 2);
+        assert_eq!(data[0].gpu, Some(42.0));
+        assert_eq!(data[1].gpu, None);
+        assert!(activity_axis(&data, ActivityLane::Gpu).max >= 42.0);
+        assert!(!coupler.is_fresh(t + GPU_FRESHNESS));
+    }
+
+    #[test]
+    fn gpu_rejects_missing_invalid_stale_and_out_of_order_snapshots() {
+        let t = Instant::now();
+        let mut coupler = GpuPulseCoupler::default();
+        coupler.observe(t, Some(55));
+        coupler.observe(t - Duration::from_millis(50), Some(99));
+        assert_eq!(coupler.take_for_pulse(t + Duration::from_secs(3)), None);
+        coupler.observe(t + Duration::from_secs(4), Some(101));
+        assert!(!coupler.is_fresh(t + Duration::from_secs(4)));
+        coupler.observe(t + Duration::from_secs(6), Some(0));
+        assert_eq!(coupler.take_for_pulse(t + Duration::from_secs(6)), Some(0));
+        coupler.observe(t + Duration::from_secs(8), None);
+        assert!(!coupler.is_fresh(t + Duration::from_secs(8)));
+        coupler.reset();
+        assert_eq!(coupler.take_for_pulse(t + Duration::from_secs(9)), None);
     }
 }

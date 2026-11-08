@@ -222,7 +222,7 @@
       "content_and_interaction_requirements": [
         "Real 500ms CPU/RAM history, gauges, time domain and adaptive axes",
         "No fabricated points or overshoot outside measured values",
-        "Native CPU/RAM graphs use timestamped 500ms pulses with a bounded measured one-minute history; GPU, exact visuals and motion remain outstanding"
+        "Native CPU/RAM plots use real 500ms pulses; sparse GPU peaks measured by the existing 2s worker attach once to the next actual pulse with 8s expiry. Source-equivalent visual geometry and motion remain outstanding"
       ],
       "animation_requirements": [
         "True chart interpolation and reduced-motion; original ECharts visual parity"

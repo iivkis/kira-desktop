@@ -1,5 +1,6 @@
 //! Portable GTK4 system-monitor UI. No /proc reads, Core IPC or process actions.
 use std::cmp::Ordering;
+use std::time::Instant;
 
 use gtk::prelude::*;
 
@@ -219,6 +220,18 @@ impl SystemMonitor {
 
     pub fn set_pulse(&self, sample: ChartSample) {
         self.charts.push_sample(sample);
+    }
+
+    /// Peak is the maximum of actually measured GPU utilizations.
+    /// A missing device reading must not be interpreted as 0%.
+    pub fn observe_gpu(&self, overview: &SystemOverview, measured_at: Instant) {
+        let peak = overview
+            .gpu
+            .iter()
+            .filter_map(|gpu| gpu.utilization_percent)
+            .filter(|value| *value <= 100)
+            .max();
+        self.charts.observe_gpu(measured_at, peak);
     }
 
     pub fn set_processes(&self, snapshot: &ProcessList) {

@@ -24,7 +24,7 @@ enum ShellUpdate {
     Config(ConfigState),
     Applications(Vec<ApplicationEntry>),
     ApplicationLaunch(Result<(), String>),
-    SystemOverview(SystemOverview),
+    SystemOverview(SystemOverview, Instant),
     SystemPulse(ChartSample),
     Processes(ProcessList),
     ProcessError(String),
@@ -133,6 +133,7 @@ fn start_system_sampler(
         loop {
             if system_visible.load(Ordering::Relaxed) {
                 let snapshot = metrics.sample();
+                let observed_at = Instant::now();
                 let overview = SystemOverview {
                     cpu_percent: snapshot.cpu_percent,
                     cpu_temperature_c: snapshot.cpu_temperature_c,
@@ -152,7 +153,10 @@ fn start_system_sampler(
                         })
                         .collect(),
                 };
-                if sender.send(ShellUpdate::SystemOverview(overview)).is_err() {
+                if sender
+                    .send(ShellUpdate::SystemOverview(overview, observed_at))
+                    .is_err()
+                {
                     return;
                 }
                 if processes_visible.load(Ordering::Relaxed) {
@@ -536,7 +540,12 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                             });
                         }
                     }
-                    ShellUpdate::SystemOverview(snapshot) => system.set_overview(&snapshot),
+                    ShellUpdate::SystemOverview(snapshot, measured_at) => {
+                        system.set_overview(&snapshot);
+                        if active_system && !system.processes_selected() {
+                            system.observe_gpu(&snapshot, measured_at);
+                        }
+                    }
                     ShellUpdate::SystemPulse(sample) => {
                         if popup.is_active(PopupKind::System) && !system.processes_selected() {
                             system.set_pulse(sample);
