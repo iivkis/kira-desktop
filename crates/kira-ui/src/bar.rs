@@ -96,6 +96,11 @@ impl Bar {
         self.actions.append(&action_button(symbol, label, on_click));
     }
 
+    /// Add a reusable button/widget with its own model and status lifecycle.
+    pub fn add_action_widget(&self, widget: &gtk::Widget) {
+        self.actions.append(widget);
+    }
+
     pub fn set_compact(&self, compact: bool) {
         self.compact.set(compact);
         self.title

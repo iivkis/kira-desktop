@@ -16,6 +16,8 @@ pub mod process_table;
 pub mod reflow;
 pub mod system;
 pub mod system_charts;
+pub mod system_details;
+pub mod system_health;
 pub mod tenet_scroll;
 pub mod workspace;
 
@@ -40,6 +42,13 @@ pub use system::{
 pub use system_charts::{
     ActivityAxis, ActivityLane, ChartPoint, ChartSample, GpuPulseCoupler, PulseHistory,
     SystemCharts, activity_axis, measured_history_caption,
+};
+pub use system_details::{
+    SystemDetails, cpu_temperature, gpu_temperature, gpu_utilization, load_label, power_label,
+    uptime_label,
+};
+pub use system_health::{
+    CoreStatus, HealthMetrics, HealthPhase, HealthSummary, SystemHealth, classify_health,
 };
 pub use tenet_scroll::TenetScroll;
 pub use workspace::{

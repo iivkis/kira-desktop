@@ -27,6 +27,61 @@ impl Pulse {
     }
 }
 
+/// Lightweight, always-on system health data. No GPU/sysfs temperature
+/// enumeration and no process scans on the bar's two-second cadence.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct HealthSample {
+    pub cpu_percent: Option<u8>,
+    pub memory_total_kib: Option<u64>,
+    pub memory_available_kib: Option<u64>,
+    pub root_total_kib: Option<u64>,
+    pub root_available_kib: Option<u64>,
+    pub battery_percent: Option<u8>,
+    pub battery_charging: Option<bool>,
+}
+
+#[derive(Default)]
+pub struct HealthSampler {
+    previous_cpu: Option<(u64, u64)>,
+}
+
+impl HealthSampler {
+    pub fn sample(&mut self) -> HealthSample {
+        let mut sample = self.sample_from(
+            Path::new("/proc/stat"),
+            Path::new("/proc/meminfo"),
+            Path::new("/"),
+        );
+        (sample.battery_percent, sample.battery_charging) = battery();
+        sample
+    }
+
+    fn sample_from(&mut self, stat: &Path, memory: &Path, root: &Path) -> HealthSample {
+        let cpu_percent = fs::read_to_string(stat)
+            .ok()
+            .and_then(|text| cpu_ticks(&text))
+            .and_then(|next| {
+                let value = self.previous_cpu.and_then(|prev| cpu_usage(prev, next));
+                self.previous_cpu = Some(next);
+                value
+            });
+        let mut memory_sample = Snapshot::default();
+        if let Ok(text) = fs::read_to_string(memory) {
+            parse_memory(&text, &mut memory_sample);
+        }
+        let volume = root_filesystem_kib(root);
+        HealthSample {
+            cpu_percent,
+            memory_total_kib: memory_sample.memory_total_kib,
+            memory_available_kib: memory_sample.memory_available_kib,
+            root_total_kib: volume.map(|v| v.0),
+            root_available_kib: volume.map(|v| v.1),
+            battery_percent: None,
+            battery_charging: None,
+        }
+    }
+}
+
 /// Short-lived, read-only worker sampler. Avoids all sysfs/hwmon, disk,
 /// battery, GPU enumeration, and process scans at the 500ms pulse cadence.
 #[derive(Default)]
@@ -485,6 +540,36 @@ mod tests {
         if let Some((total, available)) = root_filesystem_kib(Path::new("/")) {
             assert!(total > 0 && available <= total);
         }
+    }
+
+    #[test]
+    fn light_health_sampler_reports_real_cpu_memory_and_root_without_gpu() {
+        let dir = std::env::temp_dir().join(format!(
+            "kira-health-sample-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&dir).unwrap();
+        let cpu = dir.join("stat");
+        let memory = dir.join("meminfo");
+        fs::write(&cpu, "cpu 1 1 1 7 0 0 0 0\n").unwrap();
+        fs::write(&memory, "MemTotal: 1000 kB\nMemAvailable: 400 kB\n").unwrap();
+        let mut sampler = HealthSampler::default();
+        let first = sampler.sample_from(&cpu, &memory, &dir);
+        assert_eq!(first.cpu_percent, None);
+        assert_eq!(first.memory_total_kib, Some(1000));
+        assert_eq!(first.memory_available_kib, Some(400));
+        assert!(first.root_total_kib.is_some());
+        assert!(first.root_available_kib <= first.root_total_kib);
+        assert_eq!(first.battery_percent, None);
+        fs::write(&cpu, "cpu 2 2 2 17 0 0 0 0\n").unwrap();
+        let second = sampler.sample_from(&cpu, &memory, &dir);
+        assert_eq!(second.cpu_percent, Some(23));
+        fs::remove_file(&memory).unwrap();
+        let missing = sampler.sample_from(&cpu, &memory, Path::new("/missing-kira-health-root"));
+        assert_eq!(missing.memory_total_kib, None);
+        assert_eq!(missing.root_total_kib, None);
+        fs::remove_dir_all(&dir).unwrap();
     }
 
     #[test]

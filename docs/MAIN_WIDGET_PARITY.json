@@ -31,7 +31,8 @@
       "state": "partial",
       "content_and_interaction_requirements": [
         "Brand/launcher zone, workspaces, tray, system health, warning inspector, settings, clickable local clock",
-        "Exact 42px height and compact density"
+        "Exact 42px height and compact density",
+        "Native status button now consumes independent Core RPC probe, Niri subscription and fresh CPU/memory/disk/battery measurements; tray and warning inspector still pending"
       ],
       "animation_requirements": [
         "Shared TENET flow indicator and native hover focus feedback",
@@ -183,13 +184,15 @@
         "sha": "656a219d38569b648d15c19d65a32100510d8f0f"
       },
       "target_files": [
-        "crates/kira-ui/src/system.rs"
+        "crates/kira-ui/src/system.rs",
+        "crates/kira-ui/src/system_details.rs",
+        "crates/kira-ui/src/capacity.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [
         "Overview with disk, swap, temperature, battery, GPU and system disclosure",
         "Process search, sorting by name/PID/CPU/RSS/PSS, report copy and freshness",
-        "Native capacity tiles now consume root statvfs and swap meminfo measurements; six-second freshness and unavailable/unconfigured distinctions are unit-tested. Hardware disclosure, source-perfect visuals and motion remain incomplete"
+        "Native 6s hardware readouts and keyboard-operable GTK Expander for uptime/load/power are wired; exact disclosure motion, entire overview report, pixels and animation still pending"
       ],
       "animation_requirements": [
         "TENET panel arrival and disclosure",
@@ -247,11 +250,16 @@
         "path": "frontend/src/lib/components/SystemHealth.svelte",
         "sha": "75389413b18e1a5c9cbaec87dd59501eec9ff0ba"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/system_health.rs",
+        "crates/kira-shell/src/main.rs",
+        "crates/kira-services/src/system_metrics.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Health classification from Core/Niri and fresh metrics, tooltips and status",
-        "Accessible warning/health affordance"
+        "Accessible warning/health affordance",
+        "Native state classifier and toolbar button now consume separate five-second Core probe, Niri EventStream and lightweight two-second resource worker with six-second expiry; source animation and visual acceptance missing"
       ],
       "animation_requirements": [
         "Readout pulse with truthful state and reduced motion"

@@ -15,8 +15,8 @@ use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceSta
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
     ApplicationEntry, Bar, Calendar, ChartSample, DisplayIntent, DisplayPhase, DisplaySettings,
-    GpuReading, InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor,
-    SystemOverview, WorkspaceItem,
+    CoreStatus, GpuReading, HealthMetrics, InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem,
+    ProcessList, SystemHealth, SystemMonitor, SystemOverview, WorkspaceItem,
 };
 
 enum ShellUpdate {
@@ -24,10 +24,81 @@ enum ShellUpdate {
     Config(ConfigState),
     Applications(Vec<ApplicationEntry>),
     ApplicationLaunch(Result<(), String>),
+    CoreStatus(CoreStatus, String),
+    HealthMetrics(HealthMetrics, Instant),
     SystemOverview(SystemOverview, Instant),
     SystemPulse(ChartSample),
     Processes(ProcessList),
     ProcessError(String),
+}
+
+/// Core availability is a real read-only RPC result, not inferred from
+/// Niri workspaces or whether our own shell process is running.
+fn parse_core_probe(response: kira_ipc::RpcResponse) -> (CoreStatus, String) {
+    let version = if response.error.is_none() {
+        response
+            .result
+            .as_ref()
+            .and_then(|result| result.get("version"))
+            .and_then(serde_json::Value::as_str)
+            .filter(|value| !value.is_empty() && value.len() <= 64)
+            .map(str::to_owned)
+    } else {
+        None
+    };
+    match version {
+        Some(version) => (CoreStatus::Connected, version),
+        None => (CoreStatus::Unavailable, String::new()),
+    }
+}
+
+fn start_core_health_probe(sender: mpsc::Sender<ShellUpdate>) {
+    std::thread::spawn(move || {
+        loop {
+            let request = RpcRequest {
+                jsonrpc: PROTOCOL_VERSION.to_owned(),
+                id: 74,
+                method: "get_state".to_owned(),
+                params: None,
+            };
+            let update = kira_ipc::core_socket_path()
+                .and_then(|path| kira_ipc::client::call(&path, &request))
+                .map_or_else(
+                    |_| (CoreStatus::Unavailable, String::new()),
+                    parse_core_probe,
+                );
+            if sender.send(ShellUpdate::CoreStatus(update.0, update.1)).is_err() {
+                return;
+            }
+            std::thread::sleep(Duration::from_secs(5));
+        }
+    });
+}
+
+fn start_health_sampler(sender: mpsc::Sender<ShellUpdate>) {
+    std::thread::spawn(move || {
+        let mut sampler = kira_services::system_metrics::HealthSampler::default();
+        loop {
+            let sample = sampler.sample();
+            let measured_at = Instant::now();
+            let metrics = HealthMetrics {
+                cpu_percent: sample.cpu_percent,
+                memory_total_kib: sample.memory_total_kib,
+                memory_available_kib: sample.memory_available_kib,
+                root_total_kib: sample.root_total_kib,
+                root_available_kib: sample.root_available_kib,
+                battery_percent: sample.battery_percent,
+                battery_charging: sample.battery_charging,
+            };
+            if sender
+                .send(ShellUpdate::HealthMetrics(metrics, measured_at))
+                .is_err()
+            {
+                return;
+            }
+            std::thread::sleep(Duration::from_secs(2));
+        }
+    });
 }
 
 fn request_focus(id: String) {
@@ -359,6 +430,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         Ok(())
     }));
     let system = Rc::new(SystemMonitor::new());
+    let health = Rc::new(SystemHealth::new());
     system.set_report_copy_handler(|report| {
         let display = gtk::gdk::Display::default()
             .ok_or_else(|| "Буфер обмена Wayland недоступен".to_owned())?;
@@ -382,6 +454,8 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let processes_visible = Arc::new(AtomicBool::new(false));
     let pulse_visible = Arc::new(AtomicBool::new(false));
     start_core_subscriptions(sender.clone());
+    start_core_health_probe(sender.clone());
+    start_health_sampler(sender.clone());
     start_application_discovery(sender.clone());
     start_pulse_sampler(sender.clone(), pulse_visible.clone());
     start_system_sampler(
@@ -450,6 +524,10 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         match kind {
             PopupKind::Launcher => bar.set_launcher_action(on_click),
             PopupKind::Calendar => bar.set_calendar_action(on_click),
+            PopupKind::System => {
+                health.set_open_action(on_click);
+                bar.add_action_widget(&health.widget());
+            }
             _ => bar.add_action(symbol, label, on_click),
         }
     }
@@ -468,6 +546,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let applications = applications.clone();
         let launcher = launcher.clone();
         let system = system.clone();
+        let health = health.clone();
         let settings = settings.clone();
         let popup = popup.clone();
         let system_visible = system_visible.clone();
@@ -499,6 +578,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
             for update in receiver.try_iter().take(64) {
                 match update {
                     ShellUpdate::Workspaces(next) => {
+                        health.set_niri(Some(next.connected));
                         *state.borrow_mut() = next;
                         let settings = config.borrow();
                         bar.workspaces.update(
@@ -544,6 +624,12 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                             });
                         }
                     }
+                    ShellUpdate::CoreStatus(status, version) => {
+                        health.set_core(status, &version);
+                    }
+                    ShellUpdate::HealthMetrics(metrics, measured_at) => {
+                        health.set_metrics(metrics, measured_at);
+                    }
                     ShellUpdate::SystemOverview(snapshot, measured_at) => {
                         system.set_overview(&snapshot);
                         if active_system && !system.processes_selected() {
@@ -570,14 +656,44 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     gtk::glib::timeout_add_local(Duration::from_secs(1), {
         let config = config.clone();
         let clock = bar.clock.clone();
+        let system = system.clone();
+        let health = health.clone();
         move || {
             clock.set_text(&current_clock(config.borrow().show_seconds));
+            system.set_health_summary(&health.summary());
             gtk::glib::ControlFlow::Continue
         }
     });
 
     *primary.borrow_mut() = Some(bar.window.clone());
     bar.window.present();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn core_probe_requires_valid_rpc_success_with_version() {
+        let valid = kira_ipc::RpcResponse::success(
+            74,
+            serde_json::json!({ "version": "0.1.0", "status": "bootstrap" }),
+        );
+        assert_eq!(
+            parse_core_probe(valid),
+            (CoreStatus::Connected, "0.1.0".to_owned())
+        );
+        let invalid = kira_ipc::RpcResponse::success(74, serde_json::json!({ "ping": true }));
+        assert_eq!(
+            parse_core_probe(invalid).0,
+            CoreStatus::Unavailable
+        );
+        let error = kira_ipc::RpcResponse::failure(Some(74), -32601, "not found");
+        assert_eq!(
+            parse_core_probe(error).0,
+            CoreStatus::Unavailable
+        );
+    }
 }
 
 fn main() {

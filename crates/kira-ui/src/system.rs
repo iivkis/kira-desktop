@@ -7,6 +7,8 @@ use gtk::prelude::*;
 use crate::capacity::CapacityCards;
 use crate::process_table::ProcessTable;
 use crate::system_charts::{ChartSample, SystemCharts};
+use crate::system_details::SystemDetails;
+use crate::system_health::{HealthPhase, HealthSummary};
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct SystemOverview {
@@ -145,7 +147,8 @@ pub fn overview_labels(value: &SystemOverview) -> Vec<String> {
 pub struct SystemMonitor {
     root: gtk::Box,
     pages: gtk::Stack,
-    readings: Vec<gtk::Label>,
+    health: gtk::Label,
+    details: SystemDetails,
     charts: SystemCharts,
     capacity: CapacityCards,
     process_table: ProcessTable,
@@ -155,10 +158,15 @@ impl SystemMonitor {
     pub fn new() -> Self {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 12);
         root.add_css_class("system-monitor");
-        let title = gtk::Label::new(Some("Система"));
+        let title = gtk::Label::new(Some("Монитор системы"));
         title.add_css_class("section-title");
         title.set_xalign(0.0);
         root.append(&title);
+        let health = gtk::Label::new(None);
+        health.add_css_class("system-monitor-health");
+        health.set_xalign(0.0);
+        health.set_visible(false);
+        root.append(&health);
 
         let pages = gtk::Stack::new();
         pages.set_transition_type(gtk::StackTransitionType::None);
@@ -171,33 +179,16 @@ impl SystemMonitor {
         overview.append(&charts.widget());
         let capacity = CapacityCards::new();
         overview.append(&capacity.widget());
-        let mut readings = Vec::new();
-        for label in [
-            "CPU",
-            "Температура CPU",
-            "Оперативная память",
-            "Нагрузка (1/5/15)",
-            "Аптайм",
-            "Батарея",
-            "GPU",
-        ] {
-            let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-            row.add_css_class("system-metric");
-            let name = gtk::Label::new(Some(label));
-            name.set_xalign(0.0);
-            name.set_hexpand(true);
-            name.add_css_class("muted");
-            row.append(&name);
-            let reading = gtk::Label::new(Some("недоступно"));
-            reading.set_xalign(1.0);
-            reading.set_wrap(true);
-            reading.set_max_width_chars(36);
-            reading.add_css_class("system-value");
-            row.append(&reading);
-            overview.append(&row);
-            readings.push(reading);
-        }
-        pages.add_titled(&overview, Some("overview"), "Обзор");
+        let details = SystemDetails::new();
+        overview.append(&details.widget());
+        let scroll = gtk::ScrolledWindow::new();
+        scroll.add_css_class("system-overview-scroll");
+        scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+        scroll.set_max_content_height(540);
+        scroll.set_min_content_height(240);
+        scroll.set_propagate_natural_height(true);
+        scroll.set_child(Some(&overview));
+        pages.add_titled(&scroll, Some("overview"), "Обзор");
 
         let process_table = ProcessTable::new();
         pages.add_titled(&process_table.widget(), Some("processes"), "Процессы");
@@ -206,7 +197,8 @@ impl SystemMonitor {
         Self {
             root,
             pages,
-            readings,
+            health,
+            details,
             charts,
             capacity,
             process_table,
@@ -222,15 +214,21 @@ impl SystemMonitor {
     }
 
     pub fn set_overview(&self, overview: &SystemOverview) {
-        for (label, text) in self.readings.iter().zip(overview_labels(overview)) {
-            label.set_text(&text);
-        }
+        self.details.update(overview);
         self.capacity.update(
             overview.root_total_kib,
             overview.root_available_kib,
             overview.swap_total_kib,
             overview.swap_free_kib,
         );
+    }
+
+    pub fn set_health_summary(&self, health: &HealthSummary) {
+        let visible = health.phase != HealthPhase::Ready && !health.quiet_refresh;
+        self.health.set_visible(visible);
+        if visible && self.health.text() != health.localized {
+            self.health.set_text(health.localized);
+        }
     }
 
     pub fn set_pulse(&self, sample: ChartSample) {
