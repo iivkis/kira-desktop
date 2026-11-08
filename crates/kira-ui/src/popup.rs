@@ -79,7 +79,7 @@ impl PopupView {
     /// Remember focus only inside the actual widget content. Detach/attach
     /// controls must not erase the last focused application entry or day.
     fn remember_content_focus(&self, window: &gtk::ApplicationWindow) {
-        if let Some(focused) = window.focus()
+        if let Some(focused) = gtk::prelude::GtkWindowExt::focus(window)
             && focused.is_ancestor(&self.content)
         {
             self.last_content_focus.replace(Some(focused));
@@ -422,7 +422,7 @@ impl PopupHost {
     fn bar_monitor(&self) -> Option<gtk::gdk::Monitor> {
         let bar = self.bar.upgrade()?;
         let surface = bar.surface()?;
-        bar.display().monitor_at_surface(&surface)
+        gtk::prelude::WidgetExt::display(&bar).monitor_at_surface(&surface)
     }
 
     pub fn is_transient_active(&self, kind: PopupKind) -> bool {
