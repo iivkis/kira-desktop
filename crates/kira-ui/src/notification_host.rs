@@ -749,7 +749,7 @@ impl NotificationHostSet {
         let mut hosts = self.hosts.borrow_mut();
         let old_active = self.active.get();
         hosts.retain(|entry| {
-            if monitors.iter().any(|monitor| *monitor == entry.monitor) {
+            if monitors.contains(&entry.monitor) {
                 true
             } else {
                 entry.host.hide();
