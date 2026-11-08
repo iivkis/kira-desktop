@@ -9,6 +9,7 @@ pub mod flow_indicator;
 pub mod launcher;
 pub mod motion;
 pub mod popup;
+pub mod process_table;
 mod popup_clip;
 mod popup_section;
 pub mod reflow;
@@ -27,6 +28,7 @@ pub use launcher::{
     ApplicationEntry, Launcher, filter_applications, matching_apps_label, next_launcher_selection,
 };
 pub use popup::{PopupHost, PopupKind};
+pub use process_table::{ProcessSort, ProcessTable, filter_sort_processes, process_report};
 pub use reflow::{ReflowOffset, ReflowRow, ReflowScope, ReflowSnapshot};
 pub use system::{
     GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels,

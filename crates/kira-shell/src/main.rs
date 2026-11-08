@@ -321,6 +321,12 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         Ok(())
     }));
     let system = Rc::new(SystemMonitor::new());
+    system.set_report_copy_handler(|report| {
+        let display = gtk::gdk::Display::default()
+            .ok_or_else(|| "Буфер обмена Wayland недоступен".to_owned())?;
+        display.clipboard().set_text(&report);
+        Ok(())
+    });
     let settings = Rc::new(InfoPanel::new(
         "Настройки Kira",
         &settings_summary(&config.borrow()),

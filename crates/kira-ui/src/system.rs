@@ -3,7 +3,7 @@ use std::cmp::Ordering;
 
 use gtk::prelude::*;
 
-const MAX_VISIBLE_PROCESSES: usize = 80;
+use crate::process_table::ProcessTable;
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct SystemOverview {
@@ -139,8 +139,7 @@ pub struct SystemMonitor {
     root: gtk::Box,
     pages: gtk::Stack,
     readings: Vec<gtk::Label>,
-    process_summary: gtk::Label,
-    processes: gtk::Box,
+    process_table: ProcessTable,
 }
 
 impl SystemMonitor {
@@ -187,29 +186,15 @@ impl SystemMonitor {
         }
         pages.add_titled(&overview, Some("overview"), "Обзор");
 
-        let process_page = gtk::Box::new(gtk::Orientation::Vertical, 8);
-        let process_summary =
-            gtk::Label::new(Some("Список процессов появится после открытия вкладки"));
-        process_summary.add_css_class("muted");
-        process_summary.set_xalign(0.0);
-        process_summary.set_wrap(true);
-        process_page.append(&process_summary);
-        let scroll = gtk::ScrolledWindow::new();
-        scroll.set_min_content_height(180);
-        scroll.set_max_content_height(360);
-        scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
-        let processes = gtk::Box::new(gtk::Orientation::Vertical, 2);
-        scroll.set_child(Some(&processes));
-        process_page.append(&scroll);
-        pages.add_titled(&process_page, Some("processes"), "Процессы");
+        let process_table = ProcessTable::new();
+        pages.add_titled(&process_table.widget(), Some("processes"), "Процессы");
 
         root.append(&pages);
         Self {
             root,
             pages,
             readings,
-            process_summary,
-            processes,
+            process_table,
         }
     }
 
@@ -228,50 +213,20 @@ impl SystemMonitor {
     }
 
     pub fn set_processes(&self, snapshot: &ProcessList) {
-        while let Some(child) = self.processes.first_child() {
-            self.processes.remove(&child);
-        }
-        let suffix = if snapshot.truncated {
-            " (список ограничен)"
-        } else {
-            ""
-        };
-        self.process_summary
-            .set_text(&format!("Процессов: {}{suffix}", snapshot.total));
-        for item in top_processes(&snapshot.rows, MAX_VISIBLE_PROCESSES) {
-            let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-            row.add_css_class("process-row");
-            let name = gtk::Label::new(Some(&format!("{} ({})", item.name, item.pid)));
-            name.set_xalign(0.0);
-            name.set_hexpand(true);
-            name.set_max_width_chars(24);
-            name.set_tooltip_text(Some(&item.name));
-            row.append(&name);
-            let cpu = item
-                .cpu_percent
-                .filter(|x| x.is_finite())
-                .map_or_else(|| "CPU —".into(), |x| format!("{x:.1}%"));
-            let cpu_label = gtk::Label::new(Some(&cpu));
-            cpu_label.set_width_chars(7);
-            cpu_label.set_xalign(1.0);
-            row.append(&cpu_label);
-            let mem = item
-                .pss_kib
-                .or(item.rss_kib)
-                .map_or_else(|| "ОЗУ —".into(), gib);
-            let mem_label = gtk::Label::new(Some(&mem));
-            mem_label.set_xalign(1.0);
-            row.append(&mem_label);
-            self.processes.append(&row);
-        }
+        self.process_table.set_snapshot(snapshot);
     }
 
     pub fn set_process_error(&self, message: &str) {
-        while let Some(child) = self.processes.first_child() {
-            self.processes.remove(&child);
-        }
-        self.process_summary.set_text(message);
+        self.process_table.set_error(message);
     }
+
+    pub fn set_report_copy_handler(
+        &self,
+        on_copy: impl Fn(String) -> Result<(), String> + 'static,
+    ) {
+        self.process_table.set_copy_handler(on_copy);
+    }
+
 }
 
 impl Default for SystemMonitor {
