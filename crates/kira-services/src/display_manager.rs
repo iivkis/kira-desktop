@@ -61,7 +61,6 @@ impl Model {
         Self { sender, receiver }
     }
 
-
     /// Own a complete transaction in a separate process group. If the GTK
     /// Shell is SIGKILLed, stdin closes but this worker still owns rollback.
     /// Never fall back to in-process Apply if this spawn fails.
@@ -91,7 +90,11 @@ impl Model {
                     return;
                 };
                 message.push(b'\n');
-                if stream.write_all(&message).and_then(|()| stream.flush()).is_err() {
+                if stream
+                    .write_all(&message)
+                    .and_then(|()| stream.flush())
+                    .is_err()
+                {
                     return;
                 }
             }
@@ -99,9 +102,8 @@ impl Model {
         thread::spawn(move || {
             let mut stream = BufReader::new(output);
             while let Ok(Some(line)) = read_wire_line(&mut stream) {
-                let Some(event) = serde_json::from_slice(&line)
-                    .ok()
-                    .and_then(event_from_wire) else {
+                let Some(event) = serde_json::from_slice(&line).ok().and_then(event_from_wire)
+                else {
                     break;
                 };
                 if events.send(event).is_err() {
@@ -140,7 +142,6 @@ impl Model {
             .collect()
     }
 }
-
 
 /// Bounded newline frames. A partial or oversized command is a disconnect,
 /// not an invitation to parse arbitrary bytes or keep a preview pending.
@@ -181,7 +182,12 @@ fn request_wire(request: Request) -> serde_json::Value {
 fn request_from_wire(value: serde_json::Value) -> Option<Request> {
     match value.get("kind")?.as_str()? {
         "refresh" => Some(Request::Refresh),
-        "apply" => Some(Request::Apply(value.get("value")?.as_array().map(|_| value["value"].clone())?)),
+        "apply" => Some(Request::Apply(
+            value
+                .get("value")?
+                .as_array()
+                .map(|_| value["value"].clone())?,
+        )),
         "confirm" => Some(Request::Confirm(value.get("id")?.as_u64()?)),
         "revert" => Some(Request::Revert(value.get("id")?.as_u64()?)),
         "save" => Some(Request::Save),
@@ -222,8 +228,13 @@ fn event_from_wire(value: serde_json::Value) -> Option<Event> {
         persistence,
         outputs: value.get("outputs").filter(|item| !item.is_null()).cloned(),
         pending_id: value.get("pending_id").and_then(serde_json::Value::as_u64),
-        deadline_unix_ms: value.get("deadline_unix_ms").and_then(serde_json::Value::as_u64),
-        error: value.get("error").and_then(serde_json::Value::as_str).map(str::to_owned),
+        deadline_unix_ms: value
+            .get("deadline_unix_ms")
+            .and_then(serde_json::Value::as_u64),
+        error: value
+            .get("error")
+            .and_then(serde_json::Value::as_str)
+            .map(str::to_owned),
     })
 }
 
@@ -242,7 +253,8 @@ pub fn run_supervisor_stdio() -> i32 {
         while let Ok(Some(line)) = read_wire_line(&mut stream) {
             let Some(request) = serde_json::from_slice(&line)
                 .ok()
-                .and_then(request_from_wire) else {
+                .and_then(request_from_wire)
+            else {
                 break;
             };
             if commands.send(request).is_err() {
@@ -259,7 +271,11 @@ pub fn run_supervisor_stdio() -> i32 {
                 break;
             };
             message.push(b'\n');
-            if stream.write_all(&message).and_then(|()| stream.flush()).is_err() {
+            if stream
+                .write_all(&message)
+                .and_then(|()| stream.flush())
+                .is_err()
+            {
                 // A closed reader is not permission to skip the rollback.
                 break;
             }
@@ -780,7 +796,9 @@ mod tests {
 
     #[test]
     fn supervisor_protocol_rejects_arbitrary_commands_and_invalid_frames() {
-        let mut valid = std::io::Cursor::new(br#"{"kind":"confirm","id":19}"#.iter().copied().chain([b'\n']).collect::<Vec<_>>());
+        let mut valid = std::io::Cursor::new(
+            br#"{"kind":"confirm","id":19}"#.iter().copied().chain([b'\n']).collect::<Vec<_>>(),
+        );
         let frame = read_wire_line(&mut valid).unwrap().unwrap();
         assert!(matches!(
             request_from_wire(serde_json::from_slice(&frame).unwrap()),
