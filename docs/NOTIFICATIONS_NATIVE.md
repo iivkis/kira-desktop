@@ -83,9 +83,15 @@ resumes and that the background is not a transparent click interceptor.
 Compare 360×640, 600×480 and 1920×1080 and multi-monitor/scale changes
 with the pinned `main` implementation.
 
-**Still outstanding:** exact 180ms power2.out 12px card arrival and inverse
-dismissal, full compositor-calibrated paint acknowledgment, independent
-per-output placement, hover/pointer/focus/a11y audit, popup collision captures,
+**Motion implementation:** the host now animates each genuinely new ID's
+real GTK card from y=12px and opacity=0 to y=0 and opacity=1 over 180ms
+with source `power2.out`. It runs after paint-gated region reveal and
+does not delay or restart the queue's D-Bus dwell. Existing IDs do not
+replay the entrance on unrelated changes. `MotionToken` cancels
+superseded frame-clock callbacks and reduced motion settles immediately.
+
+**Still outstanding:** inverse dismissal, compositor-calibrated paint
+acknowledgment, independent per-output placement, focus/a11y/collision QA,
 and paired frame/time/pixel evidence. Until these are reviewed, both
 `notifications` and `notification-card` remain **partial**, with no
 `verified` flag set.

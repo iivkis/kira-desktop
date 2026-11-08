@@ -66,6 +66,7 @@ struct MenuSession {
     owner: String,
     path: String,
     title: String,
+    layout_version: u32,
     entries: Vec<TrayMenuEntry>,
 }
 
@@ -809,6 +810,44 @@ impl Service {
                 }
             },
         );
+        let weak = Rc::downgrade(self);
+        connection.signal_subscribe(
+            None,
+            Some(MENU_INTERFACE),
+            Some("LayoutUpdated"),
+            None,
+            None,
+            gio::DBusSignalFlags::NONE,
+            move |_, sender, path, _, _, params| {
+                // Some applications send a burst of LayoutUpdated signals
+                // while replacing a submenu. Only an exact active unique
+                // owner/path and a strictly newer revision may trigger IO.
+                if params.n_children() != 2 {
+                    return;
+                }
+                let (Some(version), Some(parent)) = (
+                    params.child_value(0).get::<u32>(),
+                    params.child_value(1).get::<i32>(),
+                ) else {
+                    return;
+                };
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                let menu = service.current_menu.borrow().as_ref().filter(|menu| {
+                    menu.owner == sender
+                        && menu.path == path
+                        && version != menu.layout_version
+                        && tray_menu::revision_is_current(version, menu.layout_version)
+                        && (parent == 0 || menu.entries.iter().any(|entry| entry.id == parent))
+                }).cloned();
+                if let Some(menu) = menu {
+                    let serial = service.menu_serial.get().wrapping_add(1);
+                    service.menu_serial.set(serial);
+                    service.refresh_menu_after_action(menu, serial);
+                }
+            },
+        );
     }
 
     fn refresh_sender(self: &Rc<Self>, sender: &str, path: &str) {
@@ -988,102 +1027,23 @@ impl Service {
         }
     }
 
-    /// Fixed, bounded application menu. The only authority is the verified
-    /// registration's current unique sender and its advertised object path.
-    fn open_menu(self: &Rc<Self>, item: &Item, path: &str) {
-        self.clear_menu();
-        let revision = self.menu_serial.get();
-        let Some(connection) = self.connection.borrow().clone() else {
-            return;
-        };
-        let Some(owner) = item.owner_unique.clone() else {
-            return;
-        };
-        let session = MenuSession {
-            handle: item.handle,
-            owner,
-            path: path.to_owned(),
-            title: item.title.clone(),
-            entries: Vec::new(),
-        };
-        if !self.menu_item_is_live(&session) {
-            return;
-        }
-        let request = session.clone();
-        let weak = Rc::downgrade(self);
-        let menu_connection = connection.clone();
-        connection.call(
-            Some(&session.owner),
-            &session.path,
-            MENU_INTERFACE,
-            "AboutToShow",
-            Some(&(0i32,).to_variant()),
-            None,
-            gio::DBusCallFlags::NONE,
-            1000,
-            None::<&gio::Cancellable>,
-            move |_| {
-                let Some(service) = weak.upgrade() else {
-                    return;
-                };
-                if service.menu_serial.get() != revision || !service.menu_item_is_live(&request) {
-                    return;
-                }
-                let weak = Rc::downgrade(&service);
-                let menu = request.clone();
-                menu_connection.call(
-                    Some(&request.owner),
-                    &request.path,
-                    MENU_INTERFACE,
-                    "GetLayout",
-                    Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
-                    None,
-                    gio::DBusCallFlags::NONE,
-                    2500,
-                    None::<&gio::Cancellable>,
-                    move |reply| {
-                        let Some(service) = weak.upgrade() else {
-                            return;
-                        };
-                        if service.menu_serial.get() != revision
-                            || !service.menu_item_is_live(&menu)
-                        {
-                            return;
-                        }
-                        let Some(entries) = reply.ok().as_ref().and_then(tray_menu::parse_layout)
-                        else {
-                            // Legacy clients may only implement ContextMenu.
-                            if let Some(item) = service.items.borrow().iter().find(|item| {
-                                item.handle == menu.handle
-                                    && item.owner_unique.as_deref() == Some(menu.owner.as_str())
-                            }) {
-                                service.call_item_method(item, "ContextMenu");
-                            }
-                            return;
-                        };
-                        let mut ready = menu;
-                        ready.entries = entries;
-                        service.current_menu.replace(Some(ready));
-                        service.publish_menu();
-                    },
-                );
-            },
-        );
-    }
-
-    fn refresh_menu_after_action(self: &Rc<Self>, menu: MenuSession, revision: u64) {
-        if self.menu_serial.get() != revision || !self.menu_item_is_live(&menu) {
+    /// An input is still authoritative only while it refers to the same
+    /// unique D-Bus owner, advertised menu object and live application.
+    /// The session serial invalidates superseded calls to AboutToShow,
+    /// GetLayout or Event even across a submenu expansion.
+    fn read_menu_layout(self: &Rc<Self>, menu: MenuSession, serial: u64, fallback: bool) {
+        if self.menu_serial.get() != serial || !self.menu_item_is_live(&menu) {
             return;
         }
         let Some(connection) = self.connection.borrow().clone() else {
             return;
         };
         let weak = Rc::downgrade(self);
-        let call_owner = menu.owner.clone();
-        let call_path = menu.path.clone();
+        let owner = menu.owner.clone();
+        let path = menu.path.clone();
         connection.call(
-            Some(&call_owner),
-            &call_path,
+            Some(&owner),
+            &path,
             MENU_INTERFACE,
             "GetLayout",
             Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
@@ -1095,24 +1055,139 @@ impl Service {
                 let Some(service) = weak.upgrade() else {
                     return;
                 };
-                if service.menu_serial.get() != revision || !service.menu_item_is_live(&menu) {
+                if service.menu_serial.get() != serial || !service.menu_item_is_live(&menu) {
                     return;
                 }
-                let Some(entries) = reply.ok().as_ref().and_then(tray_menu::parse_layout) else {
-                    return; // Keep the last safe menu on failed refresh.
+                let Some((version, entries)) =
+                    reply.ok().as_ref().and_then(tray_menu::parse_layout)
+                else {
+                    // A legacy application may implement ContextMenu only.
+                    // Do not discard an already painted menu on a failed
+                    // refresh after a live toggle or submenu request.
+                    if fallback {
+                        let item = service
+                            .items
+                            .borrow()
+                            .iter()
+                            .find(|item| {
+                                item.handle == menu.handle
+                                    && item.owner_unique.as_deref() == Some(menu.owner.as_str())
+                            })
+                            .cloned();
+                        if let Some(item) = item {
+                            service.call_item_method(&item, "ContextMenu");
+                        }
+                    }
+                    return;
                 };
                 let mut current = service.current_menu.borrow_mut();
-                let Some(active) = current.as_mut() else {
-                    return;
-                };
-                if !active.same_target(&menu) || active.entries == entries {
-                    return;
+                if let Some(active) = current.as_mut() {
+                    if !active.same_target(&menu)
+                        || !tray_menu::revision_is_current(version, active.layout_version)
+                    {
+                        return;
+                    }
+                    if active.layout_version == version && active.entries == entries {
+                        return;
+                    }
+                    active.layout_version = version;
+                    active.entries = entries;
+                } else if fallback {
+                    let mut created = menu;
+                    created.layout_version = version;
+                    created.entries = entries;
+                    *current = Some(created);
+                } else {
+                    return; // A dismissed menu must never be resurrected.
                 }
-                active.entries = entries;
                 drop(current);
                 service.publish_menu();
             },
         );
+    }
+
+    fn request_menu_layout(
+        self: &Rc<Self>,
+        menu: MenuSession,
+        serial: u64,
+        about: Option<i32>,
+        fallback: bool,
+    ) {
+        if self.menu_serial.get() != serial || !self.menu_item_is_live(&menu) {
+            return;
+        }
+        let Some(parent_id) = about else {
+            self.read_menu_layout(menu, serial, fallback);
+            return;
+        };
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let owner = menu.owner.clone();
+        let path = menu.path.clone();
+        connection.call(
+            Some(&owner),
+            &path,
+            MENU_INTERFACE,
+            "AboutToShow",
+            Some(&(parent_id,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            1000,
+            None::<&gio::Cancellable>,
+            move |_| {
+                if let Some(service) = weak.upgrade()
+                    && service.menu_serial.get() == serial
+                    && service.menu_item_is_live(&menu)
+                {
+                    // Failing AboutToShow is common for static menus; the
+                    // bounded GetLayout is still authoritative if available.
+                    service.read_menu_layout(menu, serial, fallback);
+                }
+            },
+        );
+    }
+
+    fn open_menu(self: &Rc<Self>, item: &Item, path: &str) {
+        self.clear_menu();
+        let Some(owner) = item.owner_unique.clone() else {
+            return;
+        };
+        let menu = MenuSession {
+            handle: item.handle,
+            owner,
+            path: path.to_owned(),
+            title: item.title.clone(),
+            layout_version: 0,
+            entries: Vec::new(),
+        };
+        self.request_menu_layout(menu, self.menu_serial.get(), Some(0), true);
+    }
+
+    fn menu_expand(self: &Rc<Self>, handle: u32, id: i32) {
+        let menu = self
+            .current_menu
+            .borrow()
+            .as_ref()
+            .filter(|menu| menu.handle == handle && tray_menu::expandable(&menu.entries, id))
+            .cloned();
+        let Some(menu) = menu else {
+            return;
+        };
+        if !self.menu_item_is_live(&menu) {
+            self.clear_stale_menu();
+            return;
+        }
+        let serial = self.menu_serial.get().wrapping_add(1);
+        self.menu_serial.set(serial);
+        self.request_menu_layout(menu, serial, Some(id), false);
+    }
+
+    fn refresh_menu_after_action(self: &Rc<Self>, menu: MenuSession, serial: u64) {
+        // Action semantics are not a navigation request. Preserve the
+        // current menu until new validated properties are available.
+        self.request_menu_layout(menu, serial, None, false);
     }
 
     fn menu_click(self: &Rc<Self>, handle: u32, id: i32) {
@@ -1132,14 +1207,14 @@ impl Service {
         let Some(connection) = self.connection.borrow().clone() else {
             return;
         };
-        let revision = self.menu_serial.get().wrapping_add(1);
-        self.menu_serial.set(revision);
+        let serial = self.menu_serial.get().wrapping_add(1);
+        self.menu_serial.set(serial);
         let weak = Rc::downgrade(self);
-        let call_owner = menu.owner.clone();
-        let call_path = menu.path.clone();
+        let owner = menu.owner.clone();
+        let path = menu.path.clone();
         connection.call(
-            Some(&call_owner),
-            &call_path,
+            Some(&owner),
+            &path,
             MENU_INTERFACE,
             "Event",
             Some(&tray_menu::click_params(id)),
@@ -1148,11 +1223,12 @@ impl Service {
             2500,
             None::<&gio::Cancellable>,
             move |reply| {
-                let Some(service) = weak.upgrade() else {
-                    return;
-                };
-                if reply.is_ok() && service.menu_serial.get() == revision {
-                    service.refresh_menu_after_action(menu, revision);
+                if let Some(service) = weak.upgrade()
+                    && reply.is_ok()
+                    && service.menu_serial.get() == serial
+                    && service.menu_item_is_live(&menu)
+                {
+                    service.refresh_menu_after_action(menu, serial);
                 }
             },
         );
@@ -1167,9 +1243,15 @@ impl Service {
             self.menu_click(handle, id);
             return;
         }
+        if let TrayIntent::MenuExpand(handle, id) = intent {
+            self.menu_expand(handle, id);
+            return;
+        }
         let handle = match intent {
             TrayIntent::Activate(id) | TrayIntent::Secondary(id) | TrayIntent::TogglePin(id) => id,
-            TrayIntent::MenuClick(_, _) | TrayIntent::DismissMenu => return,
+            TrayIntent::MenuClick(_, _) | TrayIntent::MenuExpand(_, _) | TrayIntent::DismissMenu => {
+                return;
+            }
         };
         let item = self
             .items

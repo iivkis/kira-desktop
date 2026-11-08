@@ -2,11 +2,14 @@
 //! surface. No D-Bus, IPC, WebKit or access to external application commands.
 //! A frame is acknowledged only after two real mapped GTK frame ticks.
 use std::cell::{Cell, RefCell};
+use std::collections::HashSet;
 use std::rc::Rc;
 
 use gtk::cairo::{RectangleInt, Region};
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+
+use crate::motion::MotionToken;
 
 pub const MAX_TOASTS: usize = 3;
 pub const PREFERRED_WIDTH: i32 = 360;
@@ -15,6 +18,26 @@ pub const OUTER_MARGIN: i32 = 12;
 pub const INNER_MARGIN: i32 = 8;
 pub const GAP: i32 = 8;
 pub const MIN_CARD_HEIGHT: i32 = 58;
+pub const TOAST_ENTRY_MS: u64 = 180;
+
+/// Pinned main source: y=12→0, alpha=0→1 in 180ms power2.out.
+/// The actual paint-gated dwell starts independently of this decoration.
+pub fn toast_entry_frame(progress: f64) -> (f64, f64) {
+    let time = if progress.is_finite() {
+        progress.clamp(0.0, 1.0)
+    } else {
+        1.0
+    };
+    let remaining = (1.0 - time).powi(2);
+    (12.0 * remaining, 1.0 - remaining)
+}
+
+struct CardEntrance {
+    id: u32,
+    frame: gtk::Fixed,
+    card: gtk::Widget,
+    motion: MotionToken,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct ToastLayout {
@@ -204,6 +227,8 @@ pub struct NotificationHost {
     layout: Cell<ToastLayout>,
     current: RefCell<Vec<NotificationView>>,
     revision: Rc<Cell<u64>>,
+    pending_entrances: RefCell<Vec<CardEntrance>>,
+    active_motion: RefCell<Vec<MotionToken>>,
     on_intent: Rc<dyn Fn(NotificationIntent)>,
     on_painted: Rc<dyn Fn(Vec<u32>)>,
 }
@@ -252,6 +277,8 @@ impl NotificationHost {
             layout: Cell::new(layout),
             current: RefCell::new(Vec::new()),
             revision: Rc::new(Cell::new(0)),
+            pending_entrances: RefCell::new(Vec::new()),
+            active_motion: RefCell::new(Vec::new()),
             on_intent: Rc::new(on_intent),
             on_painted: Rc::new(on_painted),
         })
@@ -268,6 +295,11 @@ impl NotificationHost {
         }
         self.revision.set(self.revision.get().wrapping_add(1));
         self.layout.set(layout);
+        let old_ids: HashSet<_> = self.current.borrow().iter().map(|notice| notice.id).collect();
+        for token in self.active_motion.borrow_mut().drain(..) {
+            token.cancel();
+        }
+        self.pending_entrances.borrow_mut().clear();
         *self.current.borrow_mut() = cards.to_vec();
         self.window.set_opacity(0.0);
         self.clear_input();
@@ -284,8 +316,26 @@ impl NotificationHost {
         self.root.append(&spacer);
         // The queue is oldest first. GTK children are top to bottom.
         for notice in cards.iter().rev() {
-            self.root
-                .append(&card(notice, layout.card_height, self.on_intent.clone()));
+            let content = card(notice, layout.card_height, self.on_intent.clone());
+            let frame = gtk::Fixed::new();
+            frame.set_hexpand(true);
+            frame.set_overflow(gtk::Overflow::Hidden);
+            frame.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
+            content.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
+            frame.put(&content, 0.0, 0.0);
+            self.root.append(&frame);
+            // Existing IDs do not replay their entrance when a different
+            // notification arrives or a slow application replaces its text.
+            if !old_ids.contains(&notice.id) {
+                let motion = MotionToken::default();
+                self.pending_entrances.borrow_mut().push(CardEntrance {
+                    id: notice.id,
+                    frame,
+                    card: content,
+                    motion: motion.clone(),
+                });
+                self.active_motion.borrow_mut().push(motion);
+            }
         }
 
         let wanted = self.revision.get();
@@ -325,6 +375,30 @@ impl NotificationHost {
         if let Some(surface) = self.window.surface() {
             surface.set_input_region(Some(&toast_hit_region(self.layout.get(), ids.len())));
             self.window.set_opacity(1.0);
+            for entrance in self.pending_entrances.borrow_mut().drain(..) {
+                // All input is already scoped to painted toast rectangles.
+                // Move the *real* GTK card, never a fake ghost or timer.
+                if !ids.contains(&entrance.id) {
+                    continue;
+                }
+                let position = entrance.frame.clone();
+                let card = entrance.card.clone();
+                let completed_position = entrance.frame.clone();
+                let completed_card = entrance.card.clone();
+                entrance.motion.run(
+                    &entrance.frame.clone().upcast(),
+                    TOAST_ENTRY_MS,
+                    move |progress| {
+                        let (y, alpha) = toast_entry_frame(progress);
+                        position.move_(&card, 0.0, y);
+                        card.set_opacity(alpha);
+                    },
+                    move || {
+                        completed_position.move_(&completed_card, 0.0, 0.0);
+                        completed_card.set_opacity(1.0);
+                    },
+                );
+            }
             true
         } else {
             false
@@ -359,6 +433,15 @@ mod tests {
             critical: false,
             actions: vec![("default".into(), "Open".into())],
         }
+    }
+
+    #[test]
+    fn entry_is_exact_source_power_two_out_and_settles() {
+        assert_eq!(toast_entry_frame(0.0), (12.0, 0.0));
+        assert_eq!(toast_entry_frame(0.5), (3.0, 0.75));
+        assert_eq!(toast_entry_frame(1.0), (0.0, 1.0));
+        assert_eq!(toast_entry_frame(1.5), (0.0, 1.0));
+        assert_eq!(toast_entry_frame(f64::NAN), (0.0, 1.0));
     }
 
     #[test]

@@ -2,7 +2,10 @@
 //! item snapshots and emits bounded numeric handle intents only: it never
 //! constructs D-Bus paths, commands, URLs or application menu calls.
 use std::cell::RefCell;
+use std::collections::HashMap;
 use std::rc::Rc;
+
+use crate::reflow::{ReflowRow, ReflowScope};
 
 use gtk::prelude::*;
 
@@ -70,6 +73,7 @@ pub enum TrayIntent {
     Secondary(u32),
     TogglePin(u32),
     MenuClick(u32, i32),
+    MenuExpand(u32, i32),
     DismissMenu,
 }
 
@@ -178,6 +182,97 @@ fn connect_secondary(button: &gtk::Button, id: u32, on_intent: Rc<dyn Fn(TrayInt
     button.add_controller(click);
 }
 
+/// Retain GTK row identity across live SNI updates. Reordering pinned
+/// items must not destroy a row's widgets or restart its event controllers.
+struct TrayLiveRow {
+    widget: ReflowRow,
+    title: gtk::Label,
+    open: gtk::Button,
+    icon_host: gtk::Box,
+    attention: gtk::Label,
+    pin: gtk::Button,
+    snapshot: TrayItem,
+}
+
+impl TrayLiveRow {
+    fn new(item: &TrayItem, on_intent: Rc<dyn Fn(TrayIntent)>) -> Self {
+        let root = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+        root.add_css_class("tray-row");
+        let open = gtk::Button::new();
+        open.add_css_class("tray-row-activate");
+        open.set_hexpand(true);
+        let content = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+        let icon_host = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        content.append(&icon_host);
+        let title = gtk::Label::new(None);
+        title.set_xalign(0.0);
+        title.set_hexpand(true);
+        title.set_ellipsize(gtk::pango::EllipsizeMode::End);
+        content.append(&title);
+        let attention = gtk::Label::new(Some("•"));
+        attention.add_css_class("tray-attention");
+        content.append(&attention);
+        open.set_child(Some(&content));
+        let handle = item.handle;
+        let callback = on_intent.clone();
+        open.connect_clicked(move |_| callback(TrayIntent::Activate(handle)));
+        connect_secondary(&open, handle, on_intent.clone());
+        root.append(&open);
+        let pin = gtk::Button::new();
+        pin.add_css_class("tray-pin");
+        let callback = on_intent.clone();
+        pin.connect_clicked(move |_| callback(TrayIntent::TogglePin(handle)));
+        root.append(&pin);
+        let widget = ReflowRow::new(&root.upcast());
+        widget.set_hexpand(true);
+        let mut row = Self {
+            widget,
+            title,
+            open,
+            icon_host,
+            attention,
+            pin,
+            snapshot: item.clone(),
+        };
+        row.refresh(item);
+        row
+    }
+
+    fn refresh(&mut self, item: &TrayItem) {
+        if self.snapshot.icon_name != item.icon_name || self.snapshot.pixmap != item.pixmap
+            || self.icon_host.first_child().is_none()
+        {
+            while let Some(child) = self.icon_host.first_child() {
+                self.icon_host.remove(&child);
+            }
+            self.icon_host.append(&icon(item, 24));
+        }
+        self.title.set_text(&item.title);
+        self.attention
+            .set_visible(item.status == TrayStatus::NeedsAttention);
+        self.open
+            .set_tooltip_text(Some(&item.title));
+        self.open.update_property(&[gtk::accessible::Property::Label(
+            &format!("Открыть {}", item.title),
+        )]);
+        self.pin.set_label(if item.pinned { "★" } else { "☆" });
+        if item.pinned {
+            self.pin.add_css_class("pinned");
+        } else {
+            self.pin.remove_css_class("pinned");
+        }
+        self.pin.update_property(&[gtk::accessible::Property::Label(
+            &format!("{} {}", if item.pinned { "Открепить" } else { "Закрепить" }, item.title),
+        )]);
+        self.pin.set_tooltip_text(Some(if item.pinned {
+            "Убрать в трей"
+        } else {
+            "Закрепить в Top Bar"
+        }));
+        self.snapshot = item.clone();
+    }
+}
+
 /// Stable reusable tray slot and pooled-popup page. All pinning and SNI
 /// dispatch stays with the Shell's trusted host, not GTK.
 pub struct TrayUi {
@@ -188,6 +283,8 @@ pub struct TrayUi {
     header_title: gtk::Label,
     list_scroll: gtk::ScrolledWindow,
     list: gtk::Box,
+    live_rows: RefCell<HashMap<u32, TrayLiveRow>>,
+    reflow: ReflowScope,
     menu_page: gtk::Box,
     menu_list: gtk::Box,
     current_menu: RefCell<Option<TrayMenu>>,
@@ -266,6 +363,8 @@ impl TrayUi {
             popup,
             header_title: title,
             list_scroll: scroll,
+            reflow: ReflowScope::new(&list.clone().upcast()),
+            live_rows: RefCell::new(HashMap::new()),
             list,
             menu_page,
             menu_list,
@@ -314,10 +413,18 @@ impl TrayUi {
                 continue;
             }
             if entry.has_children {
-                let group = gtk::Label::new(Some(&entry.label));
-                group.set_xalign(0.0);
+                // AboutToShow(parent_id) lets truly lazy apps populate
+                // submenus. The Shell revalidates the unique enabled parent
+                // and refreshes the same pooled menu, never a new surface.
+                let group = gtk::Button::with_label(&format!("▸ {}", entry.label));
+                group.set_halign(gtk::Align::Fill);
+                group.set_sensitive(entry.enabled);
                 group.set_margin_start(i32::from(entry.depth) * 12 + 8);
                 group.add_css_class("tray-menu-group");
+                let handle = menu.handle;
+                let id = entry.id;
+                let on_intent = self.on_intent.clone();
+                group.connect_clicked(move |_| on_intent(TrayIntent::MenuExpand(handle, id)));
                 self.menu_list.append(&group);
                 continue;
             }
@@ -409,6 +516,25 @@ impl TrayUi {
             .cloned()
             .collect::<Vec<_>>();
         visible.sort_by_key(|item| item.pinned);
+
+        // Capture the *painted* positions before mutating order. Surviving
+        // ReflowRow identities traverse a real 340ms back.out FLIP; hidden
+        // popups or reduced motion settle with zero extra GTK timers.
+        let previous = self
+            .live_rows
+            .borrow()
+            .iter()
+            .map(|(id, live)| (id.to_string(), live.widget.clone()))
+            .collect::<Vec<_>>();
+        let snapshot = self.reflow.capture(&previous);
+        while let Some(child) = self.list.first_child() {
+            self.list.remove(&child);
+        }
+        let mut rows = self.live_rows.borrow_mut();
+        let wanted = visible.iter().map(|item| item.handle).collect::<Vec<_>>();
+        rows.retain(|id, _| wanted.contains(id));
+        let mut current = Vec::new();
+
         if visible.is_empty() {
             let status = if state.available {
                 "НЕТ ПРИЛОЖЕНИЙ В ТРЕЕ"
@@ -420,56 +546,16 @@ impl TrayUi {
             empty.set_xalign(0.0);
             self.list.append(&empty);
         }
-        for item in visible {
-            let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-            row.add_css_class("tray-row");
-            let activate = gtk::Button::new();
-            activate.add_css_class("tray-row-activate");
-            activate.set_hexpand(true);
-            let row_content = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-            row_content.append(&icon(&item, 24));
-            let title = gtk::Label::new(Some(&item.title));
-            title.set_xalign(0.0);
-            title.set_hexpand(true);
-            title.set_ellipsize(gtk::pango::EllipsizeMode::End);
-            row_content.append(&title);
-            if item.status == TrayStatus::NeedsAttention {
-                let attention = gtk::Label::new(Some("•"));
-                attention.add_css_class("tray-attention");
-                row_content.append(&attention);
-            }
-            activate.set_child(Some(&row_content));
-            let id = item.handle;
-            let on_intent = self.on_intent.clone();
-            activate.connect_clicked(move |_| on_intent(TrayIntent::Activate(id)));
-            connect_secondary(&activate, id, self.on_intent.clone());
-            row.append(&activate);
-            // Pin controls are intents, not optimistic GtkToggleButtons.
-            // The source state changes only after trusted durable persistence.
-            let pin = gtk::Button::with_label(if item.pinned { "★" } else { "☆" });
-            pin.add_css_class("tray-pin");
-            if item.pinned {
-                pin.add_css_class("pinned");
-            }
-            pin.update_property(&[gtk::accessible::Property::Label(&format!(
-                "{} {}",
-                if item.pinned {
-                    "Открепить"
-                } else {
-                    "Закрепить"
-                },
-                item.title
-            ))]);
-            pin.set_tooltip_text(Some(if item.pinned {
-                "Убрать в трей"
-            } else {
-                "Закрепить в Top Bar"
-            }));
-            let on_intent = self.on_intent.clone();
-            pin.connect_clicked(move |_| on_intent(TrayIntent::TogglePin(id)));
-            row.append(&pin);
-            self.list.append(&row);
+        for item in &visible {
+            let live = rows.entry(item.handle).or_insert_with(|| {
+                TrayLiveRow::new(item, self.on_intent.clone())
+            });
+            live.refresh(item);
+            self.list.append(&live.widget);
+            current.push((item.handle.to_string(), live.widget.clone()));
         }
+        drop(rows);
+        self.reflow.play(snapshot, &current);
     }
 }
 

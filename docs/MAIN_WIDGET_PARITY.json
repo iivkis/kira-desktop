@@ -388,7 +388,8 @@
         "Pinned/unpinned items and native D-Bus menu hierarchy",
         "Secondary click and menu actions, keyboard dismissal",
         "Native GTK popup shares item snapshots, invokes only trusted numeric-handle Activate/ContextMenu, and persists pin IDs; menu trees and source FLIP remain missing",
-        "Native trusted 80-entry, 3-depth dbusmenu AboutToShow/GetLayout/Event(clicked) with unique enabled leaf checks, preserved checkbox/radio menu session after action and fallback ContextMenu; deeper lazy menus and graphical acceptance outstanding"
+        "Native trusted 80-entry, 3-depth dbusmenu AboutToShow/GetLayout/Event(clicked) with unique enabled leaf checks, preserved checkbox/radio menu session after action and fallback ContextMenu; deeper lazy menus and graphical acceptance outstanding",
+        "Owner-scoped LayoutUpdated and revision guards, enabled unique lazy-parent AboutToShow and 340ms retained GTK row FLIP implemented; deep popovers and graphical parity still missing"
       ],
       "animation_requirements": [
         "Reversible popup reveal and FLIP reflow"
@@ -420,7 +421,8 @@
       "content_and_interaction_requirements": [
         "Queued bounded notification cards and click-through region, multiple outputs",
         "Arrival ACK, FIFO and urgency; truthful close, actions and timeouts",
-        "Native GIO Freedesktop endpoint is fail-closed on unsafe display or existing owner, with source 100-item queue, three shaped GTK cards, frame-gated painted lifetime, real close/action signals. Output collision and interaction QA remain missing"
+        "Native GIO Freedesktop endpoint is fail-closed on unsafe display or existing owner, with source 100-item queue, three shaped GTK cards, frame-gated painted lifetime, real close/action signals. Output collision and interaction QA remain missing",
+        "Paint-gated real GTK 180ms y12→0 power2.out notification entry and immediate reduced-motion settling added; multi-output and reverse exit still missing"
       ],
       "animation_requirements": [
         "Reversible notification arrival and removal, bounded stagger"
@@ -452,7 +454,8 @@
       "content_and_interaction_requirements": [
         "Sender, title, body, close/open intents and accessible labels",
         "No user-generated markup injection",
-        "GTK plain-text card displays real sender, title/body, urgency and bounded action/close intents; source-equivalent 180ms motion and independently reviewed output not yet implemented"
+        "GTK plain-text card displays real sender, title/body, urgency and bounded action/close intents; source-equivalent 180ms motion and independently reviewed output not yet implemented",
+        "Real bounded plain-text card animates 180ms power2.out only on incoming ID, cancels superseded frames; paired Niri evidence and removal inversion still missing"
       ],
       "animation_requirements": [
         "0.18s y=12px opacity 0→1 power2.out, same-path reversal"

@@ -25,7 +25,8 @@ especially `docs/TRAY_DESIGN.md`, `TrayBar.svelte`, `TrayWidget.svelte`,
   to an existing watcher without evicting it.
 - The Shell accepts only typed `TrayIntent::Activate`,
   `TrayIntent::Secondary`, `TrayIntent::TogglePin`,
-  `TrayIntent::MenuClick(handle, leaf_id)` and `TrayIntent::DismissMenu` from
+  `TrayIntent::MenuClick(handle, leaf_id)`,
+  `TrayIntent::MenuExpand(handle, parent_id)` and `TrayIntent::DismissMenu` from
   the UI. A menu click is accepted only when the saved unique-owner/path
   session still exists and the requested ID is a unique, enabled leaf.
   Methods target the verified **unique owner** of the registered SNI item,
@@ -52,14 +53,22 @@ only `Event(clicked)` for the saved verified session, and an async
 `GetLayout` refresh retains the menu after a click. Invalid, stale or
 out-of-order replies never replace the current menu; clients without a
 valid menu layout fall back to `ContextMenu`. Escape and popup closure
-invalidate outstanding menu operations. True lazy submenus, deeper trees
-and external layout-update signal subscriptions remain outstanding.
+invalidate outstanding menu operations. An exact unique-owner/menu-path
+`LayoutUpdated(version,parent_id)` signal triggers generation-guarded
+root rereads only when the revision is newer and the parent ID is known.
+A `children-display=submenu` entry is actionable even before its child
+nodes load: the trusted Shell validates a unique enabled parent, then calls
+`AboutToShow(parent_id)` followed by bounded `GetLayout(0)`. Deeper
+than three levels, cascading submenus and persistent expansion/collapse
+state remain future work.
 IconPixmap is supported with a bounded, renderer-local RGBA GDK texture;
 OverlayIcon composition and multi-resolution selection beyond the nearest
 24px frame remain missing.
-GTK list rows currently rebuild on updates; retained keyed TENET 340ms FLIP,
-responsive bar icon limits, cross-surface icon transfer, popout and exact
-source typography remain outstanding.
+GTK rows now retain their real `ReflowRow` identities across SNI updates,
+capture painted positions and run a source 340ms `back.out(1.14)` FLIP for
+up to 24 previously rendered rows. Reduced-motion and unmapped popups
+settle immediately. Responsive bar icon limits, cross-surface icon transfer,
+popout, pixel comparisons and source typography remain outstanding.
 
 In isolated nested Niri, register test applications through local and
 external SNI watchers. Check that registered real items appear and change
