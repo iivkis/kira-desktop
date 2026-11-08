@@ -158,7 +158,7 @@ struct Navigation {
 impl Navigation {
     fn sync_layout(&self) {
         let visible = settings_sidebar_visible(self.detached.get(), self.viewport_width.get());
-        if !visible && self.sidebar.is_visible() && self.buttons.iter().any(gtk::WidgetExt::has_focus) {
+        if !visible && self.sidebar.is_visible() && self.buttons.iter().any(|button| button.has_focus()) {
             // A focused sidebar must not disappear underneath keyboard users.
             self.dropdown.grab_focus();
         }
