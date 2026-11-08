@@ -209,7 +209,8 @@ impl HealthState {
         } else {
             format!("Открыть монитор системы: {}", health.localized)
         };
-        self.button.update_property(&[gtk::accessible::Property::Label(&accessible_name)]);
+        self.button
+            .update_property(&[gtk::accessible::Property::Label(&accessible_name)]);
         self.button.set_tooltip_text(Some(&format!(
             "{}\nНажмите для подробных сведений",
             health.details
@@ -272,7 +273,12 @@ impl SystemHealth {
 
     pub fn set_metrics(&self, metrics: HealthMetrics, measured_at: Instant) {
         // Discard delayed worker samples which would revive an old state.
-        if self.state.received_at.get().is_some_and(|at| measured_at <= at) {
+        if self
+            .state
+            .received_at
+            .get()
+            .is_some_and(|at| measured_at <= at)
+        {
             return;
         }
         self.state.received_at.set(Some(measured_at));

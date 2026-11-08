@@ -14,9 +14,9 @@ use gtk::prelude::*;
 use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
-    ApplicationEntry, Bar, Calendar, ChartSample, DisplayIntent, DisplayPhase, DisplaySettings,
-    CoreStatus, GpuReading, HealthMetrics, InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem,
-    ProcessList, SystemHealth, SystemMonitor, SystemOverview, WorkspaceItem,
+    ApplicationEntry, Bar, Calendar, ChartSample, CoreStatus, DisplayIntent, DisplayPhase,
+    DisplaySettings, GpuReading, HealthMetrics, InfoPanel, Launcher, PopupHost, PopupKind,
+    ProcessItem, ProcessList, SystemHealth, SystemMonitor, SystemOverview, WorkspaceItem,
 };
 
 enum ShellUpdate {
@@ -62,12 +62,16 @@ fn start_core_health_probe(sender: mpsc::Sender<ShellUpdate>) {
                 params: None,
             };
             let update = kira_ipc::core_socket_path()
-                .and_then(|path| kira_ipc::client::call(&path, &request))
+                .ok()
+                .and_then(|path| kira_ipc::client::call(&path, &request).ok())
                 .map_or_else(
-                    |_| (CoreStatus::Unavailable, String::new()),
+                    || (CoreStatus::Unavailable, String::new()),
                     parse_core_probe,
                 );
-            if sender.send(ShellUpdate::CoreStatus(update.0, update.1)).is_err() {
+            if sender
+                .send(ShellUpdate::CoreStatus(update.0, update.1))
+                .is_err()
+            {
                 return;
             }
             std::thread::sleep(Duration::from_secs(5));
@@ -684,15 +688,9 @@ mod tests {
             (CoreStatus::Connected, "0.1.0".to_owned())
         );
         let invalid = kira_ipc::RpcResponse::success(74, serde_json::json!({ "ping": true }));
-        assert_eq!(
-            parse_core_probe(invalid).0,
-            CoreStatus::Unavailable
-        );
+        assert_eq!(parse_core_probe(invalid).0, CoreStatus::Unavailable);
         let error = kira_ipc::RpcResponse::failure(Some(74), -32601, "not found");
-        assert_eq!(
-            parse_core_probe(error).0,
-            CoreStatus::Unavailable
-        );
+        assert_eq!(parse_core_probe(error).0, CoreStatus::Unavailable);
     }
 }
 

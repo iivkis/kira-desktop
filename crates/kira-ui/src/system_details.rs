@@ -216,11 +216,15 @@ impl SystemDetails {
             .cpu_temp
             .set_text(&cpu_temperature(overview.cpu_temperature_c));
         self.state.show_gpu(&overview.gpu);
-        self.state.uptime.set_text(&uptime_label(overview.uptime_seconds));
-        self.state.load.set_text(&load_label(overview.load));
         self.state
-            .power
-            .set_text(&power_label(overview.battery_percent, overview.battery_charging, true));
+            .uptime
+            .set_text(&uptime_label(overview.uptime_seconds));
+        self.state.load.set_text(&load_label(overview.load));
+        self.state.power.set_text(&power_label(
+            overview.battery_percent,
+            overview.battery_charging,
+            true,
+        ));
 
         let weak = Rc::downgrade(&self.state);
         gtk::glib::timeout_add_local_once(DETAILS_FRESHNESS, move || {
