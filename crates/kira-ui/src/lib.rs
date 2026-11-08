@@ -16,6 +16,7 @@ mod popup_clip;
 mod popup_section;
 pub mod process_table;
 pub mod reflow;
+pub mod settings;
 pub mod sky_catalog;
 pub mod sky_map;
 pub mod sky_model;
@@ -53,6 +54,10 @@ pub use process_table::{
     process_report_with_state,
 };
 pub use reflow::{ReflowOffset, ReflowRow, ReflowScope, ReflowSnapshot};
+pub use settings::{
+    ALL_SECTIONS, SettingsAbout, SettingsPanel, SettingsSection, format_installed_memory,
+    settings_destination, settings_field, settings_sidebar_visible, settings_value,
+};
 pub use sky_map::SkyMap;
 pub use system::{
     GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels,
@@ -125,12 +130,3 @@ impl InfoPanel {
     }
 }
 
-/// A reusable settings composition without binding the UI crate to Core/Niri.
-pub fn settings_page(summary: &gtk::Widget, displays: &gtk::Widget) -> gtk::Widget {
-    let root = gtk::Box::new(gtk::Orientation::Vertical, 16);
-    root.append(summary);
-    let divider = gtk::Separator::new(gtk::Orientation::Horizontal);
-    root.append(&divider);
-    root.append(displays);
-    root.upcast()
-}
