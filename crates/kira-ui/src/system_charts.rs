@@ -30,7 +30,10 @@ pub struct GpuPulseCoupler {
 
 impl GpuPulseCoupler {
     pub fn observe(&mut self, measured_at: Instant, peak_percent: Option<u8>) {
-        if self.last_observed_at.is_some_and(|last| measured_at <= last) {
+        if self
+            .last_observed_at
+            .is_some_and(|last| measured_at <= last)
+        {
             return;
         }
         self.last_observed_at = Some(measured_at);
@@ -54,9 +57,8 @@ impl GpuPulseCoupler {
     }
 
     pub fn is_fresh(&self, now: Instant) -> bool {
-        self.last_valid_at.is_some_and(|at| {
-            now >= at && now.saturating_duration_since(at) < GPU_FRESHNESS
-        })
+        self.last_valid_at
+            .is_some_and(|at| now >= at && now.saturating_duration_since(at) < GPU_FRESHNESS)
     }
 
     pub fn reset(&mut self) {
@@ -360,7 +362,8 @@ impl ChartState {
         let points = history.recent(now);
         let show_gpu = self.gpu.borrow().is_fresh(now);
         self.gpu_axis.set_visible(show_gpu);
-        self.plot.set_content_height(if show_gpu { 296 } else { 202 });
+        self.plot
+            .set_content_height(if show_gpu { 296 } else { 202 });
         self.caption.set_text(&measured_history_caption(&points));
         let cpu_axis = activity_axis(&points, ActivityLane::Cpu);
         let ram_axis = activity_axis(&points, ActivityLane::Ram);
@@ -469,7 +472,11 @@ impl SystemCharts {
     }
 
     pub fn push_sample(&self, sample: ChartSample) {
-        let gpu = self.state.gpu.borrow_mut().take_for_pulse(sample.measured_at);
+        let gpu = self
+            .state
+            .gpu
+            .borrow_mut()
+            .take_for_pulse(sample.measured_at);
         self.state.history.borrow_mut().push_with_gpu(sample, gpu);
         self.state.refresh();
         // One-shot expiry callbacks, not an always-ticking UI timer. Older
@@ -487,7 +494,10 @@ impl SystemCharts {
     /// The host may submit one actual GPU peak from its slower telemetry worker.
     /// It is consumed only by the next time-ordered 500ms CPU/RAM pulse.
     pub fn observe_gpu(&self, measured_at: Instant, peak_percent: Option<u8>) {
-        self.state.gpu.borrow_mut().observe(measured_at, peak_percent);
+        self.state
+            .gpu
+            .borrow_mut()
+            .observe(measured_at, peak_percent);
         self.state.refresh();
         let weak = Rc::downgrade(&self.state);
         gtk::glib::timeout_add_local_once(GPU_FRESHNESS, move || {
