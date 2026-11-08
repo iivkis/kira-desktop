@@ -71,9 +71,41 @@ struct PopupView {
     detached: RefCell<Option<gtk::ApplicationWindow>>,
     detach_button: Option<gtk::Button>,
     scroll: gtk::ScrolledWindow,
+    content: gtk::Widget,
+    last_content_focus: RefCell<Option<gtk::Widget>>,
 }
 
 impl PopupView {
+    /// Remember focus only inside the actual widget content. Detach/attach
+    /// controls must not erase the last focused application entry or day.
+    fn remember_content_focus(&self, window: &gtk::ApplicationWindow) {
+        if let Some(focused) = window.focus()
+            && focused.is_ancestor(&self.content)
+        {
+            self.last_content_focus.replace(Some(focused));
+        }
+    }
+
+    /// Retain keyboard focus without trying to focus an unparented or hidden
+    /// widget. The idle guard prevents stealing focus after a rapid switch.
+    fn restore_content_focus(&self, window: &gtk::ApplicationWindow) {
+        let Some(target) = self.last_content_focus.borrow().clone() else {
+            return;
+        };
+        let weak = window.downgrade();
+        gtk::glib::idle_add_local_once(move || {
+            if let Some(window) = weak.upgrade()
+                && window.is_visible()
+                && window.is_active()
+                && target.is_ancestor(&window)
+                && target.is_sensitive()
+                && target.is_visible()
+            {
+                target.grab_focus();
+            }
+        });
+    }
+
     fn retarget_monitor(&self, kind: PopupKind, monitor: Option<&gtk::gdk::Monitor>) {
         if self.window.monitor() != monitor.cloned() {
             self.window.set_monitor(monitor);
@@ -200,6 +232,7 @@ impl PopupView {
         self.window.set_visible(false);
         if reopen {
             self.transition(true);
+            self.restore_content_focus(&self.window);
         }
     }
 
@@ -248,6 +281,13 @@ impl PopupView {
         }
 
         let weak = Rc::downgrade(self);
+        detached.connect_notify_local(Some("focus-widget"), move |window, _| {
+            if let Some(view) = weak.upgrade() {
+                view.remember_content_focus(window);
+            }
+        });
+
+        let weak = Rc::downgrade(self);
         detached.connect_close_request(move |_| {
             // A window-manager close retains the original controller for
             // the next Top Bar toggle. Nothing is reconstructed.
@@ -256,8 +296,22 @@ impl PopupView {
             }
             gtk::glib::Propagation::Stop
         });
+        let weak = Rc::downgrade(self);
+        let key = gtk::EventControllerKey::new();
+        key.connect_key_pressed(move |_, keyval, _, _| {
+            if keyval == gtk::gdk::Key::Escape {
+                if let Some(view) = weak.upgrade() {
+                    view.reattach(false);
+                }
+                gtk::glib::Propagation::Stop
+            } else {
+                gtk::glib::Propagation::Proceed
+            }
+        });
+        detached.add_controller(key);
         self.detached.replace(Some(detached.clone()));
         detached.present();
+        self.restore_content_focus(&detached);
     }
 
     /// Switching to a different popup cannot leave two active layer-shell
@@ -387,6 +441,7 @@ impl PopupHost {
         {
             // The existing detached window is raised, not duplicated.
             window.present();
+            view.restore_content_focus(window);
             return;
         }
         let previous = self.active.replace(None);
@@ -537,6 +592,8 @@ impl PopupHost {
                 detached: RefCell::new(None),
                 detach_button: detach_button.clone(),
                 scroll,
+                content: view_widget,
+                last_content_focus: RefCell::new(None),
             });
 
             if let Some(button) = detach_button {
@@ -558,6 +615,12 @@ impl PopupHost {
                 });
             }
 
+            let weak = Rc::downgrade(&view);
+            window.connect_notify_local(Some("focus-widget"), move |window, _| {
+                if let Some(view) = weak.upgrade() {
+                    view.remember_content_focus(window);
+                }
+            });
             let active = self.active.clone();
             let weak = Rc::downgrade(&view);
             window.connect_close_request(move |_| {
@@ -589,6 +652,7 @@ impl PopupHost {
             view.retarget_monitor(kind, monitor.as_ref());
             self.active.set(Some(kind));
             view.transition(true);
+            view.restore_content_focus(&view.window);
         }
     }
 }
