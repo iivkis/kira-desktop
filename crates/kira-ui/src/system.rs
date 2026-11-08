@@ -4,6 +4,7 @@ use std::cmp::Ordering;
 use gtk::prelude::*;
 
 use crate::process_table::ProcessTable;
+use crate::system_charts::{ChartSample, SystemCharts};
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct SystemOverview {
@@ -139,6 +140,7 @@ pub struct SystemMonitor {
     root: gtk::Box,
     pages: gtk::Stack,
     readings: Vec<gtk::Label>,
+    charts: SystemCharts,
     process_table: ProcessTable,
 }
 
@@ -158,6 +160,8 @@ impl SystemMonitor {
         root.append(&selector);
 
         let overview = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        let charts = SystemCharts::new();
+        overview.append(&charts.widget());
         let mut readings = Vec::new();
         for label in [
             "CPU",
@@ -194,6 +198,7 @@ impl SystemMonitor {
             root,
             pages,
             readings,
+            charts,
             process_table,
         }
     }
@@ -210,6 +215,10 @@ impl SystemMonitor {
         for (label, text) in self.readings.iter().zip(overview_labels(overview)) {
             label.set_text(&text);
         }
+    }
+
+    pub fn set_pulse(&self, sample: ChartSample) {
+        self.charts.push_sample(sample);
     }
 
     pub fn set_processes(&self, snapshot: &ProcessList) {

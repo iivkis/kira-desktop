@@ -7,14 +7,15 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, mpsc};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::display_bridge::decode_outputs;
 use gtk::prelude::*;
 use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceState};
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
-    ApplicationEntry, Bar, Calendar, DisplayIntent, DisplayPhase, DisplaySettings, GpuReading,
+    ApplicationEntry, Bar, Calendar, ChartSample, DisplayIntent, DisplayPhase, DisplaySettings,
+    GpuReading,
     InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor,
     SystemOverview, WorkspaceItem,
 };
@@ -25,6 +26,7 @@ enum ShellUpdate {
     Applications(Vec<ApplicationEntry>),
     ApplicationLaunch(Result<(), String>),
     SystemOverview(SystemOverview),
+    SystemPulse(ChartSample),
     Processes(ProcessList),
     ProcessError(String),
 }
@@ -181,6 +183,35 @@ fn start_system_sampler(
                 }
             }
             std::thread::sleep(Duration::from_secs(2));
+        }
+    });
+}
+
+/// Read-only 500ms CPU/RAM worker while Overview is visible.
+fn start_pulse_sampler(sender: mpsc::Sender<ShellUpdate>, visible: Arc<AtomicBool>) {
+    std::thread::spawn(move || {
+        let mut sampler = kira_services::system_metrics::PulseSampler::default();
+        let mut was_visible = false;
+        loop {
+            let active = visible.load(Ordering::Relaxed);
+            if active {
+                if !was_visible {
+                    // Reset the CPU delta baseline after an inactive interval.
+                    sampler = kira_services::system_metrics::PulseSampler::default();
+                }
+                let reading = sampler.sample();
+                let sample = ChartSample {
+                    measured_at: Instant::now(),
+                    cpu_percent: reading.cpu_percent,
+                    memory_total_kib: reading.memory_total_kib,
+                    memory_available_kib: reading.memory_available_kib,
+                };
+                if sender.send(ShellUpdate::SystemPulse(sample)).is_err() {
+                    return;
+                }
+            }
+            was_visible = active;
+            std::thread::sleep(kira_services::system_metrics::PULSE_INTERVAL);
         }
     });
 }
@@ -342,8 +373,10 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let (sender, receiver) = mpsc::channel::<ShellUpdate>();
     let system_visible = Arc::new(AtomicBool::new(false));
     let processes_visible = Arc::new(AtomicBool::new(false));
+    let pulse_visible = Arc::new(AtomicBool::new(false));
     start_core_subscriptions(sender.clone());
     start_application_discovery(sender.clone());
+    start_pulse_sampler(sender.clone(), pulse_visible.clone());
     start_system_sampler(
         sender.clone(),
         system_visible.clone(),
@@ -432,6 +465,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let popup = popup.clone();
         let system_visible = system_visible.clone();
         let processes_visible = processes_visible.clone();
+        let pulse_visible = pulse_visible.clone();
         let display_model = display_model.clone();
         let displays = displays.clone();
         move || {
@@ -439,6 +473,10 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
             system_visible.store(active_system, Ordering::Relaxed);
             processes_visible.store(
                 active_system && system.processes_selected(),
+                Ordering::Relaxed,
+            );
+            pulse_visible.store(
+                active_system && !system.processes_selected(),
                 Ordering::Relaxed,
             );
             // Hiding an unconfirmed Settings popup (including Escape) asks the
@@ -500,6 +538,11 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         }
                     }
                     ShellUpdate::SystemOverview(snapshot) => system.set_overview(&snapshot),
+                    ShellUpdate::SystemPulse(sample) => {
+                        if popup.is_active(PopupKind::System) && !system.processes_selected() {
+                            system.set_pulse(sample);
+                        }
+                    }
                     ShellUpdate::Processes(snapshot) => system.set_processes(&snapshot),
                     ShellUpdate::ProcessError(error) => system.set_process_error(&error),
                 }

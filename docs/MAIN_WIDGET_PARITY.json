@@ -213,11 +213,16 @@
         "path": "frontend/src/lib/components/SystemCharts.svelte",
         "sha": "c7f6dd5ee3b99328a50738d1113bd9b1ff1ee902"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/system_charts.rs",
+        "crates/kira-ui/src/system.rs",
+        "crates/kira-shell/src/main.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Real 500ms CPU/RAM history, gauges, time domain and adaptive axes",
-        "No fabricated points or overshoot outside measured values"
+        "No fabricated points or overshoot outside measured values",
+        "Native CPU/RAM graphs use timestamped 500ms pulses with a bounded measured one-minute history; GPU, exact visuals and motion remain outstanding"
       ],
       "animation_requirements": [
         "True chart interpolation and reduced-motion; original ECharts visual parity"

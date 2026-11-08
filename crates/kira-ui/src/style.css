@@ -112,6 +112,12 @@ window.kira-popup { background: transparent; color: #ffffff; }
 /* Reusable system monitor and output editor; no desktop-only theme rules. */
 .system-metric { padding: 6px 4px; }
 .system-value { font-weight: bold; }
+.system-charts { padding: 12px 8px; background: #14213d; }
+.system-charts .section-title { font-size: 12px; }
+.system-charts .system-chart-value { font-size: 25px; font-weight: 900; }
+.system-charts progressbar trough { background: #000000; min-height: 5px; }
+.system-charts progressbar progress { background: #fca311; }
+.system-charts progressbar { min-width: 88px; }
 .process-row { padding: 5px 4px; }
 .process-row:hover { background: #000000; }
 .process-table entry, .process-table dropdown { background: #000000; color: #ffffff; }

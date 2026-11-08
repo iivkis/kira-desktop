@@ -14,6 +14,7 @@ mod popup_section;
 pub mod process_table;
 pub mod reflow;
 pub mod system;
+pub mod system_charts;
 pub mod tenet_scroll;
 pub mod workspace;
 
@@ -33,6 +34,10 @@ pub use reflow::{ReflowOffset, ReflowRow, ReflowScope, ReflowSnapshot};
 pub use system::{
     GpuReading, ProcessItem, ProcessList, SystemMonitor, SystemOverview, overview_labels,
     top_processes,
+};
+pub use system_charts::{
+    ActivityAxis, ActivityLane, ChartPoint, ChartSample, PulseHistory, SystemCharts,
+    activity_axis, measured_history_caption,
 };
 pub use tenet_scroll::TenetScroll;
 pub use workspace::{
