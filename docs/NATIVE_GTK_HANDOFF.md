@@ -29,6 +29,26 @@
 
 Следующая серия реальных коммитов после HEAD `e00b6dd63ca92a4e64b74f38b0a8c8bade401804` добавляет нативный Settings (в предыдущем этапе), активные side-anchored GTK Popover каскады Tray с owner-validated ancestor/sibling actions, и output-local suppression Notifications (pooled vs detached). Первые GTK unit/Clippy проверки этих изменений проходили; **повторно проверить CI именно последнего HEAD** перед выводом о зелёной сборке. Frozen main и все 15 `verified` по-прежнему не менялись. Live Wayland и парные кадры здесь не предоставлены. В частности, частичная headless D-Bus и model QA не подтверждают реальные GtkPopover child surfaces, focus и hit regions. Следующий исполнитель должен начать с этого незавершённого графического G3/G4 gate.
 
+## G4: bounded notification output-host pool and SNI protocol acceptance fixture
+
+After the prior known-green HEAD `37b75b5e9d28d3bac3fea0125848601f69a3f6c6`,
+the next iteration implements `kira-ui::NotificationHostSet` with a
+maximum eight retained monitor-bound GTK windows. Exactly one output is
+selected per notification FIFO; real pooled transients divert toasts to a
+different safe monitor when possible. Old action/paint callbacks are
+silenced; migration requeues the visible cards and requires fresh frame
+ACK before counting the new output's dwell. Unplugged GDK surfaces close
+without leaving stale shaped-input regions. The existing D-Bus server
+remains a single owner. The acceptance-only SNI binary and headless
+private-bus smoke now exercise real `com.canonical.dbusmenu` methods:
+typed hierarchy, lazy branch, checkbox, and fixed leaf Event.
+
+**CI status for this paragraph:** code changes are committed but must be
+checked against the latest workflow HEAD, not this handoff snapshot. No
+real nested-Niri/Wayland presence has been established. Real child popup
+focus, multi-output mapping, compositor click-through and TENET/pixel
+capture remain separate acceptance gates. The ledger stays 0/15 verified.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
