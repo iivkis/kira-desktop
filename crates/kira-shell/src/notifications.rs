@@ -11,7 +11,8 @@ use gtk::prelude::*;
 
 use kira_services::notification_queue::{DEFAULT_DWELL, Notice, NotificationQueue};
 use kira_ui::{
-    NotificationHost, NotificationIntent, NotificationView, PopupHost, PopupKind, ToastLayout,
+    NotificationHostSet, NotificationIntent, NotificationView, PopupHost, PopupKind,
+    ToastHostSelection, ToastLayout,
 };
 
 const OBJECT_PATH: &str = "/org/freedesktop/Notifications";
@@ -111,12 +112,29 @@ fn view(notice: &Notice) -> NotificationView {
 
 /// Never guess an output geometry or claim notification delivery when GTK
 /// cannot expose the actual logical monitor bounds.
-fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)> {
-    let display = gtk::gdk::Display::default()?;
+fn live_monitors() -> Vec<gtk::gdk::Monitor> {
+    let Some(display) = gtk::gdk::Display::default() else {
+        return Vec::new();
+    };
     let model = display.monitors();
-    let monitors: Vec<gtk::gdk::Monitor> = (0..model.n_items())
+    (0..model.n_items())
         .filter_map(|index| model.item(index)?.downcast::<gtk::gdk::Monitor>().ok())
-        .collect();
+        .collect()
+}
+
+fn pooled_right_transient(popup: &PopupHost) -> bool {
+    [
+        PopupKind::Calendar,
+        PopupKind::System,
+        PopupKind::Settings,
+        PopupKind::Tray,
+    ]
+    .into_iter()
+    .any(|kind| popup.is_transient_active(kind))
+}
+
+fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)> {
+    let monitors = live_monitors();
     let outputs = monitors
         .iter()
         .map(|monitor| {
@@ -127,7 +145,15 @@ fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)>
     let preferred = popup
         .bar_monitor()
         .and_then(|bar| monitors.iter().position(|monitor| monitor == &bar));
-    let (index, layout) = kira_ui::toast_output_plan(&outputs, preferred)?;
+    let mut blocked = vec![false; monitors.len()];
+    if pooled_right_transient(popup) {
+        // Without a mapped bar, we cannot prove which output the transient
+        // overlaps. Never route a toast to an arbitrary first monitor.
+        let index = preferred?;
+        blocked[index] = true;
+    }
+    let (index, layout) =
+        kira_ui::toast_output_plan_unobstructed(&outputs, preferred, &blocked)?;
     Some((monitors[index].clone(), layout))
 }
 
@@ -160,7 +186,7 @@ struct Service {
     owner_id: RefCell<Option<gio::OwnerId>>,
     bus: RefCell<Option<gio::DBusConnection>>,
     queue: RefCell<NotificationQueue>,
-    host: RefCell<Option<NotificationHost>>,
+    host: RefCell<Option<NotificationHostSet>>,
     popup: Rc<PopupHost>,
     timer_revision: Cell<u64>,
 }
@@ -342,35 +368,36 @@ impl Service {
     }
 
     fn can_show_on(&self, target: &gtk::gdk::Monitor) -> bool {
-        // Only real pooled transients occlude their own output. Detached
-        // xdg-toplevels must not globally starve the notification FIFO.
-        let transient = [
-            PopupKind::Calendar,
-            PopupKind::System,
-            PopupKind::Settings,
-            PopupKind::Tray,
-        ]
-        .into_iter()
-        .any(|kind| self.popup.is_transient_active(kind));
+        // Double-check that a newly raised pooled transient has not
+        // invalidated the chosen target while the GTK host was selected.
         let same_monitor = self.popup.bar_monitor().map(|bar| bar == *target);
-        toast_target_unobstructed(transient, same_monitor)
+        toast_target_unobstructed(pooled_right_transient(&self.popup), same_monitor)
     }
 
     fn sync(self: &Rc<Self>) {
         let now = Instant::now();
         let target = current_target(&self.popup);
-        if let Some((monitor, _)) = target.as_ref()
-            && let Some(host) = self.host.borrow().as_ref()
-        {
-            host.retarget_monitor(monitor);
-        }
-        let layout = target.as_ref().map(|(_, layout)| *layout);
+        let (ready, switched) = {
+            let borrowed = self.host.borrow();
+            if let Some(host) = borrowed.as_ref() {
+                // Remove unplugged GDK surfaces before any new paint ACK.
+                let lost = host.reconcile(&live_monitors());
+                let selection = if let Some((monitor, layout)) = target.as_ref() {
+                    host.select(monitor, *layout)
+                } else {
+                    host.hide_all();
+                    ToastHostSelection::Unavailable
+                };
+                (
+                    selection != ToastHostSelection::Unavailable && host.is_renderable(),
+                    lost || selection == ToastHostSelection::Changed,
+                )
+            } else {
+                (false, false)
+            }
+        };
         let can_show = self.owned.get()
-            && self
-                .host
-                .borrow()
-                .as_ref()
-                .is_some_and(NotificationHost::is_renderable)
+            && ready
             && target
                 .as_ref()
                 .is_some_and(|(monitor, _)| self.can_show_on(monitor));
@@ -381,6 +408,12 @@ impl Service {
                 .filter(|notice| !notice.persistent)
                 .map(|notice| notice.id)
                 .collect::<Vec<_>>();
+            if switched {
+                // A painted ID on another output has NOT been painted on
+                // this one. Reset admission and dwell to the actual frame
+                // of the newly mapped destination, never its old clock.
+                queue.step(now, false);
+            }
             queue.step(now, can_show);
             previous
                 .into_iter()
@@ -388,18 +421,21 @@ impl Service {
                 .collect::<Vec<_>>()
         };
         for id in expired {
-            self.signal_closed(id, 1); // Expired, not manually dismissed.
+            self.signal_closed(id, 1);
         }
-
         let cards = if can_show {
             self.queue.borrow().visible().map(view).collect::<Vec<_>>()
         } else {
             Vec::new()
         };
         if let Some(host) = self.host.borrow().as_ref() {
-            if let Some(layout) = layout {
-                host.set_cards(layout, &cards);
+            if can_show {
+                if let Some((_, layout)) = target.as_ref() {
+                    host.set_cards(*layout, &cards);
+                }
             } else {
+                // Never draw even a non-targetable reverse-ghost above an
+                // occluding popup or a monitor that has disappeared.
                 host.hide();
             }
         }
@@ -520,7 +556,8 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
     let on_painted = Rc::downgrade(&service);
     // Failing to construct a native input-shaped surface MUST leave the
     // Freedesktop name unowned, rather than swallowing user notifications.
-    let Some(host) = NotificationHost::new(
+    let on_ready = Rc::downgrade(&service);
+    let Some(host) = NotificationHostSet::new(
         app,
         &monitor,
         layout,
@@ -534,16 +571,15 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
                 service.on_painted(&ids);
             }
         },
+        move || {
+            if let Some(service) = on_ready.upgrade() {
+                service.sync();
+            }
+        },
     ) else {
         eprintln!("kira-shell: cannot create a shaped GTK notification surface");
         return;
     };
-    let weak = Rc::downgrade(&service);
-    host.window.connect_map(move |_| {
-        if let Some(service) = weak.upgrade() {
-            service.sync();
-        }
-    });
     service.host.replace(Some(host));
     SERVICE.with(|active| *active.borrow_mut() = Some(service.clone()));
     observe_outputs(&service);
@@ -574,7 +610,7 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
                 service.bus.borrow_mut().take();
                 service.queue.borrow_mut().step(Instant::now(), false);
                 if let Some(host) = service.host.borrow().as_ref() {
-                    host.hide();
+                    host.hide_all();
                 }
                 eprintln!("kira-shell: another notification daemon owns the D-Bus name");
             }
@@ -613,6 +649,35 @@ mod tests {
         // the queue, even before the bar has mapped.
         assert!(toast_target_unobstructed(false, None));
         assert!(toast_target_unobstructed(false, Some(true)));
+    }
+
+    #[test]
+    fn rerouting_resets_painted_dwell_before_new_destination_ack() {
+        let now = Instant::now();
+        let mut queue = NotificationQueue::default();
+        queue.push(
+            Notice {
+                id: 42,
+                app: "real".into(),
+                summary: "move".into(),
+                body: String::new(),
+                actions: Vec::new(),
+                critical: false,
+                persistent: false,
+                dwell: DEFAULT_DWELL,
+            },
+            now,
+        );
+        queue.step(now, true);
+        assert!(queue.mark_painted(now, &[42]));
+        assert_eq!(queue.painted_count(), 1);
+        queue.step(now + Duration::from_secs(1), false);
+        assert_eq!(queue.painted_count(), 0);
+        queue.step(now + Duration::from_secs(1), true);
+        assert_eq!(queue.visible().map(|notice| notice.id).collect::<Vec<_>>(), vec![42]);
+        assert_eq!(queue.painted_count(), 0);
+        assert!(queue.mark_painted(now + Duration::from_secs(2), &[42]));
+        assert_eq!(queue.painted_count(), 1);
     }
 
     #[test]
