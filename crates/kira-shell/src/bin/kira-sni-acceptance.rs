@@ -181,6 +181,7 @@ fn main() {
     let property_status = status.clone();
     let property_title = title.clone();
     let method_log = path.clone();
+    let menu_event_log = path.clone();
     let name_log = path.clone();
     let name_connection = connection_holder.clone();
     let lost_loop = event_loop.clone();
@@ -241,7 +242,7 @@ fn main() {
                 let loaded = menu_loaded.clone();
                 let checked = menu_checked.clone();
                 let revision = menu_revision.clone();
-                let menu_log = path.clone();
+                let menu_log = menu_event_log.clone();
                 let menu_connection = connection.clone();
                 if let Err(error) = connection
                     .register_object(MENU_PATH, &menu_interface)
