@@ -112,11 +112,7 @@ fn menu_layout(lazy_loaded: bool, checked: bool, version: u32) -> glib::Variant 
                         ("label", "Advanced".to_variant()),
                         ("children-display", "submenu".to_variant()),
                     ],
-                    vec![menu_node(
-                        23,
-                        &[("label", "Deep".to_variant())],
-                        Vec::new(),
-                    )],
+                    vec![menu_node(23, &[("label", "Deep".to_variant())], Vec::new())],
                 ),
             ]
         } else {
@@ -140,11 +136,7 @@ fn menu_layout(lazy_loaded: bool, checked: bool, version: u32) -> glib::Variant 
         ],
         Vec::new(),
     );
-    let separator = menu_node(
-        50,
-        &[("type", "separator".to_variant())],
-        Vec::new(),
-    );
+    let separator = menu_node(50, &[("type", "separator".to_variant())], Vec::new());
     let root = menu_node(0, &[], vec![open, submenu, disabled, toggle, separator]);
     glib::Variant::tuple_from_iter([version.to_variant(), root])
 }
@@ -248,11 +240,7 @@ fn main() {
                     .register_object(MENU_PATH, &menu_interface)
                     .method_call(move |_, _, _, _, method, params, invocation| match method {
                         "GetLayout" => {
-                            let reply = menu_layout(
-                                loaded.get(),
-                                checked.get(),
-                                revision.get(),
-                            );
+                            let reply = menu_layout(loaded.get(), checked.get(), revision.get());
                             invocation.return_value(Some(&reply));
                         }
                         "AboutToShow" => {
@@ -373,7 +361,10 @@ mod tests {
         assert_eq!(fixture[0].2.len(), 24 * 24 * 4);
         assert_eq!(&fixture[0].2[..4], &[255, 20, 33, 61]);
         assert_eq!(icon_pixmap(true)[0].2[..4], [255, 252, 163, 17]);
-        assert_eq!(menu_layout(false, false, 1).type_().as_str(), "(u(ia{sv}av))");
+        assert_eq!(
+            menu_layout(false, false, 1).type_().as_str(),
+            "(u(ia{sv}av))"
+        );
         let root = menu_layout(false, false, 1).child_value(1);
         assert_eq!(root.child_value(2).n_children(), 5);
         let lazy = menu_layout(true, true, 3);
