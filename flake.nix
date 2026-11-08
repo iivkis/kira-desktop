@@ -28,7 +28,7 @@
         };
         ci = pkgs.mkShell {
           packages = with pkgs; [
-            cargo rustc clippy pkg-config gtk4 gtk4-layer-shell
+            cargo rustc clippy python3 dbus glib pkg-config gtk4 gtk4-layer-shell
           ];
         };
       });

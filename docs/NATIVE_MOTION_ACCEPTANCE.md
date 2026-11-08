@@ -68,6 +68,12 @@ manifest and screenshot is explicitly
 `unreviewed`; this command does **not** certify visual parity, keyboard
 interaction, exact input-region hit-testing or Niri compositor timestamps.
 
+CI also runs `scripts/smoke_sni_fixture_bus.py` against the **packaged
+GIO fixture** on an entirely new headless `dbus-run-session`, checking a
+real `GetAll` `IconPixmap` and the live NeedsAttention transition. This
+headless protocol test is intentionally separate from nested Niri and
+cannot pass the visual or hit-region gates.
+
 The private bus is torn down after the run. **Never** enable
 `KIRA_NOTIFICATIONS_PREVIEW` or `KIRA_SNI_PREVIEW` in the host session;
 both Shell adapters now require a separate
