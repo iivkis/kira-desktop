@@ -4,6 +4,15 @@
    Visual and motion equivalence are NOT yet certified; see widget parity audit. */
 window.kira-bar { background: #000000; color: #ffffff; }
 window.kira-popup { background: transparent; color: #ffffff; }
+window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
+.kira-popup .popup-window-control {
+  background: #14213d; color: #fca311;
+  min-height: 28px; padding: 3px 10px;
+  border: 1px solid #fca311; border-radius: 6px;
+}
+.kira-popup .popup-window-control:focus-visible {
+  outline: 2px solid #fca311; outline-offset: 2px;
+}
 .kira-popup .kira-popup-surface { background: #000000; }
 
 .kira-bar button, .kira-popup button {
