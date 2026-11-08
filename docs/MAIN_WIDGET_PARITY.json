@@ -404,7 +404,8 @@
         "Native GTK popup shares item snapshots, invokes only trusted numeric-handle Activate/ContextMenu, and persists pin IDs; menu trees and source FLIP remain missing",
         "Native trusted 80-entry, 3-depth dbusmenu AboutToShow/GetLayout/Event(clicked) with unique enabled leaf checks, preserved checkbox/radio menu session after action and fallback ContextMenu; deeper lazy menus and graphical acceptance outstanding",
         "Owner-scoped LayoutUpdated and revision guards, enabled unique lazy-parent AboutToShow and 340ms retained GTK row FLIP implemented; deep popovers and graphical parity still missing",
-        "One pooled GTK popup now navigates bounded direct children with MenuBack/Escape and validated owner-scoped submenu ID paths; disappeared ancestors retreat safely. Cascading popovers and paired Niri evidence still missing"
+        "One pooled GTK popup now navigates bounded direct children with MenuBack/Escape and validated owner-scoped submenu ID paths; disappeared ancestors retreat safely. Cascading popovers and paired Niri evidence still missing",
+        "Retained Tray now moves between pooled layer-shell and native decorated xdg-toplevel. Bar raises detached window without dropping the owner-validated SNI menu, while the distinct tray close action returns to the pool. Native Up/Down/Home/End/Right/Left/Escape keyboard navigation and stable enabled-ID focus after LayoutUpdated have pure tests, not graphical acceptance."
       ],
       "animation_requirements": [
         "Reversible popup reveal and FLIP reflow"
@@ -496,14 +497,20 @@
         "path": "frontend/src/lib/components/WindowControls.svelte",
         "sha": "9bb1ec684e8862c006757c6797268396a88e44ec"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/popup.rs",
+        "crates/kira-ui/src/tray.rs",
+        "crates/kira-shell/src/main.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Popup close and Niri-managed detached window controls",
-        "State preservation across detach/reattach and error reporting"
+        "State preservation across detach/reattach and error reporting",
+        "Launcher, Calendar, System, Settings and Tray share one retained GTK clip/controller through ordinary xdg-toplevel detach/reattach, including Tray menu state. No additional live SNI client is created; bar raise and Tray close are distinct actions."
       ],
       "animation_requirements": [
-        "Reversible close using one master timeline"
+        "Reversible close using one master timeline",
+        "PopupTimeline/GSK clip is retained through detach and reattach; matched Niri focus/contact/visual/motion evidence still missing."
       ],
       "verified": {
         "content": false,
