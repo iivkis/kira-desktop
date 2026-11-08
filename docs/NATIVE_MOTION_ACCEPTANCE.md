@@ -47,7 +47,7 @@ In an existing local Wayland session (never on the active desktop's Niri KDL):
 | Manual wheel interruption | Start animated scroll, then wheel/touch; manual adjustment wins, no previous target rebounds |
 | Workspace change | Move focus rapidly among chips, shrink/expand visible workspace range; retained indicator remains attached to the correct chip |
 | Disconnect/reconnect | Hide the strip and show it again; stale FLIP offsets do not reappear |
-| Calendar | Change selected day and month and replay clock digits; no stale focus/contact or scrambled selected-day layer |
+| Calendar | Change selected day and month and replay clock digits; close the popup during digit exchange, click-juggle, inverse fragments and month-grid motion, then reopen; no stale contact, clipping, transforms or scrambled selected-day layer |
 | Reduced motion | Disable GTK animations in the **isolated session**, then repeat; factual state updates immediately and every retained FLIP row settles without stale offsets |
 | Popup lifecycle | Open/close, Escape, resize, switch quickly during 340ms FLIP, 420ms selection, or 340ms scroll; remapping must not revive an old tick, stale geometry or painted offset |
 

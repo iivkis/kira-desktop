@@ -514,6 +514,7 @@ pub struct CalendarFragmentScene {
     direction: Rc<Cell<i32>>,
     contact: Rc<Cell<Option<(f64, f64)>>>,
     motion: MotionToken,
+    unmap_handler: Option<gtk::glib::SignalHandlerId>,
 }
 
 impl CalendarFragmentScene {
@@ -526,6 +527,7 @@ impl CalendarFragmentScene {
         let active = Rc::new(Cell::new(false));
         let direction = Rc::new(Cell::new(1));
         let contact = Rc::new(Cell::new(None));
+        let motion = MotionToken::default();
         {
             let progress = progress.clone();
             let active = active.clone();
@@ -558,13 +560,27 @@ impl CalendarFragmentScene {
                 }
             });
         }
+        let unmap_handler = area.connect_unmap({
+            let motion = motion.clone();
+            let progress = progress.clone();
+            let active = active.clone();
+            let contact = contact.clone();
+            move |_| {
+                // The next map must not replay a fragment from a past date.
+                motion.cancel();
+                active.set(false);
+                progress.set(1.0);
+                contact.set(None);
+            }
+        });
         Self {
             area,
             progress,
             active,
             direction,
             contact,
-            motion: MotionToken::default(),
+            motion,
+            unmap_handler: Some(unmap_handler),
         }
     }
 
@@ -618,6 +634,15 @@ impl CalendarFragmentScene {
 impl Default for CalendarFragmentScene {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl Drop for CalendarFragmentScene {
+    fn drop(&mut self) {
+        self.motion.cancel();
+        if let Some(handler) = self.unmap_handler.take() {
+            self.area.disconnect(handler);
+        }
     }
 }
 

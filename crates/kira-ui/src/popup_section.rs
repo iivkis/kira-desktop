@@ -47,6 +47,16 @@ mod imp {
     }
 
     impl WidgetImpl for PopupSection {
+        fn unmap(&self) {
+            self.motion.cancel();
+            if matches!(self.profile.get(), MotionProfile::CalendarGrid) {
+                // A hidden grid cannot finish its frame-clock spring.
+                // Keep the factual date model and clear the old transform.
+                self.obj().set_progress(1.0);
+            }
+            self.parent_unmap();
+        }
+
         fn measure(&self, orientation: gtk::Orientation, for_size: i32) -> (i32, i32, i32, i32) {
             self.child
                 .borrow()

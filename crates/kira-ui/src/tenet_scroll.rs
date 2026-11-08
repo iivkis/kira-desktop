@@ -40,6 +40,7 @@ pub struct TenetScroll {
     motion: MotionToken,
     internal: Rc<Cell<bool>>,
     pending: Rc<Cell<Option<f64>>>,
+    wheel_controller: Option<gtk::EventControllerScroll>,
     handler: Option<gtk::glib::SignalHandlerId>,
     unmap_handler: Option<gtk::glib::SignalHandlerId>,
 }
@@ -61,6 +62,20 @@ impl TenetScroll {
                 pending_manual.set(None);
             }
         });
+        // Cancel on the actual wheel gesture, including at a scroll limit
+        // where GTK may not emit adjustment::value-changed at all.
+        // Proceed so the ScrolledWindow still owns the physical scrolling.
+        let wheel_controller =
+            gtk::EventControllerScroll::new(gtk::EventControllerScrollFlags::VERTICAL);
+        wheel_controller.set_propagation_phase(gtk::PropagationPhase::Capture);
+        let wheel_motion = motion.clone();
+        let wheel_pending = pending.clone();
+        wheel_controller.connect_scroll(move |_, _, _| {
+            wheel_motion.cancel();
+            wheel_pending.set(None);
+            gtk::glib::Propagation::Proceed
+        });
+        window.add_controller(wheel_controller.clone());
         let unmap_motion = motion.clone();
         let unmap_pending = pending.clone();
         let unmap_writing = internal.clone();
@@ -83,6 +98,7 @@ impl TenetScroll {
             motion,
             internal,
             pending,
+            wheel_controller: Some(wheel_controller),
             handler: Some(handler),
             unmap_handler: Some(unmap_handler),
         }
@@ -155,6 +171,9 @@ impl TenetScroll {
 impl Drop for TenetScroll {
     fn drop(&mut self) {
         self.cancel();
+        if let Some(controller) = self.wheel_controller.take() {
+            self.window.remove_controller(controller);
+        }
         if let Some(handler) = self.handler.take() {
             // The ScrolledWindow can replace its adjustment; always disconnect
             // from the exact GObject that originally owned this handler.

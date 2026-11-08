@@ -127,6 +127,16 @@ impl DigitCell {
     }
 }
 
+/// Settle all visual layers while preserving the real, most recently supplied time.
+/// Called when a popup unmaps, animations are disabled or the owner is dropped.
+fn settle_digit_visuals(digits: &[Option<DigitCell>]) {
+    for cell in digits.iter().flatten() {
+        cell.reset();
+        cell.slot.set_overflow(gtk::Overflow::Hidden);
+        cell.slot.set_clip_overlay(&cell.layer, true);
+    }
+}
+
 /// GTK-only clock view; callers supply real local clock text independently
 /// of animation. The view has no timer, IPC, locale or system dependency.
 pub struct ClockDigits {
@@ -138,6 +148,7 @@ pub struct ClockDigits {
     previous_flights: RefCell<Vec<ClockFlight>>,
     juggle_nonce: Cell<u64>,
     settings_handler: Option<(gtk::Settings, gtk::glib::SignalHandlerId)>,
+    unmap_handler: Option<gtk::glib::SignalHandlerId>,
 }
 
 impl ClockDigits {
@@ -162,6 +173,18 @@ impl ClockDigits {
         }
         let digits = Rc::new(digits);
         let juggle_motion = MotionToken::default();
+        // Hidden GTK surfaces stop ticking, so cancel every digit flight and
+        // restore clipping before the next map can display an obsolete frame.
+        let unmap_handler = root.connect_unmap({
+            let weak_digits = Rc::downgrade(&digits);
+            let motion = juggle_motion.clone();
+            move |_| {
+                motion.cancel();
+                if let Some(digits) = weak_digits.upgrade() {
+                    settle_digit_visuals(digits.as_slice());
+                }
+            }
+        });
         let settings_handler = gtk::Settings::default().map(|settings| {
             let jog = juggle_motion.clone();
             let weak = Rc::downgrade(&digits);
@@ -171,11 +194,7 @@ impl ClockDigits {
                         && let Some(digits) = weak.upgrade()
                     {
                         jog.cancel();
-                        for cell in digits.iter().flatten() {
-                            cell.reset();
-                            cell.slot.set_overflow(gtk::Overflow::Hidden);
-                            cell.slot.set_clip_overlay(&cell.layer, true);
-                        }
+                        settle_digit_visuals(digits.as_slice());
                     }
                 });
             (settings, handler)
@@ -189,6 +208,7 @@ impl ClockDigits {
             previous_flights: RefCell::new(Vec::new()),
             juggle_nonce: Cell::new(0),
             settings_handler,
+            unmap_handler: Some(unmap_handler),
         }
     }
 
@@ -334,15 +354,16 @@ impl ClockDigits {
     }
 
     pub fn clear_motion(&self) {
-        self.stop_juggle();
-        for cell in self.digits.iter().flatten() {
-            cell.reset();
-        }
+        self.juggle_motion.cancel();
+        settle_digit_visuals(self.digits.as_slice());
     }
 }
 
 impl Drop for ClockDigits {
     fn drop(&mut self) {
+        if let Some(handler) = self.unmap_handler.take() {
+            self.root.disconnect(handler);
+        }
         if let Some((settings, handler)) = self.settings_handler.take() {
             settings.disconnect(handler);
         }
