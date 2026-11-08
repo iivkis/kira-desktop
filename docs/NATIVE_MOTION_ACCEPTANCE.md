@@ -36,6 +36,50 @@ In an existing local Wayland session (never on the active desktop's Niri KDL):
    animation progress; use a calibrated high-frame-rate recorder for temporal
    certification.
 
+## Real private-bus notification and SNI smoke
+
+The optional fully coordinated command below requires **an existing parent
+Wayland session**, `nix develop` (with `dbus-run-session`, `gdbus`, `grim`,
+Niri and GTK4) and `nix build .#default`. It is never run on headless CI.
+Unlike a plain preview, it constructs a **fresh private D-Bus session**
+before launching nested Niri or Kira and validates a 128-bit handshake plus
+a child-bus address different from the inherited parent bus. Production
+`main` and the user's active Niri, KDL, notification daemon, tray watcher,
+and XDG state are untouched.
+
+```sh
+nix develop
+nix build .#default
+python3 scripts/accept_nested.py --package-dir result \
+  --output /tmp/kira-acceptance-$(date +%s)
+```
+
+The coordinator creates a disposable Kira Core/Shell, a real **GIO
+StatusNotifierItem** with ARGB32 `IconPixmap` that sends `NewStatus`, a
+native watcher, and a native Notification Host on the same isolated session
+bus. It probes the exact Freedesktop service, exercises real
+`Notify`/`CloseNotification`/`replaces_id` calls, and uses `grim` against
+the validated nested Wayland socket to capture *entry*, *exit*, and *live
+tray* frame sequences. A scenario manifest records bounded IDs, actual
+event/sample times and remaining untested behaviors. All PNGs are explicitly
+`unreviewed`; this command does **not** certify visual parity, keyboard
+interaction, exact input-region hit-testing or Niri compositor timestamps.
+
+The private bus is torn down after the run. **Never** enable
+`KIRA_NOTIFICATIONS_PREVIEW` or `KIRA_SNI_PREVIEW` in the host session;
+both Shell adapters now require a separate
+`KIRA_ISOLATED_SESSION_BUS=1` attestation, which only the coordinator sets
+after its bus-check. If the environment cannot prove isolation, the smoke
+fails closed and ownership remains disabled. The executable
+`kira-sni-acceptance` is a non-autostart acceptance fixture, not a system
+daemon or a stand-in for real app menus.
+
+Once this succeeds, run the same viewport and stimuli manually against
+the frozen `main` in a *different* private nested session. Review input,
+timing, motion frames and final pixels side by side before changing any of
+the 15 parity flags. The first step proves bus and compositor reachability,
+not source/native equivalence.
+
 ## Required cases
 
 | Scenario | Input / expected invariant |

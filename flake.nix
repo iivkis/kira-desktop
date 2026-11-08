@@ -18,7 +18,7 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             cargo rustc sccache rustfmt clippy go-task python3
-            niri foot grim pkg-config gtk4 gtk4-layer-shell
+            niri foot grim dbus glib pkg-config gtk4 gtk4-layer-shell
           ];
           shellHook = ''
             export RUSTC_WRAPPER="${pkgs.sccache}/bin/sccache"

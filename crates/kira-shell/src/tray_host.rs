@@ -1362,6 +1362,12 @@ pub fn dismiss_menu() {
     });
 }
 
+/// A test watcher may own the Freedesktop name only in a coordinator-
+/// attested fresh private session, never the ordinary nested preview.
+fn isolated_watcher_preview(opt_in: Option<&str>, isolated: Option<&str>) -> bool {
+    opt_in == Some("1") && isolated == Some("1")
+}
+
 pub fn start(
     on_update: impl Fn(TrayState) + 'static,
     on_menu: impl Fn(Option<TrayMenu>) + 'static,
@@ -1408,9 +1414,14 @@ pub fn start(
     );
     service.host_owner.replace(Some(host_id));
 
-    if std::env::var_os("KIRA_PREVIEW").is_some() {
-        // A nested compositor may share the parent session bus; never
-        // seize its SNI watcher. Host registration is not ownership.
+    if std::env::var_os("KIRA_PREVIEW").is_some()
+        && !isolated_watcher_preview(
+            std::env::var("KIRA_SNI_PREVIEW").ok().as_deref(),
+            std::env::var("KIRA_ISOLATED_SESSION_BUS").ok().as_deref(),
+        )
+    {
+        // The ordinary nested preview may share the PARENT session bus.
+        // Host registration is safe, owning its watcher is not.
         let weak = Rc::downgrade(&service);
         gio::bus_get(
             gio::BusType::Session,
@@ -1480,6 +1491,14 @@ pub fn start(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn sni_watcher_requires_an_explicit_isolated_preview_bus() {
+        assert!(!isolated_watcher_preview(None, None));
+        assert!(!isolated_watcher_preview(Some("1"), None));
+        assert!(!isolated_watcher_preview(Some("true"), Some("1")));
+        assert!(isolated_watcher_preview(Some("1"), Some("1")));
+    }
 
     #[test]
     fn registration_addresses_are_checked_before_gio() {

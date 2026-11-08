@@ -448,11 +448,20 @@ pub fn layout_changed() {
     });
 }
 
+/// Preview ownership must have BOTH an explicit test opt-in and the
+/// coordinator's verified private-bus attestation. Never allow a simple
+/// inherited KIRA_NOTIFICATIONS_PREVIEW flag to seize the host's bus.
+fn preview_notifications_allowed(preview: bool, opt_in: Option<&str>, isolated: Option<&str>) -> bool {
+    !preview || (opt_in == Some("1") && isolated == Some("1"))
+}
+
 pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
-    if std::env::var_os("KIRA_PREVIEW").is_some()
-        && std::env::var_os("KIRA_NOTIFICATIONS_PREVIEW").is_none()
-    {
-        eprintln!("kira-shell: Notifications D-Bus disabled in shared-bus preview");
+    if !preview_notifications_allowed(
+        std::env::var_os("KIRA_PREVIEW").is_some(),
+        std::env::var("KIRA_NOTIFICATIONS_PREVIEW").ok().as_deref(),
+        std::env::var("KIRA_ISOLATED_SESSION_BUS").ok().as_deref(),
+    ) {
+        eprintln!("kira-shell: Notifications D-Bus disabled without isolated preview bus");
         return;
     }
     if !gtk::gdk::Display::default().is_some_and(|display| display.supports_input_shapes()) {
@@ -542,6 +551,16 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn notification_preview_never_owns_an_unattested_bus() {
+        assert!(preview_notifications_allowed(false, None, None));
+        assert!(!preview_notifications_allowed(true, None, None));
+        assert!(!preview_notifications_allowed(true, Some("1"), None));
+        assert!(!preview_notifications_allowed(true, None, Some("1")));
+        assert!(!preview_notifications_allowed(true, Some("true"), Some("1")));
+        assert!(preview_notifications_allowed(true, Some("1"), Some("1")));
+    }
 
     #[test]
     fn hidden_fifo_never_schedules_a_busy_loop() {

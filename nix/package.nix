@@ -63,7 +63,9 @@ stdenv.mkDerivation {
     mkdir -p "$out/bin"
     cp "${rustBinaries}/bin/kira-core" "$out/bin/kira-core"
     cp "${rustBinaries}/bin/kira-shell" "$out/bin/kira-shell"
-    chmod +x "$out/bin/kira-core" "$out/bin/kira-shell"
+    # Acceptance-only SNI client; refuses non-isolated D-Bus and is never autostarted.
+    cp "${rustBinaries}/bin/kira-sni-acceptance" "$out/bin/kira-sni-acceptance"
+    chmod +x "$out/bin/kira-core" "$out/bin/kira-shell" "$out/bin/kira-sni-acceptance"
     runHook postInstall
   '';
 

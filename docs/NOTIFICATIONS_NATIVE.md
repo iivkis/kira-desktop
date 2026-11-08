@@ -73,6 +73,16 @@ reason 1. Persistent visual expiry does **not** close the logical D-Bus ID.
 
 ## Acceptance, remaining gaps
 
+For a reproducible first live protocol and frame check, use
+`python3 scripts/accept_nested.py --output /tmp/new-notify-evidence` from
+`nix develop`. The coordinator starts a fresh `dbus-run-session` *before*
+nested Niri, owns neither the parent's daemon nor its watcher, sends real
+Freedesktop `Notify`, replacement and close calls, and records timestamped
+entry/exit/tray PNGs plus `scenario-manifest.json`. A missing compositor,
+shaped input, private bus or server ownership fails the run, not passes it.
+The output remains `unreviewed` and needs independent paired captures
+against frozen `main`.
+
 In a dedicated nested Niri compositor and **isolated session D-Bus**, run
 the native Shell and send four real `notify-send` messages rapidly. Use
 `gdbus` or `busctl --user` to test `replaces_id`, same ID from another

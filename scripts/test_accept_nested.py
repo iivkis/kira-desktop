@@ -1,0 +1,78 @@
+"""Fail-closed private D-Bus acceptance launcher, no graphics required."""
+from pathlib import Path
+import sys
+import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dev_preview import PreviewError
+from accept_nested import (
+    PARENT_BUS, TOKEN, acceptance_command, child_environment, verify_private_bus,
+)
+
+
+class PrivateBusAcceptanceTests(unittest.TestCase):
+    def setUp(self):
+        self.parent = {
+            "WAYLAND_DISPLAY": "wayland-host",
+            "XDG_RUNTIME_DIR": "/run/user/1000",
+            "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+            "KIRA_PREVIEW": "1",
+            "KIRA_NOTIFICATIONS_PREVIEW": "1",
+            "KIRA_SNI_PREVIEW": "1",
+            "KIRA_ISOLATED_SESSION_BUS": "1",
+            "NIRI_SOCKET": "/real/niri.sock",
+            "KIRA_CORE_SOCKET": "/real/core.sock",
+        }
+
+    def test_parent_context_is_scrubbed_and_preserved(self):
+        child = child_environment(self.parent, "1234567890abcdef" * 2)
+        self.assertEqual(child[PARENT_BUS], self.parent["DBUS_SESSION_BUS_ADDRESS"])
+        self.assertEqual(child[TOKEN], "1234567890abcdef" * 2)
+        self.assertEqual(child["WAYLAND_DISPLAY"], self.parent["WAYLAND_DISPLAY"])
+        for key in (
+            "KIRA_PREVIEW", "KIRA_SNI_PREVIEW", "KIRA_NOTIFICATIONS_PREVIEW",
+            "KIRA_ISOLATED_SESSION_BUS", "NIRI_SOCKET", "KIRA_CORE_SOCKET",
+        ):
+            self.assertNotIn(key, child)
+            self.assertIn(key, self.parent)
+
+    def test_valid_fresh_bus_and_all_denied_shared_bus_cases(self):
+        candidate = child_environment(self.parent, "a" * 32)
+        candidate["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=/tmp/dbus-isolated"
+        verify_private_bus(candidate)
+        for changed in (
+            {"DBUS_SESSION_BUS_ADDRESS": self.parent["DBUS_SESSION_BUS_ADDRESS"]},
+            {"DBUS_SESSION_BUS_ADDRESS": ""},
+            {TOKEN: "not-a-token"},
+            {"KIRA_SNI_PREVIEW": "1"},
+            {"KIRA_NOTIFICATIONS_PREVIEW": "1"},
+        ):
+            with self.subTest(changed=changed), self.assertRaises(PreviewError):
+                verify_private_bus({**candidate, **changed})
+
+    def test_missing_parent_wayland_or_invalid_nonce_fails(self):
+        for env in (
+            {"XDG_RUNTIME_DIR": "/run/user/1000"},
+            {"WAYLAND_DISPLAY": "wayland-0"},
+        ):
+            with self.assertRaises(PreviewError):
+                child_environment(env, "a" * 32)
+        with self.assertRaises(PreviewError):
+            child_environment(self.parent, "x" * 32)
+
+    def test_child_uses_separate_bus_runner_and_explicit_paths(self):
+        command = acceptance_command(
+            Path("/repo/scripts/dev_preview.py"), Path("/repo/result"),
+            Path("/tmp/new-evidence"), "/bin/dbus-run-session",
+            Path("/repo/target/debug"),
+        )
+        self.assertEqual(command[0:2], ["/bin/dbus-run-session", "--"])
+        self.assertIn("--acceptance-notifications", command)
+        self.assertEqual(command[command.index("--evidence-dir") + 1], "/tmp/new-evidence")
+        self.assertEqual(command[command.index("--package-dir") + 1], "/repo/result")
+        self.assertEqual(command[command.index("--bin-dir") + 1], "/repo/target/debug")
+        self.assertNotIn("sh", command)
+
+
+if __name__ == "__main__":
+    unittest.main()

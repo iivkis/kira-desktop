@@ -43,6 +43,8 @@
 
 No WebKit fallback, browser runtime, direct shell execution or arbitrary command execution in UI. Component callbacks express intent only. Kira UI stays independent of the actual compositor and Core transport. Native does not mean secure plugin isolation; third-party native widgets remain out of scope.
 
+The opt-in `scripts/accept_nested.py` now coordinates a fresh private D-Bus, disposable nested Niri, real SNI fixture, real notification calls and timestamped grim evidence; headless CI only exercises the fail-closed environment and protocol tests, not graphical source parity.
+
 The native System Monitor and DisplaySettings GTK views are now wired to their existing Rust services, but **passing headless Cargo tests does not demonstrate real Niri display transactions or visual parity**. See [ACCEPTANCE_NATIVE_G2.md](ACCEPTANCE_NATIVE_G2.md) for mandatory nested graphical scenarios. Deep StatusNotifier menu behavior, native notification presentation QA, multi-output popup positioning, detached windows, source-complete TENET animations, richer launcher performance and packaged Niri smoke remain explicit work.
 
 **Live-output safety gate:** `kira-shell` disables Apply/Confirm/Save outside the controlled nested preview. A 15s worker timeout survives GTK main-thread stalls, but not termination of the entire Shell process. Before enabling production display changes, move the watchdog to Core or a separate supervisor and test process-death rollback. Setting `KIRA_PREVIEW` manually is **not** a security boundary; use only the verified nested preview script.

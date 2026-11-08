@@ -78,6 +78,14 @@ up to 24 previously rendered rows. Reduced-motion and unmapped popups
 settle immediately. Responsive bar icon limits, cross-surface icon transfer,
 popout, pixel comparisons and source typography remain outstanding.
 
+The acceptance-only command `python3 scripts/accept_nested.py --output
+/tmp/new-sni-evidence` launches a disposable GIO StatusNotifierItem on a
+fresh `dbus-run-session`; its real ARGB32 `IconPixmap`, status and
+NewStatus are checked against the native watcher's live properties and
+captured by nested `grim`. The additional executable is never autostarted.
+Ordinary preview still cannot own the user's watcher; a private-bus
+attestation is mandatory for acceptance-only ownership.
+
 In isolated nested Niri, register test applications through local and
 external SNI watchers. Check that registered real items appear and change
 title/icon/attention on NewIcon, NewStatus and PropertiesChanged. Switch the

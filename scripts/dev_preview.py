@@ -182,11 +182,24 @@ def run_preview(
     package: Path,
     bin_dir: Path | None = None,
     debug: bool = False,
+    *,
+    acceptance_notifications: bool = False,
+    evidence_dir: Path | None = None,
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
     if not runtime_value or not parent_display:
         raise PreviewError("An existing Wayland session is required (XDG_RUNTIME_DIR / WAYLAND_DISPLAY)")
+    if acceptance_notifications:
+        from accept_nested import verify_private_bus
+
+        verify_private_bus(os.environ)
+        if evidence_dir is None:
+            raise PreviewError("An explicit new evidence directory is required")
+        if evidence_dir.exists():
+            raise PreviewError("Existing evidence must never be overwritten")
+    elif evidence_dir is not None:
+        raise PreviewError("Evidence output is only available in private-bus acceptance mode")
     runtime = Path(runtime_value)
     if not ready_socket(display_path(parent_display, runtime)):
         raise PreviewError("Parent Wayland socket is not accepting connections")
@@ -196,9 +209,8 @@ def run_preview(
 
     package = package.resolve()
     binaries_directory = (bin_dir if bin_dir is not None else package / "bin").resolve()
-    binaries = {
-        name: binaries_directory / f"kira-{name}" for name in ("core", "shell")
-    }
+    names = ("core", "shell", "sni-acceptance") if acceptance_notifications else ("core", "shell")
+    binaries = {name: binaries_directory / f"kira-{name}" for name in names}
     for binary in binaries.values():
         if not binary.is_file() or not os.access(binary, os.X_OK):
             raise PreviewError(f"Missing {binary}; build the preview binaries first")
@@ -236,7 +248,7 @@ def run_preview(
 
         processes: dict[str, subprocess.Popen] = {}
         handles = []
-        logs = {name: temp / f"{name}.log" for name in ("niri", "core", "shell")}
+        logs = {name: temp / f"{name}.log" for name in ("niri", "core", "shell", "sni")}
         debug_offsets = {"core": 0, "shell": 0}
 
         def launch(name: str, argv: list[str], env: dict[str, str]):
@@ -277,12 +289,43 @@ def run_preview(
                 os.environ.get("NIRI_SOCKET"), temp, config, socket_file,
                 active_config,
             )
+            if acceptance_notifications:
+                # Only the coordinator can attest a fresh dbus-run-session.
+                # Keep SNI pins, caches and state out of the user's HOME.
+                state_dir = temp / "xdg-state"
+                cache_dir = temp / "xdg-cache"
+                data_dir = temp / "xdg-data"
+                for directory in (state_dir, cache_dir, data_dir):
+                    directory.mkdir(mode=0o700)
+                isolated.update({
+                    "KIRA_NOTIFICATIONS_PREVIEW": "1",
+                    "KIRA_SNI_PREVIEW": "1",
+                    "KIRA_ISOLATED_SESSION_BUS": "1",
+                    "XDG_STATE_HOME": str(state_dir),
+                    "XDG_CACHE_HOME": str(cache_dir),
+                    "XDG_DATA_HOME": str(data_dir),
+                })
             core = launch("core", [str(binaries["core"])], isolated)
             await_ready(
                 lambda: True if ready_socket(socket_file) else None,
                 core, "isolated Kira Core socket", 10.0,
             )
             shell = launch("shell", [str(binaries["shell"])], isolated)
+            if acceptance_notifications:
+                # This executable is a real StatusNotifierItem over GIO,
+                # never a mocked GTK icon. It can see only the new private bus.
+                launch(
+                    "sni",
+                    [str(binaries["sni-acceptance"]), str(temp / "sni-events.log")],
+                    isolated,
+                )
+                from acceptance_scenarios import run_acceptance
+
+                print("[preview] Running real private D-Bus acceptance and PNG capture.", flush=True)
+                assert evidence_dir is not None
+                manifest = run_acceptance(nested, environment, isolated, evidence_dir)
+                print(f"[preview] Unreviewed evidence: {manifest}", flush=True)
+                return
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
             print(f"[preview] Live Kira KDL config: {active_config}", flush=True)
             print(f"[preview] Isolated Niri KDL: {config}", flush=True)
@@ -318,7 +361,7 @@ def run_preview(
             raise PreviewError(str(error)) from error
         finally:
             signal.signal(signal.SIGTERM, previous_sigterm_handler)
-            for name in ("shell", "core", "niri"):
+            for name in ("sni", "shell", "core", "niri"):
                 stop_process(processes.get(name))
             for handle in handles:
                 handle.close()
@@ -366,6 +409,14 @@ def main() -> int:
     parser.add_argument("--bin-dir", type=Path, help="Cargo debug binaries directory")
     parser.add_argument("--debug", action="store_true", help="Stream Core and native GTK Shell logs")
     parser.add_argument("--validate-config", action="store_true")
+    parser.add_argument(
+        "--acceptance-notifications", action="store_true",
+        help="Private dbus-run-session smoke only (use accept_nested.py)",
+    )
+    parser.add_argument(
+        "--evidence-dir", type=Path,
+        help="NEW output directory for unreviewed nested PNG captures",
+    )
     parser.add_argument("mode", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("ready_path", nargs="?", help=argparse.SUPPRESS)
     parser.add_argument("nonce", nargs="?", help=argparse.SUPPRESS)
@@ -376,7 +427,11 @@ def main() -> int:
         elif args.mode == "report" and args.ready_path and args.nonce:
             report_ready(Path(args.ready_path), args.nonce)
         elif args.mode is None:
-            run_preview(args.package_dir, args.bin_dir, args.debug)
+            run_preview(
+                args.package_dir, args.bin_dir, args.debug,
+                acceptance_notifications=args.acceptance_notifications,
+                evidence_dir=args.evidence_dir,
+            )
         else:
             parser.error("Unknown preview mode")
     except PreviewError as error:
