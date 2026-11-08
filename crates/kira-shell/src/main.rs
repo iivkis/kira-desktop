@@ -639,6 +639,10 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let displays = displays.clone();
         let mut previously_obstructed = false;
         move || {
+            // The bar may span a different monitor after hotplug; use the
+            // real allocated GTK width, matching frozen main's 2/4/6 icon
+            // breakpoints. No SNI item is created or dropped on resize.
+            tray_ui.set_bar_width(bar.window.width());
             // Escape closes the native pooled popup, not the D-Bus session.
             // Invalidate stale async GetLayout replies once it is dismissed.
             if !popup.is_active(PopupKind::Tray) && tray_ui.menu_open() {
