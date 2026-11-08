@@ -57,13 +57,15 @@ quality. Preserve the console transcript for manual acceptance.
 - [ ] Change Calendar selection, Launcher search text and System page in their detached windows. Switch to other transients, attach again and reopen: date, query, scrolling and widget identities must survive.
 - [ ] Close a detached window using its window-manager control: it should reattach invisibly, preserve state and reopen from the bar. Try rapid attach/detach and Escape, including keyboard focus and screen-reader labels.
 - [ ] Keep a detached System window open: continuous sampling should stay active only while the view is visible. A detached Settings view with an unconfirmed display Apply must still roll back when closed.
+- [ ] On two monitors with different geometries, open Calendar and Settings from the Top Bar's actual output. Verify native popup monitor, width, top margin and scroll bounds match the bar's GDK surface. Switch outputs or hotplug before reopening: no stale forced monitor or off-screen popup. A detached xdg-toplevel remains compositor-positioned.
+- [ ] Focus a Launcher search entry and enter a query, detach then raise the same window via the bar and reattach. Focus restoration must never hijack another popup during rapid switching. Test Escape, focus-visible and screen-reader names on both layer-shell and detached windows.
 - [ ] Inspect fractional scaling, focus, monitor geometry, clipping, reduced motion and transient overlap in real nested Niri. Tray remains pooled; detached tray cascades are not implemented or accepted.
 
 ## Visual / input and release gates
 
 - [ ] Keyboard navigation, tab order, Escape, visible focus, screen-reader labels and scrolling work on both pages.
 - [ ] At 100%, 125%, 150%, 200% fractional scale and on 800×600 / multi-output layouts, no controls overflow the popup or become unreachable.
-- [ ] In two-output sessions, the popup opens on the intended current output rather than assuming monitor index zero. **Known gap:** current placement still uses the first output; do not mark this accepted until fixed and tested.
+- [ ] In two-output sessions, the popup uses the mapped bar's actual GDK monitor, rather than monitor index zero. The source now handles this, but real nested Niri tests, output removal and fractional scaling are still required before acceptance.
 - [ ] `cargo fmt --all -- --check`, `task shell:check`, `task check` and `nix build .#default` pass with no WebKit dependency.
 - [ ] Attach actual nested Niri screenshots/logs and results to the migration PR. Until then this is a **testable native implementation**, not validated production feature parity.
 
