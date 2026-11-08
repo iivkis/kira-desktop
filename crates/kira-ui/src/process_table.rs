@@ -67,12 +67,12 @@ fn known_u64_desc(a: Option<u64>, b: Option<u64>) -> Ordering {
 }
 
 /// All tokens match the observed name or PID. Missing metrics sort last.
-pub fn filter_sort_processes(
-    rows: &[ProcessItem],
+pub fn filter_sort_processes<'a>(
+    rows: &'a [ProcessItem],
     query: &str,
     sort: ProcessSort,
     limit: usize,
-) -> Vec<&ProcessItem> {
+) -> Vec<&'a ProcessItem> {
     let terms: Vec<String> = query.split_whitespace().map(str::to_lowercase).collect();
     let mut selected: Vec<_> = rows
         .iter()
