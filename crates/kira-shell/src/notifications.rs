@@ -451,7 +451,11 @@ pub fn layout_changed() {
 /// Preview ownership must have BOTH an explicit test opt-in and the
 /// coordinator's verified private-bus attestation. Never allow a simple
 /// inherited KIRA_NOTIFICATIONS_PREVIEW flag to seize the host's bus.
-fn preview_notifications_allowed(preview: bool, opt_in: Option<&str>, isolated: Option<&str>) -> bool {
+fn preview_notifications_allowed(
+    preview: bool,
+    opt_in: Option<&str>,
+    isolated: Option<&str>,
+) -> bool {
     !preview || (opt_in == Some("1") && isolated == Some("1"))
 }
 
@@ -558,7 +562,11 @@ mod tests {
         assert!(!preview_notifications_allowed(true, None, None));
         assert!(!preview_notifications_allowed(true, Some("1"), None));
         assert!(!preview_notifications_allowed(true, None, Some("1")));
-        assert!(!preview_notifications_allowed(true, Some("true"), Some("1")));
+        assert!(!preview_notifications_allowed(
+            true,
+            Some("true"),
+            Some("1")
+        ));
         assert!(preview_notifications_allowed(true, Some("1"), Some("1")));
     }
 

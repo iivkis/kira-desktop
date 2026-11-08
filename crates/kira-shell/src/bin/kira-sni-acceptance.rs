@@ -81,8 +81,7 @@ fn main() {
     let event_loop = glib::MainLoop::new(None, false);
     let status = Rc::new(Cell::new(false));
     let title = Rc::new(RefCell::new(String::from("Kira private SNI fixture")));
-    let connection_holder: Rc<RefCell<Option<gio::DBusConnection>>> =
-        Rc::new(RefCell::new(None));
+    let connection_holder: Rc<RefCell<Option<gio::DBusConnection>>> = Rc::new(RefCell::new(None));
     let bus_ready = connection_holder.clone();
     let property_status = status.clone();
     let property_title = title.clone();
@@ -107,22 +106,25 @@ fn main() {
             let title = property_title.clone();
             if let Err(error) = connection
                 .register_object(ITEM_PATH, &info)
-                .method_call(move |_, _, _, _, method, _, invocation| {
-                    match method {
-                        "Activate" | "ContextMenu" => {
-                            log_event(&method_log, method);
-                            invocation.return_value(None);
-                        }
-                        _ => invocation.return_dbus_error(
-                            "org.freedesktop.DBus.Error.UnknownMethod",
-                            "Unsupported fixture method",
-                        ),
+                .method_call(move |_, _, _, _, method, _, invocation| match method {
+                    "Activate" | "ContextMenu" => {
+                        log_event(&method_log, method);
+                        invocation.return_value(None);
                     }
+                    _ => invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.UnknownMethod",
+                        "Unsupported fixture method",
+                    ),
                 })
                 .property(move |_, _, _, _, name| match name {
                     "Id" => "kira-sni-acceptance".to_variant(),
                     "Title" => title.borrow().to_variant(),
-                    "Status" => (if status.get() { "NeedsAttention" } else { "Active" }).to_variant(),
+                    "Status" => (if status.get() {
+                        "NeedsAttention"
+                    } else {
+                        "Active"
+                    })
+                    .to_variant(),
                     "IconName" => "".to_variant(),
                     "IconPixmap" => icon_pixmap(status.get()).to_variant(),
                     "ItemIsMenu" => false.to_variant(),
@@ -181,7 +183,10 @@ fn main() {
         changed_status.set(true);
         if let Some(connection) = changed_connection.borrow().as_ref() {
             let _ = connection.emit_signal(
-                None, ITEM_PATH, ITEM_IFACE, "NewStatus",
+                None,
+                ITEM_PATH,
+                ITEM_IFACE,
+                "NewStatus",
                 Some(&("NeedsAttention",).to_variant()),
             );
             let _ = connection.emit_signal(None, ITEM_PATH, ITEM_IFACE, "NewIcon", None);

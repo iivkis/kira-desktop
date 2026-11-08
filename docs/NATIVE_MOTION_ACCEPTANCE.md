@@ -60,8 +60,11 @@ native watcher, and a native Notification Host on the same isolated session
 bus. It probes the exact Freedesktop service, exercises real
 `Notify`/`CloseNotification`/`replaces_id` calls, and uses `grim` against
 the validated nested Wayland socket to capture *entry*, *exit*, and *live
-tray* frame sequences. A scenario manifest records bounded IDs, actual
-event/sample times and remaining untested behaviors. All PNGs are explicitly
+tray* frame sequences. The acceptance runner checks PNG chunk CRCs, IEND, viewport
+consistency, safe frame paths and monotonic sample times, then generates
+`review-index.html` for offline per-frame inspection. A scenario manifest
+records bounded IDs, actual event/sample times and untested behaviors. Every
+manifest and screenshot is explicitly
 `unreviewed`; this command does **not** certify visual parity, keyboard
 interaction, exact input-region hit-testing or Niri compositor timestamps.
 

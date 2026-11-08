@@ -311,4 +311,9 @@ def run_acceptance(
     staging = output / "scenario-manifest.json.tmp"
     staging.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     staging.replace(manifest)
+    from validate_nested_evidence import validate_bundle, write_index
+
+    # Reject fake/empty/truncated frames, unsafe paths, mixed viewports or
+    # nonmonotonic sample times before publishing the offline review.
+    write_index(output, validate_bundle(output))
     return manifest
