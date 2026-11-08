@@ -406,3 +406,56 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
 .display-settings button:disabled {
   opacity: 0.4;
 }
+
+/* Retained Settings / About. Source has a 220px detached rail and a compact
+   section picker. Width decides navigation; no separate desktop controller. */
+.kira-settings { background: #000000; color: #ffffff; }
+.kira-settings .settings-heading {
+  font-size: 26px; border-left: 2px solid #fca311; padding-left: 12px;
+  margin-bottom: 4px;
+}
+.kira-settings .settings-sidebar {
+  min-width: 220px; background: #14213d;
+  border-right: 1px solid #e5e5e5;
+}
+.kira-settings .settings-sidebar-content { padding: 20px 12px; }
+.kira-settings button.settings-nav-button {
+  min-height: 44px; background: transparent; color: #e5e5e5;
+  font-size: 13px; font-weight: 800; border-radius: 0;
+}
+.kira-settings button.settings-nav-button.selected { color: #ffffff; }
+.kira-settings button.settings-nav-button:focus-visible {
+  outline: 2px solid #fca311; outline-offset: -2px;
+}
+.kira-settings .settings-planned-heading {
+  color: #e5e5e5; font-weight: 800; font-size: 11px;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 20px; padding: 12px 16px 4px;
+}
+.kira-settings .settings-planned {
+  color: #e5e5e5; font-size: 12px; padding: 5px 16px; opacity: 0.7;
+}
+.kira-settings .settings-content { padding: 14px 20px 22px; }
+.kira-settings .settings-section-picker {
+  color: #ffffff; background: #14213d;
+  min-height: 44px; border: 1px solid #e5e5e5; border-radius: 0;
+  font-weight: 800;
+}
+.kira-settings .settings-section-picker:focus-visible {
+  outline: 2px solid #fca311; outline-offset: 1px;
+}
+.kira-settings .settings-about .section-title { font-size: 21px; }
+.kira-settings .settings-os-card {
+  background: #14213d; padding: 20px; border-left: 3px solid #fca311;
+}
+.kira-settings .settings-os-name {
+  font-size: 23px; font-weight: 900; color: #ffffff;
+}
+.kira-settings .settings-device-heading { font-size: 14px; font-weight: 900; margin-top: 12px; }
+.kira-settings .settings-fact { padding: 10px 3px; }
+.kira-settings .settings-field-name {
+  font-size: 12px; font-weight: 700; color: #e5e5e5;
+}
+.kira-settings .settings-field-value {
+  font-size: 14px; font-weight: 700; color: #ffffff;
+}
