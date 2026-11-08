@@ -1,13 +1,20 @@
 //! GTK-only process explorer. Sampling and clipboard authority stay outside kira-ui.
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::cmp::Ordering;
 use std::rc::Rc;
+use std::time::{Duration, Instant};
 
 use gtk::prelude::*;
 
 use crate::system::{ProcessItem, ProcessList};
 
 const MAX_VISIBLE_PROCESSES: usize = 80;
+const MAX_SNAPSHOT_AGE: Duration = Duration::from_secs(8);
+
+/// A received snapshot expires after eight seconds without fresh data.
+pub fn process_snapshot_fresh(received: Option<Instant>, now: Instant) -> bool {
+    received.is_some_and(|time| now.saturating_duration_since(time) < MAX_SNAPSHOT_AGE)
+}
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum ProcessSort {
@@ -154,6 +161,8 @@ struct ProcessTableState {
     snapshot: RefCell<Option<ProcessList>>,
     error: RefCell<Option<String>>,
     received_at: RefCell<Option<String>>,
+    received_instant: Cell<Option<Instant>>,
+    revision: Cell<u64>,
     on_copy: RefCell<Option<CopyReport>>,
 }
 
@@ -162,10 +171,20 @@ impl ProcessTableState {
         while let Some(child) = self.rows.first_child() {
             self.rows.remove(&child);
         }
-        self.copy
-            .set_sensitive(self.snapshot.borrow().is_some() && self.on_copy.borrow().is_some());
+        self.copy.set_sensitive(
+            self.snapshot.borrow().is_some()
+                && process_snapshot_fresh(self.received_instant.get(), Instant::now())
+                && self.on_copy.borrow().is_some(),
+        );
         if let Some(error) = self.error.borrow().as_ref() {
             self.summary.set_text(error);
+            return;
+        }
+        if self.snapshot.borrow().is_some()
+            && !process_snapshot_fresh(self.received_instant.get(), Instant::now())
+        {
+            self.summary
+                .set_text("Данные процессов устарели, ожидается новый снимок");
             return;
         }
         let snapshot = self.snapshot.borrow();
@@ -227,6 +246,11 @@ impl ProcessTableState {
     }
 
     fn copy_report(&self) {
+        if !process_snapshot_fresh(self.received_instant.get(), Instant::now()) {
+            self.feedback.set_text("Данные устарели, отчёт не скопирован");
+            self.render();
+            return;
+        }
         let snapshot = self.snapshot.borrow();
         let Some(snapshot) = snapshot.as_ref() else {
             self.feedback.set_text("Нет данных для отчёта");
@@ -299,6 +323,8 @@ impl ProcessTable {
             snapshot: RefCell::new(None),
             error: RefCell::new(None),
             received_at: RefCell::new(None),
+            received_instant: Cell::new(None),
+            revision: Cell::new(0),
             on_copy: RefCell::new(None),
         });
         state.search.connect_search_changed({
@@ -345,11 +371,31 @@ impl ProcessTable {
             .and_then(|time| time.format("%H:%M:%S").ok())
             .map(|time| time.to_string());
         self.state.received_at.replace(received);
+        self.state.received_instant.set(Some(Instant::now()));
+        let revision = self.state.revision.get().wrapping_add(1);
+        self.state.revision.set(revision);
         self.state.feedback.set_text("");
         self.state.render();
+        // One bounded timeout per received snapshot; no background polling.
+        // An old callback cannot expire a newer, freshly sampled process list.
+        let weak = Rc::downgrade(&self.state);
+        gtk::glib::timeout_add_local_once(MAX_SNAPSHOT_AGE, move || {
+            if let Some(state) = weak.upgrade()
+                && state.revision.get() == revision
+            {
+                state.snapshot.replace(None);
+                state.received_instant.set(None);
+                state.error.replace(Some(
+                    "Данные процессов устарели, ожидается новый снимок".to_owned(),
+                ));
+                state.render();
+            }
+        });
     }
 
     pub fn set_error(&self, error: &str) {
+        self.state.revision.set(self.state.revision.get().wrapping_add(1));
+        self.state.received_instant.set(None);
         self.state.snapshot.replace(None);
         self.state.error.replace(Some(error.to_owned()));
         self.state.received_at.replace(None);
@@ -418,6 +464,15 @@ mod tests {
         assert_eq!(ids(ProcessSort::Pid), [2, 5, 8]);
         assert_eq!(ids(ProcessSort::Rss), [2, 8, 5]);
         assert_eq!(ids(ProcessSort::Pss), [2, 5, 8]);
+    }
+
+    #[test]
+    fn freshness_expires_at_eight_seconds_and_never_invents_a_snapshot() {
+        let now = Instant::now();
+        assert!(!process_snapshot_fresh(None, now));
+        assert!(process_snapshot_fresh(Some(now), now));
+        assert!(process_snapshot_fresh(Some(now), now + Duration::from_millis(7999)));
+        assert!(!process_snapshot_fresh(Some(now), now + MAX_SNAPSHOT_AGE));
     }
 
     #[test]
