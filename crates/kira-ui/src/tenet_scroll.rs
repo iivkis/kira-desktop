@@ -172,7 +172,7 @@ impl Drop for TenetScroll {
     fn drop(&mut self) {
         self.cancel();
         if let Some(controller) = self.wheel_controller.take() {
-            self.window.remove_controller(controller);
+            self.window.remove_controller(&controller);
         }
         if let Some(handler) = self.handler.take() {
             // The ScrolledWindow can replace its adjustment; always disconnect
