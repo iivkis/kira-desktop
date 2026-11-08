@@ -294,16 +294,21 @@
         "sha": "e0b0aa60ea740ac7a35d24ce63b726c178f0f6f1"
       },
       "target_files": [
-        "crates/kira-ui/src/lib.rs",
-        "crates/kira-ui/src/displays.rs"
+        "crates/kira-ui/src/settings.rs",
+        "crates/kira-ui/src/displays.rs",
+        "crates/kira-shell/src/main.rs",
+        "crates/kira-services/src/system_info.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [
         "Responsive About/Displays navigation and OS/device facts",
-        "Detached 220px sidebar, unavailable section labels and close/popout semantics"
+        "Detached 220px sidebar, unavailable section labels and close/popout semantics",
+        "Native retained SettingsPanel now provides source-ordered About/Displays navigation, 220px detached-only sidebar above 720 logical px, compact keyboard-operable section selector, honest disabled planned sections and retained selection through popout/reattach; model tests added but no real Wayland focus or screenshots.",
+        "Trusted read-only host About snapshot is loaded on a worker and mapped to typed kira-ui facts (OS/kernel/architecture/hostname/CPU/threads/binary memory/session/Shell version), with loading/unavailable placeholders. Real device and accessibility review outstanding."
       ],
       "animation_requirements": [
-        "Editable page flow indicator and reveal with reversible dismissal"
+        "Editable page flow indicator and reveal with reversible dismissal",
+        "Sidebar reuses native 420ms retained FlowIndicator rail; source-matched page reveal, live detached focus transitions and paired motion/pixel review remain unverified."
       ],
       "verified": {
         "content": false,
