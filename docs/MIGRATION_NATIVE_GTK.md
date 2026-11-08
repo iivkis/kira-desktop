@@ -59,7 +59,7 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 - Replaced stock GTK Calendar with reusable `kira-ui::Calendar`: faithful six-row Monday-first eight-column grid with ISO week numbers, adjacent-month dates, live clock, local day labels, month/year navigation and ISO clipboard intent.
 - Pure `calendar_model` tests replicate main's Gregorian/ISO edge cases, year 1..9999 bounds, DST-safe civil arithmetic and selection identity.
 - `kira-ui::motion` adds reusable interruptible frame-clock timing, reduced-motion handling and a native GtkDrawingArea replay of main's four deterministic inverted calendar fragment paths. The full GSAP spring/stagger/clock-digit and popup master scene is **not** yet equivalent or graphically validated.
-- Detached SkyMap, GSK parity, pixel comparison and matched motion sequences remain G3/G4 acceptance items. See [CALENDAR_NATIVE_PARITY.md](CALENDAR_NATIVE_PARITY.md).
+- The detached-only offline SkyMap now consumes the pinned Hipparcos/XHIP stars and d3-celestial line figures, through pure tested `sky_model` and reusable GTK/Cairo `SkyMap`. A responsive FlowBox shows it beside the original date rail in the native ~1040×720 Calendar toplevel and hides it in the compact popup. It shares the civil-date selection, requires explicit observer coordinates and local time, and animates interrupted sidereal movement on the GTK frame clock. Real nested-Niri visibility, high-DPI allocations, pixel comparison and matched motion sequences remain G3/G4 acceptance items. See [CALENDAR_NATIVE_PARITY.md](CALENDAR_NATIVE_PARITY.md) and [SKY_MAP.md](SKY_MAP.md).
 
 ## G2 increment: native monitoring and displays
 

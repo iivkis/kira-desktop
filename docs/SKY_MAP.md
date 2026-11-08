@@ -2,22 +2,21 @@
 
 ## Scope
 
-The date picker remains a **small 420px popup**; the sky atlas is mounted
-**only after Calendar is promoted to an ordinary Niri window** (1040×720
-default, resizable). At wide sizes, the existing 370px date rail sits
-beside the atlas; at viewport widths <= 760px the rail and atlas stack
-vertically and the whole window scrolls without horizontal clipping.
-Black editorial header, Prussian Blue observation workbench and Black
-source footer reuse the canonical Kira palette. The atlas canvas is capped
-at 1536 physical pixels across its longest dimension to avoid large
-HiDPI allocations. It is a 2D azimuthal equidistant chart of the sky above
-the observer's horizon. The same selected calendar date is passed directly
-to the atlas, so date selection immediately changes the depicted sky.
-Changing date, time or latitude updates the same canvas; GSAP interpolates
-sidereal rotation (shortest circular path), cancellable by any new update.
-Reduced motion draws the new geometry immediately, including if the
-preference changes mid-tween. There is no continuous animation loop,
-remote fetch, browser geolocation prompt or external CDN.
+The native date picker remains a compact ~420px transient popup; the star
+atlas is **shown only when Calendar is detached** into a regular Niri-managed
+xdg-toplevel (1040×720 default, resizable). The same retained GTK date rail
+and SkyMap widget share one FlowBox that wraps vertically on narrow windows.
+Actual wrap/scroll/focus at 680px still require nested Niri verification.
+The canonical palette remains Black, Prussian Blue, Orange, Grey, White.
+The Cairo chart uses a horizon-clipped azimuthal equidistant projection.
+It renders J2000 fixed stars and conventional illustrated constellations
+using the *same selected calendar day* as the compact date picker.
+A native GTK frame-clock token interpolates sidereal time and latitude in
+420ms over the shortest sidereal arc. New input cancels the old animation;
+reduced-motion settles instantly. No continuous animation loop, network,
+browser geolocation permission or external CDN exists. The former Canvas
+backing-buffer limit of 1536 physical pixels is **not yet verified** for
+the new GtkDrawingArea and remains an explicit scale/performance acceptance gate.
 
 Observer coordinates are **explicitly editable**. First opening uses a
 **clearly labeled Greenwich example** at latitude +51.4779°, longitude 0°,
@@ -60,29 +59,30 @@ not model moving Moon/planets or light pollution.
   the standard astronomical hour-angle formulas, cf.
   [U.S. Naval Observatory / Astronomical Almanac](https://aa.usno.navy.mil/faq/GAST).
   Fixed-star calculations are implemented in
-  `crates/kira-ui/src/sky_model.rs` (no new npm dependencies).
+  `crates/kira-ui/src/sky_model.rs` (no runtime astronomy packages).
 - Official status and names of 88 constellation regions:
   [International Astronomical Union (IAU)](https://www.iau.org/IAU/Astronomy-FAQs/Constellations.aspx).
   The IAU standardizes constellation **areas/boundaries**; the illustrated
   connecting segments are *not* those boundaries. The source GeoJSON has
   89 figure records because Serpens appears in two regions.
 
-## Testing
+## Native testing and remaining acceptance
 
-`frontend/src/lib/astronomy/sky-model.test.ts` verifies catalogue
-bounds, coordinate validation, Greenwich sidereal angle at J2000,
-zenith/horizon cardinal projection, date/time and shortest-path wrap.
-The Python calendar contract checks that the atlas is gated on the
-generation-matched detached-window event and does not request geolocation
-or runtime network access. Browser smoke additionally opens a real
-detached calendar at desktop (1100px) and narrow (680px) widths, verifies
-the responsive layout, selected-date change and Canvas paint. Existing
-overlay smoke tests still validate the lightweight calendar popup. For actual visual QA, start nested Niri,
-open Calendar, select a date, promote to an ordinary window and verify:
-the star field renders; changing date/time rotates it; changing
-latitude/longitude changes visible constellations; closing the window
-unmounts and releases the canvas; reduced-motion and repeated input changes
-leave no ongoing tween.
+`crates/kira-ui/src/sky_model.rs` contains independent tests for:
+observer validation, local wall-clock date and 1900–2100 bounds,
+J2000 Greenwich sidereal angle, zenith, eastern/western horizon,
+cardinal sign and shortest circular angle. `sky_catalog.rs` verifies exact
+pinned catalogue population and astronomical bounds. These tests are run
+in `task shell:check` / GitHub CI.
+
+The actual Cairo renderer and detached GtkFlowBox must still be exercised
+in *isolated* nested Niri, never by replacing the host's compositor.
+Check 1100px and 680px Calendar widths, selected-date updates, explicit
+coordinates and local time, zero network/geolocation access, invalid-state
+message, interruption/cancellation after rapid edits, reduced motion,
+altitude clipping, focus, and 1536px-equivalent high-DPI memory budget.
+Paired source/native screenshot and motion-frame evidence are not yet
+recorded. This is an implemented native candidate, not certified parity.
 
 ## Third-party BSD-3-Clause notice (d3-celestial catalogue reduction)
 
@@ -106,4 +106,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Native migration status
 
-Native `kira-ui` now retains the pinned offline catalogue and pure sidereal/horizon model. The Cairo atlas, detached-only mount, date/time/location input, 420ms retargeted movement and actual graphical parity are tracked separately until implemented and verified. No network requests or inferred location are permitted.
+Native `kira-ui::SkyMap` now draws the catalogue with Cairo, follows the
+retained Calendar's selected date and exposes the explicit location/time
+controls in detached mode. Headless data/model tests and compile checks do
+**not** verify visual fidelity, animation timelines, monitor scaling,
+physical pixel-budget equivalence or accessibility.

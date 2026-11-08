@@ -29,6 +29,10 @@ tasks:
       - test -s docs/CALENDAR_NATIVE_PARITY.md
       - test -s crates/kira-ui/src/calendar.rs
       - test -s crates/kira-ui/src/calendar_model.rs
+      - test -s crates/kira-ui/src/sky_catalog.rs
+      - test -s crates/kira-ui/src/sky_model.rs
+      - test -s crates/kira-ui/src/sky_map.rs
+      - test -s docs/SKY_MAP.md
       - test -s crates/kira-ui/src/motion.rs
       - python3 scripts/check_widget_parity.py
       - test -s crates/kira-ui/src/system.rs

@@ -7,7 +7,7 @@
 - `frontend/src/lib/components/CalendarWidget.svelte`: original calendar contents and keyboard behavior
 - `frontend/src/lib/calendar-model.ts` and `calendar-model.test.ts`: Monday-first six-row/ISO-week/date behavior
 - `frontend/src/lib/calendar-tenet-model.ts` and `calendar-tenet-motion.ts`: saved four fragments, clock digit flights, selection and reversible temporal choreography
-- `frontend/src/lib/components/SkyMap.svelte`: detached observatory (still missing)
+- `frontend/src/lib/components/SkyMap.svelte` and frozen `sky-catalog.ts` / `sky-model.ts`: original detached observatory, now partly recovered in `kira-ui`
 
 ## Ported and tested
 
@@ -24,7 +24,7 @@
 
 - The digit roll, click juggling and calendar compositor models now have independent Rust tests, but no paired frame sequences demonstrate that their rendered GTK geometry and timing match `main`.
 - The original `tenetFlowIndicator` 420ms selection spring is ported as a retained GTK indicator beneath real day buttons, using the visible in-flight rect on interruption. Its true pixel geometry, keyboard/focus behavior, reduced-motion settling and frame-by-frame comparison are not yet recorded. Source-complete popup switching remains missing. Native clip, seam, sections and traces also require graphical acceptance.
-- Native standalone/detached Calendar and accompanying 74KB catalog `SkyMap`; fullscreen/accessible observatory is not implemented.
+- Native detached Calendar now includes a retained GTK/Cairo offline SkyMap from the source 2,416-star catalog, 743 line edges, 89 constellation labels and 39 named star names. It shares selected date and exposes explicit coordinate/host-local-time controls, with 420ms cancellable sidereal tween. Real nested Niri observatory, scaling/accessibility, visual equality and frame-sequence verification are still missing.
 - A paired native/WebKit recording with the same date, animation flags, locale, font, resolution, scale and Wayland environment. No pixel-perfect or temporal equivalence certificate exists.
 
 ## Acceptance matrix
@@ -38,6 +38,10 @@ In a strictly isolated nested Niri (never the active desktop's display config):
 - [ ] Capture animations in both implementations at same clock contact point, including normal forward/inverted fragment return, frequent repeated interactions, interrupted reverse and reduced-motion mode.
 - [ ] Compare original individual digit rolls and month/day master timeline **before** marking motion verified. A rough fade or visually similar particle scene is not enough.
 - [ ] Compare 360×640, 600×480, 800×600 and 1920×1080 at 100, 125, 150, 200% GTK scale, including popups, border, spacing and contrast.
+- [ ] Detach Calendar: the ~1040×720 window shows the existing date rail beside a real offline Cairo atlas. Reattach: the ~420px popup has no star atlas. Reopen detached: coordinate/time inputs and selected date remain retained.
+- [ ] At 680px detached width, FlowBox must wrap the atlas below the date rail with vertical scrolling and no horizontal clipping. Test 100%, 125%, 150%, 200% scales and HiDPI memory behavior; physical backing allocation still needs verification against the 1536px source budget.
+- [ ] Change selected day, clock, latitude and longitude (west negative). Check cardinal N/E/S/W orientation, below-horizon clipping, 420ms shortest-path sidereal easing and cancellation under rapid input. Invalid/empty coordinate, out-of-range year/time and local DST gap should show unavailable, never guessed sky or inferred GPS location.
+- [ ] Compare the original and native catalogue points and star field snapshots in matching Niri geometry; the IAU asterism linework is illustrative and not official constellation boundaries.
 - [ ] Verify screen reader labels, date focus, GDK copy result, navigation button disabling and Wayland keyboard/input hit regions.
 
 See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md), [MAIN_WIDGET_PARITY.json](MAIN_WIDGET_PARITY.json) and [KIRA_UI.md](KIRA_UI.md). The source contract takes priority over an easier-to-draw replacement.

@@ -130,7 +130,7 @@
       "content_and_interaction_requirements": [
         "Custom Monday-first six-row, eight-column ISO-week grid, valid adjacent-month dates and independent selected/current/outside state",
         "Localized live clock, -12/-1/+1/+12 navigation with year bounds, day arrows/Home/PageUp/PageDown+Ctrl, Today and ISO clipboard feedback",
-        "Still missing: detached SkyMap observatory, exact live digit exchange, window controls and full animated selection rail"
+        "Detached SkyMap observatory shares the selected date, opens only on detachable GTK window, and retains explicit coordinate/time controls; source-equivalent graphical and animated selection parity remain unverified"
       ],
       "animation_requirements": [
         "Native event-memory model reuses main's four calendar fragment coordinates and inverted clock/grid trace scene on GtkDrawingArea",
@@ -155,14 +155,21 @@
         "path": "frontend/src/lib/components/SkyMap.svelte",
         "sha": "ca521f156aa752f0a8c0f2457f6068d8fb43cc26"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/sky_catalog.rs",
+        "crates/kira-ui/src/sky_model.rs",
+        "crates/kira-ui/src/sky_map.rs",
+        "crates/kira-ui/src/calendar.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Actual astronomical catalog, constellations, location and time inputs",
-        "Horizon projection and accessible observations"
+        "Horizon projection and accessible observations",
+        "Native Cairo horizon canvas, bundled 2416-star J2000 catalog, 743 line edges, 89 constellation labels and 39 named stars; explicit Greenwich demo and local wall-clock controls; paired graphical verification pending"
       ],
       "animation_requirements": [
-        "0.42s sidereal-time interpolation, interruption and reduced motion"
+        "0.42s sidereal-time interpolation, interruption and reduced motion",
+        "Native 420ms shortest-path sidereal and observer interpolation uses retained MotionToken, canceled/restarted on invalid input/unmap; unverified without paired frame captures"
       ],
       "verified": {
         "content": false,
