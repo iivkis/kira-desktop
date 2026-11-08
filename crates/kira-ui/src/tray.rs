@@ -11,6 +11,37 @@ type ToggleHandler = Rc<RefCell<Option<Box<dyn Fn()>>>>;
 pub const MAX_BAR_ICONS: usize = 4;
 pub const MAX_TRAY_ITEMS: usize = 64;
 
+/// SNI sends unpremultiplied ARGB32 pixels in network byte order. Keep
+/// the exact decoded real client bytes in a bounded, GTK-independent model.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct TrayPixmap {
+    pub width: i32,
+    pub height: i32,
+    pub rgba: Vec<u8>,
+}
+
+impl TrayPixmap {
+    pub fn from_argb(width: i32, height: i32, argb: &[u8]) -> Option<Self> {
+        if !(1..=128).contains(&width) || !(1..=128).contains(&height) {
+            return None;
+        }
+        let expected = usize::try_from(width.checked_mul(height)?.checked_mul(4)?).ok()?;
+        if argb.len() != expected {
+            return None;
+        }
+        let mut rgba = Vec::with_capacity(expected);
+        for pixel in argb.chunks_exact(4) {
+            rgba.extend_from_slice(&[pixel[1], pixel[2], pixel[3], pixel[0]]);
+        }
+        Some(Self {
+            width,
+            height,
+            rgba,
+        })
+    }
+}
+
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TrayStatus {
     Active,
@@ -23,6 +54,7 @@ pub struct TrayItem {
     pub handle: u32,
     pub title: String,
     pub icon_name: Option<String>,
+    pub pixmap: Option<TrayPixmap>,
     pub status: TrayStatus,
     pub pinned: bool,
 }
@@ -38,6 +70,29 @@ pub enum TrayIntent {
     Activate(u32),
     Secondary(u32),
     TogglePin(u32),
+    MenuClick(u32, i32),
+    DismissMenu,
+}
+
+/// Bounded menu descriptions only. The Shell retains the real D-Bus
+/// destination and validates all clicks against its live menu session.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct TrayMenuEntry {
+    pub id: i32,
+    pub label: String,
+    pub depth: u8,
+    pub enabled: bool,
+    pub separator: bool,
+    pub checked: bool,
+    pub radio: bool,
+    pub has_children: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct TrayMenu {
+    pub handle: u32,
+    pub title: String,
+    pub items: Vec<TrayMenuEntry>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -80,11 +135,30 @@ pub fn tray_bar_model(state: &TrayState, max_visible: usize) -> TrayBarModel {
 }
 
 fn icon(item: &TrayItem, size: i32) -> gtk::Widget {
-    if let Some(name) = &item.icon_name {
+    // A syntactically valid IconName may not exist in the current theme.
+    // Choose a real client pixmap before GTK's fake "image-missing" glyph.
+    if let Some(name) = item.icon_name.as_deref()
+        && let Some(display) = gtk::gdk::Display::default()
+        && gtk::IconTheme::for_display(&display).has_icon(name)
+    {
         let image = gtk::Image::from_icon_name(name);
         image.set_pixel_size(size);
-        image.upcast()
-    } else {
+        return image.upcast();
+    }
+    if let Some(pixmap) = &item.pixmap {
+        let texture = gtk::gdk::MemoryTexture::new(
+            pixmap.width,
+            pixmap.height,
+            gtk::gdk::MemoryFormat::R8g8b8a8,
+            &gtk::glib::Bytes::from_owned(pixmap.rgba.clone()),
+            usize::try_from(pixmap.width).unwrap_or(0) * 4,
+        );
+        let picture = gtk::Picture::for_paintable(&texture);
+        picture.set_content_fit(gtk::ContentFit::Contain);
+        picture.set_size_request(size, size);
+        return picture.upcast();
+    }
+    {
         let letter = item
             .title
             .chars()
@@ -112,7 +186,12 @@ pub struct TrayUi {
     icons: gtk::Box,
     overflow: gtk::Button,
     popup: gtk::Box,
+    header_title: gtk::Label,
+    list_scroll: gtk::ScrolledWindow,
     list: gtk::Box,
+    menu_page: gtk::Box,
+    menu_list: gtk::Box,
+    current_menu: RefCell<Option<TrayMenu>>,
     state: RefCell<TrayState>,
     on_intent: Rc<dyn Fn(TrayIntent)>,
     on_toggle: ToggleHandler,
@@ -151,6 +230,27 @@ impl TrayUi {
         scroll.set_child(Some(&list));
         popup.append(&scroll);
 
+        let menu_page = gtk::Box::new(gtk::Orientation::Vertical, 8);
+        menu_page.add_css_class("tray-menu-page");
+        menu_page.set_visible(false);
+        let back = gtk::Button::with_label("‹ Назад");
+        back.add_css_class("tray-menu-back");
+        back.update_property(&[gtk::accessible::Property::Label("Назад к значкам трея")]);
+        menu_page.append(&back);
+        let menu_scroll = gtk::ScrolledWindow::new();
+        menu_scroll.set_max_content_height(420);
+        menu_scroll.set_propagate_natural_height(true);
+        menu_scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+        let menu_list = gtk::Box::new(gtk::Orientation::Vertical, 2);
+        menu_list.add_css_class("tray-menu-list");
+        menu_scroll.set_child(Some(&menu_list));
+        menu_page.append(&menu_scroll);
+        popup.append(&menu_page);
+
+        let on_intent: Rc<dyn Fn(TrayIntent)> = Rc::new(on_intent);
+        let dismiss = on_intent.clone();
+        back.connect_clicked(move |_| dismiss(TrayIntent::DismissMenu));
+
         let on_toggle: ToggleHandler = Rc::new(RefCell::new(None));
         for button in [&overflow, &close] {
             let on_toggle = on_toggle.clone();
@@ -165,9 +265,14 @@ impl TrayUi {
             icons,
             overflow,
             popup,
+            header_title: title,
+            list_scroll: scroll,
             list,
+            menu_page,
+            menu_list,
+            current_menu: RefCell::new(None),
             state: RefCell::new(TrayState::default()),
-            on_intent: Rc::new(on_intent),
+            on_intent,
             on_toggle,
         };
         ui.update(&TrayState::default());
@@ -184,6 +289,68 @@ impl TrayUi {
 
     pub fn popup_widget(&self) -> gtk::Widget {
         self.popup.clone().upcast()
+    }
+
+    /// A native menu is a separate state in the same pooled GTK popup, never
+    /// a second Wayland surface. Entries are always plain text, never markup.
+    pub fn set_menu(&self, menu: Option<TrayMenu>) {
+        if *self.current_menu.borrow() == menu {
+            return;
+        }
+        *self.current_menu.borrow_mut() = menu.clone();
+        while let Some(child) = self.menu_list.first_child() {
+            self.menu_list.remove(&child);
+        }
+        self.menu_page.set_visible(menu.is_some());
+        self.list_scroll.set_visible(menu.is_none());
+        let Some(menu) = menu else {
+            self.header_title.set_text("Скрытые значки");
+            return;
+        };
+        self.header_title.set_text("Меню приложения");
+        for entry in menu.items.iter().take(80) {
+            if entry.separator {
+                let line = gtk::Separator::new(gtk::Orientation::Horizontal);
+                self.menu_list.append(&line);
+                continue;
+            }
+            if entry.has_children {
+                let group = gtk::Label::new(Some(&entry.label));
+                group.set_xalign(0.0);
+                group.set_margin_start(i32::from(entry.depth) * 12 + 8);
+                group.add_css_class("tray-menu-group");
+                self.menu_list.append(&group);
+                continue;
+            }
+            let button = gtk::Button::with_label(&format!(
+                "{}{}",
+                if entry.checked {
+                    if entry.radio { "● " } else { "✓ " }
+                } else {
+                    ""
+                },
+                entry.label
+            ));
+            button.set_halign(gtk::Align::Fill);
+            button.set_hexpand(true);
+            button.set_sensitive(entry.enabled);
+            button.set_margin_start(i32::from(entry.depth) * 12 + 8);
+            button.add_css_class("tray-menu-entry");
+            let handle = menu.handle;
+            let id = entry.id;
+            let on_intent = self.on_intent.clone();
+            button.connect_clicked(move |_| on_intent(TrayIntent::MenuClick(handle, id)));
+            self.menu_list.append(&button);
+        }
+        if menu.items.is_empty() {
+            let empty = gtk::Label::new(Some("У приложения пока нет доступных действий"));
+            empty.add_css_class("muted");
+            self.menu_list.append(&empty);
+        }
+    }
+
+    pub fn menu_open(&self) -> bool {
+        self.current_menu.borrow().is_some()
     }
 
     pub fn update(&self, state: &TrayState) {
@@ -316,6 +483,7 @@ mod tests {
             handle: id,
             title: format!("App {id}"),
             icon_name: None,
+            pixmap: None,
             status,
             pinned,
         }
@@ -340,6 +508,17 @@ mod tests {
         assert_eq!(model.overflow_count, 2);
         assert!(model.overflow_attention);
         assert_eq!(tray_bar_model(&state, 5).overflow_count, 1);
+    }
+
+    #[test]
+    fn argb32_pixels_are_unpremultiplied_and_bounded() {
+        let pix = TrayPixmap::from_argb(2, 1, &[255, 1, 2, 3, 128, 8, 16, 32])
+            .expect("real SNI pixel data");
+        assert_eq!(pix.rgba, [1, 2, 3, 255, 8, 16, 32, 128]);
+        assert!(TrayPixmap::from_argb(0, 1, &[0; 4]).is_none());
+        assert!(TrayPixmap::from_argb(129, 1, &[0; 516]).is_none());
+        assert!(TrayPixmap::from_argb(1, 1, &[0; 3]).is_none());
+        assert!(TrayPixmap::from_argb(1, 1, &[0; 5]).is_none());
     }
 
     #[test]

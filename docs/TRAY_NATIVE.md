@@ -24,13 +24,19 @@ especially `docs/TRAY_DESIGN.md`, `TrayBar.svelte`, `TrayWidget.svelte`,
   Nested `KIRA_PREVIEW` never takes the watcher name; it may attach
   to an existing watcher without evicting it.
 - The Shell accepts only typed `TrayIntent::Activate`,
-  `TrayIntent::Secondary` and `TrayIntent::TogglePin` from the UI.
+  `TrayIntent::Secondary`, `TrayIntent::TogglePin`,
+  `TrayIntent::MenuClick(handle, leaf_id)` and `TrayIntent::DismissMenu` from
+  the UI. A menu click is accepted only when the saved unique-owner/path
+  session still exists and the requested ID is a unique, enabled leaf.
   Methods target the verified **unique owner** of the registered SNI item,
   not a caller-controlled destination/path. Actions are fixed to
-  `Activate(0,0)` or `ContextMenu(0,0)`. The UI cannot construct an
-  arbitrary D-Bus method or command. Application IconName is limited to
-  safe local GTK theme names; missing unsupported icons use a real title
-  initial, not invented app identities.
+  `Activate(0,0)` or `ContextMenu(0,0)`, with fixed
+  `com.canonical.dbusmenu` `AboutToShow/GetLayout/Event(clicked)` for
+  verified menu objects. The UI cannot construct an arbitrary D-Bus method
+  or command. Application IconName is limited to safe local GTK theme names;
+  the 32-frame bounded `IconPixmap` decoder selects the real nearest-24px
+  ARGB32 network-order frame, converts to RGBA and displays a GDK texture.
+  Missing unsupported icons use a real title initial, not invented apps.
 - Pin preference keys prefer the application's bounded `Id` and fall
   back to its registration. State is stored in
   `$XDG_STATE_HOME/kira-desktop/tray-pins.json`, capped to 128 keys
@@ -38,13 +44,19 @@ especially `docs/TRAY_DESIGN.md`, `TrayBar.svelte`, `TrayWidget.svelte`,
 
 ## Known limitations and test requirements
 
-This increment does **not** implement freedesktop
-`com.canonical.dbusmenu` layout fetching, nested leaf actions, radio/checkbox
-states or preserving an application menu session. An item's
-`ItemIsMenu` primary click currently uses a native D-Bus ContextMenu
-fallback; apps that require an embedded menu will still be incomplete.
-SNI `IconPixmap`/ARGB decoding and `OverlayIcon` composition are not
-ported; only safe local GTK theme icons and text fallbacks exist.
+This increment implements a bounded first-phase
+`com.canonical.dbusmenu` tree inside the **same** pooled GTK popup:
+up to 80 entries, three levels, checked/radio state, enabled/disabled
+and separators. `AboutToShow` runs before `GetLayout`, leaf clicks send
+only `Event(clicked)` for the saved verified session, and an async
+`GetLayout` refresh retains the menu after a click. Invalid, stale or
+out-of-order replies never replace the current menu; clients without a
+valid menu layout fall back to `ContextMenu`. Escape and popup closure
+invalidate outstanding menu operations. True lazy submenus, deeper trees
+and external layout-update signal subscriptions remain outstanding.
+IconPixmap is supported with a bounded, renderer-local RGBA GDK texture;
+OverlayIcon composition and multi-resolution selection beyond the nearest
+24px frame remain missing.
 GTK list rows currently rebuild on updates; retained keyed TENET 340ms FLIP,
 responsive bar icon limits, cross-surface icon transfer, popout and exact
 source typography remain outstanding.
@@ -57,7 +69,11 @@ old handle never activates the new process. Unregister and check cleanup.
 Verify the preview does not take another watcher's well-known bus name.
 Pin/unpin across restart; test an unwritable state directory and 64 live
 items without fabricated overflow. Validate Activate and ContextMenu using
-an SNI app that actually implements them. Close and reopen the pooled tray
+an SNI app that actually implements them. Supply malformed ARGB32 frames,
+128px frames and a real theme-less pixmap app; verify no fake theme icon
+overrides an available pixmap. Open a real KDE/AppIndicator dbusmenu,
+exercise disabled, radio and checkbox entries, malicious duplicate IDs,
+no-op empty layout, out-of-order GetLayout, and unregistration mid-click. Close and reopen the pooled tray
 popup while rapidly changing items; inspect keyboard Escape and window focus.
 
 Capture paired frames and motion against the frozen main reference at

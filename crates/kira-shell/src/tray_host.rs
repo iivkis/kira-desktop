@@ -11,13 +11,15 @@ use std::rc::Rc;
 use gtk::gio;
 use gtk::glib::{self, variant::ToVariant};
 
-use kira_ui::{TrayIntent, TrayItem, TrayState, TrayStatus};
+use kira_ui::{TrayIntent, TrayItem, TrayMenu, TrayMenuEntry, TrayPixmap, TrayState, TrayStatus};
+use crate::tray_menu;
 
 const WATCHER: &str = "org.kde.StatusNotifierWatcher";
 const WATCHER_PATH: &str = "/StatusNotifierWatcher";
 const WATCHER_IFACE: &str = "org.kde.StatusNotifierWatcher";
 const ITEM_IFACE: &str = "org.kde.StatusNotifierItem";
 const PROPERTIES: &str = "org.freedesktop.DBus.Properties";
+const MENU_INTERFACE: &str = "com.canonical.dbusmenu";
 const DBUS: &str = "org.freedesktop.DBus";
 const DBUS_PATH: &str = "/org/freedesktop/DBus";
 const MAX_ITEMS: usize = 64;
@@ -50,10 +52,35 @@ struct Item {
     stable_key: String,
     title: String,
     icon_name: Option<String>,
+    pixmap: Option<TrayPixmap>,
     status: TrayStatus,
     is_menu: bool,
+    menu_path: Option<String>,
     ready: bool,
     refresh_serial: u64,
+}
+
+#[derive(Clone, Debug)]
+struct MenuSession {
+    handle: u32,
+    owner: String,
+    path: String,
+    title: String,
+    entries: Vec<TrayMenuEntry>,
+}
+
+impl MenuSession {
+    fn same_target(&self, other: &Self) -> bool {
+        self.handle == other.handle && self.owner == other.owner && self.path == other.path
+    }
+
+    fn snapshot(&self) -> TrayMenu {
+        TrayMenu {
+            handle: self.handle,
+            title: self.title.clone(),
+            items: self.entries.clone(),
+        }
+    }
 }
 
 struct Service {
@@ -69,6 +96,9 @@ struct Service {
     next_handle: Cell<u32>,
     items: RefCell<Vec<Item>>,
     pins: RefCell<HashSet<String>>,
+    menu_serial: Cell<u64>,
+    current_menu: RefCell<Option<MenuSession>>,
+    on_menu: Box<dyn Fn(Option<TrayMenu>)>,
     on_update: Box<dyn Fn(TrayState)>,
 }
 
@@ -124,6 +154,42 @@ fn valid_icon_name(value: &str) -> bool {
             .chars()
             .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | '.'))
         && !value.starts_with('.')
+}
+
+/// A snapshot contains at most 32 candidate real icon frames. Decode only
+/// the nearest 24px frame after validating all dimensions and payload bytes.
+fn decode_pixmap(value: &glib::Variant) -> Option<TrayPixmap> {
+    if value.type_().as_str() != "a(iiay)" || value.n_children() > 32 {
+        return None;
+    }
+    let mut best: Option<(usize, i32, i32)> = None;
+    for index in 0..value.n_children() {
+        let frame = value.child_value(index);
+        let (Some(width), Some(height)) = (
+            frame.child_value(0).get::<i32>(),
+            frame.child_value(1).get::<i32>(),
+        ) else {
+            continue;
+        };
+        if !(1..=128).contains(&width) || !(1..=128).contains(&height) {
+            continue;
+        }
+        let distance = (width - 24).abs() + (height - 24).abs();
+        if best
+            .as_ref()
+            .is_none_or(|(_, previous, selected_width)| {
+                distance < *previous || (distance == *previous && width > *selected_width)
+            })
+        {
+            best = Some((index, distance, width));
+        }
+    }
+    let (index, _, _) = best?;
+    let frame = value.child_value(index);
+    let width = frame.child_value(0).get::<i32>()?;
+    let height = frame.child_value(1).get::<i32>()?;
+    let bytes = frame.child_value(2).get::<Vec<u8>>()?;
+    TrayPixmap::from_argb(width, height, &bytes)
 }
 
 fn clean(value: &str, limit: usize) -> String {
@@ -223,6 +289,7 @@ impl Service {
                 handle: item.handle,
                 title: item.title.clone(),
                 icon_name: item.icon_name.clone(),
+                pixmap: item.pixmap.clone(),
                 status: item.status,
                 pinned: pins.contains(&item.stable_key),
             })
@@ -460,8 +527,10 @@ impl Service {
             stable_key: registration.into(),
             title: String::new(),
             icon_name: None,
+            pixmap: None,
             status: TrayStatus::Active,
             is_menu: false,
+            menu_path: None,
             ready: false,
             refresh_serial: 0,
         });
@@ -569,10 +638,35 @@ impl Service {
                     .lookup_value("ItemIsMenu", None)
                     .and_then(|v| v.get::<bool>())
                     .unwrap_or(false);
+                // Freedesktop SNI Menu is D-Bus type 'o', not String.
+                let menu_path = props
+                    .lookup_value("Menu", None)
+                    .and_then(|value| {
+                        (value.type_().as_str() == "o")
+                            .then(|| value.str().map(str::to_owned))
+                            .flatten()
+                    })
+                    .filter(|path| {
+                        valid_object_path(path) && !path.ends_with("/NO_DBUSMENU")
+                    });
                 let status = match status.as_deref() {
                     Some("Passive") => TrayStatus::Passive,
                     Some("NeedsAttention") => TrayStatus::NeedsAttention,
                     _ => TrayStatus::Active,
+                };
+                let pixmap = if status == TrayStatus::NeedsAttention {
+                    props
+                        .lookup_value("AttentionIconPixmap", None)
+                        .and_then(|value| decode_pixmap(&value))
+                        .or_else(|| {
+                            props
+                                .lookup_value("IconPixmap", None)
+                                .and_then(|value| decode_pixmap(&value))
+                        })
+                } else {
+                    props
+                        .lookup_value("IconPixmap", None)
+                        .and_then(|value| decode_pixmap(&value))
                 };
                 let icon = (if status == TrayStatus::NeedsAttention {
                     attention_icon
@@ -604,11 +698,14 @@ impl Service {
                     120,
                 );
                 item.icon_name = icon;
+                item.pixmap = pixmap;
                 item.status = status;
                 item.is_menu = is_menu;
+                item.menu_path = menu_path;
                 item.ready = true;
                 drop(items);
                 service.publish();
+                service.clear_stale_menu();
             },
         );
     }
@@ -672,6 +769,7 @@ impl Service {
                     service.available.set(false);
                     service.items.borrow_mut().clear();
                     service.publish();
+                    service.clear_menu();
                     if !new.is_empty() {
                         service.adopt_external();
                     }
@@ -736,6 +834,7 @@ impl Service {
         items.retain(|item| item.registration != registration);
         drop(items);
         self.publish();
+        self.clear_stale_menu();
     }
 
     fn unregister_bus(&self, bus: &str) {
@@ -745,6 +844,7 @@ impl Service {
         if items.len() != changed {
             drop(items);
             self.publish();
+            self.clear_stale_menu();
         }
     }
 
@@ -825,9 +925,254 @@ impl Service {
         );
     }
 
-    fn action(&self, intent: TrayIntent) {
+    fn publish_menu(&self) {
+        let snapshot = self.current_menu.borrow().as_ref().map(MenuSession::snapshot);
+        (self.on_menu)(snapshot);
+    }
+
+    /// Clears both the current menu and all outstanding async menu replies.
+    fn clear_menu(&self) {
+        self.menu_serial
+            .set(self.menu_serial.get().wrapping_add(1));
+        if self.current_menu.borrow_mut().take().is_some() {
+            self.publish_menu();
+        }
+    }
+
+    fn menu_item_is_live(&self, menu: &MenuSession) -> bool {
+        self.items.borrow().iter().any(|item| {
+            item.ready
+                && item.status != TrayStatus::Passive
+                && item.handle == menu.handle
+                && item.owner_unique.as_deref() == Some(menu.owner.as_str())
+                && item.menu_path.as_deref() == Some(menu.path.as_str())
+        })
+    }
+
+    fn clear_stale_menu(&self) {
+        let stale = self
+            .current_menu
+            .borrow()
+            .as_ref()
+            .is_some_and(|menu| !self.menu_item_is_live(menu));
+        if stale {
+            self.clear_menu();
+        }
+    }
+
+    fn call_item_method(&self, item: &Item, method: &str) {
+        let Some(owner) = item.owner_unique.as_deref() else {
+            return;
+        };
+        if !matches!(method, "Activate" | "ContextMenu")
+            || !self.items.borrow().iter().any(|current| {
+                current.ready
+                    && current.handle == item.handle
+                    && current.path == item.path
+                    && current.owner_unique.as_deref() == Some(owner)
+            })
+        {
+            return;
+        }
+        if let Some(connection) = self.connection.borrow().as_ref() {
+            connection.call(
+                Some(owner),
+                &item.path,
+                ITEM_IFACE,
+                method,
+                Some(&(0i32, 0i32).to_variant()),
+                None,
+                gio::DBusCallFlags::NONE,
+                2500,
+                None::<&gio::Cancellable>,
+                |_| {},
+            );
+        }
+    }
+
+    /// Fixed, bounded application menu. The only authority is the verified
+    /// registration's current unique sender and its advertised object path.
+    fn open_menu(self: &Rc<Self>, item: &Item, path: &str) {
+        self.clear_menu();
+        let revision = self.menu_serial.get();
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        let Some(owner) = item.owner_unique.clone() else {
+            return;
+        };
+        let session = MenuSession {
+            handle: item.handle,
+            owner,
+            path: path.to_owned(),
+            title: item.title.clone(),
+            entries: Vec::new(),
+        };
+        if !self.menu_item_is_live(&session) {
+            return;
+        }
+        let request = session.clone();
+        let weak = Rc::downgrade(self);
+        let menu_connection = connection.clone();
+        connection.call(
+            Some(&session.owner),
+            &session.path,
+            MENU_INTERFACE,
+            "AboutToShow",
+            Some(&(0i32,).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            1000,
+            None::<&gio::Cancellable>,
+            move |_| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.menu_serial.get() != revision || !service.menu_item_is_live(&request) {
+                    return;
+                }
+                let weak = Rc::downgrade(&service);
+                let menu = request.clone();
+                menu_connection.call(
+                    Some(&request.owner),
+                    &request.path,
+                    MENU_INTERFACE,
+                    "GetLayout",
+                    Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
+                    None,
+                    gio::DBusCallFlags::NONE,
+                    2500,
+                    None::<&gio::Cancellable>,
+                    move |reply| {
+                        let Some(service) = weak.upgrade() else {
+                            return;
+                        };
+                        if service.menu_serial.get() != revision
+                            || !service.menu_item_is_live(&menu)
+                        {
+                            return;
+                        }
+                        let Some(entries) =
+                            reply.ok().as_ref().and_then(tray_menu::parse_layout)
+                        else {
+                            // Legacy clients may only implement ContextMenu.
+                            if let Some(item) = service.items.borrow().iter().find(|item| {
+                                item.handle == menu.handle
+                                    && item.owner_unique.as_deref() == Some(menu.owner.as_str())
+                            }) {
+                                service.call_item_method(item, "ContextMenu");
+                            }
+                            return;
+                        };
+                        let mut ready = menu;
+                        ready.entries = entries;
+                        service.current_menu.replace(Some(ready));
+                        service.publish_menu();
+                    },
+                );
+            },
+        );
+    }
+
+    fn refresh_menu_after_action(self: &Rc<Self>, menu: MenuSession, revision: u64) {
+        if self.menu_serial.get() != revision || !self.menu_item_is_live(&menu) {
+            return;
+        }
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        let weak = Rc::downgrade(self);
+        let call_owner = menu.owner.clone();
+        let call_path = menu.path.clone();
+        connection.call(
+            Some(&call_owner),
+            &call_path,
+            MENU_INTERFACE,
+            "GetLayout",
+            Some(&(0i32, -1i32, Vec::<String>::new()).to_variant()),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if service.menu_serial.get() != revision || !service.menu_item_is_live(&menu) {
+                    return;
+                }
+                let Some(entries) = reply.ok().as_ref().and_then(tray_menu::parse_layout) else {
+                    return; // Keep the last safe menu on failed refresh.
+                };
+                let mut current = service.current_menu.borrow_mut();
+                let Some(active) = current.as_mut() else {
+                    return;
+                };
+                if !active.same_target(&menu) || active.entries == entries {
+                    return;
+                }
+                active.entries = entries;
+                drop(current);
+                service.publish_menu();
+            },
+        );
+    }
+
+    fn menu_click(self: &Rc<Self>, handle: u32, id: i32) {
+        let selected = self
+            .current_menu
+            .borrow()
+            .as_ref()
+            .filter(|menu| menu.handle == handle && tray_menu::clickable(&menu.entries, id))
+            .cloned();
+        let Some(menu) = selected else {
+            return;
+        };
+        if !self.menu_item_is_live(&menu) {
+            self.clear_stale_menu();
+            return;
+        }
+        let Some(connection) = self.connection.borrow().clone() else {
+            return;
+        };
+        let revision = self.menu_serial.get().wrapping_add(1);
+        self.menu_serial.set(revision);
+        let weak = Rc::downgrade(self);
+        let call_owner = menu.owner.clone();
+        let call_path = menu.path.clone();
+        connection.call(
+            Some(&call_owner),
+            &call_path,
+            MENU_INTERFACE,
+            "Event",
+            Some(&tray_menu::click_params(id)),
+            None,
+            gio::DBusCallFlags::NONE,
+            2500,
+            None::<&gio::Cancellable>,
+            move |reply| {
+                let Some(service) = weak.upgrade() else {
+                    return;
+                };
+                if reply.is_ok() && service.menu_serial.get() == revision {
+                    service.refresh_menu_after_action(menu, revision);
+                }
+            },
+        );
+    }
+
+    fn action(self: &Rc<Self>, intent: TrayIntent) {
+        if matches!(intent, TrayIntent::DismissMenu) {
+            self.clear_menu();
+            return;
+        }
+        if let TrayIntent::MenuClick(handle, id) = intent {
+            self.menu_click(handle, id);
+            return;
+        }
         let handle = match intent {
             TrayIntent::Activate(id) | TrayIntent::Secondary(id) | TrayIntent::TogglePin(id) => id,
+            TrayIntent::MenuClick(_, _) | TrayIntent::DismissMenu => return,
         };
         let item = self
             .items
@@ -854,31 +1199,14 @@ impl Service {
             self.publish();
             return;
         }
-        let Some(connection) = self.connection.borrow().clone() else {
-            return;
-        };
-        let Some(owner) = &item.owner_unique else {
-            return;
-        };
-        // Only fixed StatusNotifierItem methods on a verified owner. Menu
-        // hierarchy is not ported yet; ContextMenu is the safe fallback.
-        let method = if matches!(intent, TrayIntent::Secondary(_)) || item.is_menu {
-            "ContextMenu"
-        } else {
-            "Activate"
-        };
-        connection.call(
-            Some(owner),
-            &item.path,
-            ITEM_IFACE,
-            method,
-            Some(&(0i32, 0i32).to_variant()),
-            None,
-            gio::DBusCallFlags::NONE,
-            2500,
-            None::<&gio::Cancellable>,
-            |_| {},
-        );
+        let context = matches!(intent, TrayIntent::Secondary(_)) || item.is_menu;
+        if context {
+            if let Some(path) = item.menu_path.as_deref() {
+                self.open_menu(&item, path);
+                return;
+            }
+        }
+        self.call_item_method(&item, if context { "ContextMenu" } else { "Activate" });
     }
 }
 
@@ -891,7 +1219,20 @@ pub fn action(intent: TrayIntent) {
     });
 }
 
-pub fn start(on_update: impl Fn(TrayState) + 'static) {
+/// Closing pooled popup windows cancels pending menu replies, including
+/// dismissal via Escape handled by the PopupHost rather than an explicit row.
+pub fn dismiss_menu() {
+    SERVICE.with(|active| {
+        if let Some(service) = active.borrow().as_ref() {
+            service.clear_menu();
+        }
+    });
+}
+
+pub fn start(
+    on_update: impl Fn(TrayState) + 'static,
+    on_menu: impl Fn(Option<TrayMenu>) + 'static,
+) {
     let service = Rc::new(Service {
         connection: RefCell::new(None),
         watcher_owner: RefCell::new(None),
@@ -905,6 +1246,9 @@ pub fn start(on_update: impl Fn(TrayState) + 'static) {
         next_handle: Cell::new(1),
         items: RefCell::new(Vec::new()),
         pins: RefCell::new(load_pins()),
+        menu_serial: Cell::new(0),
+        current_menu: RefCell::new(None),
+        on_menu: Box::new(on_menu),
         on_update: Box::new(on_update),
     });
     service.publish();
@@ -992,6 +1336,7 @@ pub fn start(on_update: impl Fn(TrayState) + 'static) {
                 service.available.set(false);
                 service.items.borrow_mut().clear();
                 service.publish();
+                service.clear_menu();
                 service.adopt_external();
             }
         },
@@ -1021,6 +1366,12 @@ mod tests {
             Some(("org.kde.App".into(), "/StatusNotifierItem".into()))
         );
         assert_eq!(parse_registration("org.bad/../unsafe"), None);
+    }
+
+    #[test]
+    fn malformed_sni_icon_variants_are_never_interpreted_as_pixels() {
+        assert!(decode_pixmap(&"not an icon".to_variant()).is_none());
+        assert!(decode_pixmap(&Vec::<(i32, i32, Vec<u8>)>::new().to_variant()).is_none());
     }
 
     #[test]

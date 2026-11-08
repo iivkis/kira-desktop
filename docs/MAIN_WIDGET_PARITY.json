@@ -352,7 +352,8 @@
       "content_and_interaction_requirements": [
         "Live StatusNotifier icons, max four visible and overflow count",
         "Primary and secondary activation, needs-attention status",
-        "Native GTK bar shows registered StatusNotifierItem theme icon/label, pinned identity, live attention and bounded overflow from authenticated D-Bus item properties; pixmaps and responsive/visual parity remain outstanding"
+        "Native GTK bar shows registered StatusNotifierItem theme icon/label, pinned identity, live attention and bounded overflow from authenticated D-Bus item properties; pixmaps and responsive/visual parity remain outstanding",
+        "Native SNI a(iiay) IconPixmap and AttentionIconPixmap decode only bounded nearest-24px ARGB32 network-order frames, render RGBA GDK textures and prefer existing themed icons; live Niri pixmap acceptance outstanding"
       ],
       "animation_requirements": [
         "Continuous selection and overflow entrance"
@@ -379,13 +380,15 @@
       "target_files": [
         "crates/kira-ui/src/tray.rs",
         "crates/kira-shell/src/tray_host.rs",
-        "crates/kira-shell/src/main.rs"
+        "crates/kira-shell/src/main.rs",
+        "crates/kira-shell/src/tray_menu.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [
         "Pinned/unpinned items and native D-Bus menu hierarchy",
         "Secondary click and menu actions, keyboard dismissal",
-        "Native GTK popup shares item snapshots, invokes only trusted numeric-handle Activate/ContextMenu, and persists pin IDs; menu trees and source FLIP remain missing"
+        "Native GTK popup shares item snapshots, invokes only trusted numeric-handle Activate/ContextMenu, and persists pin IDs; menu trees and source FLIP remain missing",
+        "Native trusted 80-entry, 3-depth dbusmenu AboutToShow/GetLayout/Event(clicked) with unique enabled leaf checks, preserved checkbox/radio menu session after action and fallback ContextMenu; deeper lazy menus and graphical acceptance outstanding"
       ],
       "animation_requirements": [
         "Reversible popup reveal and FLIP reflow"

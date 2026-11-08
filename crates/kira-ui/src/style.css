@@ -236,3 +236,23 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
   background: #fca311; color: #000000;
 }
 .kira-popup .tray-attention { color: #fca311; }
+
+/* A canonical dbusmenu is an embedded state of the existing tray popup. */
+.kira-popup .tray-menu-page { background: #14213d; padding: 8px; }
+.kira-popup .tray-menu-list { padding: 4px; }
+.kira-popup .tray-menu-back {
+  border-bottom: 1px solid #e5e5e5; border-radius: 0;
+  text-align: left; color: #e5e5e5; font-size: 12px;
+}
+.kira-popup .tray-menu-group {
+  font-size: 11px; font-weight: 800; color: #e5e5e5;
+  padding: 8px 0 4px;
+}
+.kira-popup .tray-menu-entry {
+  background: transparent; color: #ffffff; text-align: left;
+  min-height: 36px; border-radius: 2px; font-size: 12px;
+}
+.kira-popup .tray-menu-entry:hover, .kira-popup .tray-menu-entry:focus-visible {
+  background: #000000; color: #fca311;
+}
+.kira-popup .tray-menu-entry:disabled { opacity: 0.4; }

@@ -4,6 +4,7 @@
 mod display_bridge;
 mod notifications;
 mod tray_host;
+mod tray_menu;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -431,15 +432,34 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let popup = popup.clone();
         tray_ui.set_toggle_handler(move || {
             if let Some(tray) = tray.upgrade() {
+                if tray.menu_open() {
+                    tray_host::dismiss_menu();
+                }
                 popup.toggle(PopupKind::Tray, || tray.popup_widget());
             }
         });
     }
     bar.add_action_widget(&tray_ui.bar_widget());
-    tray_host::start({
-        let tray_ui = tray_ui.clone();
-        move |state| tray_ui.update(&state)
-    });
+    tray_host::start(
+        {
+            let tray_ui = tray_ui.clone();
+            move |state| tray_ui.update(&state)
+        },
+        {
+            let tray = Rc::downgrade(&tray_ui);
+            let popup = popup.clone();
+            move |menu| {
+                let Some(tray) = tray.upgrade() else {
+                    return;
+                };
+                let has_menu = menu.is_some();
+                tray.set_menu(menu);
+                if has_menu && !popup.is_active(PopupKind::Tray) {
+                    popup.toggle(PopupKind::Tray, || tray.popup_widget());
+                }
+            }
+        },
+    );
     let config = Rc::new(RefCell::new(UiConfig::default()));
     let state = Rc::new(RefCell::new(WorkspaceState::default()));
     let applications = Rc::new(RefCell::new(Vec::<ApplicationEntry>::new()));
@@ -582,6 +602,11 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let displays = displays.clone();
         let mut previously_obstructed = false;
         move || {
+            // Escape closes the native pooled popup, not the D-Bus session.
+            // Invalidate stale async GetLayout replies once it is dismissed.
+            if !popup.is_active(PopupKind::Tray) && tray_ui.menu_open() {
+                tray_host::dismiss_menu();
+            }
             let obstructed = [
                 PopupKind::Calendar,
                 PopupKind::System,
