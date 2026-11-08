@@ -53,5 +53,7 @@ jobs:
           nix develop .#ci --command cargo test --locked -p kira-ui -p kira-services -p kira-shell --all-targets
       - name: Build distributable Nix package with embedded GTK CSS
         run: nix build .#default -L
+      - name: Smoke external display rollback with isolated fake Niri
+        run: nix develop .#ci --command python3 scripts/smoke_display_supervisor.py --shell result/bin/kira-shell
       - name: Smoke real SNI client against an isolated headless D-Bus
         run: nix develop .#ci --command python3 scripts/smoke_sni_fixture_bus.py --fixture result/bin/kira-sni-acceptance
