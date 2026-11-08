@@ -476,7 +476,7 @@ impl TrayUi {
                 gtk::gdk::Key::End => MenuNavigation::Last,
                 _ => return gtk::glib::Propagation::Proceed,
             };
-            let (target, current) = {
+            let target = {
                 let actions = actions.borrow();
                 let enabled = actions
                     .iter()
@@ -491,10 +491,9 @@ impl TrayUi {
                 let button = selected.and_then(|id| {
                     actions.iter().find(|entry| entry.id == id).map(|entry| entry.button.clone())
                 });
-                (button, current)
+                button
             };
             if let Some(button) = target {
-                let _ = current;
                 button.grab_focus();
                 gtk::glib::Propagation::Stop
             } else {
