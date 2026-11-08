@@ -219,7 +219,8 @@ impl DisplayMap {
                 })
             };
             if let Some(index) = selected {
-                (state.borrow().on_intent)(MapIntent::Select(index));
+                let notify = state.borrow().on_intent.clone();
+                notify(MapIntent::Select(index));
             }
             if let Some(view) = view.upgrade() { view.queue_draw(); }
         });
@@ -237,7 +238,10 @@ impl DisplayMap {
                 snap_position(&current.outputs, &current.choices, drag.index, x, y)
                     .map(|(x, y)| MapIntent::Move { index: drag.index, x, y })
             };
-            if let Some(action) = action { (state.borrow().on_intent)(action); }
+            if let Some(action) = action {
+                let notify = state.borrow().on_intent.clone();
+                notify(action);
+            }
         });
         let weak = Rc::downgrade(&state);
         drag.connect_drag_end(move |_, _, _| {
@@ -275,7 +279,8 @@ impl DisplayMap {
                 })
             };
             if let Some(action) = action {
-                (state.borrow().on_intent)(action);
+                let notify = state.borrow().on_intent.clone();
+                notify(action);
                 gtk::glib::Propagation::Stop
             } else {
                 gtk::glib::Propagation::Proceed

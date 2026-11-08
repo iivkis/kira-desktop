@@ -224,10 +224,11 @@ impl Controls {
         if reset_confirmed {
             *self.phase.borrow_mut() = DisplayPhase::Ready;
         }
-        if let (Some(item), Some((x, y))) = (
-            self.choices.borrow().get(index).cloned(),
-            self.coordinates.borrow().get(index).cloned(),
-        ) {
+        // Release both RefCell read guards before touching GTK SpinButtons:
+        // set_value can synchronously re-enter Controls::edited.
+        let item = self.choices.borrow().get(index).cloned();
+        let coordinates = self.coordinates.borrow().get(index).cloned();
+        if let (Some(item), Some((x, y))) = (item, coordinates) {
             if x.value_as_int() != item.x {
                 x.set_value(f64::from(item.x));
             }
