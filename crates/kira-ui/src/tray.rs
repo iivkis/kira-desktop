@@ -239,7 +239,8 @@ impl TrayLiveRow {
     }
 
     fn refresh(&mut self, item: &TrayItem) {
-        if self.snapshot.icon_name != item.icon_name || self.snapshot.pixmap != item.pixmap
+        if self.snapshot.icon_name != item.icon_name
+            || self.snapshot.pixmap != item.pixmap
             || self.icon_host.first_child().is_none()
         {
             while let Some(child) = self.icon_host.first_child() {
@@ -250,20 +251,28 @@ impl TrayLiveRow {
         self.title.set_text(&item.title);
         self.attention
             .set_visible(item.status == TrayStatus::NeedsAttention);
+        self.open.set_tooltip_text(Some(&item.title));
         self.open
-            .set_tooltip_text(Some(&item.title));
-        self.open.update_property(&[gtk::accessible::Property::Label(
-            &format!("Открыть {}", item.title),
-        )]);
+            .update_property(&[gtk::accessible::Property::Label(&format!(
+                "Открыть {}",
+                item.title
+            ))]);
         self.pin.set_label(if item.pinned { "★" } else { "☆" });
         if item.pinned {
             self.pin.add_css_class("pinned");
         } else {
             self.pin.remove_css_class("pinned");
         }
-        self.pin.update_property(&[gtk::accessible::Property::Label(
-            &format!("{} {}", if item.pinned { "Открепить" } else { "Закрепить" }, item.title),
-        )]);
+        self.pin
+            .update_property(&[gtk::accessible::Property::Label(&format!(
+                "{} {}",
+                if item.pinned {
+                    "Открепить"
+                } else {
+                    "Закрепить"
+                },
+                item.title
+            ))]);
         self.pin.set_tooltip_text(Some(if item.pinned {
             "Убрать в трей"
         } else {
@@ -547,9 +556,9 @@ impl TrayUi {
             self.list.append(&empty);
         }
         for item in &visible {
-            let live = rows.entry(item.handle).or_insert_with(|| {
-                TrayLiveRow::new(item, self.on_intent.clone())
-            });
+            let live = rows
+                .entry(item.handle)
+                .or_insert_with(|| TrayLiveRow::new(item, self.on_intent.clone()));
             live.refresh(item);
             self.list.append(&live.widget);
             current.push((item.handle.to_string(), live.widget.clone()));

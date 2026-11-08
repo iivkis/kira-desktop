@@ -834,13 +834,18 @@ impl Service {
                 let Some(service) = weak.upgrade() else {
                     return;
                 };
-                let menu = service.current_menu.borrow().as_ref().filter(|menu| {
-                    menu.owner == sender
-                        && menu.path == path
-                        && version != menu.layout_version
-                        && tray_menu::revision_is_current(version, menu.layout_version)
-                        && (parent == 0 || menu.entries.iter().any(|entry| entry.id == parent))
-                }).cloned();
+                let menu = service
+                    .current_menu
+                    .borrow()
+                    .as_ref()
+                    .filter(|menu| {
+                        menu.owner == sender
+                            && menu.path == path
+                            && version != menu.layout_version
+                            && tray_menu::revision_is_current(version, menu.layout_version)
+                            && (parent == 0 || menu.entries.iter().any(|entry| entry.id == parent))
+                    })
+                    .cloned();
                 if let Some(menu) = menu {
                     let serial = service.menu_serial.get().wrapping_add(1);
                     service.menu_serial.set(serial);
@@ -1249,7 +1254,9 @@ impl Service {
         }
         let handle = match intent {
             TrayIntent::Activate(id) | TrayIntent::Secondary(id) | TrayIntent::TogglePin(id) => id,
-            TrayIntent::MenuClick(_, _) | TrayIntent::MenuExpand(_, _) | TrayIntent::DismissMenu => {
+            TrayIntent::MenuClick(_, _)
+            | TrayIntent::MenuExpand(_, _)
+            | TrayIntent::DismissMenu => {
                 return;
             }
         };

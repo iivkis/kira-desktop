@@ -295,7 +295,12 @@ impl NotificationHost {
         }
         self.revision.set(self.revision.get().wrapping_add(1));
         self.layout.set(layout);
-        let old_ids: HashSet<_> = self.current.borrow().iter().map(|notice| notice.id).collect();
+        let old_ids: HashSet<_> = self
+            .current
+            .borrow()
+            .iter()
+            .map(|notice| notice.id)
+            .collect();
         for token in self.active_motion.borrow_mut().drain(..) {
             token.cancel();
         }
