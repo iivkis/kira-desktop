@@ -441,7 +441,9 @@ impl PopupHost {
     /// Optional lifecycle callback to show detached-only content without
     /// introducing shell policy into reusable GTK view constructors.
     pub fn set_detach_handler(&self, kind: PopupKind, callback: impl Fn(bool) + 'static) {
-        self.detach_handlers.borrow_mut().insert(kind, Rc::new(callback));
+        self.detach_handlers
+            .borrow_mut()
+            .insert(kind, Rc::new(callback));
     }
 
     fn bar_monitor(&self) -> Option<gtk::gdk::Monitor> {

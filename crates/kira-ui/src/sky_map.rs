@@ -9,9 +9,7 @@ use gtk::prelude::*;
 
 use crate::calendar_model::CivilDate;
 use crate::motion::MotionToken;
-use crate::sky_catalog::{
-    CONSTELLATION_LABELS, CONSTELLATION_SEGMENTS, NAMED_STARS, STARS,
-};
+use crate::sky_catalog::{CONSTELLATION_LABELS, CONSTELLATION_SEGMENTS, NAMED_STARS, STARS};
 use crate::sky_model::{
     horizon_point, local_observation_unix, observer_coordinates, shortest_sidereal_delta,
     sidereal_degrees,
@@ -236,8 +234,8 @@ impl SkyMap {
         };
         let (date, time, observer_label) = {
             let scene = self.scene.borrow();
-            let demo = scene.latitude.trim() == GREENWICH_LAT
-                && scene.longitude.trim() == GREENWICH_LON;
+            let demo =
+                scene.latitude.trim() == GREENWICH_LAT && scene.longitude.trim() == GREENWICH_LON;
             (
                 scene.date.iso(),
                 scene.time.clone(),
@@ -249,12 +247,14 @@ impl SkyMap {
             )
         };
         self.example.set_label(observer_label);
-        self.message
-            .set_label(&format!("{date} · {time} (локальное время) · звёзды до 5,35 mag"));
+        self.message.set_label(&format!(
+            "{date} · {time} (локальное время) · звёзды до 5,35 mag"
+        ));
         self.drawing.set_visible(true);
-        self.drawing.update_property(&[gtk::accessible::Property::Label(
-            &format!("Звёздное небо {date} в {time}, север сверху, восток справа"),
-        )]);
+        self.drawing
+            .update_property(&[gtk::accessible::Property::Label(&format!(
+                "Звёздное небо {date} в {time}, север сверху, восток справа"
+            ))]);
 
         let (initial_latitude, initial_sidereal, animate) = {
             let mut scene = self.scene.borrow_mut();
@@ -310,13 +310,7 @@ impl SkyMap {
     }
 }
 
-fn paint_sky(
-    cr: &gtk::cairo::Context,
-    width: i32,
-    height: i32,
-    latitude: f64,
-    sidereal: f64,
-) {
+fn paint_sky(cr: &gtk::cairo::Context, width: i32, height: i32, latitude: f64, sidereal: f64) {
     let w = f64::from(width);
     let h = f64::from(height);
     cr.set_source_rgb(20.0 / 255.0, 33.0 / 255.0, 61.0 / 255.0);
@@ -339,8 +333,7 @@ fn paint_sky(
         let _ = cr.stroke();
     }
     cr.set_source_rgba(0.9, 0.9, 0.9, 0.09);
-    for (x1, y1, x2, y2) in [(-radius, 0.0, radius, 0.0),
-                             (0.0, -radius, 0.0, radius)] {
+    for (x1, y1, x2, y2) in [(-radius, 0.0, radius, 0.0), (0.0, -radius, 0.0, radius)] {
         cr.move_to(x1, y1);
         cr.line_to(x2, y2);
         let _ = cr.stroke();
@@ -360,7 +353,10 @@ fn paint_sky(
         for step in 0..=8 {
             let t = f64::from(step) / 8.0;
             let point = horizon_point(
-                ra1 + delta * t, dec1 + (dec2 - dec1) * t, latitude, sidereal,
+                ra1 + delta * t,
+                dec1 + (dec2 - dec1) * t,
+                latitude,
+                sidereal,
             );
             if point.altitude < 0.0 {
                 active = false;
@@ -398,7 +394,9 @@ fn paint_sky(
     }
 
     cr.select_font_face(
-        "Sans", gtk::cairo::FontSlant::Normal, gtk::cairo::FontWeight::Normal,
+        "Sans",
+        gtk::cairo::FontSlant::Normal,
+        gtk::cairo::FontWeight::Normal,
     );
     cr.set_font_size(10.0);
     let mut occupied = Vec::<(f64, f64)>::new();
@@ -409,7 +407,10 @@ fn paint_sky(
         }
         let x = point.x * radius;
         let y = point.y * radius;
-        if occupied.iter().any(|(px, py)| (px - x).hypot(py - y) < 65.0) {
+        if occupied
+            .iter()
+            .any(|(px, py)| (px - x).hypot(py - y) < 65.0)
+        {
             continue;
         }
         occupied.push((x, y));
@@ -424,7 +425,10 @@ fn paint_sky(
         }
         let x = point.x * radius;
         let y = point.y * radius;
-        if occupied.iter().any(|(px, py)| (px - x).hypot(py - y) < 40.0) {
+        if occupied
+            .iter()
+            .any(|(px, py)| (px - x).hypot(py - y) < 40.0)
+        {
             continue;
         }
         occupied.push((x, y));
@@ -441,10 +445,15 @@ fn paint_sky(
     cr.set_source_rgb(0.988, 0.639, 0.067);
     cr.set_font_size(11.0);
     for (label, dx, dy) in [
-        ("N", 0.0, -1.0), ("E", 1.0, 0.0),
-        ("S", 0.0, 1.0), ("W", -1.0, 0.0),
+        ("N", 0.0, -1.0),
+        ("E", 1.0, 0.0),
+        ("S", 0.0, 1.0),
+        ("W", -1.0, 0.0),
     ] {
-        cr.move_to(center_x + dx * (radius + 16.0), center_y + dy * (radius + 16.0));
+        cr.move_to(
+            center_x + dx * (radius + 16.0),
+            center_y + dy * (radius + 16.0),
+        );
         let _ = cr.show_text(label);
     }
 }

@@ -462,7 +462,11 @@ impl Calendar {
                 }
             }
         });
-        Self { root, state, sky_child }
+        Self {
+            root,
+            state,
+            sky_child,
+        }
     }
 
     /// Only an independently detached Calendar gets the offline star atlas.
