@@ -350,6 +350,173 @@ impl Controls {
             _ => {}
         }
     }
+
+    fn set_outputs(self: &Rc<Self>, outputs: Vec<DisplayOutput>) {
+        let selected_name = self.selected.get().and_then(|index| {
+            self.choices.borrow().get(index).map(|item| item.connector.clone())
+        });
+        while let Some(child) = self.selectors.first_child() {
+            self.selectors.remove(&child);
+        }
+        while let Some(child) = self.outputs.first_child() {
+            self.outputs.remove(&child);
+        }
+        self.sections.borrow_mut().clear();
+        self.selector_buttons.borrow_mut().clear();
+        self.coordinates.borrow_mut().clear();
+        *self.observed.borrow_mut() = outputs.clone();
+        *self.choices.borrow_mut() = outputs.iter().map(DisplayChoice::from).collect();
+        for (index, output) in outputs.iter().enumerate() {
+            let choose = gtk::Button::with_label(&format!(
+                "{} · {} · {}",
+                index + 1,
+                output.connector,
+                if output.enabled { "Включён" } else { "Выключен" },
+            ));
+            choose.add_css_class("display-selector");
+            choose.set_hexpand(true);
+            choose.set_halign(gtk::Align::Fill);
+            choose.update_property(&[gtk::accessible::Property::Label(&format!(
+                "Выбрать экран {}: {}",
+                index + 1,
+                output.connector,
+            ))]);
+            let weak = Rc::downgrade(self);
+            choose.connect_clicked(move |_| {
+                if let Some(controls) = weak.upgrade() {
+                    controls.select(index);
+                }
+            });
+            self.selectors.append(&choose);
+            self.selector_buttons.borrow_mut().push(choose);
+            let section = gtk::Box::new(gtk::Orientation::Vertical, 6);
+            section.add_css_class("display-output");
+
+            let name = gtk::Label::new(Some(&format!(
+                "{} · {}",
+                output.connector, output.description
+            )));
+            name.add_css_class("section-title");
+            name.set_xalign(0.0);
+            name.set_wrap(true);
+            section.append(&name);
+
+            let enabled = gtk::CheckButton::with_label("Монитор включён");
+            enabled.set_active(output.enabled);
+            section.append(&enabled);
+            let weak = Rc::downgrade(self);
+            enabled.connect_toggled(move |button| {
+                if let Some(controls) = weak.upgrade() {
+                    controls.edited(index, |item| item.enabled = button.is_active());
+                }
+            });
+
+            let names = output
+                .modes
+                .iter()
+                .map(|mode| mode.label.as_str())
+                .collect::<Vec<_>>();
+            let mode = gtk::DropDown::from_strings(&names);
+            let selected = output
+                .modes
+                .iter()
+                .position(|item| item.id == output.mode)
+                .unwrap_or(0);
+            mode.set_selected(selected as u32);
+            mode.set_sensitive(!names.is_empty());
+            section.append(&labeled_field("Разрешение и частота", &mode));
+            let ids = output
+                .modes
+                .iter()
+                .map(|item| item.id.clone())
+                .collect::<Vec<_>>();
+            let weak = Rc::downgrade(self);
+            mode.connect_selected_notify(move |select| {
+                if let Some(mode) = ids.get(select.selected() as usize)
+                    && let Some(controls) = weak.upgrade()
+                {
+                    controls.edited(index, |item| item.mode = mode.clone());
+                }
+            });
+
+            let scale = gtk::SpinButton::with_range(0.5, 4.0, 0.25);
+            scale.set_digits(2);
+            scale.set_value(output.scale);
+            section.append(&labeled_field("Масштаб", &scale));
+            let weak = Rc::downgrade(self);
+            scale.connect_value_changed(move |spin| {
+                if let Some(controls) = weak.upgrade() {
+                    controls.edited(index, |item| item.scale = spin.value());
+                }
+            });
+
+            let orientation = gtk::DropDown::from_strings(&TRANSFORMS);
+            let selected = TRANSFORMS
+                .iter()
+                .position(|transform| *transform == output.transform)
+                .unwrap_or(0);
+            orientation.set_selected(selected as u32);
+            section.append(&labeled_field("Ориентация", &orientation));
+            let weak = Rc::downgrade(self);
+            orientation.connect_selected_notify(move |select| {
+                if let Some(transform) = TRANSFORMS.get(select.selected() as usize)
+                    && let Some(controls) = weak.upgrade()
+                {
+                    controls.edited(index, |item| item.transform = (*transform).to_owned());
+                }
+            });
+
+            let position = gtk::Box::new(gtk::Orientation::Horizontal, 6);
+            let x = gtk::SpinButton::with_range(-32000.0, 32000.0, 1.0);
+            x.set_value(f64::from(output.x));
+            let y = gtk::SpinButton::with_range(-32000.0, 32000.0, 1.0);
+            y.set_value(f64::from(output.y));
+            position.append(&gtk::Label::new(Some("X")));
+            position.append(&x);
+            position.append(&gtk::Label::new(Some("Y")));
+            position.append(&y);
+            section.append(&labeled_field("Позиция", &position));
+            let weak = Rc::downgrade(self);
+            x.connect_value_changed(move |spin| {
+                if let Some(controls) = weak.upgrade() {
+                    controls.edited(index, |item| item.x = spin.value_as_int());
+                }
+            });
+            let weak = Rc::downgrade(self);
+            y.connect_value_changed(move |spin| {
+                if let Some(controls) = weak.upgrade() {
+                    controls.edited(index, |item| item.y = spin.value_as_int());
+                }
+            });
+
+            let vrr = gtk::CheckButton::with_label("Адаптивная частота (VRR)");
+            vrr.set_active(output.vrr);
+            vrr.set_sensitive(output.vrr_supported);
+            section.append(&vrr);
+            let weak = Rc::downgrade(self);
+            vrr.connect_toggled(move |button| {
+                if let Some(controls) = weak.upgrade() {
+                    controls.edited(index, |item| item.vrr = button.is_active());
+                }
+            });
+            self.coordinates.borrow_mut().push((x, y));
+            self.outputs.append(&section);
+            self.sections.borrow_mut().push(section);
+        }
+        if outputs.is_empty() {
+            self.selected.set(None);
+            self.update_map();
+        } else {
+            let selected = selected_name
+                .and_then(|connector| {
+                    outputs.iter().position(|output| output.connector == connector)
+                })
+                .unwrap_or(0);
+            self.select(selected);
+        }
+        self.sync();
+    }
+
 }
 
 pub struct DisplaySettings {
@@ -525,124 +692,7 @@ impl DisplaySettings {
     }
 
     pub fn set_outputs(&self, outputs: Vec<DisplayOutput>) {
-        while let Some(child) = self.controls.outputs.first_child() {
-            self.controls.outputs.remove(&child);
-        }
-        *self.controls.choices.borrow_mut() = outputs.iter().map(DisplayChoice::from).collect();
-        for (index, output) in outputs.iter().enumerate() {
-            let section = gtk::Box::new(gtk::Orientation::Vertical, 6);
-            section.add_css_class("display-output");
-
-            let name = gtk::Label::new(Some(&format!(
-                "{} · {}",
-                output.connector, output.description
-            )));
-            name.add_css_class("section-title");
-            name.set_xalign(0.0);
-            name.set_wrap(true);
-            section.append(&name);
-
-            let enabled = gtk::CheckButton::with_label("Монитор включён");
-            enabled.set_active(output.enabled);
-            section.append(&enabled);
-            let weak = Rc::downgrade(&self.controls);
-            enabled.connect_toggled(move |button| {
-                if let Some(controls) = weak.upgrade() {
-                    controls.edited(index, |item| item.enabled = button.is_active());
-                }
-            });
-
-            let names = output
-                .modes
-                .iter()
-                .map(|mode| mode.label.as_str())
-                .collect::<Vec<_>>();
-            let mode = gtk::DropDown::from_strings(&names);
-            let selected = output
-                .modes
-                .iter()
-                .position(|item| item.id == output.mode)
-                .unwrap_or(0);
-            mode.set_selected(selected as u32);
-            mode.set_sensitive(!names.is_empty());
-            section.append(&labeled_field("Разрешение и частота", &mode));
-            let ids = output
-                .modes
-                .iter()
-                .map(|item| item.id.clone())
-                .collect::<Vec<_>>();
-            let weak = Rc::downgrade(&self.controls);
-            mode.connect_selected_notify(move |select| {
-                if let Some(mode) = ids.get(select.selected() as usize)
-                    && let Some(controls) = weak.upgrade()
-                {
-                    controls.edited(index, |item| item.mode = mode.clone());
-                }
-            });
-
-            let scale = gtk::SpinButton::with_range(0.5, 4.0, 0.25);
-            scale.set_digits(2);
-            scale.set_value(output.scale);
-            section.append(&labeled_field("Масштаб", &scale));
-            let weak = Rc::downgrade(&self.controls);
-            scale.connect_value_changed(move |spin| {
-                if let Some(controls) = weak.upgrade() {
-                    controls.edited(index, |item| item.scale = spin.value());
-                }
-            });
-
-            let orientation = gtk::DropDown::from_strings(&TRANSFORMS);
-            let selected = TRANSFORMS
-                .iter()
-                .position(|transform| *transform == output.transform)
-                .unwrap_or(0);
-            orientation.set_selected(selected as u32);
-            section.append(&labeled_field("Ориентация", &orientation));
-            let weak = Rc::downgrade(&self.controls);
-            orientation.connect_selected_notify(move |select| {
-                if let Some(transform) = TRANSFORMS.get(select.selected() as usize)
-                    && let Some(controls) = weak.upgrade()
-                {
-                    controls.edited(index, |item| item.transform = (*transform).to_owned());
-                }
-            });
-
-            let position = gtk::Box::new(gtk::Orientation::Horizontal, 6);
-            let x = gtk::SpinButton::with_range(-32000.0, 32000.0, 1.0);
-            x.set_value(f64::from(output.x));
-            let y = gtk::SpinButton::with_range(-32000.0, 32000.0, 1.0);
-            y.set_value(f64::from(output.y));
-            position.append(&gtk::Label::new(Some("X")));
-            position.append(&x);
-            position.append(&gtk::Label::new(Some("Y")));
-            position.append(&y);
-            section.append(&labeled_field("Позиция", &position));
-            let weak = Rc::downgrade(&self.controls);
-            x.connect_value_changed(move |spin| {
-                if let Some(controls) = weak.upgrade() {
-                    controls.edited(index, |item| item.x = spin.value_as_int());
-                }
-            });
-            let weak = Rc::downgrade(&self.controls);
-            y.connect_value_changed(move |spin| {
-                if let Some(controls) = weak.upgrade() {
-                    controls.edited(index, |item| item.y = spin.value_as_int());
-                }
-            });
-
-            let vrr = gtk::CheckButton::with_label("Адаптивная частота (VRR)");
-            vrr.set_active(output.vrr);
-            vrr.set_sensitive(output.vrr_supported);
-            section.append(&vrr);
-            let weak = Rc::downgrade(&self.controls);
-            vrr.connect_toggled(move |button| {
-                if let Some(controls) = weak.upgrade() {
-                    controls.edited(index, |item| item.vrr = button.is_active());
-                }
-            });
-            self.controls.outputs.append(&section);
-        }
-        self.controls.sync();
+        self.controls.set_outputs(outputs);
     }
 }
 
