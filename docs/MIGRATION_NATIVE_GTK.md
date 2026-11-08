@@ -72,7 +72,7 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 
 - The reusable `kira-ui::PopupHost` supports detaching Launcher, Calendar, System and Settings into decorated Wayland xdg-toplevels, then reattaching the exact GTK clip tree to the layer-shell transient. No controller, selected date, search state, scroll position or metric model is recreated. The bar raises an existing detached view rather than spawning a duplicate.
 - System sampling and Settings rollback decisions follow detached visibility; only the transient layer counts as notification obstruction. Tray stays in its single pooled popup until detached SNI menu cascades pass independently.
-- Niri focus restoration, rapid attach/detach motion, multi-monitor placement, keyboard and accessibility QA and paired visual/motion evidence remain outstanding. Window Controls stays partial, not verified.
+- Native popup placement now reads the mapped Top Bar's GDK monitor on every open, pins the transient to that output, and updates width, top margin and scroll bounds after output changes; when the bar has no mapped surface the compositor chooses the output. The retained GTK content tracks its last focused child and restores it after detaching or reopening only while the destination window is active. Detached Escape returns to the retained pool. Real Niri focus restoration, rapid attach/detach motion, hotplug, scaling, keyboard and accessibility QA and paired visual/motion evidence remain outstanding. Window Controls stays partial, not verified.
 
 ## Current caveat
 
