@@ -286,6 +286,14 @@ impl PopupView {
                 view.remember_content_focus(window);
             }
         });
+        let weak = Rc::downgrade(self);
+        detached.connect_notify_local(Some("is-active"), move |window, _| {
+            if window.is_active()
+                && let Some(view) = weak.upgrade()
+            {
+                view.restore_content_focus(window);
+            }
+        });
 
         let weak = Rc::downgrade(self);
         detached.connect_close_request(move |_| {
@@ -619,6 +627,14 @@ impl PopupHost {
             window.connect_notify_local(Some("focus-widget"), move |window, _| {
                 if let Some(view) = weak.upgrade() {
                     view.remember_content_focus(window);
+                }
+            });
+            let weak = Rc::downgrade(&view);
+            window.connect_notify_local(Some("is-active"), move |window, _| {
+                if window.is_active()
+                    && let Some(view) = weak.upgrade()
+                {
+                    view.restore_content_focus(window);
                 }
             });
             let active = self.active.clone();
