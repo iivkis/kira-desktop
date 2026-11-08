@@ -343,11 +343,16 @@
         "path": "frontend/src/lib/components/TrayBar.svelte",
         "sha": "4904704ee4aca89a99d75e409e9d5ba4113a0c8e"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/tray.rs",
+        "crates/kira-shell/src/tray_host.rs",
+        "crates/kira-shell/src/main.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Live StatusNotifier icons, max four visible and overflow count",
-        "Primary and secondary activation, needs-attention status"
+        "Primary and secondary activation, needs-attention status",
+        "Native GTK bar shows registered StatusNotifierItem theme icon/label, pinned identity, live attention and bounded overflow from authenticated D-Bus item properties; pixmaps and responsive/visual parity remain outstanding"
       ],
       "animation_requirements": [
         "Continuous selection and overflow entrance"
@@ -371,11 +376,16 @@
         "path": "frontend/src/lib/components/TrayWidget.svelte",
         "sha": "b3ad22354d10027695c8ec0fa5273096212530da"
       },
-      "target_files": [],
-      "state": "missing",
+      "target_files": [
+        "crates/kira-ui/src/tray.rs",
+        "crates/kira-shell/src/tray_host.rs",
+        "crates/kira-shell/src/main.rs"
+      ],
+      "state": "partial",
       "content_and_interaction_requirements": [
         "Pinned/unpinned items and native D-Bus menu hierarchy",
-        "Secondary click and menu actions, keyboard dismissal"
+        "Secondary click and menu actions, keyboard dismissal",
+        "Native GTK popup shares item snapshots, invokes only trusted numeric-handle Activate/ContextMenu, and persists pin IDs; menu trees and source FLIP remain missing"
       ],
       "animation_requirements": [
         "Reversible popup reveal and FLIP reflow"

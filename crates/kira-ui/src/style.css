@@ -212,3 +212,27 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
 .kira-notification-host .notification-action {
   color: #fca311; font-size: 11px; font-weight: 800;
 }
+
+/* Genuine SNI tray identities. GTK resolves sanitized theme icons locally. */
+.kira-bar .tray-strip { padding: 0 2px; }
+.kira-bar .tray-item-button, .kira-bar .tray-overflow {
+  min-width: 29px; min-height: 30px; padding: 0 3px; border-radius: 2px;
+  color: #e5e5e5;
+}
+.kira-bar .tray-initial { font-size: 11px; font-weight: 800; color: #e5e5e5; }
+.kira-bar .needs-attention { border-bottom: 2px solid #fca311; }
+.kira-popup .tray-widget { background: #000000; min-width: 210px; }
+.kira-popup .tray-widget .section-title {
+  font-size: 18px; border-left: 2px solid #fca311; padding-left: 12px;
+}
+.kira-popup .tray-list { background: #14213d; padding: 10px; }
+.kira-popup .tray-row { min-height: 44px; }
+.kira-popup .tray-row-activate { min-width: 120px; padding: 6px; }
+.kira-popup .tray-row togglebutton {
+  color: #e5e5e5; min-height: 30px; min-width: 30px;
+  border: 0; border-radius: 2px; background: #000000;
+}
+.kira-popup .tray-row togglebutton:checked {
+  background: #fca311; color: #000000;
+}
+.kira-popup .tray-attention { color: #fca311; }

@@ -20,6 +20,7 @@ pub enum PopupKind {
     Calendar,
     System,
     Settings,
+    Tray,
 }
 
 struct PopupView {

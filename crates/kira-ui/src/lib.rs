@@ -20,6 +20,7 @@ pub mod system_charts;
 pub mod system_details;
 pub mod system_health;
 pub mod tenet_scroll;
+pub mod tray;
 pub mod workspace;
 
 pub use bar::{Bar, action_button};
@@ -56,6 +57,9 @@ pub use system_health::{
     CoreStatus, HealthMetrics, HealthPhase, HealthSummary, SystemHealth, classify_health,
 };
 pub use tenet_scroll::TenetScroll;
+pub use tray::{
+    TrayBarModel, TrayIntent, TrayItem, TrayState, TrayStatus, TrayUi, tray_bar_model,
+};
 pub use workspace::{
     WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspace_window, visible_workspaces,
 };

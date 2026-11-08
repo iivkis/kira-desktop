@@ -3,6 +3,7 @@
 
 mod display_bridge;
 mod notifications;
+mod tray_host;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -17,7 +18,7 @@ use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayMode
 use kira_ui::{
     ApplicationEntry, Bar, Calendar, ChartSample, CoreStatus, DisplayIntent, DisplayPhase,
     DisplaySettings, GpuReading, HealthMetrics, InfoPanel, Launcher, PopupHost, PopupKind,
-    ProcessItem, ProcessList, SystemHealth, SystemMonitor, SystemOverview, WorkspaceItem,
+    ProcessItem, ProcessList, SystemHealth, SystemMonitor, SystemOverview, TrayUi, WorkspaceItem,
 };
 
 enum ShellUpdate {
@@ -424,6 +425,21 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     kira_ui::install_style();
     let bar = Rc::new(Bar::new(app, request_focus));
     let popup = Rc::new(PopupHost::new(app));
+    let tray_ui = Rc::new(TrayUi::new(tray_host::action));
+    {
+        let tray = Rc::downgrade(&tray_ui);
+        let popup = popup.clone();
+        tray_ui.set_toggle_handler(move || {
+            if let Some(tray) = tray.upgrade() {
+                popup.toggle(PopupKind::Tray, || tray.popup_widget());
+            }
+        });
+    }
+    bar.add_action_widget(&tray_ui.bar_widget());
+    tray_host::start({
+        let tray_ui = tray_ui.clone();
+        move |state| tray_ui.update(&state)
+    });
     let config = Rc::new(RefCell::new(UiConfig::default()));
     let state = Rc::new(RefCell::new(WorkspaceState::default()));
     let applications = Rc::new(RefCell::new(Vec::<ApplicationEntry>::new()));
@@ -484,6 +500,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let applications = applications.clone();
         let system = system.clone();
         let settings_content = settings_content.clone();
+        let tray_ui = tray_ui.clone();
         let displays = displays.clone();
         let display_model = display_model.clone();
         let sender = sender.clone();
@@ -506,6 +523,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 PopupKind::Calendar => calendar.widget(),
                 PopupKind::System => system.widget(),
                 PopupKind::Settings => settings_content.clone(),
+                PopupKind::Tray => tray_ui.popup_widget(),
             });
             if kind == PopupKind::Launcher
                 && popup.is_active(PopupKind::Launcher)
