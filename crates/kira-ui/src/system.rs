@@ -4,6 +4,7 @@ use std::time::Instant;
 
 use gtk::prelude::*;
 
+use crate::capacity::CapacityCards;
 use crate::process_table::ProcessTable;
 use crate::system_charts::{ChartSample, SystemCharts};
 
@@ -13,6 +14,10 @@ pub struct SystemOverview {
     pub cpu_temperature_c: Option<f64>,
     pub memory_total_kib: Option<u64>,
     pub memory_available_kib: Option<u64>,
+    pub swap_total_kib: Option<u64>,
+    pub swap_free_kib: Option<u64>,
+    pub root_total_kib: Option<u64>,
+    pub root_available_kib: Option<u64>,
     pub load: Option<[f64; 3]>,
     pub uptime_seconds: Option<u64>,
     pub battery_percent: Option<u8>,
@@ -142,6 +147,7 @@ pub struct SystemMonitor {
     pages: gtk::Stack,
     readings: Vec<gtk::Label>,
     charts: SystemCharts,
+    capacity: CapacityCards,
     process_table: ProcessTable,
 }
 
@@ -163,6 +169,8 @@ impl SystemMonitor {
         let overview = gtk::Box::new(gtk::Orientation::Vertical, 5);
         let charts = SystemCharts::new();
         overview.append(&charts.widget());
+        let capacity = CapacityCards::new();
+        overview.append(&capacity.widget());
         let mut readings = Vec::new();
         for label in [
             "CPU",
@@ -200,6 +208,7 @@ impl SystemMonitor {
             pages,
             readings,
             charts,
+            capacity,
             process_table,
         }
     }
@@ -216,6 +225,12 @@ impl SystemMonitor {
         for (label, text) in self.readings.iter().zip(overview_labels(overview)) {
             label.set_text(&text);
         }
+        self.capacity.update(
+            overview.root_total_kib,
+            overview.root_available_kib,
+            overview.swap_total_kib,
+            overview.swap_free_kib,
+        );
     }
 
     pub fn set_pulse(&self, sample: ChartSample) {

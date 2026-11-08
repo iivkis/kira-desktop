@@ -110,6 +110,17 @@ window.kira-popup { background: transparent; color: #ffffff; }
 
 
 /* Reusable system monitor and output editor; no desktop-only theme rules. */
+/* Source capacity pair: independent disk/swap readings with explicit unknown. */
+.system-capacity { background: #000000; padding: 16px 12px; }
+.system-capacity-heading {
+  font-size: 12px; font-weight: 800; letter-spacing: 1px; color: #ffffff;
+}
+.system-capacity-card { background: #14213d; padding: 12px; }
+.system-capacity-name { font-size: 11px; font-weight: 800; color: #e5e5e5; }
+.system-capacity-value { font-size: 24px; font-weight: 900; color: #ffffff; }
+.system-capacity-fraction { font-size: 11px; color: #e5e5e5; }
+.system-capacity progressbar trough { background: #000000; min-height: 5px; }
+.system-capacity progressbar progress { background: #fca311; }
 .system-metric { padding: 6px 4px; }
 .system-value { font-weight: bold; }
 .system-charts { padding: 12px 8px; background: #14213d; }

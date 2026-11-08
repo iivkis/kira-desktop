@@ -188,7 +188,8 @@
       "state": "partial",
       "content_and_interaction_requirements": [
         "Overview with disk, swap, temperature, battery, GPU and system disclosure",
-        "Process search, sorting by name/PID/CPU/RSS/PSS, report copy and freshness"
+        "Process search, sorting by name/PID/CPU/RSS/PSS, report copy and freshness",
+        "Native capacity tiles now consume root statvfs and swap meminfo measurements; six-second freshness and unavailable/unconfigured distinctions are unit-tested. Hardware disclosure, source-perfect visuals and motion remain incomplete"
       ],
       "animation_requirements": [
         "TENET panel arrival and disclosure",

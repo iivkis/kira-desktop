@@ -3,6 +3,7 @@
 pub mod bar;
 pub mod calendar;
 pub mod calendar_model;
+pub mod capacity;
 pub mod clock_digits;
 pub mod displays;
 pub mod flow_indicator;
@@ -21,6 +22,7 @@ pub mod workspace;
 pub use bar::{Bar, action_button};
 pub use calendar::Calendar;
 pub use calendar_model::{CivilDate, DayState, current_local_date, month_grid};
+pub use capacity::{CapacityCards, CapacityReading, capacity_reading};
 pub use displays::{
     DisplayChoice, DisplayIntent, DisplayMode, DisplayOutput, DisplayPhase, DisplaySettings,
 };

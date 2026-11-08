@@ -1,7 +1,9 @@
 //! Read-only Linux system telemetry. No external commands, privileged APIs or
 //! additional dependencies. Optional fields are absent when the kernel does
 //! not provide a metric; lack of data must never be displayed as zero.
+use std::ffi::CString;
 use std::fs;
+use std::os::unix::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
@@ -202,6 +204,37 @@ fn battery() -> (Option<u8>, Option<bool>) {
     (None, None)
 }
 
+/// Convert block counts to KiB without wrapping large filesystems or
+/// confusing root-reserved free space with what an ordinary user can use.
+fn filesystem_kib(blocks: u64, available: u64, block_size: u64) -> Option<(u64, u64)> {
+    if blocks == 0 || block_size == 0 || available > blocks {
+        return None;
+    }
+    let total = u64::try_from(u128::from(blocks) * u128::from(block_size) / 1024).ok()?;
+    let free = u64::try_from(u128::from(available) * u128::from(block_size) / 1024).ok()?;
+    (total > 0 && free <= total).then_some((total, free))
+}
+
+/// Kernel statvfs for the mounted / filesystem, not an estimate from
+/// /proc/meminfo or a shell command. f_bavail excludes reserved blocks.
+fn root_filesystem_kib(path: &Path) -> Option<(u64, u64)> {
+    let path = CString::new(path.as_os_str().as_bytes()).ok()?;
+    let mut stat = std::mem::MaybeUninit::<libc::statvfs>::uninit();
+    // SAFETY: path is NUL-terminated, stat points to writable initialized
+    // storage, and the structure is read only if statvfs reports success.
+    if unsafe { libc::statvfs(path.as_ptr(), stat.as_mut_ptr()) } != 0 {
+        return None;
+    }
+    // SAFETY: a zero return from statvfs means the whole structure was filled.
+    let stat = unsafe { stat.assume_init() };
+    let block_size = if stat.f_frsize > 0 {
+        stat.f_frsize
+    } else {
+        stat.f_bsize
+    };
+    filesystem_kib(stat.f_blocks, stat.f_bavail, block_size)
+}
+
 // sysfs is kernel-provided; optional sensors must never become zero by default.
 // GPU utilization is driver-dependent (e.g. AMD gpu_busy_percent).
 const MAX_GPUS: usize = 8;
@@ -400,6 +433,10 @@ impl Sampler {
         (s.battery_percent, s.battery_charging) = battery();
         s.cpu_temperature_c = cpu_temperature(Path::new("/sys"));
         s.gpus = sample_gpus(Path::new("/sys"));
+        if let Some((total, available)) = root_filesystem_kib(Path::new("/")) {
+            s.root_total_kib = Some(total);
+            s.root_available_kib = Some(available);
+        }
         s
     }
 }
@@ -429,6 +466,25 @@ mod tests {
         );
         assert_eq!(s.memory_percent(), Some(75));
         assert_eq!(s.swap_free_kib, Some(512));
+    }
+
+    #[test]
+    fn root_capacity_handles_reserved_blocks_large_values_and_missing_mounts() {
+        // statvfs f_bavail rather than f_bfree is the unprivileged capacity.
+        assert_eq!(filesystem_kib(1000, 400, 4096), Some((4000, 1600)));
+        assert_eq!(filesystem_kib(1000, 1000, 4096), Some((4000, 4000)));
+        assert_eq!(filesystem_kib(1000, 1001, 4096), None);
+        assert_eq!(filesystem_kib(0, 0, 4096), None);
+        assert_eq!(filesystem_kib(1000, 400, 0), None);
+        assert_eq!(filesystem_kib(u64::MAX, 1, u64::MAX), None);
+        assert_eq!(
+            root_filesystem_kib(Path::new("/this-directory-must-not-exist-kira-gtk")),
+            None
+        );
+        // An inaccessible root filesystem is represented as unknown, not zero.
+        if let Some((total, available)) = root_filesystem_kib(Path::new("/")) {
+            assert!(total > 0 && available <= total);
+        }
     }
 
     #[test]
