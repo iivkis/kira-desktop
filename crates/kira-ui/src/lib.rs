@@ -36,8 +36,8 @@ pub use system::{
     top_processes,
 };
 pub use system_charts::{
-    ActivityAxis, ActivityLane, ChartPoint, ChartSample, PulseHistory, SystemCharts,
-    activity_axis, measured_history_caption,
+    ActivityAxis, ActivityLane, ChartPoint, ChartSample, PulseHistory, SystemCharts, activity_axis,
+    measured_history_caption,
 };
 pub use tenet_scroll::TenetScroll;
 pub use workspace::{

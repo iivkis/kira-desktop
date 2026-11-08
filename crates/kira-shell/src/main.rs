@@ -15,8 +15,7 @@ use kira_ipc::{ConfigState, PROTOCOL_VERSION, RpcRequest, UiConfig, WorkspaceSta
 use kira_services::display_manager::{Event as DisplayEvent, Model as DisplayModel};
 use kira_ui::{
     ApplicationEntry, Bar, Calendar, ChartSample, DisplayIntent, DisplayPhase, DisplaySettings,
-    GpuReading,
-    InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor,
+    GpuReading, InfoPanel, Launcher, PopupHost, PopupKind, ProcessItem, ProcessList, SystemMonitor,
     SystemOverview, WorkspaceItem,
 };
 

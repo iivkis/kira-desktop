@@ -65,9 +65,11 @@ impl PulseHistory {
     }
 
     pub fn prune(&mut self, now: Instant) {
-        while self.samples.front().is_some_and(|first| {
-            now.saturating_duration_since(first.measured_at) > MAX_PULSE_AGE
-        }) {
+        while self
+            .samples
+            .front()
+            .is_some_and(|first| now.saturating_duration_since(first.measured_at) > MAX_PULSE_AGE)
+        {
             self.samples.pop_front();
         }
         while self.samples.len() > MAX_PULSE_POINTS {
@@ -97,13 +99,10 @@ impl PulseHistory {
     }
 
     pub fn latest(&self, now: Instant) -> Option<ChartPoint> {
-        self.samples
-            .back()
-            .copied()
-            .filter(|point| {
-                now >= point.measured_at
-                    && now.saturating_duration_since(point.measured_at) < PULSE_FRESHNESS
-            })
+        self.samples.back().copied().filter(|point| {
+            now >= point.measured_at
+                && now.saturating_duration_since(point.measured_at) < PULSE_FRESHNESS
+        })
     }
 }
 
@@ -226,8 +225,7 @@ fn draw_history(cr: &gtk::cairo::Context, width: i32, height: i32, points: &[Cha
                             .as_secs_f64()
                             / span)
                             .clamp(0.0, 1.0);
-                let y = bottom
-                    - (value - axis.min) / (axis.max - axis.min) * (bottom - top);
+                let y = bottom - (value - axis.min) / (axis.max - axis.min) * (bottom - top);
                 if !drawing {
                     cr.move_to(x, y);
                     drawing = true;
@@ -424,11 +422,24 @@ mod tests {
         let t = Instant::now();
         let mut history = PulseHistory::default();
         for n in 0..150 {
-            history.push(sample(t + Duration::from_millis(n * 500), Some(50), Some(500)));
+            history.push(sample(
+                t + Duration::from_millis(n * 500),
+                Some(50),
+                Some(500),
+            ));
         }
-        assert_eq!(history.recent(t + Duration::from_millis(74500)).len(), MAX_PULSE_POINTS);
+        assert_eq!(
+            history.recent(t + Duration::from_millis(74500)).len(),
+            MAX_PULSE_POINTS
+        );
         history.push(sample(t + Duration::from_millis(500), Some(99), Some(990)));
-        assert_eq!(history.latest(t + Duration::from_millis(74500)).unwrap().cpu, Some(50.0));
+        assert_eq!(
+            history
+                .latest(t + Duration::from_millis(74500))
+                .unwrap()
+                .cpu,
+            Some(50.0)
+        );
         assert!(history.recent(t + Duration::from_secs(140)).is_empty());
         assert!(history.latest(t + Duration::from_secs(140)).is_none());
     }
@@ -445,8 +456,16 @@ mod tests {
         assert_eq!(broken.cpu, None);
         assert_eq!(broken.ram, None);
         let points = [
-            ChartPoint { measured_at: t, cpu: Some(99.9), ram: Some(12.5) },
-            ChartPoint { measured_at: t, cpu: Some(100.0), ram: Some(12.6) },
+            ChartPoint {
+                measured_at: t,
+                cpu: Some(99.9),
+                ram: Some(12.5),
+            },
+            ChartPoint {
+                measured_at: t,
+                cpu: Some(100.0),
+                ram: Some(12.6),
+            },
         ];
         let cpu = activity_axis(&points, ActivityLane::Cpu);
         let ram = activity_axis(&points, ActivityLane::Ram);
@@ -454,8 +473,13 @@ mod tests {
         assert!(cpu.min <= 99.9);
         assert!(ram.min <= 12.5 && ram.max >= 12.6);
         assert!(ram.max - ram.min >= 4.0);
-        assert_eq!(activity_axis(&[broken], ActivityLane::Cpu),
-            ActivityAxis { min: 0.0, max: 100.0 });
+        assert_eq!(
+            activity_axis(&[broken], ActivityLane::Cpu),
+            ActivityAxis {
+                min: 0.0,
+                max: 100.0
+            }
+        );
     }
 
     #[test]
