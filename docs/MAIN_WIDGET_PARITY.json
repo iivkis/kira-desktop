@@ -447,7 +447,8 @@
         "Native GIO Freedesktop endpoint is fail-closed on unsafe display or existing owner, with source 100-item queue, three shaped GTK cards, frame-gated painted lifetime, real close/action signals. Output collision and interaction QA remain missing",
         "Paint-gated real GTK 180ms y12→0 power2.out notification entry and immediate reduced-motion settling added; multi-output and reverse exit still missing",
         "A painted removed D-Bus ID immediately loses input/queue ownership while its actual GTK card makes a non-targetable 180ms inverse exit; geometry or popup occlusion suppresses old surfaces, without Niri visual proof",
-        "Live GDK output selection now uses the mapped Top Bar monitor (not hard-coded first), pure safe-geometry fallback, explicit layer-shell monitor affinity and input-clearing retarget on output change; automatic tests cover fallback and 240px threshold. Full all-output/collision/Wayland QA remains unverified."
+        "Live GDK output selection now uses the mapped Top Bar monitor (not hard-coded first), pure safe-geometry fallback, explicit layer-shell monitor affinity and input-clearing retarget on output change; automatic tests cover fallback and 240px threshold. Full all-output/collision/Wayland QA remains unverified.",
+        "Notification collision policy now inspects only actually pooled right-side transients and suppresses toasts on their specific mapped GDK monitor; detached Niri toplevels no longer starve the global FIFO and safe fallback to another real monitor may deliver. Unknown monitor affinity remains fail-closed. Pure policy regression tests added; live cross-output/pointer QA unreviewed."
       ],
       "animation_requirements": [
         "Reversible notification arrival and removal, bounded stagger"
