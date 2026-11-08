@@ -341,13 +341,32 @@ impl PopupHost {
         }
     }
 
-    pub fn is_active(&self, kind: PopupKind) -> bool {
+    pub fn is_transient_active(&self, kind: PopupKind) -> bool {
         self.active.get() == Some(kind)
+    }
+
+    /// Detaching a view does not pause its live model or pending Settings
+    /// confirmation. Only the one shared transient counts for overlays.
+    pub fn is_active(&self, kind: PopupKind) -> bool {
+        self.is_transient_active(kind)
+            || self.windows.borrow().get(&kind).is_some_and(|view| {
+                view.detached
+                    .borrow()
+                    .as_ref()
+                    .is_some_and(|window| window.is_visible())
+            })
     }
 
     /// Hidden views retain their GTK state. Only one transient is visible;
     /// Escape and same-button toggles retrace the actual saved timeline.
     pub fn toggle(&self, kind: PopupKind, make_view: impl FnOnce() -> gtk::Widget) {
+        if let Some(view) = self.windows.borrow().get(&kind)
+            && let Some(window) = view.detached.borrow().as_ref()
+        {
+            // The existing detached window is raised, not duplicated.
+            window.present();
+            return;
+        }
         let previous = self.active.replace(None);
         if previous == Some(kind) {
             if let Some(view) = self.windows.borrow().get(&kind) {
@@ -375,11 +394,7 @@ impl PopupHost {
             window.set_exclusive_zone(0);
             window.set_keyboard_mode(KeyboardMode::OnDemand);
 
-            let (screen_width, screen_height) = gtk::gdk::Display::default()
-                .and_then(|display| display.monitors().item(0))
-                .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
-                .map(|monitor| (monitor.geometry().width(), monitor.geometry().height()))
-                .unwrap_or((1280, 800));
+            let (screen_width, screen_height) = screen_geometry();
             let (width, top, max_height) = layout_for(kind, screen_width, screen_height);
             window.set_margin(Edge::Top, top);
             if kind == PopupKind::Launcher {
@@ -396,6 +411,19 @@ impl PopupHost {
             frame.set_margin_bottom(18);
             frame.set_margin_start(18);
             frame.set_margin_end(18);
+            let detach_button = if supports_detach(kind) {
+                let button = gtk::Button::with_label("Отделить");
+                button.add_css_class("popup-window-control");
+                button.set_halign(gtk::Align::End);
+                button.set_tooltip_text(Some("Перенести виджет в отдельное окно"));
+                button.update_property(&[gtk::accessible::Property::Label(
+                    "Отделить виджет в отдельное окно",
+                )]);
+                frame.append(&button);
+                Some(button)
+            } else {
+                None
+            };
             let view_widget = make_view();
             let sections = stage_sections(&view_widget);
             let contact_widget = contact_widget(&view_widget);
@@ -482,7 +510,26 @@ impl PopupHost {
                 contact,
                 timeline,
                 motion: MotionToken::default(),
+                detached: RefCell::new(None),
+                detach_button: detach_button.clone(),
             });
+
+            if let Some(button) = detach_button {
+                let weak = Rc::downgrade(&view);
+                let active = self.active.clone();
+                let app = self.app.clone();
+                button.connect_clicked(move |_| {
+                    if let Some(view) = weak.upgrade() {
+                        let detached = view.detached.borrow().is_some();
+                        if detached {
+                            view.reattach(true);
+                            active.set(Some(kind));
+                        } else {
+                            view.detach(&app, kind, &active);
+                        }
+                    }
+                });
+            }
 
             let active = self.active.clone();
             let weak = Rc::downgrade(&view);
@@ -526,5 +573,22 @@ mod tests {
         assert_eq!(layout_for(PopupKind::Calendar, 1920, 1080), (420, 54, 1014));
         assert_eq!(layout_for(PopupKind::Settings, 500, 600).0, 476);
         assert!(layout_for(PopupKind::Launcher, 640, 480).2 > 0);
+    }
+
+    #[test]
+    fn detachable_native_windows_are_bounded_and_tray_stays_pooled() {
+        for kind in [
+            PopupKind::Launcher,
+            PopupKind::Calendar,
+            PopupKind::System,
+            PopupKind::Settings,
+        ] {
+            assert!(supports_detach(kind));
+            let (width, height) = detached_size(kind, 600, 480);
+            assert!((160..=576).contains(&width));
+            assert!((160..=456).contains(&height));
+            assert!(detached_title(kind).starts_with("Kira"));
+        }
+        assert!(!supports_detach(PopupKind::Tray));
     }
 }
