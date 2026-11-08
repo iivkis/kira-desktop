@@ -226,7 +226,6 @@ impl SystemMonitor {
     ) {
         self.process_table.set_copy_handler(on_copy);
     }
-
 }
 
 impl Default for SystemMonitor {

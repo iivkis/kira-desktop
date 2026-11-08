@@ -72,7 +72,9 @@ pub fn filter_sort_processes(
         .filter(|item| {
             let name = item.name.to_lowercase();
             let pid = item.pid.to_string();
-            terms.iter().all(|term| name.contains(term) || pid.contains(term))
+            terms
+                .iter()
+                .all(|term| name.contains(term) || pid.contains(term))
         })
         .collect();
     selected.sort_by(|a, b| {
@@ -103,7 +105,10 @@ fn cpu_text(value: Option<f64>) -> String {
 }
 
 fn memory_text(value: Option<u64>) -> String {
-    value.map_or_else(|| "—".into(), |kib| format!("{:.1} MiB", kib as f64 / 1024.0))
+    value.map_or_else(
+        || "—".into(),
+        |kib| format!("{:.1} MiB", kib as f64 / 1024.0),
+    )
 }
 
 /// Explicit copy intent uses the filtered real snapshot, capped at 80 rows.
@@ -114,7 +119,11 @@ pub fn process_report(snapshot: &ProcessList, query: &str, sort: ProcessSort) ->
         "Процессы Kira (снимок)\nВсего обнаружено: {}\nПолучено строк: {}{}\nФильтр: {}\nСортировка: {}\nПоказано: {} из {}\nPID | Имя | CPU | RSS | PSS\n",
         snapshot.total,
         snapshot.rows.len(),
-        if snapshot.truncated { " (сканирование ограничено)" } else { "" },
+        if snapshot.truncated {
+            " (сканирование ограничено)"
+        } else {
+            ""
+        },
         clean_text(query),
         sort.label(),
         found.len().min(MAX_VISIBLE_PROCESSES),
