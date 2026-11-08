@@ -43,7 +43,157 @@ pub fn menu_focus_target(
 struct MenuFocus {
     id: i32,
     button: gtk::Button,
+    // GTK BoxLayout anchors allocate child popovers when the menu moves.
+    anchor: gtk::Widget,
     submenu: bool,
+    depth: usize,
+}
+
+/// The key controller also runs on each GDK popover, because native Wayland
+/// submenus have their own keyboard surface and may not bubble to the pool.
+fn install_menu_keys(
+    widget: &gtk::Widget,
+    menu_open: Rc<RefCell<bool>>,
+    actions: Rc<RefCell<Vec<MenuFocus>>>,
+    on_intent: Rc<dyn Fn(TrayIntent)>,
+) {
+    let key_controller = gtk::EventControllerKey::new();
+    key_controller.connect_key_pressed(move |_, key, _, _| {
+        if !*menu_open.borrow() {
+            return gtk::glib::Propagation::Proceed;
+        }
+        if key == gtk::gdk::Key::Escape || key == gtk::gdk::Key::Left {
+            on_intent(TrayIntent::MenuBack);
+            return gtk::glib::Propagation::Stop;
+        }
+        if key == gtk::gdk::Key::Right {
+            let submenu = actions
+                .borrow()
+                .iter()
+                .find(|entry| entry.submenu && entry.button.has_focus())
+                .map(|entry| entry.button.clone());
+            if let Some(button) = submenu {
+                button.emit_clicked();
+                return gtk::glib::Propagation::Stop;
+            }
+            return gtk::glib::Propagation::Proceed;
+        }
+        let direction = match key {
+            gtk::gdk::Key::Up => MenuNavigation::Previous,
+            gtk::gdk::Key::Down => MenuNavigation::Next,
+            gtk::gdk::Key::Home => MenuNavigation::First,
+            gtk::gdk::Key::End => MenuNavigation::Last,
+            _ => return gtk::glib::Propagation::Proceed,
+        };
+        let target = {
+            let actions = actions.borrow();
+            let current = actions.iter().find(|entry| entry.button.has_focus());
+            let depth = current.map_or_else(
+                || actions.iter().map(|entry| entry.depth).max().unwrap_or(0),
+                |entry| entry.depth,
+            );
+            let enabled = actions
+                .iter()
+                .filter(|entry| entry.depth == depth && entry.button.is_sensitive())
+                .map(|entry| entry.id)
+                .collect::<Vec<_>>();
+            let selected = menu_focus_target(&enabled, current.map(|entry| entry.id), direction);
+            selected.and_then(|id| {
+                actions
+                    .iter()
+                    .find(|entry| entry.id == id && entry.depth == depth)
+                    .map(|entry| entry.button.clone())
+            })
+        };
+        if let Some(button) = target {
+            button.grab_focus();
+            gtk::glib::Propagation::Stop
+        } else {
+            gtk::glib::Propagation::Proceed
+        }
+    });
+    widget.add_controller(key_controller);
+}
+
+/// Build one menu level into an existing GTK container. The numeric handle
+/// is all the UI knows; the Shell performs the owner-scoped D-Bus validation.
+fn append_menu_rows(
+    list: &gtk::Box,
+    menu: &TrayMenu,
+    entries: &[TrayMenuEntry],
+    depth: usize,
+    on_intent: &Rc<dyn Fn(TrayIntent)>,
+) -> Vec<MenuFocus> {
+    let mut focus = Vec::new();
+    for entry in entries.iter().take(80) {
+        if entry.separator {
+            list.append(&gtk::Separator::new(gtk::Orientation::Horizontal));
+            continue;
+        }
+        let label = if entry.has_children {
+            format!("{} ▸", entry.label)
+        } else {
+            format!(
+                "{}{}",
+                if entry.checked {
+                    if entry.radio { "● " } else { "✓ " }
+                } else {
+                    ""
+                },
+                entry.label
+            )
+        };
+        let button = gtk::Button::with_label(&label);
+        button.set_halign(gtk::Align::Fill);
+        button.set_hexpand(true);
+        button.set_sensitive(entry.enabled);
+        button.add_css_class(if entry.has_children {
+            "tray-menu-group"
+        } else {
+            "tray-menu-entry"
+        });
+        button.update_property(&[gtk::accessible::Property::Label(&format!(
+            "{}{}",
+            entry.label,
+            if entry.checked { ", выбрано" } else { "" }
+        ))]);
+        if entry.has_children {
+            // BoxLayout supports anchoring live GTK popovers and allocating
+            // their positions, unlike an arbitrary GtkButton with no layout.
+            let anchor = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+            anchor.append(&button);
+            list.append(&anchor);
+            let handle = menu.handle;
+            let id = entry.id;
+            let callback = on_intent.clone();
+            button.connect_clicked(move |_| callback(TrayIntent::MenuExpand(handle, id)));
+            focus.push(MenuFocus {
+                id,
+                button,
+                anchor: anchor.upcast(),
+                submenu: true,
+                depth,
+            });
+        } else {
+            let handle = menu.handle;
+            let id = entry.id;
+            let callback = on_intent.clone();
+            button.connect_clicked(move |_| callback(TrayIntent::MenuClick(handle, id)));
+            focus.push(MenuFocus {
+                id,
+                anchor: button.clone().upcast(),
+                button,
+                submenu: false,
+                depth,
+            });
+        }
+    }
+    if entries.is_empty() {
+        let empty = gtk::Label::new(Some("В этом разделе нет доступных действий"));
+        empty.add_css_class("muted");
+        list.append(&empty);
+    }
+    focus
 }
 
 pub const MAX_BAR_ICONS: usize = 6;
@@ -460,6 +610,9 @@ pub struct TrayUi {
     reflow: ReflowScope,
     menu_page: gtk::Box,
     menu_list: gtk::Box,
+    // Child GDK popovers are attached only to real, enabled parent buttons.
+    // This is a presentation stack, not another SNI client/controller.
+    menu_popovers: Rc<RefCell<Vec<gtk::Popover>>>,
     current_menu: RefCell<Option<TrayMenu>>,
     keyboard_menu: Rc<RefCell<bool>>,
     menu_focus: Rc<RefCell<Vec<MenuFocus>>>,
@@ -524,64 +677,21 @@ impl TrayUi {
         let on_intent: Rc<dyn Fn(TrayIntent)> = Rc::new(on_intent);
         let keyboard_menu = Rc::new(RefCell::new(false));
         let menu_focus = Rc::new(RefCell::new(Vec::<MenuFocus>::new()));
-        let escape = gtk::EventControllerKey::new();
-        let menu_open = keyboard_menu.clone();
-        let actions = menu_focus.clone();
-        let on_escape = on_intent.clone();
-        escape.connect_key_pressed(move |_, key, _, _| {
-            if !*menu_open.borrow() {
-                return gtk::glib::Propagation::Proceed;
-            }
-            if key == gtk::gdk::Key::Escape || key == gtk::gdk::Key::Left {
-                on_escape(TrayIntent::MenuBack);
-                return gtk::glib::Propagation::Stop;
-            }
-            if key == gtk::gdk::Key::Right {
-                let submenu = actions
-                    .borrow()
-                    .iter()
-                    .find(|entry| entry.submenu && entry.button.has_focus())
-                    .map(|entry| entry.button.clone());
-                if let Some(button) = submenu {
-                    button.emit_clicked();
-                    return gtk::glib::Propagation::Stop;
-                }
-                return gtk::glib::Propagation::Proceed;
-            }
-            let direction = match key {
-                gtk::gdk::Key::Up => MenuNavigation::Previous,
-                gtk::gdk::Key::Down => MenuNavigation::Next,
-                gtk::gdk::Key::Home => MenuNavigation::First,
-                gtk::gdk::Key::End => MenuNavigation::Last,
-                _ => return gtk::glib::Propagation::Proceed,
-            };
-            let target = {
-                let actions = actions.borrow();
-                let enabled = actions
-                    .iter()
-                    .filter(|entry| entry.button.is_sensitive())
-                    .map(|entry| entry.id)
-                    .collect::<Vec<_>>();
-                let current = actions
-                    .iter()
-                    .find(|entry| entry.button.has_focus())
-                    .map(|entry| entry.id);
-                let selected = menu_focus_target(&enabled, current, direction);
-                selected.and_then(|id| {
-                    actions
-                        .iter()
-                        .find(|entry| entry.id == id)
-                        .map(|entry| entry.button.clone())
-                })
-            };
-            if let Some(button) = target {
-                button.grab_focus();
-                gtk::glib::Propagation::Stop
-            } else {
-                gtk::glib::Propagation::Proceed
+        install_menu_keys(
+            &popup.clone().upcast(),
+            keyboard_menu.clone(),
+            menu_focus.clone(),
+            on_intent.clone(),
+        );
+        let menu_popovers = Rc::new(RefCell::new(Vec::<gtk::Popover>::new()));
+        let weak_popovers = Rc::downgrade(&menu_popovers);
+        popup.connect_map(move |_| {
+            if let Some(popovers) = weak_popovers.upgrade()
+                && let Some(first) = popovers.borrow().first()
+            {
+                first.popup();
             }
         });
-        popup.add_controller(escape);
         let dismiss = on_intent.clone();
         back.connect_clicked(move |_| dismiss(TrayIntent::MenuBack));
 
@@ -615,6 +725,7 @@ impl TrayUi {
             list,
             menu_page,
             menu_list,
+            menu_popovers,
             current_menu: RefCell::new(None),
             keyboard_menu,
             menu_focus,
