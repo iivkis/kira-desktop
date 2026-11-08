@@ -625,7 +625,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 PopupKind::Tray,
             ]
             .into_iter()
-            .any(|kind| popup.is_active(kind));
+            .any(|kind| popup.is_transient_active(kind));
             if obstructed != previously_obstructed {
                 previously_obstructed = obstructed;
                 notifications::layout_changed();
