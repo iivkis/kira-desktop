@@ -250,6 +250,7 @@ fn start_system_sampler(
                                 .map(|process| ProcessItem {
                                     pid: process.pid,
                                     name: process.name,
+                                    state: process.state,
                                     cpu_percent: process.cpu_percent,
                                     rss_kib: process.rss_kib,
                                     pss_kib: process.pss_kib,
@@ -724,8 +725,16 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                             system.set_pulse(sample);
                         }
                     }
-                    ShellUpdate::Processes(snapshot) => system.set_processes(&snapshot),
-                    ShellUpdate::ProcessError(error) => system.set_process_error(&error),
+                    ShellUpdate::Processes(snapshot) => {
+                        if popup.is_active(PopupKind::System) && system.processes_selected() {
+                            system.set_processes(&snapshot);
+                        }
+                    }
+                    ShellUpdate::ProcessError(error) => {
+                        if popup.is_active(PopupKind::System) && system.processes_selected() {
+                            system.set_process_error(&error);
+                        }
+                    },
                 }
             }
             for event in display_model.poll() {

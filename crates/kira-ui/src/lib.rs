@@ -42,7 +42,11 @@ pub use notification_host::{
     toast_hit_region, toast_layout,
 };
 pub use popup::{PopupHost, PopupKind};
-pub use process_table::{ProcessSort, ProcessTable, filter_sort_processes, process_report};
+pub use process_table::{
+    ProcessSort, ProcessSortState, ProcessTable, filter_sort_processes,
+    filter_sort_processes_with_state, next_process_limit, process_report,
+    process_report_with_state,
+};
 pub use reflow::{ReflowOffset, ReflowRow, ReflowScope, ReflowSnapshot};
 pub use sky_map::SkyMap;
 pub use system::{

@@ -8,7 +8,17 @@ use gtk::prelude::*;
 
 use crate::system::{ProcessItem, ProcessList};
 
-const MAX_VISIBLE_PROCESSES: usize = 80;
+const PROCESS_PAGE: usize = 36;
+const MAX_VISIBLE_PROCESSES: usize = 180;
+
+/// Source-compatible progressive disclosure, without allocating thousands
+/// of GTK rows when /proc yields more than the visible budget.
+pub fn next_process_limit(current: usize, available: usize) -> usize {
+    current
+        .saturating_add(PROCESS_PAGE)
+        .min(MAX_VISIBLE_PROCESSES)
+        .min(available)
+}
 const MAX_SNAPSHOT_AGE: Duration = Duration::from_secs(8);
 
 /// A received snapshot expires after eight seconds without fresh data.
@@ -27,39 +37,83 @@ pub enum ProcessSort {
 }
 
 impl ProcessSort {
-    fn from_selection(index: u32) -> Self {
-        match index {
-            1 => Self::Name,
-            2 => Self::Pid,
-            3 => Self::Rss,
-            4 => Self::Pss,
-            _ => Self::Cpu,
+    fn heading(self) -> &'static str {
+        match self {
+            Self::Name => "ПРОЦЕСС",
+            Self::Pid => "PID",
+            Self::Cpu => "CPU",
+            Self::Rss => "RSS",
+            Self::Pss => "PSS",
         }
     }
 
-    fn label(self) -> &'static str {
-        match self {
-            Self::Cpu => "CPU (убыв.)",
-            Self::Name => "Имя (возр.)",
-            Self::Pid => "PID (возр.)",
-            Self::Rss => "RSS (убыв.)",
-            Self::Pss => "PSS (убыв.)",
+    fn default_descending(self) -> bool {
+        matches!(self, Self::Cpu | Self::Rss | Self::Pss)
+    }
+}
+
+/// Repeated clicks toggle the same column, switching columns restores that
+/// metric's source default. Unknown measurements always remain last.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ProcessSortState {
+    pub field: ProcessSort,
+    pub descending: bool,
+}
+
+impl Default for ProcessSortState {
+    fn default() -> Self {
+        Self {
+            field: ProcessSort::Cpu,
+            descending: true,
         }
     }
 }
 
-fn known_f64_desc(a: Option<f64>, b: Option<f64>) -> Ordering {
+impl ProcessSortState {
+    pub fn for_field(field: ProcessSort) -> Self {
+        Self {
+            field,
+            descending: field.default_descending(),
+        }
+    }
+
+    pub fn toggle(self, field: ProcessSort) -> Self {
+        if self.field == field {
+            Self {
+                field,
+                descending: !self.descending,
+            }
+        } else {
+            Self::for_field(field)
+        }
+    }
+
+    fn label(self) -> String {
+        format!(
+            "{} ({})",
+            self.field.heading(),
+            if self.descending { "убыв." } else { "возр." },
+        )
+    }
+}
+
+fn known_f64_order(a: Option<f64>, b: Option<f64>, descending: bool) -> Ordering {
     match (a.filter(|v| v.is_finite()), b.filter(|v| v.is_finite())) {
-        (Some(a), Some(b)) => b.partial_cmp(&a).unwrap_or(Ordering::Equal),
+        (Some(a), Some(b)) => {
+            let order = a.partial_cmp(&b).unwrap_or(Ordering::Equal);
+            if descending { order.reverse() } else { order }
+        }
         (Some(_), None) => Ordering::Less,
         (None, Some(_)) => Ordering::Greater,
         (None, None) => Ordering::Equal,
     }
 }
 
-fn known_u64_desc(a: Option<u64>, b: Option<u64>) -> Ordering {
+fn known_u64_order(a: Option<u64>, b: Option<u64>, descending: bool) -> Ordering {
     match (a, b) {
-        (Some(a), Some(b)) => b.cmp(&a),
+        (Some(a), Some(b)) => {
+            if descending { b.cmp(&a) } else { a.cmp(&b) }
+        }
         (Some(_), None) => Ordering::Less,
         (None, Some(_)) => Ordering::Greater,
         (None, None) => Ordering::Equal,
@@ -73,24 +127,36 @@ pub fn filter_sort_processes<'a>(
     sort: ProcessSort,
     limit: usize,
 ) -> Vec<&'a ProcessItem> {
+    filter_sort_processes_with_state(rows, query, ProcessSortState::for_field(sort), limit)
+}
+
+pub fn filter_sort_processes_with_state<'a>(
+    rows: &'a [ProcessItem],
+    query: &str,
+    sort: ProcessSortState,
+    limit: usize,
+) -> Vec<&'a ProcessItem> {
     let terms: Vec<String> = query.split_whitespace().map(str::to_lowercase).collect();
     let mut selected: Vec<_> = rows
         .iter()
         .filter(|item| {
             let name = item.name.to_lowercase();
             let pid = item.pid.to_string();
-            terms
-                .iter()
-                .all(|term| name.contains(term) || pid.contains(term))
+            terms.iter().all(|term| name.contains(term) || pid.contains(term))
         })
         .collect();
     selected.sort_by(|a, b| {
-        let order = match sort {
-            ProcessSort::Cpu => known_f64_desc(a.cpu_percent, b.cpu_percent),
-            ProcessSort::Name => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
-            ProcessSort::Pid => a.pid.cmp(&b.pid),
-            ProcessSort::Rss => known_u64_desc(a.rss_kib, b.rss_kib),
-            ProcessSort::Pss => known_u64_desc(a.pss_kib, b.pss_kib),
+        let order = match sort.field {
+            ProcessSort::Cpu => known_f64_order(a.cpu_percent, b.cpu_percent, sort.descending),
+            ProcessSort::Name => {
+                let order = a.name.to_lowercase().cmp(&b.name.to_lowercase());
+                if sort.descending { order.reverse() } else { order }
+            }
+            ProcessSort::Pid => {
+                if sort.descending { b.pid.cmp(&a.pid) } else { a.pid.cmp(&b.pid) }
+            }
+            ProcessSort::Rss => known_u64_order(a.rss_kib, b.rss_kib, sort.descending),
+            ProcessSort::Pss => known_u64_order(a.pss_kib, b.pss_kib, sort.descending),
         };
         order.then_with(|| a.pid.cmp(&b.pid))
     });
@@ -118,12 +184,21 @@ fn memory_text(value: Option<u64>) -> String {
     )
 }
 
-/// Explicit copy intent uses the filtered real snapshot, capped at 80 rows.
-/// Missing PSS is never silently replaced with RSS.
+/// Clipboard export is explicit and bounded independently of /proc size.
+/// Missing PSS is never silently replaced by RSS or real zero.
 pub fn process_report(snapshot: &ProcessList, query: &str, sort: ProcessSort) -> String {
-    let found = filter_sort_processes(&snapshot.rows, query, sort, usize::MAX);
+    process_report_with_state(snapshot, query, ProcessSortState::for_field(sort))
+}
+
+pub fn process_report_with_state(
+    snapshot: &ProcessList,
+    query: &str,
+    sort: ProcessSortState,
+) -> String {
+    let found = filter_sort_processes_with_state(&snapshot.rows, query, sort, usize::MAX);
+    let shown = found.len().min(MAX_VISIBLE_PROCESSES);
     let mut report = format!(
-        "Процессы Kira (снимок)\nВсего обнаружено: {}\nПолучено строк: {}{}\nФильтр: {}\nСортировка: {}\nПоказано: {} из {}\nPID | Имя | CPU | RSS | PSS\n",
+        "Процессы Kira (снимок)\nВсего обнаружено: {}\nПолучено строк: {}{}\nФильтр: {}\nСортировка: {}\nПоказано: {} из {}\nPID | Имя | Состояние | CPU | RSS | PSS\n",
         snapshot.total,
         snapshot.rows.len(),
         if snapshot.truncated {
@@ -133,14 +208,15 @@ pub fn process_report(snapshot: &ProcessList, query: &str, sort: ProcessSort) ->
         },
         clean_text(query),
         sort.label(),
-        found.len().min(MAX_VISIBLE_PROCESSES),
+        shown,
         found.len()
     );
     for item in found.into_iter().take(MAX_VISIBLE_PROCESSES) {
         report.push_str(&format!(
-            "{} | {} | {} | {} | {}\n",
+            "{} | {} | {} | {} | {} | {}\n",
             item.pid,
             clean_text(&item.name),
+            if item.state.is_ascii_graphic() { item.state } else { '?' },
             cpu_text(item.cpu_percent),
             memory_text(item.rss_kib),
             memory_text(item.pss_kib)
@@ -153,7 +229,10 @@ type CopyReport = Box<dyn Fn(String) -> Result<(), String>>;
 
 struct ProcessTableState {
     search: gtk::SearchEntry,
-    sort: gtk::DropDown,
+    sort: Cell<ProcessSortState>,
+    sort_buttons: Vec<(ProcessSort, gtk::Button)>,
+    visible_count: Cell<usize>,
+    show_more: gtk::Button,
     summary: gtk::Label,
     rows: gtk::Box,
     feedback: gtk::Label,
@@ -170,6 +249,17 @@ impl ProcessTableState {
     fn render(&self) {
         while let Some(child) = self.rows.first_child() {
             self.rows.remove(&child);
+        }
+        self.show_more.set_visible(false);
+        for (field, button) in &self.sort_buttons {
+            if *field == self.sort.get().field {
+                button.add_css_class("selected");
+                let arrow = if self.sort.get().descending { " ↓" } else { " ↑" };
+                button.set_label(&format!("{}{}", field.heading(), arrow));
+            } else {
+                button.remove_css_class("selected");
+                button.set_label(field.heading());
+            }
         }
         self.copy.set_sensitive(
             self.snapshot.borrow().is_some()
@@ -194,9 +284,15 @@ impl ProcessTableState {
             return;
         };
         let query = self.search.text();
-        let sort = ProcessSort::from_selection(self.sort.selected());
-        let found = filter_sort_processes(&snapshot.rows, query.as_str(), sort, usize::MAX);
-        let shown = found.len().min(MAX_VISIBLE_PROCESSES);
+        let found = filter_sort_processes_with_state(
+            &snapshot.rows,
+            query.as_str(),
+            self.sort.get(),
+            usize::MAX,
+        );
+        let shown = found.len().min(self.visible_count.get());
+        self.show_more.set_visible(shown < found.len() && shown < MAX_VISIBLE_PROCESSES);
+        self.show_more.set_sensitive(shown < MAX_VISIBLE_PROCESSES);
         let truncated = if snapshot.truncated {
             " · сканирование ограничено"
         } else {
@@ -221,22 +317,28 @@ impl ProcessTableState {
             empty.add_css_class("muted");
             self.rows.append(&empty);
         }
-        for item in found.into_iter().take(MAX_VISIBLE_PROCESSES) {
-            let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+        for item in found.into_iter().take(shown) {
+            let row = gtk::Box::new(gtk::Orientation::Horizontal, 3);
             row.add_css_class("process-row");
-            let name = gtk::Label::new(Some(&format!("{} ({})", item.name, item.pid)));
+            let name = gtk::Label::new(Some(&item.name));
             name.set_xalign(0.0);
             name.set_hexpand(true);
-            name.set_max_width_chars(24);
-            name.set_tooltip_text(Some(&item.name));
+            name.set_ellipsize(gtk::pango::EllipsizeMode::End);
+            name.set_tooltip_text(Some(&format!(
+                "{} / PID {} / СОСТОЯНИЕ {}",
+                item.name, item.pid, item.state
+            )));
             row.append(&name);
-            for (heading, value) in [
-                ("CPU", cpu_text(item.cpu_percent)),
-                ("RSS", memory_text(item.rss_kib)),
-                ("PSS", memory_text(item.pss_kib)),
+            for (heading, value, width) in [
+                ("PID", item.pid.to_string(), 46),
+                ("CPU", cpu_text(item.cpu_percent), 54),
+                ("RSS", memory_text(item.rss_kib), 70),
+                ("PSS", memory_text(item.pss_kib), 70),
             ] {
                 let cell = gtk::Label::new(Some(&value));
+                cell.set_width_request(width);
                 cell.set_xalign(1.0);
+                cell.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 cell.set_tooltip_text(Some(heading));
                 cell.add_css_class("process-value");
                 row.append(&cell);
@@ -257,11 +359,8 @@ impl ProcessTableState {
             self.feedback.set_text("Нет данных для отчёта");
             return;
         };
-        let report = process_report(
-            snapshot,
-            self.search.text().as_str(),
-            ProcessSort::from_selection(self.sort.selected()),
-        );
+        let report =
+            process_report_with_state(snapshot, self.search.text().as_str(), self.sort.get());
         let handler = self.on_copy.borrow();
         let result = handler
             .as_ref()
@@ -283,15 +382,45 @@ impl ProcessTable {
     pub fn new() -> Self {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 8);
         root.add_css_class("process-table");
-        let controls = gtk::Box::new(gtk::Orientation::Horizontal, 6);
         let search = gtk::SearchEntry::new();
         search.set_hexpand(true);
-        search.set_placeholder_text(Some("Поиск по имени или PID"));
-        controls.append(&search);
-        let sort = gtk::DropDown::from_strings(&["CPU ↓", "Имя ↑", "PID ↑", "RSS ↓", "PSS ↓"]);
-        sort.update_property(&[gtk::accessible::Property::Label("Сортировка процессов")]);
-        controls.append(&sort);
-        root.append(&controls);
+        search.set_placeholder_text(Some("Фильтр по имени или PID"));
+        search.update_property(&[gtk::accessible::Property::Label(
+            "Фильтр по названию процесса или PID",
+        )]);
+        root.append(&search);
+        let headers = gtk::Box::new(gtk::Orientation::Horizontal, 3);
+        headers.add_css_class("process-sort-header");
+        let mut sort_buttons = Vec::new();
+        for field in [
+            ProcessSort::Name,
+            ProcessSort::Pid,
+            ProcessSort::Cpu,
+            ProcessSort::Rss,
+            ProcessSort::Pss,
+        ] {
+            let button = gtk::Button::with_label(field.heading());
+            button.add_css_class("process-sort-button");
+            button.set_tooltip_text(Some(&format!("Сортировать по {}", field.heading())));
+            button.update_property(&[gtk::accessible::Property::Label(&format!(
+                "Сортировать по {}",
+                field.heading()
+            ))]);
+            if field == ProcessSort::Name {
+                button.set_hexpand(true);
+                button.set_halign(gtk::Align::Fill);
+            } else {
+                button.set_width_request(match field {
+                    ProcessSort::Pid => 46,
+                    ProcessSort::Cpu => 54,
+                    ProcessSort::Rss | ProcessSort::Pss => 70,
+                    ProcessSort::Name => 0,
+                });
+            }
+            headers.append(&button);
+            sort_buttons.push((field, button));
+        }
+        root.append(&headers);
         let summary = gtk::Label::new(Some("Список процессов появится после открытия вкладки"));
         summary.add_css_class("muted");
         summary.set_xalign(0.0);
@@ -302,7 +431,13 @@ impl ProcessTable {
         scroll.set_max_content_height(360);
         scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
         let rows = gtk::Box::new(gtk::Orientation::Vertical, 2);
-        scroll.set_child(Some(&rows));
+        let list = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        list.append(&rows);
+        let show_more = gtk::Button::with_label("ПОКАЗАТЬ ЕЩЁ");
+        show_more.add_css_class("process-show-more");
+        show_more.set_visible(false);
+        list.append(&show_more);
+        scroll.set_child(Some(&list));
         root.append(&scroll);
         let footer = gtk::Box::new(gtk::Orientation::Horizontal, 8);
         let copy = gtk::Button::with_label("Скопировать отчёт");
@@ -316,7 +451,10 @@ impl ProcessTable {
 
         let state = Rc::new(ProcessTableState {
             search,
-            sort,
+            sort: Cell::new(ProcessSortState::default()),
+            sort_buttons,
+            visible_count: Cell::new(PROCESS_PAGE),
+            show_more,
             summary,
             rows,
             feedback,
@@ -332,14 +470,28 @@ impl ProcessTable {
             let weak = Rc::downgrade(&state);
             move |_| {
                 if let Some(state) = weak.upgrade() {
+                    state.visible_count.set(PROCESS_PAGE);
                     state.render();
                 }
             }
         });
-        state.sort.connect_selected_notify({
+        for (field, button) in &state.sort_buttons {
+            let weak = Rc::downgrade(&state);
+            let field = *field;
+            button.connect_clicked(move |_| {
+                if let Some(state) = weak.upgrade() {
+                    state.sort.set(state.sort.get().toggle(field));
+                    state.visible_count.set(PROCESS_PAGE);
+                    state.render();
+                }
+            });
+        }
+        state.show_more.connect_clicked({
             let weak = Rc::downgrade(&state);
             move |_| {
                 if let Some(state) = weak.upgrade() {
+                    state.visible_count
+                        .set(next_process_limit(state.visible_count.get(), usize::MAX));
                     state.render();
                 }
             }
@@ -361,6 +513,21 @@ impl ProcessTable {
 
     pub fn set_copy_handler(&self, on_copy: impl Fn(String) -> Result<(), String> + 'static) {
         self.state.on_copy.replace(Some(Box::new(on_copy)));
+        self.state.render();
+    }
+
+    /// Leaving and reopening the processes page must not reuse stale rows.
+    /// Search, sort direction and scroll are retained, sample identity is not.
+    pub fn reset_for_tab(&self) {
+        self.state
+            .revision
+            .set(self.state.revision.get().wrapping_add(1));
+        self.state.snapshot.replace(None);
+        self.state.received_instant.set(None);
+        self.state.received_at.replace(None);
+        self.state.error.replace(None);
+        self.state.visible_count.set(PROCESS_PAGE);
+        self.state.feedback.set_text("");
         self.state.render();
     }
 
@@ -427,6 +594,7 @@ mod tests {
         ProcessItem {
             pid,
             name: name.into(),
+            state: 'S',
             cpu_percent: cpu,
             rss_kib: rss,
             pss_kib: pss,
@@ -481,6 +649,77 @@ mod tests {
         assert!(!process_snapshot_fresh(Some(now), now + MAX_SNAPSHOT_AGE));
     }
 
+
+    #[test]
+    fn bidirectional_source_sort_and_progressive_limit_are_deterministic() {
+        let rows = [
+            item(3, "zebra", Some(20.0), Some(4000), Some(1200)),
+            item(1, "alpha", Some(80.0), Some(1000), Some(800)),
+            item(2, "beta", Some(50.0), Some(2000), Some(1300)),
+            item(4, "missing", None, None, None),
+        ];
+        let ids = |sort: ProcessSortState| {
+            filter_sort_processes_with_state(&rows, "", sort, 180)
+                .into_iter()
+                .map(|p| p.pid)
+                .collect::<Vec<_>>()
+        };
+        for (field, ascending, descending) in [
+            (ProcessSort::Name, vec![1, 2, 4, 3], vec![3, 4, 2, 1]),
+            (ProcessSort::Pid, vec![1, 2, 3, 4], vec![4, 3, 2, 1]),
+            (ProcessSort::Cpu, vec![3, 2, 1, 4], vec![1, 2, 3, 4]),
+            (ProcessSort::Rss, vec![1, 2, 3, 4], vec![3, 2, 1, 4]),
+            (ProcessSort::Pss, vec![1, 3, 2, 4], vec![2, 3, 1, 4]),
+        ] {
+            let current = ProcessSortState::for_field(field);
+            assert_eq!(ids(ProcessSortState { descending: false, ..current }), ascending);
+            assert_eq!(ids(ProcessSortState { descending: true, ..current }), descending);
+        }
+        assert_eq!(
+            ProcessSortState::default().toggle(ProcessSort::Cpu),
+            ProcessSortState { field: ProcessSort::Cpu, descending: false }
+        );
+        assert_eq!(
+            ProcessSortState::default().toggle(ProcessSort::Rss),
+            ProcessSortState { field: ProcessSort::Rss, descending: true }
+        );
+        assert_eq!(next_process_limit(0, 400), 36);
+        assert_eq!(next_process_limit(36, 400), 72);
+        assert_eq!(next_process_limit(144, 400), 180);
+        assert_eq!(next_process_limit(180, 400), 180);
+        assert_eq!(next_process_limit(36, 50), 50);
+        assert_eq!(next_process_limit(usize::MAX, 400), 180);
+    }
+
+    #[test]
+    fn report_includes_real_process_state_and_selected_sort_direction() {
+        let mut snapshot = ProcessList {
+            rows: (0..500)
+                .map(|pid| item(pid, "worker", Some(f64::from(pid)), None, None))
+                .collect(),
+            total: 500,
+            truncated: false,
+        };
+        snapshot.rows[0].state = 'Z';
+        let report = process_report_with_state(
+            &snapshot,
+            "",
+            ProcessSortState { field: ProcessSort::Pid, descending: false },
+        );
+        assert!(report.contains("Показано: 180 из 500"));
+        assert!(report.contains("PID | Имя | Состояние | CPU | RSS | PSS"));
+        assert!(report.contains("0 | worker | Z"));
+        assert!(!report.contains("499 | worker"));
+        assert!(report.contains("Сортировка: PID (возр.)"));
+        let back = process_report_with_state(
+            &snapshot,
+            "",
+            ProcessSortState { field: ProcessSort::Pid, descending: true },
+        );
+        assert!(back.contains("499 | worker"));
+        assert!(!back.contains("0 | worker | Z"));
+    }
+
     #[test]
     fn report_never_invents_missing_pss_and_escapes_record_breaks() {
         let snapshot = ProcessList {
@@ -490,7 +729,7 @@ mod tests {
         };
         let report = process_report(&snapshot, "host", ProcessSort::Pss);
         assert!(report.contains("Получено строк: 1 (сканирование ограничено)"));
-        assert!(report.contains("41 | host spoof | — | 2.0 MiB | —"));
+        assert!(report.contains("41 | host spoof | S | — | 2.0 MiB | —"));
         assert!(!report.contains("host\nspoof"));
         assert!(!report.contains("0.0%"));
     }

@@ -1,5 +1,6 @@
 //! Portable GTK4 system-monitor UI. No /proc reads, Core IPC or process actions.
 use std::cmp::Ordering;
+use std::rc::Rc;
 use std::time::Instant;
 
 use gtk::prelude::*;
@@ -38,6 +39,7 @@ pub struct GpuReading {
 pub struct ProcessItem {
     pub pid: u32,
     pub name: String,
+    pub state: char,
     pub cpu_percent: Option<f64>,
     pub rss_kib: Option<u64>,
     pub pss_kib: Option<u64>,
@@ -151,7 +153,7 @@ pub struct SystemMonitor {
     details: SystemDetails,
     charts: SystemCharts,
     capacity: CapacityCards,
-    process_table: ProcessTable,
+    process_table: Rc<ProcessTable>,
 }
 
 impl SystemMonitor {
@@ -190,8 +192,18 @@ impl SystemMonitor {
         scroll.set_child(Some(&overview));
         pages.add_titled(&scroll, Some("overview"), "Обзор");
 
-        let process_table = ProcessTable::new();
+        let process_table = Rc::new(ProcessTable::new());
         pages.add_titled(&process_table.widget(), Some("processes"), "Процессы");
+        {
+            let weak = Rc::downgrade(&process_table);
+            pages.connect_notify_local(Some("visible-child-name"), move |stack, _| {
+                if stack.visible_child_name().as_deref() == Some("processes")
+                    && let Some(table) = weak.upgrade()
+                {
+                    table.reset_for_tab();
+                }
+            });
+        }
 
         root.append(&pages);
         Self {
@@ -277,6 +289,7 @@ mod tests {
         ProcessItem {
             pid,
             name: "sample".into(),
+            state: 'S',
             cpu_percent: cpu,
             rss_kib: None,
             pss_kib: None,
