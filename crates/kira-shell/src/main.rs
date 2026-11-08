@@ -425,7 +425,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     }
     kira_ui::install_style();
     let bar = Rc::new(Bar::new(app, request_focus));
-    let popup = Rc::new(PopupHost::new(app));
+    let popup = Rc::new(PopupHost::new(app, &bar.window));
     let tray_ui = Rc::new(TrayUi::new(tray_host::action));
     {
         let tray = Rc::downgrade(&tray_ui);
