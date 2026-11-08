@@ -4,6 +4,9 @@
 //! Full third-party attribution and license: docs/SKY_MAP.md.
 //! Illustrative line figures are NOT IAU constellation boundaries.
 //! Zero network, geolocation, or runtime data loading.
+// A catalogue star with magnitude 3.14 is observed data, not an
+// approximation of the mathematical constant pi.
+#[allow(clippy::approx_constant)]
 pub const STARS: &[[f64; 3]] = &[
     [0.399, -77.066, 4.78],
     [0.456, -3.027, 5.13],

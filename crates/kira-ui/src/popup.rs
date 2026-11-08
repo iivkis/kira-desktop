@@ -14,6 +14,10 @@ use crate::popup_section::PopupSection;
 
 const GAP: i32 = 12;
 
+// Named because the callback is shared between a retained native view
+// and its detachable toplevel lifetime, never supplied by untrusted IPC.
+type DetachHandler = Rc<dyn Fn(bool)>;
+
 fn supports_detach(kind: PopupKind) -> bool {
     kind != PopupKind::Tray
 }
@@ -344,7 +348,7 @@ impl PopupView {
 }
 
 pub struct PopupHost {
-    detach_handlers: RefCell<HashMap<PopupKind, Rc<dyn Fn(bool)>>>,
+    detach_handlers: RefCell<HashMap<PopupKind, DetachHandler>>,
     app: gtk::Application,
     bar: gtk::glib::WeakRef<gtk::ApplicationWindow>,
     windows: RefCell<HashMap<PopupKind, Rc<PopupView>>>,
