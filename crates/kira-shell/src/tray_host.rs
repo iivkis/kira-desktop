@@ -1197,11 +1197,9 @@ impl Service {
             return;
         }
         let context = matches!(intent, TrayIntent::Secondary(_)) || item.is_menu;
-        if context {
-            if let Some(path) = item.menu_path.as_deref() {
-                self.open_menu(&item, path);
-                return;
-            }
+        if context && let Some(path) = item.menu_path.as_deref() {
+            self.open_menu(&item, path);
+            return;
         }
         self.call_item_method(&item, if context { "ContextMenu" } else { "Activate" });
     }
