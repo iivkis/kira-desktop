@@ -41,7 +41,7 @@ fn detached_size(kind: PopupKind, screen_width: i32, screen_height: i32) -> (i32
         PopupKind::Settings => (680, 720),
         PopupKind::System => (520, 700),
         PopupKind::Launcher => (520, 600),
-        PopupKind::Calendar => (480, 600),
+        PopupKind::Calendar => (1040, 720),
         PopupKind::Tray => (420, 520),
     };
     (
@@ -73,6 +73,7 @@ struct PopupView {
     scroll: gtk::ScrolledWindow,
     content: gtk::Widget,
     last_content_focus: RefCell<Option<gtk::Widget>>,
+    on_detached: Option<Rc<dyn Fn(bool)>>,
 }
 
 impl PopupView {
@@ -212,6 +213,9 @@ impl PopupView {
             return;
         };
         detached.set_child(None::<&gtk::Widget>);
+        if let Some(callback) = &self.on_detached {
+            callback(false);
+        }
         detached.destroy();
         self.window.set_child(Some(&self.clip));
         if let Some(button) = &self.detach_button {
@@ -272,6 +276,9 @@ impl PopupView {
         let (width, height) = detached_size(kind, screen_width, screen_height);
         detached.set_default_size(width, height);
         detached.set_child(Some(&self.clip));
+        if let Some(callback) = &self.on_detached {
+            callback(true);
+        }
         if let Some(button) = &self.detach_button {
             button.set_label("Прикрепить");
             button.set_tooltip_text(Some("Вернуть виджет на панель"));
@@ -337,6 +344,7 @@ impl PopupView {
 }
 
 pub struct PopupHost {
+    detach_handlers: RefCell<HashMap<PopupKind, Rc<dyn Fn(bool)>>>,
     app: gtk::Application,
     bar: gtk::glib::WeakRef<gtk::ApplicationWindow>,
     windows: RefCell<HashMap<PopupKind, Rc<PopupView>>>,
@@ -362,7 +370,17 @@ fn layout_for(kind: PopupKind, width: i32, height: i32) -> (i32, i32, i32) {
 /// The original widgets and their controllers survive opening, closing
 /// and subsequent state updates. Siblings keep their original order.
 fn stage_sections(view: &gtk::Widget) -> Vec<PopupSection> {
-    let Some(root) = view.downcast_ref::<gtk::Box>() else {
+    let root = if view.has_css_class("kira-calendar") {
+        // Stage the same three source sections inside the responsive rail,
+        // not the enclosing FlowBox or its detached-only atlas sibling.
+        view.first_child()
+            .and_then(|flow| flow.first_child())
+            .and_then(|child| child.first_child())
+            .and_then(|rail| rail.downcast::<gtk::Box>().ok())
+    } else {
+        view.downcast_ref::<gtk::Box>().cloned()
+    };
+    let Some(root) = root else {
         return Vec::new();
     };
     let mut children = Vec::new();
@@ -412,11 +430,18 @@ fn contact_widget(root: &gtk::Widget) -> gtk::Widget {
 impl PopupHost {
     pub fn new(app: &gtk::Application, bar: &gtk::ApplicationWindow) -> Self {
         Self {
+            detach_handlers: RefCell::new(HashMap::new()),
             app: app.clone(),
             bar: bar.downgrade(),
             windows: RefCell::new(HashMap::new()),
             active: Rc::new(Cell::new(None)),
         }
+    }
+
+    /// Optional lifecycle callback to show detached-only content without
+    /// introducing shell policy into reusable GTK view constructors.
+    pub fn set_detach_handler(&self, kind: PopupKind, callback: impl Fn(bool) + 'static) {
+        self.detach_handlers.borrow_mut().insert(kind, Rc::new(callback));
     }
 
     fn bar_monitor(&self) -> Option<gtk::gdk::Monitor> {
@@ -602,6 +627,7 @@ impl PopupHost {
                 scroll,
                 content: view_widget,
                 last_content_focus: RefCell::new(None),
+                on_detached: self.detach_handlers.borrow().get(&kind).cloned(),
             });
 
             if let Some(button) = detach_button {
