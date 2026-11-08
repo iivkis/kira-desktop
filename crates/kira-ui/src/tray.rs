@@ -1,7 +1,7 @@
 //! Reusable live StatusNotifier tray presentation. The UI consumes typed
 //! item snapshots and emits bounded numeric handle intents only: it never
 //! constructs D-Bus paths, commands, URLs or application menu calls.
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -46,7 +46,19 @@ struct MenuFocus {
     submenu: bool,
 }
 
-pub const MAX_BAR_ICONS: usize = 4;
+pub const MAX_BAR_ICONS: usize = 6;
+
+/// Match the frozen main TrayBar responsive policy, while keeping
+/// unmeasured/unmapped GTK surfaces at the four-icon initial budget.
+pub fn tray_budget_for_width(width: i32) -> usize {
+    if width < 700 {
+        2
+    } else if width < 1100 {
+        4
+    } else {
+        6
+    }
+}
 pub const MAX_TRAY_ITEMS: usize = 64;
 
 /// SNI sends unpremultiplied ARGB32 pixels in network byte order. Keep
@@ -390,6 +402,8 @@ pub struct TrayUi {
     on_intent: Rc<dyn Fn(TrayIntent)>,
     on_toggle: ToggleHandler,
     on_close: ToggleHandler,
+    bar_budget: Cell<usize>,
+    rendered_budget: Cell<usize>,
 }
 
 impl TrayUi {
@@ -544,6 +558,8 @@ impl TrayUi {
             on_intent,
             on_toggle,
             on_close,
+            bar_budget: Cell::new(4),
+            rendered_budget: Cell::new(usize::MAX),
         };
         ui.update(&TrayState::default());
         ui
@@ -557,6 +573,19 @@ impl TrayUi {
     /// It must not accidentally raise an independently detached window.
     pub fn set_close_handler(&self, on_close: impl Fn() + 'static) {
         *self.on_close.borrow_mut() = Some(Box::new(on_close));
+    }
+
+    /// Reflow the real visible pinned icons only when the mapped bar crosses
+    /// the source responsive threshold. Never fabricate overflow identities.
+    pub fn set_bar_width(&self, width: i32) {
+        if width <= 0 {
+            return;
+        }
+        let next = tray_budget_for_width(width);
+        if self.bar_budget.replace(next) != next {
+            let snapshot = self.state.borrow().clone();
+            self.update(&snapshot);
+        }
     }
 
     pub fn bar_widget(&self) -> gtk::Widget {
@@ -710,10 +739,13 @@ impl TrayUi {
     }
 
     pub fn update(&self, state: &TrayState) {
-        if *self.state.borrow() == *state && self.icons.first_child().is_some() {
+        if *self.state.borrow() == *state
+            && self.rendered_budget.get() == self.bar_budget.get()
+        {
             return;
         }
         *self.state.borrow_mut() = state.clone();
+        self.rendered_budget.set(self.bar_budget.get());
         while let Some(child) = self.icons.first_child() {
             self.icons.remove(&child);
         }
@@ -721,7 +753,7 @@ impl TrayUi {
             self.list.remove(&child);
         }
 
-        let view = tray_bar_model(state, MAX_BAR_ICONS);
+        let view = tray_bar_model(state, self.bar_budget.get());
         for item in &view.visible {
             let button = gtk::Button::new();
             button.add_css_class("tray-item-button");
@@ -920,6 +952,27 @@ mod tests {
         entries.pop();
         entries[0].enabled = false;
         assert!(menu_page(&entries, &[1]).is_none());
+    }
+
+    #[test]
+    fn responsive_icon_budget_matches_frozen_main_and_never_invents_items() {
+        assert_eq!(MAX_BAR_ICONS, 6);
+        for (width, budget) in [(360, 2), (699, 2), (700, 4),
+            (1099, 4), (1100, 6), (1920, 6)]
+        {
+            assert_eq!(tray_budget_for_width(width), budget);
+        }
+        let state = TrayState {
+            available: true,
+            items: (1..=8)
+                .map(|id| item(id, TrayStatus::Active, true))
+                .collect(),
+        };
+        for (width, visible) in [(650, 2), (960, 4), (1300, 6)] {
+            let view = tray_bar_model(&state, tray_budget_for_width(width));
+            assert_eq!(view.visible.len(), visible);
+            assert_eq!(view.overflow_count, 8 - visible);
+        }
     }
 
     #[test]
