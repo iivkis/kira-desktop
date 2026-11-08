@@ -677,11 +677,7 @@ impl NotificationHostSet {
         (set.select(monitor, layout) != ToastHostSelection::Unavailable).then_some(set)
     }
 
-    pub fn select(
-        &self,
-        monitor: &gtk::gdk::Monitor,
-        layout: ToastLayout,
-    ) -> ToastHostSelection {
+    pub fn select(&self, monitor: &gtk::gdk::Monitor, layout: ToastLayout) -> ToastHostSelection {
         let mut hosts = self.hosts.borrow_mut();
         if let Some(active) = self.active.get()
             && hosts
@@ -724,8 +720,7 @@ impl NotificationHostSet {
                 on_painted(ids);
             }
         };
-        let Some(host) = NotificationHost::new(&self.app, monitor, layout, intent, painted)
-        else {
+        let Some(host) = NotificationHost::new(&self.app, monitor, layout, intent, painted) else {
             return ToastHostSelection::Unavailable;
         };
         let active = self.active.clone();
