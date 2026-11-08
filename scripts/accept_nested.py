@@ -18,6 +18,7 @@ import subprocess
 import sys
 
 from dev_preview import PreviewError
+from private_bus import private_bus_config, run_session_arguments
 
 TOKEN = "KIRA_ACCEPTANCE_TOKEN"
 PARENT_BUS = "KIRA_ACCEPTANCE_PARENT_BUS"
@@ -67,10 +68,11 @@ def acceptance_command(
     package: Path,
     output: Path,
     bus_runner: str,
+    config: Path,
     bin_dir: Path | None = None,
 ) -> list[str]:
     argv = [
-        bus_runner, "--",
+        *run_session_arguments(bus_runner, config),
         sys.executable, str(script),
         "--acceptance-notifications",
         "--evidence-dir", str(output),
@@ -97,16 +99,17 @@ def main() -> int:
         if output.exists():
             raise PreviewError("Evidence directory already exists; never overwrite an earlier run")
         env = child_environment(os.environ, secrets.token_hex(16))
-        command = acceptance_command(
-            Path(__file__).resolve().parent / "dev_preview.py",
-            args.package_dir.resolve(),
-            output, bus_runner,
-            args.bin_dir.resolve() if args.bin_dir else None,
-        )
-        # dbus-run-session starts its own daemon, sets DBUS_SESSION_BUS_ADDRESS
-        # for Niri, Kira Core, Kira Shell and the real gdbus test traffic,
-        # then tears that daemon down when the preview exits.
-        return subprocess.run(command, env=env, check=False).returncode
+        # The isolated daemon cannot depend on a host /etc/dbus-1/session.conf,
+        # activate an external user service, or create a socket outside its
+        # mode-0700 throwaway directory.
+        with private_bus_config() as config:
+            command = acceptance_command(
+                Path(__file__).resolve().parent / "dev_preview.py",
+                args.package_dir.resolve(),
+                output, bus_runner, config,
+                args.bin_dir.resolve() if args.bin_dir else None,
+            )
+            return subprocess.run(command, env=env, check=False).returncode
     except (PreviewError, OSError) as error:
         print(f"[acceptance] {error}", file=sys.stderr)
         return 1

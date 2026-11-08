@@ -19,6 +19,7 @@ import time
 from accept_nested import PARENT_BUS, TOKEN, verify_private_bus
 from acceptance_scenarios import SNI_FIXTURE, sni_property_get_all
 from dev_preview import PreviewError
+from private_bus import private_bus_config, run_session_arguments
 
 
 def run_child(fixture: Path) -> None:
@@ -109,11 +110,13 @@ def main() -> int:
             env.pop(name, None)
         env[PARENT_BUS] = parent
         env[TOKEN] = secrets.token_hex(16)
-        child = [
-            bus_runner, "--", sys.executable, str(Path(__file__).resolve()),
-            "--fixture", str(fixture), "--child",
-        ]
-        return subprocess.run(child, env=env, check=False, timeout=25).returncode
+        with private_bus_config() as config:
+            child = [
+                *run_session_arguments(bus_runner, config),
+                sys.executable, str(Path(__file__).resolve()),
+                "--fixture", str(fixture), "--child",
+            ]
+            return subprocess.run(child, env=env, check=False, timeout=25).returncode
     except (PreviewError, OSError, subprocess.TimeoutExpired) as error:
         print(f"[sni-smoke] {error}", file=sys.stderr)
         return 1

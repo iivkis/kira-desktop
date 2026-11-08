@@ -80,7 +80,7 @@ popout, pixel comparisons and source typography remain outstanding.
 
 The acceptance-only command `python3 scripts/accept_nested.py --output
 /tmp/new-sni-evidence` launches a disposable GIO StatusNotifierItem on a
-fresh `dbus-run-session`; its real ARGB32 `IconPixmap`, status and
+fresh `dbus-run-session` with a locked-down temporary config; its real ARGB32 `IconPixmap`, status and
 NewStatus are checked against the native watcher's live properties and
 captured by nested `grim`. The additional executable is never autostarted.
 Ordinary preview still cannot own the user's watcher; a private-bus

@@ -8,6 +8,7 @@ from dev_preview import PreviewError
 from accept_nested import (
     PARENT_BUS, TOKEN, acceptance_command, child_environment, verify_private_bus,
 )
+from private_bus import private_bus_config, run_session_arguments
 
 
 class PrivateBusAcceptanceTests(unittest.TestCase):
@@ -61,17 +62,34 @@ class PrivateBusAcceptanceTests(unittest.TestCase):
             child_environment(self.parent, "x" * 32)
 
     def test_child_uses_separate_bus_runner_and_explicit_paths(self):
-        command = acceptance_command(
-            Path("/repo/scripts/dev_preview.py"), Path("/repo/result"),
-            Path("/tmp/new-evidence"), "/bin/dbus-run-session",
-            Path("/repo/target/debug"),
-        )
-        self.assertEqual(command[0:2], ["/bin/dbus-run-session", "--"])
-        self.assertIn("--acceptance-notifications", command)
-        self.assertEqual(command[command.index("--evidence-dir") + 1], "/tmp/new-evidence")
-        self.assertEqual(command[command.index("--package-dir") + 1], "/repo/result")
-        self.assertEqual(command[command.index("--bin-dir") + 1], "/repo/target/debug")
-        self.assertNotIn("sh", command)
+        with private_bus_config() as config:
+            command = acceptance_command(
+                Path("/repo/scripts/dev_preview.py"), Path("/repo/result"),
+                Path("/tmp/new-evidence"), "/bin/dbus-run-session", config,
+                Path("/repo/target/debug"),
+            )
+            self.assertEqual(
+                command[:3],
+                ["/bin/dbus-run-session", "--config-file=" + str(config), "--"],
+            )
+            self.assertIn("--acceptance-notifications", command)
+            self.assertEqual(command[command.index("--evidence-dir") + 1], "/tmp/new-evidence")
+            self.assertEqual(command[command.index("--package-dir") + 1], "/repo/result")
+            self.assertEqual(command[command.index("--bin-dir") + 1], "/repo/target/debug")
+            self.assertNotIn("sh", command)
+
+    def test_bus_config_is_0700_temporary_and_never_activates_user_services(self):
+        with private_bus_config() as config:
+            self.assertTrue(config.is_file())
+            self.assertEqual(config.parent.stat().st_mode & 0o777, 0o700)
+            self.assertEqual(config.stat().st_mode & 0o777, 0o600)
+            contents = config.read_text(encoding="utf-8")
+            self.assertIn("<auth>EXTERNAL</auth>", contents)
+            self.assertIn("unix:tmpdir=" + str(config.parent), contents)
+            self.assertNotIn("standard_session_servicedirs", contents)
+            self.assertEqual(run_session_arguments("/dbus/run", config),
+                             ["/dbus/run", "--config-file=" + str(config), "--"])
+        self.assertFalse(config.exists())
 
 
 if __name__ == "__main__":

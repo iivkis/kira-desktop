@@ -54,6 +54,11 @@ python3 scripts/accept_nested.py --package-dir result \
   --output /tmp/kira-acceptance-$(date +%s)
 ```
 
+The coordinator uses a minimal purpose-built session bus config inside a
+mode-0700 temporary directory (and mode-0600 config). It does not rely on
+`/etc/dbus-1/session.conf` or activate host user services. The socket
+vanishes with the runner. No host D-Bus, Niri KDL or state paths are used.
+
 The coordinator creates a disposable Kira Core/Shell, a real **GIO
 StatusNotifierItem** with ARGB32 `IconPixmap` that sends `NewStatus`, a
 native watcher, and a native Notification Host on the same isolated session

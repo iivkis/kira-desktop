@@ -29,7 +29,7 @@ jobs:
           cargo test --locked -p kira-core -p kira-ipc --all-targets
       - name: Validate native preview and pinned widget parity contracts
         run: |
-          python3 -m py_compile scripts/dev_preview.py scripts/capture_native_motion.py scripts/accept_nested.py scripts/acceptance_scenarios.py scripts/validate_nested_evidence.py scripts/smoke_sni_fixture_bus.py scripts/test_accept_nested.py scripts/test_acceptance_scenarios.py scripts/test_validate_nested_evidence.py scripts/test_preview_environment.py scripts/test_native_motion_capture.py scripts/check_widget_parity.py scripts/test_widget_parity.py
+          python3 -m py_compile scripts/dev_preview.py scripts/capture_native_motion.py scripts/accept_nested.py scripts/acceptance_scenarios.py scripts/validate_nested_evidence.py scripts/private_bus.py scripts/smoke_sni_fixture_bus.py scripts/test_accept_nested.py scripts/test_acceptance_scenarios.py scripts/test_validate_nested_evidence.py scripts/test_preview_environment.py scripts/test_native_motion_capture.py scripts/check_widget_parity.py scripts/test_widget_parity.py
           python3 scripts/check_widget_parity.py
           python3 -m unittest discover -s scripts -p 'test_*.py' -v
       - name: Verify removed web frontend
