@@ -452,7 +452,9 @@ impl PopupHost {
             .insert(kind, Rc::new(callback));
     }
 
-    fn bar_monitor(&self) -> Option<gtk::gdk::Monitor> {
+    /// GDK's actual mapped Top Bar output, never a fabricated Niri index.
+    /// Exposed for other reusable Wayland surfaces such as notifications.
+    pub fn bar_monitor(&self) -> Option<gtk::gdk::Monitor> {
         let bar = self.bar.upgrade()?;
         let surface = bar.surface()?;
         gtk::prelude::WidgetExt::display(&bar).monitor_at_surface(&surface)

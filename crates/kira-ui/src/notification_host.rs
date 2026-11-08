@@ -1,5 +1,5 @@
-//! Reusable GTK4 notification presentation: one shaped, bottom-right Wayland
-//! surface. No D-Bus, IPC, WebKit or access to external application commands.
+//! Reusable GTK4 notification presentation: one output-targeted shaped,
+//! bottom-right Wayland surface. No D-Bus, IPC, WebKit or access to external application commands.
 //! A frame is acknowledged only after two real mapped GTK frame ticks.
 use std::cell::{Cell, RefCell};
 use std::collections::{HashMap, HashSet};
@@ -115,6 +115,25 @@ pub fn toast_layout(
         height,
         card_height,
     })
+}
+
+/// Choose a *real* output rather than silently using monitor index zero.
+/// Prefer the bar's current monitor when it has enough logical space; if it
+/// cannot host 240px safely, choose the first other usable output. No output
+/// means no renderable toast, not imaginary geometry. The Shell maps these
+/// indices to live GDK Monitor objects and never passes Niri commands here.
+pub fn toast_output_plan(
+    outputs: &[(i32, i32)],
+    preferred: Option<usize>,
+) -> Option<(usize, ToastLayout)> {
+    let candidate = |index: usize| {
+        outputs.get(index).and_then(|&(width, height)| {
+            toast_layout(width, height, height).map(|layout| (index, layout))
+        })
+    };
+    preferred
+        .and_then(candidate)
+        .or_else(|| (0..outputs.len()).find_map(candidate))
 }
 
 pub fn toast_hit_region(layout: ToastLayout, painted_count: usize) -> Region {
@@ -286,6 +305,7 @@ pub struct NotificationHost {
 impl NotificationHost {
     pub fn new(
         app: &gtk::Application,
+        monitor: &gtk::gdk::Monitor,
         layout: ToastLayout,
         on_intent: impl Fn(NotificationIntent) + 'static,
         on_painted: impl Fn(Vec<u32>) + 'static,
@@ -301,6 +321,9 @@ impl NotificationHost {
         window.set_anchor(Edge::Top, false);
         window.set_anchor(Edge::Right, true);
         window.set_anchor(Edge::Bottom, true);
+        // A layer surface without an explicit monitor may land on the wrong
+        // output even when its geometry was measured from another monitor.
+        window.set_monitor(Some(monitor));
         window.set_margin(Edge::Right, OUTER_MARGIN);
         window.set_margin(Edge::Bottom, OUTER_MARGIN);
         window.set_exclusive_zone(0);
@@ -346,6 +369,16 @@ impl NotificationHost {
             on_intent: Rc::new(on_intent),
             on_painted: Rc::new(on_painted),
         })
+    }
+
+    /// Hotplug or a moved Top Bar changes the destination output. Release
+    /// old shaped-input ownership and old animation frames *before* retargeting.
+    /// The queued D-Bus notification IDs remain owned by the trusted Shell.
+    pub fn retarget_monitor(&self, monitor: &gtk::gdk::Monitor) {
+        if self.window.monitor().as_ref() != Some(monitor) {
+            self.hide();
+            self.window.set_monitor(Some(monitor));
+        }
     }
 
     pub fn has_snapshot(&self, cards: &[NotificationView], layout: ToastLayout) -> bool {
@@ -656,4 +689,24 @@ mod tests {
         item.actions = vec![("k".into(), "v".into()); 9];
         assert!(!bounded_notification(&item));
     }
+    #[test]
+    fn output_plan_prefers_bar_monitor_not_first_gdk_item() {
+        let outputs = [(1920, 1080), (800, 600), (360, 640)];
+        let (index, layout) = toast_output_plan(&outputs, Some(2)).unwrap();
+        assert_eq!(index, 2);
+        assert_eq!(layout.width, 336);
+        assert_eq!(toast_output_plan(&outputs, Some(1)).unwrap().0, 1);
+        assert_eq!(toast_output_plan(&outputs, None).unwrap().0, 0);
+    }
+
+    #[test]
+    fn unusable_or_disappeared_output_fails_over_without_fake_geometry() {
+        let outputs = [(120, 600), (800, 600), (264, 640)];
+        assert_eq!(toast_output_plan(&outputs, Some(0)).unwrap().0, 1);
+        assert_eq!(toast_output_plan(&outputs, Some(5)).unwrap().0, 1);
+        assert_eq!(toast_output_plan(&outputs, Some(2)).unwrap().1.width, 240);
+        assert_eq!(toast_output_plan(&[(120, 600), (500, 100)], None), None);
+        assert_eq!(toast_output_plan(&[], Some(0)), None);
+    }
+
 }

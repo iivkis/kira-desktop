@@ -45,7 +45,7 @@ pub use launcher::{
 };
 pub use notification_host::{
     NotificationHost, NotificationIntent, NotificationView, ToastLayout, bounded_notification,
-    toast_hit_region, toast_layout,
+    toast_hit_region, toast_layout, toast_output_plan,
 };
 pub use popup::{PopupHost, PopupKind};
 pub use process_table::{

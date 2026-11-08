@@ -112,12 +112,24 @@ fn view(notice: &Notice) -> NotificationView {
 
 /// Never guess an output geometry or claim notification delivery when GTK
 /// cannot expose the actual logical monitor bounds.
-fn current_layout() -> Option<ToastLayout> {
+fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)> {
     let display = gtk::gdk::Display::default()?;
-    let first = display.monitors().item(0)?;
-    let monitor = first.downcast::<gtk::gdk::Monitor>().ok()?;
-    let rect = monitor.geometry();
-    toast_layout(rect.width(), rect.height(), rect.height())
+    let model = display.monitors();
+    let monitors: Vec<gtk::gdk::Monitor> = (0..model.n_items())
+        .filter_map(|index| model.item(index)?.downcast::<gtk::gdk::Monitor>().ok())
+        .collect();
+    let outputs = monitors
+        .iter()
+        .map(|monitor| {
+            let rect = monitor.geometry();
+            (rect.width(), rect.height())
+        })
+        .collect::<Vec<_>>();
+    let preferred = popup
+        .bar_monitor()
+        .and_then(|bar| monitors.iter().position(|monitor| monitor == &bar));
+    let (index, layout) = kira_ui::toast_output_plan(&outputs, preferred)?;
+    Some((monitors[index].clone(), layout))
 }
 
 /// Never schedule an already-due FIFO deadline when the host is covered,
@@ -335,7 +347,13 @@ impl Service {
 
     fn sync(self: &Rc<Self>) {
         let now = Instant::now();
-        let layout = current_layout();
+        let target = current_target(&self.popup);
+        if let Some((monitor, _)) = target.as_ref()
+            && let Some(host) = self.host.borrow().as_ref()
+        {
+            host.retarget_monitor(monitor);
+        }
+        let layout = target.as_ref().map(|(_, layout)| *layout);
         let can_show = self.owned.get()
             && self
                 .host
@@ -472,7 +490,7 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
         eprintln!("kira-shell: no shaped pointer input; leaving notifications unowned");
         return;
     }
-    let Some(layout) = current_layout() else {
+    let Some((monitor, layout)) = current_target(&popup) else {
         eprintln!("kira-shell: no safe monitor geometry for notifications");
         return;
     };
@@ -492,6 +510,7 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
     // Freedesktop name unowned, rather than swallowing user notifications.
     let Some(host) = NotificationHost::new(
         app,
+        &monitor,
         layout,
         move |intent| {
             if let Some(service) = on_intent.upgrade() {

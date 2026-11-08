@@ -116,3 +116,19 @@ independent per-output placement, focus/a11y/collision QA and paired
 frame/time/pixel evidence; no native movement is visually certified. Until these are reviewed, both
 `notifications` and `notification-card` remain **partial**, with no
 `verified` flag set.
+
+### Output-aware placement model (unreviewed)
+
+The native Shell no longer computes toast geometry from GDK monitor index zero
+while allowing the compositor to choose another output. `kira-ui` now tests a
+pure selection policy: prefer the real mapped Top Bar output if it can fit the
+source 240px minimum and half-output card geometry; otherwise use the first
+other *real, safe* GDK output, or suppress rendering. A single toast host is
+explicitly attached to that output's layer-shell monitor. Output geometry or
+hotplug observations retarget the existing host, dropping old shaped input
+and departure frames before the new output's paint acknowledgement. The
+notification queue and D-Bus service are not recreated or preempted.
+
+This is **not** all-output acceptance: actual multi-output Niri geometry,
+host reanchor timing, focus and popup collisions, and physical/fractional
+pixel evidence still require an isolated compositor and paired main review.
