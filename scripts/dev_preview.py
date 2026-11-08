@@ -178,6 +178,77 @@ def isolated_shell_environment(
     return isolated
 
 
+def output_signature(outputs: object) -> dict[str, dict]:
+    """Compare observed output state, not incidental Niri metadata.
+
+    Never call a restoration PASS without a valid connected output and an
+    observed mode/scale/position/rotation/VRR change.
+    """
+    if not isinstance(outputs, dict) or not outputs or len(outputs) > 8:
+        raise PreviewError("Nested Niri returned no bounded output snapshot")
+    signature = {}
+    for connector, output in outputs.items():
+        if not isinstance(connector, str) or not connector or not isinstance(output, dict):
+            raise PreviewError("Malformed output in nested Niri snapshot")
+        if "logical" not in output or "current_mode" not in output:
+            raise PreviewError("Incomplete nested Niri output state")
+        logical = output["logical"]
+        if logical is not None:
+            if not isinstance(logical, dict) or not all(
+                key in logical for key in ("scale", "transform", "x", "y")
+            ):
+                raise PreviewError("Incomplete nested display geometry")
+            logical = {key: logical[key] for key in ("scale", "transform", "x", "y")}
+        signature[connector] = {
+            "logical": logical,
+            "current_mode": output["current_mode"],
+            "vrr_enabled": output.get("vrr_enabled"),
+        }
+    if not any(item["logical"] is not None for item in signature.values()):
+        raise PreviewError("No enabled display in nested Niri")
+    return signature
+
+
+def nested_output_snapshot(niri: str, environment: dict[str, str]) -> dict[str, dict]:
+    """Read only the verified nested NIRI_SOCKET, never the live compositor."""
+    socket_path = Path(environment.get("NIRI_SOCKET", ""))
+    if not socket_path.is_absolute() or not socket_path.is_socket():
+        raise PreviewError("Refusing display inspection without the nested Niri socket")
+    result = subprocess.run(
+        [niri, "msg", "--json", "outputs"],
+        env=environment, text=True, capture_output=True, check=False, timeout=3,
+    )
+    if result.returncode:
+        raise PreviewError("Nested Niri did not answer output inspection")
+    try:
+        return output_signature(json.loads(result.stdout))
+    except (TypeError, ValueError) as error:
+        raise PreviewError("Invalid nested Niri output JSON") from error
+
+
+def await_display_restore(
+    niri: str,
+    environment: dict[str, str],
+    baseline: dict[str, dict],
+    compositor: subprocess.Popen,
+) -> None:
+    """Give the independent rollback owner time after a real GTK Shell kill."""
+    deadline = time.monotonic() + 10
+    last_error = "No output query"
+    while time.monotonic() < deadline:
+        if compositor.poll() is not None:
+            raise PreviewError("Nested Niri died before rollback could be observed")
+        try:
+            current = nested_output_snapshot(niri, environment)
+            if current == baseline:
+                return
+            last_error = "Nested output state still differs from baseline"
+        except (PreviewError, subprocess.TimeoutExpired) as error:
+            last_error = str(error)
+        time.sleep(0.15)
+    raise PreviewError("Display rollback after Shell SIGKILL was not observed: " + last_error)
+
+
 def run_preview(
     package: Path,
     bin_dir: Path | None = None,
@@ -185,11 +256,14 @@ def run_preview(
     *,
     acceptance_notifications: bool = False,
     evidence_dir: Path | None = None,
+    accept_display_crash: bool = False,
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
     if not runtime_value or not parent_display:
         raise PreviewError("An existing Wayland session is required (XDG_RUNTIME_DIR / WAYLAND_DISPLAY)")
+    if acceptance_notifications and accept_display_crash:
+        raise PreviewError("Display-crash QA and notification capture are separate runs")
     if acceptance_notifications:
         from accept_nested import verify_private_bus
 
@@ -310,7 +384,19 @@ def run_preview(
                 lambda: True if ready_socket(socket_file) else None,
                 core, "isolated Kira Core socket", 10.0,
             )
+            # Capture before the GTK Shell can apply anything. The compositor
+            # and its output socket are already verified as separate from host.
+            baseline_outputs = (
+                nested_output_snapshot(niri_path, isolated)
+                if accept_display_crash else None
+            )
             shell = launch("shell", [str(binaries["shell"])], isolated)
+            if accept_display_crash:
+                print(f"[preview:crash] GTK Shell PID: {shell.pid}", flush=True)
+                print("[preview:crash] Apply a reversible display change in the nested Settings, "
+                      f"then run 'kill -KILL {shell.pid}' from the host terminal within 15s.", flush=True)
+                print("[preview:crash] The nested Niri stays alive long enough to verify "
+                      "rollback; an unobserved change is INCONCLUSIVE, never PASS.", flush=True)
             if acceptance_notifications:
                 # This executable is a real StatusNotifierItem over GIO,
                 # never a mocked GTK icon. It can see only the new private bus.
@@ -336,7 +422,12 @@ def run_preview(
             print("[preview] Alt+Ctrl+1/2 moves the focused window without changing the focused workspace; Alt+1/2 switches.", flush=True)
             print("[preview] If a shortcut does not work, check host layout shortcuts and run 'niri msg --json workspaces' in the nested foot terminal.", flush=True)
 
+            observed_changed = False
+            last_outputs = baseline_outputs
             while True:
+                if accept_display_crash and shell.poll() is None:
+                    last_outputs = nested_output_snapshot(niri_path, isolated)
+                    observed_changed |= last_outputs != baseline_outputs
                 if debug:
                     for name in ("core", "shell"):
                         debug_offsets[name] = print_log_changes(
@@ -347,6 +438,20 @@ def run_preview(
                     if proc.poll() is not None:
                         if name == "niri" and proc.returncode == 0:
                             print("[preview] Nested Niri closed.", flush=True)
+                            return
+                        if name == "shell" and accept_display_crash:
+                            if proc.returncode != -signal.SIGKILL:
+                                raise PreviewError("Crash acceptance requires GTK Shell SIGKILL")
+                            if not observed_changed or last_outputs == baseline_outputs:
+                                raise PreviewError(
+                                    "INCONCLUSIVE: no pending display change was observed at Shell death"
+                                )
+                            assert baseline_outputs is not None
+                            await_display_restore(niri_path, isolated, baseline_outputs, niri)
+                            print("[preview:crash] PASS: real nested Niri output state "
+                                  "returned to its pre-Apply baseline after Shell SIGKILL.", flush=True)
+                            print("[preview:crash] This is NOT multi-output, "
+                                  "hotplug or compositor pixel-parity acceptance.", flush=True)
                             return
                         raise PreviewError(f"{name} exited with status {proc.returncode}")
                 time.sleep(0.2)
@@ -410,6 +515,10 @@ def main() -> int:
     parser.add_argument("--debug", action="store_true", help="Stream Core and native GTK Shell logs")
     parser.add_argument("--validate-config", action="store_true")
     parser.add_argument(
+        "--accept-display-crash", action="store_true",
+        help="Observe a real nested Niri rollback after GTK Shell SIGKILL",
+    )
+    parser.add_argument(
         "--acceptance-notifications", action="store_true",
         help="Private dbus-run-session smoke only (use accept_nested.py)",
     )
@@ -431,6 +540,7 @@ def main() -> int:
                 args.package_dir, args.bin_dir, args.debug,
                 acceptance_notifications=args.acceptance_notifications,
                 evidence_dir=args.evidence_dir,
+                accept_display_crash=args.accept_display_crash,
             )
         else:
             parser.error("Unknown preview mode")

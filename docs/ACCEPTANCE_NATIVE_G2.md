@@ -22,6 +22,20 @@ The preview must report a nested Wayland display, a **separate nested NIRI_SOCKE
 
 ## Displays: transactional contract
 
+For a dedicated real-compositor crash test (not a substitute for paired main/native
+visual QA), run `nix develop --command task dev:preview:display-crash`.
+The coordinator verifies the nested Niri socket, captures actual output mode,
+scale, position, transform and VRR before Shell startup, and prints the **nested
+GTK Shell PID**. In the nested **Настройки → Дисплеи**, apply one reversible
+change. From a separate host terminal, execute the printed `kill -KILL PID`
+before the 15-second confirmation timer expires. The coordinator keeps Niri
+alive for up to ten seconds after Shell SIGKILL and compares actual output
+snapshots. It prints PASS only when a changed state was observed while Shell
+was alive and the baseline was restored afterwards; no observed change or
+incorrect termination is INCONCLUSIVE/FAIL. This **does not touch host Niri**,
+does not verify multi-output/hotplug, and does not certify visual or parity
+quality. Preserve the console transcript for manual acceptance.
+
 - [ ] In the normal (non-preview) desktop session, Settings can refresh outputs but **Apply/Confirm/Save are disabled** until process-external rollback exists. In official nested preview, the same reusable widget allows these mutation actions.
 - [ ] Open **Настройки → Дисплеи** and refresh; only Niri-advertised connectors/modes/VRR capabilities are offered. No input causes a Niri command during mere selection.
 - [ ] Confirm that Apply is disabled if all monitors are disabled, the mode list is empty, or a value is outside accepted bounds.

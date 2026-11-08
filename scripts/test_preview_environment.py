@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from dev_preview import PreviewError, isolated_shell_environment
+from dev_preview import PreviewError, isolated_shell_environment, output_signature
 
 
 class PreviewIsolationTests(unittest.TestCase):
@@ -51,6 +51,32 @@ class PreviewIsolationTests(unittest.TestCase):
             self.environment(None)
         with self.assertRaises(PreviewError):
             self.environment(self.path / "missing.sock")
+
+    def test_crash_qa_signature_detects_real_output_changes(self):
+        base = {"DP-1": {
+            "current_mode": 0,
+            "logical": {"scale": 1.0, "transform": "Normal", "x": 0, "y": 0},
+            "vrr_enabled": False,
+            "description": "Incidental metadata",
+        }}
+        original = output_signature(base)
+        base["DP-1"]["description"] = "Updated metadata"
+        self.assertEqual(original, output_signature(base))
+        base["DP-1"]["logical"]["scale"] = 1.25
+        self.assertNotEqual(original, output_signature(base))
+        base["DP-1"]["logical"]["scale"] = 1.0
+        self.assertEqual(original, output_signature(base))
+        base["HDMI-A-1"] = {
+            "current_mode": 0, "logical": None, "vrr_enabled": False,
+        }
+        self.assertNotEqual(original, output_signature(base))
+
+    def test_crash_qa_rejects_incomplete_or_disconnected_snapshots(self):
+        for payload in ({}, [], {"DP-1": {}},
+                        {"DP-1": {"logical": {"scale": 1.0}, "current_mode": 0}},
+                        {"DP-1": {"logical": None, "current_mode": None}}):
+            with self.subTest(payload=payload), self.assertRaises(PreviewError):
+                output_signature(payload)
 
     def test_parent_compositor_ipc_socket_is_rejected(self):
         with self.assertRaises(PreviewError):

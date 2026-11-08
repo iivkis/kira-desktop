@@ -95,6 +95,12 @@ tasks:
     cmds:
       - python3 scripts/dev_preview.py --bin-dir target/debug --debug
 
+  dev:preview:display-crash:
+    desc: Isolated nested-Niri Shell SIGKILL and observed display rollback QA.
+    cmds:
+      - cargo build --locked -p kira-core -p kira-shell
+      - python3 scripts/dev_preview.py --bin-dir target/debug --accept-display-crash
+
   dev:preview:release:
     cmds:
       - task: nix:build
