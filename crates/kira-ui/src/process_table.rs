@@ -247,7 +247,8 @@ impl ProcessTableState {
 
     fn copy_report(&self) {
         if !process_snapshot_fresh(self.received_instant.get(), Instant::now()) {
-            self.feedback.set_text("Данные устарели, отчёт не скопирован");
+            self.feedback
+                .set_text("Данные устарели, отчёт не скопирован");
             self.render();
             return;
         }
@@ -394,7 +395,9 @@ impl ProcessTable {
     }
 
     pub fn set_error(&self, error: &str) {
-        self.state.revision.set(self.state.revision.get().wrapping_add(1));
+        self.state
+            .revision
+            .set(self.state.revision.get().wrapping_add(1));
         self.state.received_instant.set(None);
         self.state.snapshot.replace(None);
         self.state.error.replace(Some(error.to_owned()));
@@ -471,7 +474,10 @@ mod tests {
         let now = Instant::now();
         assert!(!process_snapshot_fresh(None, now));
         assert!(process_snapshot_fresh(Some(now), now));
-        assert!(process_snapshot_fresh(Some(now), now + Duration::from_millis(7999)));
+        assert!(process_snapshot_fresh(
+            Some(now),
+            now + Duration::from_millis(7999)
+        ));
         assert!(!process_snapshot_fresh(Some(now), now + MAX_SNAPSHOT_AGE));
     }
 
