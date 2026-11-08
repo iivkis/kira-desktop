@@ -28,10 +28,10 @@ fn detached_title(kind: PopupKind) -> &'static str {
     }
 }
 
-fn screen_geometry() -> (i32, i32) {
-    gtk::gdk::Display::default()
-        .and_then(|display| display.monitors().item(0))
-        .and_then(|item| item.downcast::<gtk::gdk::Monitor>().ok())
+fn screen_geometry(monitor: Option<&gtk::gdk::Monitor>) -> (i32, i32) {
+    // When the bar surface is not mapped, let the compositor choose an output
+    // rather than falsely pinning the transient to monitor zero.
+    monitor
         .map(|monitor| (monitor.geometry().width(), monitor.geometry().height()))
         .unwrap_or((1280, 800))
 }
@@ -70,9 +70,22 @@ struct PopupView {
     // Move one retained GTK clip tree between two distinct Wayland roles.
     detached: RefCell<Option<gtk::ApplicationWindow>>,
     detach_button: Option<gtk::Button>,
+    scroll: gtk::ScrolledWindow,
 }
 
 impl PopupView {
+    fn retarget_monitor(&self, kind: PopupKind, monitor: Option<&gtk::gdk::Monitor>) {
+        if self.window.monitor() != monitor.cloned() {
+            self.window.set_monitor(monitor);
+        }
+        let (width, height) = screen_geometry(monitor);
+        let (popup_width, top, max_height) = layout_for(kind, width, height);
+        self.window.set_margin(Edge::Top, top);
+        self.window.set_default_size(popup_width, -1);
+        self.scroll.set_max_content_height(max_height);
+        self.contact.set(None);
+    }
+
     fn render(&self) {
         let frame = self.timeline.borrow().frame(1);
         self.clip.set_fraction(frame.clip);
@@ -221,7 +234,8 @@ impl PopupView {
         detached.set_resizable(true);
         detached.add_css_class("kira-popup");
         detached.add_css_class("kira-detached");
-        let (screen_width, screen_height) = screen_geometry();
+        let monitor = self.window.monitor();
+        let (screen_width, screen_height) = screen_geometry(monitor.as_ref());
         let (width, height) = detached_size(kind, screen_width, screen_height);
         detached.set_default_size(width, height);
         detached.set_child(Some(&self.clip));
@@ -262,6 +276,7 @@ impl PopupView {
 
 pub struct PopupHost {
     app: gtk::Application,
+    bar: gtk::glib::WeakRef<gtk::ApplicationWindow>,
     windows: RefCell<HashMap<PopupKind, Rc<PopupView>>>,
     active: Rc<Cell<Option<PopupKind>>>,
 }
@@ -333,12 +348,19 @@ fn contact_widget(root: &gtk::Widget) -> gtk::Widget {
 }
 
 impl PopupHost {
-    pub fn new(app: &gtk::Application) -> Self {
+    pub fn new(app: &gtk::Application, bar: &gtk::ApplicationWindow) -> Self {
         Self {
             app: app.clone(),
+            bar: bar.downgrade(),
             windows: RefCell::new(HashMap::new()),
             active: Rc::new(Cell::new(None)),
         }
+    }
+
+    fn bar_monitor(&self) -> Option<gtk::gdk::Monitor> {
+        let bar = self.bar.upgrade()?;
+        let surface = bar.surface()?;
+        bar.display().monitor_at_surface(&surface)
     }
 
     pub fn is_transient_active(&self, kind: PopupKind) -> bool {
@@ -394,7 +416,9 @@ impl PopupHost {
             window.set_exclusive_zone(0);
             window.set_keyboard_mode(KeyboardMode::OnDemand);
 
-            let (screen_width, screen_height) = screen_geometry();
+            let monitor = self.bar_monitor();
+            window.set_monitor(monitor.as_ref());
+            let (screen_width, screen_height) = screen_geometry(monitor.as_ref());
             let (width, top, max_height) = layout_for(kind, screen_width, screen_height);
             window.set_margin(Edge::Top, top);
             if kind == PopupKind::Launcher {
@@ -512,6 +536,7 @@ impl PopupHost {
                 motion: MotionToken::default(),
                 detached: RefCell::new(None),
                 detach_button: detach_button.clone(),
+                scroll,
             });
 
             if let Some(button) = detach_button {
@@ -560,6 +585,8 @@ impl PopupHost {
             self.windows.borrow_mut().insert(kind, view);
         }
         if let Some(view) = self.windows.borrow().get(&kind) {
+            let monitor = self.bar_monitor();
+            view.retarget_monitor(kind, monitor.as_ref());
             self.active.set(Some(kind));
             view.transition(true);
         }
@@ -575,6 +602,7 @@ mod tests {
         assert_eq!(layout_for(PopupKind::Calendar, 1920, 1080), (420, 54, 1014));
         assert_eq!(layout_for(PopupKind::Settings, 500, 600).0, 476);
         assert!(layout_for(PopupKind::Launcher, 640, 480).2 > 0);
+        assert_eq!(screen_geometry(None), (1280, 800));
     }
 
     #[test]
