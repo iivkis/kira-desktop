@@ -694,7 +694,7 @@ impl TrayUi {
             }
         });
         let dismiss = on_intent.clone();
-        back.connect_clicked(move |_| dismiss(TrayIntent::MenuBack));
+        back.connect_clicked(move |_| dismiss(TrayIntent::DismissMenu));
 
         let on_toggle: ToggleHandler = Rc::new(RefCell::new(None));
         let on_close: ToggleHandler = Rc::new(RefCell::new(None));
