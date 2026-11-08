@@ -48,8 +48,15 @@ pub fn logical_size(output: &DisplayOutput, choice: &DisplayChoice) -> Option<(f
         choice.transform.as_str(),
         "90" | "270" | "flipped-90" | "flipped-270"
     );
-    let (width, height) = if rotated { (height, width) } else { (width, height) };
-    Some((f64::from(width) / choice.scale, f64::from(height) / choice.scale))
+    let (width, height) = if rotated {
+        (height, width)
+    } else {
+        (width, height)
+    };
+    Some((
+        f64::from(width) / choice.scale,
+        f64::from(height) / choice.scale,
+    ))
 }
 
 /// All screens share one linear transform; their screen-space positions match
@@ -60,8 +67,10 @@ pub fn layout_rectangles(
     viewport_width: f64,
     viewport_height: f64,
 ) -> Vec<MapRect> {
-    if !viewport_width.is_finite() || !viewport_height.is_finite()
-        || viewport_width <= 2.0 * PADDING_X || viewport_height <= 2.0 * PADDING_Y
+    if !viewport_width.is_finite()
+        || !viewport_height.is_finite()
+        || viewport_width <= 2.0 * PADDING_X
+        || viewport_height <= 2.0 * PADDING_Y
     {
         return Vec::new();
     }
@@ -70,18 +79,38 @@ pub fn layout_rectangles(
         .enumerate()
         .filter(|(_, choice)| choice.enabled)
         .filter_map(|(index, choice)| {
-            let output = outputs.iter().find(|output| output.connector == choice.connector)?;
+            let output = outputs
+                .iter()
+                .find(|output| output.connector == choice.connector)?;
             let (width, height) = logical_size(output, choice)?;
-            Some((index, f64::from(choice.x), f64::from(choice.y), width, height))
+            Some((
+                index,
+                f64::from(choice.x),
+                f64::from(choice.y),
+                width,
+                height,
+            ))
         })
         .collect();
     if sized.is_empty() {
         return Vec::new();
     }
-    let min_x = sized.iter().map(|(_, x, _, _, _)| *x).fold(f64::INFINITY, f64::min);
-    let min_y = sized.iter().map(|(_, _, y, _, _)| *y).fold(f64::INFINITY, f64::min);
-    let max_x = sized.iter().map(|(_, x, _, w, _)| x + w).fold(f64::NEG_INFINITY, f64::max);
-    let max_y = sized.iter().map(|(_, _, y, _, h)| y + h).fold(f64::NEG_INFINITY, f64::max);
+    let min_x = sized
+        .iter()
+        .map(|(_, x, _, _, _)| *x)
+        .fold(f64::INFINITY, f64::min);
+    let min_y = sized
+        .iter()
+        .map(|(_, _, y, _, _)| *y)
+        .fold(f64::INFINITY, f64::min);
+    let max_x = sized
+        .iter()
+        .map(|(_, x, _, w, _)| x + w)
+        .fold(f64::NEG_INFINITY, f64::max);
+    let max_y = sized
+        .iter()
+        .map(|(_, _, y, _, h)| y + h)
+        .fold(f64::NEG_INFINITY, f64::max);
     let zoom = MAX_ZOOM
         .min((viewport_width - 2.0 * PADDING_X) / (max_x - min_x).max(1.0))
         .min((viewport_height - 2.0 * PADDING_Y) / (max_y - min_y).max(1.0));
@@ -120,21 +149,37 @@ pub fn snap_position(
     if !moving.enabled {
         return None;
     }
-    let output = outputs.iter().find(|output| output.connector == moving.connector)?;
+    let output = outputs
+        .iter()
+        .find(|output| output.connector == moving.connector)?;
     let (self_width, self_height) = logical_size(output, moving)?;
     let width = self_width.round() as i32;
     let height = self_height.round() as i32;
     let mut xs = Vec::new();
     let mut ys = Vec::new();
-    for other in choices.iter().filter(|other| other.enabled && other.connector != moving.connector) {
-        let Some(source) = outputs.iter().find(|output| output.connector == other.connector) else {
+    for other in choices
+        .iter()
+        .filter(|other| other.enabled && other.connector != moving.connector)
+    {
+        let Some(source) = outputs
+            .iter()
+            .find(|output| output.connector == other.connector)
+        else {
             continue;
         };
         let Some((w, h)) = logical_size(source, other) else {
             continue;
         };
-        xs.extend([other.x, other.x.saturating_add(w.round() as i32), other.x.saturating_sub(width)]);
-        ys.extend([other.y, other.y.saturating_add(h.round() as i32), other.y.saturating_sub(height)]);
+        xs.extend([
+            other.x,
+            other.x.saturating_add(w.round() as i32),
+            other.x.saturating_sub(width),
+        ]);
+        ys.extend([
+            other.y,
+            other.y.saturating_add(h.round() as i32),
+            other.y.saturating_sub(height),
+        ]);
     }
     Some((snapped_axis(raw_x, xs), snapped_axis(raw_y, ys)))
 }
@@ -201,7 +246,8 @@ impl DisplayMap {
                     MAP_HEIGHT,
                 );
                 let hit = rects.into_iter().rev().find(|rect| {
-                    x >= rect.x && y >= rect.y
+                    x >= rect.x
+                        && y >= rect.y
                         && x <= rect.x + rect.width.max(30.0)
                         && y <= rect.y + rect.height.max(28.0)
                 });
@@ -214,7 +260,9 @@ impl DisplayMap {
                             start_y: choice.y,
                             zoom: rect.zoom,
                         })
-                    } else { None };
+                    } else {
+                        None
+                    };
                     rect.index
                 })
             };
@@ -222,7 +270,9 @@ impl DisplayMap {
                 let notify = state.borrow().on_intent.clone();
                 notify(MapIntent::Select(index));
             }
-            if let Some(view) = view.upgrade() { view.queue_draw(); }
+            if let Some(view) = view.upgrade() {
+                view.queue_draw();
+            }
         });
 
         let weak = Rc::downgrade(&state);
@@ -230,13 +280,22 @@ impl DisplayMap {
             let Some(state) = weak.upgrade() else { return };
             let action = {
                 let current = state.borrow();
-                let Some(drag) = current.drag.as_ref() else { return };
-                if !current.editing || drag.zoom <= 0.0 { return }
+                let Some(drag) = current.drag.as_ref() else {
+                    return;
+                };
+                if !current.editing || drag.zoom <= 0.0 {
+                    return;
+                }
                 let clamp = |value: f64| value.round().clamp(-32_000.0, 32_000.0) as i32;
                 let x = clamp(f64::from(drag.start_x) + offset_x / drag.zoom);
                 let y = clamp(f64::from(drag.start_y) + offset_y / drag.zoom);
-                snap_position(&current.outputs, &current.choices, drag.index, x, y)
-                    .map(|(x, y)| MapIntent::Move { index: drag.index, x, y })
+                snap_position(&current.outputs, &current.choices, drag.index, x, y).map(|(x, y)| {
+                    MapIntent::Move {
+                        index: drag.index,
+                        x,
+                        y,
+                    }
+                })
             };
             if let Some(action) = action {
                 let notify = state.borrow().on_intent.clone();
@@ -245,7 +304,9 @@ impl DisplayMap {
         });
         let weak = Rc::downgrade(&state);
         drag.connect_drag_end(move |_, _, _| {
-            if let Some(state) = weak.upgrade() { state.borrow_mut().drag = None; }
+            if let Some(state) = weak.upgrade() {
+                state.borrow_mut().drag = None;
+            }
         });
         drawing.add_controller(drag);
 
@@ -255,7 +316,11 @@ impl DisplayMap {
             let Some(state) = weak.upgrade() else {
                 return gtk::glib::Propagation::Proceed;
             };
-            let step = if modifier.contains(gtk::gdk::ModifierType::SHIFT_MASK) { 1 } else { 10 };
+            let step = if modifier.contains(gtk::gdk::ModifierType::SHIFT_MASK) {
+                1
+            } else {
+                10
+            };
             let offset = match keyval {
                 gtk::gdk::Key::Left => Some((-step, 0)),
                 gtk::gdk::Key::Right => Some((step, 0)),
@@ -265,7 +330,9 @@ impl DisplayMap {
             };
             let action = {
                 let current = state.borrow();
-                if !current.editing { return gtk::glib::Propagation::Proceed; }
+                if !current.editing {
+                    return gtk::glib::Propagation::Proceed;
+                }
                 offset.and_then(|(dx, dy)| {
                     let index = current.selected?;
                     let item = current.choices.get(index)?;
@@ -275,7 +342,8 @@ impl DisplayMap {
                         index,
                         item.x.saturating_add(dx),
                         item.y.saturating_add(dy),
-                    ).map(|(x, y)| MapIntent::Move { index, x, y })
+                    )
+                    .map(|(x, y)| MapIntent::Move { index, x, y })
                 })
             };
             if let Some(action) = action {
@@ -333,14 +401,30 @@ fn paint(cr: &gtk::cairo::Context, width: f64, height: f64, state: &State) {
         cr.rectangle(rect.x, rect.y, w, h);
         let _ = cr.fill_preserve();
         cr.set_source_rgb(
-            if is_selected { 252.0 / 255.0 } else { 229.0 / 255.0 },
-            if is_selected { 163.0 / 255.0 } else { 229.0 / 255.0 },
-            if is_selected { 17.0 / 255.0 } else { 229.0 / 255.0 },
+            if is_selected {
+                252.0 / 255.0
+            } else {
+                229.0 / 255.0
+            },
+            if is_selected {
+                163.0 / 255.0
+            } else {
+                229.0 / 255.0
+            },
+            if is_selected {
+                17.0 / 255.0
+            } else {
+                229.0 / 255.0
+            },
         );
         cr.set_line_width(if is_selected { 2.0 } else { 1.0 });
         let _ = cr.stroke();
         cr.set_source_rgb(1.0, 1.0, 1.0);
-        cr.select_font_face("Sans", gtk::cairo::FontSlant::Normal, gtk::cairo::FontWeight::Bold);
+        cr.select_font_face(
+            "Sans",
+            gtk::cairo::FontSlant::Normal,
+            gtk::cairo::FontWeight::Bold,
+        );
         cr.set_font_size(12.0);
         cr.move_to(rect.x + 6.0, rect.y + 15.0);
         let _ = cr.show_text(&(rect.index + 1).to_string());
@@ -348,7 +432,11 @@ fn paint(cr: &gtk::cairo::Context, width: f64, height: f64, state: &State) {
             cr.set_font_size(10.0);
             cr.move_to(rect.x + 6.0, rect.y + 30.0);
             let label = &state.choices[rect.index].connector;
-            let limited: String = label.chars().filter(|ch| !ch.is_control()).take(20).collect();
+            let limited: String = label
+                .chars()
+                .filter(|ch| !ch.is_control())
+                .take(20)
+                .collect();
             let _ = cr.show_text(&limited);
         }
     }
@@ -369,11 +457,17 @@ mod tests {
             connector: connector.into(),
             description: connector.into(),
             enabled: true,
-            modes: vec![DisplayMode { id: id.clone(), label: id.clone() }],
+            modes: vec![DisplayMode {
+                id: id.clone(),
+                label: id.clone(),
+            }],
             mode: id,
             scale: 1.0,
             transform: "normal".into(),
-            x, y, vrr: false, vrr_supported: false,
+            x,
+            y,
+            vrr: false,
+            vrr_supported: false,
         }
     }
 
@@ -385,14 +479,22 @@ mod tests {
         first.transform = "90".into();
         let outputs = [first, second];
         let choices = outputs.iter().map(DisplayChoice::from).collect::<Vec<_>>();
-        assert_eq!(logical_size(&outputs[0], &choices[0]), Some((864.0, 1536.0)));
-        assert_eq!(logical_size(&outputs[1], &choices[1]), Some((2560.0, 1440.0)));
+        assert_eq!(
+            logical_size(&outputs[0], &choices[0]),
+            Some((864.0, 1536.0))
+        );
+        assert_eq!(
+            logical_size(&outputs[1], &choices[1]),
+            Some((2560.0, 1440.0))
+        );
         let rects = layout_rectangles(&outputs, &choices, 500.0, 230.0);
         assert_eq!(rects.len(), 2);
         assert!(rects[0].x < rects[1].x);
         assert!(rects[0].y > rects[1].y);
-        assert!(rects.iter().all(|rect| rect.x.is_finite() && rect.y.is_finite()
-            && rect.width > 0.0 && rect.height > 0.0));
+        assert!(rects.iter().all(|rect| rect.x.is_finite()
+            && rect.y.is_finite()
+            && rect.width > 0.0
+            && rect.height > 0.0));
         assert!(layout_rectangles(&outputs, &choices, 0.0, 230.0).is_empty());
     }
 
@@ -404,9 +506,18 @@ mod tests {
             output("DP-3", 640, 480, 3900, 200),
         ];
         let choices = outputs.iter().map(DisplayChoice::from).collect::<Vec<_>>();
-        assert_eq!(snap_position(&outputs, &choices, 1, 1900, 12), Some((1920, 0)));
-        assert_eq!(snap_position(&outputs, &choices, 1, -1275, -715), Some((-1280, -720)));
-        assert_eq!(snap_position(&outputs, &choices, 1, 32_001, -33_000), Some((32_000, -32_000)));
+        assert_eq!(
+            snap_position(&outputs, &choices, 1, 1900, 12),
+            Some((1920, 0))
+        );
+        assert_eq!(
+            snap_position(&outputs, &choices, 1, -1275, -715),
+            Some((-1280, -720))
+        );
+        assert_eq!(
+            snap_position(&outputs, &choices, 1, 32_001, -33_000),
+            Some((32_000, -32_000))
+        );
         assert_eq!(snap_position(&outputs, &choices, 0, 1, 1), Some((0, 0)));
     }
 
@@ -416,7 +527,7 @@ mod tests {
         let mut choice = DisplayChoice::from(&output);
         choice.mode = "unadvertised".into();
         assert_eq!(logical_size(&output, &choice), None);
-        assert!(layout_rectangles(&[output.clone()], &[choice.clone()], 500.0, 230.0).is_empty());
+        assert!(layout_rectangles(std::slice::from_ref(&output), std::slice::from_ref(&choice), 500.0, 230.0).is_empty());
         assert_eq!(snap_position(&[output], &[choice], 0, 40, 0), None);
     }
 }

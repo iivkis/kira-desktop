@@ -354,7 +354,10 @@ impl Controls {
 
     fn set_outputs(self: &Rc<Self>, outputs: Vec<DisplayOutput>) {
         let selected_name = self.selected.get().and_then(|index| {
-            self.choices.borrow().get(index).map(|item| item.connector.clone())
+            self.choices
+                .borrow()
+                .get(index)
+                .map(|item| item.connector.clone())
         });
         while let Some(child) = self.selectors.first_child() {
             self.selectors.remove(&child);
@@ -372,7 +375,11 @@ impl Controls {
                 "{} · {} · {}",
                 index + 1,
                 output.connector,
-                if output.enabled { "Включён" } else { "Выключен" },
+                if output.enabled {
+                    "Включён"
+                } else {
+                    "Выключен"
+                },
             ));
             choose.add_css_class("display-selector");
             choose.set_hexpand(true);
@@ -510,14 +517,15 @@ impl Controls {
         } else {
             let selected = selected_name
                 .and_then(|connector| {
-                    outputs.iter().position(|output| output.connector == connector)
+                    outputs
+                        .iter()
+                        .position(|output| output.connector == connector)
                 })
                 .unwrap_or(0);
             self.select(selected);
         }
         self.sync();
     }
-
 }
 
 pub struct DisplaySettings {
