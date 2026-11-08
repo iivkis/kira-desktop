@@ -323,9 +323,14 @@ impl Service {
     fn can_show(&self) -> bool {
         // The right-side pooled popup has unknown compositor extents during
         // its animation. Queue rather than overlap it with unreadable toasts.
-        ![PopupKind::Calendar, PopupKind::System, PopupKind::Settings]
-            .into_iter()
-            .any(|kind| self.popup.is_active(kind))
+        ![
+            PopupKind::Calendar,
+            PopupKind::System,
+            PopupKind::Settings,
+            PopupKind::Tray,
+        ]
+        .into_iter()
+        .any(|kind| self.popup.is_active(kind))
     }
 
     fn sync(self: &Rc<Self>) {

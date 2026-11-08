@@ -582,9 +582,14 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let displays = displays.clone();
         let mut previously_obstructed = false;
         move || {
-            let obstructed = [PopupKind::Calendar, PopupKind::System, PopupKind::Settings]
-                .into_iter()
-                .any(|kind| popup.is_active(kind));
+            let obstructed = [
+                PopupKind::Calendar,
+                PopupKind::System,
+                PopupKind::Settings,
+                PopupKind::Tray,
+            ]
+            .into_iter()
+            .any(|kind| popup.is_active(kind));
             if obstructed != previously_obstructed {
                 previously_obstructed = obstructed;
                 notifications::layout_changed();

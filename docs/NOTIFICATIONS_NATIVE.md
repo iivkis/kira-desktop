@@ -36,7 +36,7 @@ It does not claim the Freedesktop bus name if GDK cannot shape pointer input,
 if no real monitor geometry can fit a minimum 240px host, or if construction
 of its GDK surface fails. The window height never exceeds half the logical
 output height; card height is at most one third of the window height.
-An active right-side Calendar/System/Settings pooled popup pauses and
+An active right-side Calendar/System/Settings/Tray pooled popup pauses and
 requeues toasts rather than guessing their compositor overlap.
 
 Each changed native snapshot clears input, stages at most three GTK cards and
