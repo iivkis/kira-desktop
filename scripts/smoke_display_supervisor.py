@@ -66,13 +66,22 @@ def invoke(shell: Path, environment: dict[str, str], commands: list[dict]):
     return result, events
 
 
-def log_scales(path: Path) -> list[str]:
+def log_commands(path: Path) -> list[list[str]]:
     if not path.exists():
         return []
-    instructions = [
-        json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+
+
+def log_scales(path: Path) -> list[str]:
+    return [args[1] for args in log_commands(path) if args[0] == "scale"]
+
+
+def output_commands(scale: str) -> list[list[str]]:
+    """Six fixed Niri operations; the final vrr command proves rollback completed."""
+    return [
+        ["on"], ["mode", "1920x1080@60.000"], ["scale", scale],
+        ["transform", "normal"], ["position", "set", "0", "0"], ["vrr", "off"],
     ]
-    return [args[1] for args in instructions if args[0] == "scale"]
 
 
 def crash_parent(shell: Path) -> None:
@@ -121,18 +130,25 @@ def assert_sigkill_rollback(shell: Path, env: dict[str, str], log: Path) -> None
             raise AssertionError("Simulated Shell never received pending Apply")
         notice = json.loads(parent.stdout.readline())
         worker_pid = int(notice["worker_pid"])
-        if log_scales(log) != ["1.25"]:
-            raise AssertionError("No actual simulated display mutation before kill")
+        if log_commands(log) != output_commands("1.25"):
+            raise AssertionError("Pending Apply did not finish all six Niri commands")
         os.kill(parent.pid, signal.SIGKILL)
         if parent.wait(timeout=4) != -signal.SIGKILL:
             raise AssertionError("The parent was not terminated by SIGKILL")
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
-            if log_scales(log) == ["1.25", "1"]:
+            # A second scale command is not the end of rollback: transform,
+            # position and VRR are applied *after* scale. Never declare PASS
+            # or sample a stable log before all six reverse commands finish.
+            if log_commands(log) == (
+                output_commands("1.25") + output_commands("1")
+            ):
                 print("[display-supervisor] SIGKILL parent / external rollback: PASS")
                 return
             time.sleep(0.1)
-        raise AssertionError(f"No rollback after SIGKILL: {log_scales(log)!r}")
+        raise AssertionError(
+            f"Full rollback not completed after SIGKILL: {log_commands(log)!r}"
+        )
     finally:
         if parent.poll() is None:
             parent.kill()
@@ -170,8 +186,8 @@ def smoke(shell: Path) -> None:
                 f"Missing crash-style rollback: code={result.returncode} "
                 f"states={states!r} stderr={result.stderr[-500:]}"
             )
-        if log_scales(log) != ["1.25", "1"]:
-            raise AssertionError(f"Expected apply + baseline restore: {log_scales(log)}")
+        if log_commands(log) != output_commands("1.25") + output_commands("1"):
+            raise AssertionError(f"Expected all commands restored: {log_commands(log)}")
 
         # Confirm is an explicit distinct transaction: EOF after Confirm must
         # not rollback a confirmed session change.
@@ -180,7 +196,7 @@ def smoke(shell: Path) -> None:
         states = [event.get("state") for event in events]
         if result.returncode or "confirmed" not in states or "reverted" in states:
             raise AssertionError(f"Confirmed transaction failed: {states!r}")
-        if log_scales(log) != ["1.25"]:
+        if log_commands(log) != output_commands("1.25"):
             raise AssertionError("Explicit confirmation unexpectedly rolled back")
 
         # Invalid unrecognized wire messages are fail-closed, not execution.
