@@ -1181,19 +1181,17 @@ impl Service {
     }
 
     fn menu_expand(self: &Rc<Self>, handle: u32, id: i32) {
-        let menu = self
-            .current_menu
-            .borrow()
-            .as_ref()
-            .filter(|menu| {
-                menu.handle == handle
-                    && menu.navigation.len() < 3
-                    && tray_menu::expandable(&menu.entries, id)
-                    && kira_ui::tray::menu_page(&menu.entries, &menu.navigation)
-                        .is_some_and(|page| page.iter().any(|entry| entry.id == id))
-            })
-            .cloned();
-        let Some(menu) = menu else {
+        // Every retained ancestor page remains genuinely visible in a
+        // floating cascade. A clicked sibling can replace the deeper path,
+        // but only after verifying owner, globally unique parent and page.
+        let selected = self.current_menu.borrow().as_ref().and_then(|menu| {
+            if menu.handle != handle || !tray_menu::expandable(&menu.entries, id) {
+                return None;
+            }
+            kira_ui::tray::menu_expansion_path(&menu.entries, &menu.navigation, id)
+                .map(|path| (menu.clone(), path))
+        });
+        let Some((menu, path)) = selected else {
             return;
         };
         if !self.menu_item_is_live(&menu) {
@@ -1206,7 +1204,7 @@ impl Service {
             if !active.same_target(&menu) {
                 return;
             }
-            active.navigation.push(id);
+            active.navigation = path;
         }
         self.publish_menu();
         self.request_menu_layout(menu, serial, Some(id), false);
@@ -1244,8 +1242,7 @@ impl Service {
             .filter(|menu| {
                 menu.handle == handle
                     && tray_menu::clickable(&menu.entries, id)
-                    && kira_ui::tray::menu_page(&menu.entries, &menu.navigation)
-                        .is_some_and(|page| page.iter().any(|entry| entry.id == id))
+                    && kira_ui::tray::menu_visible_leaf(&menu.entries, &menu.navigation, id)
             })
             .cloned();
         let Some(menu) = selected else {
