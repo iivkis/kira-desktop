@@ -11,6 +11,41 @@ use gtk::prelude::*;
 
 type ToggleHandler = Rc<RefCell<Option<Box<dyn Fn()>>>>;
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum MenuNavigation {
+    Previous,
+    Next,
+    First,
+    Last,
+}
+
+/// Keyboard traversal is deliberately limited to live, enabled menu controls.
+/// The actual D-Bus invocation still goes through validated Shell intents.
+pub fn menu_focus_target(
+    enabled: &[i32],
+    current: Option<i32>,
+    direction: MenuNavigation,
+) -> Option<i32> {
+    if enabled.is_empty() {
+        return None;
+    }
+    let index = current.and_then(|id| enabled.iter().position(|entry| *entry == id));
+    let last = enabled.len() - 1;
+    let target = match direction {
+        MenuNavigation::First => 0,
+        MenuNavigation::Last => last,
+        MenuNavigation::Next => index.map_or(0, |i| (i + 1) % enabled.len()),
+        MenuNavigation::Previous => index.map_or(last, |i| (i + last) % enabled.len()),
+    };
+    enabled.get(target).copied()
+}
+
+struct MenuFocus {
+    id: i32,
+    button: gtk::Button,
+    submenu: bool,
+}
+
 pub const MAX_BAR_ICONS: usize = 4;
 pub const MAX_TRAY_ITEMS: usize = 64;
 
@@ -350,9 +385,11 @@ pub struct TrayUi {
     menu_list: gtk::Box,
     current_menu: RefCell<Option<TrayMenu>>,
     keyboard_menu: Rc<RefCell<bool>>,
+    menu_focus: Rc<RefCell<Vec<MenuFocus>>>,
     state: RefCell<TrayState>,
     on_intent: Rc<dyn Fn(TrayIntent)>,
     on_toggle: ToggleHandler,
+    on_close: ToggleHandler,
 }
 
 impl TrayUi {
@@ -407,12 +444,58 @@ impl TrayUi {
 
         let on_intent: Rc<dyn Fn(TrayIntent)> = Rc::new(on_intent);
         let keyboard_menu = Rc::new(RefCell::new(false));
+        let menu_focus = Rc::new(RefCell::new(Vec::<MenuFocus>::new()));
         let escape = gtk::EventControllerKey::new();
         let menu_open = keyboard_menu.clone();
+        let actions = menu_focus.clone();
         let on_escape = on_intent.clone();
         escape.connect_key_pressed(move |_, key, _, _| {
-            if key == gtk::gdk::Key::Escape && *menu_open.borrow() {
+            if !*menu_open.borrow() {
+                return gtk::glib::Propagation::Proceed;
+            }
+            if key == gtk::gdk::Key::Escape || key == gtk::gdk::Key::Left {
                 on_escape(TrayIntent::MenuBack);
+                return gtk::glib::Propagation::Stop;
+            }
+            if key == gtk::gdk::Key::Right {
+                let submenu = actions
+                    .borrow()
+                    .iter()
+                    .find(|entry| entry.submenu && entry.button.has_focus())
+                    .map(|entry| entry.button.clone());
+                if let Some(button) = submenu {
+                    button.emit_clicked();
+                    return gtk::glib::Propagation::Stop;
+                }
+                return gtk::glib::Propagation::Proceed;
+            }
+            let direction = match key {
+                gtk::gdk::Key::Up => MenuNavigation::Previous,
+                gtk::gdk::Key::Down => MenuNavigation::Next,
+                gtk::gdk::Key::Home => MenuNavigation::First,
+                gtk::gdk::Key::End => MenuNavigation::Last,
+                _ => return gtk::glib::Propagation::Proceed,
+            };
+            let (target, current) = {
+                let actions = actions.borrow();
+                let enabled = actions
+                    .iter()
+                    .filter(|entry| entry.button.is_sensitive())
+                    .map(|entry| entry.id)
+                    .collect::<Vec<_>>();
+                let current = actions
+                    .iter()
+                    .find(|entry| entry.button.has_focus())
+                    .map(|entry| entry.id);
+                let selected = menu_focus_target(&enabled, current, direction);
+                let button = selected.and_then(|id| {
+                    actions.iter().find(|entry| entry.id == id).map(|entry| entry.button.clone())
+                });
+                (button, current)
+            };
+            if let Some(button) = target {
+                let _ = current;
+                button.grab_focus();
                 gtk::glib::Propagation::Stop
             } else {
                 gtk::glib::Propagation::Proceed
@@ -423,11 +506,20 @@ impl TrayUi {
         back.connect_clicked(move |_| dismiss(TrayIntent::MenuBack));
 
         let on_toggle: ToggleHandler = Rc::new(RefCell::new(None));
-        for button in [&overflow, &close] {
+        let on_close: ToggleHandler = Rc::new(RefCell::new(None));
+        {
             let on_toggle = on_toggle.clone();
-            button.connect_clicked(move |_| {
+            overflow.connect_clicked(move |_| {
                 if let Some(toggle) = on_toggle.borrow().as_ref() {
                     toggle();
+                }
+            });
+        }
+        {
+            let on_close = on_close.clone();
+            close.connect_clicked(move |_| {
+                if let Some(close) = on_close.borrow().as_ref() {
+                    close();
                 }
             });
         }
@@ -445,9 +537,11 @@ impl TrayUi {
             menu_list,
             current_menu: RefCell::new(None),
             keyboard_menu,
+            menu_focus,
             state: RefCell::new(TrayState::default()),
             on_intent,
             on_toggle,
+            on_close,
         };
         ui.update(&TrayState::default());
         ui
@@ -455,6 +549,12 @@ impl TrayUi {
 
     pub fn set_toggle_handler(&self, on_toggle: impl Fn() + 'static) {
         *self.on_toggle.borrow_mut() = Some(Box::new(on_toggle));
+    }
+
+    /// The Tray's own close button dismisses the active presentation.
+    /// It must not accidentally raise an independently detached window.
+    pub fn set_close_handler(&self, on_close: impl Fn() + 'static) {
+        *self.on_close.borrow_mut() = Some(Box::new(on_close));
     }
 
     pub fn bar_widget(&self) -> gtk::Widget {
@@ -471,8 +571,15 @@ impl TrayUi {
         if *self.current_menu.borrow() == menu {
             return;
         }
+        let previous_focus = self
+            .menu_focus
+            .borrow()
+            .iter()
+            .find(|entry| entry.button.has_focus())
+            .map(|entry| entry.id);
         *self.current_menu.borrow_mut() = menu.clone();
         *self.keyboard_menu.borrow_mut() = menu.is_some();
+        self.menu_focus.borrow_mut().clear();
         while let Some(child) = self.menu_list.first_child() {
             self.menu_list.remove(&child);
         }
@@ -509,7 +616,16 @@ impl TrayUi {
                 let id = entry.id;
                 let on_intent = self.on_intent.clone();
                 group.connect_clicked(move |_| on_intent(TrayIntent::MenuExpand(handle, id)));
+                group.update_property(&[gtk::accessible::Property::Label(&format!(
+                    "Открыть подменю {}",
+                    entry.label,
+                ))]);
                 self.menu_list.append(&group);
+                self.menu_focus.borrow_mut().push(MenuFocus {
+                    id,
+                    button: group,
+                    submenu: true,
+                });
                 continue;
             }
             let button = gtk::Button::with_label(&format!(
@@ -530,12 +646,54 @@ impl TrayUi {
             let id = entry.id;
             let on_intent = self.on_intent.clone();
             button.connect_clicked(move |_| on_intent(TrayIntent::MenuClick(handle, id)));
+            button.update_property(&[gtk::accessible::Property::Label(&format!(
+                "{}{}",
+                entry.label,
+                if entry.checked { ", выбрано" } else { "" },
+            ))]);
             self.menu_list.append(&button);
+            self.menu_focus.borrow_mut().push(MenuFocus {
+                id,
+                button,
+                submenu: false,
+            });
         }
         if entries.is_empty() {
             let empty = gtk::Label::new(Some("В этом разделе нет доступных действий"));
             empty.add_css_class("muted");
             self.menu_list.append(&empty);
+        }
+        // A live LayoutUpdated can rebuild controls while the user navigates.
+        // Return to the same enabled D-Bus ID if it survives, else first
+        // available control. Never focus a hidden or different active window.
+        let focus = {
+            let menu = self.menu_focus.borrow();
+            let enabled = menu
+                .iter()
+                .filter(|entry| entry.button.is_sensitive())
+                .map(|entry| entry.id)
+                .collect::<Vec<_>>();
+            let chosen = if previous_focus.is_some_and(|id| enabled.contains(&id)) {
+                previous_focus
+            } else {
+                menu_focus_target(&enabled, None, MenuNavigation::First)
+            };
+            chosen.and_then(|id| {
+                menu.iter().find(|entry| entry.id == id).map(|entry| entry.button.clone())
+            })
+        };
+        if let Some(button) = focus {
+            gtk::glib::idle_add_local_once(move || {
+                if button.is_mapped()
+                    && button.is_sensitive()
+                    && button
+                        .root()
+                        .and_then(|root| root.downcast::<gtk::Window>().ok())
+                        .is_some_and(|window| window.is_active())
+                {
+                    button.grab_focus();
+                }
+            });
         }
     }
 
@@ -669,6 +827,19 @@ mod tests {
             radio: false,
             has_children,
         }
+    }
+
+    #[test]
+    fn keyboard_menu_navigation_is_bounded_and_revisitable() {
+        let enabled = [11, 13, 17];
+        assert_eq!(menu_focus_target(&enabled, None, MenuNavigation::First), Some(11));
+        assert_eq!(menu_focus_target(&enabled, None, MenuNavigation::Previous), Some(17));
+        assert_eq!(menu_focus_target(&enabled, Some(17), MenuNavigation::Next), Some(11));
+        assert_eq!(menu_focus_target(&enabled, Some(11), MenuNavigation::Previous), Some(17));
+        assert_eq!(menu_focus_target(&enabled, Some(11), MenuNavigation::Last), Some(17));
+        assert_eq!(menu_focus_target(&enabled, Some(13), MenuNavigation::Next), Some(17));
+        assert_eq!(menu_focus_target(&enabled, Some(99), MenuNavigation::Next), Some(11));
+        assert_eq!(menu_focus_target(&[], Some(11), MenuNavigation::Last), None);
     }
 
     #[test]
