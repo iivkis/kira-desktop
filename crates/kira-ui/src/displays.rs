@@ -146,6 +146,7 @@ struct Controls {
     choices: RefCell<Vec<DisplayChoice>>,
     phase: RefCell<DisplayPhase>,
     editing_enabled: Cell<bool>,
+    supervisor_lost: Cell<bool>,
     on_intent: Rc<dyn Fn(DisplayIntent)>,
 }
 
@@ -157,6 +158,7 @@ impl Controls {
 
     fn editing_allowed(&self) -> bool {
         self.editing_enabled.get()
+            && !self.supervisor_lost.get()
             && matches!(
                 *self.phase.borrow(),
                 DisplayPhase::Ready
@@ -266,7 +268,11 @@ impl Controls {
             DisplayPhase::Saved => "Настройки сохранены в управляемый KDL".to_owned(),
             DisplayPhase::Error(message) => format!("Ошибка: {message}"),
         };
-        if self.editing_enabled.get() {
+        if self.supervisor_lost.get() {
+            self.status.set_text(&format!(
+                "{message}\nСупервизор дисплеев остановлен. Перезапустите оболочку для нового сеанса редактирования."
+            ));
+        } else if self.editing_enabled.get() {
             self.status.set_text(&message);
         } else {
             self.status.set_text(&format!(
@@ -281,23 +287,27 @@ impl Controls {
                 | DisplayPhase::Saved
                 | DisplayPhase::Error(_)
         );
-        let mutating = editing && self.editing_enabled.get();
+        let mutating =
+            editing && self.editing_enabled.get() && !self.supervisor_lost.get();
         self.outputs.set_sensitive(mutating);
         self.update_map();
-        self.refresh.set_sensitive(editing);
+        self.refresh.set_sensitive(editing && !self.supervisor_lost.get());
         self.reset.set_sensitive(mutating);
         self.apply
             .set_sensitive(mutating && can_apply(&self.choices.borrow()));
-        self.save
-            .set_sensitive(self.editing_enabled.get() && matches!(*phase, DisplayPhase::Confirmed));
+        self.save.set_sensitive(
+            mutating && matches!(*phase, DisplayPhase::Confirmed),
+        );
         match &*phase {
             DisplayPhase::Pending {
                 deadline_unix_ms, ..
             } => {
                 self.confirm.set_sensitive(
-                    self.editing_enabled.get() && seconds_left(*deadline_unix_ms, now) > 0,
+                    !self.supervisor_lost.get()
+                        && self.editing_enabled.get()
+                        && seconds_left(*deadline_unix_ms, now) > 0,
                 );
-                self.revert.set_sensitive(true);
+                self.revert.set_sensitive(!self.supervisor_lost.get());
             }
             _ => {
                 self.confirm.set_sensitive(false);
@@ -309,7 +319,9 @@ impl Controls {
     fn submit(self: &Rc<Self>, action: &str) {
         let can_save = *self.phase.borrow() == DisplayPhase::Confirmed;
         match action {
-            "refresh" if !matches!(*self.phase.borrow(), DisplayPhase::Pending { .. }) => {
+            "refresh"
+                if !self.supervisor_lost.get()
+                    && !matches!(*self.phase.borrow(), DisplayPhase::Pending { .. }) => {
                 self.set_phase(DisplayPhase::Loading);
                 (self.on_intent)(DisplayIntent::Refresh);
             }
@@ -318,7 +330,7 @@ impl Controls {
                 self.set_phase(DisplayPhase::Applying);
                 (self.on_intent)(DisplayIntent::Apply(choices));
             }
-            "confirm" if self.editing_enabled.get() => {
+            "confirm" if self.editing_enabled.get() && !self.supervisor_lost.get() => {
                 let phase = self.phase.borrow().clone();
                 if let DisplayPhase::Pending {
                     id,
@@ -330,14 +342,14 @@ impl Controls {
                     (self.on_intent)(DisplayIntent::Confirm(id));
                 }
             }
-            "revert" => {
+            "revert" if !self.supervisor_lost.get() => {
                 let phase = self.phase.borrow().clone();
                 if let DisplayPhase::Pending { id, .. } = phase {
                     self.set_phase(DisplayPhase::Reverting);
                     (self.on_intent)(DisplayIntent::Revert(id));
                 }
             }
-            "save" if self.editing_enabled.get() && can_save => {
+            "save" if self.editing_enabled.get() && !self.supervisor_lost.get() && can_save => {
                 self.set_phase(DisplayPhase::Saving);
                 (self.on_intent)(DisplayIntent::Save);
             }
@@ -634,6 +646,7 @@ impl DisplaySettings {
             choices: RefCell::new(Vec::new()),
             phase: RefCell::new(DisplayPhase::Loading),
             editing_enabled: Cell::new(true),
+            supervisor_lost: Cell::new(false),
             on_intent: Rc::new(on_intent),
         });
         *map_host.borrow_mut() = Rc::downgrade(&controls);
@@ -675,6 +688,15 @@ impl DisplaySettings {
     /// supervised outside the UI process. Read-only refresh remains available.
     pub fn set_editing_enabled(&self, enabled: bool) {
         self.controls.editing_enabled.set(enabled);
+        self.controls.sync();
+    }
+
+    /// A dead supervisor cannot service even read-only Refresh requests.
+    /// Unlike ordinary production read-only mode, this failure is terminal
+    /// for the current editor session. No request is silently discarded.
+    pub fn set_supervisor_lost(&self) {
+        self.controls.supervisor_lost.set(true);
+        self.controls.editing_enabled.set(false);
         self.controls.sync();
     }
 

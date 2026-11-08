@@ -353,7 +353,7 @@ fn handle_display_event(display: &DisplaySettings, event: DisplayEvent) {
         if error.starts_with("Display supervisor exited:")
             || error.starts_with("Display supervisor wait failed:")
         {
-            display.set_editing_enabled(false);
+            display.set_supervisor_lost();
         }
         display.set_phase(DisplayPhase::Error(error));
         return;
