@@ -156,7 +156,11 @@ fn append_menu_rows(
         button.update_property(&[gtk::accessible::Property::Label(&format!(
             "{}{}",
             entry.label,
-            if entry.checked { ", выбрано" } else { "" }
+            if entry.checked {
+                ", выбрано"
+            } else {
+                ""
+            }
         ))]);
         if entry.has_children {
             // BoxLayout supports anchoring live GTK popovers and allocating
@@ -348,7 +352,6 @@ pub fn menu_page(items: &[TrayMenuEntry], navigation: &[i32]) -> Option<Vec<Tray
     )
 }
 
- 
 /// All visible cascade levels, including their ancestor pages, come from
 /// the same bounded owner-validated preorder snapshot.
 pub fn menu_cascade_pages(
@@ -371,7 +374,10 @@ pub fn menu_expansion_path(
     id: i32,
 ) -> Option<Vec<i32>> {
     let pages = menu_cascade_pages(items, navigation)?;
-    let matched = items.iter().filter(|entry| entry.id == id).collect::<Vec<_>>();
+    let matched = items
+        .iter()
+        .filter(|entry| entry.id == id)
+        .collect::<Vec<_>>();
     if matched.len() != 1 {
         return None;
     }
@@ -395,11 +401,7 @@ pub fn menu_expansion_path(
 
 /// Leaf actions in the visible root or ancestor pages stay usable when a
 /// child cascade is open, without exposing invisible sibling branches.
-pub fn menu_visible_leaf(
-    items: &[TrayMenuEntry],
-    navigation: &[i32],
-    id: i32,
-) -> bool {
+pub fn menu_visible_leaf(items: &[TrayMenuEntry], navigation: &[i32], id: i32) -> bool {
     let Some(pages) = menu_cascade_pages(items, navigation) else {
         return false;
     };
@@ -407,9 +409,8 @@ pub fn menu_visible_leaf(
         return false;
     }
     pages.iter().any(|page| {
-        page.iter().any(|entry| {
-            entry.id == id && entry.enabled && !entry.separator && !entry.has_children
-        })
+        page.iter()
+            .any(|entry| entry.id == id && entry.enabled && !entry.separator && !entry.has_children)
     })
 }
 
@@ -1153,14 +1154,23 @@ mod tests {
     #[test]
     fn cascade_pages_retain_ancestors_and_refuse_orphan_paths() {
         let entries = vec![
-            entry(10, 0, true), entry(11, 1, false),
-            entry(12, 1, true), entry(13, 2, false),
-            entry(20, 0, true), entry(21, 1, false),
+            entry(10, 0, true),
+            entry(11, 1, false),
+            entry(12, 1, true),
+            entry(13, 2, false),
+            entry(20, 0, true),
+            entry(21, 1, false),
         ];
         let pages = menu_cascade_pages(&entries, &[10, 12]).unwrap();
         assert_eq!(pages.len(), 3);
-        assert_eq!(pages[0].iter().map(|x| x.id).collect::<Vec<_>>(), vec![10, 20]);
-        assert_eq!(pages[1].iter().map(|x| x.id).collect::<Vec<_>>(), vec![11, 12]);
+        assert_eq!(
+            pages[0].iter().map(|x| x.id).collect::<Vec<_>>(),
+            vec![10, 20]
+        );
+        assert_eq!(
+            pages[1].iter().map(|x| x.id).collect::<Vec<_>>(),
+            vec![11, 12]
+        );
         assert_eq!(pages[2].iter().map(|x| x.id).collect::<Vec<_>>(), vec![13]);
         assert!(menu_cascade_pages(&entries, &[20, 12]).is_none());
         assert!(menu_cascade_pages(&entries, &[10, 12, 13, 14]).is_none());
@@ -1170,14 +1180,20 @@ mod tests {
     #[test]
     fn visible_ancestor_clicks_switch_branches_without_hidden_dispatch() {
         let mut entries = vec![
-            entry(10, 0, true), entry(11, 1, false),
-            entry(12, 1, true), entry(13, 2, false),
-            entry(20, 0, true), entry(21, 1, false),
+            entry(10, 0, true),
+            entry(11, 1, false),
+            entry(12, 1, true),
+            entry(13, 2, false),
+            entry(20, 0, true),
+            entry(21, 1, false),
             entry(30, 0, false),
         ];
         assert_eq!(menu_expansion_path(&entries, &[10, 12], 20), Some(vec![20]));
         assert_eq!(menu_expansion_path(&entries, &[10, 12], 10), Some(vec![10]));
-        assert_eq!(menu_expansion_path(&entries, &[10, 12], 12), Some(vec![10, 12]));
+        assert_eq!(
+            menu_expansion_path(&entries, &[10, 12], 12),
+            Some(vec![10, 12])
+        );
         assert_eq!(menu_expansion_path(&entries, &[10, 12], 21), None);
         assert_eq!(menu_expansion_path(&entries, &[20], 12), None);
         assert!(menu_visible_leaf(&entries, &[10, 12], 11));
