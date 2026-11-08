@@ -797,7 +797,7 @@ mod tests {
     #[test]
     fn supervisor_protocol_rejects_arbitrary_commands_and_invalid_frames() {
         let mut valid = std::io::Cursor::new(
-            br#"{"kind":"confirm","id":19}"#.iter().copied().chain([b'\n']).collect::<Vec<_>>(),
+            br#"{"kind":"confirm","id":19}"#.iter().copied().chain(*b"\n").collect::<Vec<_>>(),
         );
         let frame = read_wire_line(&mut valid).unwrap().unwrap();
         assert!(matches!(
