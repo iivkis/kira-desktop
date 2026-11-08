@@ -92,7 +92,11 @@ impl ProcessSortState {
         format!(
             "{} ({})",
             self.field.heading(),
-            if self.descending { "убыв." } else { "возр." },
+            if self.descending {
+                "убыв."
+            } else {
+                "возр."
+            },
         )
     }
 }
@@ -112,7 +116,11 @@ fn known_f64_order(a: Option<f64>, b: Option<f64>, descending: bool) -> Ordering
 fn known_u64_order(a: Option<u64>, b: Option<u64>, descending: bool) -> Ordering {
     match (a, b) {
         (Some(a), Some(b)) => {
-            if descending { b.cmp(&a) } else { a.cmp(&b) }
+            if descending {
+                b.cmp(&a)
+            } else {
+                a.cmp(&b)
+            }
         }
         (Some(_), None) => Ordering::Less,
         (None, Some(_)) => Ordering::Greater,
@@ -142,7 +150,9 @@ pub fn filter_sort_processes_with_state<'a>(
         .filter(|item| {
             let name = item.name.to_lowercase();
             let pid = item.pid.to_string();
-            terms.iter().all(|term| name.contains(term) || pid.contains(term))
+            terms
+                .iter()
+                .all(|term| name.contains(term) || pid.contains(term))
         })
         .collect();
     selected.sort_by(|a, b| {
@@ -150,10 +160,18 @@ pub fn filter_sort_processes_with_state<'a>(
             ProcessSort::Cpu => known_f64_order(a.cpu_percent, b.cpu_percent, sort.descending),
             ProcessSort::Name => {
                 let order = a.name.to_lowercase().cmp(&b.name.to_lowercase());
-                if sort.descending { order.reverse() } else { order }
+                if sort.descending {
+                    order.reverse()
+                } else {
+                    order
+                }
             }
             ProcessSort::Pid => {
-                if sort.descending { b.pid.cmp(&a.pid) } else { a.pid.cmp(&b.pid) }
+                if sort.descending {
+                    b.pid.cmp(&a.pid)
+                } else {
+                    a.pid.cmp(&b.pid)
+                }
             }
             ProcessSort::Rss => known_u64_order(a.rss_kib, b.rss_kib, sort.descending),
             ProcessSort::Pss => known_u64_order(a.pss_kib, b.pss_kib, sort.descending),
@@ -216,7 +234,11 @@ pub fn process_report_with_state(
             "{} | {} | {} | {} | {} | {}\n",
             item.pid,
             clean_text(&item.name),
-            if item.state.is_ascii_graphic() { item.state } else { '?' },
+            if item.state.is_ascii_graphic() {
+                item.state
+            } else {
+                '?'
+            },
             cpu_text(item.cpu_percent),
             memory_text(item.rss_kib),
             memory_text(item.pss_kib)
@@ -254,7 +276,11 @@ impl ProcessTableState {
         for (field, button) in &self.sort_buttons {
             if *field == self.sort.get().field {
                 button.add_css_class("selected");
-                let arrow = if self.sort.get().descending { " ↓" } else { " ↑" };
+                let arrow = if self.sort.get().descending {
+                    " ↓"
+                } else {
+                    " ↑"
+                };
                 button.set_label(&format!("{}{}", field.heading(), arrow));
             } else {
                 button.remove_css_class("selected");
@@ -291,7 +317,8 @@ impl ProcessTableState {
             usize::MAX,
         );
         let shown = found.len().min(self.visible_count.get());
-        self.show_more.set_visible(shown < found.len() && shown < MAX_VISIBLE_PROCESSES);
+        self.show_more
+            .set_visible(shown < found.len() && shown < MAX_VISIBLE_PROCESSES);
         self.show_more.set_sensitive(shown < MAX_VISIBLE_PROCESSES);
         let truncated = if snapshot.truncated {
             " · сканирование ограничено"
@@ -490,7 +517,8 @@ impl ProcessTable {
             let weak = Rc::downgrade(&state);
             move |_| {
                 if let Some(state) = weak.upgrade() {
-                    state.visible_count
+                    state
+                        .visible_count
                         .set(next_process_limit(state.visible_count.get(), usize::MAX));
                     state.render();
                 }
@@ -649,7 +677,6 @@ mod tests {
         assert!(!process_snapshot_fresh(Some(now), now + MAX_SNAPSHOT_AGE));
     }
 
-
     #[test]
     fn bidirectional_source_sort_and_progressive_limit_are_deterministic() {
         let rows = [
@@ -672,16 +699,34 @@ mod tests {
             (ProcessSort::Pss, vec![1, 3, 2, 4], vec![2, 3, 1, 4]),
         ] {
             let current = ProcessSortState::for_field(field);
-            assert_eq!(ids(ProcessSortState { descending: false, ..current }), ascending);
-            assert_eq!(ids(ProcessSortState { descending: true, ..current }), descending);
+            assert_eq!(
+                ids(ProcessSortState {
+                    descending: false,
+                    ..current
+                }),
+                ascending
+            );
+            assert_eq!(
+                ids(ProcessSortState {
+                    descending: true,
+                    ..current
+                }),
+                descending
+            );
         }
         assert_eq!(
             ProcessSortState::default().toggle(ProcessSort::Cpu),
-            ProcessSortState { field: ProcessSort::Cpu, descending: false }
+            ProcessSortState {
+                field: ProcessSort::Cpu,
+                descending: false
+            }
         );
         assert_eq!(
             ProcessSortState::default().toggle(ProcessSort::Rss),
-            ProcessSortState { field: ProcessSort::Rss, descending: true }
+            ProcessSortState {
+                field: ProcessSort::Rss,
+                descending: true
+            }
         );
         assert_eq!(next_process_limit(0, 400), 36);
         assert_eq!(next_process_limit(36, 400), 72);
@@ -704,7 +749,10 @@ mod tests {
         let report = process_report_with_state(
             &snapshot,
             "",
-            ProcessSortState { field: ProcessSort::Pid, descending: false },
+            ProcessSortState {
+                field: ProcessSort::Pid,
+                descending: false,
+            },
         );
         assert!(report.contains("Показано: 180 из 500"));
         assert!(report.contains("PID | Имя | Состояние | CPU | RSS | PSS"));
@@ -714,7 +762,10 @@ mod tests {
         let back = process_report_with_state(
             &snapshot,
             "",
-            ProcessSortState { field: ProcessSort::Pid, descending: true },
+            ProcessSortState {
+                field: ProcessSort::Pid,
+                descending: true,
+            },
         );
         assert!(back.contains("499 | worker"));
         assert!(!back.contains("0 | worker | Z"));

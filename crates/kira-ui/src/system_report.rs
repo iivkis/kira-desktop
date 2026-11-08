@@ -59,7 +59,11 @@ fn fraction(total: Option<u64>, available: Option<u64>) -> String {
 pub fn format_overview_report(snapshot: &SystemOverview) -> String {
     let load = snapshot
         .load
-        .filter(|values| values.iter().all(|value| value.is_finite() && *value >= 0.0))
+        .filter(|values| {
+            values
+                .iter()
+                .all(|value| value.is_finite() && *value >= 0.0)
+        })
         .map_or_else(
             || "НЕДОСТУПНО".to_owned(),
             |values| format!("{:.2} / {:.2} / {:.2}", values[0], values[1], values[2]),
@@ -157,9 +161,10 @@ impl ReportState {
         };
         let text = format_overview_report(snapshot);
         let handler = self.on_copy.borrow();
-        let result = handler
-            .as_ref()
-            .map_or_else(|| Err("Буфер обмена недоступен".to_owned()), |copy| copy(text));
+        let result = handler.as_ref().map_or_else(
+            || Err("Буфер обмена недоступен".to_owned()),
+            |copy| copy(text),
+        );
         self.feedback.set_text(match result {
             Ok(()) => "Отчёт обзора скопирован",
             Err(ref error) => error,

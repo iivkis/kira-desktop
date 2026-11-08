@@ -734,7 +734,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         if popup.is_active(PopupKind::System) && system.processes_selected() {
                             system.set_process_error(&error);
                         }
-                    },
+                    }
                 }
             }
             for event in display_model.poll() {
