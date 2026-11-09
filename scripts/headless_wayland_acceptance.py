@@ -151,6 +151,13 @@ def run_virtual(
             if compositor.poll() is not None:
                 raise PreviewError("Weston died before capture validation")
             captures = validate_bundle(output)
+            from check_native_visual_smoke import verify_toast_transitions
+            visual = verify_toast_transitions(output)
+            (output / "visual-smoke.json").write_text(
+                json.dumps(visual, ensure_ascii=False, indent=2) + "
+",
+                encoding="utf-8",
+            )
             index = output / "review-index.html"
             if len(captures) != 3 or not index.is_file():
                 raise PreviewError("Missing validated native-only review index")
