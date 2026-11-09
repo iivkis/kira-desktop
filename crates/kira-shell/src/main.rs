@@ -998,10 +998,7 @@ mod tests {
         .collect();
         let unique = sort_unique_applications(apps);
         assert_eq!(
-            unique
-                .iter()
-                .map(|app| app.id.as_str())
-                .collect::<Vec<_>>(),
+            unique.iter().map(|app| app.id.as_str()).collect::<Vec<_>>(),
             ["same", "third", "another"]
         );
     }
