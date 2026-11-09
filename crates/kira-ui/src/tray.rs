@@ -56,7 +56,7 @@ fn install_menu_keys(
     widget: &gtk::Widget,
     menu_open: Rc<RefCell<bool>>,
     epoch: Rc<Cell<u64>>,
-    actions: Rc<RefCell<Vec<MenuFocus>>,
+    actions: Rc<RefCell<Vec<MenuFocus>>>,
     on_intent: Rc<dyn Fn(TrayIntent)>,
 ) {
     let key_controller = gtk::EventControllerKey::new();
