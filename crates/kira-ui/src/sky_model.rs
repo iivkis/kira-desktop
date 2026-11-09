@@ -96,7 +96,10 @@ pub fn validate_sky_observation(
 /// Calendar owns the selected day; its state must never drift behind SkyMap.
 pub fn shift_sky_clock(clock: &str, minutes: i32) -> Option<String> {
     let (hour, minute) = clock_hour_minute(clock)?;
-    let next = hour.checked_mul(60)?.checked_add(minute)?.checked_add(minutes)?;
+    let next = hour
+        .checked_mul(60)?
+        .checked_add(minute)?
+        .checked_add(minutes)?;
     if !(0..24 * 60).contains(&next) {
         return None;
     }
@@ -222,12 +225,7 @@ mod tests {
             Err(SkyInputError::Time)
         );
         assert_eq!(
-            validate_sky_observation(
-                CivilDate::new(2101, 1, 1).unwrap(),
-                "51",
-                "0",
-                "22:00",
-            ),
+            validate_sky_observation(CivilDate::new(2101, 1, 1).unwrap(), "51", "0", "22:00",),
             Err(SkyInputError::Date)
         );
     }

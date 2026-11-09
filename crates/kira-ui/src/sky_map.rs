@@ -117,9 +117,7 @@ impl SkyMap {
         actions.append(&later);
         let reset = gtk::Button::with_label("СБРОС");
         reset.add_css_class("sky-reset");
-        reset.set_tooltip_text(Some(
-            "Вернуть координаты Гринвича и время 22:00",
-        ));
+        reset.set_tooltip_text(Some("Вернуть координаты Гринвича и время 22:00"));
         reset.update_property(&[gtk::accessible::Property::Label(
             "Сбросить координаты и время наблюдения",
         )]);
@@ -268,8 +266,7 @@ impl SkyMap {
                 scene.time.clone(),
                 scene.latitude.clone(),
                 scene.longitude.clone(),
-                scene.latitude.trim() == GREENWICH_LAT
-                    && scene.longitude.trim() == GREENWICH_LON,
+                scene.latitude.trim() == GREENWICH_LAT && scene.longitude.trim() == GREENWICH_LON,
             )
         };
         self.example.set_label(if demo {
@@ -288,12 +285,7 @@ impl SkyMap {
         ] {
             field.remove_css_class("sky-invalid");
         }
-        let target = validate_sky_observation(
-            date,
-            &latitude_text,
-            &longitude_text,
-            &time,
-        );
+        let target = validate_sky_observation(date, &latitude_text, &longitude_text, &time);
         self.motion.cancel();
         let (observer, instant) = match target {
             Ok(observation) => observation,
