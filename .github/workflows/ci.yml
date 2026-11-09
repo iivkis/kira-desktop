@@ -57,3 +57,5 @@ jobs:
         run: nix develop .#ci --command python3 scripts/smoke_display_supervisor.py --shell result/bin/kira-shell
       - name: Smoke real SNI client against an isolated headless D-Bus
         run: nix develop .#ci --command python3 scripts/smoke_sni_fixture_bus.py --fixture result/bin/kira-sni-acceptance
+      - name: Smoke dual-peer notification policy on an isolated headless D-Bus
+        run: nix develop .#ci --command python3 scripts/smoke_notification_policy_bus.py --fixture result/bin/kira-notification-policy-fixture --probe result/bin/kira-notification-acceptance
