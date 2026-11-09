@@ -2,6 +2,10 @@
 
 **Normative for native-gtk. First build the reusable UI library, then build Kira Desktop from it.** This is a hard sequencing rule, not a later cleanup task.
 
+This library's ongoing design/motion review and enforceable source-only
+invariants are documented in [NATIVE_DESIGN_MOTION_REVIEW.md](NATIVE_DESIGN_MOTION_REVIEW.md).
+A fast green CI run is not graphical acceptance.
+
 ## Architectural boundaries
 
 - `crates/kira-ui` is a reusable GTK4/gtk4-layer-shell library. It owns public view models, native controls, shared CSS, accessibility and popup lifecycle. It can be embedded in another GTK application without Core, Niri, IPC, filesystem writes or privileged commands.

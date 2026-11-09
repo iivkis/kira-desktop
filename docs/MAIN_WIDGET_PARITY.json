@@ -255,7 +255,8 @@
         "Source 350ms initial and 180ms update gauge/plot motion is not yet implemented or visually reviewed; static Cairo drawing does not claim TENET completion.",
         "Pure kira-ui::ChartMotion and GTK MotionToken now animate source-aligned 350ms first and 180ms cubicOut updates of both gauges and measured trace clipping. Retargeting starts from the last painted utilization/time cursor, never emits synthetic CPU/RAM/GPU samples, and clears on hide, expiration and reduced-motion. Headless tests cover interruption, valid range, timestamp retarget and unknown values. Paired real nested-Niri frame captures are still required to accept motion and pixels.",
         "Native 180ms cubicOut retarget now moves the shared X-domain from its last painted endpoint and synchronizes the historical trace clip to that same frame clock. Nested-Niri paired motion capture not yet recorded.",
-        "The pinned orange time marker uses actual painted ChartMotion time-domain and trace extent; no new sampled values or fake interpolated point. Interruptions, focus, clip and motion need paired nested-Niri review."
+        "The pinned orange time marker uses actual painted ChartMotion time-domain and trace extent; no new sampled values or fake interpolated point. Interruptions, focus, clip and motion need paired nested-Niri review.",
+        "TENET design review patches: GDK first-painted-frame clock shared across native scenes, strictly monotone frame cursor and chart point hit-tests clipped to the actual painted trace (not unrevealed future timestamps). Pure model tests and source-only design gate are planned/provided; GTK/Niri source-matched motion and pointer capture still unverified."
       ],
       "verified": {
         "content": false,
@@ -546,7 +547,8 @@
       ],
       "animation_requirements": [
         "Reversible close using one master timeline",
-        "PopupTimeline/GSK clip is retained through detach and reattach; matched Niri focus/contact/visual/motion evidence still missing."
+        "PopupTimeline/GSK clip is retained through detach and reattach; matched Niri focus/contact/visual/motion evidence still missing.",
+        "Shared PopupHost uses the GDK first-painted-frame clock rather than monotonic wall time before mapping, preserving the initial clip and reversible scene on delayed Wayland window creation; popup Close/Attach targets have 34px minimum. Needs real nested-Niri reveal/reverse/reduced-motion/focus capture."
       ],
       "verified": {
         "content": false,

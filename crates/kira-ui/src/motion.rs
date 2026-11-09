@@ -4,7 +4,6 @@
 //! no WebKit, GSAP, DOM, or fake telemetry.
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
-use std::time::Instant;
 
 use gtk::prelude::*;
 
@@ -67,7 +66,11 @@ pub fn calendar_flights(direction: i32) -> [Flight; 4] {
 }
 
 pub fn cubic_in_out(position: f64) -> f64 {
-    let t = position.clamp(0.0, 1.0);
+    let t = if position.is_finite() {
+        position.clamp(0.0, 1.0)
+    } else {
+        0.0
+    };
     if t < 0.5 {
         4.0 * t * t * t
     } else {
@@ -426,6 +429,17 @@ pub(crate) fn animations_enabled() -> bool {
         .is_none_or(|settings| settings.property::<bool>("gtk-enable-animations"))
 }
 
+/// Convert measured GDK frame-clock microseconds to a finite normalized
+/// cursor. The initial frame is always p=0, regardless of how long the
+/// widget was waiting for its first Wayland map / GTK allocation.
+pub fn frame_clock_progress(first_us: i64, now_us: i64, duration_ms: u64) -> f64 {
+    if duration_ms == 0 {
+        return 1.0;
+    }
+    let elapsed = now_us.saturating_sub(first_us).max(0) as f64;
+    (elapsed / (duration_ms as f64 * 1000.0)).clamp(0.0, 1.0)
+}
+
 /// One generation per surface: starting a new motion invalidates the old tick.
 /// Reduced-motion settles immediately with no orphan animation callback.
 #[derive(Clone, Default)]
@@ -455,10 +469,14 @@ impl MotionToken {
             return;
         }
         step(0.0);
-        let started = Instant::now();
+        // Starting at the API call used to skip the opening clip if GTK had
+        // not yet mapped the window. Time belongs to painted GTK frames, not
+        // to user-space work/Wayland scheduling before the first tick.
+        let first_frame = Cell::new(None::<i64>);
+        let last_progress = Cell::new(0.0_f64);
         let token = self.clone();
         let completed = Rc::new(RefCell::new(Some(complete)));
-        widget.add_tick_callback(move |_, _| {
+        widget.add_tick_callback(move |_, clock| {
             if token.generation.get() != generation {
                 return gtk::glib::ControlFlow::Break;
             }
@@ -469,8 +487,16 @@ impl MotionToken {
                 }
                 return gtk::glib::ControlFlow::Break;
             }
-            let cursor =
-                (started.elapsed().as_secs_f64() * 1000.0 / duration_ms as f64).clamp(0.0, 1.0);
+            let at = clock.frame_time();
+            let origin = first_frame.get().unwrap_or_else(|| {
+                first_frame.set(Some(at));
+                at
+            });
+            // Defensive monotonicity: even a clock discontinuity must not
+            // rewind a physically recorded scene or reduce accessible state.
+            let cursor = frame_clock_progress(origin, at, duration_ms)
+                .max(last_progress.get());
+            last_progress.set(cursor);
             step(cursor);
             if cursor >= 1.0 {
                 let callback = completed.borrow_mut().take();
@@ -649,6 +675,36 @@ impl Drop for CalendarFragmentScene {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn first_painted_frame_is_zero_even_after_mapping_delay() {
+        let started_on_first_tick = 9_000_000_i64;
+        assert_eq!(
+            frame_clock_progress(started_on_first_tick, started_on_first_tick, 420),
+            0.0
+        );
+        assert_eq!(
+            frame_clock_progress(started_on_first_tick, started_on_first_tick + 210_000, 420),
+            0.5
+        );
+        assert_eq!(
+            frame_clock_progress(started_on_first_tick, started_on_first_tick + 420_000, 420),
+            1.0
+        );
+        assert_eq!(
+            frame_clock_progress(started_on_first_tick, started_on_first_tick + 10_000_000, 420),
+            1.0
+        );
+    }
+
+    #[test]
+    fn frame_clock_never_interpolates_nonfinite_or_reversed_time() {
+        assert_eq!(frame_clock_progress(20_000, 19_000, 420), 0.0);
+        assert_eq!(frame_clock_progress(i64::MAX, i64::MIN, 420), 0.0);
+        assert_eq!(frame_clock_progress(100, 110, 0), 1.0);
+        assert_eq!(cubic_in_out(f64::NAN), 0.0);
+        assert_eq!(cubic_in_out(f64::INFINITY), 0.0);
+    }
 
     #[test]
     fn identical_dual_time_and_clamping_as_main() {

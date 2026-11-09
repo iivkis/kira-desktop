@@ -12,6 +12,12 @@ nix develop --command task dev:preview
 
 The preview must report a nested Wayland display, a **separate nested NIRI_SOCKET**, a temporary `NIRI_CONFIG`, a separate `XDG_CONFIG_HOME`, and the temporary Kira KDL. It must fail closed when the nested IPC socket is unavailable. Never copy your production Niri config into this test and never run output changes in a production session without an explicit recovery plan.
 
+## Design and motion regression gate (still unverified)
+
+- [ ] Delay the first Wayland map of every popup then open it: the clipped materialization must begin at recorded frame zero, not jump past its seam/sections while GTK allocates. Interrupt opening with Escape and immediately reopen; compare original forward/reverse flight coordinates, no rectangular flash and stable focus. Disable `gtk-enable-animations` during a running scene and confirm an immediate factual endpoint. Repeat at 125%, 150%, 200% scale.
+- [ ] In SystemCharts, click beyond the currently revealed path while the trace is growing or being retargeted. The inspector must **not** choose an unrevealed measurement, and clicks in the left-axis gutter or at width below 80px must be ignored. Once the genuine sample becomes painted, clicking the matching X selects exactly it; stale GPU readings remain unknown. Compare click marker and selected text against paired native/source frame sequences.
+- [ ] Inspect all five native transient and detached Close/Attach controls for at least a 34px target, the five canonical theme colors, visible focus and one transient popup. Do not treat the static design linter as a pixel/focus screenshot.
+
 ## System Monitor
 
 - [ ] Open **Система**: GTK Overview shows real sampled CPU, temperature (when supported), available/total memory, load, uptime, battery and GPU. Missing data are shown as unavailable, never zero.

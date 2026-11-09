@@ -46,6 +46,20 @@ interruption, high-DPI geometry and paired Niri/source motion remain pending.
 
 `kira-ui::TenetScroll` uses the real adjustment and target bounds to calculate the nearest visible position, then animates 340ms `power3.out`. Starting a new navigation samples the current adjustment and the stable layout row rather than its moving child transform; manual scroll cancels the track. Unmapping the ScrolledWindow cancels its tick and settles an outstanding programmatic destination, unless a manual scroll has already superseded it. A capture-phase wheel listener also cancels the target before GTK changes the adjustment (including at its boundary); adjustment changes remain the fallback for touch/keyboard. Both obey GTK reduced-motion settling. Native Calendar digit tracks, click-juggle clips, inverse fragments and month-grid transforms now explicitly cancel and settle on GTK unmap, retaining factual clock/date state. These lifecycle guards still require graphical verification. Native nested-Niri recordings remain the acceptance gate. A host-side, opt-in `scripts/capture_native_motion.py` records timestamped PNGs strictly from a verified nested socket, never the parent display. See [NATIVE_MOTION_ACCEPTANCE.md](NATIVE_MOTION_ACCEPTANCE.md); no paired captures have been reviewed.
 
+## Painted-frame causality and plot inspection (unverified)
+
+The common `MotionToken` now measures progress from the **first GDK frame-clock
+tick**, rather than wall time before GTK maps a surface. Popup reveals and
+other retained scenes therefore begin at the initial painted state after
+delayed mapping; a repeated input invalidates the previous generation and
+frame progress cannot move backward. Reduced-motion remains an immediate
+truthful endpoint. The `SystemCharts` pointer inspector additionally
+rejects clicks outside its true plot and on points beyond the *painted*
+shared time domain / trace clip, so a user cannot select a future trace
+that was not actually drawn. Both changes have pure model regressions
+but require paired nested-Niri timing, scaling and focus captures.
+See [NATIVE_DESIGN_MOTION_REVIEW.md](NATIVE_DESIGN_MOTION_REVIEW.md).
+
 ## Acceptance
 
 For each animated scene document its intent, contact event, original recorded history, cancellation/reset path, accessibility fallback and lifecycle cleanup. Test repeated clicks, interruption, widget closure, screen scale changes and reduced motion in an isolated nested Niri session. No assertion of finished TENET quality without visual review.

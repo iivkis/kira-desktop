@@ -40,6 +40,18 @@ For quantitative graphics use GtkDrawingArea/GSK with text equivalents. Samples,
 
 [TENET_MOTION.md](TENET_MOTION.md) defines causal memory, reversible scenes and continuity. The target animation engine is GLib/GTK frame clock and GSK, not GSAP. The first native milestone may use instant transitions; functional completion and reduced-motion correctness come first.
 
+## Regression guard
+
+The fast source-only `scripts/check_native_design.py` gate rejects
+noncanonical Kira Default CSS colors, browser/CSS-only keyframe and filter
+effects, suppressed focus outlines, orange foreground on orange surfaces,
+and accidental changes to the 42px Top Bar / zero-reservation popup contract.
+It also guards the GTK reduced-motion and first-painted-frame timing hooks.
+The gate has negative fixture tests and does **not** compile GTK or measure
+actual contrast, focus navigation, Niri pixels or the temporal paths.
+The latest rationale and unverified graphical risks are tracked in
+[NATIVE_DESIGN_MOTION_REVIEW.md](NATIVE_DESIGN_MOTION_REVIEW.md).
+
 ## Quality
 
 Review at 100%, 125%, 150%, 200% scale and on small displays. Check click targets, contrast, keyboard navigation, focus, screen readers, single-popup geometry, Niri window behavior, data freshness and graceful disconnected modes.

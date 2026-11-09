@@ -288,16 +288,24 @@ pub fn inspected_chart_point(
     }
 }
 
-/// Mouse inspection projects to the SAME measured axis as the Cairo trace.
+/// Mouse inspection projects to the SAME painted axis and clip as Cairo.
+/// An unrevealed future point must not be selectable before the trace exists.
 fn chart_sample_at_x(
     points: &[ChartPoint],
     domain: ChartTimeDomain,
+    painted_extent: f64,
     x: f64,
     width: i32,
 ) -> Option<Instant> {
     let left = 41.0_f64;
     let right = f64::from(width) - 8.0;
-    if points.is_empty() || !x.is_finite() || right <= left {
+    if points.is_empty()
+        || !x.is_finite()
+        || !painted_extent.is_finite()
+        || width <= 80
+        || x < left
+        || x > right
+    {
         return None;
     }
     let span = domain
@@ -307,22 +315,25 @@ fn chart_sample_at_x(
     if span <= 0.0 {
         return None;
     }
-    let fraction = ((x - left) / (right - left)).clamp(0.0, 1.0);
+    let requested = ((x - left) / (right - left)).clamp(0.0, 1.0);
+    let clip = painted_extent.clamp(0.0, 1.0);
+    // Clicks outside the actually revealed plot leave inspection unchanged.
+    if requested > clip {
+        return None;
+    }
     points
         .iter()
-        .min_by(|a, b| {
-            let delta = |point: &ChartPoint| {
-                (point
-                    .measured_at
-                    .saturating_duration_since(domain.start)
-                    .as_secs_f64()
-                    / span
-                    - fraction)
-                    .abs()
-            };
-            delta(a).total_cmp(&delta(b))
+        .filter_map(|point| {
+            let fraction = point
+                .measured_at
+                .saturating_duration_since(domain.start)
+                .as_secs_f64()
+                / span;
+            (fraction <= clip && fraction <= 1.0)
+                .then_some((point.measured_at, (fraction - requested).abs()))
         })
-        .map(|point| point.measured_at)
+        .min_by(|a, b| a.1.total_cmp(&b.1))
+        .map(|(stamp, _)| stamp)
 }
 
 pub fn chart_inspection_text(
@@ -690,11 +701,14 @@ impl ChartState {
         let Some((first, last)) = points.first().zip(points.last()) else {
             return;
         };
-        let domain = self
-            .animation
-            .borrow()
-            .display_domain(first.measured_at, last.measured_at);
-        if let Some(stamp) = chart_sample_at_x(&visible, domain, x, width) {
+        let (domain, extent) = {
+            let motion = self.animation.borrow();
+            (
+                motion.display_domain(first.measured_at, last.measured_at),
+                motion.trace_extent(first.measured_at, last.measured_at),
+            )
+        };
+        if let Some(stamp) = chart_sample_at_x(&visible, domain, extent, x, width) {
             self.selected_at.set(Some(stamp));
             self.inspector_feedback.set_text("");
             self.refresh();
@@ -1288,18 +1302,42 @@ mod tests {
             })
             .collect::<Vec<_>>();
         let domain = ChartTimeDomain::measured(t, t + Duration::from_millis(1000));
-        assert_eq!(chart_sample_at_x(&points, domain, 41.0, 349), Some(t));
+        assert_eq!(chart_sample_at_x(&points, domain, 1.0, 41.0, 349), Some(t));
         assert_eq!(
-            chart_sample_at_x(&points, domain, 191.0, 349),
+            chart_sample_at_x(&points, domain, 1.0, 191.0, 349),
             Some(t + Duration::from_millis(500))
         );
         assert_eq!(
-            chart_sample_at_x(&points, domain, 341.0, 349),
+            chart_sample_at_x(&points, domain, 1.0, 341.0, 349),
             Some(t + Duration::from_millis(1000))
         );
-        assert_eq!(chart_sample_at_x(&points, domain, f64::NAN, 349), None);
-        assert_eq!(chart_sample_at_x(&points, domain, 191.0, 30), None);
-        assert_eq!(chart_sample_at_x(&[], domain, 191.0, 349), None);
+        assert_eq!(chart_sample_at_x(&points, domain, 1.0, f64::NAN, 349), None);
+        assert_eq!(chart_sample_at_x(&points, domain, 1.0, 191.0, 30), None);
+        assert_eq!(chart_sample_at_x(&[], domain, 1.0, 191.0, 349), None);
+    }
+
+    #[test]
+    fn hit_testing_does_not_select_future_or_unrevealed_samples() {
+        let t = Instant::now();
+        let points = (0..3)
+            .map(|index| ChartPoint {
+                measured_at: t + Duration::from_millis(index * 500),
+                cpu: Some(index as f64),
+                ram: None,
+                gpu: None,
+            })
+            .collect::<Vec<_>>();
+        let domain = ChartTimeDomain::measured(t, t + Duration::from_secs(1));
+        // The active clip is only 30% into the plot. Neither the middle
+        // nor the final point has been painted yet.
+        assert_eq!(chart_sample_at_x(&points, domain, 0.3, 41.0, 349), Some(t));
+        assert_eq!(chart_sample_at_x(&points, domain, 0.3, 191.0, 349), None);
+        assert_eq!(chart_sample_at_x(&points, domain, 0.3, 341.0, 349), None);
+        assert_eq!(chart_sample_at_x(&points, domain, 0.3, 140.0, 349), None);
+        assert_eq!(chart_sample_at_x(&points, domain, 0.3, 41.0, 80), None);
+        assert_eq!(chart_sample_at_x(&points, domain, f64::NAN, 41.0, 349), None);
+        assert_eq!(chart_sample_at_x(&points, domain, 0.0, 41.0, 349), Some(t));
+        assert_eq!(chart_sample_at_x(&points, domain, 1.0, 341.0, 349), Some(t + Duration::from_secs(1)));
     }
 
     #[test]
