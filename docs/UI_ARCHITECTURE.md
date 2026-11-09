@@ -24,6 +24,6 @@ Every desktop feature **starts** with the reusable `kira-ui` component: typed vi
 
 Prefer pure data models and small native view controllers. Separate models from GTK object construction and separate asynchronous Linux/GIO operations from the GTK main context. Data delivery is one-way: background worker → owned result → GTK main context → widget. Interactions go through typed controller methods, Core requests or fixed GIO actions.
 
-A GtkCalendar replaces browser date grids, a GtkSearchEntry + list replaces browser launcher DOM, and system metrics are exposed through native labels/charts. Future complex controls use GTK composite widgets, not WebKit as a convenience fallback.
+The reusable native Calendar owns its custom Monday-first ISO-week grid rather than substituting a generic GtkCalendar. GtkSearchEntry and keyed GTK result rows replace the browser launcher DOM; native labels/charts render measured system data. Future complex controls use GTK composite widgets, not WebKit as a convenience fallback.
 
 Read [ARCHITECTURE_NATIVE.md](ARCHITECTURE_NATIVE.md) and [MIGRATION_NATIVE_GTK.md](MIGRATION_NATIVE_GTK.md) for the complete design and explicit feature gaps.

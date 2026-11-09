@@ -1,7 +1,20 @@
+# Rust and Nix build outputs
 /target/
 /result
-*.swp
-.DS_Store
+/result-*/
+/.direnv/
+
+# Local graphical evidence and scratch results
 /artifacts/
+
+# Python bytecode and test caches
 __pycache__/
 *.py[cod]
+.pytest_cache/
+/.coverage
+/htmlcov/
+
+# Editor/OS scratch files
+*.swp
+*.swo
+.DS_Store
