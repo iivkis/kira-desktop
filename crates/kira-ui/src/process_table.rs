@@ -620,9 +620,7 @@ impl ProcessTableState {
                 .borrow()
                 .get(&item.pid)
                 .is_some_and(|row| row.identity.name != item.name);
-            if replace
-                && let Some(old) = self.cache.borrow_mut().remove(&item.pid)
-            {
+            if replace && let Some(old) = self.cache.borrow_mut().remove(&item.pid) {
                 self.rows.remove(&old.wrapper);
             }
             // Finish the immutable borrow before creating a missing row.
