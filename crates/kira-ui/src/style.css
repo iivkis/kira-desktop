@@ -56,8 +56,9 @@ window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
 .kira-bar button.bar-warning-trigger:hover { color: #ffffff; }
 .kira-bar .bar-warning-index { font-size: 10px; color: #fca311; }
 .kira-bar .bar-warning-inspector {
-  background: #000000; color: #ffffff; min-height: 42px;
-  padding: 2px 8px; border-bottom: 1px solid #14213d;
+  background: #000000; color: #ffffff;
+  /* Overlay fills the parent's exact 42px allocation; do not grow its min-size. */
+  padding: 0 8px; border-bottom: 1px solid #14213d;
 }
 .kira-bar .bar-warning-count {
   color: #fca311; font-size: 11px; font-weight: 800;
