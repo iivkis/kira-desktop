@@ -7,6 +7,9 @@ use std::time::{Duration, Instant};
 
 use gtk::prelude::*;
 
+use crate::chart_motion::ChartMotion;
+use crate::motion::{MotionToken, animations_enabled};
+
 pub const MAX_PULSE_POINTS: usize = 120;
 pub const MAX_PULSE_AGE: Duration = Duration::from_secs(60);
 pub const PULSE_FRESHNESS: Duration = Duration::from_millis(2500);
@@ -365,6 +368,7 @@ fn draw_history(
     height: i32,
     points: &[ChartPoint],
     show_gpu: bool,
+    trace_extent: f64,
 ) {
     if width <= 80 || height <= 60 {
         return;
@@ -407,6 +411,12 @@ fn draw_history(
             cr.move_to(1.0, y + 3.0);
             let _ = cr.show_text(&format!("{limit:.1}%"));
         }
+        // The path is still built solely from actual readings. Retargeting
+        // only reveals its recorded geometry up to the current painted time.
+        let clipped_right = left + (right - left) * trace_extent.clamp(0.0, 1.0);
+        let _ = cr.save();
+        cr.rectangle(left - 3.0, top - 3.0, (clipped_right - left + 6.0).max(0.0), 62.0);
+        cr.clip();
         for path in history_paths(points, lane, left, right, top, bottom) {
             if path.len() >= 2 {
                 trace_curve(cr, &path);
@@ -431,12 +441,15 @@ fn draw_history(
                 }
             }
         }
+        let _ = cr.restore();
     }
 }
 
 struct ChartState {
     history: RefCell<PulseHistory>,
     gpu: RefCell<GpuPulseCoupler>,
+    animation: RefCell<ChartMotion>,
+    motion: MotionToken,
     cpu_text: gtk::Label,
     ram_text: gtk::Label,
     gauge_canvas: gtk::DrawingArea,
@@ -448,10 +461,44 @@ struct ChartState {
 }
 
 impl ChartState {
+    fn animate_sample(self: &Rc<Self>, view: &gtk::Widget, point: ChartPoint, previous: Option<Instant>) {
+        // Hidden or reduced-motion windows settle immediately. Re-showing a
+        // detached chart must never revive an old GTK frame callback.
+        let animate = view.is_mapped() && animations_enabled();
+        self.motion.cancel();
+        let duration = self.animation.borrow_mut().begin(
+            point.measured_at,
+            previous,
+            point.cpu,
+            point.ram,
+            animate,
+        );
+        if !animate {
+            return;
+        }
+        let weak = Rc::downgrade(self);
+        self.motion.run(
+            view,
+            duration,
+            move |cursor| {
+                if let Some(state) = weak.upgrade() {
+                    state.animation.borrow_mut().step(cursor);
+                    state.gauge_canvas.queue_draw();
+                    state.plot.queue_draw();
+                }
+            },
+            || {},
+        );
+    }
+
     fn refresh(&self) {
         let now = Instant::now();
         let history = self.history.borrow();
         let current = history.latest(now);
+        if current.is_none() {
+            self.motion.cancel();
+            self.animation.borrow_mut().expire_gauges();
+        }
         let cpu = current.and_then(|point| point.cpu);
         let ram = current.and_then(|point| point.ram);
         self.cpu_text.set_text(&meter_text(cpu, false));
@@ -558,6 +605,8 @@ impl SystemCharts {
         let state = Rc::new(ChartState {
             history: RefCell::new(PulseHistory::default()),
             gpu: RefCell::new(GpuPulseCoupler::default()),
+            animation: RefCell::new(ChartMotion::default()),
+            motion: MotionToken::default(),
             cpu_text: meters[0].clone(),
             ram_text: meters[1].clone(),
             gauge_canvas: gauge_canvas.clone(),
@@ -571,12 +620,13 @@ impl SystemCharts {
         gauge_canvas.set_draw_func(move |_, cr, width, height| {
             if let Some(state) = weak.upgrade() {
                 let current = state.history.borrow().latest(Instant::now());
+                let painted = state.animation.borrow().gauges();
                 draw_gauges(
                     cr,
                     width,
                     height,
-                    current.and_then(|p| p.cpu),
-                    current.and_then(|p| p.ram),
+                    current.and_then(|p| p.cpu).and(painted.0),
+                    current.and_then(|p| p.ram).and(painted.1),
                 );
             }
         });
@@ -585,12 +635,27 @@ impl SystemCharts {
             if let Some(state) = weak.upgrade() {
                 let now = Instant::now();
                 let points = state.history.borrow().recent(now);
-                draw_history(cr, width, height, &points, state.gpu.borrow().is_fresh(now));
+                let extent = points
+                    .first()
+                    .zip(points.last())
+                    .map_or(1.0, |(first, last)| {
+                        state.animation.borrow().trace_extent(first.measured_at, last.measured_at)
+                    });
+                draw_history(
+                    cr,
+                    width,
+                    height,
+                    &points,
+                    state.gpu.borrow().is_fresh(now),
+                    extent,
+                );
             }
         });
         let weak = Rc::downgrade(&state);
         root.connect_unmap(move |_| {
             if let Some(state) = weak.upgrade() {
+                state.motion.cancel();
+                state.animation.borrow_mut().reset();
                 state.history.borrow_mut().clear();
                 state.gpu.borrow_mut().reset();
                 state.refresh();
@@ -604,12 +669,22 @@ impl SystemCharts {
     }
 
     pub fn push_sample(&self, sample: ChartSample) {
+        let previous = self.state.history.borrow().samples.back().map(|p| p.measured_at);
+        // Duplicate/out-of-order samples are neither measurements nor motion.
+        if previous.is_some_and(|at| sample.measured_at <= at) {
+            return;
+        }
         let gpu = self
             .state
             .gpu
             .borrow_mut()
             .take_for_pulse(sample.measured_at);
         self.state.history.borrow_mut().push_with_gpu(sample, gpu);
+        let point = ChartPoint {
+            gpu: gpu.map(f64::from),
+            ..ChartPoint::from(sample)
+        };
+        self.state.animate_sample(&self.root.clone().upcast(), point, previous);
         self.state.refresh();
         // One-shot expiry callbacks, not an always-ticking UI timer. Older
         // callbacks cannot forge new readings; they only re-evaluate time.

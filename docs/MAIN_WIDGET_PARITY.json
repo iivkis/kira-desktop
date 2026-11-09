@@ -242,7 +242,8 @@
       ],
       "animation_requirements": [
         "True chart interpolation and reduced-motion; original ECharts visual parity",
-        "Source 350ms initial and 180ms update gauge/plot motion is not yet implemented or visually reviewed; static Cairo drawing does not claim TENET completion."
+        "Source 350ms initial and 180ms update gauge/plot motion is not yet implemented or visually reviewed; static Cairo drawing does not claim TENET completion.",
+        "Pure kira-ui::ChartMotion and GTK MotionToken now animate source-aligned 350ms first and 180ms cubicOut updates of both gauges and measured trace clipping. Retargeting starts from the last painted utilization/time cursor, never emits synthetic CPU/RAM/GPU samples, and clears on hide, expiration and reduced-motion. Headless tests cover interruption, valid range, timestamp retarget and unknown values. Paired real nested-Niri frame captures are still required to accept motion and pixels."
       ],
       "verified": {
         "content": false,
