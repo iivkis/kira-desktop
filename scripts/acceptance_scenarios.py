@@ -171,6 +171,44 @@ def await_real_sni_fixture(
     )
 
 
+def verify_notification_sender_probe(
+    executable: Path, env: dict[str, str], *, runner=subprocess.run,
+) -> dict[str, bool]:
+    """Probe same/foreign D-Bus sender leases on a single private bus.
+
+    Each GIO connection persists for all method calls. Spawning several
+    gdbus subprocesses alone cannot test a legal same-sender replacement.
+    """
+    if (env.get("KIRA_PREVIEW") != "1"
+            or env.get("KIRA_ISOLATED_SESSION_BUS") != "1"
+            or env.get("KIRA_NOTIFICATIONS_PREVIEW") != "1"
+            or not re.fullmatch(r"[0-9a-f]{32}", env.get("KIRA_ACCEPTANCE_TOKEN", ""))
+            or not env.get("DBUS_SESSION_BUS_ADDRESS", "").startswith("unix:")
+            or env.get("DBUS_SESSION_BUS_ADDRESS") == env.get("KIRA_ACCEPTANCE_PARENT_BUS")):
+        raise PreviewError("Refusing notification sender probe without a private preview bus")
+    if not executable.is_file() or not os.access(executable, os.X_OK):
+        raise PreviewError("The packaged notification sender probe is missing or not executable")
+    result = runner(
+        [str(executable)], env=env, text=True, capture_output=True,
+        check=False, timeout=15,
+    )
+    if result.returncode:
+        raise PreviewError(
+            "Real private GIO notification sender probe failed: " + result.stderr.strip()[:400]
+        )
+    try:
+        report = json.loads(result.stdout)
+    except (TypeError, ValueError) as error:
+        raise PreviewError("Private sender probe emitted invalid JSON") from error
+    expected = (
+        "same_sender_replaced", "foreign_sender_isolated",
+        "stale_id_rejected", "private_bus",
+    )
+    if not isinstance(report, dict) or any(report.get(key) is not True for key in expected):
+        raise PreviewError("Private sender probe did not prove every identity isolation check")
+    return {key: True for key in expected}
+
+
 def capture_event(
     display: str, output: Path, label: str,
     parent_environment: dict[str, str],
@@ -214,6 +252,7 @@ def run_acceptance(
     parent_environment: dict[str, str],
     isolated_environment: dict[str, str],
     output: Path,
+    notification_probe: Path,
 ) -> Path:
     """The preview owns lifecycle: run only after its Shell is running."""
     from accept_nested import verify_private_bus
@@ -267,6 +306,9 @@ def run_acceptance(
     close_notification(foreign_attempt, isolated_environment)
     third = notify("close_by_id", 0, isolated_environment, timeout=5000)
     close_notification(third, isolated_environment)
+    sender_probe = verify_notification_sender_probe(
+        notification_probe, isolated_environment,
+    )
 
     # This is a *live* SNI registration, not a fake application in GTK.
     # Capture its actual status and themed/pixmap state on the nested
@@ -287,6 +329,7 @@ def run_acceptance(
         "session_bus": "new dbus-run-session (no address recorded)",
         "nested_wayland": nested_display,
         "server_information": server,
+        "notification_sender_probe": sender_probe,
         "captures": [
             str(arrival.relative_to(output)),
             str(departure.relative_to(output)),
