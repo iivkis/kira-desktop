@@ -221,6 +221,34 @@ pub enum NotificationIntent {
     Action(u32, String),
 }
 
+/// Untrusted/duplicated IDs cannot share a GTK frame or an action lease.
+pub fn bounded_notifications(cards: &[NotificationView]) -> bool {
+    cards.len() <= MAX_TOASTS
+        && cards.iter().all(bounded_notification)
+        && cards.iter().map(|card| card.id).collect::<HashSet<_>>().len() == cards.len()
+}
+
+/// Keep only genuinely identical view models with the same geometry. A
+/// Freedesktop replacement using an old ID but new text/actions must build
+/// new controls and invalidate the old buttons, not mutate their leases.
+pub fn retained_toast_ids(
+    previous: &[NotificationView],
+    next: &[NotificationView],
+    old_layout: ToastLayout,
+    new_layout: ToastLayout,
+) -> HashSet<u32> {
+    if old_layout != new_layout
+        || !bounded_notifications(previous)
+        || !bounded_notifications(next)
+    {
+        return HashSet::new();
+    }
+    next.iter()
+        .filter(|new| previous.iter().any(|old| old == *new))
+        .map(|item| item.id)
+        .collect()
+}
+
 pub fn bounded_notification(view: &NotificationView) -> bool {
     view.id != 0
         && view.app.chars().count() <= 128
@@ -338,9 +366,11 @@ fn card(
 pub struct NotificationHost {
     pub window: gtk::ApplicationWindow,
     root: gtk::Box,
+    spacer: gtk::Box,
     leaving: gtk::Fixed,
     visible_frames: RefCell<HashMap<u32, gtk::Fixed>>,
-    painted_ids: RefCell<HashSet<u32>>,
+    visible_leases: RefCell<HashMap<u32, Rc<Cell<u64>>>>,
+    painted_ids: Rc<RefCell<HashSet<u32>>>,
     suppress_departure: Cell<bool>,
     layout: Cell<ToastLayout>,
     current: RefCell<Vec<NotificationView>>,
@@ -386,6 +416,11 @@ impl NotificationHost {
         root.set_margin_end(INNER_MARGIN);
         root.set_margin_top(INNER_MARGIN);
         root.set_margin_bottom(INNER_MARGIN);
+        // One permanent spacer keeps the host's source bottom alignment
+        // while unchanged cards retain their actual parent and focus.
+        let spacer = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        spacer.set_vexpand(true);
+        root.append(&spacer);
         let layers = gtk::Overlay::new();
         layers.set_child(Some(&root));
         let leaving = gtk::Fixed::new();
@@ -407,9 +442,11 @@ impl NotificationHost {
         Some(Self {
             window,
             root,
+            spacer,
             leaving,
             visible_frames: RefCell::new(HashMap::new()),
-            painted_ids: RefCell::new(HashSet::new()),
+            visible_leases: RefCell::new(HashMap::new()),
+            painted_ids: Rc::new(RefCell::new(HashSet::new())),
             suppress_departure: Cell::new(false),
             layout: Cell::new(layout),
             current: RefCell::new(Vec::new()),
@@ -437,44 +474,69 @@ impl NotificationHost {
     }
 
     pub fn set_cards(&self, layout: ToastLayout, cards: &[NotificationView]) {
-        assert!(cards.len() <= MAX_TOASTS && cards.iter().all(bounded_notification));
+        if !bounded_notifications(cards) {
+            // Duplicate IDs or an oversized model cannot be mapped safely to
+            // one focusable card and one owner-scoped action permission.
+            self.hide();
+            return;
+        }
         if self.has_snapshot(cards, layout) {
             return;
         }
         self.revision.set(self.revision.get().wrapping_add(1));
+        // A new revision revokes every old callback first. Unchanged buttons
+        // can be reissued their own current lease only after their identical
+        // ID and payload pass the retained GTK identity check.
         let lease = self.action_gate.renew();
-        let action_gate = self.action_gate.clone();
-        let dispatch = self.on_intent.clone();
-        let on_intent: Rc<dyn Fn(NotificationIntent)> = Rc::new(move |intent| {
-            if action_gate.accepts(lease) {
-                dispatch(intent);
-            }
-        });
         let old_layout = self.layout.replace(layout);
         let previous = self.current.borrow().clone();
-        let painted = self.painted_ids.replace(HashSet::new());
+        let old_ids: HashSet<_> = previous.iter().map(|notice| notice.id).collect();
+        let previously_painted = self.painted_ids.replace(HashSet::new());
         let departures = departing_toasts(
             &previous,
             cards,
-            &painted,
+            &previously_painted,
             old_layout == layout && !self.suppress_departure.get(),
         );
-        let old_ids: HashSet<_> = previous.iter().map(|notice| notice.id).collect();
+        let reusable = retained_toast_ids(&previous, cards, old_layout, layout);
         for token in self.active_motion.borrow_mut().drain(..) {
             token.cancel();
         }
         self.pending_entrances.borrow_mut().clear();
 
-        // A superseded exit never survives into the next snapshot. Reuse
-        // actual old GTK frames for departure, not a copied image/ghost.
+        // An interrupted departure is never allowed to survive into the
+        // next snapshot. Its stale controls already lost their lease.
         while let Some(child) = self.leaving.first_child() {
             self.leaving.remove(&child);
         }
-        let mut available = std::mem::take(&mut *self.visible_frames.borrow_mut());
-        let exiting = departures
-            .into_iter()
-            .filter_map(|(id, index)| available.remove(&id).map(|frame| (index, frame)))
-            .collect::<Vec<_>>();
+
+        let mut old_frames = std::mem::take(&mut *self.visible_frames.borrow_mut());
+        let mut old_leases = std::mem::take(&mut *self.visible_leases.borrow_mut());
+        let mut kept_frames = HashMap::new();
+        let mut kept_leases = HashMap::new();
+        for id in reusable {
+            if let (Some(frame), Some(token)) = (old_frames.remove(&id), old_leases.remove(&id)) {
+                // The original button callbacks capture this same token.
+                // Old replaced/removed buttons do NOT receive a new lease.
+                token.set(lease);
+                kept_frames.insert(id, frame);
+                kept_leases.insert(id, token);
+            }
+        }
+
+        // Only discarded children leave the retained list. Existing cards
+        // remain in the original GTK box, so keyboard focus is not unparented
+        // when an unrelated notification is added or removed.
+        let mut exiting = Vec::new();
+        for (id, frame) in old_frames {
+            self.root.remove(&frame);
+            if let Some((_, index)) = departures
+                .iter()
+                .find(|(departing, _)| *departing == id)
+            {
+                exiting.push((*index, frame));
+            }
+        }
 
         *self.current.borrow_mut() = cards.to_vec();
         self.root.set_opacity(0.0);
@@ -482,18 +544,11 @@ impl NotificationHost {
             .set_opacity(if exiting.is_empty() { 0.0 } else { 1.0 });
         self.clear_input();
         self.window.set_default_size(layout.width, layout.height);
-        while let Some(child) = self.root.first_child() {
-            self.root.remove(&child);
-        }
 
-        // The old surface's *already-painted* cards leave along the
-        // reversed entrance path. They are not targetable and do not
-        // hold the Freedesktop notification ID or its input region.
+        // Rewind the actual previously rendered old frame, not a pixel
+        // copy or a hypothetical fully visible card.
         for (index, frame) in exiting {
             frame.set_can_target(false);
-            // An interrupted entrance left this child's *real* opacity
-            // and position at an intermediate contact point. Transfer that
-            // pose to the outgoing container before reversing the path.
             let start_alpha = frame
                 .first_child()
                 .map(|child| {
@@ -538,34 +593,72 @@ impl NotificationHost {
             return;
         }
 
-        let spacer = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        spacer.set_vexpand(true);
-        self.root.append(&spacer);
-        // The queue is oldest first. GTK children are top to bottom.
+        // The queue is oldest first, but GTK renders top to bottom.
+        // Move the existing frames in place rather than destructively
+        // rebuilding the whole stack on every snapshot.
+        let mut predecessor: gtk::Widget = self.spacer.clone().upcast();
         for notice in cards.iter().rev() {
-            let content = card(notice, layout.card_height, on_intent.clone());
-            let frame = gtk::Fixed::new();
-            frame.set_hexpand(true);
-            frame.set_overflow(gtk::Overflow::Hidden);
-            frame.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
-            content.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
-            frame.put(&content, 0.0, 0.0);
-            self.root.append(&frame);
-            self.visible_frames
-                .borrow_mut()
-                .insert(notice.id, frame.clone());
-            // Existing IDs do not replay their entrance when a different
-            // notification arrives or a slow application replaces its text.
-            if !old_ids.contains(&notice.id) {
-                let motion = MotionToken::default();
-                self.pending_entrances.borrow_mut().push(CardEntrance {
-                    id: notice.id,
-                    frame,
-                    card: content,
-                    motion: motion.clone(),
+            let (frame, token) = if let (Some(frame), Some(token)) = (
+                kept_frames.remove(&notice.id),
+                kept_leases.remove(&notice.id),
+            ) {
+                // If its entrance was interrupted by an unrelated update,
+                // settle at the genuine final position. Telemetry changes
+                // never replay entrance or leave a half-transparent control.
+                if let Some(content) = frame.first_child() {
+                    frame.move_(&content, 0.0, 0.0);
+                    content.set_opacity(1.0);
+                }
+                (frame, token)
+            } else {
+                let token = Rc::new(Cell::new(lease));
+                let gate = self.action_gate.clone();
+                let token_for_dispatch = token.clone();
+                let painted = self.painted_ids.clone();
+                let dispatch = self.on_intent.clone();
+                let own_id = notice.id;
+                let intent: Rc<dyn Fn(NotificationIntent)> = Rc::new(move |action| {
+                    let id = match &action {
+                        NotificationIntent::Close(id) | NotificationIntent::Action(id, _) => *id,
+                    };
+                    // A stale/remounted button can never execute against
+                    // a different revision, output or unpainted snapshot.
+                    if id == own_id
+                        && gate.accepts(token_for_dispatch.get())
+                        && painted.borrow().contains(&own_id)
+                    {
+                        dispatch(action);
+                    }
                 });
-                self.active_motion.borrow_mut().push(motion);
+                let content = card(notice, layout.card_height, intent);
+                let frame = gtk::Fixed::new();
+                frame.set_hexpand(true);
+                frame.set_overflow(gtk::Overflow::Hidden);
+                frame.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
+                content.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
+                frame.put(&content, 0.0, 0.0);
+                self.root.append(&frame);
+                // Actual new notification IDs receive one source TENET
+                // entrance. Replacements by ID update immediately.
+                if !old_ids.contains(&notice.id) {
+                    let motion = MotionToken::default();
+                    self.pending_entrances.borrow_mut().push(CardEntrance {
+                        id: notice.id,
+                        frame: frame.clone(),
+                        card: content,
+                        motion: motion.clone(),
+                    });
+                    self.active_motion.borrow_mut().push(motion);
+                }
+                (frame, token)
+            };
+            let is_in_position = predecessor.next_sibling().as_ref() == Some(frame.upcast_ref());
+            if !is_in_position {
+                self.root.reorder_child_after(&frame, Some(&predecessor));
             }
+            predecessor = frame.clone().upcast();
+            self.visible_frames.borrow_mut().insert(notice.id, frame);
+            self.visible_leases.borrow_mut().insert(notice.id, token);
         }
 
         let wanted = self.revision.get();
@@ -983,6 +1076,77 @@ mod tests {
         item.actions = vec![("k".into(), "v".into()); 9];
         assert!(!bounded_notification(&item));
     }
+    #[test]
+    fn retains_only_unmodified_notification_ids_at_identical_geometry() {
+        let layout = toast_layout(1280, 800, 800).unwrap();
+        let a = notice(1);
+        let b = notice(2);
+        let c = notice(3);
+        let previous = [a.clone(), b.clone()];
+        let new_set = [c.clone(), b.clone(), a.clone()];
+        assert_eq!(
+            retained_toast_ids(&previous, &new_set, layout, layout),
+            HashSet::from([1, 2])
+        );
+        let mut edited = b.clone();
+        edited.summary = "Replaced content".into();
+        assert_eq!(
+            retained_toast_ids(&previous, &[a.clone(), edited], layout, layout),
+            HashSet::from([1])
+        );
+        let mut actions_changed = b.clone();
+        actions_changed.actions.push(("accept".into(), "OK".into()));
+        assert_eq!(
+            retained_toast_ids(&previous, &[actions_changed], layout, layout),
+            HashSet::new()
+        );
+        let narrow = toast_layout(400, 800, 800).unwrap();
+        assert_eq!(
+            retained_toast_ids(&previous, &previous, layout, narrow),
+            HashSet::new()
+        );
+    }
+
+    #[test]
+    fn repeated_or_malformed_ids_fail_closed_without_doubled_gtk_identity() {
+        assert!(bounded_notifications(&[notice(1), notice(2)]));
+        assert!(!bounded_notifications(&[notice(1), notice(1)]));
+        assert!(!bounded_notifications(&[notice(0)]));
+        assert!(!bounded_notifications(&[
+            notice(1),
+            notice(2),
+            notice(3),
+            notice(4),
+        ]));
+        let layout = toast_layout(1280, 800, 800).unwrap();
+        assert_eq!(
+            retained_toast_ids(
+                &[notice(1), notice(1)],
+                &[notice(1)],
+                layout,
+                layout
+            ),
+            HashSet::new()
+        );
+    }
+
+    #[test]
+    fn reuse_renews_only_actual_button_lease_and_revokes_replaced_ones() {
+        let gate = ToastActionGate::default();
+        let retained = Rc::new(Cell::new(gate.renew()));
+        let replaced = Rc::new(Cell::new(retained.get()));
+        assert!(gate.accepts(retained.get()));
+        let next_snapshot = gate.renew();
+        assert!(!gate.accepts(retained.get()));
+        // Only the model-identical real GtkWidget can retain the token.
+        retained.set(next_snapshot);
+        assert!(gate.accepts(retained.get()));
+        assert!(!gate.accepts(replaced.get()));
+        let revoked = gate.renew();
+        assert!(!gate.accepts(retained.get()));
+        assert_ne!(revoked, replaced.get());
+    }
+
     #[test]
     fn output_plan_prefers_bar_monitor_not_first_gdk_item() {
         let outputs = [(1920, 1080), (800, 600), (360, 640)];

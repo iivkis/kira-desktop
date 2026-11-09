@@ -40,6 +40,20 @@ When the last 60-second history window discards the pinned sample, the
 selection clears instead of adopting another identity. User focus,
 interruption, high-DPI geometry and paired Niri/source motion remain pending.
 
+## Native retained notification lifecycle (unverified)
+
+The native shaped-input NotificationHost now retains a widget's actual GTK
+frame, focusable buttons and identity when its Freedesktop ID, bounded text,
+actions and layout remain identical across unrelated queue changes. GTK box
+siblings are reordered in place instead of unparenting every card.
+A retained identical button's action lease is renewed for the next actually
+painted snapshot; a replaced/removed or pre-paint button cannot dispatch.
+Previously started 180ms entrance motion settles if unrelated list updates
+interrupt it; a disappearing painted card alone takes the original 180ms
+inverted same-path exit without regaining input.
+This maintains temporal identity without forging process/notification data.
+Nested-Niri focus, pointer and 60fps motion capture are required.
+
 ## Native keyed FLIP and scroll (unverified)
 
 `kira-ui::ReflowRow` retains an actual GTK child/button and controller under a GTK allocation transform. `ReflowScope` records the painted origins of the first 24 stable-key rows and, after the new GTK layout, replays the saved difference over 340ms using `back.out(1.14)`. Pruned rows never receive imaginary movements; new content and the real selected model update immediately. Launcher uses reflow only for explicit search/filter input when the previous result set contains 1–20 entries, not new GIO catalogue readings; a second interaction freezes each surviving row at its last painted coordinates. WorkspaceStrip only restages changed visible workspace ordering and clears stale offsets when disconnected. The FLIP scope invalidates pending ticks without losing the current painted geometry, and its explicit cancellation settles every still-live row; with reduced motion enabled it settles immediately. GTK unmap also resets row transforms, clears the persistent marker's cached geometry (keeping the selected target), and invalidates pending layout ticks before any remap.

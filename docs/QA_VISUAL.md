@@ -27,3 +27,15 @@ For source-motion review use `profile=full`; PNG uploads require
 `docs/CI_PERFORMANCE.md`. The static
 `scripts/compare_visual_evidence.py` comparison is not a
 visual parity certificate.
+
+## Retained notification cards (new GTK acceptance scenario)
+
+Before accepting retained native NotificationHost updates, record a three-card
+snapshot, keyboard-focus the middle action, add/remove or reorder the other
+cards and confirm the **same GTK button remains focused** and actionable only
+after its new paint acknowledgment. The unchanged card must not reanimate on
+data changes. Replace the same ID's text/action set and verify that the old
+button's queued event cannot dispatch; the new button must receive its own
+lease. Exercise source-aligned 180ms entrance interruption, inverted dismissal,
+reduced motion, fractional scaling and multi-output retarget with paired
+nested-Niri captures. Source-only quick CI cannot validate these GTK states.
