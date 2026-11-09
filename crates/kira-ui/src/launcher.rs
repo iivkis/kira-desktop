@@ -37,7 +37,13 @@ pub fn filter_applications(
 ) -> Vec<ApplicationEntry> {
     let terms: Vec<_> = query.split_whitespace().map(str::to_lowercase).collect();
     if terms.is_empty() {
-        return apps.iter().take(limit).cloned().collect();
+        let mut seen_ids = HashSet::new();
+        return apps
+            .iter()
+            .filter(|app| seen_ids.insert(app.id.clone()))
+            .take(limit)
+            .cloned()
+            .collect();
     }
     let joined = terms.join(" ");
     let mut ranked: Vec<_> = apps
@@ -69,8 +75,10 @@ pub fn filter_applications(
         })
         .collect();
     ranked.sort_by_key(|(rank, index, _)| (*rank, *index));
+    let mut seen_ids = HashSet::new();
     ranked
         .into_iter()
+        .filter(|(_, _, app)| seen_ids.insert(app.id.clone()))
         .take(limit)
         .map(|(_, _, app)| app.clone())
         .collect()
@@ -719,6 +727,30 @@ mod tests {
             ["12", "10", "14", "13", "15", "11"]
         );
         assert_eq!(filter_applications(&apps, "browser editor", 80)[0].id, "14");
+    }
+
+    #[test]
+    fn duplicate_gio_ids_cannot_create_duplicate_keyed_rows() {
+        let apps = vec![
+            app("shared", "Alpha", "Mail tools"),
+            app("mail", "Mail", ""),
+            app("shared", "Mail Pro", ""),
+        ];
+        assert_eq!(
+            filter_applications(&apps, "", 80)
+                .iter()
+                .map(|app| app.id.as_str())
+                .collect::<Vec<_>>(),
+            ["shared", "mail"]
+        );
+        assert_eq!(
+            filter_applications(&apps, "mail", 80)
+                .iter()
+                .map(|app| app.id.as_str())
+                .collect::<Vec<_>>(),
+            ["mail", "shared"]
+        );
+        assert_eq!(filter_applications(&apps, "mail", 1)[0].id, "mail");
     }
 
     #[test]

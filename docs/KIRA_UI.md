@@ -40,6 +40,10 @@
 | `ReflowRow` / `ReflowScope` / `TenetScroll` | Stable row IDs, GTK allocation snapshots and real scroll adjustment | Source 340ms keyed FLIP for at most 24 retained rows, disabled for Launcher filters starting above 20 entries; frozen previous paint on interruptions, full row-offset reset on scope cancellation or GTK unmap, 340ms interruptible power3.out nearest-visible scrolling with layout-row bounds, unmap settlement and immediate reduced-motion settling | Launcher filtering and keyboard movement, WorkspaceStrip order changes; stable GTK width expansion, disconnected workspace offsets reset, user scroll wins; native frame acceptance outstanding |
 | `MotionToken` / `CalendarFragmentScene` / `ClockDigits` / `PopupTimeline` / `PopupSection` | Event-lifetime cursor, per-digit 400ms history, source section stagger and recorded four-flight paths | Frame-clock digit exchange and saved-sector click juggling, source-timed GSK month compositor, measured-day inverse fragments, GSK-clipped reversible popup, GTK section transforms and saved INVERTED traces | Reduced-motion settling and basic interruption modeled; nested-Niri motion, focus and geometry acceptance remain unverified |
 
+## Launcher catalogue identity safety
+
+The Shell now removes duplicate GIO application IDs globally after display-name sorting (not only adjacent IDs). The reusable Launcher independently filters duplicate IDs after search ranking, including an empty query. This keeps keyed GTK rows unique even if a trusted catalogue supplies repeated identities, while preserving distinct applications that share a display name. Pure Rust regression tests cover both boundaries; packaged GTK and nested-Niri acceptance remain unverified.
+
 ## Guardrails and acceptance
 
 No WebKit fallback, browser runtime, direct shell execution or arbitrary command execution in UI. Component callbacks express intent only. Kira UI stays independent of the actual compositor and Core transport. Native does not mean secure plugin isolation; third-party native widgets remain out of scope.

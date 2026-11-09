@@ -7,6 +7,7 @@ mod tray_host;
 mod tray_menu;
 
 use std::cell::{Cell, RefCell};
+use std::collections::HashSet;
 use std::rc::Rc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, mpsc};
@@ -234,10 +235,19 @@ fn refresh_settings_about(sender: mpsc::Sender<ShellUpdate>) {
     });
 }
 
+/// Keep stable display-name order, but deduplicate by global GIO identity.
+/// Two entries sharing an ID need not be adjacent in name order.
+fn sort_unique_applications(mut apps: Vec<ApplicationEntry>) -> Vec<ApplicationEntry> {
+    apps.sort_by_key(|app| app.name.to_lowercase());
+    let mut seen_ids = HashSet::new();
+    apps.retain(|app| seen_ids.insert(app.id.clone()));
+    apps
+}
+
 /// Discover applications on a worker, converting GIO objects into Send-safe metadata.
 fn start_application_discovery(sender: mpsc::Sender<ShellUpdate>) {
     std::thread::spawn(move || {
-        let mut apps: Vec<ApplicationEntry> = gtk::gio::AppInfo::all()
+        let apps: Vec<ApplicationEntry> = gtk::gio::AppInfo::all()
             .into_iter()
             .filter(|app| app.should_show())
             .filter_map(|app| {
@@ -254,9 +264,7 @@ fn start_application_discovery(sender: mpsc::Sender<ShellUpdate>) {
                 })
             })
             .collect();
-        apps.sort_by_key(|app| app.name.to_lowercase());
-        apps.dedup_by(|a, b| a.id == b.id);
-        let _ = sender.send(ShellUpdate::Applications(apps));
+        let _ = sender.send(ShellUpdate::Applications(sort_unique_applications(apps)));
     });
 }
 
@@ -971,6 +979,32 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn gio_catalogue_deduplicates_nonadjacent_ids_without_merging_distinct_apps() {
+        let apps = [
+            ("same", "Alpha"),
+            ("another", "Middle"),
+            ("same", "Zulu"),
+            ("third", "Alpha"),
+        ]
+        .into_iter()
+        .map(|(id, name)| ApplicationEntry {
+            id: id.to_owned(),
+            name: name.to_owned(),
+            description: String::new(),
+            icon: None,
+        })
+        .collect();
+        let unique = sort_unique_applications(apps);
+        assert_eq!(
+            unique
+                .iter()
+                .map(|app| app.id.as_str())
+                .collect::<Vec<_>>(),
+            ["same", "third", "another"]
+        );
+    }
 
     #[test]
     fn core_probe_requires_valid_rpc_success_with_version() {
