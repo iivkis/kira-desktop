@@ -330,7 +330,7 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
 .kira-popup .calendar-rail { background: #000000; }
 .kira-popup .sky-atlas {
   background: #000000; color: #ffffff;
-  padding: 16px; min-width: 480px;
+  padding: 16px; min-width: 0;
 }
 .kira-popup .sky-title {
   color: #ffffff; font-size: 21px; font-weight: 800;
@@ -356,6 +356,19 @@ window.kira-notification-host, .kira-notification-host .notification-stack {
 .kira-popup .sky-workbench entry:focus-visible {
   outline: 2px solid #fca311; outline-offset: 2px;
 }
+.kira-popup .sky-workbench entry.sky-invalid {
+  border: 2px solid #fca311;
+}
+.kira-popup .sky-clock-step {
+  color: #ffffff; background: #000000;
+  border: 1px solid #e5e5e5; border-radius: 2px;
+  min-height: 34px; padding: 4px 8px;
+}
+.kira-popup .sky-clock-step:hover,
+.kira-popup .sky-clock-step:focus-visible {
+  color: #fca311; border-color: #fca311;
+}
+.kira-popup .sky-clock-step:disabled { opacity: 0.45; }
 .kira-popup .sky-reset {
   color: #fca311; background: #000000;
   border: 1px solid #fca311; border-radius: 2px;

@@ -18,6 +18,19 @@ browser geolocation permission or external CDN exists. The former Canvas
 backing-buffer limit of 1536 physical pixels is **not yet verified** for
 the new GtkDrawingArea and remains an explicit scale/performance acceptance gate.
 
+The controls now use a wrapping native FlowBox so manual coordinate/time
+editors and actions remain available in a narrow detached window. **−1 ч**
+and **+1 ч** adjust the host-local observation clock without silently moving
+the Calendar's selected date; nudges are disabled if the clock is invalid or
+would cross midnight. **СБРОС** restores Greenwich latitude, longitude
+**and 22:00**, but intentionally retains the selected Calendar day.
+Each invalid coordinate/time field receives a visible orange border and a
+specific Russian diagnostic. Unsupported dates and nonexistent local DST
+clock instants are rejected; the renderer is hidden rather than showing
+an invented sky. The chart's accessible description includes the actual
+manual coordinates and selected date/time. Model tests cover boundary
+nudges and validation; nested-Niri wrapping/focus remains unverified.
+
 Observer coordinates are **explicitly editable**. First opening uses a
 **clearly labeled Greenwich example** at latitude +51.4779°, longitude 0°,
 *not the user's inferred location*. Longitude east is positive, west

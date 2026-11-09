@@ -11,8 +11,8 @@ use crate::calendar_model::CivilDate;
 use crate::motion::MotionToken;
 use crate::sky_catalog::{CONSTELLATION_LABELS, CONSTELLATION_SEGMENTS, NAMED_STARS, STARS};
 use crate::sky_model::{
-    horizon_point, local_observation_unix, observer_coordinates, shortest_sidereal_delta,
-    sidereal_degrees,
+    SkyInputError, horizon_point, shift_sky_clock, shortest_sidereal_delta, sidereal_degrees,
+    validate_sky_observation,
 };
 
 const ANIMATION_MS: u64 = 420;
@@ -37,6 +37,11 @@ pub struct SkyMap {
     drawing: gtk::DrawingArea,
     message: gtk::Label,
     example: gtk::Label,
+    latitude_entry: gtk::Entry,
+    longitude_entry: gtk::Entry,
+    clock_entry: gtk::Entry,
+    earlier: gtk::Button,
+    later: gtk::Button,
     scene: Rc<RefCell<Scene>>,
     motion: MotionToken,
 }
@@ -62,7 +67,8 @@ impl SkyMap {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 10);
         root.add_css_class("sky-atlas");
         root.set_hexpand(true);
-        root.set_size_request(490, -1);
+        // Allow the detached atlas to shrink below a two-column width.
+        root.set_size_request(0, -1);
 
         let heading = gtk::Label::new(Some("ЗВЁЗДНОЕ НЕБО"));
         heading.set_xalign(0.0);
@@ -79,23 +85,46 @@ impl SkyMap {
         example.set_xalign(0.0);
         workbench.append(&example);
 
-        let controls = gtk::Grid::new();
-        controls.set_column_spacing(7);
-        controls.set_row_spacing(7);
+        // Wrapping native inputs remain keyboard-operable in a narrow
+        // detached window. A four-column GtkGrid used to clip their editors.
+        let controls = gtk::FlowBox::new();
+        controls.set_selection_mode(gtk::SelectionMode::None);
+        controls.set_min_children_per_line(1);
+        controls.set_max_children_per_line(3);
+        controls.set_column_spacing(8);
+        controls.set_row_spacing(8);
         let (lat_row, latitude) = entry("Широта, °", GREENWICH_LAT, "Широта наблюдателя");
         let (lon_row, longitude) = entry("Долгота, ° E", GREENWICH_LON, "Долгота наблюдателя");
         let (time_row, clock) = entry("Время, ЧЧ:ММ", DEFAULT_TIME, "Локальное время наблюдения");
-        controls.attach(&lat_row, 0, 0, 1, 1);
-        controls.attach(&lon_row, 1, 0, 1, 1);
-        controls.attach(&time_row, 2, 0, 1, 1);
-        let reset = gtk::Button::with_label("СБРОС");
-        reset.set_valign(gtk::Align::End);
-        reset.add_css_class("sky-reset");
-        reset.set_tooltip_text(Some("Вернуть демонстрационные координаты Гринвича"));
-        reset.update_property(&[gtk::accessible::Property::Label(
-            "Вернуть демонстрационные координаты Гринвича",
+        controls.insert(&lat_row, -1);
+        controls.insert(&lon_row, -1);
+        controls.insert(&time_row, -1);
+
+        let actions = gtk::Box::new(gtk::Orientation::Horizontal, 6);
+        let earlier = gtk::Button::with_label("−1 ч");
+        earlier.add_css_class("sky-clock-step");
+        earlier.set_tooltip_text(Some("На час раньше, не меняя день календаря"));
+        earlier.update_property(&[gtk::accessible::Property::Label(
+            "Показать звёздное небо на час раньше",
         )]);
-        controls.attach(&reset, 3, 0, 1, 1);
+        actions.append(&earlier);
+        let later = gtk::Button::with_label("+1 ч");
+        later.add_css_class("sky-clock-step");
+        later.set_tooltip_text(Some("На час позже, не меняя день календаря"));
+        later.update_property(&[gtk::accessible::Property::Label(
+            "Показать звёздное небо на час позже",
+        )]);
+        actions.append(&later);
+        let reset = gtk::Button::with_label("СБРОС");
+        reset.add_css_class("sky-reset");
+        reset.set_tooltip_text(Some(
+            "Вернуть координаты Гринвича и время 22:00",
+        ));
+        reset.update_property(&[gtk::accessible::Property::Label(
+            "Сбросить координаты и время наблюдения",
+        )]);
+        actions.append(&reset);
+        controls.insert(&actions, -1);
         workbench.append(&controls);
 
         let local = gtk::Label::new(Some(
@@ -107,7 +136,7 @@ impl SkyMap {
         workbench.append(&local);
 
         let drawing = gtk::DrawingArea::new();
-        drawing.set_content_width(500);
+        drawing.set_content_width(340);
         drawing.set_content_height(410);
         drawing.set_hexpand(true);
         drawing.set_vexpand(true);
@@ -136,6 +165,11 @@ impl SkyMap {
             drawing: drawing.clone(),
             message,
             example,
+            latitude_entry: latitude.clone(),
+            longitude_entry: longitude.clone(),
+            clock_entry: clock.clone(),
+            earlier: earlier.clone(),
+            later: later.clone(),
             scene: Rc::new(RefCell::new(Scene {
                 date,
                 latitude: GREENWICH_LAT.into(),
@@ -182,9 +216,24 @@ impl SkyMap {
                 atlas.update();
             }
         });
+        let clock_earlier = clock.clone();
+        earlier.connect_clicked(move |_| {
+            if let Some(value) = shift_sky_clock(&clock_earlier.text(), -60) {
+                clock_earlier.set_text(&value);
+            }
+        });
+        let clock_later = clock.clone();
+        later.connect_clicked(move |_| {
+            if let Some(value) = shift_sky_clock(&clock_later.text(), 60) {
+                clock_later.set_text(&value);
+            }
+        });
         reset.connect_clicked(move |_| {
+            // Reset ALL independent inputs, including the clock. Calendar's
+            // selected civil date is intentionally unchanged.
             latitude.set_text(GREENWICH_LAT);
             longitude.set_text(GREENWICH_LON);
+            clock.set_text(DEFAULT_TIME);
         });
         atlas.update();
         atlas
@@ -212,48 +261,74 @@ impl SkyMap {
     }
 
     fn update(&self) {
-        let target = {
+        let (date, time, latitude_text, longitude_text, demo) = {
             let scene = self.scene.borrow();
-            let observer = observer_coordinates(&scene.latitude, &scene.longitude);
-            let unix = local_observation_unix(scene.date, &scene.time);
-            observer.zip(unix).map(|(observer, when)| {
-                (
-                    observer.latitude,
-                    sidereal_degrees(when, observer.longitude),
-                )
-            })
-        };
-        self.motion.cancel();
-        let Some((latitude, sidereal)) = target else {
-            self.message.set_text(
-                "Нет карты: проверьте широту (±90°), долготу (±180°), время ЧЧ:ММ и год 1900–2100.",
-            );
-            self.drawing.set_visible(false);
-            self.scene.borrow_mut().painted = false;
-            return;
-        };
-        let (date, time, observer_label) = {
-            let scene = self.scene.borrow();
-            let demo =
-                scene.latitude.trim() == GREENWICH_LAT && scene.longitude.trim() == GREENWICH_LON;
             (
-                scene.date.iso(),
+                scene.date,
                 scene.time.clone(),
-                if demo {
-                    "ТОЧКА НАБЛЮДЕНИЯ · ДЕМО: ГРИНВИЧ"
-                } else {
-                    "ТОЧКА НАБЛЮДЕНИЯ · ВВЕДЕНО ВРУЧНУЮ"
-                },
+                scene.latitude.clone(),
+                scene.longitude.clone(),
+                scene.latitude.trim() == GREENWICH_LAT
+                    && scene.longitude.trim() == GREENWICH_LON,
             )
         };
-        self.example.set_label(observer_label);
+        self.example.set_label(if demo {
+            "ТОЧКА НАБЛЮДЕНИЯ · ДЕМО: ГРИНВИЧ"
+        } else {
+            "ТОЧКА НАБЛЮДЕНИЯ · ВВЕДЕНО ВРУЧНУЮ"
+        });
+        self.earlier
+            .set_sensitive(shift_sky_clock(&time, -60).is_some());
+        self.later
+            .set_sensitive(shift_sky_clock(&time, 60).is_some());
+        for field in [
+            &self.latitude_entry,
+            &self.longitude_entry,
+            &self.clock_entry,
+        ] {
+            field.remove_css_class("sky-invalid");
+        }
+        let target = validate_sky_observation(
+            date,
+            &latitude_text,
+            &longitude_text,
+            &time,
+        );
+        self.motion.cancel();
+        let (observer, instant) = match target {
+            Ok(observation) => observation,
+            Err(error) => {
+                let message = match error {
+                    SkyInputError::Date => "Карта недоступна: выберите дату с 1900 по 2100 год.",
+                    SkyInputError::Latitude => {
+                        self.latitude_entry.add_css_class("sky-invalid");
+                        "Карта недоступна: широта должна быть от −90° до +90°."
+                    }
+                    SkyInputError::Longitude => {
+                        self.longitude_entry.add_css_class("sky-invalid");
+                        "Карта недоступна: долгота должна быть от −180° до +180°."
+                    }
+                    SkyInputError::Time => {
+                        self.clock_entry.add_css_class("sky-invalid");
+                        "Карта недоступна: укажите ЧЧ:ММ (00:00–23:59), существующее в системном часовом поясе."
+                    }
+                };
+                self.message.set_text(message);
+                self.drawing.set_visible(false);
+                self.scene.borrow_mut().painted = false;
+                return;
+            }
+        };
+        let latitude = observer.latitude;
+        let sidereal = sidereal_degrees(instant, observer.longitude);
+        let date = date.iso();
         self.message.set_label(&format!(
             "{date} · {time} (локальное время) · звёзды до 5,35 mag"
         ));
         self.drawing.set_visible(true);
         self.drawing
             .update_property(&[gtk::accessible::Property::Label(&format!(
-                "Звёздное небо {date} в {time}, север сверху, восток справа"
+                "Звёздное небо {date} в {time}, широта {latitude_text}, долгота {longitude_text}, север сверху, восток справа"
             ))]);
 
         let (initial_latitude, initial_sidereal, animate) = {

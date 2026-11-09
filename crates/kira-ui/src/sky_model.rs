@@ -52,6 +52,57 @@ pub fn clock_hour_minute(clock: &str) -> Option<(i32, i32)> {
     (hour < 24 && minute < 60).then_some((hour, minute))
 }
 
+/// Field-scoped failures allow GTK to highlight the exact editor without
+/// guessing a location, timezone or rendering a stale sky as a valid one.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SkyInputError {
+    Date,
+    Latitude,
+    Longitude,
+    Time,
+}
+
+/// Validate inputs independently of the GTK widget tree. A nonexistent
+/// system-local DST time is invalid even if HH:MM parses successfully.
+pub fn validate_sky_observation(
+    date: CivilDate,
+    latitude: &str,
+    longitude: &str,
+    time: &str,
+) -> Result<(Observer, i64), SkyInputError> {
+    if !(1900..=2100).contains(&date.year) {
+        return Err(SkyInputError::Date);
+    }
+    fn angle(value: &str, limit: f64) -> Option<f64> {
+        value
+            .trim()
+            .parse::<f64>()
+            .ok()
+            .filter(|number| number.is_finite() && number.abs() <= limit)
+    }
+    let latitude = angle(latitude, 90.0).ok_or(SkyInputError::Latitude)?;
+    let longitude = angle(longitude, 180.0).ok_or(SkyInputError::Longitude)?;
+    let instant = local_observation_unix(date, time).ok_or(SkyInputError::Time)?;
+    Ok((
+        Observer {
+            latitude,
+            longitude,
+        },
+        instant,
+    ))
+}
+
+/// Explicit local-clock nudges do not silently roll over into another date.
+/// Calendar owns the selected day; its state must never drift behind SkyMap.
+pub fn shift_sky_clock(clock: &str, minutes: i32) -> Option<String> {
+    let (hour, minute) = clock_hour_minute(clock)?;
+    let next = hour.checked_mul(60)?.checked_add(minute)?.checked_add(minutes)?;
+    if !(0..24 * 60).contains(&next) {
+        return None;
+    }
+    Some(format!("{:02}:{:02}", next / 60, next % 60))
+}
+
 /// Date and wall-clock time use the *operating system's local timezone*,
 /// not a timezone inferred from user-entered coordinates. Explicitly reject
 /// nonexistent times (DST jumps) and unsupported years.
@@ -152,6 +203,43 @@ mod tests {
         assert!(local_observation_unix(CivilDate::new(2500, 1, 1).unwrap(), "22:00").is_none());
         assert!(local_observation_unix(CivilDate::new(2026, 11, 3).unwrap(), "27:00").is_none());
         assert!(local_observation_unix(CivilDate::new(2026, 11, 3).unwrap(), "22:30").is_some());
+    }
+
+    #[test]
+    fn manual_observer_validation_reports_one_field_and_dst_unknown() {
+        let date = CivilDate::new(2026, 11, 3).unwrap();
+        assert!(validate_sky_observation(date, "51.4779", "0", "22:00").is_ok());
+        assert_eq!(
+            validate_sky_observation(date, "91", "0", "22:00"),
+            Err(SkyInputError::Latitude)
+        );
+        assert_eq!(
+            validate_sky_observation(date, "51", "-181", "22:00"),
+            Err(SkyInputError::Longitude)
+        );
+        assert_eq!(
+            validate_sky_observation(date, "51", "0", "23:65"),
+            Err(SkyInputError::Time)
+        );
+        assert_eq!(
+            validate_sky_observation(
+                CivilDate::new(2101, 1, 1).unwrap(),
+                "51",
+                "0",
+                "22:00",
+            ),
+            Err(SkyInputError::Date)
+        );
+    }
+
+    #[test]
+    fn clock_controls_do_not_change_calendar_day_or_hide_input_errors() {
+        assert_eq!(shift_sky_clock("22:00", 60).as_deref(), Some("23:00"));
+        assert_eq!(shift_sky_clock("12:15", -60).as_deref(), Some("11:15"));
+        assert_eq!(shift_sky_clock("00:30", -60), None);
+        assert_eq!(shift_sky_clock("23:30", 60), None);
+        assert_eq!(shift_sky_clock("bad", 60), None);
+        assert_eq!(shift_sky_clock("00:00", i32::MAX), None);
     }
 
     #[test]

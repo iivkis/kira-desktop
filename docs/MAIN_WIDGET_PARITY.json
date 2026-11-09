@@ -170,7 +170,8 @@
       "content_and_interaction_requirements": [
         "Actual astronomical catalog, constellations, location and time inputs",
         "Horizon projection and accessible observations",
-        "Native Cairo horizon canvas, bundled 2416-star J2000 catalog, 743 line edges, 89 constellation labels and 39 named stars; explicit Greenwich demo and local wall-clock controls; paired graphical verification pending"
+        "Native Cairo horizon canvas, bundled 2416-star J2000 catalog, 743 line edges, 89 constellation labels and 39 named stars; explicit Greenwich demo and local wall-clock controls; paired graphical verification pending",
+        "Native detached SkyMap now wraps manual editors, highlights a specific invalid field, keeps invalid/DST/year state unavailable, prevents ±1h controls from silently crossing the Calendar day, and resets coordinates plus clock together; pure model tests added, nested-Niri focus/layout/pixel proof missing."
       ],
       "animation_requirements": [
         "0.42s sidereal-time interpolation, interruption and reduced motion",
