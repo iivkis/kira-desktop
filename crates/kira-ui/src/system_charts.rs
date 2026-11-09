@@ -244,8 +244,115 @@ pub fn measured_history_caption(points: &[ChartPoint]) -> String {
     }
 }
 
-fn meter_text(value: Option<f64>) -> String {
-    value.map_or_else(|| "нет данных".into(), |n| format!("{n:.1}%"))
+
+fn meter_text(value: Option<f64>, precise: bool) -> String {
+    value.map_or_else(
+        || "—".into(),
+        |n| if precise { format!("{n:.1}%") } else { format!("{n:.0}%") },
+    )
+}
+
+/// Only actual finite utilization readings are permitted to paint a gauge.
+/// A missing value leaves its track visible without implying zero utilization.
+fn gauge_sweep(value: Option<f64>) -> Option<f64> {
+    value
+        .filter(|v| v.is_finite() && (0.0..=100.0).contains(v))
+        .map(|v| std::f64::consts::TAU * v / 100.0)
+}
+
+fn draw_gauges(
+    cr: &gtk::cairo::Context,
+    width: i32,
+    height: i32,
+    cpu: Option<f64>,
+    ram: Option<f64>,
+) {
+    if width < 80 || height < 40 {
+        return;
+    }
+    let half = f64::from(width) / 2.0;
+    // Frozen main: two silent full-circle ECharts gauges, 73% radius, 8px
+    // rounded tracks, centered at 25% and 75% within a 182px-high stage.
+    let radius = (half.min(f64::from(height)) * 0.73 / 2.0 - 4.0).max(1.0);
+    let center_y = f64::from(height) / 2.0;
+    let start = -std::f64::consts::FRAC_PI_2;
+    cr.set_line_width(8.0);
+    cr.set_line_cap(gtk::cairo::LineCap::Round);
+    for (index, value, color) in [
+        (0, cpu, (0.988, 0.639, 0.067)),
+        (1, ram, (1.0, 1.0, 1.0)),
+    ] {
+        let center_x = (f64::from(index) + 0.5) * half;
+        cr.set_source_rgb(0.078, 0.129, 0.239);
+        cr.arc(center_x, center_y, radius, start, start + std::f64::consts::TAU);
+        let _ = cr.stroke();
+        if let Some(sweep) = gauge_sweep(value)
+            && sweep > 0.0
+        {
+            cr.set_source_rgb(color.0, color.1, color.2);
+            cr.arc(center_x, center_y, radius, start, start + sweep);
+            let _ = cr.stroke();
+        }
+    }
+}
+
+/// Project only measured points onto the shared monotonic time axis. CPU/RAM
+/// gaps break their traces; GPU connects sparse genuine readings as main does,
+/// but never inserts a fake intermediate reading.
+fn history_paths(
+    points: &[ChartPoint],
+    lane: ActivityLane,
+    left: f64,
+    right: f64,
+    top: f64,
+    bottom: f64,
+) -> Vec<Vec<(f64, f64)>> {
+    let Some(first) = points.first().map(|p| p.measured_at) else {
+        return Vec::new();
+    };
+    let span = points
+        .last()
+        .map(|p| p.measured_at.saturating_duration_since(first).as_secs_f64())
+        .unwrap_or_default()
+        .max(0.5);
+    let axis = activity_axis(points, lane);
+    let mut paths = Vec::new();
+    let mut path = Vec::new();
+    for point in points {
+        if let Some(value) = reading(point, lane) {
+            let elapsed = point.measured_at.saturating_duration_since(first).as_secs_f64();
+            let x = left + (right - left) * (elapsed / span).clamp(0.0, 1.0);
+            let y = bottom - ((value - axis.min) / (axis.max - axis.min)) * (bottom - top);
+            path.push((x, y));
+        } else if lane != ActivityLane::Gpu && !path.is_empty() {
+            paths.push(std::mem::take(&mut path));
+        }
+    }
+    if !path.is_empty() {
+        paths.push(path);
+    }
+    paths
+}
+
+/// Source's 0.18 line smoothing with monotone horizontal tangents. Control
+/// points stay between measured Y values, never visually overshooting 0–100%.
+fn trace_curve(cr: &gtk::cairo::Context, path: &[(f64, f64)]) {
+    if let Some(&(x, y)) = path.first() {
+        cr.move_to(x, y);
+        for segment in path.windows(2) {
+            let (prev_x, prev_y) = segment[0];
+            let (next_x, next_y) = segment[1];
+            let bend = (next_x - prev_x) * 0.18;
+            cr.curve_to(
+                prev_x + bend,
+                prev_y,
+                next_x - bend,
+                next_y,
+                next_x,
+                next_y,
+            );
+        }
+    }
 }
 
 fn draw_history(
@@ -258,74 +365,67 @@ fn draw_history(
     if width <= 80 || height <= 60 {
         return;
     }
-    let left = 45.0;
+    // Frozen main uses 96px stride, 28px plot offset and 56px chart height.
+    let left = 41.0;
     let right = f64::from(width) - 8.0;
-    let available_width = (right - left).max(1.0);
-    let first = points.first().map(|point| point.measured_at);
-    let span = first
-        .zip(points.last().map(|point| point.measured_at))
-        .map_or(0.5, |(start, end)| {
-            end.saturating_duration_since(start).as_secs_f64().max(0.5)
-        });
     let lanes: &[ActivityLane] = if show_gpu {
         &[ActivityLane::Cpu, ActivityLane::Ram, ActivityLane::Gpu]
     } else {
         &[ActivityLane::Cpu, ActivityLane::Ram]
     };
-    let lane_height = f64::from(height) / lanes.len() as f64;
     for (index, &lane) in lanes.iter().enumerate() {
-        let top = index as f64 * lane_height + 16.0;
-        let bottom = (index as f64 + 1.0) * lane_height - 10.0;
+        let top = index as f64 * 96.0 + 28.0;
+        let bottom = top + 56.0;
+        if bottom > f64::from(height) {
+            break;
+        }
         let axis = activity_axis(points, lane);
-        cr.set_source_rgb(0.078, 0.129, 0.239);
-        cr.set_line_width(1.0);
+        let (red, green, blue, alpha, name) = match lane {
+            ActivityLane::Cpu => (0.988, 0.639, 0.067, 0.18, "CPU"),
+            ActivityLane::Ram => (1.0, 1.0, 1.0, 0.09, "RAM"),
+            ActivityLane::Gpu => (0.898, 0.898, 0.898, 0.09, "GPU"),
+        };
+        cr.set_font_size(10.0);
+        cr.set_source_rgb(red, green, blue);
+        cr.move_to(36.0, top - 17.0);
+        let _ = cr.show_text(name);
+        cr.set_font_size(11.0);
         for tick in 0..=2 {
-            let y = top + (bottom - top) * f64::from(tick) / 2.0;
+            let frac = f64::from(tick) / 2.0;
+            let y = top + (bottom - top) * frac;
+            cr.set_source_rgb(0.078, 0.129, 0.239);
+            cr.set_line_width(1.0);
             cr.move_to(left, y);
             cr.line_to(right, y);
-        }
-        let _ = cr.stroke();
-        cr.set_line_width(2.0);
-        match lane {
-            ActivityLane::Cpu => cr.set_source_rgb(0.988, 0.639, 0.067),
-            ActivityLane::Ram => cr.set_source_rgb(1.0, 1.0, 1.0),
-            ActivityLane::Gpu => cr.set_source_rgb(0.898, 0.898, 0.898),
-        }
-        let mut drawing = false;
-        let mut last_xy = None;
-        let mut measured_count = 0usize;
-        for point in points {
-            if let (Some(first), Some(value)) = (first, reading(point, lane)) {
-                let x = left
-                    + available_width
-                        * (point
-                            .measured_at
-                            .saturating_duration_since(first)
-                            .as_secs_f64()
-                            / span)
-                            .clamp(0.0, 1.0);
-                let y = bottom - (value - axis.min) / (axis.max - axis.min) * (bottom - top);
-                if !drawing {
-                    cr.move_to(x, y);
-                    drawing = true;
-                } else {
-                    cr.line_to(x, y);
-                }
-                last_xy = Some((x, y));
-                measured_count += 1;
-            } else if drawing && lane != ActivityLane::Gpu {
-                let _ = cr.stroke();
-                drawing = false;
-            }
-        }
-        if drawing {
             let _ = cr.stroke();
+            let limit = axis.max - (axis.max - axis.min) * frac;
+            cr.set_source_rgb(0.898, 0.898, 0.898);
+            cr.move_to(1.0, y + 3.0);
+            let _ = cr.show_text(&format!("{limit:.1}%"));
         }
-        if measured_count == 1
-            && let Some((x, y)) = last_xy
-        {
-            cr.arc(x, y, 2.5, 0.0, std::f64::consts::TAU);
-            let _ = cr.fill();
+        for path in history_paths(points, lane, left, right, top, bottom) {
+            if path.len() >= 2 {
+                trace_curve(cr, &path);
+                if let (Some(first), Some(last)) = (path.first(), path.last()) {
+                    cr.line_to(last.0, bottom);
+                    cr.line_to(first.0, bottom);
+                    cr.close_path();
+                    cr.set_source_rgba(red, green, blue, alpha);
+                    let _ = cr.fill();
+                }
+                trace_curve(cr, &path);
+                cr.set_source_rgb(red, green, blue);
+                cr.set_line_width(2.5);
+                let _ = cr.stroke();
+            }
+            // Main shows 5px symbols until there are three aligned points.
+            if points.len() < 3 || path.len() == 1 {
+                cr.set_source_rgb(red, green, blue);
+                for (x, y) in path {
+                    cr.arc(x, y, 2.5, 0.0, std::f64::consts::TAU);
+                    let _ = cr.fill();
+                }
+            }
         }
     }
 }
@@ -335,8 +435,7 @@ struct ChartState {
     gpu: RefCell<GpuPulseCoupler>,
     cpu_text: gtk::Label,
     ram_text: gtk::Label,
-    cpu_bar: gtk::ProgressBar,
-    ram_bar: gtk::ProgressBar,
+    gauge_canvas: gtk::DrawingArea,
     cpu_axis: gtk::Label,
     ram_axis: gtk::Label,
     gpu_axis: gtk::Label,
@@ -349,16 +448,19 @@ impl ChartState {
         let now = Instant::now();
         let history = self.history.borrow();
         let current = history.latest(now);
-        for (bar, label, value) in [
-            (&self.cpu_bar, &self.cpu_text, current.and_then(|p| p.cpu)),
-            (&self.ram_bar, &self.ram_text, current.and_then(|p| p.ram)),
-        ] {
-            bar.set_visible(value.is_some());
-            if let Some(value) = value {
-                bar.set_fraction(value / 100.0);
-            }
-            label.set_text(&meter_text(value));
-        }
+        let cpu = current.and_then(|point| point.cpu);
+        let ram = current.and_then(|point| point.ram);
+        self.cpu_text.set_text(&meter_text(cpu, false));
+        self.ram_text.set_text(&meter_text(ram, true));
+        self.cpu_text.set_tooltip_text(Some(&format!(
+            "Загрузка CPU: {}",
+            cpu.map_or_else(|| "нет данных".into(), |n| format!("{n:.0}%"))
+        )));
+        self.ram_text.set_tooltip_text(Some(&format!(
+            "Использование RAM: {}",
+            ram.map_or_else(|| "нет данных".into(), |n| format!("{n:.1}%"))
+        )));
+        self.gauge_canvas.queue_draw();
         let points = history.recent(now);
         let show_gpu = self.gpu.borrow().is_fresh(now);
         self.gpu_axis.set_visible(show_gpu);
@@ -374,6 +476,10 @@ impl ChartState {
             .set_text(&format!("CPU {:.1}–{:.1}%", cpu_axis.min, cpu_axis.max));
         self.ram_axis
             .set_text(&format!("RAM {:.1}–{:.1}%", ram_axis.min, ram_axis.max));
+        self.plot.set_tooltip_text(Some(&format!(
+            "История нагрузки с адаптивными шкалами. {}",
+            measured_history_caption(&points)
+        )));
         self.plot.queue_draw();
     }
 }
@@ -389,24 +495,34 @@ impl SystemCharts {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 8);
         root.add_css_class("system-charts");
 
-        let gauges = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-        gauges.set_homogeneous(true);
+        let gauges = gtk::Overlay::new();
+        gauges.add_css_class("system-chart-gauges");
+        let gauge_canvas = gtk::DrawingArea::new();
+        gauge_canvas.set_content_width(320);
+        gauge_canvas.set_content_height(182);
+        gauge_canvas.set_hexpand(true);
+        gauge_canvas.set_can_target(false);
+        gauges.set_child(Some(&gauge_canvas));
+        let meter_row = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        meter_row.set_homogeneous(true);
         let mut meters = Vec::new();
-        for title in ["CPU", "RAM"] {
-            let column = gtk::Box::new(gtk::Orientation::Vertical, 4);
-            let name = gtk::Label::new(Some(title));
-            name.add_css_class("muted");
-            let value = gtk::Label::new(Some("нет данных"));
+        for (title, css_class) in [("CPU", "system-chart-cpu"), ("RAM", "system-chart-ram")] {
+            let column = gtk::Box::new(gtk::Orientation::Vertical, 8);
+            column.add_css_class("system-chart-meter");
+            column.set_valign(gtk::Align::Center);
+            column.set_hexpand(true);
+            let value = gtk::Label::new(Some("—"));
             value.add_css_class("system-chart-value");
-            let bar = gtk::ProgressBar::new();
-            bar.set_visible(false);
-            bar.set_show_text(false);
+            value.add_css_class(css_class);
+            let name = gtk::Label::new(Some(title));
+            name.add_css_class("system-chart-label");
+            name.add_css_class("muted");
             column.append(&value);
             column.append(&name);
-            column.append(&bar);
-            gauges.append(&column);
-            meters.push((value, bar));
+            meter_row.append(&column);
+            meters.push(value);
         }
+        gauges.add_overlay(&meter_row);
         root.append(&gauges);
 
         let heading = gtk::Label::new(Some("ИСТОРИЯ НАГРУЗКИ"));
@@ -438,15 +554,27 @@ impl SystemCharts {
         let state = Rc::new(ChartState {
             history: RefCell::new(PulseHistory::default()),
             gpu: RefCell::new(GpuPulseCoupler::default()),
-            cpu_text: meters[0].0.clone(),
-            ram_text: meters[1].0.clone(),
-            cpu_bar: meters[0].1.clone(),
-            ram_bar: meters[1].1.clone(),
+            cpu_text: meters[0].clone(),
+            ram_text: meters[1].clone(),
+            gauge_canvas: gauge_canvas.clone(),
             cpu_axis,
             ram_axis,
             gpu_axis,
             caption,
             plot: plot.clone(),
+        });
+        let weak = Rc::downgrade(&state);
+        gauge_canvas.set_draw_func(move |_, cr, width, height| {
+            if let Some(state) = weak.upgrade() {
+                let current = state.history.borrow().latest(Instant::now());
+                draw_gauges(
+                    cr,
+                    width,
+                    height,
+                    current.and_then(|p| p.cpu),
+                    current.and_then(|p| p.ram),
+                );
+            }
         });
         let weak = Rc::downgrade(&state);
         plot.set_draw_func(move |_, cr, width, height| {
@@ -641,6 +769,51 @@ mod tests {
         assert_eq!(data[1].gpu, None);
         assert!(activity_axis(&data, ActivityLane::Gpu).max >= 42.0);
         assert!(!coupler.is_fresh(t + GPU_FRESHNESS));
+    }
+
+    #[test]
+    fn gauge_displays_unknown_without_inventing_zero_and_bounds_sweep() {
+        assert_eq!(gauge_sweep(None), None);
+        assert_eq!(gauge_sweep(Some(f64::NAN)), None);
+        assert_eq!(gauge_sweep(Some(-0.1)), None);
+        assert_eq!(gauge_sweep(Some(101.0)), None);
+        assert_eq!(gauge_sweep(Some(0.0)), Some(0.0));
+        assert_eq!(gauge_sweep(Some(100.0)), Some(std::f64::consts::TAU));
+        assert_eq!(gauge_sweep(Some(25.0)), Some(std::f64::consts::FRAC_PI_2));
+        assert_eq!(meter_text(None, true), "—");
+        assert_eq!(meter_text(Some(13.5), true), "13.5%");
+        assert_eq!(meter_text(Some(13.0), false), "13%");
+    }
+
+    #[test]
+    fn timestamp_paths_break_cpu_gaps_but_connect_only_real_gpu_points() {
+        let t = Instant::now();
+        let points = [
+            ChartPoint { measured_at: t, cpu: Some(10.0), ram: Some(50.0), gpu: Some(20.0) },
+            ChartPoint { measured_at: t + Duration::from_millis(500), cpu: None, ram: Some(60.0), gpu: None },
+            ChartPoint { measured_at: t + Duration::from_millis(1500), cpu: Some(70.0), ram: Some(70.0), gpu: Some(80.0) },
+        ];
+        let cpu = history_paths(&points, ActivityLane::Cpu, 41.0, 341.0, 28.0, 84.0);
+        assert_eq!(cpu.len(), 2);
+        assert_eq!(cpu[0].len(), 1);
+        assert_eq!(cpu[1].len(), 1);
+        assert_eq!(cpu[0][0].0, 41.0);
+        assert_eq!(cpu[1][0].0, 341.0);
+        let gpu = history_paths(&points, ActivityLane::Gpu, 41.0, 341.0, 28.0, 84.0);
+        assert_eq!(gpu.len(), 1);
+        assert_eq!(gpu[0].len(), 2);
+        assert_eq!(gpu[0][0].0, 41.0);
+        assert_eq!(gpu[0][1].0, 341.0);
+        let ram = history_paths(&points, ActivityLane::Ram, 41.0, 341.0, 28.0, 84.0);
+        assert_eq!(ram.len(), 1);
+        assert_eq!(ram[0].len(), 3);
+        assert_eq!(ram[0][1].0, 141.0);
+        for path in [cpu, gpu, ram] {
+            for (x, y) in path.into_iter().flatten() {
+                assert!((41.0..=341.0).contains(&x));
+                assert!((28.0..=84.0).contains(&y));
+            }
+        }
     }
 
     #[test]

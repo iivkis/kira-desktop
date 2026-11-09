@@ -167,10 +167,13 @@ window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
 .system-value { font-weight: bold; }
 .system-charts { padding: 12px 8px; background: #14213d; }
 .system-charts .section-title { font-size: 12px; }
-.system-charts .system-chart-value { font-size: 25px; font-weight: 900; }
-.system-charts progressbar trough { background: #000000; min-height: 5px; }
-.system-charts progressbar progress { background: #fca311; }
-.system-charts progressbar { min-width: 88px; }
+.system-charts .system-chart-gauges { background: #000000; }
+.system-charts .system-chart-meter { min-height: 182px; }
+.system-charts .system-chart-meter + .system-chart-meter { border-left: 1px solid #14213d; }
+.system-charts .system-chart-value { font-size: 36px; font-weight: 900; letter-spacing: -1px; }
+.system-charts .system-chart-cpu { color: #fca311; }
+.system-charts .system-chart-ram { color: #ffffff; }
+.system-charts .system-chart-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; }
 .process-row { padding: 5px 4px; }
 .process-row:hover { background: #000000; }
 .process-table entry, .process-table dropdown { background: #000000; color: #ffffff; }

@@ -237,10 +237,12 @@
       "content_and_interaction_requirements": [
         "Real 500ms CPU/RAM history, gauges, time domain and adaptive axes",
         "No fabricated points or overshoot outside measured values",
-        "Native CPU/RAM plots use real 500ms pulses; sparse GPU peaks measured by the existing 2s worker attach once to the next actual pulse with 8s expiry. Source-equivalent visual geometry and motion remain outstanding"
+        "Native CPU/RAM plots use real 500ms pulses; sparse GPU peaks measured by the existing 2s worker attach once to the next actual pulse with 8s expiry. Source-equivalent visual geometry and motion remain outstanding",
+        "Native Cairo replaces linear CPU/RAM progress strips with the frozen main two 182px full-circle 73%-radius 8px round-cap gauges, 36px CPU/RAM text, source-aligned 96px trend lanes with measured axes, source-opacity areas and monotone cubic line smoothing. Missing values render empty tracks, never fabricated zeroes; pure path/geometry tests cover gaps and GPU sparse connection. Pixel and animated update parity still need actual nested-Niri paired capture."
       ],
       "animation_requirements": [
-        "True chart interpolation and reduced-motion; original ECharts visual parity"
+        "True chart interpolation and reduced-motion; original ECharts visual parity",
+        "Source 350ms initial and 180ms update gauge/plot motion is not yet implemented or visually reviewed; static Cairo drawing does not claim TENET completion."
       ],
       "verified": {
         "content": false,
