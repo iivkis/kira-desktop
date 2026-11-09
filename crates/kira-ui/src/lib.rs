@@ -28,8 +28,8 @@ pub mod system_health;
 pub mod system_report;
 pub mod tenet_scroll;
 pub mod tray;
-pub mod workspace;
 pub mod warnings;
+pub mod workspace;
 
 pub use bar::{Bar, action_button};
 pub use calendar::Calendar;
@@ -85,10 +85,12 @@ pub use tray::{
     MenuNavigation, TrayBarModel, TrayIntent, TrayItem, TrayMenu, TrayMenuEntry, TrayPixmap,
     TrayState, TrayStatus, TrayUi, menu_focus_target, tray_bar_model, tray_budget_for_width,
 };
+pub use warnings::{
+    UiWarning, WarningInspector, bounded_warnings, next_warning_id, visible_warning_index,
+};
 pub use workspace::{
     WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspace_window, visible_workspaces,
 };
-pub use warnings::{UiWarning, WarningInspector, bounded_warnings, next_warning_id, visible_warning_index};
 
 use gtk::prelude::*;
 

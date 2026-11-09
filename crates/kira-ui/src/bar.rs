@@ -73,11 +73,8 @@ impl Bar {
         right.append(&clock_button);
         layout.append(&right);
 
-        let warnings = WarningInspector::new(
-            &layout.clone().upcast(),
-            &clock_button.clone().upcast(),
-        );
-        actions.append(&warnings.button_widget());
+        let warnings =
+            WarningInspector::new(&layout.clone().upcast(), &clock_button.clone().upcast());
         let overlay = gtk::Overlay::new();
         overlay.set_child(Some(&layout));
         overlay.add_overlay(&warnings.inspector_widget());
@@ -110,6 +107,12 @@ impl Bar {
     /// Add a reusable button/widget with its own model and status lifecycle.
     pub fn add_action_widget(&self, widget: &gtk::Widget) {
         self.actions.append(widget);
+    }
+
+    /// Place source order: Tray, SystemHealth, Warning, Settings.
+    /// Kept separate from ordinary actions so the inspector is not first.
+    pub fn add_warning_slot(&self) {
+        self.actions.append(&self.warnings.button_widget());
     }
 
     pub fn set_compact(&self, compact: bool) {

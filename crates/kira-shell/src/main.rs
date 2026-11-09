@@ -123,7 +123,9 @@ fn request_focus(id: String, sender: mpsc::Sender<ShellUpdate>) {
         };
         let result = kira_ipc::core_socket_path()
             .map_err(|error| error.to_string())
-            .and_then(|path| kira_ipc::client::call(&path, &request).map_err(|error| error.to_string()))
+            .and_then(|path| {
+                kira_ipc::client::call(&path, &request).map_err(|error| error.to_string())
+            })
             .and_then(|reply| {
                 if let Some(error) = reply.error {
                     Err(error.message)
@@ -701,6 +703,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
             PopupKind::System => {
                 health.set_open_action(on_click);
                 bar.add_action_widget(&health.widget());
+                bar.add_warning_slot();
             }
             _ => bar.add_action(symbol, label, on_click),
         }
@@ -789,7 +792,8 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         );
                     }
                     ShellUpdate::Config(next) => {
-                        warning_sources.borrow_mut().config = next.error.as_ref().map(|error| format!("КОНФИГ: {error}"));
+                        warning_sources.borrow_mut().config =
+                            next.error.as_ref().map(|error| format!("КОНФИГ: {error}"));
                         warnings_changed = true;
                         *config.borrow_mut() = next.config;
                         let current = config.borrow();
@@ -818,7 +822,9 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         }
                     }
                     ShellUpdate::ApplicationLaunch(result) => {
-                        warning_sources.borrow_mut().launcher = result.as_ref().err()
+                        warning_sources.borrow_mut().launcher = result
+                            .as_ref()
+                            .err()
                             .map(|error| format!("ЛАУНЧЕР: {error}"));
                         warnings_changed = true;
                         if let Some(view) = launcher.borrow().as_ref() {
@@ -830,8 +836,8 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                     }
                     ShellUpdate::WorkspaceFocus(result) => {
                         workspace_pending.set(false);
-                        warning_sources.borrow_mut().workspace = result.err()
-                            .map(|error| format!("РАБОЧИЙ СТОЛ: {error}"));
+                        warning_sources.borrow_mut().workspace =
+                            result.err().map(|error| format!("РАБОЧИЙ СТОЛ: {error}"));
                         warnings_changed = true;
                     }
                     ShellUpdate::CoreStatus(status, version) => {
@@ -911,12 +917,23 @@ mod warning_tests {
         sources.launcher = Some("ЛАУНЧЕР: desktop file missing".into());
         sources.system = Some("МОНИТОР: process permission denied".into());
         let warnings = sources.items();
-        assert_eq!(warnings.iter().map(|warning| warning.id.as_str()).collect::<Vec<_>>(),
-            vec!["launcher", "workspace", "config", "system"]);
+        assert_eq!(
+            warnings
+                .iter()
+                .map(|warning| warning.id.as_str())
+                .collect::<Vec<_>>(),
+            vec!["launcher", "workspace", "config", "system"]
+        );
         sources.workspace = None;
         sources.launcher = None;
-        assert_eq!(sources.items().iter().map(|item| item.id.as_str()).collect::<Vec<_>>(),
-            vec!["config", "system"]);
+        assert_eq!(
+            sources
+                .items()
+                .iter()
+                .map(|item| item.id.as_str())
+                .collect::<Vec<_>>(),
+            vec!["config", "system"]
+        );
         sources.config = Some("   ".into());
         assert_eq!(sources.items().len(), 1);
     }

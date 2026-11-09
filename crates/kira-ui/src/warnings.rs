@@ -93,29 +93,36 @@ impl WarningState {
             return;
         };
         self.button.set_visible(true);
-        self.button_text
-            .set_text(if self.wide.get() { &warning.text } else { &warning.short });
+        self.button_text.set_text(if self.wide.get() {
+            &warning.text
+        } else {
+            &warning.short
+        });
         self.button_index.set_visible(count > 1);
-        self.button_index.set_text(&format!("{}/{}", index + 1, count));
+        self.button_index
+            .set_text(&format!("{}/{}", index + 1, count));
         self.button.set_tooltip_text(Some(&format!(
             "{}\nНажмите для просмотра полного текста",
             warning.text
         )));
-        self.button.update_property(&[gtk::accessible::Property::Label(&format!(
-            "Открыть предупреждение {} из {}: {}",
-            index + 1,
-            count,
-            warning.short
-        ))]);
+        self.button
+            .update_property(&[gtk::accessible::Property::Label(&format!(
+                "Открыть предупреждение {} из {}: {}",
+                index + 1,
+                count,
+                warning.short
+            ))]);
         self.counter.set_text(&format!("!{}/{}", index + 1, count));
         self.details.buffer().set_text(&warning.text);
         self.next.set_visible(count > 1);
-        self.overlay.update_property(&[gtk::accessible::Property::Label(
-            "Подробности предупреждения",
-        )]);
-        self.details.update_property(&[gtk::accessible::Property::Label(
-            "Полный текст предупреждения, можно выделить и скопировать",
-        )]);
+        self.overlay
+            .update_property(&[gtk::accessible::Property::Label(
+                "Подробности предупреждения",
+            )]);
+        self.details
+            .update_property(&[gtk::accessible::Property::Label(
+                "Полный текст предупреждения, можно выделить и скопировать",
+            )]);
     }
 
     fn reveal(&self) {
@@ -143,7 +150,10 @@ impl WarningState {
     }
 
     fn advance(&self) {
-        let id = next_warning_id(&self.warnings.borrow(), self.selected_id.borrow().as_deref());
+        let id = next_warning_id(
+            &self.warnings.borrow(),
+            self.selected_id.borrow().as_deref(),
+        );
         self.selected_id.replace(id);
         self.render();
         // The original readonly text area stays focused when paging. The
@@ -172,7 +182,10 @@ impl WarningState {
         .into_iter()
         .flatten()
         .collect();
-        let current = targets.iter().position(|widget| widget.has_focus()).unwrap_or(0);
+        let current = targets
+            .iter()
+            .position(|widget| widget.has_focus())
+            .unwrap_or(0);
         let backwards = key == gtk::gdk::Key::ISO_Left_Tab
             || modifiers.contains(gtk::gdk::ModifierType::SHIFT_MASK);
         let target = if backwards {
@@ -231,15 +244,11 @@ impl WarningInspector {
         overlay.append(&scroll);
         let next = gtk::Button::with_label("›");
         next.add_css_class("bar-warning-control");
-        next.update_property(&[gtk::accessible::Property::Label(
-            "Следующее предупреждение",
-        )]);
+        next.update_property(&[gtk::accessible::Property::Label("Следующее предупреждение")]);
         overlay.append(&next);
         let close = gtk::Button::with_label("×");
         close.add_css_class("bar-warning-control");
-        close.update_property(&[gtk::accessible::Property::Label(
-            "Закрыть подробности",
-        )]);
+        close.update_property(&[gtk::accessible::Property::Label("Закрыть подробности")]);
         overlay.append(&close);
 
         let state = Rc::new(WarningState {
@@ -282,7 +291,10 @@ impl WarningInspector {
         key.set_propagation_phase(gtk::PropagationPhase::Capture);
         let weak = Rc::downgrade(&state);
         key.connect_key_pressed(move |_, key, _, modifiers| {
-            if weak.upgrade().is_some_and(|state| state.handle_key(key, modifiers)) {
+            if weak
+                .upgrade()
+                .is_some_and(|state| state.handle_key(key, modifiers))
+            {
                 gtk::glib::Propagation::Stop
             } else {
                 gtk::glib::Propagation::Proceed
@@ -335,7 +347,11 @@ mod tests {
     use super::*;
 
     fn warn(id: &str) -> UiWarning {
-        UiWarning { id: id.into(), text: format!("Ошибка {id}"), short: id.into() }
+        UiWarning {
+            id: id.into(),
+            text: format!("Ошибка {id}"),
+            short: id.into(),
+        }
     }
 
     #[test]
@@ -344,13 +360,34 @@ mod tests {
         assert_eq!(visible_warning_index(&[], Some("config")), None);
         assert_eq!(next_warning_id(&[], Some("config")), None);
         assert_eq!(visible_warning_index(&warnings, None), Some(0));
-        assert_eq!(next_warning_id(&warnings, None).as_deref(), Some("launcher"));
-        assert_eq!(next_warning_id(&warnings, Some("launcher")).as_deref(), Some("calendar"));
-        assert_eq!(next_warning_id(&warnings, Some("calendar")).as_deref(), Some("config"));
-        assert_eq!(visible_warning_index(&warnings[1..], Some("calendar")), Some(1));
-        assert_eq!(visible_warning_index(&warnings[..2], Some("calendar")), Some(0));
-        assert_eq!(next_warning_id(&warnings[..2], Some("calendar")).as_deref(), Some("launcher"));
-        assert_eq!(next_warning_id(&warnings[..1], None).as_deref(), Some("config"));
+        assert_eq!(
+            next_warning_id(&warnings, None).as_deref(),
+            Some("launcher")
+        );
+        assert_eq!(
+            next_warning_id(&warnings, Some("launcher")).as_deref(),
+            Some("calendar")
+        );
+        assert_eq!(
+            next_warning_id(&warnings, Some("calendar")).as_deref(),
+            Some("config")
+        );
+        assert_eq!(
+            visible_warning_index(&warnings[1..], Some("calendar")),
+            Some(1)
+        );
+        assert_eq!(
+            visible_warning_index(&warnings[..2], Some("calendar")),
+            Some(0)
+        );
+        assert_eq!(
+            next_warning_id(&warnings[..2], Some("calendar")).as_deref(),
+            Some("launcher")
+        );
+        assert_eq!(
+            next_warning_id(&warnings[..1], None).as_deref(),
+            Some("config")
+        );
     }
 
     #[test]
