@@ -107,6 +107,14 @@ class HeadlessAcceptanceTests(unittest.TestCase):
         self.assertEqual(cmd[0], sys.executable)
         self.assertIn("--package-dir", cmd)
         self.assertIn("--output", cmd)
+        self.assertEqual(cmd[cmd.index("--profile") + 1], "smoke")
+        self.assertEqual(accept_command(
+            Path("/repo/scripts/accept_nested.py"),
+            Path("/repo/result"), Path("/out/capture"), profile="full",
+        )[-1], "full")
+        with self.assertRaises(PreviewError):
+            accept_command(Path("/repo/accept.py"), Path("/result"),
+                           Path("/out"), profile="unknown")
         self.assertNotIn("sh", cmd)
 
 

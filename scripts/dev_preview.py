@@ -275,6 +275,7 @@ def run_preview(
     acceptance_notifications: bool = False,
     evidence_dir: Path | None = None,
     accept_display_crash: bool = False,
+    acceptance_profile: str = "full",
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
@@ -433,6 +434,7 @@ def run_preview(
                 manifest = run_acceptance(
                     nested, environment, isolated, evidence_dir,
                     binaries["notification-acceptance"],
+                    profile=acceptance_profile,
                 )
                 print(f"[preview] Unreviewed evidence: {manifest}", flush=True)
                 return
@@ -546,6 +548,8 @@ def main() -> int:
         "--acceptance-notifications", action="store_true",
         help="Private dbus-run-session smoke only (use accept_nested.py)",
     )
+    parser.add_argument("--acceptance-profile", choices=("smoke", "full"), default="full",
+                        help=argparse.SUPPRESS)
     parser.add_argument(
         "--evidence-dir", type=Path,
         help="NEW output directory for unreviewed nested PNG captures",
@@ -565,6 +569,7 @@ def main() -> int:
                 acceptance_notifications=args.acceptance_notifications,
                 evidence_dir=args.evidence_dir,
                 accept_display_crash=args.accept_display_crash,
+                acceptance_profile=args.acceptance_profile,
             )
         else:
             parser.error("Unknown preview mode")

@@ -1,9 +1,9 @@
 name: Nix package (nightly / manual)
 
+# ci.yml builds the package for every native source change. The standalone
+# package workflow remains manually available without an extra nightly build.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '37 3 * * *'
 
 permissions:
   contents: read

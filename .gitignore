@@ -2,6 +2,6 @@
 /result
 *.swp
 .DS_Store
-/artifacts/visual-qa/
+/artifacts/
 __pycache__/
 *.py[cod]

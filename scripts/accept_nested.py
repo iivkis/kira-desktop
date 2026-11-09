@@ -78,6 +78,7 @@ def acceptance_command(
     bus_runner: str,
     config: Path,
     bin_dir: Path | None = None,
+    profile: str = "full",
 ) -> list[str]:
     argv = [
         *run_session_arguments(bus_runner, config),
@@ -85,6 +86,7 @@ def acceptance_command(
         "--acceptance-notifications",
         "--evidence-dir", str(output),
         "--package-dir", str(package),
+        "--acceptance-profile", profile,
     ]
     if bin_dir is not None:
         argv.extend(["--bin-dir", str(bin_dir)])
@@ -96,6 +98,7 @@ def main() -> int:
     parser.add_argument("--package-dir", type=Path, default=Path("result"))
     parser.add_argument("--bin-dir", type=Path, help="Built kira-core and kira-shell directory")
     parser.add_argument("--output", type=Path, required=True, help="NEW evidence directory")
+    parser.add_argument("--profile", choices=("smoke", "full"), default="full")
     args = parser.parse_args()
     try:
         bus_runner = shutil.which("dbus-run-session")
@@ -117,6 +120,7 @@ def main() -> int:
                 args.package_dir.resolve(),
                 output, bus_runner, config,
                 args.bin_dir.resolve() if args.bin_dir else None,
+                profile=args.profile,
             )
             return subprocess.run(command, env=env, check=False).returncode
     except (PreviewError, OSError) as error:

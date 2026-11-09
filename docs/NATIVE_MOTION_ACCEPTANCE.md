@@ -4,44 +4,55 @@
 `305139949f49176487ef9759fc32c228eadff408`. Native branch: `native-gtk`.
 This document does not certify any of the 15 widgets in `MAIN_WIDGET_PARITY.json`.
 
-## Experimental virtual Wayland CI (native-only, real pixels)
+## Optimized native Wayland CI: real pixels, no automatic artifact uploads
 
-`graphical.yml` now has an independent, experimental native
-graphical run on `native-gtk`. It is deliberately separate from
-mandatory Rust/Nix CI while software-rendered Niri stability is established.
+The mandatory 1 workflow now builds the distributable Nix
+package **once** per source-changing push. It reuses the actual
+2 on the same GitHub runner for display rollback, SNI,
+Notifications and genuine Weston → nested-Niri **visual pixel smoke**.
+The separate 3 workflow is **manual only**, so it never
+rebuilds the same package automatically on every push.
 
-- `nix build .#default` packages the real Rust/GTK Shell, Core,
-  SNI and Notifications acceptance clients.
-- `nix develop .#graphical-ci` invokes
-  `scripts/headless_wayland_acceptance.py`. It refuses an already
-  active Wayland/Niri session, and allocates new mode-0700 HOME, XDG and
-  Wayland runtime directories. A headless Weston creates the **outer**
-  Wayland socket, with Mesa llvmpipe software EGL/OpenGL for Niri.
-- `accept_nested.py` launches a fresh private D-Bus bus;
-  `dev_preview.py` creates its **own** Niri IPC and inner
-  Wayland socket before starting the package. Actual D-Bus notification
-  calls, genuine SNI registration and `grim` frame captures are
-  validated by `validate_nested_evidence.py`.
-- When it succeeds, the workflow uploads `review-index.html`,
-  unreviewed PNGs and raw capture metadata. When EGL, compositor, Core,
-  D-Bus or PNG validation fails, the job **fails**; no image is
-  generated as a stand-in.
+- 4 allocates private mode-0700 HOME,
+  XDG and Wayland runtime directories. Weston supplies a separate outer
+  Wayland socket using software Mesa EGL/OpenGL, and nested Niri owns
+  another IPC/Wayland socket. A fresh D-Bus bus serves native protocol clients.
+- 5 validates real 6 PNGs,
+  checks Top Bar paint and notification appearance/disappearance. The
+  **smoke** profile captures 14 entry + 14 exit + 6 tray frames in the
+  same ~650 ms observation window as the original 42-frame captures.
+  These 34 PNGs are discarded when the CI job ends. Nothing is uploaded.
+- The manual 7 workflow defaults to
+  **smoke** and does not upload anything. Select profile **full** to
+  capture the original 42 + 42 + 20 = **104** frames for motion review,
+  and separately enable **upload_evidence** to retain that unreviewed
+  archive for two days.
+- 8 uses the complete push/PR
+  change range to skip the expensive native job for docs-only changes.
+  Unknown revisions or failed comparisons run the full job. Rust
+  Core/IPC, Python tests and parity validation continue on every push.
+- 9 typechecks GTK targets through
+  Clippy 10 and all Rust tests, without the redundant
+  independent 11 pass. The nightly extra Nix build is
+  removed; 12 remains manual.
 
-On a non-graphical Linux shell with the dependencies from this repo:
+To run the minimal smoke from a **non-graphical** local Linux terminal:
 
-```sh
+13sh
 nix build .#default
 nix develop .#graphical-ci --command python3 \
   scripts/headless_wayland_acceptance.py \
   --package-dir result --output artifacts/virtual-niri \
-  --width 1280 --height 800
-```
+  --profile smoke --width 1280 --height 800
+14
 
-The virtual run is **native-only**, does not provide keyboard or fractional
-scale acceptance, and does not compare frozen main. The first experimental
-run reached real Weston but failed to initialize nested Niri EGL; the runner
-now provisions Nix Mesa llvmpipe/GLVND explicitly. A green future run
-still cannot set any widget `verified` flags by itself.
+For unreviewed full-density frames run the same command with
+15 and review them locally; for an uploaded archive
+select both manual 16 and 17 in GitHub Actions.
+Both modes fail closed on broken D-Bus, compositor, live
+notifications or incomplete PNGs. Neither proves pixel parity with
+frozen main, keyboard operation, reduced motion or multi-output focus.
+The 15 widget 18 flags remain false until paired review.
 
 ## Paired source/native frame review (manual provenance required)
 

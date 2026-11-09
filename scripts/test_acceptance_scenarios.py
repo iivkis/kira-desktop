@@ -12,7 +12,7 @@ from smoke_sni_fixture_bus import menu_call
 from acceptance_scenarios import (
     await_native_server, await_real_sni_fixture, close_notification,
     gdbus_args, notification_id, notify, sni_property_get_all,
-    verify_notification_sender_probe,
+    verify_notification_sender_probe, capture_profile,
 )
 
 
@@ -26,6 +26,17 @@ class RealProtocolAcceptanceTests(unittest.TestCase):
     @staticmethod
     def reply(stdout, returncode=0, stderr=""):
         return SimpleNamespace(stdout=stdout, stderr=stderr, returncode=returncode)
+
+    def test_evidence_smoke_uses_67_percent_fewer_frames_at_similar_duration(self):
+        self.assertEqual(capture_profile("full"), (42, 16, 20, 33))
+        self.assertEqual(capture_profile("smoke"), (14, 50, 6, 33))
+        full, smoke = capture_profile("full"), capture_profile("smoke")
+        self.assertEqual(2 * full[0] + full[2], 104)
+        self.assertEqual(2 * smoke[0] + smoke[2], 34)
+        self.assertAlmostEqual((full[0] - 1) * full[1],
+                               (smoke[0] - 1) * smoke[1], delta=20)
+        with self.assertRaises(PreviewError):
+            capture_profile("unknown")
 
     def test_only_fixed_freedesktop_methods_can_be_sent(self):
         expected = [

@@ -44,23 +44,24 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 6. **G4 Visual fidelity:** canonical design tokens, native charts and TENET timelines, reduced motion, visual regression and scaling acceptance at 100/125/150/200%.
 7. **G5 Shipping:** Nix build, packaged isolated nested Niri smoke, documented feature parity, accessibility and memory/perf comparison to main. No blanket release claim before these pass.
 
-## G4/G5 experimental graphical smoke and paired review
+## G4/G5 CI performance and artifact hygiene
 
-- `.github/workflows/graphical.yml` now attempts an actual
-  packaged GTK Shell in a fully disposable headless Weston → nested Niri
-  environment with a private D-Bus session and validated `grim`
-  PNG frames. A software Mesa EGL driver is explicitly provisioned for
-  Niri under the non-NixOS GitHub runner. **Experimental until verified
-  green**: the first attempt failed closed on missing EGL rather than
-  publishing synthetic screenshots. The normal Rust/Nix jobs remain
-  independent.
-- `scripts/compare_visual_evidence.py` pairs genuine, intact
-  source-main and native manifests of one named stimulus into a standalone
-  HTML review with both timelines and exactly matched viewport dimensions.
-  It cannot attest which binary made a manually supplied frame; reviewer
-  provenance, interaction and visual sign-off are still mandatory.
-- No collected native-only artifact, paired HTML page, or headless smoke
-  may silently change any of the 15 false `verified` flags.
+- The native CI reuses **one** Nix package build for all headless/fake
+  Niri, real nested-Wayland screenshot, SNI and Notifications checks.
+  The previous second automatic graphical job is now manual-only.
+- A fail-open whole-push/PR change classifier skips heavy GTK/Nix
+  compilation for documentation-only changes. Core formatting, Clippy,
+  tests, Python and parity checks still execute. Clippy on all target
+  kinds plus tests removes the extra independent plain Cargo typecheck.
+- Normal graphical smoke captures 34 true PNG frames instead of 104,
+  uploads nothing and drops the private evidence directory after CI.
+  The full 104-frame review and two-day artifact retention are optional,
+  with separate explicit inputs on manual 1.
+- Measured *before* tuning: the native shell job took 7m36s
+  (Cargo check/Clippy/test 3m10s; Nix build 4m11s), while a second
+  graphical job consumed 5m12s including a duplicate 4m41s Nix
+  build. Compare completed CI run timings; do not claim a measured
+  speedup before the new job finishes. See 2.
 
 ## Non-negotiable behavior
 

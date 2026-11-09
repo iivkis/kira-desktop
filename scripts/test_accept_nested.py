@@ -108,6 +108,7 @@ class PrivateBusAcceptanceTests(unittest.TestCase):
                 ["/bin/dbus-run-session", "--config-file=" + str(config), "--"],
             )
             self.assertIn("--acceptance-notifications", command)
+            self.assertEqual(command[command.index("--acceptance-profile") + 1], "full")
             self.assertEqual(command[command.index("--evidence-dir") + 1], "/tmp/new-evidence")
             self.assertEqual(command[command.index("--package-dir") + 1], "/repo/result")
             self.assertEqual(command[command.index("--bin-dir") + 1], "/repo/target/debug")

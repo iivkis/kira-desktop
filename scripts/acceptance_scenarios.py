@@ -32,6 +32,19 @@ FRAME_COUNT = 42
 FRAME_INTERVAL_MS = 16
 
 
+def capture_profile(profile: str) -> tuple[int, int, int, int]:
+    """(entry/exit frames, cadence ms, tray frames, cadence ms).
+
+    Smoke has the same ~650ms entry/exit observation window with far fewer
+    PNG encoder / grim process startups. Full keeps source-review detail.
+    """
+    if profile == "smoke":
+        return (14, 50, 6, 33)
+    if profile == "full":
+        return (FRAME_COUNT, FRAME_INTERVAL_MS, 20, 33)
+    raise PreviewError("Unknown evidence profile; refusing ambiguous capture")
+
+
 def gdbus_args(method: str, *parameters: str) -> list[str]:
     if method not in {
         "GetServerInformation", "GetCapabilities", "Notify", "CloseNotification"
@@ -214,7 +227,8 @@ def capture_event(
     parent_environment: dict[str, str],
     session_environment: dict[str, str],
     action: Callable[[], int | None],
-    *, runner=subprocess.run, clock=time.monotonic,
+    *, frames: int = FRAME_COUNT, interval_ms: int = FRAME_INTERVAL_MS,
+    runner=subprocess.run, clock=time.monotonic,
 ) -> tuple[Path, dict[str, object]]:
     """Start real capture before the D-Bus event, with no fake frame timing."""
     result: dict[str, object] = {}
@@ -233,7 +247,7 @@ def capture_event(
     producer.start()
     try:
         manifest = capture_frames(
-            display, output, label, FRAME_COUNT, FRAME_INTERVAL_MS,
+            display, output, label, frames, interval_ms,
             parent_environment, grim="grim", runner=runner,
         )
     finally:
@@ -253,10 +267,12 @@ def run_acceptance(
     isolated_environment: dict[str, str],
     output: Path,
     notification_probe: Path,
+    *, profile: str = "full",
 ) -> Path:
     """The preview owns lifecycle: run only after its Shell is running."""
     from accept_nested import verify_private_bus
 
+    frames, interval_ms, tray_frames, tray_interval_ms = capture_profile(profile)
     # Both the sender and receiver must use the new dbus-run-session
     # address. We never forward the parent's bus into this scenario.
     verify_private_bus(parent_environment)
@@ -279,6 +295,7 @@ def run_acceptance(
         nested_display, output / "entry", "toast-entry",
         parent_environment, isolated_environment,
         lambda: notify("entry_real", 0, isolated_environment, timeout=10000),
+        frames=frames, interval_ms=interval_ms,
     )
     identifier = event_in.get("id")
     if not isinstance(identifier, int):
@@ -291,6 +308,7 @@ def run_acceptance(
         nested_display, output / "exit", "toast-exit",
         parent_environment, isolated_environment,
         lambda: (close_notification(identifier, isolated_environment), identifier)[1],
+        frames=frames, interval_ms=interval_ms,
     )
 
     # Contract probes are real D-Bus calls; they are *not* claims about
@@ -318,8 +336,8 @@ def run_acceptance(
     if "NeedsAttention" not in sni_final["item"]:
         raise PreviewError("Real SNI Status/NewStatus did not reach private D-Bus")
     tray_capture = capture_frames(
-        nested_display, output / "tray", "tray-live-sni", 20, 33,
-        parent_environment, grim="grim",
+        nested_display, output / "tray", "tray-live-sni",
+        tray_frames, tray_interval_ms, parent_environment, grim="grim",
     )
 
     summary = {
@@ -328,6 +346,7 @@ def run_acceptance(
         "scenario": "private-dbus-notification-host",
         "session_bus": "new dbus-run-session (no address recorded)",
         "nested_wayland": nested_display,
+        "capture_profile": profile,
         "server_information": server,
         "notification_sender_probe": sender_probe,
         "captures": [
