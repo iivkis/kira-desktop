@@ -1,0 +1,57 @@
+name: Native GTK source compilation
+
+# Separate from the two-minute Core/IPC job: GTK source is checked on
+# every native branch change, rather than silently relying on rustfmt.
+# Full Nix package / nested-Niri interaction acceptance remains manual.
+on:
+  push:
+    branches: [native-gtk]
+    paths:
+      - ".github/workflows/gtk-check.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "flake.nix"
+      - "flake.lock"
+      - "nix/**"
+      - "crates/**"
+  pull_request:
+    paths:
+      - ".github/workflows/gtk-check.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "flake.nix"
+      - "flake.lock"
+      - "nix/**"
+      - "crates/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-gtk-source-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gtk-source:
+    name: Compile GTK UI and Shell with native libraries
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      # Ubuntu 24.04 lacks a packaged GTK4 Layer Shell development library.
+      # The repository's locked Nix devShell supplies GTK4, layer-shell,
+      # pkg-config and the matching Rust toolchain in one reproducible closure.
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compile real GTK4 UI/Shell Rust sources (including test targets)
+        run: |
+          nix develop .#ci --command bash -euo pipefail -c '
+            cargo check --locked --workspace --all-targets
+          '
+      - name: Execute native UI library model/regression tests
+        run: |
+          nix develop .#ci --command bash -euo pipefail -c '
+            cargo test --locked -p kira-ui --lib
+          '

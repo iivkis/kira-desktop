@@ -6,10 +6,16 @@ This document does not certify any of the 15 widgets in `MAIN_WIDGET_PARITY.json
 
 ## Fast CI versus real native Wayland evidence
 
-Routine push and pull-request CI is a single two-minute-capped Core/IPC
-and Python/parity job. It performs **no GTK compilation, Nix packaging
-or screenshot capture**. A green fast job is *not* native graphical
-acceptance.
+The fast routine Core/IPC + Python/parity job remains limited to **two runner
+minutes**. It does not compile GTK, produce a Nix package or capture pixels.
+
+A **separate automatic GTK source-check** (`.github/workflows/gtk-check.yml`)
+runs on native-gtk source changes and relevant pull requests. It uses the
+repository's locked Nix `ci` devShell to compile the entire Rust workspace
+with actual GTK4 + GTK4 Layer Shell dependencies and run `kira-ui` library
+tests. It is a compiler/test gate, **not** a distributable Nix package build,
+a live GTK pointer/focus test or source/native pixel parity evidence.
+A green fast job alone does not imply this independent GTK job passed.
 
 For actual native acceptance, manually dispatch **Full native GTK/Nix/Wayland
 validation (manual)** (`.github/workflows/graphical.yml`) on the target

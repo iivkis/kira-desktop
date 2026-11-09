@@ -32,10 +32,12 @@ certificate. All 15 widgets remain unverified until paired graphical evidence.
 
 ## Explicitly not claimed
 
-1. The native GTK components were **not compiled or run in GTK/Nix/nested
-   Niri** by the fast two-minute CI. Rust formatting, Core/IPC tests and
-   the source-only Python guard are useful but do not prove pointer/focus
-   behavior or lack of compiler errors in GTK-specific paths.
+1. The fast two-minute CI deliberately never compiles GTK. A separate
+   automatic `.github/workflows/gtk-check.yml` now compiles real GTK4/Shell
+   sources with locked Nix dependencies on native code changes. Its result
+   must be checked independently: it does not prove actual Wayland
+   pointer/focus behavior or lack of runtime faults. Full nested-Niri
+   acceptance is still manual.
 2. No source/native screenshot pairs or 60fps motion paths have been
    captured and reviewed. In particular, notifications, popup inversion,
    calendar flight paths, output hotplug/focus, multi-monitor scaling and
