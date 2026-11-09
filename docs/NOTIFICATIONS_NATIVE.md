@@ -305,3 +305,10 @@ the runner verifies the temporary owned socket using
 **shared Rust policy**, NOT rendered popup frames, Niri focus, output
 hit regions or visual parity. Frozen source behaviour that differs
 from sender-scoped replacement remains explicitly non-verified.
+
+
+The Shell's GTK action/close path also uses the same atomic close
+operation. An action emits `ActionInvoked` and the subsequent
+`NotificationClosed` only **after** the still-active queue ID is
+successfully closed and its sender lease retired. A duplicate/stale
+callback cannot emit an app action or close another toast.
