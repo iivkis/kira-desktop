@@ -83,6 +83,26 @@ or `LayoutUpdated` tree. Pure Rust model tests cover the revision boundary.
 Native nested-Niri owner churn, focus, geometry, TENET and paired frozen-main
 pixel capture still have no evidence. All 15 parity entries remain partial.
 
+## G7: sender-scoped Freedesktop notification replacement
+
+Starting from green `native-gtk` HEAD
+`4a0508742dd5f87286022a910057a08722da6520`
+(CI `42555358708`), the next feature adds pure
+`kira-services::NotificationOwnership` plus Shell GIO integration.
+A unique D-Bus peer may replace only its own active notification; a
+foreign or expired numeric `replaces_id` allocates a fresh ID.
+Close/expiry/action retire the owner lease, while parked persistent
+notices retain it. `CloseNotification` preserves ID-based external
+compatibility. The isolated nested-Niri protocol acceptance script now
+asserts cross-process replacement **does not** overwrite an existing
+notification, rather than assuming separate `gdbus` processes have
+the same sender identity.
+
+**Check CI on the latest HEAD**, not a historical green workflow.
+The live preview test has not run in this environment. Real
+nested-Niri GTK, output-hotplug, TENET and pixel evidence are
+still required. The parity ledger remains 0/15 verified.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
