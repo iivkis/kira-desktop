@@ -286,7 +286,10 @@ fn chart_sample_at_x(
     if points.is_empty() || !x.is_finite() || right <= left {
         return None;
     }
-    let span = domain.end.saturating_duration_since(domain.start).as_secs_f64();
+    let span = domain
+        .end
+        .saturating_duration_since(domain.start)
+        .as_secs_f64();
     if span <= 0.0 {
         return None;
     }
@@ -316,10 +319,14 @@ pub fn chart_inspection_text(
     let Some(point) = inspected_chart_point(points, selected) else {
         return "НЕТ ЗАМЕРОВ · график ожидает реальные показания".into();
     };
-    let age = now.saturating_duration_since(point.measured_at).as_secs_f64();
-    let lag = points
-        .last()
-        .map_or(0.0, |last| last.measured_at.saturating_duration_since(point.measured_at).as_secs_f64());
+    let age = now
+        .saturating_duration_since(point.measured_at)
+        .as_secs_f64();
+    let lag = points.last().map_or(0.0, |last| {
+        last.measured_at
+            .saturating_duration_since(point.measured_at)
+            .as_secs_f64()
+    });
     let status = if selected.is_some() {
         format!("ВЫБРАН ЗАМЕР · −{lag:.1} с от последнего")
     } else if now.saturating_duration_since(point.measured_at) < PULSE_FRESHNESS {
@@ -341,8 +348,13 @@ pub fn chart_inspection_report(
     now: Instant,
 ) -> Option<String> {
     let point = inspected_chart_point(points, selected)?;
-    let position = points.iter().position(|row| row.measured_at == point.measured_at)?;
-    let lag = points.last()?.measured_at.saturating_duration_since(point.measured_at);
+    let position = points
+        .iter()
+        .position(|row| row.measured_at == point.measured_at)?;
+    let lag = points
+        .last()?
+        .measured_at
+        .saturating_duration_since(point.measured_at);
     let age = now.saturating_duration_since(point.measured_at);
     Some(format!(
         "Kira · измеренная история системы (снимок)\nЗамер: {} из {}\nОт последнего: {:.1} с\nВозраст: {:.1} с\nCPU: {}\nRAM: {}\nGPU: {}\n",
@@ -602,14 +614,14 @@ fn draw_inspection_marker(
     if !points.iter().any(|point| point.measured_at == stamp) {
         return;
     }
-    let span = domain.end.saturating_duration_since(domain.start).as_secs_f64();
+    let span = domain
+        .end
+        .saturating_duration_since(domain.start)
+        .as_secs_f64();
     if span <= 0.0 || width <= 80 || height <= 60 {
         return;
     }
-    let fraction = stamp
-        .saturating_duration_since(domain.start)
-        .as_secs_f64()
-        / span;
+    let fraction = stamp.saturating_duration_since(domain.start).as_secs_f64() / span;
     if !(0.0..=extent.clamp(0.0, 1.0)).contains(&fraction) {
         return;
     }
@@ -663,7 +675,10 @@ impl ChartState {
         let Some((first, last)) = points.first().zip(points.last()) else {
             return;
         };
-        let domain = self.animation.borrow().display_domain(first.measured_at, last.measured_at);
+        let domain = self
+            .animation
+            .borrow()
+            .display_domain(first.measured_at, last.measured_at);
         if let Some(stamp) = chart_sample_at_x(&points, domain, x, width) {
             self.selected_at.set(Some(stamp));
             self.inspector_feedback.set_text("");
@@ -755,13 +770,15 @@ impl ChartState {
             .is_some_and(|at| !points.iter().any(|point| point.measured_at == at))
         {
             self.selected_at.set(None);
-            self.inspector_feedback.set_text("Выбранный замер вышел из истории");
+            self.inspector_feedback
+                .set_text("Выбранный замер вышел из истории");
         }
         let selected = self.selected_at.get();
         let index = selected
             .and_then(|at| points.iter().position(|point| point.measured_at == at))
             .unwrap_or_else(|| points.len().saturating_sub(1));
-        self.inspector_previous.set_sensitive(!points.is_empty() && index > 0);
+        self.inspector_previous
+            .set_sensitive(!points.is_empty() && index > 0);
         self.inspector_next.set_sensitive(selected.is_some());
         self.inspector_live.set_sensitive(selected.is_some());
         self.inspector_copy
@@ -884,9 +901,7 @@ impl SystemCharts {
         )]);
         let next = gtk::Button::with_label("▶");
         next.set_tooltip_text(Some("Следующий реальный замер"));
-        next.update_property(&[gtk::accessible::Property::Label(
-            "Следующий замер нагрузки",
-        )]);
+        next.update_property(&[gtk::accessible::Property::Label("Следующий замер нагрузки")]);
         let live = gtk::Button::with_label("СЕЙЧАС");
         live.set_tooltip_text(Some("Вернуться к последнему полученному замеру"));
         live.update_property(&[gtk::accessible::Property::Label(
@@ -1010,9 +1025,7 @@ impl SystemCharts {
         let chart_pointer = gtk::GestureClick::new();
         chart_pointer.connect_pressed(move |gesture, _, x, _| {
             if let Some(state) = weak.upgrade() {
-                let width = gesture
-                    .widget()
-                    .map_or(0, |widget| widget.width());
+                let width = gesture.widget().map_or(0, |widget| widget.width());
                 state.inspect_pointer(x, width);
                 state.plot.grab_focus();
             }
@@ -1059,10 +1072,7 @@ impl SystemCharts {
 
     /// Clipboard transport is owned by the embedding shell, not by the
     /// reusable chart or the process sampler.
-    pub fn set_copy_handler(
-        &self,
-        on_copy: impl Fn(String) -> Result<(), String> + 'static,
-    ) {
+    pub fn set_copy_handler(&self, on_copy: impl Fn(String) -> Result<(), String> + 'static) {
         self.state.on_copy.replace(Some(Box::new(on_copy)));
         self.state.refresh();
     }
@@ -1168,7 +1178,10 @@ mod tests {
             })
             .collect::<Vec<_>>();
         let second = t + Duration::from_millis(500);
-        assert_eq!(inspection_target(&points, None, InspectionAction::Earlier), Some(second));
+        assert_eq!(
+            inspection_target(&points, None, InspectionAction::Earlier),
+            Some(second)
+        );
         assert_eq!(
             inspection_target(&points, Some(second), InspectionAction::Earlier),
             Some(t)
@@ -1185,10 +1198,22 @@ mod tests {
             inspection_target(&points, Some(second), InspectionAction::Later),
             None
         );
-        assert_eq!(inspection_target(&points, None, InspectionAction::First), Some(t));
-        assert_eq!(inspection_target(&points, Some(t), InspectionAction::Live), None);
-        assert_eq!(inspection_target(&[], None, InspectionAction::Earlier), None);
-        assert_eq!(inspected_chart_point(&points, Some(second)).unwrap().cpu, Some(15.0));
+        assert_eq!(
+            inspection_target(&points, None, InspectionAction::First),
+            Some(t)
+        );
+        assert_eq!(
+            inspection_target(&points, Some(t), InspectionAction::Live),
+            None
+        );
+        assert_eq!(
+            inspection_target(&[], None, InspectionAction::Earlier),
+            None
+        );
+        assert_eq!(
+            inspected_chart_point(&points, Some(second)).unwrap().cpu,
+            Some(15.0)
+        );
         assert_eq!(
             inspected_chart_point(&points[1..], Some(t)),
             None,
@@ -1249,8 +1274,10 @@ mod tests {
         assert!(history.contains("GPU: —"));
         assert!(chart_inspection_text(&points, None, now).contains("ТЕКУЩИЙ ЗАМЕР"));
         assert!(chart_inspection_text(&points, Some(t), now).contains("ВЫБРАН ЗАМЕР"));
-        assert!(chart_inspection_text(&points, None, now + Duration::from_secs(3))
-            .contains("ПОСЛЕДНИЙ ЗАМЕР УСТАРЕЛ"));
+        assert!(
+            chart_inspection_text(&points, None, now + Duration::from_secs(3))
+                .contains("ПОСЛЕДНИЙ ЗАМЕР УСТАРЕЛ")
+        );
         assert!(chart_inspection_report(&points, Some(t - Duration::from_secs(1)), now).is_none());
         assert!(chart_inspection_report(&[], None, now).is_none());
     }
