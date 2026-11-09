@@ -10,7 +10,8 @@ use gtk::glib::{self, variant::ToVariant};
 use gtk::prelude::*;
 
 use kira_services::notification_queue::{
-    DEFAULT_DWELL, Notice, NotificationOwnership, NotificationQueue,
+    DEFAULT_DWELL, Notice, NotificationOwnership, NotificationQueue, admit_notification,
+    close_notification, revoke_notification_session,
 };
 use kira_ui::{
     NotificationHostSet, NotificationIntent, NotificationView, PopupHost, PopupKind,
@@ -174,14 +175,6 @@ fn toast_intent_authorized(owned: bool, painted: bool, current_target: bool) -> 
     owned && painted && current_target
 }
 
-/// A D-Bus ownership epoch is a real trust boundary. Once the name is
-/// gone, do not replay a foreign daemon's previous notifications or accept
-/// stale sender leases if this process later reacquires the name.
-fn revoke_notification_session(queue: &mut NotificationQueue, senders: &mut NotificationOwnership) {
-    queue.reset_session();
-    senders.clear();
-}
-
 /// A registered GIO object may remain callable through its unique bus name
 /// after the well-known Freedesktop Notifications name was lost. Reject
 /// every RPC unless the active service still owns the exact connection.
@@ -277,24 +270,25 @@ impl Service {
                                 );
                                 return;
                             };
-                            let (id, accepted) = {
+                            let id = {
                                 let mut queue = service.queue.borrow_mut();
-                                let id = service.senders.borrow().assign_id(
+                                let mut owners = service.senders.borrow_mut();
+                                admit_notification(
                                     &mut queue,
+                                    &mut owners,
                                     sender,
                                     params.child_value(1).get::<u32>().unwrap_or(0),
-                                );
-                                let notice = notice_from_params(&params, id);
-                                (id, queue.push(notice, Instant::now()))
+                                    notice_from_params(&params, 0),
+                                    Instant::now(),
+                                )
                             };
-                            if !accepted {
+                            let Some(id) = id else {
                                 invocation.return_dbus_error(
                                     "org.freedesktop.Notifications.Error.QueueFull",
                                     "Notification queue is full",
                                 );
                                 return;
                             }
-                            service.senders.borrow_mut().record(id, sender);
                             invocation.return_value(Some(&(id,).to_variant()));
                             service.sync();
                         }
@@ -304,8 +298,11 @@ impl Service {
                             // operation. Keep cross-process clients compatible;
                             // unlike Notify(replaces_id), it cannot inject
                             // replacement content or new action keys.
-                            if service.queue.borrow_mut().close(id) {
-                                service.senders.borrow_mut().forget(id);
+                            if close_notification(
+                                &mut service.queue.borrow_mut(),
+                                &mut service.senders.borrow_mut(),
+                                id,
+                            ) {
                                 invocation.return_value(None);
                                 service.signal_closed(id, 3);
                                 service.sync();
