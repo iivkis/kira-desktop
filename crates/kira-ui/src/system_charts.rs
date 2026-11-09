@@ -7,7 +7,7 @@ use std::time::{Duration, Instant};
 
 use gtk::prelude::*;
 
-use crate::chart_motion::ChartMotion;
+use crate::chart_motion::{ChartMotion, ChartTimeDomain};
 use crate::motion::{MotionToken, animations_enabled};
 
 pub const MAX_PULSE_POINTS: usize = 120;
@@ -242,7 +242,15 @@ pub fn measured_history_caption(points: &[ChartPoint]) -> String {
                 .measured_at
                 .saturating_duration_since(measured[0].measured_at)
                 .as_secs_f64();
-            format!("{count} реальных замеров · {span:.1} с истории")
+            let form = match count % 100 {
+                11..=14 => "реальных замеров",
+                _ => match count % 10 {
+                    1 => "реальный замер",
+                    2..=4 => "реальных замера",
+                    _ => "реальных замеров",
+                },
+            };
+            format!("{count} {form} · {span:.1} с истории")
         }
     }
 }
@@ -312,20 +320,14 @@ fn draw_gauges(
 /// but never inserts a fake intermediate reading.
 fn history_paths(
     points: &[ChartPoint],
+    domain: ChartTimeDomain,
     lane: ActivityLane,
     left: f64,
     right: f64,
     top: f64,
     bottom: f64,
 ) -> Vec<Vec<(f64, f64)>> {
-    let Some(first) = points.first().map(|p| p.measured_at) else {
-        return Vec::new();
-    };
-    let span = points
-        .last()
-        .map(|p| p.measured_at.saturating_duration_since(first).as_secs_f64())
-        .unwrap_or_default()
-        .max(0.5);
+    let span = domain.end.saturating_duration_since(domain.start).as_secs_f64();
     let axis = activity_axis(points, lane);
     let mut paths = Vec::new();
     let mut path = Vec::new();
@@ -333,7 +335,7 @@ fn history_paths(
         if let Some(value) = reading(point, lane) {
             let elapsed = point
                 .measured_at
-                .saturating_duration_since(first)
+                .saturating_duration_since(domain.start)
                 .as_secs_f64();
             let x = left + (right - left) * (elapsed / span).clamp(0.0, 1.0);
             let y = bottom - ((value - axis.min) / (axis.max - axis.min)) * (bottom - top);
@@ -367,6 +369,7 @@ fn draw_history(
     width: i32,
     height: i32,
     points: &[ChartPoint],
+    domain: Option<ChartTimeDomain>,
     show_gpu: bool,
     trace_extent: f64,
 ) {
@@ -422,7 +425,9 @@ fn draw_history(
             62.0,
         );
         cr.clip();
-        for path in history_paths(points, lane, left, right, top, bottom) {
+        for path in domain.map_or_else(Vec::new, |domain| {
+            history_paths(points, domain, lane, left, right, top, bottom)
+        }) {
             if path.len() >= 2 {
                 trace_curve(cr, &path);
                 if let (Some(first), Some(last)) = (path.first(), path.last()) {
@@ -470,6 +475,7 @@ impl ChartState {
         self: &Rc<Self>,
         view: &gtk::Widget,
         point: ChartPoint,
+        first_visible_at: Instant,
         previous: Option<Instant>,
     ) {
         // Hidden or reduced-motion windows settle immediately. Re-showing a
@@ -478,6 +484,7 @@ impl ChartState {
         self.motion.cancel();
         let duration = self.animation.borrow_mut().begin(
             point.measured_at,
+            first_visible_at,
             previous,
             point.cpu,
             point.ram,
@@ -537,10 +544,14 @@ impl ChartState {
             .set_text(&format!("CPU {:.1}–{:.1}%", cpu_axis.min, cpu_axis.max));
         self.ram_axis
             .set_text(&format!("RAM {:.1}–{:.1}%", ram_axis.min, ram_axis.max));
-        self.plot.set_tooltip_text(Some(&format!(
-            "История нагрузки с адаптивными шкалами. {}",
-            measured_history_caption(&points)
-        )));
+        let plot_label = format!(
+            "История нагрузки с адаптивными шкалами. {}. CPU: {}, RAM: {}",
+            measured_history_caption(&points),
+            meter_text(cpu, false),
+            meter_text(ram, true)
+        );
+        self.plot.set_tooltip_text(Some(&plot_label));
+        self.plot.update_property(&[gtk::accessible::Property::Label(&plot_label)]);
         self.plot.queue_draw();
     }
 }
@@ -645,20 +656,24 @@ impl SystemCharts {
             if let Some(state) = weak.upgrade() {
                 let now = Instant::now();
                 let points = state.history.borrow().recent(now);
-                let extent = points
-                    .first()
-                    .zip(points.last())
-                    .map_or(1.0, |(first, last)| {
-                        state
-                            .animation
-                            .borrow()
-                            .trace_extent(first.measured_at, last.measured_at)
-                    });
+                let (domain, extent) = {
+                    let animation = state.animation.borrow();
+                    let endpoints = points.first().zip(points.last());
+                    (
+                        endpoints.map(|(first, last)| {
+                            animation.display_domain(first.measured_at, last.measured_at)
+                        }),
+                        endpoints.map_or(1.0, |(first, last)| {
+                            animation.trace_extent(first.measured_at, last.measured_at)
+                        }),
+                    )
+                };
                 draw_history(
                     cr,
                     width,
                     height,
                     &points,
+                    domain,
                     state.gpu.borrow().is_fresh(now),
                     extent,
                 );
@@ -703,8 +718,19 @@ impl SystemCharts {
             gpu: gpu.map(f64::from),
             ..ChartPoint::from(sample)
         };
-        self.state
-            .animate_sample(&self.root.clone().upcast(), point, previous);
+        let first_visible_at = self
+            .state
+            .history
+            .borrow()
+            .recent(sample.measured_at)
+            .first()
+            .map_or(sample.measured_at, |p| p.measured_at);
+        self.state.animate_sample(
+            &self.root.clone().upcast(),
+            point,
+            first_visible_at,
+            previous,
+        );
         self.state.refresh();
         // One-shot expiry callbacks, not an always-ticking UI timer. Older
         // callbacks cannot forge new readings; they only re-evaluate time.
@@ -907,18 +933,18 @@ mod tests {
                 gpu: Some(80.0),
             },
         ];
-        let cpu = history_paths(&points, ActivityLane::Cpu, 41.0, 341.0, 28.0, 84.0);
+        let cpu = history_paths(&points, ChartTimeDomain::measured(t, t + Duration::from_millis(1500)), ActivityLane::Cpu, 41.0, 341.0, 28.0, 84.0);
         assert_eq!(cpu.len(), 2);
         assert_eq!(cpu[0].len(), 1);
         assert_eq!(cpu[1].len(), 1);
         assert_eq!(cpu[0][0].0, 41.0);
         assert_eq!(cpu[1][0].0, 341.0);
-        let gpu = history_paths(&points, ActivityLane::Gpu, 41.0, 341.0, 28.0, 84.0);
+        let gpu = history_paths(&points, ChartTimeDomain::measured(t, t + Duration::from_millis(1500)), ActivityLane::Gpu, 41.0, 341.0, 28.0, 84.0);
         assert_eq!(gpu.len(), 1);
         assert_eq!(gpu[0].len(), 2);
         assert_eq!(gpu[0][0].0, 41.0);
         assert_eq!(gpu[0][1].0, 341.0);
-        let ram = history_paths(&points, ActivityLane::Ram, 41.0, 341.0, 28.0, 84.0);
+        let ram = history_paths(&points, ChartTimeDomain::measured(t, t + Duration::from_millis(1500)), ActivityLane::Ram, 41.0, 341.0, 28.0, 84.0);
         assert_eq!(ram.len(), 1);
         assert_eq!(ram[0].len(), 3);
         assert_eq!(ram[0][1].0, 141.0);
@@ -928,6 +954,46 @@ mod tests {
                 assert!((28.0..=84.0).contains(&y));
             }
         }
+    }
+
+    #[test]
+    fn russian_count_agrees_with_frozen_main_for_short_and_long_histories() {
+        let t = Instant::now();
+        let points = (0..=25)
+            .map(|i| ChartPoint {
+                measured_at: t + Duration::from_millis(i * 500),
+                cpu: Some(1.0),
+                ram: None,
+                gpu: None,
+            })
+            .collect::<Vec<_>>();
+        for (n, expected) in [
+            (2, "2 реальных замера"),
+            (3, "3 реальных замера"),
+            (5, "5 реальных замеров"),
+            (11, "11 реальных замеров"),
+            (21, "21 реальный замер"),
+            (22, "22 реальных замера"),
+        ] {
+            assert!(measured_history_caption(&points[..n]).starts_with(expected));
+        }
+    }
+
+    #[test]
+    fn projected_x_uses_painted_axis_instead_of_new_real_endpoint() {
+        let t = Instant::now();
+        let points = [
+            ChartPoint { measured_at: t, cpu: Some(10.0), ram: None, gpu: None },
+            ChartPoint { measured_at: t + Duration::from_millis(500), cpu: Some(20.0), ram: None, gpu: None },
+            ChartPoint { measured_at: t + Duration::from_millis(1000), cpu: Some(30.0), ram: None, gpu: None },
+        ];
+        let old = ChartTimeDomain::measured(t, t + Duration::from_millis(500));
+        let new = ChartTimeDomain::measured(t, t + Duration::from_millis(1000));
+        let old_path = history_paths(&points, old, ActivityLane::Cpu, 41.0, 341.0, 28.0, 84.0);
+        let new_path = history_paths(&points, new, ActivityLane::Cpu, 41.0, 341.0, 28.0, 84.0);
+        assert_eq!(old_path[0][1].0, 341.0);
+        assert_eq!(new_path[0][1].0, 191.0);
+        assert_eq!(new_path[0][2].0, 341.0);
     }
 
     #[test]
