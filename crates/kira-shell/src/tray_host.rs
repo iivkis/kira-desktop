@@ -63,6 +63,8 @@ struct Item {
 #[derive(Clone, Debug)]
 struct MenuSession {
     handle: u32,
+    /// Trusted revision of the exact published native menu tree.
+    ui_epoch: u64,
     owner: String,
     path: String,
     title: String,
@@ -79,6 +81,7 @@ impl MenuSession {
     fn snapshot(&self) -> TrayMenu {
         TrayMenu {
             handle: self.handle,
+            epoch: self.ui_epoch,
             title: self.title.clone(),
             items: self.entries.clone(),
             navigation: self.navigation.clone(),
@@ -100,6 +103,7 @@ struct Service {
     items: RefCell<Vec<Item>>,
     pins: RefCell<HashSet<String>>,
     menu_serial: Cell<u64>,
+    ui_epoch_counter: Cell<u64>,
     current_menu: RefCell<Option<MenuSession>>,
     on_menu: Box<dyn Fn(Option<TrayMenu>)>,
     on_update: Box<dyn Fn(TrayState)>,
@@ -967,11 +971,14 @@ impl Service {
     }
 
     fn publish_menu(&self) {
-        let snapshot = self
-            .current_menu
-            .borrow()
-            .as_ref()
-            .map(MenuSession::snapshot);
+        // Each published tree revokes every older GTK callback, even when
+        // another D-Bus owner chooses the same numeric handle and item ID.
+        let next = self.ui_epoch_counter.get().wrapping_add(1).max(1);
+        self.ui_epoch_counter.set(next);
+        let snapshot = self.current_menu.borrow_mut().as_mut().map(|menu| {
+            menu.ui_epoch = next;
+            menu.snapshot()
+        });
         (self.on_menu)(snapshot);
     }
 
@@ -1170,6 +1177,7 @@ impl Service {
         };
         let menu = MenuSession {
             handle: item.handle,
+            ui_epoch: 0,
             owner,
             path: path.to_owned(),
             title: item.title.clone(),
@@ -1180,12 +1188,15 @@ impl Service {
         self.request_menu_layout(menu, self.menu_serial.get(), Some(0), true);
     }
 
-    fn menu_expand(self: &Rc<Self>, handle: u32, id: i32) {
+    fn menu_expand(self: &Rc<Self>, handle: u32, id: i32, epoch: u64) {
         // Every retained ancestor page remains genuinely visible in a
         // floating cascade. A clicked sibling can replace the deeper path,
         // but only after verifying owner, globally unique parent and page.
         let selected = self.current_menu.borrow().as_ref().and_then(|menu| {
-            if menu.handle != handle || !tray_menu::expandable(&menu.entries, id) {
+            if menu.handle != handle
+                || menu.ui_epoch != epoch
+                || !tray_menu::expandable(&menu.entries, id)
+            {
                 return None;
             }
             kira_ui::tray::menu_expansion_path(&menu.entries, &menu.navigation, id)
@@ -1234,13 +1245,14 @@ impl Service {
         self.request_menu_layout(menu, serial, None, false);
     }
 
-    fn menu_click(self: &Rc<Self>, handle: u32, id: i32) {
+    fn menu_click(self: &Rc<Self>, handle: u32, id: i32, epoch: u64) {
         let selected = self
             .current_menu
             .borrow()
             .as_ref()
             .filter(|menu| {
                 menu.handle == handle
+                    && menu.ui_epoch == epoch
                     && tray_menu::clickable(&menu.entries, id)
                     && kira_ui::tray::menu_visible_leaf(&menu.entries, &menu.navigation, id)
             })
@@ -1291,18 +1303,18 @@ impl Service {
             self.menu_back();
             return;
         }
-        if let TrayIntent::MenuClick(handle, id) = intent {
-            self.menu_click(handle, id);
+        if let TrayIntent::MenuClick(handle, id, epoch) = intent {
+            self.menu_click(handle, id, epoch);
             return;
         }
-        if let TrayIntent::MenuExpand(handle, id) = intent {
-            self.menu_expand(handle, id);
+        if let TrayIntent::MenuExpand(handle, id, epoch) = intent {
+            self.menu_expand(handle, id, epoch);
             return;
         }
         let handle = match intent {
             TrayIntent::Activate(id) | TrayIntent::Secondary(id) | TrayIntent::TogglePin(id) => id,
-            TrayIntent::MenuClick(_, _)
-            | TrayIntent::MenuExpand(_, _)
+            TrayIntent::MenuClick(_, _, _)
+            | TrayIntent::MenuExpand(_, _, _)
             | TrayIntent::MenuBack
             | TrayIntent::DismissMenu => return,
         };
@@ -1383,6 +1395,7 @@ pub fn start(
         items: RefCell::new(Vec::new()),
         pins: RefCell::new(load_pins()),
         menu_serial: Cell::new(0),
+        ui_epoch_counter: Cell::new(0),
         current_menu: RefCell::new(None),
         on_menu: Box::new(on_menu),
         on_update: Box::new(on_update),
@@ -1488,6 +1501,27 @@ pub fn start(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn changing_published_menu_epoch_revokes_previous_gtk_tree() {
+        let old = MenuSession {
+            handle: 41,
+            ui_epoch: 7,
+            owner: ":1.102".into(),
+            path: "/Menu".into(),
+            title: "Old".into(),
+            layout_version: 3,
+            entries: Vec::new(),
+            navigation: Vec::new(),
+        };
+        let mut changed = old.clone();
+        changed.ui_epoch = 8;
+        assert!(old.same_target(&changed));
+        assert_ne!(old.snapshot(), changed.snapshot());
+        assert_ne!(old.snapshot().epoch, changed.ui_epoch);
+        changed.owner = ":1.103".into();
+        assert!(!old.same_target(&changed));
+    }
 
     #[test]
     fn sni_watcher_requires_an_explicit_isolated_preview_bus() {
