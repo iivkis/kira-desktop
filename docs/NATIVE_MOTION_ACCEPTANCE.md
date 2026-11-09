@@ -12,8 +12,9 @@ minutes**. It does not compile GTK, produce a Nix package or capture pixels.
 A **separate automatic GTK source-check** (`.github/workflows/gtk-check.yml`)
 runs on native-gtk source changes and relevant pull requests. It uses the
 repository's locked Nix `ci` devShell to compile the entire Rust workspace
-with actual GTK4 + GTK4 Layer Shell dependencies and run `kira-ui` library
-tests. It is a compiler/test gate, **not** a distributable Nix package build,
+with actual GTK4 + GTK4 Layer Shell dependencies, run full-workspace
+Clippy (warnings denied), and execute every Rust crate's tests including
+`kira-ui` and `kira-shell`. It is a compiler/lint/test gate, **not** a distributable Nix package build,
 a live GTK pointer/focus test or source/native pixel parity evidence.
 A green fast job alone does not imply this independent GTK job passed.
 

@@ -552,7 +552,8 @@
       "animation_requirements": [
         "Reversible close using one master timeline",
         "PopupTimeline/GSK clip is retained through detach and reattach; matched Niri focus/contact/visual/motion evidence still missing.",
-        "Shared PopupHost uses the GDK first-painted-frame clock rather than monotonic wall time before mapping, preserving the initial clip and reversible scene on delayed Wayland window creation; popup Close/Attach targets have 34px minimum. Needs real nested-Niri reveal/reverse/reduced-motion/focus capture."
+        "Shared PopupHost uses the GDK first-painted-frame clock rather than monotonic wall time before mapping, preserving the initial clip and reversible scene on delayed Wayland window creation; popup Close/Attach targets have 34px minimum. Needs real nested-Niri reveal/reverse/reduced-motion/focus capture.",
+        "Stable measured pooled-popup contact reuses the original TENET physical origin during same-output interrupted close/reopen. Last width/top/max-height scene is retained; monitor migration or real geometry changes invalidate it. Pure model tests included. GTK/Niri paired motion and focus captures still required."
       ],
       "verified": {
         "content": false,

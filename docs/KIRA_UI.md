@@ -4,7 +4,9 @@
 
 This library's ongoing design/motion review and enforceable source-only
 invariants are documented in [NATIVE_DESIGN_MOTION_REVIEW.md](NATIVE_DESIGN_MOTION_REVIEW.md).
-A fast green CI run is not graphical acceptance.
+A fast green CI run is not graphical acceptance. The separate Nix-backed
+automatic GTK source gate also runs strict Clippy and full-workspace Rust
+tests, but still cannot prove real Niri frames or interactive focus.
 
 ## Architectural boundaries
 

@@ -20,6 +20,17 @@ fn reattach_can_open(active: Option<PopupKind>) -> bool {
     active.is_none()
 }
 
+/// The contact point belongs to the measured popup scene, not a toggle.
+/// Only a physical output/geometry change may invalidate a saved contact.
+/// In-place reverse/reopen must continue from the same actual geometry.
+fn popup_contact_needs_rebase(
+    previous: (i32, i32, i32),
+    next: (i32, i32, i32),
+    output_changed: bool,
+) -> bool {
+    output_changed || previous != next
+}
+
 // Named because the callback is shared between a retained native view
 // and its detachable toplevel lifetime, never supplied by untrusted IPC.
 type DetachHandler = Rc<dyn Fn(bool)>;
@@ -85,6 +96,9 @@ struct PopupView {
     scroll: gtk::ScrolledWindow,
     content: gtk::Widget,
     last_content_focus: RefCell<Option<gtk::Widget>>,
+    /// Width, top offset and maximum content height of the last measured
+    /// host scene. Unchanged bar clicks must never erase TENET contact memory.
+    placement: Cell<(i32, i32, i32)>,
     on_detached: Option<Rc<dyn Fn(bool)>>,
 }
 
@@ -120,15 +134,21 @@ impl PopupView {
     }
 
     fn retarget_monitor(&self, kind: PopupKind, monitor: Option<&gtk::gdk::Monitor>) {
-        if self.window.monitor() != monitor.cloned() {
+        let moved = self.window.monitor() != monitor.cloned();
+        let (width, height) = screen_geometry(monitor);
+        let next = layout_for(kind, width, height);
+        if moved {
             self.window.set_monitor(monitor);
         }
-        let (width, height) = screen_geometry(monitor);
-        let (popup_width, top, max_height) = layout_for(kind, width, height);
-        self.window.set_margin(Edge::Top, top);
-        self.window.set_default_size(popup_width, -1);
-        self.scroll.set_max_content_height(max_height);
-        self.contact.set(None);
+        if popup_contact_needs_rebase(self.placement.get(), next, moved) {
+            // Rebase only onto a genuinely different output or layout.
+            // On a rapid Close→Open the same saved contact remains intact.
+            self.window.set_margin(Edge::Top, next.1);
+            self.window.set_default_size(next.0, -1);
+            self.scroll.set_max_content_height(next.2);
+            self.placement.set(next);
+            self.contact.set(None);
+        }
     }
 
     fn render(&self) {
@@ -691,6 +711,7 @@ impl PopupHost {
                 scroll,
                 content: view_widget,
                 last_content_focus: RefCell::new(None),
+                placement: Cell::new((width, top, max_height)),
                 on_detached: self.detach_handlers.borrow().get(&kind).cloned(),
             });
 
@@ -801,6 +822,21 @@ mod tests {
             assert!(detached_title(kind).starts_with("Kira"));
         }
         assert!(supports_detach(PopupKind::Tray));
+    }
+
+    #[test]
+    fn scene_contact_is_stable_across_same_output_interrupted_reopen() {
+        let placement = layout_for(PopupKind::System, 1920, 1080);
+        assert!(!popup_contact_needs_rebase(placement, placement, false));
+        // A different monitor can have identical dimensions but cannot
+        // inherit the former physical contact or output affinity.
+        assert!(popup_contact_needs_rebase(placement, placement, true));
+        let narrower = layout_for(PopupKind::System, 360, 640);
+        assert_ne!(narrower, placement);
+        assert!(popup_contact_needs_rebase(placement, narrower, false));
+        let taller = layout_for(PopupKind::System, 1920, 1440);
+        assert_ne!(taller, placement);
+        assert!(popup_contact_needs_rebase(placement, taller, false));
     }
 
     #[test]

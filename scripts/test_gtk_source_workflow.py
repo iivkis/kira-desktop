@@ -19,7 +19,9 @@ class GtkSourceCheckContract(unittest.TestCase):
         self.assertIn("cachix/install-nix-action@", workflow)
         self.assertIn("nix develop .#ci", workflow)
         self.assertIn("cargo check --locked --workspace --all-targets", workflow)
-        self.assertIn("cargo test --locked -p kira-ui --lib", workflow)
+        self.assertIn("cargo clippy --locked --workspace --all-targets -- -D warnings", workflow)
+        self.assertIn("cargo test --locked --workspace --all-targets", workflow)
+        self.assertIn("timeout-minutes: 30", workflow)
 
     def test_two_minute_core_signal_remains_independent(self):
         fast = (ROOT / ".github" / "workflows" / "ci.yml").read_text(

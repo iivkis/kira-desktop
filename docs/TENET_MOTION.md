@@ -40,6 +40,18 @@ When the last 60-second history window discards the pinned sample, the
 selection clears instead of adopting another identity. User focus,
 interruption, high-DPI geometry and paired Niri/source motion remain pending.
 
+## Stable popup contact across interrupted open/close (unverified)
+
+The pooled layer-shell `PopupHost` now remembers the last measured popup
+layout (width, top and max-height). Opening again while the same physical
+output and geometry are unchanged does **not** clear the saved TENET contact
+or reassign the Wayland window's default size, so a Close→Open interruption
+can retrace the identical recorded physical scene. Output migration, resize
+or changed available height explicitly invalidates the old contact and
+recomputes the real geometry. Pure regression tests cover same-layout,
+new-monitor-with-same-layout and both width/height changes. Real Niri
+motion trajectories and keyboard focus still need paired captures.
+
 ## Native retained notification lifecycle (unverified)
 
 The native shaped-input NotificationHost now retains a widget's actual GTK

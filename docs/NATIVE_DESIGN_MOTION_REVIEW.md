@@ -34,7 +34,8 @@ certificate. All 15 widgets remain unverified until paired graphical evidence.
 
 1. The fast two-minute CI deliberately never compiles GTK. A separate
    automatic `.github/workflows/gtk-check.yml` now compiles real GTK4/Shell
-   sources with locked Nix dependencies on native code changes. Its result
+   sources, strict full-workspace Clippy and all Rust tests with locked Nix
+dependencies on native code changes. Its result
    must be checked independently: it does not prove actual Wayland
    pointer/focus behavior or lack of runtime faults. Full nested-Niri
    acceptance is still manual.

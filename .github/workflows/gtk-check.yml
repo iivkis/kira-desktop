@@ -50,8 +50,13 @@ jobs:
           nix develop .#ci --command bash -euo pipefail -c '
             cargo check --locked --workspace --all-targets
           '
-      - name: Execute native UI library model/regression tests
+      - name: Lint the full GTK/Shell Rust workspace including test targets
         run: |
           nix develop .#ci --command bash -euo pipefail -c '
-            cargo test --locked -p kira-ui --lib
+            cargo clippy --locked --workspace --all-targets -- -D warnings
+          '
+      - name: Test every Rust crate including native UI models and Shell
+        run: |
+          nix develop .#ci --command bash -euo pipefail -c '
+            cargo test --locked --workspace --all-targets
           '
