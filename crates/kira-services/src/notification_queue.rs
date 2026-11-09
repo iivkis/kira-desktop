@@ -373,31 +373,36 @@ mod tests {
         let now = Instant::now();
         let mut queue = NotificationQueue::default();
         let mut owners = NotificationOwnership::default();
-        let original = admit_notification(
-            &mut queue, &mut owners, ":1.10", 0, notice(900), now,
-        ).unwrap();
+        let original =
+            admit_notification(&mut queue, &mut owners, ":1.10", 0, notice(900), now).unwrap();
         assert_eq!(original, 1);
         assert_eq!(queue.history().last().unwrap().id, original);
-        let same = admit_notification(
-            &mut queue, &mut owners, ":1.10", original, notice(901), now,
-        ).unwrap();
+        let same = admit_notification(&mut queue, &mut owners, ":1.10", original, notice(901), now)
+            .unwrap();
         assert_eq!(same, original);
         assert!(owners.is_owner(original, ":1.10"));
-        let foreign = admit_notification(
-            &mut queue, &mut owners, ":1.11", original, notice(902), now,
-        ).unwrap();
+        let foreign =
+            admit_notification(&mut queue, &mut owners, ":1.11", original, notice(902), now)
+                .unwrap();
         assert_ne!(foreign, original);
         assert!(owners.is_owner(foreign, ":1.11"));
         assert_eq!(owners.active_leases(), 2);
-        assert!(admit_notification(
-            &mut queue, &mut owners, "org.freedesktop.DBus", original, notice(903), now
-        ).is_none());
+        assert!(
+            admit_notification(
+                &mut queue,
+                &mut owners,
+                "org.freedesktop.DBus",
+                original,
+                notice(903),
+                now
+            )
+            .is_none()
+        );
         assert!(close_notification(&mut queue, &mut owners, original));
         assert!(!close_notification(&mut queue, &mut owners, original));
         assert!(!owners.is_owner(original, ":1.10"));
-        let next = admit_notification(
-            &mut queue, &mut owners, ":1.10", original, notice(904), now,
-        ).unwrap();
+        let next = admit_notification(&mut queue, &mut owners, ":1.10", original, notice(904), now)
+            .unwrap();
         assert_ne!(next, original);
         revoke_notification_session(&mut queue, &mut owners);
         assert_eq!(owners.active_leases(), 0);
@@ -410,22 +415,23 @@ mod tests {
         let now = Instant::now();
         let mut queue = NotificationQueue::default();
         let mut owners = NotificationOwnership::default();
-        let original = admit_notification(
-            &mut queue, &mut owners, ":1.1", 0, notice(40), now,
-        ).unwrap();
+        let original =
+            admit_notification(&mut queue, &mut owners, ":1.1", 0, notice(40), now).unwrap();
         for id in 2..=MAX_STORED as u32 {
             assert!(queue.push(notice(id), now));
         }
         assert_eq!(queue.active_count(), MAX_STORED);
-        assert_eq!(admit_notification(
-            &mut queue, &mut owners, ":1.2", original, notice(500), now
-        ), None);
+        assert_eq!(
+            admit_notification(&mut queue, &mut owners, ":1.2", original, notice(500), now),
+            None
+        );
         assert_eq!(owners.active_leases(), 1);
         assert!(owners.is_owner(original, ":1.1"));
         assert!(queue.contains_active(original));
-        assert_eq!(admit_notification(
-            &mut queue, &mut owners, ":1.1", original, notice(501), now
-        ), Some(original));
+        assert_eq!(
+            admit_notification(&mut queue, &mut owners, ":1.1", original, notice(501), now),
+            Some(original)
+        );
         assert_eq!(owners.active_leases(), 1);
     }
 
