@@ -66,8 +66,10 @@ stdenv.mkDerivation {
     # Acceptance-only protocol clients refuse non-isolated D-Bus; never autostarted.
     cp "${rustBinaries}/bin/kira-sni-acceptance" "$out/bin/kira-sni-acceptance"
     cp "${rustBinaries}/bin/kira-notification-acceptance" "$out/bin/kira-notification-acceptance"
+    cp "${rustBinaries}/bin/kira-notification-policy-fixture" "$out/bin/kira-notification-policy-fixture"
     chmod +x "$out/bin/kira-core" "$out/bin/kira-shell" \
-      "$out/bin/kira-sni-acceptance" "$out/bin/kira-notification-acceptance"
+      "$out/bin/kira-sni-acceptance" "$out/bin/kira-notification-acceptance" \
+      "$out/bin/kira-notification-policy-fixture"
     runHook postInstall
   '';
 
