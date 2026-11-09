@@ -1209,11 +1209,10 @@ impl Service {
         // Every retained ancestor page remains genuinely visible in a
         // floating cascade. A clicked sibling can replace the deeper path,
         // but only after verifying owner, globally unique parent and page.
-        let selected = self
-            .current_menu
-            .borrow()
-            .as_ref()
-            .and_then(|menu| menu.authorized_expansion(handle, id, epoch).map(|path| (menu.clone(), path)));
+        let selected = self.current_menu.borrow().as_ref().and_then(|menu| {
+            menu.authorized_expansion(handle, id, epoch)
+                .map(|path| (menu.clone(), path))
+        });
         let Some((menu, path)) = selected else {
             return;
         };
@@ -1267,9 +1266,7 @@ impl Service {
             .current_menu
             .borrow()
             .as_ref()
-            .filter(|menu| {
-                menu.authorizes_leaf(handle, id, epoch)
-            })
+            .filter(|menu| menu.authorizes_leaf(handle, id, epoch))
             .cloned();
         let Some(menu) = selected else {
             return;
