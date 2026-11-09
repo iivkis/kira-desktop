@@ -1125,7 +1125,11 @@ mod tests {
             retained_toast_ids(&previous, &[actions_changed], layout, layout),
             HashSet::new()
         );
-        let narrow = toast_layout(400, 800, 800).unwrap();
+        // Width 400 still produces the 360px preferred host. Use a
+        // genuinely narrower output so the physical GTK card geometry
+        // really changes before invalidating its retained identity.
+        let narrow = toast_layout(320, 800, 800).unwrap();
+        assert_ne!(layout, narrow);
         assert_eq!(
             retained_toast_ids(&previous, &previous, layout, narrow),
             HashSet::new()
