@@ -131,6 +131,27 @@ Starting from green `native-gtk` HEAD
 HEAD workflow is checked.** Real screenshot/input/TENET/multi-output
 testing and 0/15 verified status are unchanged.
 
+## G9: CI-executable real GIO notification policy smoke
+
+Starting from confirmed green HEAD
+`ee328654ec2fa47f90dc2007eba5889928f88125`
+(CI `42558215851`), this series centralizes notification admission,
+ID ownership, close and D-Bus session revocation as reusable,
+GTK-free `kira-services` transaction functions used by Shell. The
+existing dual-peer acceptance client can also target the separately
+identified `Kira Policy Fixture`; the new headless fixture uses the
+same real service policy and Freedesktop GIO wire types. The installed
+CI smoke starts its **own attested private bus**, calls the fixture
+with two persistent clients and requires complete proof of legitimate
+and hostile sender cases. The fixture explicitly announces itself
+as a test fixture, not `Kira Desktop`. Production Shell graphical
+operation cannot be inferred from this successful headless test.
+
+Do not claim green CI until the latest HEAD's workflow passes Nix
+build and the new notification policy smoke step. Never claim main
+parity before paired live Wayland evidence. Ledger stays 0/15
+verified; display mutations stay preview-only.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
