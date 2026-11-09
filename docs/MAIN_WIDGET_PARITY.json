@@ -26,13 +26,14 @@
       },
       "target_files": [
         "crates/kira-ui/src/bar.rs",
+        "crates/kira-ui/src/warnings.rs",
         "crates/kira-shell/src/main.rs"
       ],
       "state": "partial",
       "content_and_interaction_requirements": [
         "Brand/launcher zone, workspaces, tray, system health, warning inspector, settings, clickable local clock",
         "Exact 42px height and compact density",
-        "Native status button now consumes independent Core RPC probe, Niri subscription and fresh CPU/memory/disk/battery measurements; tray and warning inspector still pending",
+        "Native status button now consumes independent Core RPC probe, Niri subscription and fresh CPU/memory/disk/battery measurements; tray motion/placement and in-bar inspector paired graphical acceptance still pending",
         "Native WarningInspector now implements frozen main's 42px in-bar modal read-only detail, stable-ID selection/next/close, copyable text, dynamic 900px short/long label and keyboard focus containment. Shell feeds real failures from workspace Core RPC, KDL validation, GIO application launch and active process sampling, clearing on success. Exact paired Niri focus/pixel proof remains missing.",
         "Layer-shell bar now requests on-demand keyboard access (not exclusive focus) so the in-place warning inspector can handle Tab/Escape after user activation. Exact live compositor focus acceptance is still missing."
       ],
