@@ -494,8 +494,7 @@ impl MotionToken {
             });
             // Defensive monotonicity: even a clock discontinuity must not
             // rewind a physically recorded scene or reduce accessible state.
-            let cursor = frame_clock_progress(origin, at, duration_ms)
-                .max(last_progress.get());
+            let cursor = frame_clock_progress(origin, at, duration_ms).max(last_progress.get());
             last_progress.set(cursor);
             step(cursor);
             if cursor >= 1.0 {
@@ -692,7 +691,11 @@ mod tests {
             1.0
         );
         assert_eq!(
-            frame_clock_progress(started_on_first_tick, started_on_first_tick + 10_000_000, 420),
+            frame_clock_progress(
+                started_on_first_tick,
+                started_on_first_tick + 10_000_000,
+                420
+            ),
             1.0
         );
     }

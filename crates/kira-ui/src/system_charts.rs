@@ -1335,9 +1335,15 @@ mod tests {
         assert_eq!(chart_sample_at_x(&points, domain, 0.3, 341.0, 349), None);
         assert_eq!(chart_sample_at_x(&points, domain, 0.3, 140.0, 349), None);
         assert_eq!(chart_sample_at_x(&points, domain, 0.3, 41.0, 80), None);
-        assert_eq!(chart_sample_at_x(&points, domain, f64::NAN, 41.0, 349), None);
+        assert_eq!(
+            chart_sample_at_x(&points, domain, f64::NAN, 41.0, 349),
+            None
+        );
         assert_eq!(chart_sample_at_x(&points, domain, 0.0, 41.0, 349), Some(t));
-        assert_eq!(chart_sample_at_x(&points, domain, 1.0, 341.0, 349), Some(t + Duration::from_secs(1)));
+        assert_eq!(
+            chart_sample_at_x(&points, domain, 1.0, 341.0, 349),
+            Some(t + Duration::from_secs(1))
+        );
     }
 
     #[test]
