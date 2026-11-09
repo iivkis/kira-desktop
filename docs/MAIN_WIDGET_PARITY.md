@@ -2,6 +2,17 @@
 
 **Status: BLOCKED.** The GTK4 widgets are **not** currently identical to the WebKit/Svelte widgets in `main`, including their content, interactions and animations. This document and [MAIN_WIDGET_PARITY.json](MAIN_WIDGET_PARITY.json) are the source-backed migration ledger, **not** a certificate of parity.
 
+## Automated graphical viewport evidence (not parity)
+
+The native source gate now additionally validates packaged GTK pixels in
+**three independent Weston → nested-Niri private sessions** at
+800×600, 1280×800 and 1920×1080. Each scenario retains exactly
+14 entry + 14 exit + 6 live SNI frames, checks actual grim PNG dimensions,
+and records an explicitly *unreviewed* matrix summary. The gate checks
+only native Top Bar and notification visual predicates, not all 15 widgets,
+keyboard focus or paired source/native motion. No verification flags are
+changed from this evidence alone.
+
 ## Frozen source baseline
 
 - Source: [`main` at `305139949`](https://github.com/iivkis/kira-desktop/tree/305139949f49176487ef9759fc32c228eadff408).

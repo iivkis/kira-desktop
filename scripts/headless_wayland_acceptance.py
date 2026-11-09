@@ -24,6 +24,27 @@ from validate_nested_evidence import MAIN_SHA, validate_bundle
 MAX_SECONDS = 240
 
 
+def validate_virtual_viewport(
+    captures: list[dict], width: int, height: int,
+) -> None:
+    """Inspect REAL grim PNG dimensions, never trust the Weston CLI alone.
+
+    Niri runs inside the outer headless Weston. The Niri window can have
+    different dimensions from Weston, so each requested viewport has to be
+    checked against the actual three independent capture manifests.
+    """
+    if len(captures) != 3:
+        raise PreviewError("Incomplete nested viewport evidence")
+    expected = (width, height)
+    for capture in captures:
+        actual = tuple(capture.get("dimensions", ()))
+        if actual != expected:
+            raise PreviewError(
+                f"Nested Niri screenshot viewport {actual} differs from "
+                f"requested {expected}; do not certify the wrong layout"
+            )
+
+
 def weston_command(binary: str, socket: str, log: Path, width: int, height: int) -> list[str]:
     if not re.fullmatch(r"kira-virtual-[0-9a-f]{12}", socket):
         raise PreviewError("Unbounded virtual Wayland socket name")
@@ -157,6 +178,7 @@ def run_virtual(
             if compositor.poll() is not None:
                 raise PreviewError("Weston died before capture validation")
             captures = validate_bundle(output)
+            validate_virtual_viewport(captures, width, height)
             from check_native_visual_smoke import verify_toast_transitions
             visual = verify_toast_transitions(output)
             (output / "visual-smoke.json").write_text(
@@ -177,6 +199,11 @@ def run_virtual(
                         "No keyboard, motion, or input-region acceptance",
                     ],
                 }, indent=2) + "\n", encoding="utf-8",
+            )
+            print(
+                f"[virtual] Verified actual nested PNG viewport "
+                f"{width}x{height} across {len(captures)} capture sequences",
+                flush=True,
             )
             print("[virtual] Actual nested Wayland PNG frames: " + str(index))
             return index

@@ -21,8 +21,13 @@ A green fast job alone does not imply this independent GTK job passed.
 A **third, automatically triggered graphical smoke gate**
 (`.github/workflows/graphical-smoke.yml`) on native-gtk source changes
 builds the distributable Nix GTK package, tests the static visual
-pixel predicates and captures **34 actual Weston → nested-Niri PNG frames**
-at 1280×800 using `headless_wayland_acceptance.py --profile smoke`.
+pixel predicates and captures **102 actual Weston → nested-Niri PNG frames**
+across three independent private sessions: **800×600, 1280×800,
+1920×1080**. `scripts/graphical_viewport_matrix.py` runs the same
+`headless_wayland_acceptance.py --profile smoke` for each viewport
+(14 entry + 14 exit + 6 SNI frames), checks real screenshot PNG
+dimensions against each requested size, and writes an explicitly
+**unreviewed** matrix manifest with no automatic artifact upload.
 The runner validates actual top-bar/toast signatures; screenshots are
 not automatically uploaded. This checks packaging, compositor startup
 and limited native pixels, **not** keyboard focus, fractional scaling,

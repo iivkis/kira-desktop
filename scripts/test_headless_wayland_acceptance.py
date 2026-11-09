@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from dev_preview import PreviewError
 from headless_wayland_acceptance import (
     accept_command, isolated_virtual_environment, verify_virtual_socket,
-    weston_command, run_virtual,
+    weston_command, run_virtual, validate_virtual_viewport,
 )
 
 
@@ -59,6 +59,20 @@ class HeadlessAcceptanceTests(unittest.TestCase):
                     self.root / "missing", self.root / "evidence", 1280, 800,
                     ambient={**self.ambient, **extra},
                 )
+
+    def test_real_png_viewport_must_match_the_claimed_capture_resolution(self):
+        captures = [
+            {"dimensions": (800, 600), "label": name}
+            for name in ("toast-entry", "toast-exit", "tray-live-sni")
+        ]
+        validate_virtual_viewport(captures, 800, 600)
+        for changed in (
+            captures[:-1],
+            [{**captures[0], "dimensions": (1280, 800)}, *captures[1:]],
+            [{**captures[0], "dimensions": (800, 599)}, *captures[1:]],
+        ):
+            with self.subTest(changed=changed), self.assertRaises(PreviewError):
+                validate_virtual_viewport(changed, 800, 600)
 
     def test_weston_command_is_headless_bounded_and_software_only(self):
         command = weston_command(

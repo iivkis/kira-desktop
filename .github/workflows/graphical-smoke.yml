@@ -15,6 +15,11 @@ on:
       - "nix/**"
       - "crates/**"
       - "scripts/headless_wayland_acceptance.py"
+      - "scripts/graphical_viewport_matrix.py"
+      - "scripts/accept_nested.py"
+      - "scripts/acceptance_scenarios.py"
+      - "scripts/validate_nested_evidence.py"
+      - "scripts/capture_native_motion.py"
       - "scripts/dev_preview.py"
       - "scripts/check_native_visual_smoke.py"
       - "scripts/visual_contract_checks.py"
@@ -29,6 +34,11 @@ on:
       - "nix/**"
       - "crates/**"
       - "scripts/headless_wayland_acceptance.py"
+      - "scripts/graphical_viewport_matrix.py"
+      - "scripts/accept_nested.py"
+      - "scripts/acceptance_scenarios.py"
+      - "scripts/validate_nested_evidence.py"
+      - "scripts/capture_native_motion.py"
       - "scripts/dev_preview.py"
       - "scripts/check_native_visual_smoke.py"
       - "scripts/visual_contract_checks.py"
@@ -55,11 +65,12 @@ jobs:
         run: nix build .#default -L
       - name: Validate real pixel predicates, not synthetic screenshot claims
         run: nix develop .#graphical-ci --command python3 scripts/visual_contract_checks.py -v
-      - name: Capture and validate 34 actual Weston to nested-Niri PNG frames
+      - name: Validate 102 actual PNG frames across 800x600, 1280x800 and 1920x1080
         run: |
-          nix develop .#graphical-ci --command python3 scripts/headless_wayland_acceptance.py \
-            --package-dir result --output artifacts/virtual-niri \
-            --profile smoke --width 1280 --height 800
-      # Real pixels are validated in the private runner and not automatically
-      # uploaded; full paired source/native frame review remains opt-in through
-      # the original manual graphical.yml workflow.
+          nix develop .#graphical-ci --command python3 scripts/graphical_viewport_matrix.py \
+            --package-dir result --output artifacts/virtual-niri
+      # Each viewport receives an isolated outer Weston, nested Niri and D-Bus.
+      # Real PNG sizes are verified against each requested viewport, not
+      # merely inferred from the outer compositor CLI. Captures are private
+      # and unreviewed; source/main parity still requires manual comparison.
+      # The manual graphical.yml retains opt-in artifact uploads.

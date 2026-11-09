@@ -8,8 +8,11 @@ A fast green CI run is not graphical acceptance. The separate Nix-backed
 automatic GTK source gate also runs strict Clippy and full-workspace Rust
 tests, but still cannot prove real Niri frames or interactive focus.
 The separate automatic `graphical-smoke.yml` builds the Nix package
-and validates real nested-Niri top-bar/toast pixels; none of these
-checks by themselves prove main/native content or TENET motion parity.
+and validates 102 actual nested-Niri PNG frames over three separately
+isolated sizes (800×600, 1280×800, 1920×1080), including real screenshot
+dimensions and the native Top Bar/toast pixel predicates. These checks
+do not prove main/native content, keyboard focus, scaled output or
+TENET motion parity.
 
 ## Architectural boundaries
 
