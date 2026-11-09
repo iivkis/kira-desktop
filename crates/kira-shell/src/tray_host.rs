@@ -82,6 +82,19 @@ impl MenuSession {
         epoch != 0 && self.handle == handle && self.ui_epoch == epoch
     }
 
+    fn authorizes_leaf(&self, handle: u32, id: i32, epoch: u64) -> bool {
+        self.accepts_ui_epoch(handle, epoch)
+            && tray_menu::clickable(&self.entries, id)
+            && kira_ui::tray::menu_visible_leaf(&self.entries, &self.navigation, id)
+    }
+
+    fn authorized_expansion(&self, handle: u32, id: i32, epoch: u64) -> Option<Vec<i32>> {
+        if !self.accepts_ui_epoch(handle, epoch) || !tray_menu::expandable(&self.entries, id) {
+            return None;
+        }
+        kira_ui::tray::menu_expansion_path(&self.entries, &self.navigation, id)
+    }
+
     fn snapshot(&self) -> TrayMenu {
         TrayMenu {
             handle: self.handle,
@@ -1196,13 +1209,11 @@ impl Service {
         // Every retained ancestor page remains genuinely visible in a
         // floating cascade. A clicked sibling can replace the deeper path,
         // but only after verifying owner, globally unique parent and page.
-        let selected = self.current_menu.borrow().as_ref().and_then(|menu| {
-            if !menu.accepts_ui_epoch(handle, epoch) || !tray_menu::expandable(&menu.entries, id) {
-                return None;
-            }
-            kira_ui::tray::menu_expansion_path(&menu.entries, &menu.navigation, id)
-                .map(|path| (menu.clone(), path))
-        });
+        let selected = self
+            .current_menu
+            .borrow()
+            .as_ref()
+            .and_then(|menu| menu.authorized_expansion(handle, id, epoch).map(|path| (menu.clone(), path)));
         let Some((menu, path)) = selected else {
             return;
         };
@@ -1257,9 +1268,7 @@ impl Service {
             .borrow()
             .as_ref()
             .filter(|menu| {
-                menu.accepts_ui_epoch(handle, epoch)
-                    && tray_menu::clickable(&menu.entries, id)
-                    && kira_ui::tray::menu_visible_leaf(&menu.entries, &menu.navigation, id)
+                menu.authorizes_leaf(handle, id, epoch)
             })
             .cloned();
         let Some(menu) = selected else {
@@ -1513,6 +1522,50 @@ pub fn start(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn owner_scoped_menu_decision_rejects_old_epochs_and_hidden_branches() {
+        let entry = |id, depth, enabled, child| TrayMenuEntry {
+            id,
+            depth,
+            enabled,
+            has_children: child,
+            label: format!("item-{id}"),
+            separator: false,
+            checked: false,
+            radio: false,
+        };
+        let menu = MenuSession {
+            handle: 42,
+            ui_epoch: 9,
+            owner: ":1.99".into(),
+            path: "/OwnedMenu".into(),
+            title: "Live".into(),
+            layout_version: 2,
+            entries: vec![
+                entry(10, 0, true, true),
+                entry(11, 1, true, false),
+                entry(20, 0, true, true),
+                entry(21, 1, true, false),
+                entry(30, 0, false, false),
+            ],
+            navigation: vec![10],
+        };
+        assert!(menu.authorizes_leaf(42, 11, 9));
+        assert!(!menu.authorizes_leaf(42, 21, 9)); // hidden sibling
+        assert!(!menu.authorizes_leaf(42, 30, 9)); // disabled
+        assert!(!menu.authorizes_leaf(42, 11, 8)); // old rendered GTK
+        assert!(!menu.authorizes_leaf(41, 11, 9)); // wrong live handle
+        assert_eq!(menu.authorized_expansion(42, 20, 9), Some(vec![20]));
+        assert_eq!(menu.authorized_expansion(42, 10, 9), Some(vec![10]));
+        assert_eq!(menu.authorized_expansion(42, 20, 8), None);
+        assert_eq!(menu.authorized_expansion(42, 30, 9), None);
+        let mut changed = menu.clone();
+        changed.ui_epoch += 1;
+        assert!(!changed.authorizes_leaf(42, 11, 9));
+        changed.entries.push(entry(11, 0, true, false));
+        assert!(!changed.authorizes_leaf(42, 11, 10));
+    }
 
     #[test]
     fn changing_published_menu_epoch_revokes_previous_gtk_tree() {
