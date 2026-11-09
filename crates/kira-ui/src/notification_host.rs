@@ -996,13 +996,25 @@ mod tests {
     #[test]
     fn preferred_and_retained_outputs_remain_stable_through_reorder_and_hotplug() {
         let outputs = [(120, 700), (800, 600), (1024, 768)];
-        assert_eq!(toast_output_plan_stable(&outputs, Some(0), Some(2), &[]).unwrap().0, 2);
-        assert_eq!(toast_output_plan_stable(&outputs, Some(1), Some(2), &[]).unwrap().0, 1);
+        assert_eq!(
+            toast_output_plan_stable(&outputs, Some(0), Some(2), &[])
+                .unwrap()
+                .0,
+            2
+        );
+        assert_eq!(
+            toast_output_plan_stable(&outputs, Some(1), Some(2), &[])
+                .unwrap()
+                .0,
+            1
+        );
         // The previous real monitor is still available, but GDK reordered
         // it to index zero. It must not hop to a different valid fallback.
         let shuffled = [(1024, 768), (120, 700), (800, 600)];
         assert_eq!(
-            toast_output_plan_stable(&shuffled, Some(1), Some(0), &[]).unwrap().0,
+            toast_output_plan_stable(&shuffled, Some(1), Some(0), &[])
+                .unwrap()
+                .0,
             0
         );
         assert_eq!(
