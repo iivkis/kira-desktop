@@ -1119,7 +1119,10 @@ impl SystemCharts {
         self.state.refresh();
         // One-shot expiry callbacks, not an always-ticking UI timer. Older
         // callbacks cannot forge new readings; they only re-evaluate time.
-        for after in [PULSE_FRESHNESS, MAX_PULSE_AGE] {
+        // recent() includes a point at EXACTLY 60s. Schedule the one-shot
+        // final repaint beyond that inclusive boundary: otherwise a stopped
+        // sensor can leave the last history point pinned indefinitely.
+        for after in [PULSE_FRESHNESS, MAX_PULSE_AGE + Duration::from_millis(1)] {
             let weak = Rc::downgrade(&self.state);
             gtk::glib::timeout_add_local_once(after, move || {
                 if let Some(state) = weak.upgrade() {
@@ -1320,6 +1323,20 @@ mod tests {
         );
         assert!(history.recent(t + Duration::from_secs(140)).is_empty());
         assert!(history.latest(t + Duration::from_secs(140)).is_none());
+    }
+
+    #[test]
+    fn sixty_second_inclusive_boundary_requires_one_millisecond_expiry_repaint() {
+        let at = Instant::now();
+        let mut history = PulseHistory::default();
+        history.push(sample(at, Some(37), Some(250)));
+        assert_eq!(history.recent(at + MAX_PULSE_AGE).len(), 1);
+        assert!(history
+            .recent(at + MAX_PULSE_AGE + Duration::from_millis(1))
+            .is_empty());
+        assert!(history
+            .latest(at + MAX_PULSE_AGE + Duration::from_millis(1))
+            .is_none());
     }
 
     #[test]
