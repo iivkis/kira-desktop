@@ -55,7 +55,8 @@ struct MenuFocus {
 fn install_menu_keys(
     widget: &gtk::Widget,
     menu_open: Rc<RefCell<bool>>,
-    actions: Rc<RefCell<Vec<MenuFocus>>>,
+    epoch: Rc<Cell<u64>>,
+    actions: Rc<RefCell<Vec<MenuFocus>>,
     on_intent: Rc<dyn Fn(TrayIntent)>,
 ) {
     let key_controller = gtk::EventControllerKey::new();
@@ -64,7 +65,7 @@ fn install_menu_keys(
             return gtk::glib::Propagation::Proceed;
         }
         if key == gtk::gdk::Key::Escape || key == gtk::gdk::Key::Left {
-            on_intent(TrayIntent::MenuBack);
+            on_intent(TrayIntent::MenuBack(epoch.get()));
             return gtk::glib::Propagation::Stop;
         }
         if key == gtk::gdk::Key::Right {
@@ -281,8 +282,8 @@ pub enum TrayIntent {
     /// another D-Bus owner, menu, or LayoutUpdated tree.
     MenuClick(u32, i32, u64),
     MenuExpand(u32, i32, u64),
-    MenuBack,
-    DismissMenu,
+    MenuBack(u64),
+    DismissMenu(u64),
 }
 
 /// Bounded menu descriptions only. The Shell retains the real D-Bus
@@ -622,6 +623,7 @@ pub struct TrayUi {
     // Child GDK popovers are attached only to real, enabled parent buttons.
     // This is a presentation stack, not another SNI client/controller.
     menu_popovers: Rc<RefCell<Vec<gtk::Popover>>>,
+    menu_epoch: Rc<Cell<u64>>,
     current_menu: RefCell<Option<TrayMenu>>,
     keyboard_menu: Rc<RefCell<bool>>,
     menu_focus: Rc<RefCell<Vec<MenuFocus>>>,
@@ -686,9 +688,11 @@ impl TrayUi {
         let on_intent: Rc<dyn Fn(TrayIntent)> = Rc::new(on_intent);
         let keyboard_menu = Rc::new(RefCell::new(false));
         let menu_focus = Rc::new(RefCell::new(Vec::<MenuFocus>::new()));
+        let menu_epoch = Rc::new(Cell::new(0u64));
         install_menu_keys(
             &popup.clone().upcast(),
             keyboard_menu.clone(),
+            menu_epoch.clone(),
             menu_focus.clone(),
             on_intent.clone(),
         );
@@ -702,7 +706,8 @@ impl TrayUi {
             }
         });
         let dismiss = on_intent.clone();
-        back.connect_clicked(move |_| dismiss(TrayIntent::DismissMenu));
+        let back_epoch = menu_epoch.clone();
+        back.connect_clicked(move |_| dismiss(TrayIntent::DismissMenu(back_epoch.get())));
 
         let on_toggle: ToggleHandler = Rc::new(RefCell::new(None));
         let on_close: ToggleHandler = Rc::new(RefCell::new(None));
@@ -735,6 +740,7 @@ impl TrayUi {
             menu_page,
             menu_list,
             menu_popovers,
+            menu_epoch,
             current_menu: RefCell::new(None),
             keyboard_menu,
             menu_focus,
@@ -806,6 +812,7 @@ impl TrayUi {
         while let Some(child) = self.menu_list.first_child() {
             self.menu_list.remove(&child);
         }
+        self.menu_epoch.set(menu.as_ref().map_or(0, |menu| menu.epoch));
         *self.current_menu.borrow_mut() = menu.clone();
         *self.keyboard_menu.borrow_mut() = menu.is_some();
         self.menu_page.set_visible(menu.is_some());
@@ -849,7 +856,8 @@ impl TrayUi {
                 "Назад к родительскому меню",
             )]);
             let callback = self.on_intent.clone();
-            heading.connect_clicked(move |_| callback(TrayIntent::MenuBack));
+            let epoch = menu.epoch;
+            heading.connect_clicked(move |_| callback(TrayIntent::MenuBack(epoch)));
             container.append(&heading);
             let scroll = gtk::ScrolledWindow::new();
             scroll.set_size_request(220, -1);
@@ -875,6 +883,7 @@ impl TrayUi {
             install_menu_keys(
                 &popover.clone().upcast(),
                 self.keyboard_menu.clone(),
+                Rc::new(Cell::new(menu.epoch)),
                 self.menu_focus.clone(),
                 self.on_intent.clone(),
             );
@@ -1156,6 +1165,12 @@ mod tests {
         assert!(menu_page(&entries, &[3]).is_none());
         assert!(menu_page(&entries, &[1, 6]).is_none());
         assert!(menu_page(&entries, &[0]).is_none());
+    }
+
+    #[test]
+    fn back_and_dismiss_from_old_child_surfaces_are_epoch_scoped() {
+        assert_ne!(TrayIntent::MenuBack(44), TrayIntent::MenuBack(45));
+        assert_ne!(TrayIntent::DismissMenu(44), TrayIntent::DismissMenu(45));
     }
 
     #[test]
