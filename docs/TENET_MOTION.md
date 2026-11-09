@@ -46,10 +46,13 @@ The pooled layer-shell `PopupHost` now remembers the last measured popup
 layout (width, top and max-height). Opening again while the same physical
 output and geometry are unchanged does **not** clear the saved TENET contact
 or reassign the Wayland window's default size, so a Close→Open interruption
-can retrace the identical recorded physical scene. Output migration, resize
-or changed available height explicitly invalidates the old contact and
-recomputes the real geometry. Pure regression tests cover same-layout,
-new-monitor-with-same-layout and both width/height changes. Real Niri
+can retrace the identical recorded physical scene. Output migration, a monitor's **origin or total output width/height**
+change, scale-factor change, or altered panel layout explicitly invalidates
+the old contact and recomputes the real geometry. The panel's own width can
+remain 420px while its right-anchored physical position changes as an
+output shrinks; that still requires rebasing. Pure regression tests cover
+same-layout, new-monitor-with-same-layout, viewport origin, scale factor
+and both panel and output-only size changes. Real Niri
 motion trajectories and keyboard focus still need paired captures.
 
 ## Native retained notification lifecycle (unverified)
