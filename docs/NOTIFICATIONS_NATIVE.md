@@ -271,3 +271,37 @@ all test IDs and writes fixed machine-readable proof flags. The
 `unreviewed`; absence of the binary, failed attestation, missing proof,
 or protocol failure aborts the acceptance run. This improves protocol
 evidence, **not** graphics, focus or motion certification.
+
+
+### G9: executable private-bus notification policy smoke in CI
+
+`kira-services::notification_queue` now exports the atomic, GTK-free
+`admit_notification`, `close_notification` and
+`revoke_notification_session` policy operations. The real Shell uses
+the same admission and close functions as the headless fixture, so
+sender ownership, overloaded-queue rejection and lease publication
+cannot silently diverge between the two implementations. Pure tests
+cover trusted same-peer replacement, foreign replacement, rejected
+admission, closed IDs and revocation.
+
+A new installed **test-only** `kira-notification-policy-fixture`
+exports typed Freedesktop Notifications methods on an independently
+attested `dbus-run-session`, **without GTK/Wayland**. Its advertised
+server identity is deliberately `Kira Policy Fixture`, not
+`Kira Desktop`. The private `kira-notification-acceptance
+--policy-fixture` client requires that exact identity and creates
+two separate, persistent GIO peers. CI runs
+`scripts/smoke_notification_policy_bus.py` after the Nix package
+build and checks real D-Bus same-peer replacement, cross-peer
+non-overwrite, closed-ID reuse rejection and cleanup. The normal
+nested-Niri client mode still requires the **real** `Kira Desktop`
+server identity, not the fixture.
+
+The test-only fixture is neither a second production notification
+daemon nor a substitute for running the native Shell. It must never
+autostart; both fixture and probe refuse unisolated bus flags, and
+the runner verifies the temporary owned socket using
+`scripts/private_bus.py`. Success confirms the protocol ABI and
+**shared Rust policy**, NOT rendered popup frames, Niri focus, output
+hit regions or visual parity. Frozen source behaviour that differs
+from sender-scoped replacement remains explicitly non-verified.
