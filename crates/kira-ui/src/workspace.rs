@@ -122,6 +122,17 @@ impl WorkspaceStrip {
     pub fn set_pending(&self, pending: bool) {
         self.pending.set(pending);
         self.buttons.set_sensitive(!pending);
+        // A workspace snapshot may arrive while the RPC is still pending
+        // and set each individual button insensitive. Restore their actual
+        // eligibility on completion even when a failed RPC caused no new
+        // Niri EventStream snapshot at all.
+        for (button, _) in self.cache.borrow().values() {
+            button.set_sensitive(workspace_focus_enabled(
+                self.buttons.is_visible(),
+                pending,
+                button.has_css_class("selected"),
+            ));
+        }
     }
 
     pub fn update(&self, connected: bool, items: &[WorkspaceItem], limit: usize, show_names: bool) {
