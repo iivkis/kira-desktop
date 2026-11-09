@@ -46,12 +46,7 @@ pub struct NotificationOwnership {
 }
 
 impl NotificationOwnership {
-    pub fn assign_id(
-        &self,
-        queue: &mut NotificationQueue,
-        sender: &str,
-        replaces_id: u32,
-    ) -> u32 {
+    pub fn assign_id(&self, queue: &mut NotificationQueue, sender: &str, replaces_id: u32) -> u32 {
         if replaces_id != 0
             && queue.contains_active(replaces_id)
             && self.is_owner(replaces_id, sender)
@@ -69,11 +64,7 @@ impl NotificationOwnership {
     }
 
     pub fn is_owner(&self, id: u32, sender: &str) -> bool {
-        !sender.is_empty()
-            && self
-                .senders
-                .get(&id)
-                .is_some_and(|owner| owner == sender)
+        !sender.is_empty() && self.senders.get(&id).is_some_and(|owner| owner == sender)
     }
 
     pub fn forget(&mut self, id: u32) {
