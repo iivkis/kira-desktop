@@ -243,3 +243,31 @@ notification session rather than replaying old D-Bus IDs from the
 previous owner epoch. This is covered by a Rust model regression; it
 does not substitute for live D-Bus owner-churn tests or Wayland acceptance.
 
+
+
+### D-Bus service epoch ID continuity and dual-sender acceptance
+
+The Freedesktop queue now has `NotificationQueue::reset_session()`:
+loss/release of its well-known name clears all active/waiting/parked and
+history entries, sender ownership leases, and pending deadline revisions,
+but **retains the monotonic notification ID cursor**. A delayed
+`CloseNotification` from the previous name-ownership epoch can therefore
+not close a new ID accidentally. Test cases cover active, waiting,
+parked persistent, wrap-around, and no pending deadlines.
+
+GIO can retain a registered D-Bus object at its unique connection name
+even after losing `org.freedesktop.Notifications`. The Shell now rejects
+all such stale requests unless it owns the well-known name **and** the
+invoking D-Bus connection matches the current registered service bus.
+
+A new independently packaged, **never autostarted** binary
+`kira-notification-acceptance` constructs two distinct persistent GIO
+connections solely inside the verified nested-preview private D-Bus.
+It tests same-unique-sender `replaces_id` retaining the ID, foreign
+sender rejection through a fresh ID, and stale closed-ID replacement
+rejection with real calls to the actual Kira D-Bus service. It removes
+all test IDs and writes fixed machine-readable proof flags. The
+`scripts/acceptance_scenarios.py` manifest records these flags as
+`unreviewed`; absence of the binary, failed attestation, missing proof,
+or protocol failure aborts the acceptance run. This improves protocol
+evidence, **not** graphics, focus or motion certification.
