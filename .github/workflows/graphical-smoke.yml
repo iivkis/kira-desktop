@@ -1,0 +1,65 @@
+name: Native nested-Niri graphical smoke
+
+# Independent, slower release-confidence signal. Never extend or replace
+# the required two-minute Core/IPC CI or the GTK compile/Clippy gate.
+# This exercises real packaged Wayland pixels, not source/main visual parity.
+on:
+  push:
+    branches: [native-gtk]
+    paths:
+      - ".github/workflows/graphical-smoke.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "flake.nix"
+      - "flake.lock"
+      - "nix/**"
+      - "crates/**"
+      - "scripts/headless_wayland_acceptance.py"
+      - "scripts/dev_preview.py"
+      - "scripts/check_native_visual_smoke.py"
+      - "scripts/visual_contract_checks.py"
+  pull_request:
+    branches: [native-gtk]
+    paths:
+      - ".github/workflows/graphical-smoke.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "flake.nix"
+      - "flake.lock"
+      - "nix/**"
+      - "crates/**"
+      - "scripts/headless_wayland_acceptance.py"
+      - "scripts/dev_preview.py"
+      - "scripts/check_native_visual_smoke.py"
+      - "scripts/visual_contract_checks.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-wayland-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-wayland-smoke:
+    name: Package GTK Shell and verify genuine nested-Niri pixels
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build distributable native GTK desktop package
+        run: nix build .#default -L
+      - name: Validate real pixel predicates, not synthetic screenshot claims
+        run: nix develop .#graphical-ci --command python3 scripts/visual_contract_checks.py -v
+      - name: Capture and validate 34 actual Weston to nested-Niri PNG frames
+        run: |
+          nix develop .#graphical-ci --command python3 scripts/headless_wayland_acceptance.py \
+            --package-dir result --output artifacts/virtual-niri \
+            --profile smoke --width 1280 --height 800
+      # Real pixels are validated in the private runner and not automatically
+      # uploaded; full paired source/native frame review remains opt-in through
+      # the original manual graphical.yml workflow.

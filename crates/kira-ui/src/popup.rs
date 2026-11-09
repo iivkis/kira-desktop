@@ -172,19 +172,32 @@ impl PopupView {
         let moved = self.window.monitor() != monitor.cloned();
         let (geometry, scale) = monitor_output(monitor);
         let next = popup_placement(kind, geometry, scale);
+        if !popup_contact_needs_rebase(self.placement.get(), next, moved) {
+            // The exact same output and geometry continue from the last
+            // painted progress, even during a rapid reverse/reopen.
+            return;
+        }
+
+        // A recorded physical TENET trajectory is not portable to another
+        // monitor, scale or output origin. Cancel its old GDK frame clock
+        // BEFORE changing Wayland hints, settle the old scene as hidden,
+        // and let toggle start the new reveal from its true first frame.
+        self.motion.cancel();
+        {
+            let mut timeline = self.timeline.borrow_mut();
+            timeline.close();
+            timeline.settle();
+        }
+        self.render();
+        self.window.set_visible(false);
+        self.contact.set(None);
         if moved {
             self.window.set_monitor(monitor);
         }
-        if popup_contact_needs_rebase(self.placement.get(), next, moved) {
-            // Same popup dimensions do not imply the same physical screen
-            // contact: right anchors move with output width/origin and
-            // fractional scaling may alter every painted coordinate.
-            self.window.set_margin(Edge::Top, next.panel.1);
-            self.window.set_default_size(next.panel.0, -1);
-            self.scroll.set_max_content_height(next.panel.2);
-            self.placement.set(next);
-            self.contact.set(None);
-        }
+        self.window.set_margin(Edge::Top, next.panel.1);
+        self.window.set_default_size(next.panel.0, -1);
+        self.scroll.set_max_content_height(next.panel.2);
+        self.placement.set(next);
     }
 
     fn render(&self) {
@@ -861,6 +874,25 @@ mod tests {
             assert!(detached_title(kind).starts_with("Kira"));
         }
         assert!(supports_detach(PopupKind::Tray));
+    }
+
+    #[test]
+    fn output_rebase_restarts_from_hidden_not_an_old_partial_flight() {
+        let mut timeline = PopupTimeline::default();
+        timeline.open();
+        timeline.advance_ms(220.0);
+        let partial = timeline.progress();
+        assert!(partial > 0.0 && partial < 1.0);
+        // This is the same fail-closed endpoint used by retarget_monitor:
+        // the next output is a different physical coordinate system.
+        timeline.close();
+        timeline.settle();
+        assert_eq!(timeline.progress(), 0.0);
+        assert_eq!(timeline.phase(), crate::motion::PopupPhase::Hidden);
+        timeline.open();
+        assert_eq!(timeline.progress(), 0.0);
+        timeline.advance_ms(135.0);
+        assert!(timeline.progress() > 0.0 && timeline.progress() < partial);
     }
 
     #[test]

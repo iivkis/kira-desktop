@@ -18,6 +18,16 @@ Clippy (warnings denied), and execute every Rust crate's tests including
 a live GTK pointer/focus test or source/native pixel parity evidence.
 A green fast job alone does not imply this independent GTK job passed.
 
+A **third, automatically triggered graphical smoke gate**
+(`.github/workflows/graphical-smoke.yml`) on native-gtk source changes
+builds the distributable Nix GTK package, tests the static visual
+pixel predicates and captures **34 actual Weston → nested-Niri PNG frames**
+at 1280×800 using `headless_wayland_acceptance.py --profile smoke`.
+The runner validates actual top-bar/toast signatures; screenshots are
+not automatically uploaded. This checks packaging, compositor startup
+and limited native pixels, **not** keyboard focus, fractional scaling,
+15-widget content, or paired source/main 60fps motion.
+
 For actual native acceptance, manually dispatch **Full native GTK/Nix/Wayland
 validation (manual)** (`.github/workflows/graphical.yml`) on the target
 commit. It runs all Rust workspace Clippy/tests, the real Nix package

@@ -12,8 +12,19 @@ nix develop --command task dev:preview
 
 The preview must report a nested Wayland display, a **separate nested NIRI_SOCKET**, a temporary `NIRI_CONFIG`, a separate `XDG_CONFIG_HOME`, and the temporary Kira KDL. It must fail closed when the nested IPC socket is unavailable. Never copy your production Niri config into this test and never run output changes in a production session without an explicit recovery plan.
 
+## Automatic genuine-Wayland smoke (not a parity certificate)
+
+The new auto-triggered `graphical-smoke.yml` builds the packaged native
+GTK desktop and captures 34 *actual* nested-Niri pixels at 1280×800,
+checking limited bar and toast predicates. This complements the fast
+Core/IPC and GTK compile/Clippy/test jobs. It does not test keyboard
+focus, fractional scales, multi-output geometry, full widget content
+or paired source/main TENET trajectories. Those scenarios still require
+the manual checklist and frame evidence below.
+
 ## Design and motion regression gate (still unverified)
 
+- [ ] During a half-open/half-closed popup, change real monitor, output origin, scale or size: old GDK frame callbacks must cancel and old physical scene hide before new Wayland hints; the new output begins at its own first painted frame, without stale original trajectory or stolen focus.
 - [ ] Open, close partway, and immediately reopen each pooled popup **without changing output or size**. The original TENET contact must be pixel-stable, with no new geometry hint or abrupt seam origin. Repeat while moving the Top Bar to another real monitor with identical resolution, on same-monitor output width/origin/scale changes even when the panel stays nominally 420px wide, and on available-height change: the old contact must be invalidated and captured against the new physical geometry, without a stale cross-output flight. Verify focus, reduced motion, single-transient ownership and detached reattachment after each case.
 - [ ] Delay the first Wayland map of every popup then open it: the clipped materialization must begin at recorded frame zero, not jump past its seam/sections while GTK allocates. Interrupt opening with Escape and immediately reopen; compare original forward/reverse flight coordinates, no rectangular flash and stable focus. Disable `gtk-enable-animations` during a running scene and confirm an immediate factual endpoint. Repeat at 125%, 150%, 200% scale.
 - [ ] In SystemCharts, click beyond the currently revealed path while the trace is growing or being retargeted. The inspector must **not** choose an unrevealed measurement, and clicks in the left-axis gutter or at width below 80px must be ignored. Once the genuine sample becomes painted, clicking the matching X selects exactly it; stale GPU readings remain unknown. Compare click marker and selected text against paired native/source frame sequences.

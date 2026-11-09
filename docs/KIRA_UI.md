@@ -7,6 +7,9 @@ invariants are documented in [NATIVE_DESIGN_MOTION_REVIEW.md](NATIVE_DESIGN_MOTI
 A fast green CI run is not graphical acceptance. The separate Nix-backed
 automatic GTK source gate also runs strict Clippy and full-workspace Rust
 tests, but still cannot prove real Niri frames or interactive focus.
+The separate automatic `graphical-smoke.yml` builds the Nix package
+and validates real nested-Niri top-bar/toast pixels; none of these
+checks by themselves prove main/native content or TENET motion parity.
 
 ## Architectural boundaries
 

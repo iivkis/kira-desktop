@@ -43,7 +43,7 @@ interruption, high-DPI geometry and paired Niri/source motion remain pending.
 ## Stable popup contact across interrupted open/close (unverified)
 
 The pooled layer-shell `PopupHost` now remembers the last measured popup
-layout (width, top and max-height). Opening again while the same physical
+layout (physical output origin/width/height, scale factor, panel width/top/max-height). Opening again while the same physical
 output and geometry are unchanged does **not** clear the saved TENET contact
 or reassign the Wayland window's default size, so a Close→Open interruption
 can retrace the identical recorded physical scene. Output migration, a monitor's **origin or total output width/height**
@@ -52,8 +52,13 @@ the old contact and recomputes the real geometry. The panel's own width can
 remain 420px while its right-anchored physical position changes as an
 output shrinks; that still requires rebasing. Pure regression tests cover
 same-layout, new-monitor-with-same-layout, viewport origin, scale factor
-and both panel and output-only size changes. Real Niri
-motion trajectories and keyboard focus still need paired captures.
+and both panel and output-only size changes. When a real output key changes
+mid-flight, the old `MotionToken` is cancelled and the old scene
+settled/hidden BEFORE changing Wayland monitor hints. The new output opens
+from a fresh first-painted frame instead of completing a flight in the
+wrong physical coordinate system. Identical output geometry still
+preserves true reverse/open continuity. Real Niri motion trajectories
+and keyboard focus still need paired captures.
 
 ## Native retained notification lifecycle (unverified)
 
