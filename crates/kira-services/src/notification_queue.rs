@@ -92,6 +92,16 @@ pub struct NotificationQueue {
 }
 
 impl NotificationQueue {
+    /// Discard every notice, pending admission and history entry when
+    /// ownership of the Freedesktop name is lost, but preserve the server's
+    /// monotonically advancing ID cursor. Delayed CloseNotification calls
+    /// from an earlier D-Bus epoch must not address a new live card.
+    pub fn reset_session(&mut self) {
+        let cursor = self.next_id;
+        *self = Self::default();
+        self.next_id = cursor;
+    }
+
     pub fn contains_active(&self, id: u32) -> bool {
         self.waiting.iter().any(|item| item.notice.id == id)
             || self.showing.iter().any(|item| item.notice.id == id)
@@ -309,6 +319,50 @@ mod tests {
             persistent: false,
             dwell: DEFAULT_DWELL,
         }
+    }
+
+    #[test]
+    fn reset_session_clears_queued_and_parked_notices_without_reusing_ids() {
+        let now = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let first = queue.allocate_id();
+        assert!(queue.push(notice(first), now));
+        assert!(queue.step(now, true));
+        assert!(queue.mark_painted(now, &[first]));
+        let waiting_id = queue.allocate_id();
+        assert!(queue.push(notice(waiting_id), now));
+        queue.reset_session();
+
+        assert_eq!(queue.active_count(), 0);
+        assert_eq!(queue.visible_count(), 0);
+        assert_eq!(queue.history().count(), 0);
+        assert!(!queue.has_pending());
+        assert_eq!(queue.next_deadline(now), None);
+        assert_eq!(queue.allocate_id(), waiting_id + 1);
+
+        let persistent_id = queue.allocate_id();
+        let mut persistent = notice(persistent_id);
+        persistent.persistent = true;
+        assert!(queue.push(persistent, now));
+        assert!(queue.step(now, true));
+        assert!(queue.mark_painted(now, &[persistent_id]));
+        queue.step(now + DEFAULT_DWELL, true);
+        assert!(queue.contains_active(persistent_id));
+        queue.reset_session();
+        assert!(!queue.contains_active(persistent_id));
+        assert_eq!(queue.allocate_id(), persistent_id + 1);
+    }
+
+    #[test]
+    fn reset_session_preserves_cursor_at_u32_wrap_without_reusing_zero() {
+        let mut queue = NotificationQueue {
+            next_id: u32::MAX - 1,
+            ..Default::default()
+        };
+        assert_eq!(queue.allocate_id(), u32::MAX);
+        queue.reset_session();
+        assert_eq!(queue.allocate_id(), 1);
+        assert_eq!(queue.allocate_id(), 2);
     }
 
     #[test]
