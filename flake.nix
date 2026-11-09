@@ -31,6 +31,12 @@
             cargo rustc clippy python3 dbus glib pkg-config gtk4 gtk4-layer-shell
           ];
         };
+        graphical-ci = pkgs.mkShell {
+          # Weston hosts genuine Niri/GTK without DRM or host user sessions.
+          packages = with pkgs; [
+            python3 weston niri grim dbus glib
+          ];
+        };
       });
 
       packages = forAllSystems (pkgs:

@@ -1,0 +1,47 @@
+name: Experimental real Wayland graphical acceptance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [native-gtk]
+    paths:
+      - .github/workflows/graphical.yml
+      - flake.nix
+      - scripts/headless_wayland_acceptance.py
+      - scripts/test_headless_wayland_acceptance.py
+      - scripts/accept_nested.py
+      - scripts/dev_preview.py
+      - scripts/acceptance_scenarios.py
+      - scripts/validate_nested_evidence.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-graphical-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  nested-wayland:
+    name: Real nested Niri inside virtual Weston
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build packaged GTK Shell and real D-Bus fixtures
+        run: nix build .#default -L
+      - name: Capture real GTK frames in fresh private Niri and Weston
+        run: |
+          nix develop .#graphical-ci --command python3 scripts/headless_wayland_acceptance.py \
+            --package-dir result --output artifacts/virtual-niri --width 1280 --height 800
+      - name: Publish real unreviewed screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-niri-unreviewed-${{ github.run_id }}
+          path: artifacts/virtual-niri/
+          if-no-files-found: warn
+          retention-days: 7
