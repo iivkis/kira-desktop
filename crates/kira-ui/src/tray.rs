@@ -171,7 +171,8 @@ fn append_menu_rows(
             let handle = menu.handle;
             let id = entry.id;
             let callback = on_intent.clone();
-            button.connect_clicked(move |_| callback(TrayIntent::MenuExpand(handle, id)));
+            let epoch = menu.epoch;
+            button.connect_clicked(move |_| callback(TrayIntent::MenuExpand(handle, id, epoch)));
             focus.push(MenuFocus {
                 id,
                 button,
@@ -183,7 +184,8 @@ fn append_menu_rows(
             let handle = menu.handle;
             let id = entry.id;
             let callback = on_intent.clone();
-            button.connect_clicked(move |_| callback(TrayIntent::MenuClick(handle, id)));
+            let epoch = menu.epoch;
+            button.connect_clicked(move |_| callback(TrayIntent::MenuClick(handle, id, epoch)));
             focus.push(MenuFocus {
                 id,
                 anchor: button.clone().upcast(),
@@ -274,8 +276,11 @@ pub enum TrayIntent {
     Activate(u32),
     Secondary(u32),
     TogglePin(u32),
-    MenuClick(u32, i32),
-    MenuExpand(u32, i32),
+    /// The third field is a Shell-issued revision of the exact painted menu.
+    /// Queued callbacks from removed GTK controls cannot be reused against
+    /// another D-Bus owner, menu, or LayoutUpdated tree.
+    MenuClick(u32, i32, u64),
+    MenuExpand(u32, i32, u64),
     MenuBack,
     DismissMenu,
 }
@@ -297,6 +302,8 @@ pub struct TrayMenuEntry {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct TrayMenu {
     pub handle: u32,
+    /// Changed by the trusted Shell on every published menu snapshot.
+    pub epoch: u64,
     pub title: String,
     pub items: Vec<TrayMenuEntry>,
     /// Path of validated unique parent IDs within the same D-Bus menu.
@@ -1149,6 +1156,28 @@ mod tests {
         assert!(menu_page(&entries, &[3]).is_none());
         assert!(menu_page(&entries, &[1, 6]).is_none());
         assert!(menu_page(&entries, &[0]).is_none());
+    }
+
+    #[test]
+    fn menu_intents_carry_exact_painted_revision() {
+        assert_ne!(
+            TrayIntent::MenuClick(7, 21, 100),
+            TrayIntent::MenuClick(7, 21, 101)
+        );
+        assert_ne!(
+            TrayIntent::MenuExpand(7, 20, 101),
+            TrayIntent::MenuExpand(7, 20, 102)
+        );
+        // A handle and a numeric ID are insufficient to identify a live
+        // remote D-Bus action. The epoch is not a UI-generated owner name.
+        let menu = TrayMenu {
+            handle: 7,
+            epoch: 102,
+            title: "App".into(),
+            items: vec![entry(21, 0, false)],
+            navigation: Vec::new(),
+        };
+        assert_eq!(menu.epoch, 102);
     }
 
     #[test]
