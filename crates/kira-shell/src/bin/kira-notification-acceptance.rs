@@ -95,7 +95,7 @@ fn close(connection: &gio::DBusConnection, id: u32) -> Result<(), String> {
     Ok(())
 }
 
-fn verify_server(connection: &gio::DBusConnection) -> Result<(), String> {
+fn verify_server(connection: &gio::DBusConnection, policy_fixture: bool) -> Result<(), String> {
     let reply = connection
         .call_sync(
             Some(NAME),
@@ -109,15 +109,20 @@ fn verify_server(connection: &gio::DBusConnection) -> Result<(), String> {
             None::<&gio::Cancellable>,
         )
         .map_err(|error| format!("Private notification server unavailable: {error}"))?;
-    if reply.child_value(0).str() != Some("Kira Desktop")
-        || reply.child_value(1).str() != Some("Kira")
+    let (expected_name, expected_vendor) = if policy_fixture {
+        ("Kira Policy Fixture", "Kira Test Policy")
+    } else {
+        ("Kira Desktop", "Kira")
+    };
+    if reply.child_value(0).str() != Some(expected_name)
+        || reply.child_value(1).str() != Some(expected_vendor)
     {
         return Err("Foreign notification daemon on the private acceptance bus".into());
     }
     Ok(())
 }
 
-fn run_probe(address: &str) -> Result<(), String> {
+fn run_probe(address: &str, policy_fixture: bool) -> Result<(), String> {
     // Explicit new bus connections, not gio::bus_get_sync's shared,
     // singleton session connection. The unique sender names MUST differ.
     let owner = connect_private_bus(address).map_err(|error| error.to_string())?;
@@ -128,7 +133,7 @@ fn run_probe(address: &str) -> Result<(), String> {
     {
         return Err("Protocol probe did not obtain two distinct D-Bus peers".into());
     }
-    verify_server(&owner)?;
+    verify_server(&owner, policy_fixture)?;
     let original = notify(&owner, 0, "owner_original")?;
     let updated = notify(&owner, original, "owner_updated")?;
     if original != updated {
@@ -159,8 +164,17 @@ fn main() {
         eprintln!("kira-notification-acceptance: refusing non-isolated session bus");
         std::process::exit(2);
     }
+    let args = std::env::args().skip(1).collect::<Vec<_>>();
+    let policy_fixture = match args.as_slice() {
+        [] => false,
+        [flag] if flag == "--policy-fixture" => true,
+        _ => {
+            eprintln!("kira-notification-acceptance: unrecognized private probe arguments");
+            std::process::exit(2);
+        }
+    };
     let address = std::env::var("DBUS_SESSION_BUS_ADDRESS").unwrap_or_default();
-    if let Err(error) = run_probe(&address) {
+    if let Err(error) = run_probe(&address, policy_fixture) {
         eprintln!("kira-notification-acceptance: {error}");
         std::process::exit(1);
     }
