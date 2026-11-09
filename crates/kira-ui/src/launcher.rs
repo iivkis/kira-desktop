@@ -99,11 +99,7 @@ pub enum LauncherNavigation {
     PageNext,
 }
 
-pub fn launcher_selection_after(
-    current: usize,
-    count: usize,
-    action: LauncherNavigation,
-) -> usize {
+pub fn launcher_selection_after(current: usize, count: usize, action: LauncherNavigation) -> usize {
     if count == 0 {
         return 0;
     }
@@ -580,9 +576,7 @@ impl Launcher {
             let weak = Rc::downgrade(&state);
             move |_| {
                 if let Some(state) = weak.upgrade() {
-                    if !state.requests.borrow().launching
-                        && !state.requests.borrow().refreshing
-                    {
+                    if !state.requests.borrow().launching && !state.requests.borrow().refreshing {
                         state.feedback("", false);
                     }
                     state.render(true);
