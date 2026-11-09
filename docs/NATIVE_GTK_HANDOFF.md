@@ -49,6 +49,26 @@ real nested-Niri/Wayland presence has been established. Real child popup
 focus, multi-output mapping, compositor click-through and TENET/pixel
 capture remain separate acceptance gates. The ledger stays 0/15 verified.
 
+## G5: stable notification output affinity, scale and action leases
+
+Starting from prior green HEAD `6c2c957dc56d1589d2572bf02a7e90a4f574b528`
+([CI #42537946072](https://github.com/iivkis/kira-desktop/actions/runs/42537946072)),
+the next implementation fixes three real lifecycle boundaries:
+
+- `kira-ui` selects the active real GDK monitor stably through enumeration
+  reorder when the mapped Top Bar output is blocked or too narrow;
+- same-monitor logical resize or scale-factor change invalidates card paint,
+  input and FIFO dwell; stale epoch-bound GTK button callbacks cannot act;
+- Shell checks painted card identity, current physical target and bus
+  ownership on every UI action/ACK. Private SNI protocol smoke now tests
+  idempotent lazy menus, disabled/unknown no-op Events and reversible
+  checkmarks on a private bus.
+
+**CI for the subsequent HEAD must be checked separately.** These tests are
+model and headless protocol tests. The 15-widget ledger remains 0 verified;
+native Wayland motion, scale, hotplug, keyboard focus, TENET/pixel evidence,
+and full parallel multi-output toast queues remain unaccepted.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
