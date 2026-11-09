@@ -174,6 +174,17 @@ fn toast_intent_authorized(owned: bool, painted: bool, current_target: bool) -> 
     owned && painted && current_target
 }
 
+/// A D-Bus ownership epoch is a real trust boundary. Once the name is
+/// gone, do not replay a foreign daemon's previous notifications or accept
+/// stale sender leases if this process later reacquires the name.
+fn revoke_notification_session(
+    queue: &mut NotificationQueue,
+    senders: &mut NotificationOwnership,
+) {
+    *queue = NotificationQueue::default();
+    senders.clear();
+}
+
 /// Never schedule an already-due FIFO deadline when the host is covered,
 /// unowned or unmapped. A real mapping/geometry/popup change resumes it.
 fn next_visible_deadline(
@@ -308,6 +319,11 @@ impl Service {
     fn release_name(&self) {
         self.owned.set(false);
         self.bus.borrow_mut().take();
+        self.timer_revision.set(self.timer_revision.get().wrapping_add(1));
+        revoke_notification_session(
+            &mut self.queue.borrow_mut(),
+            &mut self.senders.borrow_mut(),
+        );
         if let Some(host) = self.host.borrow().as_ref() {
             host.hide_all();
         }
@@ -663,7 +679,11 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
             if let Some(service) = lost.upgrade() {
                 service.owned.set(false);
                 service.bus.borrow_mut().take();
-                service.queue.borrow_mut().step(Instant::now(), false);
+                service.timer_revision.set(service.timer_revision.get().wrapping_add(1));
+                revoke_notification_session(
+                    &mut service.queue.borrow_mut(),
+                    &mut service.senders.borrow_mut(),
+                );
                 if let Some(host) = service.host.borrow().as_ref() {
                     host.hide_all();
                 }
@@ -677,6 +697,36 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn losing_dbus_name_revokes_stale_notifications_and_owner_leases() {
+        let mut queue = NotificationQueue::default();
+        let mut senders = NotificationOwnership::default();
+        let id = senders.assign_id(&mut queue, ":1.32", 0);
+        let pending = Notice {
+            id,
+            app: "App".into(),
+            summary: "Waiting".into(),
+            body: String::new(),
+            actions: vec![("default".into(), "Open".into())],
+            critical: false,
+            persistent: false,
+            dwell: DEFAULT_DWELL,
+        };
+        assert!(queue.push(pending, Instant::now()));
+        senders.record(id, ":1.32");
+        assert_eq!(queue.active_count(), 1);
+        assert!(senders.is_owner(id, ":1.32"));
+
+        revoke_notification_session(&mut queue, &mut senders);
+        assert_eq!(queue.active_count(), 0);
+        assert_eq!(senders.active_leases(), 0);
+        assert!(!senders.is_owner(id, ":1.32"));
+        assert!(!queue.contains_active(id));
+        assert_eq!(queue.visible_count(), 0);
+        assert!(!queue.has_pending());
+        assert_eq!(queue.next_deadline(Instant::now()), None);
+    }
 
     #[test]
     fn notification_preview_never_owns_an_unattested_bus() {
