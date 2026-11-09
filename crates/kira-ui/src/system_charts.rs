@@ -229,6 +229,20 @@ pub fn activity_axis(points: &[ChartPoint], lane: ActivityLane) -> ActivityAxis 
     ActivityAxis { min, max }
 }
 
+/// A pulse that contains no usable reading is still part of the measured
+/// time axis, but it must not masquerade as inspectable sensor evidence.
+pub fn inspectable_history(points: &[ChartPoint]) -> Vec<ChartPoint> {
+    points
+        .iter()
+        .copied()
+        .filter(|point| {
+            [ActivityLane::Cpu, ActivityLane::Ram, ActivityLane::Gpu]
+                .into_iter()
+                .any(|lane| reading(point, lane).is_some())
+        })
+        .collect()
+}
+
 /// Historical inspection is a view of actual retained pulses, never a
 /// request to sample or interpolate telemetry. None means follow the latest.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -662,7 +676,7 @@ struct ChartState {
 
 impl ChartState {
     fn inspect(&self, action: InspectionAction) {
-        let points = self.history.borrow().recent(Instant::now());
+        let points = inspectable_history(&self.history.borrow().recent(Instant::now()));
         self.selected_at
             .set(inspection_target(&points, self.selected_at.get(), action));
         self.inspector_feedback.set_text("");
@@ -672,6 +686,7 @@ impl ChartState {
     fn inspect_pointer(&self, x: f64, width: i32) {
         let now = Instant::now();
         let points = self.history.borrow().recent(now);
+        let visible = inspectable_history(&points);
         let Some((first, last)) = points.first().zip(points.last()) else {
             return;
         };
@@ -679,7 +694,7 @@ impl ChartState {
             .animation
             .borrow()
             .display_domain(first.measured_at, last.measured_at);
-        if let Some(stamp) = chart_sample_at_x(&points, domain, x, width) {
+        if let Some(stamp) = chart_sample_at_x(&visible, domain, x, width) {
             self.selected_at.set(Some(stamp));
             self.inspector_feedback.set_text("");
             self.refresh();
@@ -688,7 +703,7 @@ impl ChartState {
 
     fn copy_inspection(&self) {
         let now = Instant::now();
-        let points = self.history.borrow().recent(now);
+        let points = inspectable_history(&self.history.borrow().recent(now));
         let report = chart_inspection_report(&points, self.selected_at.get(), now);
         let result = match report {
             Some(report) => self.on_copy.borrow().as_ref().map_or_else(
@@ -762,12 +777,13 @@ impl ChartState {
         )));
         self.gauge_canvas.queue_draw();
         let points = history.recent(now);
+        let inspectable = inspectable_history(&points);
         // A pinned Instant can fall out of the 60s window. Never silently
         // claim that the next sample was the user's old selection.
         if self
             .selected_at
             .get()
-            .is_some_and(|at| !points.iter().any(|point| point.measured_at == at))
+            .is_some_and(|at| !inspectable.iter().any(|point| point.measured_at == at))
         {
             self.selected_at.set(None);
             self.inspector_feedback
@@ -775,16 +791,16 @@ impl ChartState {
         }
         let selected = self.selected_at.get();
         let index = selected
-            .and_then(|at| points.iter().position(|point| point.measured_at == at))
-            .unwrap_or_else(|| points.len().saturating_sub(1));
+            .and_then(|at| inspectable.iter().position(|point| point.measured_at == at))
+            .unwrap_or_else(|| inspectable.len().saturating_sub(1));
         self.inspector_previous
-            .set_sensitive(!points.is_empty() && index > 0);
+            .set_sensitive(!inspectable.is_empty() && index > 0);
         self.inspector_next.set_sensitive(selected.is_some());
         self.inspector_live.set_sensitive(selected.is_some());
         self.inspector_copy
-            .set_sensitive(!points.is_empty() && self.on_copy.borrow().is_some());
+            .set_sensitive(!inspectable.is_empty() && self.on_copy.borrow().is_some());
         self.inspector_text
-            .set_text(&chart_inspection_text(&points, selected, now));
+            .set_text(&chart_inspection_text(&inspectable, selected, now));
         let show_gpu = self.gpu.borrow().is_fresh(now);
         self.gpu_axis.set_visible(show_gpu);
         self.plot
@@ -804,7 +820,7 @@ impl ChartState {
             measured_history_caption(&points),
             meter_text(cpu, false),
             meter_text(ram, true),
-            chart_inspection_text(&points, selected, now)
+            chart_inspection_text(&inspectable, selected, now)
         );
         self.plot.set_tooltip_text(Some(&plot_label));
         self.plot
@@ -1225,6 +1241,38 @@ mod tests {
     }
 
     #[test]
+    fn empty_worker_pulses_are_not_misrepresented_as_measurements() {
+        let t = Instant::now();
+        let points = [
+            ChartPoint {
+                measured_at: t,
+                cpu: None,
+                ram: None,
+                gpu: None,
+            },
+            ChartPoint {
+                measured_at: t + Duration::from_millis(500),
+                cpu: Some(0.0),
+                ram: None,
+                gpu: None,
+            },
+            ChartPoint {
+                measured_at: t + Duration::from_millis(1000),
+                cpu: None,
+                ram: None,
+                gpu: Some(70.0),
+            },
+        ];
+        let usable = inspectable_history(&points);
+        assert_eq!(usable.len(), 2);
+        assert_eq!(usable[0].cpu, Some(0.0));
+        assert_eq!(usable[1].gpu, Some(70.0));
+        let empty = inspectable_history(&points[..1]);
+        assert_eq!(inspection_target(&empty, None, InspectionAction::First), None);
+        assert!(chart_inspection_report(&empty, None, t).is_none());
+    }
+
+    #[test]
     fn pointer_hit_tests_share_the_measured_time_axis_and_reject_invalid_geometry() {
         let t = Instant::now();
         let points = [0_u64, 500, 1000]
@@ -1331,12 +1379,16 @@ mod tests {
         let mut history = PulseHistory::default();
         history.push(sample(at, Some(37), Some(250)));
         assert_eq!(history.recent(at + MAX_PULSE_AGE).len(), 1);
-        assert!(history
-            .recent(at + MAX_PULSE_AGE + Duration::from_millis(1))
-            .is_empty());
-        assert!(history
-            .latest(at + MAX_PULSE_AGE + Duration::from_millis(1))
-            .is_none());
+        assert!(
+            history
+                .recent(at + MAX_PULSE_AGE + Duration::from_millis(1))
+                .is_empty()
+        );
+        assert!(
+            history
+                .latest(at + MAX_PULSE_AGE + Duration::from_millis(1))
+                .is_none()
+        );
     }
 
     #[test]
