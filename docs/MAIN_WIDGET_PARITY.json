@@ -208,12 +208,14 @@
       "content_and_interaction_requirements": [
         "Overview with disk, swap, temperature, battery, GPU and system disclosure",
         "Process search, sorting by name/PID/CPU/RSS/PSS, report copy and freshness",
-        "Native six-second hardware details and six-second fresh-only Overview report now reuse GTK/GDK clipboard; 8-second process expiry, bidirectional native sort and progressive 36-to-180 rows are covered by pure tests. Source pixel/layout and disclosure/FLIP motion still lack nested Niri acceptance."
+        "Native six-second hardware details and six-second fresh-only Overview report now reuse GTK/GDK clipboard; 8-second process expiry, bidirectional native sort and progressive 36-to-180 rows are covered by pure tests. Source pixel/layout and disclosure/FLIP motion still lack nested Niri acceptance.",
+        "Retained GTK process row identities (PID plus name guard) replace full list reconstruction on each real /proc sample. Explicit filters/sorts only animate a bounded <=24-row source TENET FLIP, share a persistent 420ms sort underline, and do not invent telemetry movement. Keyboard rows (Up/Down/Home/End/Page), Ctrl+F and clear filter, selected actual-snapshot details and bounded copy intent are implemented with pure tests; no process-control authority or stale selection survives tab reset/8s expiry. Real Niri pointer/focus/pixel QA is still required."
       ],
       "animation_requirements": [
         "TENET panel arrival and disclosure",
         "Staged content reveal and FLIP process rows",
-        "Native process row animation and selected-column indicator remain to be compared to source TENET; bidirectional sorting/filtering behavior is implemented but does not itself certify motion"
+        "Native process row animation and selected-column indicator remain to be compared to source TENET; bidirectional sorting/filtering behavior is implemented but does not itself certify motion",
+        "Interrupted 340ms keyed GTK reflow and 420ms column underline still need matched source/native frame captures at reduced motion and 125/150/200% scaling."
       ],
       "verified": {
         "content": false,

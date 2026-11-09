@@ -1,12 +1,16 @@
 //! GTK-only process explorer. Sampling and clipboard authority stay outside kira-ui.
 use std::cell::{Cell, RefCell};
 use std::cmp::Ordering;
-use std::rc::Rc;
+use std::collections::{HashMap, HashSet};
+use std::rc::{Rc, Weak};
 use std::time::{Duration, Instant};
 
 use gtk::prelude::*;
 
+use crate::flow_indicator::{FlowAxis, FlowIndicator, FlowStyle};
+use crate::reflow::{REFLOW_MAX_ROWS, ReflowRow, ReflowScope};
 use crate::system::{ProcessItem, ProcessList};
+use crate::tenet_scroll::TenetScroll;
 
 const PROCESS_PAGE: usize = 36;
 const MAX_VISIBLE_PROCESSES: usize = 180;
@@ -178,6 +182,10 @@ pub fn filter_sort_processes_with_state<'a>(
         };
         order.then_with(|| a.pid.cmp(&b.pid))
     });
+    // A malformed producer must not cause one GTK row to be parented
+    // twice under the same PID. Stable sorted order decides the survivor.
+    let mut seen_pids = HashSet::new();
+    selected.retain(|item| seen_pids.insert(item.pid));
     selected.truncate(limit);
     selected
 }
@@ -247,16 +255,222 @@ pub fn process_report_with_state(
     report
 }
 
+/// Only a small user-driven list reflows; a sensor pulse is never an
+/// animation instruction and broad sorting must remain responsive.
+pub fn animate_process_reflow(user_action: bool, visible_before: usize) -> bool {
+    user_action && (1..=REFLOW_MAX_ROWS).contains(&visible_before)
+}
+
+/// A PID alone can be reused by Linux. Selection is explicitly tied to the
+/// current snapshot's name as well, never used as a process-control authority.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ProcessSelection {
+    pub pid: u32,
+    pub name: String,
+}
+
+pub fn process_selected<'a>(
+    snapshot: &'a ProcessList,
+    selection: &ProcessSelection,
+) -> Option<&'a ProcessItem> {
+    snapshot
+        .rows
+        .iter()
+        .find(|item| item.pid == selection.pid && item.name == selection.name)
+}
+
+/// This is a *snapshot*, not a live process descriptor. Keep clipboard text
+/// bounded and do not invent missing measurements or allow control chars.
+pub fn selected_process_report(item: &ProcessItem) -> String {
+    format!(
+        "Процесс Kira (снимок)\nPID: {}\nИмя: {}\nСостояние: {}\nCPU: {}\nRSS: {}\nPSS: {}\n",
+        item.pid,
+        clean_text(&item.name),
+        if item.state.is_ascii_graphic() { item.state } else { '?' },
+        cpu_text(item.cpu_percent),
+        memory_text(item.rss_kib),
+        memory_text(item.pss_kib)
+    )
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ProcessNavigation {
+    Previous,
+    Next,
+    First,
+    Last,
+    PagePrevious,
+    PageNext,
+}
+
+/// Page moves are bounded to the *rendered* list, never hidden /proc rows.
+pub fn process_selection_after(current: usize, visible: usize, action: ProcessNavigation) -> usize {
+    if visible == 0 {
+        return 0;
+    }
+    let current = current.min(visible - 1);
+    match action {
+        ProcessNavigation::Previous => current.saturating_sub(1),
+        ProcessNavigation::Next => current.saturating_add(1).min(visible - 1),
+        ProcessNavigation::First => 0,
+        ProcessNavigation::Last => visible - 1,
+        ProcessNavigation::PagePrevious => current.saturating_sub(8),
+        ProcessNavigation::PageNext => current.saturating_add(8).min(visible - 1),
+    }
+}
+
 type CopyReport = Box<dyn Fn(String) -> Result<(), String>>;
 
+/// The GTK instance survives /proc refreshes. ReflowRow owns exactly
+/// one focusable process button; only its factual labels are updated.
+#[derive(Clone)]
+struct ProcessVisualRow {
+    identity: ProcessSelection,
+    wrapper: ReflowRow,
+    button: gtk::Button,
+    name: gtk::Label,
+    pid: gtk::Label,
+    cpu: gtk::Label,
+    rss: gtk::Label,
+    pss: gtk::Label,
+}
+
+fn numeric_cell(width: i32) -> gtk::Label {
+    let label = gtk::Label::new(None);
+    label.set_width_request(width);
+    label.set_xalign(1.0);
+    label.set_ellipsize(gtk::pango::EllipsizeMode::End);
+    label.add_css_class("process-value");
+    label
+}
+
+impl ProcessVisualRow {
+    fn new(item: &ProcessItem, weak: Weak<ProcessTableState>) -> Self {
+        let button = gtk::Button::new();
+        button.add_css_class("process-row");
+        button.set_hexpand(true);
+        button.set_halign(gtk::Align::Fill);
+        let layout = gtk::Box::new(gtk::Orientation::Horizontal, 3);
+        let name = gtk::Label::new(None);
+        name.set_xalign(0.0);
+        name.set_hexpand(true);
+        name.set_ellipsize(gtk::pango::EllipsizeMode::End);
+        layout.append(&name);
+        let pid = numeric_cell(46);
+        let cpu = numeric_cell(54);
+        let rss = numeric_cell(70);
+        let pss = numeric_cell(70);
+        for label in [&pid, &cpu, &rss, &pss] {
+            layout.append(label);
+        }
+        button.set_child(Some(&layout));
+        let key = gtk::EventControllerKey::new();
+        let key_weak = weak.clone();
+        let process_id = item.pid;
+        key.set_propagation_phase(gtk::PropagationPhase::Capture);
+        key.connect_key_pressed(move |_, pressed, _, modifiers| {
+            if modifiers.intersects(
+                gtk::gdk::ModifierType::CONTROL_MASK
+                    | gtk::gdk::ModifierType::ALT_MASK
+                    | gtk::gdk::ModifierType::SUPER_MASK,
+            ) {
+                return gtk::glib::Propagation::Proceed;
+            }
+            let action = match pressed {
+                gtk::gdk::Key::Up => ProcessNavigation::Previous,
+                gtk::gdk::Key::Down => ProcessNavigation::Next,
+                gtk::gdk::Key::Home => ProcessNavigation::First,
+                gtk::gdk::Key::End => ProcessNavigation::Last,
+                gtk::gdk::Key::Page_Up => ProcessNavigation::PagePrevious,
+                gtk::gdk::Key::Page_Down => ProcessNavigation::PageNext,
+                _ => return gtk::glib::Propagation::Proceed,
+            };
+            if let Some(state) = key_weak.upgrade()
+                && let Some(index) = state
+                    .visible_ids
+                    .borrow()
+                    .iter()
+                    .position(|id| *id == process_id)
+            {
+                let next = process_selection_after(
+                    index,
+                    state.visible_ids.borrow().len(),
+                    action,
+                );
+                state.select_index(next, true);
+            }
+            gtk::glib::Propagation::Stop
+        });
+        button.add_controller(key);
+        button.connect_clicked(move |_| {
+            if let Some(state) = weak.upgrade()
+                && let Some(index) = state
+                    .visible_ids
+                    .borrow()
+                    .iter()
+                    .position(|id| *id == process_id)
+            {
+                state.select_index(index, false);
+            }
+        });
+        let wrapper = ReflowRow::new(&button.clone().upcast());
+        let row = Self {
+            identity: ProcessSelection {
+                pid: item.pid,
+                name: item.name.clone(),
+            },
+            wrapper,
+            button,
+            name,
+            pid,
+            cpu,
+            rss,
+            pss,
+        };
+        row.update(item);
+        row
+    }
+
+    fn update(&self, item: &ProcessItem) {
+        let name = clean_text(&item.name);
+        self.name.set_text(&name);
+        self.pid.set_text(&item.pid.to_string());
+        self.cpu.set_text(&cpu_text(item.cpu_percent));
+        self.rss.set_text(&memory_text(item.rss_kib));
+        self.pss.set_text(&memory_text(item.pss_kib));
+        let description = format!(
+            "{} · PID {} · состояние {} · CPU {} · RSS {} · PSS {}",
+            name,
+            item.pid,
+            if item.state.is_ascii_graphic() { item.state } else { '?' },
+            cpu_text(item.cpu_percent),
+            memory_text(item.rss_kib),
+            memory_text(item.pss_kib),
+        );
+        self.button.set_tooltip_text(Some(&description));
+        self.button
+            .update_property(&[gtk::accessible::Property::Label(&description)]);
+    }
+}
+
 struct ProcessTableState {
+    weak_self: Weak<ProcessTableState>,
     search: gtk::SearchEntry,
+    clear: gtk::Button,
     sort: Cell<ProcessSortState>,
     sort_buttons: Vec<(ProcessSort, gtk::Button)>,
+    sort_flow: FlowIndicator,
     visible_count: Cell<usize>,
     show_more: gtk::Button,
     summary: gtk::Label,
     rows: gtk::Box,
+    visible_ids: RefCell<Vec<u32>>,
+    cache: RefCell<HashMap<u32, ProcessVisualRow>>,
+    reflow: ReflowScope,
+    scroll: TenetScroll,
+    selected: RefCell<Option<ProcessSelection>>,
+    selected_info: gtk::Label,
+    selected_copy: gtk::Button,
     feedback: gtk::Label,
     copy: gtk::Button,
     snapshot: RefCell<Option<ProcessList>>,
@@ -268,51 +482,241 @@ struct ProcessTableState {
 }
 
 impl ProcessTableState {
-    fn render(&self) {
+    fn fresh(&self) -> bool {
+        process_snapshot_fresh(self.received_instant.get(), Instant::now())
+    }
+
+    fn clear_rows(&self) {
+        self.reflow.cancel();
+        self.scroll.cancel();
+        self.visible_ids.borrow_mut().clear();
+        self.cache.borrow_mut().clear();
         while let Some(child) = self.rows.first_child() {
             self.rows.remove(&child);
         }
-        self.show_more.set_visible(false);
+        self.selected.replace(None);
+        self.selected_info.set_visible(false);
+        self.selected_copy.set_visible(false);
+    }
+
+    fn select_index(&self, index: usize, focus: bool) {
+        let pid = self.visible_ids.borrow().get(index).copied();
+        let Some(pid) = pid else {
+            return;
+        };
+        let row = self.cache.borrow().get(&pid).cloned();
+        let Some(row) = row else {
+            return;
+        };
+        self.selected.replace(Some(row.identity.clone()));
+        if focus {
+            row.button.grab_focus();
+            self.scroll.ensure_visible(&row.wrapper.clone().upcast(), true);
+        }
+        self.update_selected();
+    }
+
+    fn update_selected(&self) {
+        let current = self.selected.borrow().clone();
+        let selected = current.as_ref().and_then(|identity| {
+            self.snapshot
+                .borrow()
+                .as_ref()
+                .and_then(|snapshot| process_selected(snapshot, identity))
+                .cloned()
+        });
+        let selected = selected.filter(|item| self.visible_ids.borrow().contains(&item.pid));
+        let fresh = self.fresh();
+        if !fresh || selected.is_none() {
+            self.selected.replace(None);
+            self.selected_info.set_visible(false);
+            self.selected_copy.set_visible(false);
+        } else if let Some(item) = selected {
+            self.selected_info.set_label(&format!(
+                "ВЫБРАН: {} · PID {} · состояние {} · CPU {} · RSS {} · PSS {}",
+                clean_text(&item.name),
+                item.pid,
+                if item.state.is_ascii_graphic() { item.state } else { '?' },
+                cpu_text(item.cpu_percent),
+                memory_text(item.rss_kib),
+                memory_text(item.pss_kib),
+            ));
+            self.selected_info.set_visible(true);
+            self.selected_copy
+                .set_sensitive(self.on_copy.borrow().is_some());
+            self.selected_copy.set_visible(true);
+        }
+        let selected = self.selected.borrow();
+        for row in self.cache.borrow().values() {
+            if selected.as_ref() == Some(&row.identity) {
+                row.button.add_css_class("selected");
+            } else {
+                row.button.remove_css_class("selected");
+            }
+        }
+    }
+
+    /// Only user search/sort requests may animate keyed row reordering.
+    /// Telemetry refreshes update retained GTK labels in place, without FLIP.
+    fn render_rows(&self, shown: &[&ProcessItem], animate: bool) {
+        let prior = self.visible_ids.borrow().clone();
+        let previous = if animate_process_reflow(animate, prior.len()) {
+            let cache = self.cache.borrow();
+            let ordered: Vec<_> = prior
+                .iter()
+                .filter_map(|id| {
+                    cache.get(id).map(|row| (id.to_string(), row.wrapper.clone()))
+                })
+                .collect();
+            Some(self.reflow.capture(&ordered))
+        } else {
+            self.reflow.cancel();
+            for row in self.cache.borrow().values() {
+                row.wrapper.settle();
+            }
+            None
+        };
+
+        // Non-row placeholders are rebuildable; genuine process buttons
+        // remain stable across repeated 2-second producer snapshots.
+        let mut child = self.rows.first_child();
+        while let Some(widget) = child {
+            child = widget.next_sibling();
+            if !widget.is::<ReflowRow>() {
+                self.rows.remove(&widget);
+            }
+        }
+        let wanted: HashSet<_> = shown.iter().map(|item| item.pid).collect();
+        let stale: Vec<_> = self
+            .cache
+            .borrow()
+            .keys()
+            .copied()
+            .filter(|pid| !wanted.contains(pid))
+            .collect();
+        for pid in stale {
+            if let Some(row) = self.cache.borrow_mut().remove(&pid) {
+                self.rows.remove(&row.wrapper);
+            }
+        }
+
+        let mut ordered = Vec::new();
+        let mut predecessor: Option<gtk::Widget> = None;
+        let mut ids = Vec::new();
+        for item in shown {
+            let replace = self
+                .cache
+                .borrow()
+                .get(&item.pid)
+                .is_some_and(|row| row.identity.name != item.name);
+            if replace {
+                if let Some(old) = self.cache.borrow_mut().remove(&item.pid) {
+                    self.rows.remove(&old.wrapper);
+                }
+            }
+            let row = if let Some(row) = self.cache.borrow().get(&item.pid).cloned() {
+                row
+            } else {
+                let row = ProcessVisualRow::new(item, self.weak_self.clone());
+                self.rows.append(&row.wrapper);
+                self.cache.borrow_mut().insert(item.pid, row.clone());
+                row
+            };
+            row.update(item);
+            let in_position = match &predecessor {
+                Some(before) => before.next_sibling().as_ref() == Some(row.wrapper.upcast_ref()),
+                None => self.rows.first_child().as_ref() == Some(row.wrapper.upcast_ref()),
+            };
+            if !in_position {
+                self.rows
+                    .reorder_child_after(&row.wrapper, predecessor.as_ref());
+            }
+            predecessor = Some(row.wrapper.clone().upcast());
+            ids.push(item.pid);
+            ordered.push((item.pid.to_string(), row.wrapper));
+        }
+        self.visible_ids.replace(ids);
+
+        if shown.is_empty() {
+            let empty = gtk::Box::new(gtk::Orientation::Vertical, 8);
+            empty.set_margin_top(22);
+            empty.set_margin_bottom(20);
+            empty.set_halign(gtk::Align::Center);
+            let message = gtk::Label::new(Some("ПРОЦЕССЫ НЕ НАЙДЕНЫ"));
+            message.add_css_class("muted");
+            empty.append(&message);
+            if !self.search.text().trim().is_empty() {
+                let clear = gtk::Button::with_label("ОЧИСТИТЬ ФИЛЬТР");
+                clear.add_css_class("process-clear-empty");
+                let weak = self.weak_self.clone();
+                clear.connect_clicked(move |_| {
+                    if let Some(state) = weak.upgrade() {
+                        state.search.set_text("");
+                        state.search.grab_focus();
+                    }
+                });
+                empty.append(&clear);
+            }
+            self.rows.append(&empty);
+        }
+        if let Some(snapshot) = previous {
+            self.reflow.play(snapshot, &ordered);
+        }
+        self.update_selected();
+    }
+
+    fn render(&self, animate: bool) {
+        self.clear
+            .set_visible(!self.search.text().is_empty());
         for (field, button) in &self.sort_buttons {
-            if *field == self.sort.get().field {
+            let active = *field == self.sort.get().field;
+            if active {
                 button.add_css_class("selected");
-                let arrow = if self.sort.get().descending {
-                    " ↓"
-                } else {
-                    " ↑"
-                };
-                button.set_label(&format!("{}{}", field.heading(), arrow));
+                button.set_label(&format!(
+                    "{} {}",
+                    field.heading(),
+                    if self.sort.get().descending { "↓" } else { "↑" }
+                ));
+                self.sort_flow.retarget(&button.clone().upcast());
             } else {
                 button.remove_css_class("selected");
                 button.set_label(field.heading());
             }
+            button.update_property(&[gtk::accessible::Property::Description(if active {
+                if self.sort.get().descending {
+                    "Сортировка по убыванию, повторное нажатие изменит направление"
+                } else {
+                    "Сортировка по возрастанию, повторное нажатие изменит направление"
+                }
+            } else {
+                "Сортировать по этому столбцу"
+            })]);
         }
         self.copy.set_sensitive(
-            self.snapshot.borrow().is_some()
-                && process_snapshot_fresh(self.received_instant.get(), Instant::now())
-                && self.on_copy.borrow().is_some(),
+            self.snapshot.borrow().is_some() && self.fresh() && self.on_copy.borrow().is_some(),
         );
+        self.show_more.set_visible(false);
         if let Some(error) = self.error.borrow().as_ref() {
             self.summary.set_text(error);
+            self.clear_rows();
             return;
         }
-        if self.snapshot.borrow().is_some()
-            && !process_snapshot_fresh(self.received_instant.get(), Instant::now())
-        {
+        if self.snapshot.borrow().is_some() && !self.fresh() {
             self.summary
                 .set_text("Данные процессов устарели, ожидается новый снимок");
+            self.clear_rows();
             return;
         }
         let snapshot = self.snapshot.borrow();
         let Some(snapshot) = snapshot.as_ref() else {
             self.summary
                 .set_text("Список процессов появится после открытия вкладки");
+            self.clear_rows();
             return;
         };
-        let query = self.search.text();
         let found = filter_sort_processes_with_state(
             &snapshot.rows,
-            query.as_str(),
+            self.search.text().as_str(),
             self.sort.get(),
             usize::MAX,
         );
@@ -339,46 +743,14 @@ impl ProcessTableState {
             truncated,
             receipt
         ));
-        if found.is_empty() {
-            let empty = gtk::Label::new(Some("Совпадений нет"));
-            empty.add_css_class("muted");
-            self.rows.append(&empty);
-        }
-        for item in found.into_iter().take(shown) {
-            let row = gtk::Box::new(gtk::Orientation::Horizontal, 3);
-            row.add_css_class("process-row");
-            let name = gtk::Label::new(Some(&item.name));
-            name.set_xalign(0.0);
-            name.set_hexpand(true);
-            name.set_ellipsize(gtk::pango::EllipsizeMode::End);
-            name.set_tooltip_text(Some(&format!(
-                "{} / PID {} / СОСТОЯНИЕ {}",
-                item.name, item.pid, item.state
-            )));
-            row.append(&name);
-            for (heading, value, width) in [
-                ("PID", item.pid.to_string(), 46),
-                ("CPU", cpu_text(item.cpu_percent), 54),
-                ("RSS", memory_text(item.rss_kib), 70),
-                ("PSS", memory_text(item.pss_kib), 70),
-            ] {
-                let cell = gtk::Label::new(Some(&value));
-                cell.set_width_request(width);
-                cell.set_xalign(1.0);
-                cell.set_ellipsize(gtk::pango::EllipsizeMode::End);
-                cell.set_tooltip_text(Some(heading));
-                cell.add_css_class("process-value");
-                row.append(&cell);
-            }
-            self.rows.append(&row);
-        }
+        self.render_rows(&found[..shown], animate);
     }
 
     fn copy_report(&self) {
-        if !process_snapshot_fresh(self.received_instant.get(), Instant::now()) {
+        if !self.fresh() {
             self.feedback
                 .set_text("Данные устарели, отчёт не скопирован");
-            self.render();
+            self.render(false);
             return;
         }
         let snapshot = self.snapshot.borrow();
@@ -397,6 +769,33 @@ impl ProcessTableState {
             Err(ref error) => error,
         });
     }
+
+    fn copy_selected(&self) {
+        if !self.fresh() {
+            self.feedback
+                .set_text("Данные устарели, сведения не скопированы");
+            self.render(false);
+            return;
+        }
+        let report = self.selected.borrow().as_ref().and_then(|identity| {
+            self.snapshot
+                .borrow()
+                .as_ref()
+                .and_then(|snapshot| process_selected(snapshot, identity))
+                .map(selected_process_report)
+        });
+        let result = match report {
+            Some(report) => self.on_copy.borrow().as_ref().map_or_else(
+                || Err("Копирование недоступно".to_owned()),
+                |copy| copy(report),
+            ),
+            None => Err("Процесс больше не присутствует в текущем снимке".to_owned()),
+        };
+        self.feedback.set_text(match result {
+            Ok(()) => "Сведения о процессе скопированы",
+            Err(ref error) => error,
+        });
+    }
 }
 
 /// Standalone view: plain snapshots and a typed copy intent, no Core or Niri.
@@ -409,13 +808,22 @@ impl ProcessTable {
     pub fn new() -> Self {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 8);
         root.add_css_class("process-table");
+        let search_row = gtk::Box::new(gtk::Orientation::Horizontal, 6);
         let search = gtk::SearchEntry::new();
         search.set_hexpand(true);
-        search.set_placeholder_text(Some("Фильтр по имени или PID"));
+        search.set_placeholder_text(Some("Фильтр по имени или PID (Ctrl+F)"));
         search.update_property(&[gtk::accessible::Property::Label(
             "Фильтр по названию процесса или PID",
         )]);
-        root.append(&search);
+        search_row.append(&search);
+        let clear = gtk::Button::with_label("×");
+        clear.add_css_class("process-search-clear");
+        clear.set_visible(false);
+        clear.set_tooltip_text(Some("Очистить фильтр"));
+        clear.update_property(&[gtk::accessible::Property::Label("Очистить фильтр")]);
+        search_row.append(&clear);
+        root.append(&search_row);
+
         let headers = gtk::Box::new(gtk::Orientation::Horizontal, 3);
         headers.add_css_class("process-sort-header");
         let mut sort_buttons = Vec::new();
@@ -447,17 +855,24 @@ impl ProcessTable {
             headers.append(&button);
             sort_buttons.push((field, button));
         }
-        root.append(&headers);
+        let sort_flow = FlowIndicator::new(
+            &headers.clone().upcast(),
+            FlowAxis::Horizontal,
+            FlowStyle::Underline,
+        );
+        root.append(&sort_flow);
         let summary = gtk::Label::new(Some("Список процессов появится после открытия вкладки"));
         summary.add_css_class("muted");
         summary.set_xalign(0.0);
         summary.set_wrap(true);
         root.append(&summary);
+
         let scroll = gtk::ScrolledWindow::new();
         scroll.set_min_content_height(180);
         scroll.set_max_content_height(360);
         scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
         let rows = gtk::Box::new(gtk::Orientation::Vertical, 2);
+        let reflow = ReflowScope::new(&rows.clone().upcast());
         let list = gtk::Box::new(gtk::Orientation::Vertical, 5);
         list.append(&rows);
         let show_more = gtk::Button::with_label("ПОКАЗАТЬ ЕЩЁ");
@@ -465,25 +880,54 @@ impl ProcessTable {
         show_more.set_visible(false);
         list.append(&show_more);
         scroll.set_child(Some(&list));
+        let scroll_motion = TenetScroll::new(&scroll);
         root.append(&scroll);
-        let footer = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+
+        let selected_info = gtk::Label::new(None);
+        selected_info.add_css_class("process-selected-detail");
+        selected_info.set_xalign(0.0);
+        selected_info.set_wrap(true);
+        selected_info.set_selectable(true);
+        selected_info.set_visible(false);
+        root.append(&selected_info);
+
+        let footer = gtk::Box::new(gtk::Orientation::Vertical, 6);
+        let actions = gtk::Box::new(gtk::Orientation::Horizontal, 6);
+        footer.append(&actions);
         let copy = gtk::Button::with_label("Скопировать отчёт");
         copy.set_sensitive(false);
-        footer.append(&copy);
+        actions.append(&copy);
+        let selected_copy = gtk::Button::with_label("Скопировать процесс");
+        selected_copy.add_css_class("process-selected-copy");
+        selected_copy.update_property(&[gtk::accessible::Property::Label(
+            "Скопировать сведения о выбранном процессе",
+        )]);
+        selected_copy.set_visible(false);
+        actions.append(&selected_copy);
         let feedback = gtk::Label::new(None);
         feedback.add_css_class("muted");
         feedback.set_wrap(true);
         footer.append(&feedback);
         root.append(&footer);
 
-        let state = Rc::new(ProcessTableState {
-            search,
+        let state = Rc::new_cyclic(|weak| ProcessTableState {
+            weak_self: weak.clone(),
+            search: search.clone(),
+            clear: clear.clone(),
             sort: Cell::new(ProcessSortState::default()),
             sort_buttons,
+            sort_flow,
             visible_count: Cell::new(PROCESS_PAGE),
             show_more,
             summary,
             rows,
+            visible_ids: RefCell::new(Vec::new()),
+            cache: RefCell::new(HashMap::new()),
+            reflow,
+            scroll: scroll_motion,
+            selected: RefCell::new(None),
+            selected_info,
+            selected_copy,
             feedback,
             copy,
             snapshot: RefCell::new(None),
@@ -498,7 +942,16 @@ impl ProcessTable {
             move |_| {
                 if let Some(state) = weak.upgrade() {
                     state.visible_count.set(PROCESS_PAGE);
-                    state.render();
+                    state.render(true);
+                }
+            }
+        });
+        clear.connect_clicked({
+            let weak = Rc::downgrade(&state);
+            move |_| {
+                if let Some(state) = weak.upgrade() {
+                    state.search.set_text("");
+                    state.search.grab_focus();
                 }
             }
         });
@@ -509,7 +962,7 @@ impl ProcessTable {
                 if let Some(state) = weak.upgrade() {
                     state.sort.set(state.sort.get().toggle(field));
                     state.visible_count.set(PROCESS_PAGE);
-                    state.render();
+                    state.render(true);
                 }
             });
         }
@@ -520,7 +973,7 @@ impl ProcessTable {
                     state
                         .visible_count
                         .set(next_process_limit(state.visible_count.get(), usize::MAX));
-                    state.render();
+                    state.render(false);
                 }
             }
         });
@@ -532,6 +985,31 @@ impl ProcessTable {
                 }
             }
         });
+        state.selected_copy.connect_clicked({
+            let weak = Rc::downgrade(&state);
+            move |_| {
+                if let Some(state) = weak.upgrade() {
+                    state.copy_selected();
+                }
+            }
+        });
+        let shortcuts = gtk::EventControllerKey::new();
+        shortcuts.set_propagation_phase(gtk::PropagationPhase::Capture);
+        let search_weak = search.downgrade();
+        shortcuts.connect_key_pressed(move |_, pressed, _, modifiers| {
+            if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK)
+                && matches!(pressed, gtk::gdk::Key::f | gtk::gdk::Key::F)
+            {
+                if let Some(search) = search_weak.upgrade() {
+                    search.grab_focus();
+                }
+                gtk::glib::Propagation::Stop
+            } else {
+                gtk::glib::Propagation::Proceed
+            }
+        });
+        root.add_controller(shortcuts);
+        state.render(false);
         Self { root, state }
     }
 
@@ -541,7 +1019,7 @@ impl ProcessTable {
 
     pub fn set_copy_handler(&self, on_copy: impl Fn(String) -> Result<(), String> + 'static) {
         self.state.on_copy.replace(Some(Box::new(on_copy)));
-        self.state.render();
+        self.state.render(false);
     }
 
     /// Leaving and reopening the processes page must not reuse stale rows.
@@ -556,7 +1034,7 @@ impl ProcessTable {
         self.state.error.replace(None);
         self.state.visible_count.set(PROCESS_PAGE);
         self.state.feedback.set_text("");
-        self.state.render();
+        self.state.render(false);
     }
 
     pub fn set_snapshot(&self, snapshot: &ProcessList) {
@@ -571,7 +1049,7 @@ impl ProcessTable {
         let revision = self.state.revision.get().wrapping_add(1);
         self.state.revision.set(revision);
         self.state.feedback.set_text("");
-        self.state.render();
+        self.state.render(false);
         // One bounded timeout per received snapshot; no background polling.
         // An old callback cannot expire a newer, freshly sampled process list.
         let weak = Rc::downgrade(&self.state);
@@ -584,7 +1062,7 @@ impl ProcessTable {
                 state.error.replace(Some(
                     "Данные процессов устарели, ожидается новый снимок".to_owned(),
                 ));
-                state.render();
+                state.render(false);
             }
         });
     }
@@ -598,7 +1076,7 @@ impl ProcessTable {
         self.state.error.replace(Some(error.to_owned()));
         self.state.received_at.replace(None);
         self.state.feedback.set_text("");
-        self.state.render();
+        self.state.render(false);
     }
 }
 
@@ -611,6 +1089,30 @@ impl Default for ProcessTable {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn retained_reflow_only_tracks_small_user_driven_changes() {
+        assert!(!animate_process_reflow(false, 5));
+        assert!(!animate_process_reflow(false, 24));
+        assert!(!animate_process_reflow(true, 0));
+        assert!(animate_process_reflow(true, 1));
+        assert!(animate_process_reflow(true, 24));
+        assert!(!animate_process_reflow(true, 25));
+        assert!(!animate_process_reflow(true, 180));
+    }
+
+    #[test]
+    fn keyboard_result_navigation_is_bounded_to_rendered_pages() {
+        use ProcessNavigation as Move;
+        assert_eq!(process_selection_after(5, 0, Move::Last), 0);
+        assert_eq!(process_selection_after(0, 12, Move::Previous), 0);
+        assert_eq!(process_selection_after(3, 12, Move::Next), 4);
+        assert_eq!(process_selection_after(3, 12, Move::First), 0);
+        assert_eq!(process_selection_after(3, 12, Move::Last), 11);
+        assert_eq!(process_selection_after(10, 12, Move::PageNext), 11);
+        assert_eq!(process_selection_after(10, 12, Move::PagePrevious), 2);
+        assert_eq!(process_selection_after(99, 5, Move::Next), 4);
+    }
 
     fn item(
         pid: u32,
@@ -643,6 +1145,42 @@ mod tests {
         assert_eq!(ids, [201]);
         assert!(filter_sort_processes(&rows, "no-such", ProcessSort::Pid, 80).is_empty());
         assert!(filter_sort_processes(&rows, "", ProcessSort::Cpu, 0).is_empty());
+    }
+
+    #[test]
+    fn selected_process_is_snapshot_scoped_and_report_never_invents_values() {
+        let snapshot = ProcessList {
+            rows: vec![item(71, "worker\nunknown", None, Some(4096), None)],
+            total: 1,
+            truncated: false,
+        };
+        let current = ProcessSelection {
+            pid: 71,
+            name: "worker\nunknown".into(),
+        };
+        assert!(process_selected(&snapshot, &current).is_some());
+        assert!(process_selected(
+            &snapshot,
+            &ProcessSelection { pid: 71, name: "restarted".into() }
+        ).is_none());
+        let report = selected_process_report(&snapshot.rows[0]);
+        assert!(report.contains("PID: 71"));
+        assert!(report.contains("RSS: 4.0 MiB"));
+        assert!(report.contains("PSS: —"));
+        assert!(!report.contains("worker\nunknown"));
+        assert!(report.contains("worker unknown"));
+    }
+
+    #[test]
+    fn repeated_pid_from_untrusted_snapshot_never_duplicates_widget_identity() {
+        let rows = [
+            item(11, "same", Some(70.0), None, None),
+            item(12, "other", Some(30.0), None, None),
+            item(11, "same", Some(10.0), None, None),
+        ];
+        let found = filter_sort_processes(&rows, "", ProcessSort::Cpu, 20);
+        assert_eq!(found.iter().map(|item| item.pid).collect::<Vec<_>>(), [11, 12]);
+        assert_eq!(found[0].cpu_percent, Some(70.0));
     }
 
     #[test]

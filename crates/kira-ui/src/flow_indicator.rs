@@ -65,6 +65,8 @@ pub enum FlowStyle {
     #[default]
     Fill,
     Rail,
+    /// Source system-monitor sortable columns use a single sliding baseline.
+    Underline,
 }
 
 mod imp {
@@ -153,13 +155,23 @@ mod imp {
             if let Some(child) = self.child.borrow().as_ref() {
                 self.obj().snapshot_child(child, snapshot);
             }
-            if style == FlowStyle::Rail
-                && let Some(rect) = marker
-            {
-                snapshot.append_color(
-                    &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
-                    &gtk::graphene::Rect::new(rect.x, rect.y, 3.0, rect.height.max(0.0)),
-                );
+            if let Some(rect) = marker {
+                if style == FlowStyle::Rail {
+                    snapshot.append_color(
+                        &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
+                        &gtk::graphene::Rect::new(rect.x, rect.y, 3.0, rect.height.max(0.0)),
+                    );
+                } else if style == FlowStyle::Underline {
+                    snapshot.append_color(
+                        &gtk::gdk::RGBA::new(0.988, 0.639, 0.067, opacity),
+                        &gtk::graphene::Rect::new(
+                            rect.x,
+                            rect.y + (rect.height - 2.0).max(0.0),
+                            rect.width.max(0.0),
+                            2.0,
+                        ),
+                    );
+                }
             }
         }
     }

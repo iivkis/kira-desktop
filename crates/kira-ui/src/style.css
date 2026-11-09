@@ -224,12 +224,41 @@ window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
 .system-charts .system-chart-cpu { color: #fca311; }
 .system-charts .system-chart-ram { color: #ffffff; }
 .system-charts .system-chart-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; }
-.process-row { padding: 5px 4px; }
-.process-row:hover { background: #000000; }
+/* Retained, keyboard-operable process rows. Never color missing telemetry as valid. */
 .process-table entry, .process-table dropdown { background: #000000; color: #ffffff; }
-.process-table .process-row { background: #14213d; padding: 6px 4px; }
-.process-table .process-row:hover { background: #000000; }
-.process-table .process-value { min-width: 68px; font-size: 11px; color: #e5e5e5; }
+.kira-popup .process-table button.process-row {
+  background: #14213d; color: #ffffff;
+  min-height: 36px; padding: 6px 4px; border: 0; border-radius: 0;
+  font-size: 11px; font-weight: 700;
+}
+.kira-popup .process-table button.process-row:hover { background: #000000; }
+.kira-popup .process-table button.process-row.selected {
+  background: #000000; border-left: 3px solid #fca311;
+}
+.kira-popup .process-table button.process-row:focus-visible {
+  outline: 2px solid #fca311; outline-offset: -2px;
+}
+.process-table .process-value {
+  min-width: 0; font-size: 11px; font-weight: 400;
+  color: #e5e5e5; font-variant-numeric: tabular-nums;
+}
+.process-table .process-selected-detail {
+  padding: 9px 10px; background: #14213d;
+  border-left: 3px solid #fca311; color: #ffffff; font-size: 11px;
+}
+.kira-popup .process-search-clear,
+.kira-popup .process-clear-empty,
+.kira-popup .process-selected-copy {
+  color: #fca311; background: #000000;
+  border: 1px solid #fca311; border-radius: 2px;
+  min-height: 32px; padding: 4px 9px;
+}
+.kira-popup .process-search-clear:focus-visible,
+.kira-popup .process-clear-empty:focus-visible,
+.kira-popup .process-selected-copy:focus-visible {
+  outline: 2px solid #fca311; outline-offset: 2px;
+}
+.kira-popup .process-selected-copy:disabled { opacity: 0.45; }
 .display-output { background: #000000; padding: 12px; border-radius: 6px; }
 .display-output .section-title { font-size: 14px; }
 .display-status { color: #fca311; font-weight: bold; }
