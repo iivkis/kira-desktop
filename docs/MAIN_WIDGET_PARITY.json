@@ -32,11 +32,13 @@
       "content_and_interaction_requirements": [
         "Brand/launcher zone, workspaces, tray, system health, warning inspector, settings, clickable local clock",
         "Exact 42px height and compact density",
-        "Native status button now consumes independent Core RPC probe, Niri subscription and fresh CPU/memory/disk/battery measurements; tray and warning inspector still pending"
+        "Native status button now consumes independent Core RPC probe, Niri subscription and fresh CPU/memory/disk/battery measurements; tray and warning inspector still pending",
+        "Native WarningInspector now implements frozen main's 42px in-bar modal read-only detail, stable-ID selection/next/close, copyable text, dynamic 900px short/long label and keyboard focus containment. Shell feeds real failures from workspace Core RPC, KDL validation, GIO application launch and active process sampling, clearing on success. Exact paired Niri focus/pixel proof remains missing."
       ],
       "animation_requirements": [
         "Shared TENET flow indicator and native hover focus feedback",
-        "Warning panel keyboard/focus continuity"
+        "Warning panel keyboard/focus continuity",
+        "Warning overlay uses immediate accessible state transitions and reduced-motion-safe no-decoration. Paired keyboard/focus and layout review still outstanding."
       ],
       "verified": {
         "content": false,
@@ -274,7 +276,8 @@
       "content_and_interaction_requirements": [
         "Health classification from Core/Niri and fresh metrics, tooltips and status",
         "Accessible warning/health affordance",
-        "Native state classifier and toolbar button now consume separate five-second Core probe, Niri EventStream and lightweight two-second resource worker with six-second expiry; source animation and visual acceptance missing"
+        "Native state classifier and toolbar button now consume separate five-second Core probe, Niri EventStream and lightweight two-second resource worker with six-second expiry; source animation and visual acceptance missing",
+        "Top Bar SystemHealth now coexists with an independent inline WarningInspector for genuine Shell/Core errors; status classification remains separate and no fabricated health warning is inserted."
       ],
       "animation_requirements": [
         "Readout pulse with truthful state and reduced motion"

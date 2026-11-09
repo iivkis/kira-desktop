@@ -6,7 +6,7 @@ mod notifications;
 mod tray_host;
 mod tray_menu;
 
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, mpsc};
@@ -20,7 +20,7 @@ use kira_ui::{
     ApplicationEntry, Bar, Calendar, ChartSample, CoreStatus, DisplayIntent, DisplayPhase,
     DisplaySettings, GpuReading, HealthMetrics, Launcher, PopupHost, PopupKind, ProcessItem,
     ProcessList, SettingsAbout, SettingsPanel, SystemHealth, SystemMonitor, SystemOverview, TrayUi,
-    WorkspaceItem,
+    UiWarning, WorkspaceItem,
 };
 
 enum ShellUpdate {
@@ -28,6 +28,7 @@ enum ShellUpdate {
     Config(ConfigState),
     Applications(Vec<ApplicationEntry>),
     ApplicationLaunch(Result<(), String>),
+    WorkspaceFocus(Result<(), String>),
     CoreStatus(CoreStatus, String),
     HealthMetrics(HealthMetrics, Instant),
     SystemOverview(SystemOverview, Instant),
@@ -110,21 +111,61 @@ fn start_health_sampler(sender: mpsc::Sender<ShellUpdate>) {
     });
 }
 
-fn request_focus(id: String) {
-    // Core validates this ID against its live snapshot before the fixed Niri action.
+fn request_focus(id: String, sender: mpsc::Sender<ShellUpdate>) {
+    // No optimistic focus. The worker reports a checked RPC result while
+    // Core/Niri's actual EventStream remains the only focus authority.
     std::thread::spawn(move || {
-        if let Ok(path) = kira_ipc::core_socket_path() {
-            let request = RpcRequest {
-                jsonrpc: PROTOCOL_VERSION.to_owned(),
-                id: 1,
-                method: "focus_workspace".to_owned(),
-                params: Some(serde_json::json!({ "id": id })),
-            };
-            if let Err(error) = kira_ipc::client::call(&path, &request) {
-                eprintln!("kira-shell: workspace focus request failed: {error}");
+        let request = RpcRequest {
+            jsonrpc: PROTOCOL_VERSION.to_owned(),
+            id: 1,
+            method: "focus_workspace".to_owned(),
+            params: Some(serde_json::json!({ "id": id })),
+        };
+        let result = kira_ipc::core_socket_path()
+            .map_err(|error| error.to_string())
+            .and_then(|path| kira_ipc::client::call(&path, &request).map_err(|error| error.to_string()))
+            .and_then(|reply| {
+                if let Some(error) = reply.error {
+                    Err(error.message)
+                } else if reply.result.is_some() {
+                    Ok(())
+                } else {
+                    Err("Пустой ответ Core на фокусировку".to_owned())
+                }
+            });
+        let _ = sender.send(ShellUpdate::WorkspaceFocus(result));
+    });
+}
+
+/// Typed diagnostics from actual failed user intents and Core's KDL parser.
+/// This is Shell composition only: GTK presentation lives in kira-ui.
+#[derive(Default)]
+struct WarningSources {
+    launcher: Option<String>,
+    workspace: Option<String>,
+    config: Option<String>,
+    system: Option<String>,
+}
+
+impl WarningSources {
+    fn items(&self) -> Vec<UiWarning> {
+        let mut warnings = Vec::new();
+        for (id, short, text) in [
+            ("launcher", "ЛАУНЧЕР", self.launcher.as_deref()),
+            ("workspace", "РАБОЧИЙ СТОЛ", self.workspace.as_deref()),
+            ("config", "КОНФИГ", self.config.as_deref()),
+            ("system", "МОНИТОР", self.system.as_deref()),
+        ] {
+            if let Some(text) = text.filter(|value| !value.trim().is_empty()) {
+                warnings.push(UiWarning {
+                    id: id.to_owned(),
+                    short: short.to_owned(),
+                    text: text.to_owned(),
+                });
             }
         }
-    });
+        warnings
+    }
 }
 
 fn workspace_items(state: &WorkspaceState) -> Vec<WorkspaceItem> {
@@ -466,7 +507,18 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         return;
     }
     kira_ui::install_style();
-    let bar = Rc::new(Bar::new(app, request_focus));
+    let (sender, receiver) = mpsc::channel::<ShellUpdate>();
+    let workspace_pending = Rc::new(Cell::new(false));
+    let bar = Rc::new(Bar::new(app, {
+        let sender = sender.clone();
+        let pending = workspace_pending.clone();
+        move |id| {
+            if pending.replace(true) {
+                return;
+            }
+            request_focus(id, sender.clone());
+        }
+    }));
     let popup = Rc::new(PopupHost::new(app, &bar.window));
     let tray_ui = Rc::new(TrayUi::new(tray_host::action));
     {
@@ -513,6 +565,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         },
     );
     let config = Rc::new(RefCell::new(UiConfig::default()));
+    let warning_sources = Rc::new(RefCell::new(WarningSources::default()));
     let state = Rc::new(RefCell::new(WorkspaceState::default()));
     let applications = Rc::new(RefCell::new(Vec::<ApplicationEntry>::new()));
     let launcher: Rc<RefCell<Option<Launcher>>> = Rc::new(RefCell::new(None));
@@ -565,7 +618,6 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         }
     });
 
-    let (sender, receiver) = mpsc::channel::<ShellUpdate>();
     let system_visible = Arc::new(AtomicBool::new(false));
     let processes_visible = Arc::new(AtomicBool::new(false));
     let pulse_visible = Arc::new(AtomicBool::new(false));
@@ -665,6 +717,8 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let bar = bar.clone();
         let config = config.clone();
         let state = state.clone();
+        let warning_sources = warning_sources.clone();
+        let workspace_pending = workspace_pending.clone();
         let applications = applications.clone();
         let launcher = launcher.clone();
         let system = system.clone();
@@ -682,6 +736,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
             // real allocated GTK width, matching frozen main's 2/4/6 icon
             // breakpoints. No SNI item is created or dropped on resize.
             tray_ui.set_bar_width(bar.window.width());
+            bar.warnings.set_bar_width(bar.window.width());
             // Escape closes the native pooled popup, not the D-Bus session.
             // Invalidate stale async GetLayout replies once it is dismissed.
             if !popup.is_active(PopupKind::Tray) && tray_ui.menu_open() {
@@ -719,6 +774,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                 display_model.revert(id);
             }
             // Avoid holding the GTK main thread indefinitely during event bursts.
+            let mut warnings_changed = false;
             for update in receiver.try_iter().take(64) {
                 match update {
                     ShellUpdate::Workspaces(next) => {
@@ -733,6 +789,8 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         );
                     }
                     ShellUpdate::Config(next) => {
+                        warning_sources.borrow_mut().config = next.error.as_ref().map(|error| format!("КОНФИГ: {error}"));
+                        warnings_changed = true;
                         *config.borrow_mut() = next.config;
                         let current = config.borrow();
                         bar.title.set_text(&current.title);
@@ -760,12 +818,21 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         }
                     }
                     ShellUpdate::ApplicationLaunch(result) => {
+                        warning_sources.borrow_mut().launcher = result.as_ref().err()
+                            .map(|error| format!("ЛАУНЧЕР: {error}"));
+                        warnings_changed = true;
                         if let Some(view) = launcher.borrow().as_ref() {
                             view.set_status(match result {
                                 Ok(()) => "Приложение запущено",
                                 Err(ref error) => error,
                             });
                         }
+                    }
+                    ShellUpdate::WorkspaceFocus(result) => {
+                        workspace_pending.set(false);
+                        warning_sources.borrow_mut().workspace = result.err()
+                            .map(|error| format!("РАБОЧИЙ СТОЛ: {error}"));
+                        warnings_changed = true;
                     }
                     ShellUpdate::CoreStatus(status, version) => {
                         health.set_core(status, &version);
@@ -788,16 +855,24 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         if popup.is_active(PopupKind::System) && system.processes_selected() {
                             system.set_processes(&snapshot);
                         }
+                        if warning_sources.borrow_mut().system.take().is_some() {
+                            warnings_changed = true;
+                        }
                     }
                     ShellUpdate::ProcessError(error) => {
                         if popup.is_active(PopupKind::System) && system.processes_selected() {
                             system.set_process_error(&error);
+                            warning_sources.borrow_mut().system = Some(format!("МОНИТОР: {error}"));
+                            warnings_changed = true;
                         }
                     }
                     ShellUpdate::SettingsAbout(snapshot) => {
                         settings.set_about(&snapshot);
                     }
                 }
+            }
+            if warnings_changed {
+                bar.warnings.set_warnings(warning_sources.borrow().items());
             }
             for event in display_model.poll() {
                 handle_display_event(&displays, event);
@@ -821,6 +896,30 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
 
     *primary.borrow_mut() = Some(bar.window.clone());
     bar.window.present();
+}
+
+#[cfg(test)]
+mod warning_tests {
+    use super::*;
+
+    #[test]
+    fn real_error_sources_are_ordered_and_do_not_forge_unavailable_surfaces() {
+        let mut sources = WarningSources::default();
+        assert!(sources.items().is_empty());
+        sources.config = Some("КОНФИГ: syntax error".into());
+        sources.workspace = Some("РАБОЧИЙ СТОЛ: Niri unavailable".into());
+        sources.launcher = Some("ЛАУНЧЕР: desktop file missing".into());
+        sources.system = Some("МОНИТОР: process permission denied".into());
+        let warnings = sources.items();
+        assert_eq!(warnings.iter().map(|warning| warning.id.as_str()).collect::<Vec<_>>(),
+            vec!["launcher", "workspace", "config", "system"]);
+        sources.workspace = None;
+        sources.launcher = None;
+        assert_eq!(sources.items().iter().map(|item| item.id.as_str()).collect::<Vec<_>>(),
+            vec!["config", "system"]);
+        sources.config = Some("   ".into());
+        assert_eq!(sources.items().len(), 1);
+    }
 }
 
 fn main() {

@@ -29,6 +29,7 @@ pub mod system_report;
 pub mod tenet_scroll;
 pub mod tray;
 pub mod workspace;
+pub mod warnings;
 
 pub use bar::{Bar, action_button};
 pub use calendar::Calendar;
@@ -87,6 +88,7 @@ pub use tray::{
 pub use workspace::{
     WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspace_window, visible_workspaces,
 };
+pub use warnings::{UiWarning, WarningInspector, bounded_warnings, next_warning_id, visible_warning_index};
 
 use gtk::prelude::*;
 

@@ -5,6 +5,7 @@ use std::cell::Cell;
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
 
+use crate::warnings::WarningInspector;
 use crate::workspace::WorkspaceStrip;
 
 pub const BAR_HEIGHT: i32 = 42;
@@ -12,6 +13,7 @@ pub const BAR_HEIGHT: i32 = 42;
 pub struct Bar {
     pub window: gtk::ApplicationWindow,
     pub workspaces: WorkspaceStrip,
+    pub warnings: WarningInspector,
     pub title: gtk::Label,
     pub clock: gtk::Label,
     brand: gtk::Button,
@@ -71,10 +73,19 @@ impl Bar {
         right.append(&clock_button);
         layout.append(&right);
 
-        window.set_child(Some(&layout));
+        let warnings = WarningInspector::new(
+            &layout.clone().upcast(),
+            &clock_button.clone().upcast(),
+        );
+        actions.append(&warnings.button_widget());
+        let overlay = gtk::Overlay::new();
+        overlay.set_child(Some(&layout));
+        overlay.add_overlay(&warnings.inspector_widget());
+        window.set_child(Some(&overlay));
         Self {
             window,
             workspaces,
+            warnings,
             title,
             clock,
             brand,

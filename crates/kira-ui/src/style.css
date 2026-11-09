@@ -48,6 +48,33 @@ window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
 .kira-bar.compact .bar-center { padding: 0 8px; }
 .kira-bar.compact .bar-right { padding: 0 8px; }
 .kira-bar.compact button.workspace { min-width: 29px; padding: 0 6px; }
+/* Frozen main inline warning inspector: one 42px bar, no extra popup. */
+.kira-bar button.bar-warning-trigger {
+  min-height: 32px; max-width: 180px; padding: 0 4px;
+  color: #fca311; font-size: 11px; font-weight: 900;
+}
+.kira-bar button.bar-warning-trigger:hover { color: #ffffff; }
+.kira-bar .bar-warning-index { font-size: 10px; color: #fca311; }
+.kira-bar .bar-warning-inspector {
+  background: #000000; color: #ffffff; min-height: 42px;
+  padding: 2px 8px; border-bottom: 1px solid #14213d;
+}
+.kira-bar .bar-warning-count {
+  color: #fca311; font-size: 11px; font-weight: 800;
+}
+.kira-bar .bar-warning-text, .kira-bar .bar-warning-text text {
+  background: #000000; color: #ffffff;
+  font-size: 12px; font-weight: 700;
+}
+.kira-bar button.bar-warning-control {
+  min-width: 34px; min-height: 34px;
+  padding: 0; border: 1px solid #14213d;
+  color: #fca311; font-size: 18px; font-weight: 800;
+}
+.kira-bar button.bar-warning-control:focus-visible,
+.kira-bar .bar-warning-text:focus-visible {
+  outline: 2px solid #fca311; outline-offset: -2px;
+}
 .kira-bar .bar-title { color: #e5e5e5; font-size: 11px; font-weight: 700; }
 .kira-bar .clock { color: #ffffff; font-size: 13px; font-weight: 800; }
 .kira-bar .clock-button { min-height: 34px; }
