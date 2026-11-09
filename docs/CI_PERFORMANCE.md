@@ -58,3 +58,30 @@ while Core/IPC and parity checks still succeed. Unknown diff history
 must **never** skip native validation. For human motion/pixel QA
 dispatch the manual workflow with an explicit upload request.
 All 15 source/main widget verified flags remain false.
+
+
+## First observed optimized run (2026-11-09)
+
+GitHub Actions [#42589985764](https://github.com/iivkis/kira-desktop/actions/runs/42589985764)
+completed **successfully**, including all real nested-Niri pixels and the
+original display/SNI/notification safety smokes.
+
+| Measure | Before | After | Observed reduction |
+| --- | ---: | ---: | ---: |
+| Main native GTK/Nix job | 7m36s | **4m32s** | **3m04s (40%)** |
+| Native typecheck/Clippy/test segment | 3m10s | **1m48s** | **1m22s (43%)** |
+| Package build segment | 4m11s | **2m21s** | 1m50s; **cache-sensitive** |
+| Extra automatic graphical runner | 5m12s | **0** | Entire second job eliminated |
+| Real nested-Niri smoke | Separate runner | **11s** in native job | Same package reused |
+| Auto-uploaded screenshot ZIPs | 1 | **0** | No routine QA artifacts |
+| Native+graphical runner execution | 12m48s | **4m32s** | **8m16s (~65%)** |
+
+These figures are *job execution time*, not queue/wait time. They are
+measured from individual GitHub step timestamps; dependency caches and
+runner availability vary. The structural elimination of one automatic
+Nix build and screenshot upload does **not** depend on cache warmth.
+
+The following documentation-only commit verifies the fail-open change
+classifier on a real GitHub push: the fast Core/IPC and parity job must
+pass and the native GTK/Nix job must be marked **skipped**. If it is not,
+the optimization must be corrected rather than declared successful.
