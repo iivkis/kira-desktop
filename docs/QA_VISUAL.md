@@ -9,20 +9,21 @@ For the new native System Monitor and Display Settings, use the explicit
 GTK scale factors. Do not take production-output Apply/Confirm screenshots on
 the live user's compositor.
 
-## Automated visual smoke versus manual source parity
+## Fast CI does not validate GTK
 
-Ordinary source pushes reuse their **already built** Nix package for
-a **34-frame real Weston → nested Niri pixel-state smoke**, with no
-permanent PNG artifacts. Native Cairo/GTK paint, SNI/Notifications
-and toast entry/exit are still tested. The separate 1
-is manual-only: select 2 for the original 104-frame
-timelines and opt in to 3 only when a human
-needs a short-lived archive. See 4 and
-5 for policy and durations.
+The normal CI on push/PR is restricted to a two-minute Core/IPC +
+Python/parity contract job. It performs no GTK build or Wayland capture.
 
-For manually captured source and native sequences use
-6. It rejects unmatched frame counts,
-viewport size, stimulus, unsafe paths and malformed PNGs;
-the static comparison index is **not** a parity certificate.
-Do not mark any widget verified before genuine frozen-main provenance,
-focus, reduced motion, accessibility and pixel review.
+Before merging or shipping native UI changes, explicitly run the manual
+**Full native GTK/Nix/Wayland validation** workflow
+(`.github/workflows/graphical.yml`) on the same SHA.
+It preserves all-target Rust GTK/service/shell tests, Nix packaging,
+fake-Niri rollback, D-Bus SNI/Notifications and a real nested-Niri
+graphical pixel check.
+
+For source-motion review use `profile=full`; PNG uploads require
+`upload_evidence=true` separately. See
+`docs/NATIVE_MOTION_ACCEPTANCE.md` and
+`docs/CI_PERFORMANCE.md`. The static
+`scripts/compare_visual_evidence.py` comparison is not a
+visual parity certificate.

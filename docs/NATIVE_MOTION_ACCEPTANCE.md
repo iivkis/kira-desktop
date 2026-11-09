@@ -4,55 +4,39 @@
 `305139949f49176487ef9759fc32c228eadff408`. Native branch: `native-gtk`.
 This document does not certify any of the 15 widgets in `MAIN_WIDGET_PARITY.json`.
 
-## Optimized native Wayland CI: real pixels, no automatic artifact uploads
+## Fast CI versus real native Wayland evidence
 
-The mandatory 1 workflow now builds the distributable Nix
-package **once** per source-changing push. It reuses the actual
-2 on the same GitHub runner for display rollback, SNI,
-Notifications and genuine Weston → nested-Niri **visual pixel smoke**.
-The separate 3 workflow is **manual only**, so it never
-rebuilds the same package automatically on every push.
+Routine push and pull-request CI is a single two-minute-capped Core/IPC
+and Python/parity job. It performs **no GTK compilation, Nix packaging
+or screenshot capture**. A green fast job is *not* native graphical
+acceptance.
 
-- 4 allocates private mode-0700 HOME,
-  XDG and Wayland runtime directories. Weston supplies a separate outer
-  Wayland socket using software Mesa EGL/OpenGL, and nested Niri owns
-  another IPC/Wayland socket. A fresh D-Bus bus serves native protocol clients.
-- 5 validates real 6 PNGs,
-  checks Top Bar paint and notification appearance/disappearance. The
-  **smoke** profile captures 14 entry + 14 exit + 6 tray frames in the
-  same ~650 ms observation window as the original 42-frame captures.
-  These 34 PNGs are discarded when the CI job ends. Nothing is uploaded.
-- The manual 7 workflow defaults to
-  **smoke** and does not upload anything. Select profile **full** to
-  capture the original 42 + 42 + 20 = **104** frames for motion review,
-  and separately enable **upload_evidence** to retain that unreviewed
-  archive for two days.
-- 8 uses the complete push/PR
-  change range to skip the expensive native job for docs-only changes.
-  Unknown revisions or failed comparisons run the full job. Rust
-  Core/IPC, Python tests and parity validation continue on every push.
-- 9 typechecks GTK targets through
-  Clippy 10 and all Rust tests, without the redundant
-  independent 11 pass. The nightly extra Nix build is
-  removed; 12 remains manual.
+For actual native acceptance, manually dispatch **Full native GTK/Nix/Wayland
+validation (manual)** (`.github/workflows/graphical.yml`) on the target
+commit. It runs all Rust workspace Clippy/tests, the real Nix package
+build, fake-Niri rollback, independent private D-Bus SNI/Notifications,
+and true headless Weston → nested Niri pixel validation.
 
-To run the minimal smoke from a **non-graphical** local Linux terminal:
+The manual workflow defaults to **34 actual PNG frames** without an
+uploaded artifact. Select `profile=full` for **104 frames** of
+detailed motion review and separately opt in with
+`upload_evidence=true` for a short-lived two-day archive.
 
-13sh
+Local equivalent, from a non-graphical Linux shell:
+
+```sh
 nix build .#default
 nix develop .#graphical-ci --command python3 \
   scripts/headless_wayland_acceptance.py \
   --package-dir result --output artifacts/virtual-niri \
   --profile smoke --width 1280 --height 800
-14
+```
 
-For unreviewed full-density frames run the same command with
-15 and review them locally; for an uploaded archive
-select both manual 16 and 17 in GitHub Actions.
-Both modes fail closed on broken D-Bus, compositor, live
-notifications or incomplete PNGs. Neither proves pixel parity with
-frozen main, keyboard operation, reduced motion or multi-output focus.
-The 15 widget 18 flags remain false until paired review.
+The runner refuses an existing Wayland/Niri user session, creates private
+mode-0700 runtime/HOME/XDG directories and verifies genuinely captured
+toast and top-bar pixels. Neither manual smoke nor fast CI proves parity
+with the pinned `main`, keyboard focus, fractional scales or
+TENET animation. All 15 widget `verified` flags remain false.
 
 ## Paired source/native frame review (manual provenance required)
 

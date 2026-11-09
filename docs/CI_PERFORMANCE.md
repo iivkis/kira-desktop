@@ -1,87 +1,42 @@
-# CI optimization: baseline, safeguards, and evidence
+# CI performance: two-minute fast lane and manual full verification
 
-## Baseline on November 9, 2026
+## Decision
 
-- Native GTK job on GitHub Actions run 1: **7m36s**.
-  Its Nix package build took **4m11s**; separate Cargo check, Clippy,
-  and tests took **3m10s**.
-- Graphical job on run 2: another **5m12s**,
-  including a **second 4m41s Nix build** of the same package.
-- Both jobs together consumed **12m48s** of runner execution on
-  qualifying pushes (plus the separate fast Core/IPC job).
-- Graphical evidence was **104 PNGs** per run: 42 entry + 42 exit +
-  20 live SNI, automatically uploaded (~928 KB compressed), even
-  without a parity review.
+Previously, the optimized source-changing run [#42589985764](https://github.com/iivkis/kira-desktop/actions/runs/42589985764) completed successfully but its GTK/Nix job took **4m32s**, comprising GTK Clippy/tests (1m48s), Nix build (2m21s), and real nested-Niri smoke (11s). A prior pipeline required 7m36s for the native job plus another 5m12s of duplicate graphical work.
 
-## Biggest, low-risk reductions implemented
+Even the single Nix build can exceed two minutes. There is no honest way to promise a successful, *fresh* complete GTK/Nix build within two minutes on arbitrary ephemeral runners without an already-populated binary cache. Therefore the normal required workflow is short and the complete native acceptance is explicit and manual.
 
-1. **No duplicate Nix packaging.** The ordinary native job already
-   builds 3. All existing fake-Niri
-   display rollback, SNI and Notifications smokes still run, followed
-   by the **real Weston → nested Niri pixel check on that same runner**.
-   4 is manually dispatched only.
-2. **Docs-only bypass.** 5 compares
-   the complete push or PR base against its head, never just HEAD^.
-   If history cannot be fetched or parsed, the build is **required**.
-   Modifications to crates, scripts, Cargo, Nix, config and CI controls
-   cause a full native check. The fast Core/IPC plus Python/parity
-   tests always run.
-3. **No redundant plain Cargo check.** Core/IPC Clippy and tests remain
-   in the fast job. Native GTK/services/shell Clippy 6
-   already performs typechecking and is followed by all native tests.
-4. **Bounded screenshot density and zero automatic uploads.**
-   Normal CI captures **14 entry + 14 exit + 6 tray = 34**
-   genuine PNGs, **67.3% fewer** than 104. The observation window
-   remains ~650 ms, then the evidence is deleted with the runner.
-   No replacement mock frames are generated. The visual check still
-   requires real bar paint, entry and exit pixels, and D-Bus events.
-5. **Manual full review is preserved.** 7
-   supports profile 8 (34 PNGs) and 9
-   (104 PNGs). Uploaded evidence requires explicit
-   10 and is kept for **2 days**.
-   Nightly duplicate 11 is removed;
-   that workflow is still available on manual dispatch.
-6. **Repository hygiene.** 12 ignores
-   the entire local generated 13 folder,
-   not just one subfolder.
+## Every push and pull request: fast signal
 
-## How to measure the real outcome
+`.github/workflows/ci.yml` has **one job**, still named `Rust Core and IPC`, with an enforced **`timeout-minutes: 2`**. It runs:
 
-Compare actual step timestamps on a completed new source-changing
-14 run with the baseline above. The deleted
-independent graphical build removes one 4m41s packaging invocation and
-its runner; the in-job visual smoke adds a shorter real compositor
-step. Cargo check savings must be read from CI durations, not assumed.
+- `cargo fmt --all -- --check` for the entire Rust workspace;
+- `cargo clippy` and `cargo test` for `kira-core` and `kira-ipc` (all targets);
+- Python syntax and all `scripts/test_*.py` tests, pinned parity verification and removal checks for the old WebKit frontend.
 
-For documentation-only pushes, expect native-shell to be skipped,
-while Core/IPC and parity checks still succeed. Unknown diff history
-must **never** skip native validation. For human motion/pixel QA
-dispatch the manual workflow with an explicit upload request.
-All 15 source/main widget verified flags remain false.
+No Nix install, GTK compilation, GTK/service/shell tests, Nix package build, Wayland compositor, screenshots, upload actions, downstream jobs or change classifier run automatically.
 
+The previous fast Core/IPC and Python lane completed in about **23 seconds** in [#42591055942](https://github.com/iivkis/kira-desktop/actions/runs/42591055942). This is a historical measurement, **not** a cold-run success guarantee. GitHub runner queue time is outside the job timeout.
 
-## First observed optimized run (2026-11-09)
+## On-demand full native gate
 
-GitHub Actions [#42589985764](https://github.com/iivkis/kira-desktop/actions/runs/42589985764)
-completed **successfully**, including all real nested-Niri pixels and the
-original display/SNI/notification safety smokes.
+Dispatch **Full native GTK/Nix/Wayland validation (manual)** in GitHub Actions, located at `.github/workflows/graphical.yml`, on the **exact code commit** before merging or shipping GTK work. It performs:
 
-| Measure | Before | After | Observed reduction |
-| --- | ---: | ---: | ---: |
-| Main native GTK/Nix job | 7m36s | **4m32s** | **3m04s (40%)** |
-| Native typecheck/Clippy/test segment | 3m10s | **1m48s** | **1m22s (43%)** |
-| Package build segment | 4m11s | **2m21s** | 1m50s; **cache-sensitive** |
-| Extra automatic graphical runner | 5m12s | **0** | Entire second job eliminated |
-| Real nested-Niri smoke | Separate runner | **11s** in native job | Same package reused |
-| Auto-uploaded screenshot ZIPs | 1 | **0** | No routine QA artifacts |
-| Native+graphical runner execution | 12m48s | **4m32s** | **8m16s (~65%)** |
+1. Full Rust workspace Clippy and tests (including `kira-ui`, `kira-services` and `kira-shell`) in a Nix GTK environment.
+2. `nix build .#default -L` for the packaged native desktop.
+3. Isolated display-supervisor rollback against fake Niri, private D-Bus SNI, and two-peer Notifications policy smoke.
+4. Real Weston → nested Niri → packaged GTK visual/pixel validation, preserving the native notification transition checks.
+5. The 34-frame smoke mode or opt-in 104-frame detailed motion review. Screenshot artifact upload requires separate explicit consent and has a two-day lifetime.
 
-These figures are *job execution time*, not queue/wait time. They are
-measured from individual GitHub step timestamps; dependency caches and
-runner availability vary. The structural elimination of one automatic
-Nix build and screenshot upload does **not** depend on cache warmth.
+This full run can take several minutes. The independent old `.github/workflows/nix.yml` workflow and unused `ci_change_scope.py`/`test_ci_change_scope.py` were removed.
 
-The following documentation-only commit verifies the fail-open change
-classifier on a real GitHub push: the fast Core/IPC and parity job must
-pass and the native GTK/Nix job must be marked **skipped**. If it is not,
-the optimization must be corrected rather than declared successful.
+**Risk explicitly retained:** a passing *fast* CI run does not catch GTK compilation errors, GUI test failures or broken Nix packaging. It is **not equivalent** to the manual full gate. Run that gate before shipping native changes; if it has not run on the target commit, report verification as incomplete.
+
+## Acceptance criteria
+
+- Ordinary fast job must execute within its two-minute runtime cap. An exceptionally cold runner may **fail** the cap; this does not guarantee success or exclude queue delay.
+- There must be no automatically started heavy Nix/Wayland jobs or uploaded screenshot archives.
+- The manual full workflow must remain runnable and keep its GTK/Wayland/D-Bus safety checks.
+- All 15 widget parity flags remain false until independent source-main and native visual, motion, keyboard and accessibility acceptance.
+
+This architecture deliberately buys fast feedback by *changing the scope of automatic CI*, not by falsely claiming that Nix itself compiles in two minutes.

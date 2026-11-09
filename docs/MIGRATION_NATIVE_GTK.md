@@ -44,24 +44,24 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 6. **G4 Visual fidelity:** canonical design tokens, native charts and TENET timelines, reduced motion, visual regression and scaling acceptance at 100/125/150/200%.
 7. **G5 Shipping:** Nix build, packaged isolated nested Niri smoke, documented feature parity, accessibility and memory/perf comparison to main. No blanket release claim before these pass.
 
-## G4/G5 CI performance and artifact hygiene
+## G4/G5 two-minute CI and full release acceptance
 
-- The native CI reuses **one** Nix package build for all headless/fake
-  Niri, real nested-Wayland screenshot, SNI and Notifications checks.
-  The previous second automatic graphical job is now manual-only.
-- A fail-open whole-push/PR change classifier skips heavy GTK/Nix
-  compilation for documentation-only changes. Core formatting, Clippy,
-  tests, Python and parity checks still execute. Clippy on all target
-  kinds plus tests removes the extra independent plain Cargo typecheck.
-- Normal graphical smoke captures 34 true PNG frames instead of 104,
-  uploads nothing and drops the private evidence directory after CI.
-  The full 104-frame review and two-day artifact retention are optional,
-  with separate explicit inputs on manual 1.
-- Measured *before* tuning: the native shell job took 7m36s
-  (Cargo check/Clippy/test 3m10s; Nix build 4m11s), while a second
-  graphical job consumed 5m12s including a duplicate 4m41s Nix
-  build. Compare completed CI run timings; do not claim a measured
-  speedup before the new job finishes. See 2.
+- Ordinary push/PR CI is one **two-minute-capped** Rust Core/IPC +
+  Python/parity job. Workspace formatting is still enforced, but the
+  fast lane **does not** compile GTK, run its tests, build Nix or launch
+  Wayland. This is an explicit reduction of automatic coverage.
+- The single manual **Full native GTK/Nix/Wayland validation** workflow
+  performs complete Rust workspace Clippy/tests, actual packaging,
+  isolated display rollback, D-Bus SNI/Notifications, and real
+  nested-Niri pixels. Run it on the target commit before shipping a
+  GTK change; otherwise report the UI as unverified.
+- The redundant independent Nix-only workflow and old change classifier
+  were removed. PNGs are uploaded only with explicit consent, with
+  an optional full 104-frame mode for review.
+- A GitHub `timeout-minutes: 2` caps runner execution, not
+  queue waiting and not successful completion on cold hardware.
+  Details and real benchmarks: `docs/CI_PERFORMANCE.md`.
+- Visual and motion parity remain 0/15 until source-main comparison.
 
 ## Non-negotiable behavior
 
