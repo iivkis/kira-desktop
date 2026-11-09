@@ -59,6 +59,11 @@ quality. Preserve the console transcript for manual acceptance.
 
 ## Detached native window acceptance
 
+- [ ] Open each of Launcher, Calendar, System, Settings and Tray and activate its visible **×** without using Escape. The pooled popup must close on its recorded reverse timeline and retain search, date, process and menu controllers. Check screen-reader labels and focus-visible styling.
+- [ ] Detach each view and press its native **×**: only that decorated window closes, with no newly raised transient or loss of widget state. When no transient is active, pressing **Прикрепить** must immediately return the retained view to the pooled popup. If another transient is active, **Прикрепить** must park the detached view without replacing it.
+- [ ] Switch rapidly between transients while an old popup is closing, then send Escape or a queued WM close to that old surface: the newly active popup must remain open and own its identity.
+
+
 - [ ] Detach Calendar, Launcher, System, Settings and Tray with **Отделить** and confirm each becomes a decorated, independently movable and resizable Wayland window. Clicking the same Top Bar item must raise the existing detached window, not create another GTK controller.
 - [ ] Change Calendar selection, Launcher search text and System page in their detached windows. Switch to other transients, attach again and reopen: date, query, scrolling and widget identities must survive.
 - [ ] Close a detached window using its window-manager control: it should reattach invisibly, preserve state and reopen from the bar. Try rapid attach/detach and Escape, including keyboard focus and screen-reader labels.

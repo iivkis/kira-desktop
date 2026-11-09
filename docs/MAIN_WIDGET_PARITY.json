@@ -537,7 +537,8 @@
       "content_and_interaction_requirements": [
         "Popup close and Niri-managed detached window controls",
         "State preservation across detach/reattach and error reporting",
-        "Launcher, Calendar, System, Settings and Tray share one retained GTK clip/controller through ordinary xdg-toplevel detach/reattach, including Tray menu state. No additional live SNI client is created; bar raise and Tray close are distinct actions."
+        "Launcher, Calendar, System, Settings and Tray share one retained GTK clip/controller through ordinary xdg-toplevel detach/reattach, including Tray menu state. No additional live SNI client is created; bar raise and Tray close are distinct actions.",
+        "Reusable GTK Close control for pooled and detached views, attach-to-open only when transient slot vacant, owner-scoped stale Escape/window-close safety and retained widget focus/state. Pure policy tests added; mouse, keyboard, focus and paired Niri evidence still outstanding."
       ],
       "animation_requirements": [
         "Reversible close using one master timeline",

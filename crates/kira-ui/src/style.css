@@ -13,6 +13,13 @@ window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
 .kira-popup .popup-window-control:focus-visible {
   outline: 2px solid #fca311; outline-offset: 2px;
 }
+.kira-popup .popup-close-control {
+  min-width: 34px; font-size: 18px; font-weight: 800;
+  color: #ffffff; border-color: #e5e5e5;
+}
+.kira-popup .popup-close-control:hover {
+  color: #fca311; border-color: #fca311;
+}
 .kira-popup .kira-popup-surface { background: #000000; }
 
 .kira-bar button, .kira-popup button {

@@ -14,6 +14,13 @@ use crate::popup_section::PopupSection;
 
 const GAP: i32 = 12;
 
+/// Attaching a detached view must never replace a different active popup.
+/// With no transient present the same controller can reappear immediately.
+fn reattach_can_open(active: Option<PopupKind>) -> bool {
+    active.is_none()
+}
+
+
 // Named because the callback is shared between a retained native view
 // and its detachable toplevel lifetime, never supplied by untrusted IPC.
 type DetachHandler = Rc<dyn Fn(bool)>;
@@ -211,6 +218,18 @@ impl PopupView {
 
     fn close(&self) {
         self.transition(false);
+    }
+
+    /// The visible × is deliberately different from Attach: close a detached
+    /// xdg-toplevel without raising a new transient. Stale close events from
+    /// an old pooled window never clear another popup's active identity.
+    fn close_control(&self, kind: PopupKind, active: &Cell<Option<PopupKind>>) {
+        if self.detached.borrow().is_some() {
+            self.reattach(false);
+        } else if active.get() == Some(kind) {
+            active.set(None);
+            self.close();
+        }
     }
 
     /// Reparent the exact retained widget tree, without creating controllers.
@@ -558,19 +577,32 @@ impl PopupHost {
             frame.set_margin_bottom(18);
             frame.set_margin_start(18);
             frame.set_margin_end(18);
+            // One reusable window-controls row for every built-in widget.
+            // Both buttons remain with the retained GTK tree on reparent.
+            let controls = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+            controls.set_halign(gtk::Align::End);
+            controls.add_css_class("popup-window-controls");
+            frame.append(&controls);
             let detach_button = if supports_detach(kind) {
                 let button = gtk::Button::with_label("Отделить");
                 button.add_css_class("popup-window-control");
-                button.set_halign(gtk::Align::End);
                 button.set_tooltip_text(Some("Перенести виджет в отдельное окно"));
                 button.update_property(&[gtk::accessible::Property::Label(
                     "Отделить виджет в отдельное окно",
                 )]);
-                frame.append(&button);
+                controls.append(&button);
                 Some(button)
             } else {
                 None
             };
+            let close_button = gtk::Button::with_label("×");
+            close_button.add_css_class("popup-window-control");
+            close_button.add_css_class("popup-close-control");
+            close_button.set_tooltip_text(Some("Закрыть виджет, сохранив состояние"));
+            close_button.update_property(&[gtk::accessible::Property::Label(
+                "Закрыть виджет",
+            )]);
+            controls.append(&close_button);
             let view_widget = make_view();
             let sections = stage_sections(&view_widget);
             let contact_widget = contact_widget(&view_widget);
@@ -676,13 +708,25 @@ impl PopupHost {
                             // Reattach to the hidden pool. If another popup
                             // is active, showing this one here would violate
                             // the single-transient contract. The bar opens it.
-                            view.reattach(false);
+                            let reopen = reattach_can_open(active.get());
+                            if reopen {
+                                active.set(Some(kind));
+                            }
+                            view.reattach(reopen);
                         } else {
                             view.detach(&app, kind, &active);
                         }
                     }
                 });
             }
+
+            let weak = Rc::downgrade(&view);
+            let active_for_close = self.active.clone();
+            close_button.connect_clicked(move |_| {
+                if let Some(view) = weak.upgrade() {
+                    view.close_control(kind, &active_for_close);
+                }
+            });
 
             let weak = Rc::downgrade(&view);
             window.connect_notify_local(Some("focus-widget"), move |window, _| {
@@ -702,8 +746,7 @@ impl PopupHost {
             let weak = Rc::downgrade(&view);
             window.connect_close_request(move |_| {
                 if let Some(view) = weak.upgrade() {
-                    view.close();
-                    active.set(None);
+                    view.close_control(kind, &active);
                 }
                 gtk::glib::Propagation::Stop
             });
@@ -713,8 +756,7 @@ impl PopupHost {
             key.connect_key_pressed(move |_, keyval, _, _| {
                 if keyval == gtk::gdk::Key::Escape {
                     if let Some(view) = weak.upgrade() {
-                        view.close();
-                        active.set(None);
+                        view.close_control(kind, &active);
                     }
                     gtk::glib::Propagation::Stop
                 } else {
@@ -762,6 +804,20 @@ mod tests {
             assert!(detached_title(kind).starts_with("Kira"));
         }
         assert!(supports_detach(PopupKind::Tray));
+    }
+
+    #[test]
+    fn reattach_only_reopens_when_no_other_transient_owns_the_slot() {
+        assert!(reattach_can_open(None));
+        for occupied in [
+            PopupKind::Launcher,
+            PopupKind::Calendar,
+            PopupKind::System,
+            PopupKind::Settings,
+            PopupKind::Tray,
+        ] {
+            assert!(!reattach_can_open(Some(occupied)));
+        }
     }
 
     #[test]
