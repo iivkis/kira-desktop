@@ -54,9 +54,27 @@ fn isolated_session() -> bool {
 fn notification_from_params(params: &glib::Variant) -> Notice {
     Notice {
         id: 0,
-        app: params.child_value(0).str().unwrap_or_default().chars().take(128).collect(),
-        summary: params.child_value(3).str().unwrap_or_default().chars().take(256).collect(),
-        body: params.child_value(4).str().unwrap_or_default().chars().take(2048).collect(),
+        app: params
+            .child_value(0)
+            .str()
+            .unwrap_or_default()
+            .chars()
+            .take(128)
+            .collect(),
+        summary: params
+            .child_value(3)
+            .str()
+            .unwrap_or_default()
+            .chars()
+            .take(256)
+            .collect(),
+        body: params
+            .child_value(4)
+            .str()
+            .unwrap_or_default()
+            .chars()
+            .take(2048)
+            .collect(),
         actions: Vec::new(), // no GTK actions in this protocol-only fixture
         critical: false,
         persistent: params.child_value(7).get::<i32>() == Some(0),
@@ -87,12 +105,13 @@ fn main() {
             let shared = registration_state.clone();
             if let Err(error) = connection
                 .register_object(PATH, &info)
-                .method_call(move |_, sender, _, _, method, params, invocation| {
-                    match method {
+                .method_call(
+                    move |_, sender, _, _, method, params, invocation| match method {
                         "GetServerInformation" => {
-                            invocation.return_value(Some(&(
-                                "Kira Policy Fixture", "Kira Test Policy", "0.1", "1.3",
-                            ).to_variant()));
+                            invocation.return_value(Some(
+                                &("Kira Policy Fixture", "Kira Test Policy", "0.1", "1.3")
+                                    .to_variant(),
+                            ));
                         }
                         "Notify" => {
                             if params.size() > 64 * 1024 {
@@ -112,9 +131,12 @@ fn main() {
                             let mut state = shared.borrow_mut();
                             let PolicyState { queue, owners } = &mut *state;
                             let admitted = admit_notification(
-                                queue, owners, sender,
+                                queue,
+                                owners,
+                                sender,
                                 params.child_value(1).get::<u32>().unwrap_or(0),
-                                notification_from_params(&params), Instant::now(),
+                                notification_from_params(&params),
+                                Instant::now(),
                             );
                             if let Some(id) = admitted {
                                 invocation.return_value(Some(&(id,).to_variant()));
@@ -142,8 +164,8 @@ fn main() {
                             "org.freedesktop.DBus.Error.UnknownMethod",
                             "Unsupported policy fixture method",
                         ),
-                    }
-                })
+                    },
+                )
                 .build()
             {
                 eprintln!("kira-notification-policy-fixture: cannot export GIO object: {error}");
@@ -167,9 +189,16 @@ mod tests {
         let node = gio::DBusNodeInfo::for_xml(XML).unwrap();
         assert!(node.lookup_interface(NAME).is_some());
         let params = (
-            "app", 12u32, "", "summary", "body",
-            Vec::<String>::new(), std::collections::HashMap::<String, glib::Variant>::new(), 0i32,
-        ).to_variant();
+            "app",
+            12u32,
+            "",
+            "summary",
+            "body",
+            Vec::<String>::new(),
+            std::collections::HashMap::<String, glib::Variant>::new(),
+            0i32,
+        )
+            .to_variant();
         let notice = notification_from_params(&params);
         assert_eq!(notice.summary, "summary");
         assert!(notice.persistent);
