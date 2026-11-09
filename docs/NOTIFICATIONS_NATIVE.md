@@ -207,3 +207,28 @@ lease invalidation, and action authorization. They **do not** demonstrate
 fractional scaling, click-through, focus, hotplug or frame parity on a
 real nested compositor. The single shared FIFO still selects only one
 destination at a time, not independent simultaneous per-output queues.
+
+### Unique-sender isolation for `replaces_id` (model/protocol contract)
+
+The trusted Shell now records each accepted notification ID's **unique GIO
+D-Bus peer name** in `kira-services::NotificationOwnership`. A live
+`replaces_id` is honored only for the same unique sender; a foreign sender,
+invalid/stale ID or zero receives a new server-generated ID. In particular,
+an application cannot overwrite another application's notification content,
+declared action keys or FIFO position by guessing its numeric ID. The
+displayed `app_name` is not an authentication identity.
+
+Only accepted queue admissions acquire a lease. Explicit close, GTK
+action/close and normal expiry retire it; persistent cards parked beyond
+visual dwell keep the lease for later valid same-sender replacement.
+`CloseNotification(id)` remains the Freedesktop ID-based operation, so
+existing separate-process notification clients can close an ID and still
+receive the ordinary `NotificationClosed` reason.
+
+The private nested-Niri acceptance scenario now attempts to replace one
+`gdbus` subprocess's notice from a **different** subprocess, requiring
+a different returned ID and cleaning up both IDs. Pure Rust tests cover
+foreign/same-peer replacement, parked persistent leases, closed IDs and
+saturation. Actual live Niri operation is **not** claimed without a
+completed isolated acceptance run; 0/15 widgets remain verified.
+
