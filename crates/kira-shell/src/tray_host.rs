@@ -78,6 +78,10 @@ impl MenuSession {
         self.handle == other.handle && self.owner == other.owner && self.path == other.path
     }
 
+    fn accepts_ui_epoch(&self, handle: u32, epoch: u64) -> bool {
+        epoch != 0 && self.handle == handle && self.ui_epoch == epoch
+    }
+
     fn snapshot(&self) -> TrayMenu {
         TrayMenu {
             handle: self.handle,
@@ -1193,8 +1197,7 @@ impl Service {
         // floating cascade. A clicked sibling can replace the deeper path,
         // but only after verifying owner, globally unique parent and page.
         let selected = self.current_menu.borrow().as_ref().and_then(|menu| {
-            if menu.handle != handle
-                || menu.ui_epoch != epoch
+            if !menu.accepts_ui_epoch(handle, epoch)
                 || !tray_menu::expandable(&menu.entries, id)
             {
                 return None;
@@ -1221,8 +1224,8 @@ impl Service {
         self.request_menu_layout(menu, serial, Some(id), false);
     }
 
-    fn menu_back(&self) {
-        if self.current_menu.borrow().is_none() {
+    fn menu_back(&self, epoch: u64) {
+        if !self.current_menu.borrow().as_ref().is_some_and(|menu| menu.ui_epoch == epoch) {
             return;
         }
         self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
@@ -1251,8 +1254,7 @@ impl Service {
             .borrow()
             .as_ref()
             .filter(|menu| {
-                menu.handle == handle
-                    && menu.ui_epoch == epoch
+                menu.accepts_ui_epoch(handle, epoch)
                     && tray_menu::clickable(&menu.entries, id)
                     && kira_ui::tray::menu_visible_leaf(&menu.entries, &menu.navigation, id)
             })
@@ -1295,12 +1297,14 @@ impl Service {
     }
 
     fn action(self: &Rc<Self>, intent: TrayIntent) {
-        if matches!(intent, TrayIntent::DismissMenu) {
-            self.clear_menu();
+        if let TrayIntent::DismissMenu(epoch) = intent {
+            if self.current_menu.borrow().as_ref().is_some_and(|menu| menu.ui_epoch == epoch) {
+                self.clear_menu();
+            }
             return;
         }
-        if matches!(intent, TrayIntent::MenuBack) {
-            self.menu_back();
+        if let TrayIntent::MenuBack(epoch) = intent {
+            self.menu_back(epoch);
             return;
         }
         if let TrayIntent::MenuClick(handle, id, epoch) = intent {
@@ -1315,8 +1319,8 @@ impl Service {
             TrayIntent::Activate(id) | TrayIntent::Secondary(id) | TrayIntent::TogglePin(id) => id,
             TrayIntent::MenuClick(_, _, _)
             | TrayIntent::MenuExpand(_, _, _)
-            | TrayIntent::MenuBack
-            | TrayIntent::DismissMenu => return,
+            | TrayIntent::MenuBack(_)
+            | TrayIntent::DismissMenu(_) => return,
         };
         let item = self
             .items
@@ -1519,6 +1523,10 @@ mod tests {
         assert!(old.same_target(&changed));
         assert_ne!(old.snapshot(), changed.snapshot());
         assert_ne!(old.snapshot().epoch, changed.ui_epoch);
+        assert!(changed.accepts_ui_epoch(41, 8));
+        assert!(!changed.accepts_ui_epoch(41, 7));
+        assert!(!changed.accepts_ui_epoch(42, 8));
+        assert!(!changed.accepts_ui_epoch(41, 0));
         changed.owner = ":1.103".into();
         assert!(!old.same_target(&changed));
     }
