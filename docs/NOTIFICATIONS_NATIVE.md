@@ -232,3 +232,14 @@ foreign/same-peer replacement, parked persistent leases, closed IDs and
 saturation. Actual live Niri operation is **not** claimed without a
 completed isolated acceptance run; 0/15 widgets remain verified.
 
+
+### Freedesktop name-loss epoch (not live-verified)
+
+On real name loss or explicit release, Shell now clears the bounded
+waiting/visible/parked notification queue and sender-identity ledger,
+invalidates any scheduled queue deadline and hides every shaped GTK
+surface. A later successful name acquisition starts with a fresh
+notification session rather than replaying old D-Bus IDs from the
+previous owner epoch. This is covered by a Rust model regression; it
+does not substitute for live D-Bus owner-churn tests or Wayland acceptance.
+
