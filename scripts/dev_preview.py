@@ -301,7 +301,10 @@ def run_preview(
 
     package = package.resolve()
     binaries_directory = (bin_dir if bin_dir is not None else package / "bin").resolve()
-    names = ("core", "shell", "sni-acceptance") if acceptance_notifications else ("core", "shell")
+    names = (
+        ("core", "shell", "sni-acceptance", "notification-acceptance")
+        if acceptance_notifications else ("core", "shell")
+    )
     binaries = {name: binaries_directory / f"kira-{name}" for name in names}
     for binary in binaries.values():
         if not binary.is_file() or not os.access(binary, os.X_OK):
@@ -427,7 +430,10 @@ def run_preview(
 
                 print("[preview] Running real private D-Bus acceptance and PNG capture.", flush=True)
                 assert evidence_dir is not None
-                manifest = run_acceptance(nested, environment, isolated, evidence_dir)
+                manifest = run_acceptance(
+                    nested, environment, isolated, evidence_dir,
+                    binaries["notification-acceptance"],
+                )
                 print(f"[preview] Unreviewed evidence: {manifest}", flush=True)
                 return
             print("[preview] Kira running inside nested Niri. Ctrl+C to exit.", flush=True)
