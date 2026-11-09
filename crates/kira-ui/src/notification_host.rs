@@ -85,6 +85,24 @@ struct CardEntrance {
     motion: MotionToken,
 }
 
+/// An old GTK button can finish dispatching after its card was detached.
+/// Leases bind every button to the exact rendered snapshot which created
+/// it, so A→B→A output switches never resurrect stale actions.
+#[derive(Clone, Default)]
+struct ToastActionGate(Rc<Cell<u64>>);
+
+impl ToastActionGate {
+    fn renew(&self) -> u64 {
+        let next = self.0.get().wrapping_add(1);
+        self.0.set(next);
+        next
+    }
+
+    fn accepts(&self, lease: u64) -> bool {
+        self.0.get() == lease
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct ToastLayout {
     pub width: i32,
@@ -139,6 +157,20 @@ pub fn toast_output_plan_unobstructed(
     preferred: Option<usize>,
     blocked: &[bool],
 ) -> Option<(usize, ToastLayout)> {
+    toast_output_plan_stable(outputs, preferred, None, blocked)
+}
+
+/// A changing GDK enumeration must not shuffle an already safe fallback
+/// output. The mapped bar is authoritative when usable; otherwise retain
+/// the last safe actual monitor before selecting another real output.
+/// The Shell converts both indices from GDK object identity, never Niri
+/// numbering, and refuses unknown transient affinity.
+pub fn toast_output_plan_stable(
+    outputs: &[(i32, i32)],
+    preferred: Option<usize>,
+    retained: Option<usize>,
+    blocked: &[bool],
+) -> Option<(usize, ToastLayout)> {
     let candidate = |index: usize| {
         if blocked.get(index).copied().unwrap_or(false) {
             return None;
@@ -149,6 +181,7 @@ pub fn toast_output_plan_unobstructed(
     };
     preferred
         .and_then(candidate)
+        .or_else(|| retained.and_then(candidate))
         .or_else(|| (0..outputs.len()).find_map(candidate))
 }
 
@@ -316,6 +349,7 @@ pub struct NotificationHost {
     active_motion: RefCell<Vec<MotionToken>>,
     on_intent: Rc<dyn Fn(NotificationIntent)>,
     on_painted: Rc<dyn Fn(Vec<u32>)>,
+    action_gate: ToastActionGate,
 }
 
 impl NotificationHost {
@@ -384,6 +418,7 @@ impl NotificationHost {
             active_motion: RefCell::new(Vec::new()),
             on_intent: Rc::new(on_intent),
             on_painted: Rc::new(on_painted),
+            action_gate: ToastActionGate::default(),
         })
     }
 
@@ -407,6 +442,14 @@ impl NotificationHost {
             return;
         }
         self.revision.set(self.revision.get().wrapping_add(1));
+        let lease = self.action_gate.renew();
+        let action_gate = self.action_gate.clone();
+        let dispatch = self.on_intent.clone();
+        let on_intent: Rc<dyn Fn(NotificationIntent)> = Rc::new(move |intent| {
+            if action_gate.accepts(lease) {
+                dispatch(intent);
+            }
+        });
         let old_layout = self.layout.replace(layout);
         let previous = self.current.borrow().clone();
         let painted = self.painted_ids.replace(HashSet::new());
@@ -500,7 +543,7 @@ impl NotificationHost {
         self.root.append(&spacer);
         // The queue is oldest first. GTK children are top to bottom.
         for notice in cards.iter().rev() {
-            let content = card(notice, layout.card_height, self.on_intent.clone());
+            let content = card(notice, layout.card_height, on_intent.clone());
             let frame = gtk::Fixed::new();
             frame.set_hexpand(true);
             frame.set_overflow(gtk::Overflow::Hidden);
@@ -619,6 +662,11 @@ impl NotificationHost {
 
     pub fn is_renderable(&self) -> bool {
         self.window.is_mapped() && self.window.surface().is_some()
+    }
+
+    /// Only actually paint-acknowledged IDs may dispatch user actions.
+    pub fn is_painted(&self, id: u32) -> bool {
+        self.is_renderable() && self.painted_ids.borrow().contains(&id)
     }
 }
 
@@ -778,6 +826,21 @@ impl NotificationHostSet {
             .unwrap_or(false)
     }
 
+    /// GDK object identity survives reorder of the monitor model.
+    pub fn active_monitor(&self) -> Option<gtk::gdk::Monitor> {
+        let id = self.active.get()?;
+        self.hosts
+            .borrow()
+            .iter()
+            .find(|host| host.id == id)
+            .map(|host| host.monitor.clone())
+    }
+
+    pub fn is_painted(&self, id: u32) -> bool {
+        self.with_active(|host| host.is_painted(id))
+            .unwrap_or(false)
+    }
+
     pub fn reveal(&self, ids: &[u32]) -> bool {
         self.with_active(|host| host.reveal(ids)).unwrap_or(false)
     }
@@ -899,6 +962,55 @@ mod tests {
         assert_eq!(layout.width, 336);
         assert_eq!(toast_output_plan(&outputs, Some(1)).unwrap().0, 1);
         assert_eq!(toast_output_plan(&outputs, None).unwrap().0, 0);
+    }
+
+    #[test]
+    fn preferred_and_retained_outputs_remain_stable_through_reorder_and_hotplug() {
+        let outputs = [(120, 700), (800, 600), (1024, 768)];
+        assert_eq!(toast_output_plan_stable(&outputs, Some(0), Some(2), &[]).unwrap().0, 2);
+        assert_eq!(toast_output_plan_stable(&outputs, Some(1), Some(2), &[]).unwrap().0, 1);
+        // The previous real monitor is still available, but GDK reordered
+        // it to index zero. It must not hop to a different valid fallback.
+        let shuffled = [(1024, 768), (120, 700), (800, 600)];
+        assert_eq!(
+            toast_output_plan_stable(&shuffled, Some(1), Some(0), &[]).unwrap().0,
+            0
+        );
+        assert_eq!(
+            toast_output_plan_stable(&shuffled, Some(1), Some(0), &[true, false, false])
+                .unwrap()
+                .0,
+            2
+        );
+        assert_eq!(
+            toast_output_plan_stable(&shuffled, Some(1), Some(0), &[true, true, true]),
+            None
+        );
+        assert_eq!(
+            toast_output_plan_stable(&shuffled, Some(999), Some(888), &[])
+                .unwrap()
+                .0,
+            0
+        );
+    }
+
+    #[test]
+    fn action_leases_revoke_buttons_on_every_snapshot_even_after_reselection() {
+        let gate = ToastActionGate::default();
+        let a = gate.renew();
+        assert!(gate.accepts(a));
+        let b = gate.renew();
+        assert!(!gate.accepts(a));
+        assert!(gate.accepts(b));
+        let third = gate.renew();
+        assert!(!gate.accepts(a));
+        assert!(!gate.accepts(b));
+        assert!(gate.accepts(third));
+        // Wrapping a revision never reuses the immediately previous lease.
+        gate.0.set(u64::MAX);
+        let wrapped = gate.renew();
+        assert_eq!(wrapped, 0);
+        assert!(!gate.accepts(u64::MAX));
     }
 
     #[test]
