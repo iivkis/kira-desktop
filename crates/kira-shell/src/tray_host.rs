@@ -1197,9 +1197,7 @@ impl Service {
         // floating cascade. A clicked sibling can replace the deeper path,
         // but only after verifying owner, globally unique parent and page.
         let selected = self.current_menu.borrow().as_ref().and_then(|menu| {
-            if !menu.accepts_ui_epoch(handle, epoch)
-                || !tray_menu::expandable(&menu.entries, id)
-            {
+            if !menu.accepts_ui_epoch(handle, epoch) || !tray_menu::expandable(&menu.entries, id) {
                 return None;
             }
             kira_ui::tray::menu_expansion_path(&menu.entries, &menu.navigation, id)
@@ -1225,7 +1223,12 @@ impl Service {
     }
 
     fn menu_back(&self, epoch: u64) {
-        if !self.current_menu.borrow().as_ref().is_some_and(|menu| menu.ui_epoch == epoch) {
+        if !self
+            .current_menu
+            .borrow()
+            .as_ref()
+            .is_some_and(|menu| menu.ui_epoch == epoch)
+        {
             return;
         }
         self.menu_serial.set(self.menu_serial.get().wrapping_add(1));
@@ -1298,7 +1301,12 @@ impl Service {
 
     fn action(self: &Rc<Self>, intent: TrayIntent) {
         if let TrayIntent::DismissMenu(epoch) = intent {
-            if self.current_menu.borrow().as_ref().is_some_and(|menu| menu.ui_epoch == epoch) {
+            if self
+                .current_menu
+                .borrow()
+                .as_ref()
+                .is_some_and(|menu| menu.ui_epoch == epoch)
+            {
                 self.clear_menu();
             }
             return;
