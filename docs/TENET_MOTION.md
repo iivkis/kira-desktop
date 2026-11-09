@@ -28,6 +28,18 @@ The previously rejected hover optical lens, pixel distortion, forced glow and cu
 
 `kira-ui::FlowIndicator` owns one persistent, non-interactive GSK selection surface, with 420ms `back.out(1.18)` geometry and 120ms opacity. GTK retains the actual current rectangle during retargeting, draws under date/workspace buttons or as the launcher left rail, and honours reduced motion via `MotionToken`. All content and focus still belong to the original GTK buttons. Compilation and headless tests are not proof of pixel or animation parity.
 
+## Native measured-chart inspection (unverified)
+
+The reusable `SystemCharts` chart inspector now pins one actual `Instant`
+sample, never an interpolated utilization or a fabricated GPU interval.
+Arrow/Home/End, plotted-point clicks and Previous/Next/Live controls select
+timestamps, and a real GDK clipboard intent copies the measured values.
+The selected marker is clipped to the *painted* ChartMotion time domain and
+trace extent, so delayed line reveal is not outrun by a speculative cursor.
+When the last 60-second history window discards the pinned sample, the
+selection clears instead of adopting another identity. User focus,
+interruption, high-DPI geometry and paired Niri/source motion remain pending.
+
 ## Native keyed FLIP and scroll (unverified)
 
 `kira-ui::ReflowRow` retains an actual GTK child/button and controller under a GTK allocation transform. `ReflowScope` records the painted origins of the first 24 stable-key rows and, after the new GTK layout, replays the saved difference over 340ms using `back.out(1.14)`. Pruned rows never receive imaginary movements; new content and the real selected model update immediately. Launcher uses reflow only for explicit search/filter input when the previous result set contains 1–20 entries, not new GIO catalogue readings; a second interaction freezes each surviving row at its last painted coordinates. WorkspaceStrip only restages changed visible workspace ordering and clears stale offsets when disconnected. The FLIP scope invalidates pending ticks without losing the current painted geometry, and its explicit cancellation settles every still-live row; with reduced motion enabled it settles immediately. GTK unmap also resets row transforms, clears the persistent marker's cached geometry (keeping the selected target), and invalidates pending layout ticks before any remap.

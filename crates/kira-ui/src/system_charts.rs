@@ -1,6 +1,6 @@
 //! Reusable native CPU/RAM/GPU history. Each point is a real worker pulse, not
 //! interpolation between slow system snapshots or a GTK frame-clock sample.
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::collections::VecDeque;
 use std::rc::Rc;
 use std::time::{Duration, Instant};
@@ -227,6 +227,133 @@ pub fn activity_axis(points: &[ChartPoint], lane: ActivityLane) -> ActivityAxis 
         min = min.min(max - 4.0).max(0.0);
     }
     ActivityAxis { min, max }
+}
+
+/// Historical inspection is a view of actual retained pulses, never a
+/// request to sample or interpolate telemetry. None means follow the latest.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum InspectionAction {
+    Earlier,
+    Later,
+    First,
+    Live,
+}
+
+pub fn inspection_target(
+    points: &[ChartPoint],
+    selected: Option<Instant>,
+    action: InspectionAction,
+) -> Option<Instant> {
+    if points.is_empty() || action == InspectionAction::Live {
+        return None;
+    }
+    if action == InspectionAction::First {
+        return Some(points[0].measured_at);
+    }
+    let current = selected
+        .and_then(|stamp| points.iter().position(|point| point.measured_at == stamp))
+        .unwrap_or(points.len() - 1);
+    match action {
+        InspectionAction::Earlier if current > 0 => Some(points[current - 1].measured_at),
+        InspectionAction::Earlier => Some(points[current].measured_at),
+        InspectionAction::Later if current + 1 < points.len() - 1 => {
+            Some(points[current + 1].measured_at)
+        }
+        InspectionAction::Later => None,
+        InspectionAction::First | InspectionAction::Live => None,
+    }
+}
+
+pub fn inspected_chart_point(
+    points: &[ChartPoint],
+    selected: Option<Instant>,
+) -> Option<ChartPoint> {
+    match selected {
+        Some(at) => points.iter().find(|point| point.measured_at == at).copied(),
+        None => points.last().copied(),
+    }
+}
+
+/// Mouse inspection projects to the SAME measured axis as the Cairo trace.
+fn chart_sample_at_x(
+    points: &[ChartPoint],
+    domain: ChartTimeDomain,
+    x: f64,
+    width: i32,
+) -> Option<Instant> {
+    let left = 41.0_f64;
+    let right = f64::from(width) - 8.0;
+    if points.is_empty() || !x.is_finite() || right <= left {
+        return None;
+    }
+    let span = domain.end.saturating_duration_since(domain.start).as_secs_f64();
+    if span <= 0.0 {
+        return None;
+    }
+    let fraction = ((x - left) / (right - left)).clamp(0.0, 1.0);
+    points
+        .iter()
+        .min_by(|a, b| {
+            let delta = |point: &ChartPoint| {
+                (point
+                    .measured_at
+                    .saturating_duration_since(domain.start)
+                    .as_secs_f64()
+                    / span
+                    - fraction)
+                    .abs()
+            };
+            delta(a).total_cmp(&delta(b))
+        })
+        .map(|point| point.measured_at)
+}
+
+pub fn chart_inspection_text(
+    points: &[ChartPoint],
+    selected: Option<Instant>,
+    now: Instant,
+) -> String {
+    let Some(point) = inspected_chart_point(points, selected) else {
+        return "НЕТ ЗАМЕРОВ · график ожидает реальные показания".into();
+    };
+    let age = now.saturating_duration_since(point.measured_at).as_secs_f64();
+    let lag = points
+        .last()
+        .map_or(0.0, |last| last.measured_at.saturating_duration_since(point.measured_at).as_secs_f64());
+    let status = if selected.is_some() {
+        format!("ВЫБРАН ЗАМЕР · −{lag:.1} с от последнего")
+    } else if now.saturating_duration_since(point.measured_at) < PULSE_FRESHNESS {
+        "ТЕКУЩИЙ ЗАМЕР".to_owned()
+    } else {
+        "ПОСЛЕДНИЙ ЗАМЕР УСТАРЕЛ".to_owned()
+    };
+    format!(
+        "{status} · {age:.1} с назад · CPU {} · RAM {} · GPU {}",
+        meter_text(point.cpu, true),
+        meter_text(point.ram, true),
+        meter_text(point.gpu, true)
+    )
+}
+
+pub fn chart_inspection_report(
+    points: &[ChartPoint],
+    selected: Option<Instant>,
+    now: Instant,
+) -> Option<String> {
+    let point = inspected_chart_point(points, selected)?;
+    let position = points.iter().position(|row| row.measured_at == point.measured_at)?;
+    let lag = points.last()?.measured_at.saturating_duration_since(point.measured_at);
+    let age = now.saturating_duration_since(point.measured_at);
+    Some(format!(
+        "Kira · измеренная история системы (снимок)\nЗамер: {} из {}\nОт последнего: {:.1} с\nВозраст: {:.1} с\nCPU: {}\nRAM: {}\nGPU: {}\n",
+        position + 1,
+        points.len(),
+        lag.as_secs_f64(),
+        age.as_secs_f64(),
+        meter_text(point.cpu, true),
+        meter_text(point.ram, true),
+        meter_text(point.gpu, true),
+    ))
 }
 
 pub fn measured_history_caption(points: &[ChartPoint]) -> String {
@@ -458,6 +585,46 @@ fn draw_history(
     }
 }
 
+/// A pin is drawn only for a genuine point already painted on the
+/// measured time axis, never for a synthetic interpolated CPU/RAM/GPU value.
+fn draw_inspection_marker(
+    cr: &gtk::cairo::Context,
+    width: i32,
+    height: i32,
+    points: &[ChartPoint],
+    domain: Option<ChartTimeDomain>,
+    extent: f64,
+    selected: Option<Instant>,
+) {
+    let Some((domain, stamp)) = domain.zip(selected) else {
+        return;
+    };
+    if !points.iter().any(|point| point.measured_at == stamp) {
+        return;
+    }
+    let span = domain.end.saturating_duration_since(domain.start).as_secs_f64();
+    if span <= 0.0 || width <= 80 || height <= 60 {
+        return;
+    }
+    let fraction = stamp
+        .saturating_duration_since(domain.start)
+        .as_secs_f64()
+        / span;
+    if !(0.0..=extent.clamp(0.0, 1.0)).contains(&fraction) {
+        return;
+    }
+    let x = 41.0 + (f64::from(width) - 49.0) * fraction;
+    cr.set_source_rgba(0.988, 0.639, 0.067, 0.84);
+    cr.set_line_width(1.5);
+    cr.move_to(x, 10.0);
+    cr.line_to(x, f64::from(height) - 7.0);
+    let _ = cr.stroke();
+    cr.arc(x, 10.0, 3.0, 0.0, std::f64::consts::TAU);
+    let _ = cr.fill();
+}
+
+type CopyInspection = Box<dyn Fn(String) -> Result<(), String>>;
+
 struct ChartState {
     history: RefCell<PulseHistory>,
     gpu: RefCell<GpuPulseCoupler>,
@@ -471,9 +638,56 @@ struct ChartState {
     gpu_axis: gtk::Label,
     caption: gtk::Label,
     plot: gtk::DrawingArea,
+    selected_at: Cell<Option<Instant>>,
+    inspector_text: gtk::Label,
+    inspector_previous: gtk::Button,
+    inspector_next: gtk::Button,
+    inspector_live: gtk::Button,
+    inspector_copy: gtk::Button,
+    inspector_feedback: gtk::Label,
+    on_copy: RefCell<Option<CopyInspection>>,
 }
 
 impl ChartState {
+    fn inspect(&self, action: InspectionAction) {
+        let points = self.history.borrow().recent(Instant::now());
+        self.selected_at
+            .set(inspection_target(&points, self.selected_at.get(), action));
+        self.inspector_feedback.set_text("");
+        self.refresh();
+    }
+
+    fn inspect_pointer(&self, x: f64, width: i32) {
+        let now = Instant::now();
+        let points = self.history.borrow().recent(now);
+        let Some((first, last)) = points.first().zip(points.last()) else {
+            return;
+        };
+        let domain = self.animation.borrow().display_domain(first.measured_at, last.measured_at);
+        if let Some(stamp) = chart_sample_at_x(&points, domain, x, width) {
+            self.selected_at.set(Some(stamp));
+            self.inspector_feedback.set_text("");
+            self.refresh();
+        }
+    }
+
+    fn copy_inspection(&self) {
+        let now = Instant::now();
+        let points = self.history.borrow().recent(now);
+        let report = chart_inspection_report(&points, self.selected_at.get(), now);
+        let result = match report {
+            Some(report) => self.on_copy.borrow().as_ref().map_or_else(
+                || Err("Копирование недоступно".to_owned()),
+                |copy| copy(report),
+            ),
+            None => Err("Нет доступного замера для копирования".to_owned()),
+        };
+        self.inspector_feedback.set_text(match result {
+            Ok(()) => "Замер скопирован",
+            Err(ref error) => error,
+        });
+    }
+
     fn animate_sample(
         self: &Rc<Self>,
         view: &gtk::Widget,
@@ -533,6 +747,27 @@ impl ChartState {
         )));
         self.gauge_canvas.queue_draw();
         let points = history.recent(now);
+        // A pinned Instant can fall out of the 60s window. Never silently
+        // claim that the next sample was the user's old selection.
+        if self
+            .selected_at
+            .get()
+            .is_some_and(|at| !points.iter().any(|point| point.measured_at == at))
+        {
+            self.selected_at.set(None);
+            self.inspector_feedback.set_text("Выбранный замер вышел из истории");
+        }
+        let selected = self.selected_at.get();
+        let index = selected
+            .and_then(|at| points.iter().position(|point| point.measured_at == at))
+            .unwrap_or_else(|| points.len().saturating_sub(1));
+        self.inspector_previous.set_sensitive(!points.is_empty() && index > 0);
+        self.inspector_next.set_sensitive(selected.is_some());
+        self.inspector_live.set_sensitive(selected.is_some());
+        self.inspector_copy
+            .set_sensitive(!points.is_empty() && self.on_copy.borrow().is_some());
+        self.inspector_text
+            .set_text(&chart_inspection_text(&points, selected, now));
         let show_gpu = self.gpu.borrow().is_fresh(now);
         self.gpu_axis.set_visible(show_gpu);
         self.plot
@@ -548,10 +783,11 @@ impl ChartState {
         self.ram_axis
             .set_text(&format!("RAM {:.1}–{:.1}%", ram_axis.min, ram_axis.max));
         let plot_label = format!(
-            "История нагрузки с адаптивными шкалами. {}. CPU: {}, RAM: {}",
+            "История нагрузки с адаптивными шкалами. {}. CPU: {}, RAM: {}. {}. Стрелки влево/вправо выбирают замеры, Home/End переходят к началу/концу.",
             measured_history_caption(&points),
             meter_text(cpu, false),
-            meter_text(ram, true)
+            meter_text(ram, true),
+            chart_inspection_text(&points, selected, now)
         );
         self.plot.set_tooltip_text(Some(&plot_label));
         self.plot
@@ -609,7 +845,9 @@ impl SystemCharts {
         plot.set_content_width(320);
         plot.set_content_height(200);
         plot.set_hexpand(true);
-        plot.set_can_target(false);
+        plot.set_can_target(true);
+        plot.set_focusable(true);
+        plot.add_css_class("system-chart-inspectable");
         root.append(&plot);
 
         let axes = gtk::Box::new(gtk::Orientation::Horizontal, 12);
@@ -627,6 +865,56 @@ impl SystemCharts {
         caption.set_xalign(0.0);
         caption.set_wrap(true);
         root.append(&caption);
+
+        // A focusable, accessible workbench for genuine measured points.
+        // The chosen Instant is independent of visual gauge interpolation.
+        let inspector = gtk::Box::new(gtk::Orientation::Vertical, 7);
+        inspector.add_css_class("system-chart-inspector");
+        let controls = gtk::FlowBox::new();
+        controls.set_selection_mode(gtk::SelectionMode::None);
+        controls.set_min_children_per_line(1);
+        controls.set_max_children_per_line(4);
+        controls.set_column_spacing(6);
+        controls.set_row_spacing(6);
+        controls.add_css_class("system-chart-inspector-controls");
+        let previous = gtk::Button::with_label("◀");
+        previous.set_tooltip_text(Some("Предыдущий реальный замер"));
+        previous.update_property(&[gtk::accessible::Property::Label(
+            "Предыдущий замер нагрузки",
+        )]);
+        let next = gtk::Button::with_label("▶");
+        next.set_tooltip_text(Some("Следующий реальный замер"));
+        next.update_property(&[gtk::accessible::Property::Label(
+            "Следующий замер нагрузки",
+        )]);
+        let live = gtk::Button::with_label("СЕЙЧАС");
+        live.set_tooltip_text(Some("Вернуться к последнему полученному замеру"));
+        live.update_property(&[gtk::accessible::Property::Label(
+            "Вернуться к последнему замеру",
+        )]);
+        let copy = gtk::Button::with_label("КОПИРОВАТЬ");
+        copy.set_tooltip_text(Some("Скопировать фактические значения выбранного замера"));
+        copy.update_property(&[gtk::accessible::Property::Label(
+            "Скопировать выбранный измеренный снимок",
+        )]);
+        for button in [&previous, &next, &live, &copy] {
+            button.add_css_class("system-chart-inspector-button");
+            controls.insert(button, -1);
+        }
+        inspector.append(&controls);
+        let inspector_text = gtk::Label::new(Some("НЕТ ЗАМЕРОВ"));
+        inspector_text.set_xalign(0.0);
+        inspector_text.set_wrap(true);
+        inspector_text.set_selectable(true);
+        inspector_text.add_css_class("system-chart-inspector-text");
+        inspector.append(&inspector_text);
+        let feedback = gtk::Label::new(None);
+        feedback.set_xalign(0.0);
+        feedback.set_wrap(true);
+        feedback.add_css_class("system-chart-inspector-feedback");
+        inspector.append(&feedback);
+        root.append(&inspector);
+
         let state = Rc::new(ChartState {
             history: RefCell::new(PulseHistory::default()),
             gpu: RefCell::new(GpuPulseCoupler::default()),
@@ -640,6 +928,14 @@ impl SystemCharts {
             gpu_axis,
             caption,
             plot: plot.clone(),
+            selected_at: Cell::new(None),
+            inspector_text,
+            inspector_previous: previous.clone(),
+            inspector_next: next.clone(),
+            inspector_live: live.clone(),
+            inspector_copy: copy.clone(),
+            inspector_feedback: feedback,
+            on_copy: RefCell::new(None),
         });
         let weak = Rc::downgrade(&state);
         gauge_canvas.set_draw_func(move |_, cr, width, height| {
@@ -681,8 +977,70 @@ impl SystemCharts {
                     state.gpu.borrow().is_fresh(now),
                     extent,
                 );
+                draw_inspection_marker(
+                    cr,
+                    width,
+                    height,
+                    &points,
+                    domain,
+                    extent,
+                    state.selected_at.get(),
+                );
             }
         });
+        for (button, action) in [
+            (&previous, InspectionAction::Earlier),
+            (&next, InspectionAction::Later),
+            (&live, InspectionAction::Live),
+        ] {
+            let weak = Rc::downgrade(&state);
+            button.connect_clicked(move |_| {
+                if let Some(state) = weak.upgrade() {
+                    state.inspect(action);
+                }
+            });
+        }
+        let weak = Rc::downgrade(&state);
+        copy.connect_clicked(move |_| {
+            if let Some(state) = weak.upgrade() {
+                state.copy_inspection();
+            }
+        });
+        let weak = Rc::downgrade(&state);
+        let chart_pointer = gtk::GestureClick::new();
+        chart_pointer.connect_pressed(move |gesture, _, x, _| {
+            if let Some(state) = weak.upgrade() {
+                let width = gesture
+                    .widget()
+                    .map_or(0, |widget| widget.width());
+                state.inspect_pointer(x, width);
+                state.plot.grab_focus();
+            }
+        });
+        plot.add_controller(chart_pointer);
+        let key = gtk::EventControllerKey::new();
+        let weak = Rc::downgrade(&state);
+        key.connect_key_pressed(move |_, pressed, _, modifiers| {
+            if modifiers.intersects(
+                gtk::gdk::ModifierType::CONTROL_MASK
+                    | gtk::gdk::ModifierType::ALT_MASK
+                    | gtk::gdk::ModifierType::SUPER_MASK,
+            ) {
+                return gtk::glib::Propagation::Proceed;
+            }
+            let action = match pressed {
+                gtk::gdk::Key::Left => InspectionAction::Earlier,
+                gtk::gdk::Key::Right => InspectionAction::Later,
+                gtk::gdk::Key::Home => InspectionAction::First,
+                gtk::gdk::Key::End => InspectionAction::Live,
+                _ => return gtk::glib::Propagation::Proceed,
+            };
+            if let Some(state) = weak.upgrade() {
+                state.inspect(action);
+            }
+            gtk::glib::Propagation::Stop
+        });
+        plot.add_controller(key);
         let weak = Rc::downgrade(&state);
         root.connect_unmap(move |_| {
             if let Some(state) = weak.upgrade() {
@@ -690,10 +1048,23 @@ impl SystemCharts {
                 state.animation.borrow_mut().reset();
                 state.history.borrow_mut().clear();
                 state.gpu.borrow_mut().reset();
+                state.selected_at.set(None);
+                state.inspector_feedback.set_text("");
                 state.refresh();
             }
         });
+        state.refresh();
         Self { root, state }
+    }
+
+    /// Clipboard transport is owned by the embedding shell, not by the
+    /// reusable chart or the process sampler.
+    pub fn set_copy_handler(
+        &self,
+        on_copy: impl Fn(String) -> Result<(), String> + 'static,
+    ) {
+        self.state.on_copy.replace(Some(Box::new(on_copy)));
+        self.state.refresh();
     }
 
     pub fn widget(&self) -> gtk::Widget {
@@ -782,6 +1153,106 @@ mod tests {
             memory_total_kib: Some(1000),
             memory_available_kib: used.map(|value| 1000 - value),
         }
+    }
+
+    #[test]
+    fn inspector_moves_only_between_actual_pulses_and_returns_to_live() {
+        let t = Instant::now();
+        let points = [0_u64, 500, 1000]
+            .into_iter()
+            .map(|ms| ChartPoint {
+                measured_at: t + Duration::from_millis(ms),
+                cpu: Some(10.0 + ms as f64 / 100.0),
+                ram: Some(50.0),
+                gpu: None,
+            })
+            .collect::<Vec<_>>();
+        let second = t + Duration::from_millis(500);
+        assert_eq!(inspection_target(&points, None, InspectionAction::Earlier), Some(second));
+        assert_eq!(
+            inspection_target(&points, Some(second), InspectionAction::Earlier),
+            Some(t)
+        );
+        assert_eq!(
+            inspection_target(&points, Some(t), InspectionAction::Earlier),
+            Some(t)
+        );
+        assert_eq!(
+            inspection_target(&points, Some(t), InspectionAction::Later),
+            Some(second)
+        );
+        assert_eq!(
+            inspection_target(&points, Some(second), InspectionAction::Later),
+            None
+        );
+        assert_eq!(inspection_target(&points, None, InspectionAction::First), Some(t));
+        assert_eq!(inspection_target(&points, Some(t), InspectionAction::Live), None);
+        assert_eq!(inspection_target(&[], None, InspectionAction::Earlier), None);
+        assert_eq!(inspected_chart_point(&points, Some(second)).unwrap().cpu, Some(15.0));
+        assert_eq!(
+            inspected_chart_point(&points[1..], Some(t)),
+            None,
+            "an expired selected Instant cannot silently impersonate another sample"
+        );
+    }
+
+    #[test]
+    fn pointer_hit_tests_share_the_measured_time_axis_and_reject_invalid_geometry() {
+        let t = Instant::now();
+        let points = [0_u64, 500, 1000]
+            .into_iter()
+            .map(|ms| ChartPoint {
+                measured_at: t + Duration::from_millis(ms),
+                cpu: Some(50.0),
+                ram: None,
+                gpu: None,
+            })
+            .collect::<Vec<_>>();
+        let domain = ChartTimeDomain::measured(t, t + Duration::from_millis(1000));
+        assert_eq!(chart_sample_at_x(&points, domain, 41.0, 349), Some(t));
+        assert_eq!(
+            chart_sample_at_x(&points, domain, 191.0, 349),
+            Some(t + Duration::from_millis(500))
+        );
+        assert_eq!(
+            chart_sample_at_x(&points, domain, 341.0, 349),
+            Some(t + Duration::from_millis(1000))
+        );
+        assert_eq!(chart_sample_at_x(&points, domain, f64::NAN, 349), None);
+        assert_eq!(chart_sample_at_x(&points, domain, 191.0, 30), None);
+        assert_eq!(chart_sample_at_x(&[], domain, 191.0, 349), None);
+    }
+
+    #[test]
+    fn historical_copy_preserves_missing_gpu_and_explicit_snapshot_age() {
+        let t = Instant::now();
+        let points = vec![
+            ChartPoint {
+                measured_at: t,
+                cpu: Some(10.0),
+                ram: Some(33.3),
+                gpu: None,
+            },
+            ChartPoint {
+                measured_at: t + Duration::from_secs(2),
+                cpu: Some(25.0),
+                ram: None,
+                gpu: Some(72.0),
+            },
+        ];
+        let now = t + Duration::from_secs(3);
+        let history = chart_inspection_report(&points, Some(t), now).unwrap();
+        assert!(history.contains("Замер: 1 из 2"));
+        assert!(history.contains("От последнего: 2.0 с"));
+        assert!(history.contains("Возраст: 3.0 с"));
+        assert!(history.contains("RAM: 33.3%"));
+        assert!(history.contains("GPU: —"));
+        assert!(chart_inspection_text(&points, None, now).contains("ТЕКУЩИЙ ЗАМЕР"));
+        assert!(chart_inspection_text(&points, Some(t), now).contains("ВЫБРАН ЗАМЕР"));
+        assert!(chart_inspection_text(&points, None, now + Duration::from_secs(3))
+            .contains("ПОСЛЕДНИЙ ЗАМЕР УСТАРЕЛ"));
+        assert!(chart_inspection_report(&points, Some(t - Duration::from_secs(1)), now).is_none());
+        assert!(chart_inspection_report(&[], None, now).is_none());
     }
 
     #[test]

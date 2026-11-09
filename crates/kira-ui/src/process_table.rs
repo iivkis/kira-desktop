@@ -625,7 +625,11 @@ impl ProcessTableState {
                     self.rows.remove(&old.wrapper);
                 }
             }
-            let row = if let Some(row) = self.cache.borrow().get(&item.pid).cloned() {
+            // Finish the immutable borrow before creating a missing row.
+            // RefCell temporaries in an if-let condition otherwise live into
+            // the else arm and panic on borrow_mut during first population.
+            let cached = { self.cache.borrow().get(&item.pid).cloned() };
+            let row = if let Some(row) = cached {
                 row
             } else {
                 let row = ProcessVisualRow::new(item, self.weak_self.clone());

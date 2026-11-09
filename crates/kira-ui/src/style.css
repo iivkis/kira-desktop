@@ -224,6 +224,36 @@ window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
 .system-charts .system-chart-cpu { color: #fca311; }
 .system-charts .system-chart-ram { color: #ffffff; }
 .system-charts .system-chart-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+/* The inspector reads sampled points, not interpolated gauge values. */
+.system-charts .system-chart-inspectable { outline-offset: 2px; }
+.system-charts .system-chart-inspectable:focus-visible {
+  outline: 2px solid #fca311;
+}
+.system-charts .system-chart-inspector {
+  background: #000000; border-left: 2px solid #fca311;
+  padding: 10px 12px;
+}
+.system-charts .system-chart-inspector-controls {
+  background: transparent;
+}
+.system-charts .system-chart-inspector-button {
+  color: #e5e5e5; background: #14213d;
+  border: 1px solid #e5e5e5; border-radius: 2px;
+  min-height: 34px; padding: 4px 9px;
+  font-size: 11px; font-weight: 700;
+}
+.system-charts .system-chart-inspector-button:hover,
+.system-charts .system-chart-inspector-button:focus-visible {
+  color: #fca311; border-color: #fca311;
+}
+.system-charts .system-chart-inspector-button:disabled { opacity: 0.45; }
+.system-charts .system-chart-inspector-text {
+  color: #ffffff; font-size: 11px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.system-charts .system-chart-inspector-feedback {
+  color: #fca311; font-size: 11px;
+}
 /* Retained, keyboard-operable process rows. Never color missing telemetry as valid. */
 .process-table entry, .process-table dropdown { background: #000000; color: #ffffff; }
 .kira-popup .process-table button.process-row {

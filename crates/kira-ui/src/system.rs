@@ -278,6 +278,10 @@ impl SystemMonitor {
         on_copy: impl Fn(String) -> Result<(), String> + 'static,
     ) {
         let shared = Rc::new(on_copy);
+        self.charts.set_copy_handler({
+            let shared = shared.clone();
+            move |sample| shared(sample)
+        });
         self.report.set_copy_handler({
             let shared = shared.clone();
             move |report| shared(report)
