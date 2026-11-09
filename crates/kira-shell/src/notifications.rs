@@ -133,7 +133,10 @@ fn pooled_right_transient(popup: &PopupHost) -> bool {
     .any(|kind| popup.is_transient_active(kind))
 }
 
-fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)> {
+fn current_target(
+    popup: &PopupHost,
+    retained: Option<&gtk::gdk::Monitor>,
+) -> Option<(gtk::gdk::Monitor, ToastLayout)> {
     let monitors = live_monitors();
     let outputs = monitors
         .iter()
@@ -152,7 +155,9 @@ fn current_target(popup: &PopupHost) -> Option<(gtk::gdk::Monitor, ToastLayout)>
         let index = preferred?;
         blocked[index] = true;
     }
-    let (index, layout) = kira_ui::toast_output_plan_unobstructed(&outputs, preferred, &blocked)?;
+    let previous = retained.and_then(|last| monitors.iter().position(|monitor| monitor == last));
+    let (index, layout) =
+        kira_ui::toast_output_plan_stable(&outputs, preferred, previous, &blocked)?;
     Some((monitors[index].clone(), layout))
 }
 
@@ -164,6 +169,13 @@ fn toast_target_unobstructed(
     same_monitor_as_transient: Option<bool>,
 ) -> bool {
     !right_transient_active || same_monitor_as_transient == Some(false)
+}
+
+/// GTK may finish dispatching a button from the previous snapshot
+/// after a monitor move. The Shell requires live ownership, an actually
+/// painted active card and a still-current physical destination.
+fn toast_intent_authorized(owned: bool, painted: bool, current_target: bool) -> bool {
+    owned && painted && current_target
 }
 
 /// Never schedule an already-due FIFO deadline when the host is covered,
@@ -281,7 +293,7 @@ impl Service {
         self.owned.set(false);
         self.bus.borrow_mut().take();
         if let Some(host) = self.host.borrow().as_ref() {
-            host.hide();
+            host.hide_all();
         }
         if let Some(id) = self.owner_id.borrow_mut().take() {
             gio::bus_unown_name(id);
@@ -304,7 +316,17 @@ impl Service {
     }
 
     fn on_intent(self: &Rc<Self>, intent: NotificationIntent) {
-        if !self.owned.get() {
+        let id = match &intent {
+            NotificationIntent::Close(id) | NotificationIntent::Action(id, _) => *id,
+        };
+        // A GTK signal queued on an old monitor, unpainted card or stale
+        // snapshot must not invoke an otherwise live Freedesktop ID.
+        let painted = self
+            .host
+            .borrow()
+            .as_ref()
+            .is_some_and(|host| host.is_painted(id));
+        if !toast_intent_authorized(self.owned.get(), painted, self.target_is_current()) {
             return;
         }
         match intent {
@@ -341,7 +363,7 @@ impl Service {
     }
 
     fn on_painted(self: &Rc<Self>, ids: &[u32]) {
-        if !self.owned.get() || ids.is_empty() || ids.len() > 3 {
+        if !self.owned.get() || ids.is_empty() || ids.len() > 3 || !self.target_is_current() {
             return;
         }
         if !self
@@ -366,6 +388,15 @@ impl Service {
         }
     }
 
+    fn target_is_current(&self) -> bool {
+        let host = self.host.borrow();
+        let Some(active) = host.as_ref().and_then(NotificationHostSet::active_monitor) else {
+            return false;
+        };
+        current_target(&self.popup, Some(&active))
+            .is_some_and(|(target, _)| target == active && self.can_show_on(&target))
+    }
+
     fn can_show_on(&self, target: &gtk::gdk::Monitor) -> bool {
         // Double-check that a newly raised pooled transient has not
         // invalidated the chosen target while the GTK host was selected.
@@ -375,7 +406,12 @@ impl Service {
 
     fn sync(self: &Rc<Self>) {
         let now = Instant::now();
-        let target = current_target(&self.popup);
+        let retained = self
+            .host
+            .borrow()
+            .as_ref()
+            .and_then(NotificationHostSet::active_monitor);
+        let target = current_target(&self.popup, retained.as_ref());
         let (ready, switched) = {
             let borrowed = self.host.borrow();
             if let Some(host) = borrowed.as_ref() {
@@ -537,7 +573,7 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
         eprintln!("kira-shell: no shaped pointer input; leaving notifications unowned");
         return;
     }
-    let Some((monitor, layout)) = current_target(&popup) else {
+    let Some((monitor, layout)) = current_target(&popup, None) else {
         eprintln!("kira-shell: no safe monitor geometry for notifications");
         return;
     };
@@ -648,6 +684,15 @@ mod tests {
         // the queue, even before the bar has mapped.
         assert!(toast_target_unobstructed(false, None));
         assert!(toast_target_unobstructed(false, Some(true)));
+    }
+
+    #[test]
+    fn notification_intents_require_painted_current_output_and_bus_ownership() {
+        assert!(toast_intent_authorized(true, true, true));
+        assert!(!toast_intent_authorized(true, false, true));
+        assert!(!toast_intent_authorized(true, true, false));
+        assert!(!toast_intent_authorized(false, true, true));
+        assert!(!toast_intent_authorized(false, false, false));
     }
 
     #[test]
