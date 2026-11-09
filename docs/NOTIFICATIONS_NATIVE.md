@@ -176,3 +176,34 @@ of eight and old monitor input regions are destroyed on disconnection.
 physical occlusion by detached windows, fractional scale/hotplug while
 a card is pressed, plus simultaneous independent per-output notification
 queues. No visual/TENET/pixel flags are set by this work.
+
+### Stable output affinity and revocable action/paint leases (unreviewed)
+
+A moving or temporarily blocked Top Bar no longer causes the active
+notification to hop between arbitrary GDK enumeration indices. The reusable
+`toast_output_plan_stable` policy tries the real bar monitor, then the
+previous still-usable **GDK object**, then another usable output. Blockers
+are computed only from actual pooled right-side transients. Unknown popup
+output affinity remains fail-closed; detached Niri-managed windows are not
+mistaken for pooled transients.
+
+A scale-factor change or a logical output resize on the **same** monitor
+now invalidates its old shaped-input region, its animation/card snapshot and
+its paint lease. `NotificationHostSet::select` reports `Changed` for
+in-place geometry/scale changes, and Shell requeues the visible FIFO entries
+until the new mapped GTK frames are acknowledged. A GDK monitor reorder
+alone does not force a reroute while the previous safe fallback still exists.
+
+Each GTK card now carries an epoch-bound action callback. A queued button
+activation from an old card (even when the same host is later re-selected or
+the same Freedesktop ID is reused) cannot invoke a new notification. The
+Shell also requires current bus ownership, correct current physical output
+and a **painted active ID** before accepting any on-screen Close/Action or
+paint ACK. Programmatic D-Bus `CloseNotification` remains independent,
+as required by the specification.
+
+CI tests cover order changes, blocked outputs, in-place geometry and scale,
+lease invalidation, and action authorization. They **do not** demonstrate
+fractional scaling, click-through, focus, hotplug or frame parity on a
+real nested compositor. The single shared FIFO still selects only one
+destination at a time, not independent simultaneous per-output queues.
