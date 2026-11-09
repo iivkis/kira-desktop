@@ -2,7 +2,7 @@
 //! and launcher-model.ts. No application discovery or process execution here.
 use std::cell::{Cell, RefCell};
 use std::collections::{HashMap, HashSet};
-use std::rc::Rc;
+use std::rc::{Rc, Weak};
 
 use gtk::prelude::*;
 
@@ -87,6 +87,71 @@ pub fn next_launcher_selection(current: usize, count: usize, direction: i8) -> u
     }
 }
 
+/// The result list is keyboard-operable even after focus leaves SearchEntry.
+/// Navigation never wraps into a nonexistent or undisplayed catalogue row.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum LauncherNavigation {
+    Previous,
+    Next,
+    First,
+    Last,
+    PagePrevious,
+    PageNext,
+}
+
+pub fn launcher_selection_after(
+    current: usize,
+    count: usize,
+    action: LauncherNavigation,
+) -> usize {
+    if count == 0 {
+        return 0;
+    }
+    let current = current.min(count - 1);
+    match action {
+        LauncherNavigation::Previous => next_launcher_selection(current, count, -1),
+        LauncherNavigation::Next => next_launcher_selection(current, count, 1),
+        LauncherNavigation::First => 0,
+        LauncherNavigation::Last => count - 1,
+        LauncherNavigation::PagePrevious => current.saturating_sub(8),
+        LauncherNavigation::PageNext => current.saturating_add(8).min(count - 1),
+    }
+}
+
+/// Independent, tested gates for user requests while the Shell's async GIO
+/// worker is in flight. GTK never assumes that a launch has succeeded.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct LauncherRequests {
+    pub refreshing: bool,
+    pub launching: bool,
+}
+
+impl LauncherRequests {
+    pub fn begin_refresh(&mut self) -> bool {
+        if self.refreshing {
+            return false;
+        }
+        self.refreshing = true;
+        true
+    }
+
+    pub fn finish_refresh(&mut self) {
+        self.refreshing = false;
+    }
+
+    pub fn begin_launch(&mut self) -> bool {
+        if self.launching {
+            return false;
+        }
+        self.launching = true;
+        true
+    }
+
+    pub fn finish_launch(&mut self) {
+        self.launching = false;
+    }
+}
+
 pub fn matching_apps_label(number: usize) -> String {
     let rest = number % 100;
     let digit = rest % 10;
@@ -142,6 +207,7 @@ fn update_app_row(button: &gtk::Button, app: &ApplicationEntry) {
 }
 
 struct LauncherState {
+    weak_self: Weak<LauncherState>,
     list: gtk::Box,
     selection_flow: FlowIndicator,
     reflow: ReflowScope,
@@ -149,6 +215,10 @@ struct LauncherState {
     cache: RefCell<HashMap<String, (gtk::Button, ReflowRow, ApplicationEntry)>>,
     visible_ids: RefCell<Vec<String>>,
     search: gtk::SearchEntry,
+    clear: gtk::Button,
+    refresh: gtk::Button,
+    refresh_action: RefCell<Option<Rc<dyn Fn()>>>,
+    requests: RefCell<LauncherRequests>,
     count: gtk::Label,
     status: gtk::Label,
     applications: RefCell<Vec<ApplicationEntry>>,
@@ -159,6 +229,55 @@ struct LauncherState {
 }
 
 impl LauncherState {
+    fn feedback(&self, message: &str, error: bool) {
+        self.status.set_text(message);
+        if error {
+            self.status.remove_css_class("muted");
+            self.status.add_css_class("config-error");
+        } else {
+            self.status.remove_css_class("config-error");
+            self.status.add_css_class("muted");
+        }
+    }
+
+    fn update_actions(&self) {
+        let pending = *self.requests.borrow();
+        self.refresh.set_sensitive(
+            self.loaded.get() && !pending.refreshing && self.refresh_action.borrow().is_some(),
+        );
+        self.clear.set_visible(!self.search.text().is_empty());
+        for button in self.rows.borrow().iter() {
+            button.set_sensitive(!pending.launching);
+        }
+    }
+
+    fn request_refresh(&self) {
+        let callback = self.refresh_action.borrow().clone();
+        let Some(callback) = callback else {
+            return;
+        };
+        if !self.requests.borrow_mut().begin_refresh() {
+            return;
+        }
+        self.feedback("Обновление списка приложений…", false);
+        self.update_actions();
+        callback();
+    }
+
+    fn request_launch(&self, id: &str) {
+        if let Some(index) = self.visible_ids.borrow().iter().position(|item| item == id) {
+            self.select(index, false);
+        } else {
+            return;
+        }
+        if !self.requests.borrow_mut().begin_launch() {
+            return;
+        }
+        self.feedback("Запуск приложения…", false);
+        self.update_actions();
+        (self.on_launch)(id.to_owned());
+    }
+
     fn select(&self, index: usize, scroll: bool) {
         let rows = self.rows.borrow();
         if rows.is_empty() {
@@ -259,9 +378,13 @@ impl LauncherState {
                 button.add_css_class("app-row");
                 button.set_halign(gtk::Align::Fill);
                 update_app_row(&button, app);
-                let launch = self.on_launch.clone();
+                let weak = self.weak_self.clone();
                 let id = app.id.clone();
-                button.connect_clicked(move |_| (launch)(id.clone()));
+                button.connect_clicked(move |_| {
+                    if let Some(state) = weak.upgrade() {
+                        state.request_launch(&id);
+                    }
+                });
                 let row = ReflowRow::new(&button.clone().upcast());
                 self.list.append(&row);
                 self.cache
@@ -281,14 +404,31 @@ impl LauncherState {
             self.rows.borrow_mut().push(button);
         }
         if found.is_empty() {
-            let empty = gtk::Label::new(Some(if !self.loaded.get() {
-                "ЗАГРУЗКА ПРИЛОЖЕНИЙ…"
-            } else {
-                "Приложения не найдены"
-            }));
-            empty.add_css_class("muted");
+            let empty = gtk::Box::new(gtk::Orientation::Vertical, 8);
             empty.set_margin_top(22);
             empty.set_margin_bottom(20);
+            empty.set_halign(gtk::Align::Center);
+            let message = gtk::Label::new(Some(if !self.loaded.get() {
+                "ЗАГРУЗКА ПРИЛОЖЕНИЙ…"
+            } else if !query.trim().is_empty() {
+                "Приложения не найдены"
+            } else {
+                "Нет доступных приложений"
+            }));
+            message.add_css_class("muted");
+            empty.append(&message);
+            if self.loaded.get() && !query.trim().is_empty() {
+                let reset = gtk::Button::with_label("ОЧИСТИТЬ ПОИСК");
+                reset.add_css_class("launcher-empty-action");
+                let weak = self.weak_self.clone();
+                reset.connect_clicked(move |_| {
+                    if let Some(state) = weak.upgrade() {
+                        state.search.set_text("");
+                        state.search.grab_focus();
+                    }
+                });
+                empty.append(&reset);
+            }
             self.list.append(&empty);
         } else if found.len() > MAX_DISPLAYED {
             let more = gtk::Label::new(Some(&format!(
@@ -302,21 +442,55 @@ impl LauncherState {
         self.visible_ids
             .replace(visible.iter().map(|(id, _)| id.clone()).collect());
         self.select(0, false);
+        self.update_actions();
         if let Some(snapshot) = previous {
             self.reflow.play(snapshot, &visible);
         }
     }
 
     fn launch_selected(&self) {
-        let filtered = filter_applications(
-            &self.applications.borrow(),
-            &self.search.text(),
-            MAX_DISPLAYED,
-        );
-        if let Some(app) = filtered.get(self.selected.get()) {
-            (self.on_launch)(app.id.clone());
+        if let Some(id) = self.visible_ids.borrow().get(self.selected.get()).cloned() {
+            self.request_launch(&id);
         }
     }
+}
+
+/// SearchEntry and rows share navigation. SearchEntry keeps ordinary
+/// Home/End caret movement; Ctrl+Home/End navigates results explicitly.
+fn launcher_key_controller(state: &Rc<LauncherState>) -> gtk::EventControllerKey {
+    let key = gtk::EventControllerKey::new();
+    let weak = Rc::downgrade(state);
+    key.connect_key_pressed(move |_, pressed, _, modifiers| {
+        let Some(state) = weak.upgrade() else {
+            return gtk::glib::Propagation::Proceed;
+        };
+        if modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK)
+            && (pressed == gtk::gdk::Key::r || pressed == gtk::gdk::Key::R)
+        {
+            state.request_refresh();
+            return gtk::glib::Propagation::Stop;
+        }
+        if state.search.has_focus()
+            && !modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK)
+            && matches!(pressed, gtk::gdk::Key::Home | gtk::gdk::Key::End)
+        {
+            return gtk::glib::Propagation::Proceed;
+        }
+        let action = match pressed {
+            gtk::gdk::Key::Down => LauncherNavigation::Next,
+            gtk::gdk::Key::Up => LauncherNavigation::Previous,
+            gtk::gdk::Key::Home => LauncherNavigation::First,
+            gtk::gdk::Key::End => LauncherNavigation::Last,
+            gtk::gdk::Key::Page_Up => LauncherNavigation::PagePrevious,
+            gtk::gdk::Key::Page_Down => LauncherNavigation::PageNext,
+            _ => return gtk::glib::Propagation::Proceed,
+        };
+        let count = state.rows.borrow().len();
+        let next = launcher_selection_after(state.selected.get(), count, action);
+        state.select(next, true);
+        gtk::glib::Propagation::Stop
+    });
+    key
 }
 
 pub struct Launcher {
@@ -343,7 +517,17 @@ impl Launcher {
         let clear = gtk::Button::with_label("×");
         clear.set_tooltip_text(Some("Очистить поиск"));
         clear.update_property(&[gtk::accessible::Property::Label("Очистить поиск")]);
+        clear.add_css_class("launcher-clear");
+        clear.set_visible(false);
         query_row.append(&clear);
+        let refresh = gtk::Button::with_label("⟳");
+        refresh.add_css_class("launcher-refresh");
+        refresh.set_tooltip_text(Some("Обновить список установленных приложений (Ctrl+R)"));
+        refresh.update_property(&[gtk::accessible::Property::Label(
+            "Обновить список приложений",
+        )]);
+        refresh.set_sensitive(false);
+        query_row.append(&refresh);
         root.append(&query_row);
 
         let count = gtk::Label::new(None);
@@ -368,10 +552,11 @@ impl Launcher {
         let status = gtk::Label::new(None);
         status.set_xalign(0.0);
         status.set_wrap(true);
-        status.add_css_class("config-error");
+        status.add_css_class("muted");
         root.append(&status);
 
-        let state = Rc::new(LauncherState {
+        let state = Rc::new_cyclic(|weak| LauncherState {
+            weak_self: weak.clone(),
             list,
             selection_flow,
             reflow,
@@ -379,6 +564,10 @@ impl Launcher {
             cache: RefCell::new(HashMap::new()),
             visible_ids: RefCell::new(Vec::new()),
             search: search.clone(),
+            clear: clear.clone(),
+            refresh: refresh.clone(),
+            refresh_action: RefCell::new(None),
+            requests: RefCell::new(LauncherRequests::default()),
             count,
             status,
             applications: RefCell::new(Vec::new()),
@@ -391,7 +580,11 @@ impl Launcher {
             let weak = Rc::downgrade(&state);
             move |_| {
                 if let Some(state) = weak.upgrade() {
-                    state.status.set_text("");
+                    if !state.requests.borrow().launching
+                        && !state.requests.borrow().refreshing
+                    {
+                        state.feedback("", false);
+                    }
                     state.render(true);
                 }
             }
@@ -413,27 +606,16 @@ impl Launcher {
                 }
             }
         });
-        let key = gtk::EventControllerKey::new();
-        key.connect_key_pressed({
+        refresh.connect_clicked({
             let weak = Rc::downgrade(&state);
-            move |_, pressed, _, _| {
-                let Some(state) = weak.upgrade() else {
-                    return gtk::glib::Propagation::Proceed;
-                };
-                let count = state.rows.borrow().len();
-                let direction = if pressed == gtk::gdk::Key::Down {
-                    1
-                } else if pressed == gtk::gdk::Key::Up {
-                    -1
-                } else {
-                    return gtk::glib::Propagation::Proceed;
-                };
-                let next = next_launcher_selection(state.selected.get(), count, direction);
-                state.select(next, true);
-                gtk::glib::Propagation::Stop
+            move |_| {
+                if let Some(state) = weak.upgrade() {
+                    state.request_refresh();
+                }
             }
         });
-        search.add_controller(key);
+        search.add_controller(launcher_key_controller(&state));
+        root.add_controller(launcher_key_controller(&state));
         state.render(false);
         Self { root, state }
     }
@@ -441,11 +623,30 @@ impl Launcher {
     pub fn set_applications(&self, apps: Vec<ApplicationEntry>) {
         *self.state.applications.borrow_mut() = apps;
         self.state.loaded.set(true);
+        let refreshed = self.state.requests.borrow().refreshing;
+        self.state.requests.borrow_mut().finish_refresh();
+        if refreshed {
+            self.state.feedback("Список приложений обновлён", false);
+        }
         self.state.render(false);
     }
 
-    pub fn set_status(&self, status: &str) {
-        self.state.status.set_text(status);
+    /// The host performs GIO discovery in a worker. Repeated refresh clicks
+    /// are suppressed until set_applications delivers the observed catalogue.
+    pub fn set_refresh_handler(&self, on_refresh: impl Fn() + 'static) {
+        *self.state.refresh_action.borrow_mut() = Some(Rc::new(on_refresh));
+        self.state.update_actions();
+    }
+
+    /// Only the checked worker result ends an in-flight launch; UI never
+    /// optimistically reports that a desktop application started.
+    pub fn finish_launch(&self, result: &Result<(), String>) {
+        self.state.requests.borrow_mut().finish_launch();
+        self.state.update_actions();
+        match result {
+            Ok(()) => self.state.feedback("Приложение запущено", false),
+            Err(error) => self.state.feedback(error, true),
+        }
     }
 
     pub fn focus_search(&self) {
@@ -523,6 +724,36 @@ mod tests {
         assert_eq!(next_launcher_selection(3, 4, 1), 3);
         assert_eq!(next_launcher_selection(1, 4, 1), 2);
         assert_eq!(next_launcher_selection(0, 0, 1), 0);
+    }
+
+    #[test]
+    fn full_keyboard_navigation_is_bounded_and_respects_displayed_rows() {
+        use LauncherNavigation as Move;
+        assert_eq!(launcher_selection_after(4, 0, Move::Last), 0);
+        assert_eq!(launcher_selection_after(4, 5, Move::Next), 4);
+        assert_eq!(launcher_selection_after(1, 5, Move::Previous), 0);
+        assert_eq!(launcher_selection_after(3, 80, Move::First), 0);
+        assert_eq!(launcher_selection_after(3, 80, Move::Last), 79);
+        assert_eq!(launcher_selection_after(30, 80, Move::PagePrevious), 22);
+        assert_eq!(launcher_selection_after(30, 80, Move::PageNext), 38);
+        assert_eq!(launcher_selection_after(2, 5, Move::PagePrevious), 0);
+        assert_eq!(launcher_selection_after(2, 5, Move::PageNext), 4);
+        assert_eq!(launcher_selection_after(100, 5, Move::Next), 4);
+    }
+
+    #[test]
+    fn overlapping_refresh_and_launch_intents_wait_for_real_completion() {
+        let mut requests = LauncherRequests::default();
+        assert!(requests.begin_refresh());
+        assert!(!requests.begin_refresh());
+        assert!(requests.begin_launch());
+        assert!(!requests.begin_launch());
+        requests.finish_refresh();
+        assert!(requests.begin_refresh());
+        assert!(!requests.begin_launch());
+        requests.finish_launch();
+        assert!(requests.begin_launch());
+        assert!(!requests.begin_launch());
     }
 
     #[test]

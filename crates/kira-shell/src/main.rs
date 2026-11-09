@@ -570,6 +570,9 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
     let warning_sources = Rc::new(RefCell::new(WarningSources::default()));
     let state = Rc::new(RefCell::new(WorkspaceState::default()));
     let applications = Rc::new(RefCell::new(Vec::<ApplicationEntry>::new()));
+    // An empty observed GIO catalogue is still a finished load, never
+    // an infinite spinner while the Launcher is opened later.
+    let applications_loaded = Rc::new(Cell::new(false));
     let launcher: Rc<RefCell<Option<Launcher>>> = Rc::new(RefCell::new(None));
     let calendar = Rc::new(Calendar::new(|iso| {
         let display = gtk::gdk::Display::default()
@@ -647,6 +650,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let launcher = launcher.clone();
         let calendar = calendar.clone();
         let applications = applications.clone();
+        let applications_loaded = applications_loaded.clone();
         let system = system.clone();
         let settings = settings.clone();
         let tray_ui = tray_ui.clone();
@@ -660,9 +664,13 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                     handle
                         .get_or_insert_with(|| {
                             let sender = sender.clone();
+                            let refresh_sender = sender.clone();
                             let view =
                                 Launcher::new(move |id| launch_application(id, sender.clone()));
-                            if !applications.borrow().is_empty() {
+                            view.set_refresh_handler(move || {
+                                start_application_discovery(refresh_sender.clone());
+                            });
+                            if applications_loaded.get() {
                                 view.set_applications(applications.borrow().clone());
                             }
                             view
@@ -723,6 +731,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
         let warning_sources = warning_sources.clone();
         let workspace_pending = workspace_pending.clone();
         let applications = applications.clone();
+        let applications_loaded = applications_loaded.clone();
         let launcher = launcher.clone();
         let system = system.clone();
         let health = health.clone();
@@ -816,6 +825,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                         );
                     }
                     ShellUpdate::Applications(next) => {
+                        applications_loaded.set(true);
                         *applications.borrow_mut() = next.clone();
                         if let Some(view) = launcher.borrow().as_ref() {
                             view.set_applications(next);
@@ -828,10 +838,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                             .map(|error| format!("ЛАУНЧЕР: {error}"));
                         warnings_changed = true;
                         if let Some(view) = launcher.borrow().as_ref() {
-                            view.set_status(match result {
-                                Ok(()) => "Приложение запущено",
-                                Err(ref error) => error,
-                            });
+                            view.finish_launch(&result);
                         }
                     }
                     ShellUpdate::WorkspaceFocus(result) => {

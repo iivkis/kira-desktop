@@ -115,6 +115,21 @@ window.kira-popup.kira-detached { background: #000000; color: #ffffff; }
 .kira-popup .launcher .app-icon { min-width: 36px; min-height: 36px; }
 .kira-popup .launcher .app-name { font-size: 14px; font-weight: 700; color: #ffffff; }
 .kira-popup .launcher .app-description { font-size: 12px; color: #e5e5e5; }
+.kira-popup .launcher .launcher-clear,
+.kira-popup .launcher .launcher-refresh,
+.kira-popup .launcher .launcher-empty-action {
+  background: #14213d; color: #fca311; border: 1px solid #14213d;
+  border-radius: 0; min-height: 36px; font-weight: 700;
+}
+.kira-popup .launcher .launcher-clear:focus-visible,
+.kira-popup .launcher .launcher-refresh:focus-visible,
+.kira-popup .launcher .launcher-empty-action:focus-visible {
+  outline: 2px solid #fca311; outline-offset: -2px;
+}
+.kira-popup .launcher .launcher-refresh:disabled,
+.kira-popup .launcher .app-row:disabled { opacity: 0.55; }
+.kira-popup .launcher .launcher-empty-action { padding: 6px 14px; }
+
 /* Real editorial calendar, 8 columns incl. ISO weeks, six stable rows.
    No stock GtkCalendar: selected, today and adjacent days are independent. */
 .kira-calendar { background: #000000; color: #ffffff; }

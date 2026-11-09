@@ -73,6 +73,13 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 - GTK must remain responsive to stalled Core, slow application discovery and metric sampling.
 - Remove old code **when it has an identified native replacement or is explicitly no longer a shipping feature**. Missing features must stay listed, rather than being recreated deceptively.
 
+## Launcher usability, keyboard and trusted refresh
+
+- The reusable GTK Launcher now handles keyboard Up/Down/Home/End/PageUp/PageDown over only the actually displayed at-most-80 result rows, while preserving ordinary Home/End caret movement in the search field. Query changes use the existing bounded keyed FLIP and reset the selection/scroll; the active rail and nearest-row scroll continue to track real GTK geometry.
+- A native refresh button and Ctrl+R re-query actual GIO AppInfo in a background Shell worker. Concurrent refresh intents are ignored until the genuine catalogue result returns; the search text and existing results remain visible. Loading and a legitimately empty installed-app catalogue are distinct states even when the Shell received its snapshot before the user opened Launcher.
+- All row clicks and Enter share one launch-pending guard, disabling duplicate requests until the checked GIO response. The UI displays real success/error and reenables the rows; failures remain available in the 42px WarningInspector. No untrusted command execution or synthetic applications are introduced.
+- An explicit empty-query/no-matches recovery action, bounded catalogue feedback and canonical accent/focus styling complete the flow. Pure Rust tests cover busy transitions and bounded pagination. **GTK compilation and real nested-Niri input, focus, screen-reader and source-motion acceptance still need the manual full gate.**
+
 ## Calendar content recovery and native temporal groundwork
 
 - Replaced stock GTK Calendar with reusable `kira-ui::Calendar`: faithful six-row Monday-first eight-column grid with ISO week numbers, adjacent-month dates, live clock, local day labels, month/year navigation and ISO clipboard intent.

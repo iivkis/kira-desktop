@@ -38,6 +38,42 @@ toast and top-bar pixels. Neither manual smoke nor fast CI proves parity
 with the pinned `main`, keyboard focus, fractional scales or
 TENET animation. All 15 widget `verified` flags remain false.
 
+## Launcher keyboard and asynchronous GIO acceptance (not yet verified)
+
+In the isolated, packaged nested-Niri session with a real GIO desktop
+application catalogue:
+
+1. Open Launcher from the 42px bar. The search entry receives focus.
+   Before the first worker response it displays a loading state; once GIO
+   responds, an **actually empty** catalogue shows an explicit empty state
+   and permits Refresh, rather than spinning forever.
+2. Search using multiple name and description terms. Verify true GIO
+   display-name, description, GIcon, exact/prefix ranking, 80-row cap and
+   truthful match count. Clear both through the × button and the
+   no-results **ОЧИСТИТЬ ПОИСК** action; focus returns to the search entry.
+3. With the search input focused, use Up/Down and PageUp/PageDown;
+   Ctrl+Home/End selects the first/last visible row. Plain Home/End must
+   still move the text cursor. Move focus to an option button with Tab
+   and repeat Home/End/PageUp/PageDown. Selected rail and scroll must
+   never target a moving FLIP child or an undisplayed row.
+4. Press Ctrl+R or use Refresh with the query still active. Verify
+   current rows remain visible while the genuine GIO refresh runs,
+   concurrent requests are blocked, and the result replaces the list
+   without an additional Wayland popup. An empty catalogue is valid.
+5. Start a real application with Enter and with a row click, including
+   rapid repeated clicks. Only one request may remain outstanding until
+   the result arrives. Confirm success status, and test a genuine
+   deleted/failed desktop app: the returned failure must be visible in
+   Launcher and WarningInspector and buttons must become operable again.
+6. Detach and reattach Launcher, close and reopen the transient popup,
+   resize to 360×640 and 1920×1080, and enable reduced motion. The
+   existing GTK subtree/search and in-flight worker state must survive,
+   with one transient popup and correct keyboard/focus behavior.
+7. Compare same inputs and animation phases against frozen main at
+   `305139949f49176487ef9759fc32c228eadff408`.
+   This remains **unreviewed**; never mark launcher verified from pure
+   tests or a green fast CI.
+
 ## Paired source/native frame review (manual provenance required)
 
 After obtaining captures of the **same action** on the pinned main and
