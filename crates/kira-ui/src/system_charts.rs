@@ -327,7 +327,10 @@ fn history_paths(
     top: f64,
     bottom: f64,
 ) -> Vec<Vec<(f64, f64)>> {
-    let span = domain.end.saturating_duration_since(domain.start).as_secs_f64();
+    let span = domain
+        .end
+        .saturating_duration_since(domain.start)
+        .as_secs_f64();
     let axis = activity_axis(points, lane);
     let mut paths = Vec::new();
     let mut path = Vec::new();
@@ -551,7 +554,8 @@ impl ChartState {
             meter_text(ram, true)
         );
         self.plot.set_tooltip_text(Some(&plot_label));
-        self.plot.update_property(&[gtk::accessible::Property::Label(&plot_label)]);
+        self.plot
+            .update_property(&[gtk::accessible::Property::Label(&plot_label)]);
         self.plot.queue_draw();
     }
 }
@@ -933,18 +937,42 @@ mod tests {
                 gpu: Some(80.0),
             },
         ];
-        let cpu = history_paths(&points, ChartTimeDomain::measured(t, t + Duration::from_millis(1500)), ActivityLane::Cpu, 41.0, 341.0, 28.0, 84.0);
+        let cpu = history_paths(
+            &points,
+            ChartTimeDomain::measured(t, t + Duration::from_millis(1500)),
+            ActivityLane::Cpu,
+            41.0,
+            341.0,
+            28.0,
+            84.0,
+        );
         assert_eq!(cpu.len(), 2);
         assert_eq!(cpu[0].len(), 1);
         assert_eq!(cpu[1].len(), 1);
         assert_eq!(cpu[0][0].0, 41.0);
         assert_eq!(cpu[1][0].0, 341.0);
-        let gpu = history_paths(&points, ChartTimeDomain::measured(t, t + Duration::from_millis(1500)), ActivityLane::Gpu, 41.0, 341.0, 28.0, 84.0);
+        let gpu = history_paths(
+            &points,
+            ChartTimeDomain::measured(t, t + Duration::from_millis(1500)),
+            ActivityLane::Gpu,
+            41.0,
+            341.0,
+            28.0,
+            84.0,
+        );
         assert_eq!(gpu.len(), 1);
         assert_eq!(gpu[0].len(), 2);
         assert_eq!(gpu[0][0].0, 41.0);
         assert_eq!(gpu[0][1].0, 341.0);
-        let ram = history_paths(&points, ChartTimeDomain::measured(t, t + Duration::from_millis(1500)), ActivityLane::Ram, 41.0, 341.0, 28.0, 84.0);
+        let ram = history_paths(
+            &points,
+            ChartTimeDomain::measured(t, t + Duration::from_millis(1500)),
+            ActivityLane::Ram,
+            41.0,
+            341.0,
+            28.0,
+            84.0,
+        );
         assert_eq!(ram.len(), 1);
         assert_eq!(ram[0].len(), 3);
         assert_eq!(ram[0][1].0, 141.0);
@@ -983,9 +1011,24 @@ mod tests {
     fn projected_x_uses_painted_axis_instead_of_new_real_endpoint() {
         let t = Instant::now();
         let points = [
-            ChartPoint { measured_at: t, cpu: Some(10.0), ram: None, gpu: None },
-            ChartPoint { measured_at: t + Duration::from_millis(500), cpu: Some(20.0), ram: None, gpu: None },
-            ChartPoint { measured_at: t + Duration::from_millis(1000), cpu: Some(30.0), ram: None, gpu: None },
+            ChartPoint {
+                measured_at: t,
+                cpu: Some(10.0),
+                ram: None,
+                gpu: None,
+            },
+            ChartPoint {
+                measured_at: t + Duration::from_millis(500),
+                cpu: Some(20.0),
+                ram: None,
+                gpu: None,
+            },
+            ChartPoint {
+                measured_at: t + Duration::from_millis(1000),
+                cpu: Some(30.0),
+                ram: None,
+                gpu: None,
+            },
         ];
         let old = ChartTimeDomain::measured(t, t + Duration::from_millis(500));
         let new = ChartTimeDomain::measured(t, t + Duration::from_millis(1000));

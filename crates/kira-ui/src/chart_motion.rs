@@ -18,7 +18,10 @@ pub(crate) struct ChartTimeDomain {
 
 impl ChartTimeDomain {
     pub(crate) fn measured(first: Instant, last: Instant) -> Self {
-        Self { start: first, end: last.max(first + CHART_MIN_X_SPAN) }
+        Self {
+            start: first,
+            end: last.max(first + CHART_MIN_X_SPAN),
+        }
     }
 
     pub(crate) fn fraction(self, at: Instant) -> f64 {
@@ -148,7 +151,8 @@ impl ChartMotion {
     /// Clip at a painted timestamp using the same painted X domain.
     pub(crate) fn trace_extent(&self, first: Instant, last: Instant) -> f64 {
         let domain = self.display_domain(first, last);
-        self.painted_time.map_or(1.0, |painted| domain.fraction(painted))
+        self.painted_time
+            .map_or(1.0, |painted| domain.fraction(painted))
     }
 
     /// A freshness timeout invalidates just the gauge presentation, not
@@ -204,7 +208,14 @@ mod tests {
         let mut animation = ChartMotion::default();
         animation.begin(t, t, None, Some(50.0), Some(55.0), false);
         assert_eq!(animation.gauges(), (Some(50.0), Some(55.0)));
-        animation.begin(t + Duration::from_secs(1), t, Some(t), None, Some(101.0), true);
+        animation.begin(
+            t + Duration::from_secs(1),
+            t,
+            Some(t),
+            None,
+            Some(101.0),
+            true,
+        );
         assert_eq!(animation.gauges(), (None, None));
         animation.begin(
             t + Duration::from_secs(2),
@@ -233,7 +244,14 @@ mod tests {
             animation.step(f64::from(step) / 100.0);
             assert!((0.0..=100.0).contains(&animation.gauges().0.unwrap()));
         }
-        animation.begin(t + Duration::from_secs(1), t, Some(t), Some(0.0), None, true);
+        animation.begin(
+            t + Duration::from_secs(1),
+            t,
+            Some(t),
+            Some(0.0),
+            None,
+            true,
+        );
         for step in 0..=100 {
             animation.step(f64::from(step) / 100.0);
             assert!((0.0..=100.0).contains(&animation.gauges().0.unwrap()));
@@ -312,5 +330,4 @@ mod tests {
         motion.step(1.0);
         assert_eq!(motion.display_domain(t, fourth).end, fourth);
     }
-
 }
