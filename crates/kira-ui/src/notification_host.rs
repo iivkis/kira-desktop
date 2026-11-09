@@ -225,7 +225,12 @@ pub enum NotificationIntent {
 pub fn bounded_notifications(cards: &[NotificationView]) -> bool {
     cards.len() <= MAX_TOASTS
         && cards.iter().all(bounded_notification)
-        && cards.iter().map(|card| card.id).collect::<HashSet<_>>().len() == cards.len()
+        && cards
+            .iter()
+            .map(|card| card.id)
+            .collect::<HashSet<_>>()
+            .len()
+            == cards.len()
 }
 
 /// Keep only genuinely identical view models with the same geometry. A
@@ -237,9 +242,7 @@ pub fn retained_toast_ids(
     old_layout: ToastLayout,
     new_layout: ToastLayout,
 ) -> HashSet<u32> {
-    if old_layout != new_layout
-        || !bounded_notifications(previous)
-        || !bounded_notifications(next)
+    if old_layout != new_layout || !bounded_notifications(previous) || !bounded_notifications(next)
     {
         return HashSet::new();
     }
@@ -530,10 +533,7 @@ impl NotificationHost {
         let mut exiting = Vec::new();
         for (id, frame) in old_frames {
             self.root.remove(&frame);
-            if let Some((_, index)) = departures
-                .iter()
-                .find(|(departing, _)| *departing == id)
-            {
+            if let Some((_, index)) = departures.iter().find(|(departing, _)| *departing == id) {
                 exiting.push((*index, frame));
             }
         }
@@ -1120,12 +1120,7 @@ mod tests {
         ]));
         let layout = toast_layout(1280, 800, 800).unwrap();
         assert_eq!(
-            retained_toast_ids(
-                &[notice(1), notice(1)],
-                &[notice(1)],
-                layout,
-                layout
-            ),
+            retained_toast_ids(&[notice(1), notice(1)], &[notice(1)], layout, layout),
             HashSet::new()
         );
     }
