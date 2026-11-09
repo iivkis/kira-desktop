@@ -1,5 +1,7 @@
 name: Native GTK4 CI
 
+# Fast required signal: two-minute job cap. This does not compile GTK/Nix.
+# Run graphical.yml manually on the target SHA before claiming native readiness.
 on:
   pull_request:
   push:
@@ -16,70 +18,22 @@ jobs:
   core:
     name: Rust Core and IPC
     runs-on: ubuntu-24.04
-    outputs:
-      native_changed: ${{ steps.scope.outputs.native_changed }}
+    timeout-minutes: 2
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      # Diff the entire push/PR range, never only HEAD^. Uncertain means build.
-      - name: Detect expensive Rust/Nix build impact
-        id: scope
-        env:
-          CI_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: python3 scripts/ci_change_scope.py >> "$GITHUB_OUTPUT"
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
-      - name: Format Core/IPC and run tests
+      - name: Format Rust and lint/test Core and IPC
         run: |
           cargo fmt --all -- --check
           cargo clippy --locked -p kira-core -p kira-ipc --all-targets -- -D warnings
           cargo test --locked -p kira-core -p kira-ipc --all-targets
       - name: Validate native preview and pinned widget parity contracts
         run: |
-          python3 -m py_compile scripts/dev_preview.py scripts/capture_native_motion.py scripts/accept_nested.py scripts/headless_wayland_acceptance.py scripts/acceptance_scenarios.py scripts/validate_nested_evidence.py scripts/compare_visual_evidence.py scripts/check_native_visual_smoke.py scripts/visual_contract_checks.py scripts/ci_change_scope.py scripts/test_ci_change_scope.py scripts/private_bus.py scripts/smoke_sni_fixture_bus.py scripts/test_accept_nested.py scripts/test_headless_wayland_acceptance.py scripts/test_acceptance_scenarios.py scripts/test_validate_nested_evidence.py scripts/test_compare_visual_evidence.py scripts/test_preview_environment.py scripts/test_native_motion_capture.py scripts/check_widget_parity.py scripts/test_widget_parity.py
+          python3 -m compileall -q scripts
           python3 scripts/check_widget_parity.py
           python3 -m unittest discover -s scripts -p 'test_*.py' -v
-      - name: Verify removed web frontend
-        run: |
           test ! -e frontend/package.json
           ! grep -q webkit6 crates/kira-shell/Cargo.toml
-
-  native-shell:
-    name: Native GTK4 shell
-    needs: core
-    if: needs.core.outputs.native_changed != 'false'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      # Clippy --all-targets typechecks every GTK/service/shell target; the
-      # standalone cargo check duplicated work already covered by Clippy
-      # and the separate Core/IPC job.
-      - name: Clippy and test GTK, services and desktop integration
-        run: |
-          nix develop .#ci --command bash -euo pipefail -c '
-            cargo clippy --locked -p kira-ui -p kira-services -p kira-shell --all-targets -- -D warnings
-            cargo test --locked -p kira-ui -p kira-services -p kira-shell --all-targets
-          '
-      - name: Build distributable Nix package with embedded GTK CSS
-        run: nix build .#default -L
-      - name: Smoke external display rollback with isolated fake Niri
-        run: nix develop .#ci --command python3 scripts/smoke_display_supervisor.py --shell result/bin/kira-shell
-      - name: Smoke real SNI client against an isolated headless D-Bus
-        run: nix develop .#ci --command python3 scripts/smoke_sni_fixture_bus.py --fixture result/bin/kira-sni-acceptance
-      - name: Smoke dual-peer notification policy on an isolated headless D-Bus
-        run: nix develop .#ci --command python3 scripts/smoke_notification_policy_bus.py --fixture result/bin/kira-notification-policy-fixture --probe result/bin/kira-notification-acceptance
-      # Reuse the SAME built package and runner. No duplicate Nix build or
-      # uploaded screenshots for each source push. Real 34-frame Wayland PNGs
-      # still must pass compositor, D-Bus and visible-pixel validation.
-      - name: Real nested-Niri visual smoke, discarded after CI
-        run: |
-          nix develop .#graphical-ci --command python3 scripts/headless_wayland_acceptance.py \
-            --package-dir result --output "$RUNNER_TEMP/kira-native-smoke-$GITHUB_RUN_ATTEMPT" \
-            --profile smoke --width 1280 --height 800
