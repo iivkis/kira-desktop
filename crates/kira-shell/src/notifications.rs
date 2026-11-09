@@ -226,100 +226,103 @@ impl Service {
         let weak = Rc::downgrade(self);
         let registration = connection
             .register_object(OBJECT_PATH, &info)
-            .method_call(move |connection, sender, _, _, method, params, invocation| {
-                let Some(service) = weak.upgrade() else {
-                    invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.Failed",
-                        "Notification host stopped",
-                    );
-                    return;
-                };
-                let current_connection = service
-                    .bus
-                    .borrow()
-                    .as_ref()
-                    .is_some_and(|active| active == connection);
-                if !notification_rpc_permitted(service.owned.get(), current_connection) {
-                    invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.AccessDenied",
-                        "Notifications service does not own this D-Bus connection",
-                    );
-                    return;
-                }
-                match method {
-                    "GetCapabilities" => {
-                        invocation.return_value(Some(
-                            &(vec!["body".to_owned(), "actions".to_owned()],).to_variant(),
-                        ));
+            .method_call(
+                move |connection, sender, _, _, method, params, invocation| {
+                    let Some(service) = weak.upgrade() else {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.Failed",
+                            "Notification host stopped",
+                        );
+                        return;
+                    };
+                    let current_connection = service
+                        .bus
+                        .borrow()
+                        .as_ref()
+                        .is_some_and(|active| *active == connection);
+                    if !notification_rpc_permitted(service.owned.get(), current_connection) {
+                        invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.AccessDenied",
+                            "Notifications service does not own this D-Bus connection",
+                        );
+                        return;
                     }
-                    "GetServerInformation" => {
-                        invocation.return_value(Some(
-                            &("Kira Desktop", "Kira", env!("CARGO_PKG_VERSION"), "1.3")
-                                .to_variant(),
-                        ));
-                    }
-                    "Notify" => {
-                        if params.size() > 64 * 1024 {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.Notifications.Error.ExcessData",
-                                "Notification payload exceeds 64 KiB",
-                            );
-                            return;
+                    match method {
+                        "GetCapabilities" => {
+                            invocation.return_value(Some(
+                                &(vec!["body".to_owned(), "actions".to_owned()],).to_variant(),
+                            ));
                         }
-                        // Supplied app names and IDs confer no authority.
-                        // Only a unique D-Bus sender may replace its own ID.
-                        let Some(sender) = sender.filter(|sender| sender.starts_with(':')) else {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.DBus.Error.AccessDenied",
-                                "A unique D-Bus sender is required",
-                            );
-                            return;
-                        };
-                        let (id, accepted) = {
-                            let mut queue = service.queue.borrow_mut();
-                            let id = service.senders.borrow().assign_id(
-                                &mut queue,
-                                sender,
-                                params.child_value(1).get::<u32>().unwrap_or(0),
-                            );
-                            let notice = notice_from_params(&params, id);
-                            (id, queue.push(notice, Instant::now()))
-                        };
-                        if !accepted {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.Notifications.Error.QueueFull",
-                                "Notification queue is full",
-                            );
-                            return;
+                        "GetServerInformation" => {
+                            invocation.return_value(Some(
+                                &("Kira Desktop", "Kira", env!("CARGO_PKG_VERSION"), "1.3")
+                                    .to_variant(),
+                            ));
                         }
-                        service.senders.borrow_mut().record(id, sender);
-                        invocation.return_value(Some(&(id,).to_variant()));
-                        service.sync();
-                    }
-                    "CloseNotification" => {
-                        let id = params.child_value(0).get::<u32>().unwrap_or(0);
-                        // CloseNotification is an ID-based Freedesktop
-                        // operation. Keep cross-process clients compatible;
-                        // unlike Notify(replaces_id), it cannot inject
-                        // replacement content or new action keys.
-                        if service.queue.borrow_mut().close(id) {
-                            service.senders.borrow_mut().forget(id);
-                            invocation.return_value(None);
-                            service.signal_closed(id, 3);
+                        "Notify" => {
+                            if params.size() > 64 * 1024 {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.ExcessData",
+                                    "Notification payload exceeds 64 KiB",
+                                );
+                                return;
+                            }
+                            // Supplied app names and IDs confer no authority.
+                            // Only a unique D-Bus sender may replace its own ID.
+                            let Some(sender) = sender.filter(|sender| sender.starts_with(':'))
+                            else {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.DBus.Error.AccessDenied",
+                                    "A unique D-Bus sender is required",
+                                );
+                                return;
+                            };
+                            let (id, accepted) = {
+                                let mut queue = service.queue.borrow_mut();
+                                let id = service.senders.borrow().assign_id(
+                                    &mut queue,
+                                    sender,
+                                    params.child_value(1).get::<u32>().unwrap_or(0),
+                                );
+                                let notice = notice_from_params(&params, id);
+                                (id, queue.push(notice, Instant::now()))
+                            };
+                            if !accepted {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.QueueFull",
+                                    "Notification queue is full",
+                                );
+                                return;
+                            }
+                            service.senders.borrow_mut().record(id, sender);
+                            invocation.return_value(Some(&(id,).to_variant()));
                             service.sync();
-                        } else {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.Notifications.Error.InvalidId",
-                                "Unknown notification ID",
-                            );
                         }
+                        "CloseNotification" => {
+                            let id = params.child_value(0).get::<u32>().unwrap_or(0);
+                            // CloseNotification is an ID-based Freedesktop
+                            // operation. Keep cross-process clients compatible;
+                            // unlike Notify(replaces_id), it cannot inject
+                            // replacement content or new action keys.
+                            if service.queue.borrow_mut().close(id) {
+                                service.senders.borrow_mut().forget(id);
+                                invocation.return_value(None);
+                                service.signal_closed(id, 3);
+                                service.sync();
+                            } else {
+                                invocation.return_dbus_error(
+                                    "org.freedesktop.Notifications.Error.InvalidId",
+                                    "Unknown notification ID",
+                                );
+                            }
+                        }
+                        _ => invocation.return_dbus_error(
+                            "org.freedesktop.DBus.Error.UnknownMethod",
+                            "Unsupported notification method",
+                        ),
                     }
-                    _ => invocation.return_dbus_error(
-                        "org.freedesktop.DBus.Error.UnknownMethod",
-                        "Unsupported notification method",
-                    ),
-                }
-            })
+                },
+            )
             .build();
         if let Err(error) = registration {
             eprintln!("kira-shell: cannot register notification D-Bus endpoint: {error}");
