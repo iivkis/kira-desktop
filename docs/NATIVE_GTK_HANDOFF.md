@@ -103,6 +103,12 @@ The live preview test has not run in this environment. Real
 nested-Niri GTK, output-hotplug, TENET and pixel evidence are
 still required. The parity ledger remains 0/15 verified.
 
+The same iteration now also **revokes the complete notification service
+session** when its Freedesktop bus name is lost or explicitly unowned:
+no stale waiting/visible/parked IDs, sender leases or pending queue
+deadline may survive into a later reacquisition. A Rust regression test
+covers the transition. This does not claim graphical Wayland acceptance.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
