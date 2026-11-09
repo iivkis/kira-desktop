@@ -288,7 +288,7 @@ impl Service {
                                     "Notification queue is full",
                                 );
                                 return;
-                            }
+                            };
                             invocation.return_value(Some(&(id,).to_variant()));
                             service.sync();
                         }
