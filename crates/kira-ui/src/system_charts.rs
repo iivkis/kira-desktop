@@ -244,11 +244,16 @@ pub fn measured_history_caption(points: &[ChartPoint]) -> String {
     }
 }
 
-
 fn meter_text(value: Option<f64>, precise: bool) -> String {
     value.map_or_else(
         || "—".into(),
-        |n| if precise { format!("{n:.1}%") } else { format!("{n:.0}%") },
+        |n| {
+            if precise {
+                format!("{n:.1}%")
+            } else {
+                format!("{n:.0}%")
+            }
+        },
     )
 }
 
@@ -278,13 +283,16 @@ fn draw_gauges(
     let start = -std::f64::consts::FRAC_PI_2;
     cr.set_line_width(8.0);
     cr.set_line_cap(gtk::cairo::LineCap::Round);
-    for (index, value, color) in [
-        (0, cpu, (0.988, 0.639, 0.067)),
-        (1, ram, (1.0, 1.0, 1.0)),
-    ] {
+    for (index, value, color) in [(0, cpu, (0.988, 0.639, 0.067)), (1, ram, (1.0, 1.0, 1.0))] {
         let center_x = (f64::from(index) + 0.5) * half;
         cr.set_source_rgb(0.078, 0.129, 0.239);
-        cr.arc(center_x, center_y, radius, start, start + std::f64::consts::TAU);
+        cr.arc(
+            center_x,
+            center_y,
+            radius,
+            start,
+            start + std::f64::consts::TAU,
+        );
         let _ = cr.stroke();
         if let Some(sweep) = gauge_sweep(value)
             && sweep > 0.0
@@ -320,7 +328,10 @@ fn history_paths(
     let mut path = Vec::new();
     for point in points {
         if let Some(value) = reading(point, lane) {
-            let elapsed = point.measured_at.saturating_duration_since(first).as_secs_f64();
+            let elapsed = point
+                .measured_at
+                .saturating_duration_since(first)
+                .as_secs_f64();
             let x = left + (right - left) * (elapsed / span).clamp(0.0, 1.0);
             let y = bottom - ((value - axis.min) / (axis.max - axis.min)) * (bottom - top);
             path.push((x, y));
@@ -343,14 +354,7 @@ fn trace_curve(cr: &gtk::cairo::Context, path: &[(f64, f64)]) {
             let (prev_x, prev_y) = segment[0];
             let (next_x, next_y) = segment[1];
             let bend = (next_x - prev_x) * 0.18;
-            cr.curve_to(
-                prev_x + bend,
-                prev_y,
-                next_x - bend,
-                next_y,
-                next_x,
-                next_y,
-            );
+            cr.curve_to(prev_x + bend, prev_y, next_x - bend, next_y, next_x, next_y);
         }
     }
 }
@@ -789,9 +793,24 @@ mod tests {
     fn timestamp_paths_break_cpu_gaps_but_connect_only_real_gpu_points() {
         let t = Instant::now();
         let points = [
-            ChartPoint { measured_at: t, cpu: Some(10.0), ram: Some(50.0), gpu: Some(20.0) },
-            ChartPoint { measured_at: t + Duration::from_millis(500), cpu: None, ram: Some(60.0), gpu: None },
-            ChartPoint { measured_at: t + Duration::from_millis(1500), cpu: Some(70.0), ram: Some(70.0), gpu: Some(80.0) },
+            ChartPoint {
+                measured_at: t,
+                cpu: Some(10.0),
+                ram: Some(50.0),
+                gpu: Some(20.0),
+            },
+            ChartPoint {
+                measured_at: t + Duration::from_millis(500),
+                cpu: None,
+                ram: Some(60.0),
+                gpu: None,
+            },
+            ChartPoint {
+                measured_at: t + Duration::from_millis(1500),
+                cpu: Some(70.0),
+                ram: Some(70.0),
+                gpu: Some(80.0),
+            },
         ];
         let cpu = history_paths(&points, ActivityLane::Cpu, 41.0, 341.0, 28.0, 84.0);
         assert_eq!(cpu.len(), 2);
