@@ -180,3 +180,24 @@ action log; and clicks the checkbox twice, verifying two logged
 transactions and distinct successive typed layouts. These are headless
 private-bus **fixture/protocol** checks, not a substitute for testing
 the Shell's owner-scoped event gate with actual native GTK menu controls.
+
+## Owner-guarded GTK callback epochs
+
+The native Tray no longer identifies a rendered menu action solely by its
+numeric SNI handle and `com.canonical.dbusmenu` item ID. The trusted Shell
+issues a nonzero `ui_epoch` on **each published menu tree** (opening,
+`LayoutUpdated`, navigation or dismissal). `TrayMenu` carries this epoch
+as plain snapshot data, and GTK leaf/parent buttons capture it in their
+typed `MenuClick` / `MenuExpand` intents. Native child popover
+`Back`/`Escape` and root dismissal are epoch-bound as well. Before
+calling any D-Bus method, the Shell requires the exact current epoch,
+current numeric handle, unique enabled visible ID and original live
+unique-owner/menu path. A queued GTK callback from a deleted or replaced
+popover cannot trigger an identically numbered action in a fresh remote
+owner's tree. A new `LayoutUpdated` also revokes its old GTK callbacks.
+
+Model tests cover changed epoch, same handle, changed unique owner, zero
+epoch, disabled/duplicate/orphan menu IDs, sibling navigation and Back
+revision mismatch. This strengthens callback authority but does **not**
+certify actual Wayland GTK child-surface focus or D-Bus owner-churn behavior
+in nested Niri, nor provide any TENET motion or pixel evidence.
