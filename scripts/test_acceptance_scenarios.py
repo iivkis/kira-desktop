@@ -90,10 +90,17 @@ class RealProtocolAcceptanceTests(unittest.TestCase):
         with patch("smoke_sni_fixture_bus.subprocess.run", side_effect=runner):
             menu_call("GetLayout", self.env)
             menu_call("AboutToShow", self.env)
+            menu_call("ClickDisabled", self.env)
+            menu_call("ClickUnknown", self.env)
+            menu_call("ClickCheck", self.env)
         self.assertEqual(calls[0][-4:], ["--", "0", "-1", "[]"])
         self.assertEqual(calls[0][calls[0].index("--dest") + 1], "org.kira.AcceptanceSNI")
         self.assertEqual(calls[0][calls[0].index("--object-path") + 1], "/KiraAcceptanceMenu")
         self.assertEqual(calls[1][-2:], ["--", "20"])
+        self.assertEqual(calls[2][-5:], ["--", "30", "clicked", "<int32 0>", "0"])
+        self.assertEqual(calls[3][-5:], ["--", "999", "clicked", "<int32 0>", "0"])
+        self.assertEqual(calls[4][-5:], ["--", "40", "clicked", "<int32 0>", "0"])
+        self.assertTrue(all(argv[argv.index("--dest") + 1] == "org.kira.AcceptanceSNI" for argv in calls))
         with self.assertRaises(PreviewError):
             menu_call("org.freedesktop.DBus.StopServiceByName", self.env)
 
