@@ -135,12 +135,21 @@ mod tests {
     fn initial_update_and_interrupt_keep_painted_value() {
         let t = Instant::now();
         let mut animation = ChartMotion::default();
-        assert_eq!(animation.begin(t, None, Some(80.0), None, true), CHART_INITIAL_MS);
+        assert_eq!(
+            animation.begin(t, None, Some(80.0), None, true),
+            CHART_INITIAL_MS
+        );
         assert_eq!(animation.gauges(), (Some(0.0), None));
         animation.step(0.5);
         assert_eq!(animation.gauges().0, Some(70.0));
         assert_eq!(
-            animation.begin(t + Duration::from_millis(50), Some(t), Some(20.0), None, true),
+            animation.begin(
+                t + Duration::from_millis(50),
+                Some(t),
+                Some(20.0),
+                None,
+                true
+            ),
             CHART_UPDATE_MS
         );
         assert_eq!(animation.gauges().0, Some(70.0));
@@ -158,12 +167,21 @@ mod tests {
         assert_eq!(animation.gauges(), (Some(50.0), Some(55.0)));
         animation.begin(t + Duration::from_secs(1), Some(t), None, Some(101.0), true);
         assert_eq!(animation.gauges(), (None, None));
-        animation.begin(t + Duration::from_secs(2), None, Some(60.0), Some(f64::NAN), false);
+        animation.begin(
+            t + Duration::from_secs(2),
+            None,
+            Some(60.0),
+            Some(f64::NAN),
+            false,
+        );
         assert_eq!(animation.gauges(), (Some(60.0), None));
         animation.expire_gauges();
         assert_eq!(animation.gauges(), (None, None));
         animation.reset();
-        assert_eq!(animation.begin(t, None, Some(10.0), None, true), CHART_INITIAL_MS);
+        assert_eq!(
+            animation.begin(t, None, Some(10.0), None, true),
+            CHART_INITIAL_MS
+        );
     }
 
     #[test]
@@ -190,10 +208,16 @@ mod tests {
         let next = t + Duration::from_millis(500);
         animation.begin(next, Some(t), Some(20.0), None, true);
         animation.step(0.5);
-        assert_eq!(animation.painted_time, Some(t + Duration::from_micros(437_500)));
+        assert_eq!(
+            animation.painted_time,
+            Some(t + Duration::from_micros(437_500))
+        );
         let third = t + Duration::from_millis(1000);
         animation.begin(third, Some(next), Some(30.0), None, true);
-        assert_eq!(animation.painted_time, Some(t + Duration::from_millis(437)));
+        assert_eq!(
+            animation.painted_time,
+            Some(t + Duration::from_micros(437_500))
+        );
         animation.step(1.0);
         assert_eq!(animation.painted_time, Some(third));
     }

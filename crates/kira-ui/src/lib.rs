@@ -3,8 +3,8 @@
 pub mod bar;
 pub mod calendar;
 pub mod calendar_model;
-mod chart_motion;
 pub mod capacity;
+mod chart_motion;
 pub mod clock_digits;
 pub mod display_map;
 pub mod displays;
