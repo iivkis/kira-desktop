@@ -9,7 +9,9 @@ use gtk::gio;
 use gtk::glib::{self, variant::ToVariant};
 use gtk::prelude::*;
 
-use kira_services::notification_queue::{DEFAULT_DWELL, Notice, NotificationOwnership, NotificationQueue};
+use kira_services::notification_queue::{
+    DEFAULT_DWELL, Notice, NotificationOwnership, NotificationQueue,
+};
 use kira_ui::{
     NotificationHostSet, NotificationIntent, NotificationView, PopupHost, PopupKind,
     ToastHostSelection, ToastLayout,
