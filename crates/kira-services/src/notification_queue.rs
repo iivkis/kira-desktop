@@ -36,6 +36,59 @@ struct Showing {
     since: Option<Instant>,
 }
 
+/// A Freedesktop notification ID is scoped to the unique D-Bus peer that
+/// received it. Application-provided display names are never authority.
+/// A foreign or already-closed replaces_id becomes a fresh queue-generated
+/// ID instead of overwriting another client's pending or painted toast.
+#[derive(Default)]
+pub struct NotificationOwnership {
+    senders: std::collections::HashMap<u32, String>,
+}
+
+impl NotificationOwnership {
+    pub fn assign_id(
+        &self,
+        queue: &mut NotificationQueue,
+        sender: &str,
+        replaces_id: u32,
+    ) -> u32 {
+        if replaces_id != 0
+            && queue.contains_active(replaces_id)
+            && self.is_owner(replaces_id, sender)
+        {
+            replaces_id
+        } else {
+            queue.allocate_id()
+        }
+    }
+
+    /// Call only after queue.push succeeds. Rejected admissions never
+    /// acquire a sender lease or interfere with an existing ID.
+    pub fn record(&mut self, id: u32, sender: &str) {
+        self.senders.insert(id, sender.to_owned());
+    }
+
+    pub fn is_owner(&self, id: u32, sender: &str) -> bool {
+        !sender.is_empty()
+            && self
+                .senders
+                .get(&id)
+                .is_some_and(|owner| owner == sender)
+    }
+
+    pub fn forget(&mut self, id: u32) {
+        self.senders.remove(&id);
+    }
+
+    pub fn clear(&mut self) {
+        self.senders.clear();
+    }
+
+    pub fn active_leases(&self) -> usize {
+        self.senders.len()
+    }
+}
+
 #[derive(Default)]
 pub struct NotificationQueue {
     waiting: VecDeque<Waiting>,
@@ -265,6 +318,66 @@ mod tests {
             persistent: false,
             dwell: DEFAULT_DWELL,
         }
+    }
+
+    #[test]
+    fn foreign_sender_never_replaces_another_clients_notification() {
+        let t = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let mut owners = NotificationOwnership::default();
+        let first = owners.assign_id(&mut queue, ":1.11", 0);
+        let mut item = notice(first);
+        item.app = "A forged display name".into();
+        assert!(queue.push(item, t));
+        owners.record(first, ":1.11");
+
+        assert_eq!(owners.assign_id(&mut queue, ":1.11", first), first);
+        assert_ne!(owners.assign_id(&mut queue, ":1.12", first), first);
+        assert_ne!(owners.assign_id(&mut queue, ":1.12", 0), first);
+        assert!(!owners.is_owner(first, ":1.12"));
+        assert!(owners.is_owner(first, ":1.11"));
+        assert!(!owners.is_owner(first, ""));
+        assert_eq!(owners.active_leases(), 1);
+    }
+
+    #[test]
+    fn expired_closed_and_parked_ids_have_explicit_ownership_lifetimes() {
+        let t = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let mut owners = NotificationOwnership::default();
+        let id = owners.assign_id(&mut queue, ":1.11", 0);
+        let mut item = notice(id);
+        item.persistent = true;
+        assert!(queue.push(item, t));
+        owners.record(id, ":1.11");
+        queue.step(t, true);
+        queue.mark_painted(t, &[id]);
+        queue.step(t + DEFAULT_DWELL, true);
+        assert!(queue.contains_active(id));
+        assert_eq!(owners.assign_id(&mut queue, ":1.11", id), id);
+        assert_ne!(owners.assign_id(&mut queue, ":1.12", id), id);
+
+        assert!(queue.close(id));
+        owners.forget(id);
+        assert!(!owners.is_owner(id, ":1.11"));
+        assert_ne!(owners.assign_id(&mut queue, ":1.11", id), id);
+        owners.record(100, ":1.11");
+        owners.clear();
+        assert_eq!(owners.active_leases(), 0);
+    }
+
+    #[test]
+    fn failed_queue_admission_cannot_acquire_an_id_lease() {
+        let now = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let owners = NotificationOwnership::default();
+        for id in 1..=MAX_STORED as u32 {
+            assert!(queue.push(notice(id), now));
+        }
+        let requested = owners.assign_id(&mut queue, ":1.88", 0);
+        assert!(!queue.push(notice(requested), now));
+        assert!(!owners.is_owner(requested, ":1.88"));
+        assert_eq!(owners.active_leases(), 0);
     }
 
     #[test]
