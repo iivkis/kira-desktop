@@ -56,7 +56,12 @@ fn monitor_output(monitor: Option<&gtk::gdk::Monitor>) -> ((i32, i32, i32, i32),
     };
     let geometry = monitor.geometry();
     (
-        (geometry.x(), geometry.y(), geometry.width(), geometry.height()),
+        (
+            geometry.x(),
+            geometry.y(),
+            geometry.width(),
+            geometry.height(),
+        ),
         monitor.scale_factor(),
     )
 }
