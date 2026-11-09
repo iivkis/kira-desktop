@@ -377,8 +377,11 @@ impl Service {
         }
         match intent {
             NotificationIntent::Close(id) => {
-                if self.queue.borrow_mut().close(id) {
-                    self.senders.borrow_mut().forget(id);
+                if close_notification(
+                    &mut self.queue.borrow_mut(),
+                    &mut self.senders.borrow_mut(),
+                    id,
+                ) {
                     self.signal_closed(id, 2);
                     self.sync();
                 }
@@ -392,6 +395,16 @@ impl Service {
                 if !allowed {
                     return;
                 }
+                // Commit the ID/owner removal before emitting a public
+                // ActionInvoked signal: stale or removed IDs cannot produce
+                // an action when the bounded queue no longer holds them.
+                if !close_notification(
+                    &mut self.queue.borrow_mut(),
+                    &mut self.senders.borrow_mut(),
+                    id,
+                ) {
+                    return;
+                }
                 if let Some(connection) = self.bus.borrow().as_ref() {
                     let _ = connection.emit_signal(
                         None,
@@ -401,10 +414,7 @@ impl Service {
                         Some(&(id, key.as_str()).to_variant()),
                     );
                 }
-                if self.queue.borrow_mut().close(id) {
-                    self.senders.borrow_mut().forget(id);
-                    self.signal_closed(id, 2);
-                }
+                self.signal_closed(id, 2);
                 self.sync();
             }
         }
