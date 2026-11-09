@@ -178,8 +178,15 @@ fn toast_intent_authorized(owned: bool, painted: bool, current_target: bool) -> 
 /// gone, do not replay a foreign daemon's previous notifications or accept
 /// stale sender leases if this process later reacquires the name.
 fn revoke_notification_session(queue: &mut NotificationQueue, senders: &mut NotificationOwnership) {
-    *queue = NotificationQueue::default();
+    queue.reset_session();
     senders.clear();
+}
+
+/// A registered GIO object may remain callable through its unique bus name
+/// after the well-known Freedesktop Notifications name was lost. Reject
+/// every RPC unless the active service still owns the exact connection.
+fn notification_rpc_permitted(owned: bool, current_connection: bool) -> bool {
+    owned && current_connection
 }
 
 /// Never schedule an already-due FIFO deadline when the host is covered,
@@ -219,7 +226,7 @@ impl Service {
         let weak = Rc::downgrade(self);
         let registration = connection
             .register_object(OBJECT_PATH, &info)
-            .method_call(move |_, sender, _, _, method, params, invocation| {
+            .method_call(move |connection, sender, _, _, method, params, invocation| {
                 let Some(service) = weak.upgrade() else {
                     invocation.return_dbus_error(
                         "org.freedesktop.DBus.Error.Failed",
@@ -227,6 +234,18 @@ impl Service {
                     );
                     return;
                 };
+                let current_connection = service
+                    .bus
+                    .borrow()
+                    .as_ref()
+                    .is_some_and(|active| active == connection);
+                if !notification_rpc_permitted(service.owned.get(), current_connection) {
+                    invocation.return_dbus_error(
+                        "org.freedesktop.DBus.Error.AccessDenied",
+                        "Notifications service does not own this D-Bus connection",
+                    );
+                    return;
+                }
                 match method {
                     "GetCapabilities" => {
                         invocation.return_value(Some(
@@ -723,6 +742,17 @@ mod tests {
         assert_eq!(queue.visible_count(), 0);
         assert!(!queue.has_pending());
         assert_eq!(queue.next_deadline(Instant::now()), None);
+        // A late CloseNotification from an older D-Bus epoch must never
+        // collide with a freshly allocated ID after ownership is reacquired.
+        assert!(queue.allocate_id() > id);
+    }
+
+    #[test]
+    fn dbus_rpc_requires_name_ownership_and_the_current_connection() {
+        assert!(notification_rpc_permitted(true, true));
+        assert!(!notification_rpc_permitted(false, true));
+        assert!(!notification_rpc_permitted(true, false));
+        assert!(!notification_rpc_permitted(false, false));
     }
 
     #[test]
