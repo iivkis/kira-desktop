@@ -6,6 +6,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from dev_preview import PreviewError
+from smoke_sni_fixture_bus import menu_call
 from acceptance_scenarios import (
     await_native_server, await_real_sni_fixture, close_notification,
     gdbus_args, notification_id, notify, sni_property_get_all,
@@ -74,6 +75,27 @@ class RealProtocolAcceptanceTests(unittest.TestCase):
             return self.reply("('Kira Desktop', 'Kira', '0.1', '1.3')")
 
         self.assertIn("Kira Desktop", await_native_server(self.env, runner=native, clock=lambda: 0))
+
+    def test_real_sni_menu_cli_separates_negative_depth_from_options(self):
+        from unittest.mock import patch
+
+        calls = []
+
+        def runner(argv, *, env, text, capture_output, timeout, check):
+            self.assertIs(env, self.env)
+            self.assertEqual((text, capture_output, timeout, check), (True, True, 8, False))
+            calls.append(argv)
+            return self.reply("(uint32 1, (0, {}, []))")
+
+        with patch("smoke_sni_fixture_bus.subprocess.run", side_effect=runner):
+            menu_call("GetLayout", self.env)
+            menu_call("AboutToShow", self.env)
+        self.assertEqual(calls[0][-4:], ["--", "0", "-1", "[]"])
+        self.assertEqual(calls[0][calls[0].index("--dest") + 1], "org.kira.AcceptanceSNI")
+        self.assertEqual(calls[0][calls[0].index("--object-path") + 1], "/KiraAcceptanceMenu")
+        self.assertEqual(calls[1][-2:], ["--", "20"])
+        with self.assertRaises(PreviewError):
+            menu_call("org.freedesktop.DBus.StopServiceByName", self.env)
 
     def test_fixture_must_register_through_real_watcher_and_publish_pixmap(self):
         def fixture(argv, **kwargs):
