@@ -257,9 +257,14 @@ def run_acceptance(
     # Contract probes are real D-Bus calls; they are *not* claims about
     # visual reception or correspondence to the pinned main implementation.
     second = notify("replacement_a", 0, isolated_environment, timeout=0)
-    replaced = notify("replacement_b", second, isolated_environment, timeout=0)
-    if replaced != second:
-        raise PreviewError("Freedesktop replace_id returned a different notification ID")
+    # Each gdbus subprocess receives its own unique sender. A different
+    # sender must NEVER replace another application's stored content or
+    # action keys, even when supplying its live replaces_id.
+    foreign_attempt = notify("replacement_b", second, isolated_environment, timeout=0)
+    if foreign_attempt == second:
+        raise PreviewError("A foreign D-Bus sender replaced another notification ID")
+    close_notification(second, isolated_environment)
+    close_notification(foreign_attempt, isolated_environment)
     third = notify("close_by_id", 0, isolated_environment, timeout=5000)
     close_notification(third, isolated_environment)
 
@@ -296,7 +301,8 @@ def run_acceptance(
         "observed_events": [
             {"type": "notify", "id": identifier, **event_in},
             {"type": "close", "id": identifier, **event_out},
-            {"type": "replace_id", "id": second, "same_id": replaced == second},
+            {"type": "foreign_replace_attempt", "original_id": second,
+             "returned_id": foreign_attempt, "isolated": foreign_attempt != second},
             {"type": "close_by_id", "id": third},
         ],
         "limitations": [
