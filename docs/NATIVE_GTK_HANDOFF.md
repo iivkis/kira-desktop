@@ -109,6 +109,28 @@ no stale waiting/visible/parked IDs, sender leases or pending queue
 deadline may survive into a later reacquisition. A Rust regression test
 covers the transition. This does not claim graphical Wayland acceptance.
 
+## G8: no cross-epoch notification ID reuse and real dual-peer GIO evidence
+
+Starting from green `native-gtk` HEAD
+`c0b6106273bedf610fa2b48182cae9c400c2371c`
+(CI `42556866585`), this iteration adds:
+
+- `NotificationQueue::reset_session` preserving ID allocation across
+  loss and reacquisition of `org.freedesktop.Notifications`. Stale
+  asynchronous close requests cannot hit immediately reused IDs.
+- Shell GIO method dispatch requires current name ownership **and**
+  the exact live D-Bus connection, even when a stale object registration
+  remains reachable through a unique bus name.
+- A separately packaged, private-preview-only GIO acceptance executable
+  tests two actual persistent peer connections: same-sender replacement,
+  foreign-sender rejection, closed-ID rejection and cleanup. Nested-Niri
+  acceptance records the real result as unreviewed, with a fail-closed
+  missing-binary path. Python and Rust tests cover the guards.
+
+**Do not claim complete CI or nested-Wayland acceptance until the newest
+HEAD workflow is checked.** Real screenshot/input/TENET/multi-output
+testing and 0/15 verified status are unchanged.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
