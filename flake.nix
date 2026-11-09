@@ -34,8 +34,17 @@
         graphical-ci = pkgs.mkShell {
           # Weston hosts genuine Niri/GTK without DRM or host user sessions.
           packages = with pkgs; [
-            python3 weston niri grim dbus glib
+            python3 weston niri grim dbus glib mesa libglvnd
           ];
+          # Niri's windowed backend needs EGL; this non-NixOS CI host
+          # cannot discover Nix Mesa/GLVND without explicit search paths.
+          shellHook = ''
+            export __EGL_VENDOR_LIBRARY_FILENAMES="${pkgs.mesa}/share/glvnd/egl_vendor.d/50_mesa.json"
+            export LIBGL_DRIVERS_PATH="${pkgs.mesa}/lib/dri"
+            export LD_LIBRARY_PATH="${pkgs.libglvnd}/lib:${pkgs.mesa}/lib"
+            export LIBGL_ALWAYS_SOFTWARE=1
+            export GALLIUM_DRIVER=llvmpipe
+          '';
         };
       });
 

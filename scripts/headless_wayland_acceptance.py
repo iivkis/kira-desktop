@@ -30,7 +30,7 @@ def weston_command(binary: str, socket: str, log: Path, width: int, height: int)
     if not (640 <= width <= 2560 and 480 <= height <= 1600):
         raise PreviewError("Invalid virtual display dimensions")
     return [
-        binary, "--backend=headless-backend.so", "--renderer=pixman",
+        binary, "--backend=headless-backend.so", "--renderer=gl",
         "--no-config", "--idle-time=0", "--socket=" + socket,
         "--width=" + str(width), "--height=" + str(height),
         "--log=" + str(log),
@@ -69,6 +69,7 @@ def isolated_virtual_environment(
     env["WAYLAND_DISPLAY"] = socket
     env["XDG_SESSION_TYPE"] = "wayland"
     env["LIBGL_ALWAYS_SOFTWARE"] = "1"
+    env["GALLIUM_DRIVER"] = "llvmpipe"
     return env
 
 

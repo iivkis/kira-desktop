@@ -65,7 +65,7 @@ class HeadlessAcceptanceTests(unittest.TestCase):
             "weston", self.socket, self.root / "weston.log", 1280, 800,
         )
         self.assertIn("--backend=headless-backend.so", command)
-        self.assertIn("--renderer=pixman", command)
+        self.assertIn("--renderer=gl", command)
         self.assertIn("--no-config", command)
         self.assertNotIn("--backend=drm-backend.so", command)
         for width, height in ((10, 600), (800, 10), (99999, 800), (800, 99999)):
