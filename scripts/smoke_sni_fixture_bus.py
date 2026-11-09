@@ -34,6 +34,8 @@ def menu_call(method: str, env: dict[str, str]) -> str:
         "AboutToShow": ["20"],
         "ClickLeaf": ["21", "clicked", "<int32 0>", "0"],
         "ClickCheck": ["40", "clicked", "<int32 0>", "0"],
+        "ClickDisabled": ["30", "clicked", "<int32 0>", "0"],
+        "ClickUnknown": ["999", "clicked", "<int32 0>", "0"],
     }
     if method not in arguments:
         raise PreviewError("Unapproved SNI menu test method")
@@ -114,13 +116,25 @@ def run_child(fixture: Path) -> None:
             after = menu_call("GetLayout", isolated)
             if not all(name in after for name in ("Clear", "Advanced", "Deep")):
                 raise PreviewError("Real submenu did not appear after AboutToShow")
+            if "false" not in menu_call("AboutToShow", isolated).lower():
+                raise PreviewError("An already populated lazy submenu reported a new change")
             if menu_call("ClickLeaf", isolated) != "()":
                 raise PreviewError("Menu leaf Event returned an invalid reply")
+            for method in ("ClickDisabled", "ClickUnknown"):
+                if menu_call(method, isolated) != "()":
+                    raise PreviewError("Private menu denied no-op Event with invalid signature")
             if menu_call("ClickCheck", isolated) != "()":
                 raise PreviewError("Menu checkbox Event returned an invalid reply")
             changed = menu_call("GetLayout", isolated)
             if changed == after or "toggle-state" not in changed:
                 raise PreviewError("Real checkbox Event failed to update its menu layout")
+            # Reversing a checkmark must create a distinct revision. It must
+            # not silently inherit a prior D-Bus menu owner's state.
+            if menu_call("ClickCheck", isolated) != "()":
+                raise PreviewError("Second checkbox Event failed")
+            restored = menu_call("GetLayout", isolated)
+            if restored == changed:
+                raise PreviewError("Second checkbox click did not update the live layout")
             if not log.is_file():
                 raise PreviewError("Fixture never recorded name ownership")
             emitted = log.read_text(encoding="utf-8")
@@ -132,6 +146,12 @@ def run_child(fixture: Path) -> None:
                 )
             ):
                 raise PreviewError("Fixture omitted a real SNI menu/status transition")
+            if "MenuClick:30" in emitted or "MenuClick:999" in emitted:
+                raise PreviewError("Disabled or unknown menu Event changed the test application")
+            if emitted.count("MenuAboutToShow:20") != 1:
+                raise PreviewError("Lazy submenu was populated more than once")
+            if emitted.count("MenuClick:40") != 2:
+                raise PreviewError("Reversible real checkbox events were not both delivered")
             print(
                 "[sni-smoke] Private GIO SNI, pixmap/status and real "
                 "dbusmenu lazy hierarchy/actions: success"
