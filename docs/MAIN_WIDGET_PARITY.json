@@ -33,7 +33,8 @@
         "Brand/launcher zone, workspaces, tray, system health, warning inspector, settings, clickable local clock",
         "Exact 42px height and compact density",
         "Native status button now consumes independent Core RPC probe, Niri subscription and fresh CPU/memory/disk/battery measurements; tray and warning inspector still pending",
-        "Native WarningInspector now implements frozen main's 42px in-bar modal read-only detail, stable-ID selection/next/close, copyable text, dynamic 900px short/long label and keyboard focus containment. Shell feeds real failures from workspace Core RPC, KDL validation, GIO application launch and active process sampling, clearing on success. Exact paired Niri focus/pixel proof remains missing."
+        "Native WarningInspector now implements frozen main's 42px in-bar modal read-only detail, stable-ID selection/next/close, copyable text, dynamic 900px short/long label and keyboard focus containment. Shell feeds real failures from workspace Core RPC, KDL validation, GIO application launch and active process sampling, clearing on success. Exact paired Niri focus/pixel proof remains missing.",
+        "Layer-shell bar now requests on-demand keyboard access (not exclusive focus) so the in-place warning inspector can handle Tab/Escape after user activation. Exact live compositor focus acceptance is still missing."
       ],
       "animation_requirements": [
         "Shared TENET flow indicator and native hover focus feedback",
@@ -65,7 +66,8 @@
       "state": "partial",
       "content_and_interaction_requirements": [
         "Continuous focused window and honest before/after urgent counts",
-        "Output/active/focused/urgent semantics; pending focus state"
+        "Output/active/focused/urgent semantics; pending focus state",
+        "Native WorkspaceStrip now locks focus controls upon a real click and disallows second/focused/offline intents, releasing the disabled state only when the Core RPC worker returns a checked success/error. The Niri stream alone controls observed focus. Source pending affordance and nested-Niri a11y/visual acceptance remain pending."
       ],
       "animation_requirements": [
         "Selection rail 0.42s back.out(1.18), scroll 0.34s power3.out",

@@ -3,7 +3,7 @@
 use std::cell::Cell;
 
 use gtk::prelude::*;
-use gtk4_layer_shell::{Edge, Layer, LayerShell};
+use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
 use crate::warnings::WarningInspector;
 use crate::workspace::WorkspaceStrip;
@@ -32,6 +32,9 @@ impl Bar {
         window.init_layer_shell();
         window.set_namespace(Some("kira-desktop"));
         window.set_layer(Layer::Top);
+        // On-demand focus allows the in-bar inspector to retain Tab/Escape
+        // without claiming exclusive keyboard ownership over ordinary apps.
+        window.set_keyboard_mode(KeyboardMode::OnDemand);
         window.set_anchor(Edge::Top, true);
         window.set_anchor(Edge::Left, true);
         window.set_anchor(Edge::Right, true);

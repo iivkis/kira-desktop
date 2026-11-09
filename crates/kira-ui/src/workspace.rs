@@ -1,6 +1,6 @@
 //! Workspace strip behavior ported from main's workspace-window.ts.
 //! No compositor calls: this library accepts typed, observed state only.
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
@@ -52,6 +52,12 @@ pub fn visible_workspaces(items: &[WorkspaceItem], max_items: usize) -> Vec<&Wor
     visible_workspace_window(items, max_items).items
 }
 
+/// A focus request is only actionable while the *real* Niri snapshot is
+/// connected, the target is not already focused and no request is in flight.
+pub fn workspace_focus_enabled(connected: bool, pending: bool, focused: bool) -> bool {
+    connected && !pending && !focused
+}
+
 pub struct WorkspaceStrip {
     root: gtk::Box,
     buttons: gtk::Box,
@@ -62,6 +68,7 @@ pub struct WorkspaceStrip {
     before: gtk::Label,
     after: gtk::Label,
     cache: RefCell<HashMap<String, (gtk::Button, ReflowRow)>>,
+    pending: Rc<Cell<bool>>,
     on_focus: Rc<dyn Fn(String)>,
 }
 
@@ -100,12 +107,21 @@ impl WorkspaceStrip {
             before,
             after,
             cache: RefCell::new(HashMap::new()),
+            pending: Rc::new(Cell::new(false)),
             on_focus: Rc::new(on_focus),
         }
     }
 
     pub fn widget(&self) -> gtk::Widget {
         self.root.clone().upcast()
+    }
+
+    /// The same GTK button whose click starts an intent becomes insensitive
+    /// immediately. Only the host's actual RPC outcome releases it. The
+    /// observed Niri EventStream alone determines which workspace is focused.
+    pub fn set_pending(&self, pending: bool) {
+        self.pending.set(pending);
+        self.buttons.set_sensitive(!pending);
     }
 
     pub fn update(&self, connected: bool, items: &[WorkspaceItem], limit: usize, show_names: bool) {
@@ -211,7 +227,14 @@ impl WorkspaceStrip {
                 button.add_css_class("workspace");
                 let id = item.id.clone();
                 let on_focus = self.on_focus.clone();
-                button.connect_clicked(move |_| on_focus(id.clone()));
+                let pending = self.pending.clone();
+                let buttons = self.buttons.clone();
+                button.connect_clicked(move |_| {
+                    if !pending.replace(true) {
+                        buttons.set_sensitive(false);
+                        on_focus(id.clone());
+                    }
+                });
                 let row = ReflowRow::new(&button.clone().upcast());
                 self.buttons.append(&row);
                 self.cache
@@ -227,6 +250,7 @@ impl WorkspaceStrip {
                 .unwrap_or_else(|| item.index.to_string());
             let index_label = item.index.to_string();
             button.set_label(if show_names { &name } else { &index_label });
+            button.set_sensitive(workspace_focus_enabled(connected, self.pending.get(), item.focused));
             let on_output = item
                 .output
                 .as_deref()
@@ -303,6 +327,14 @@ mod tests {
             focused,
             urgent,
         }
+    }
+
+    #[test]
+    fn pending_focus_blocks_second_optimistic_action_without_hiding_selection() {
+        assert!(!workspace_focus_enabled(false, false, false));
+        assert!(!workspace_focus_enabled(true, true, false));
+        assert!(!workspace_focus_enabled(true, false, true));
+        assert!(workspace_focus_enabled(true, false, false));
     }
 
     #[test]

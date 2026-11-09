@@ -90,6 +90,7 @@ pub use warnings::{
 };
 pub use workspace::{
     WorkspaceItem, WorkspaceStrip, WorkspaceWindow, visible_workspace_window, visible_workspaces,
+    workspace_focus_enabled,
 };
 
 use gtk::prelude::*;

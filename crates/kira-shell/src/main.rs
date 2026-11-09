@@ -836,6 +836,7 @@ fn activate(app: &gtk::Application, primary: &Rc<RefCell<Option<gtk::Application
                     }
                     ShellUpdate::WorkspaceFocus(result) => {
                         workspace_pending.set(false);
+                        bar.workspaces.set_pending(false);
                         warning_sources.borrow_mut().workspace =
                             result.err().map(|error| format!("РАБОЧИЙ СТОЛ: {error}"));
                         warnings_changed = true;
