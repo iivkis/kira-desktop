@@ -9,7 +9,7 @@ use gtk::gio;
 use gtk::glib::{self, variant::ToVariant};
 use gtk::prelude::*;
 
-use kira_services::notification_queue::{DEFAULT_DWELL, Notice, NotificationQueue};
+use kira_services::notification_queue::{DEFAULT_DWELL, Notice, NotificationOwnership, NotificationQueue};
 use kira_ui::{
     NotificationHostSet, NotificationIntent, NotificationView, PopupHost, PopupKind,
     ToastHostSelection, ToastLayout,
@@ -46,12 +46,11 @@ fn bounded(value: String, max_chars: usize) -> String {
     value.chars().take(max_chars).collect()
 }
 
-fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> Notice {
+fn notice_from_params(params: &glib::Variant, id: u32) -> Notice {
     let app = bounded(
         params.child_value(0).get::<String>().unwrap_or_default(),
         128,
     );
-    let replace = params.child_value(1).get::<u32>().unwrap_or(0);
     let summary = bounded(
         params.child_value(3).get::<String>().unwrap_or_default(),
         256,
@@ -81,11 +80,6 @@ fn notice_from_params(queue: &mut NotificationQueue, params: &glib::Variant) -> 
         DEFAULT_DWELL
     } else {
         Duration::from_millis(u64::try_from(timeout.clamp(3000, 30000)).unwrap_or(5000))
-    };
-    let id = if replace != 0 {
-        replace
-    } else {
-        queue.allocate_id()
     };
     Notice {
         id,
@@ -197,6 +191,7 @@ struct Service {
     owner_id: RefCell<Option<gio::OwnerId>>,
     bus: RefCell<Option<gio::DBusConnection>>,
     queue: RefCell<NotificationQueue>,
+    senders: RefCell<NotificationOwnership>,
     host: RefCell<Option<NotificationHostSet>>,
     popup: Rc<PopupHost>,
     timer_revision: Cell<u64>,
@@ -214,7 +209,7 @@ impl Service {
         let weak = Rc::downgrade(self);
         let registration = connection
             .register_object(OBJECT_PATH, &info)
-            .method_call(move |_, _, _, _, method, params, invocation| {
+            .method_call(move |_, sender, _, _, method, params, invocation| {
                 let Some(service) = weak.upgrade() else {
                     invocation.return_dbus_error(
                         "org.freedesktop.DBus.Error.Failed",
@@ -242,10 +237,23 @@ impl Service {
                             );
                             return;
                         }
+                        // Supplied app names and IDs confer no authority.
+                        // Only a unique D-Bus sender may replace its own ID.
+                        let Some(sender) = sender.filter(|sender| sender.starts_with(':')) else {
+                            invocation.return_dbus_error(
+                                "org.freedesktop.DBus.Error.AccessDenied",
+                                "A unique D-Bus sender is required",
+                            );
+                            return;
+                        };
                         let (id, accepted) = {
                             let mut queue = service.queue.borrow_mut();
-                            let notice = notice_from_params(&mut queue, &params);
-                            let id = notice.id;
+                            let id = service.senders.borrow().assign_id(
+                                &mut queue,
+                                sender,
+                                params.child_value(1).get::<u32>().unwrap_or(0),
+                            );
+                            let notice = notice_from_params(&params, id);
                             (id, queue.push(notice, Instant::now()))
                         };
                         if !accepted {
@@ -255,12 +263,21 @@ impl Service {
                             );
                             return;
                         }
+                        service.senders.borrow_mut().record(id, sender);
                         invocation.return_value(Some(&(id,).to_variant()));
                         service.sync();
                     }
                     "CloseNotification" => {
                         let id = params.child_value(0).get::<u32>().unwrap_or(0);
-                        if service.queue.borrow_mut().close(id) {
+                        if !sender.is_some_and(|sender| {
+                            service.senders.borrow().is_owner(id, sender)
+                        }) {
+                            invocation.return_dbus_error(
+                                "org.freedesktop.Notifications.Error.InvalidId",
+                                "Unknown notification ID for this D-Bus sender",
+                            );
+                        } else if service.queue.borrow_mut().close(id) {
+                            service.senders.borrow_mut().forget(id);
                             invocation.return_value(None);
                             service.signal_closed(id, 3);
                             service.sync();
@@ -332,6 +349,7 @@ impl Service {
         match intent {
             NotificationIntent::Close(id) => {
                 if self.queue.borrow_mut().close(id) {
+                    self.senders.borrow_mut().forget(id);
                     self.signal_closed(id, 2);
                     self.sync();
                 }
@@ -355,6 +373,7 @@ impl Service {
                     );
                 }
                 if self.queue.borrow_mut().close(id) {
+                    self.senders.borrow_mut().forget(id);
                     self.signal_closed(id, 2);
                 }
                 self.sync();
@@ -456,6 +475,7 @@ impl Service {
                 .collect::<Vec<_>>()
         };
         for id in expired {
+            self.senders.borrow_mut().forget(id);
             self.signal_closed(id, 1);
         }
         let cards = if can_show {
@@ -583,6 +603,7 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
         owner_id: RefCell::new(None),
         bus: RefCell::new(None),
         queue: RefCell::new(NotificationQueue::default()),
+        senders: RefCell::new(NotificationOwnership::default()),
         host: RefCell::new(None),
         popup,
         timer_revision: Cell::new(0),
