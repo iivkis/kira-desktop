@@ -154,8 +154,7 @@ def run_virtual(
             from check_native_visual_smoke import verify_toast_transitions
             visual = verify_toast_transitions(output)
             (output / "visual-smoke.json").write_text(
-                json.dumps(visual, ensure_ascii=False, indent=2) + "
-",
+                json.dumps(visual, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
             index = output / "review-index.html"
