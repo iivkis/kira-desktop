@@ -169,3 +169,14 @@ GTK child-surface interaction with a real StatusNotifierHost.
 The fixture refuses a non-attested or ordinary user D-Bus bus and is
 never started with the production Shell. It cannot mutate outputs, KDL,
 host app menus or create a fabricated desktop screenshot.
+
+### Negative-action and idempotency protocol probes
+
+The private GIO `com.canonical.dbusmenu` smoke now performs two
+`AboutToShow(20)` calls and requires the second to report no change;
+sends real fixed `Event(clicked)` messages for a disabled entry and an
+unknown numeric ID and checks that neither appears in the fixture's
+action log; and clicks the checkbox twice, verifying two logged
+transactions and distinct successive typed layouts. These are headless
+private-bus **fixture/protocol** checks, not a substitute for testing
+the Shell's owner-scoped event gate with actual native GTK menu controls.
