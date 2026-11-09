@@ -812,7 +812,8 @@ impl TrayUi {
         while let Some(child) = self.menu_list.first_child() {
             self.menu_list.remove(&child);
         }
-        self.menu_epoch.set(menu.as_ref().map_or(0, |menu| menu.epoch));
+        self.menu_epoch
+            .set(menu.as_ref().map_or(0, |menu| menu.epoch));
         *self.current_menu.borrow_mut() = menu.clone();
         *self.keyboard_menu.borrow_mut() = menu.is_some();
         self.menu_page.set_visible(menu.is_some());
