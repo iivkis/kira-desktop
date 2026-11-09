@@ -286,7 +286,11 @@ pub fn selected_process_report(item: &ProcessItem) -> String {
         "Процесс Kira (снимок)\nPID: {}\nИмя: {}\nСостояние: {}\nCPU: {}\nRSS: {}\nPSS: {}\n",
         item.pid,
         clean_text(&item.name),
-        if item.state.is_ascii_graphic() { item.state } else { '?' },
+        if item.state.is_ascii_graphic() {
+            item.state
+        } else {
+            '?'
+        },
         cpu_text(item.cpu_percent),
         memory_text(item.rss_kib),
         memory_text(item.pss_kib)
@@ -392,11 +396,7 @@ impl ProcessVisualRow {
                     .iter()
                     .position(|id| *id == process_id)
             {
-                let next = process_selection_after(
-                    index,
-                    state.visible_ids.borrow().len(),
-                    action,
-                );
+                let next = process_selection_after(index, state.visible_ids.borrow().len(), action);
                 state.select_index(next, true);
             }
             gtk::glib::Propagation::Stop
@@ -442,7 +442,11 @@ impl ProcessVisualRow {
             "{} · PID {} · состояние {} · CPU {} · RSS {} · PSS {}",
             name,
             item.pid,
-            if item.state.is_ascii_graphic() { item.state } else { '?' },
+            if item.state.is_ascii_graphic() {
+                item.state
+            } else {
+                '?'
+            },
             cpu_text(item.cpu_percent),
             memory_text(item.rss_kib),
             memory_text(item.pss_kib),
@@ -511,7 +515,8 @@ impl ProcessTableState {
         self.selected.replace(Some(row.identity.clone()));
         if focus {
             row.button.grab_focus();
-            self.scroll.ensure_visible(&row.wrapper.clone().upcast(), true);
+            self.scroll
+                .ensure_visible(&row.wrapper.clone().upcast(), true);
         }
         self.update_selected();
     }
@@ -536,7 +541,11 @@ impl ProcessTableState {
                 "ВЫБРАН: {} · PID {} · состояние {} · CPU {} · RSS {} · PSS {}",
                 clean_text(&item.name),
                 item.pid,
-                if item.state.is_ascii_graphic() { item.state } else { '?' },
+                if item.state.is_ascii_graphic() {
+                    item.state
+                } else {
+                    '?'
+                },
                 cpu_text(item.cpu_percent),
                 memory_text(item.rss_kib),
                 memory_text(item.pss_kib),
@@ -565,7 +574,9 @@ impl ProcessTableState {
             let ordered: Vec<_> = prior
                 .iter()
                 .filter_map(|id| {
-                    cache.get(id).map(|row| (id.to_string(), row.wrapper.clone()))
+                    cache
+                        .get(id)
+                        .map(|row| (id.to_string(), row.wrapper.clone()))
                 })
                 .collect();
             Some(self.reflow.capture(&ordered))
@@ -666,8 +677,7 @@ impl ProcessTableState {
     }
 
     fn render(&self, animate: bool) {
-        self.clear
-            .set_visible(!self.search.text().is_empty());
+        self.clear.set_visible(!self.search.text().is_empty());
         for (field, button) in &self.sort_buttons {
             let active = *field == self.sort.get().field;
             if active {
@@ -675,7 +685,11 @@ impl ProcessTableState {
                 button.set_label(&format!(
                     "{} {}",
                     field.heading(),
-                    if self.sort.get().descending { "↓" } else { "↑" }
+                    if self.sort.get().descending {
+                        "↓"
+                    } else {
+                        "↑"
+                    }
                 ));
                 self.sort_flow.retarget(&button.clone().upcast());
             } else {
@@ -1159,10 +1173,16 @@ mod tests {
             name: "worker\nunknown".into(),
         };
         assert!(process_selected(&snapshot, &current).is_some());
-        assert!(process_selected(
-            &snapshot,
-            &ProcessSelection { pid: 71, name: "restarted".into() }
-        ).is_none());
+        assert!(
+            process_selected(
+                &snapshot,
+                &ProcessSelection {
+                    pid: 71,
+                    name: "restarted".into()
+                }
+            )
+            .is_none()
+        );
         let report = selected_process_report(&snapshot.rows[0]);
         assert!(report.contains("PID: 71"));
         assert!(report.contains("RSS: 4.0 MiB"));
@@ -1179,7 +1199,10 @@ mod tests {
             item(11, "same", Some(10.0), None, None),
         ];
         let found = filter_sort_processes(&rows, "", ProcessSort::Cpu, 20);
-        assert_eq!(found.iter().map(|item| item.pid).collect::<Vec<_>>(), [11, 12]);
+        assert_eq!(
+            found.iter().map(|item| item.pid).collect::<Vec<_>>(),
+            [11, 12]
+        );
         assert_eq!(found[0].cpu_percent, Some(70.0));
     }
 
