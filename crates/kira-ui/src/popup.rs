@@ -20,7 +20,6 @@ fn reattach_can_open(active: Option<PopupKind>) -> bool {
     active.is_none()
 }
 
-
 // Named because the callback is shared between a retained native view
 // and its detachable toplevel lifetime, never supplied by untrusted IPC.
 type DetachHandler = Rc<dyn Fn(bool)>;
@@ -599,9 +598,7 @@ impl PopupHost {
             close_button.add_css_class("popup-window-control");
             close_button.add_css_class("popup-close-control");
             close_button.set_tooltip_text(Some("Закрыть виджет, сохранив состояние"));
-            close_button.update_property(&[gtk::accessible::Property::Label(
-                "Закрыть виджет",
-            )]);
+            close_button.update_property(&[gtk::accessible::Property::Label("Закрыть виджет")]);
             controls.append(&close_button);
             let view_widget = make_view();
             let sections = stage_sections(&view_widget);
