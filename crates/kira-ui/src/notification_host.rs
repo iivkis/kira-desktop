@@ -686,7 +686,20 @@ pub enum ToastHostSelection {
 struct OutputToastHost {
     id: u64,
     monitor: gtk::gdk::Monitor,
+    scale_factor: i32,
     host: NotificationHost,
+}
+
+/// Reallocation on an unchanged GDK monitor still changes the actual
+/// painted contact region. A scale change must revoke old input and
+/// frame acknowledgements even when logical width/height stay identical.
+fn toast_geometry_changed(
+    previous: ToastLayout,
+    next: ToastLayout,
+    previous_scale: i32,
+    next_scale: i32,
+) -> bool {
+    previous != next || previous_scale != next_scale
 }
 
 /// Reusable multi-output GTK presentation controller. The trusted Shell
@@ -728,10 +741,19 @@ impl NotificationHostSet {
     pub fn select(&self, monitor: &gtk::gdk::Monitor, layout: ToastLayout) -> ToastHostSelection {
         let mut hosts = self.hosts.borrow_mut();
         if let Some(active) = self.active.get()
-            && hosts
-                .iter()
-                .any(|entry| entry.id == active && entry.monitor == *monitor)
+            && let Some(entry) = hosts
+                .iter_mut()
+                .find(|entry| entry.id == active && entry.monitor == *monitor)
         {
+            let scale = monitor.scale_factor();
+            if toast_geometry_changed(entry.host.layout.get(), layout, entry.scale_factor, scale) {
+                // The compositor can change fractional/physical scale
+                // without changing the monitor object. Invalidate input,
+                // animations and old paint ACKs before Shell resets FIFO.
+                entry.host.hide();
+                entry.scale_factor = scale;
+                return ToastHostSelection::Changed;
+            }
             return ToastHostSelection::Unchanged;
         }
         // Drop the old output's cards and input region before the next one
@@ -776,14 +798,21 @@ impl NotificationHostSet {
         host.window.connect_map(move |_| {
             if active.get() == Some(id) {
                 let callback = on_ready.clone();
-                // Never re-enter Shell::sync while an output host is being
-                // created, selected or borrowed for its GTK map signal.
-                gtk::glib::idle_add_local_once(move || callback());
+                let active_at_dispatch = active.clone();
+                // A stale map event must not reschedule an old output
+                // after its host was already replaced or hot-unplugged.
+                // Never re-enter Shell::sync while a host is borrowed.
+                gtk::glib::idle_add_local_once(move || {
+                    if active_at_dispatch.get() == Some(id) {
+                        callback();
+                    }
+                });
             }
         });
         hosts.push(OutputToastHost {
             id,
             monitor: monitor.clone(),
+            scale_factor: monitor.scale_factor(),
             host,
         });
         self.active.set(Some(id));
@@ -992,6 +1021,17 @@ mod tests {
                 .0,
             0
         );
+    }
+
+    #[test]
+    fn geometry_or_scale_updates_revoke_a_painted_output_without_monitor_replacement() {
+        let base = toast_layout(1920, 1080, 1080).unwrap();
+        let resized = toast_layout(800, 600, 600).unwrap();
+        assert!(!toast_geometry_changed(base, base, 1, 1));
+        assert!(toast_geometry_changed(base, resized, 1, 1));
+        assert!(toast_geometry_changed(base, base, 1, 2));
+        assert!(toast_geometry_changed(base, base, 2, 1));
+        assert!(!toast_geometry_changed(resized, resized, 2, 2));
     }
 
     #[test]
