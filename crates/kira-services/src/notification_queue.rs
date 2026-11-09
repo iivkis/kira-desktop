@@ -36,6 +36,53 @@ struct Showing {
     since: Option<Instant>,
 }
 
+/// Trusted admission policy shared by GTK Shell and the headless private
+/// D-Bus protocol fixture. The entire owner check, queue mutation and lease
+/// publication are one synchronous transaction. A failed or overloaded
+/// admission never changes the sender ledger.
+pub fn admit_notification(
+    queue: &mut NotificationQueue,
+    owners: &mut NotificationOwnership,
+    sender: &str,
+    replaces_id: u32,
+    mut notice: Notice,
+    now: Instant,
+) -> Option<u32> {
+    if !sender.starts_with(':') || sender.len() > 255 {
+        return None;
+    }
+    let id = owners.assign_id(queue, sender, replaces_id);
+    notice.id = id;
+    if !queue.push(notice, now) {
+        return None;
+    }
+    owners.record(id, sender);
+    Some(id)
+}
+
+/// Closing by numeric ID follows the standard Freedesktop protocol.
+pub fn close_notification(
+    queue: &mut NotificationQueue,
+    owners: &mut NotificationOwnership,
+    id: u32,
+) -> bool {
+    if !queue.close(id) {
+        return false;
+    }
+    owners.forget(id);
+    true
+}
+
+/// A name-ownership epoch must lose every queued notice and sender lease,
+/// but must never start allocating numeric IDs again at one.
+pub fn revoke_notification_session(
+    queue: &mut NotificationQueue,
+    owners: &mut NotificationOwnership,
+) {
+    queue.reset_session();
+    owners.clear();
+}
+
 /// A Freedesktop notification ID is scoped to the unique D-Bus peer that
 /// received it. Application-provided display names are never authority.
 /// A foreign or already-closed replaces_id becomes a fresh queue-generated
@@ -319,6 +366,67 @@ mod tests {
             persistent: false,
             dwell: DEFAULT_DWELL,
         }
+    }
+
+    #[test]
+    fn atomic_admission_isolation_and_close_handle_real_sender_lifetimes() {
+        let now = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let mut owners = NotificationOwnership::default();
+        let original = admit_notification(
+            &mut queue, &mut owners, ":1.10", 0, notice(900), now,
+        ).unwrap();
+        assert_eq!(original, 1);
+        assert_eq!(queue.history().last().unwrap().id, original);
+        let same = admit_notification(
+            &mut queue, &mut owners, ":1.10", original, notice(901), now,
+        ).unwrap();
+        assert_eq!(same, original);
+        assert!(owners.is_owner(original, ":1.10"));
+        let foreign = admit_notification(
+            &mut queue, &mut owners, ":1.11", original, notice(902), now,
+        ).unwrap();
+        assert_ne!(foreign, original);
+        assert!(owners.is_owner(foreign, ":1.11"));
+        assert_eq!(owners.active_leases(), 2);
+        assert!(admit_notification(
+            &mut queue, &mut owners, "org.freedesktop.DBus", original, notice(903), now
+        ).is_none());
+        assert!(close_notification(&mut queue, &mut owners, original));
+        assert!(!close_notification(&mut queue, &mut owners, original));
+        assert!(!owners.is_owner(original, ":1.10"));
+        let next = admit_notification(
+            &mut queue, &mut owners, ":1.10", original, notice(904), now,
+        ).unwrap();
+        assert_ne!(next, original);
+        revoke_notification_session(&mut queue, &mut owners);
+        assert_eq!(owners.active_leases(), 0);
+        assert_eq!(queue.active_count(), 0);
+        assert!(queue.allocate_id() > next);
+    }
+
+    #[test]
+    fn failed_admission_cannot_change_owner_of_an_existing_notification() {
+        let now = Instant::now();
+        let mut queue = NotificationQueue::default();
+        let mut owners = NotificationOwnership::default();
+        let original = admit_notification(
+            &mut queue, &mut owners, ":1.1", 0, notice(40), now,
+        ).unwrap();
+        for id in 2..=MAX_STORED as u32 {
+            assert!(queue.push(notice(id), now));
+        }
+        assert_eq!(queue.active_count(), MAX_STORED);
+        assert_eq!(admit_notification(
+            &mut queue, &mut owners, ":1.2", original, notice(500), now
+        ), None);
+        assert_eq!(owners.active_leases(), 1);
+        assert!(owners.is_owner(original, ":1.1"));
+        assert!(queue.contains_active(original));
+        assert_eq!(admit_notification(
+            &mut queue, &mut owners, ":1.1", original, notice(501), now
+        ), Some(original));
+        assert_eq!(owners.active_leases(), 1);
     }
 
     #[test]
