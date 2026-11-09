@@ -248,6 +248,11 @@ impl LauncherState {
     }
 
     fn request_refresh(&self) {
+        // A first discovery is already running in the Shell. Ctrl+R must
+        // not start a second scan before the initial catalogue arrives.
+        if !self.loaded.get() {
+            return;
+        }
         let callback = self.refresh_action.borrow().clone();
         let Some(callback) = callback else {
             return;
@@ -609,7 +614,11 @@ impl Launcher {
             }
         });
         search.add_controller(launcher_key_controller(&state));
-        root.add_controller(launcher_key_controller(&state));
+        // Capture before child buttons/ScrolledWindow can consume Home,
+        // End or Page keys; the search field still owns plain caret Home/End.
+        let root_keys = launcher_key_controller(&state);
+        root_keys.set_propagation_phase(gtk::PropagationPhase::Capture);
+        root.add_controller(root_keys);
         state.render(false);
         Self { root, state }
     }
