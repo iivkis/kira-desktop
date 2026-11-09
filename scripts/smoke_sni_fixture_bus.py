@@ -42,7 +42,7 @@ def menu_call(method: str, env: dict[str, str]) -> str:
         [
             "gdbus", "call", "--session", "--dest", SNI_FIXTURE,
             "--object-path", MENU_PATH, "--method", f"{MENU_IFACE}.{actual}",
-            *arguments[method],
+            "--", *arguments[method],
         ],
         env=env, text=True, capture_output=True, timeout=8, check=False,
     )
