@@ -22,15 +22,21 @@ A **third, automatically triggered graphical smoke gate**
 (`.github/workflows/graphical-smoke.yml`) on native-gtk source changes
 builds the distributable Nix GTK package, tests the static visual
 pixel predicates and captures **102 actual Weston → nested-Niri PNG frames**
-across three independent private sessions: **800×600, 1280×800,
-1920×1080**. `scripts/graphical_viewport_matrix.py` runs the same
-`headless_wayland_acceptance.py --profile smoke` for each viewport
-(14 entry + 14 exit + 6 SNI frames), checks real screenshot PNG
-dimensions against each requested size, and writes an explicitly
-**unreviewed** matrix manifest with no automatic artifact upload.
+at **three actual Niri output scales, 1.0, 1.5 and 2.0**, in separate
+private sessions. Niri's Winit backend in the locked package has a
+**fixed physical 1280×800 output**, so resizing only the outer Weston
+does not test smaller or wider Niri desktops. A first regression run
+correctly rejected a requested 800×600 because actual grim PNGs were
+still 1280×800. `scripts/graphical_scale_matrix.py` now sets a
+temporary isolated Niri `output "winit"` scale, verifies the applied
+logical scale via the **real private Niri IPC**, then captures 14 entry
++ 14 exit + 6 SNI frames and validates actual 1280×800 PNG dimensions.
+It writes an explicitly **unreviewed** scale matrix with no automatic
+artifact upload. Testing true native physical 800×600 or 1920×1080
+requires independently controlling Winit's physical window size.
 The runner validates actual top-bar/toast signatures; screenshots are
 not automatically uploaded. This checks packaging, compositor startup
-and limited native pixels, **not** keyboard focus, fractional scaling,
+and limited native pixels, **not** keyboard focus, direct pointer actions,
 15-widget content, or paired source/main 60fps motion.
 
 For actual native acceptance, manually dispatch **Full native GTK/Nix/Wayland

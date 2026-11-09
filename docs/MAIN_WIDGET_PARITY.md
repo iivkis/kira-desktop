@@ -2,13 +2,17 @@
 
 **Status: BLOCKED.** The GTK4 widgets are **not** currently identical to the WebKit/Svelte widgets in `main`, including their content, interactions and animations. This document and [MAIN_WIDGET_PARITY.json](MAIN_WIDGET_PARITY.json) are the source-backed migration ledger, **not** a certificate of parity.
 
-## Automated graphical viewport evidence (not parity)
+## Automated Niri logical-scale evidence (not parity)
 
-The native source gate now additionally validates packaged GTK pixels in
+The native graphical gate validates packaged GTK pixels in
 **three independent Weston → nested-Niri private sessions** at
-800×600, 1280×800 and 1920×1080. Each scenario retains exactly
-14 entry + 14 exit + 6 live SNI frames, checks actual grim PNG dimensions,
-and records an explicitly *unreviewed* matrix summary. The gate checks
+true output scales **1.0, 1.5 and 2.0** (verified through nested Niri
+IPC). The locked Winit backend is physically fixed at **1280×800**;
+varying only outer Weston does not produce a different Niri viewport,
+as the first failed 800×600 gate conclusively demonstrated. Each
+scenario captures exactly 14 entry + 14 exit + 6 live SNI frames,
+checks actual PNG dimensions and records an explicitly *unreviewed*
+scale matrix summary. The gate checks
 only native Top Bar and notification visual predicates, not all 15 widgets,
 keyboard focus or paired source/native motion. No verification flags are
 changed from this evidence alone.

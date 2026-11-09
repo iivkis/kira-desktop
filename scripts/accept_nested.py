@@ -79,7 +79,10 @@ def acceptance_command(
     config: Path,
     bin_dir: Path | None = None,
     profile: str = "full",
+    scale: float = 1.0,
 ) -> list[str]:
+    if scale not in (1.0, 1.5, 2.0):
+        raise PreviewError("Unsupported nested acceptance output scale")
     argv = [
         *run_session_arguments(bus_runner, config),
         sys.executable, str(script),
@@ -87,6 +90,7 @@ def acceptance_command(
         "--evidence-dir", str(output),
         "--package-dir", str(package),
         "--acceptance-profile", profile,
+        "--acceptance-scale", str(scale),
     ]
     if bin_dir is not None:
         argv.extend(["--bin-dir", str(bin_dir)])
@@ -99,6 +103,7 @@ def main() -> int:
     parser.add_argument("--bin-dir", type=Path, help="Built kira-core and kira-shell directory")
     parser.add_argument("--output", type=Path, required=True, help="NEW evidence directory")
     parser.add_argument("--profile", choices=("smoke", "full"), default="full")
+    parser.add_argument("--scale", type=float, choices=(1.0, 1.5, 2.0), default=1.0)
     args = parser.parse_args()
     try:
         bus_runner = shutil.which("dbus-run-session")
@@ -121,6 +126,7 @@ def main() -> int:
                 output, bus_runner, config,
                 args.bin_dir.resolve() if args.bin_dir else None,
                 profile=args.profile,
+                scale=args.scale,
             )
             return subprocess.run(command, env=env, check=False).returncode
     except (PreviewError, OSError) as error:

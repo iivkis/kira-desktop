@@ -15,10 +15,13 @@ The preview must report a nested Wayland display, a **separate nested NIRI_SOCKE
 ## Automatic genuine-Wayland smoke (not a parity certificate)
 
 The new auto-triggered `graphical-smoke.yml` builds the packaged native
-GTK desktop and captures 102 *actual* nested-Niri PNG frames over three
-independently isolated viewports (800×600, 1280×800, 1920×1080),
-asserting real grim screenshot dimensions and bounded 34-frame sequences
-per viewport, checking limited bar and toast predicates. This complements the fast
+GTK desktop and captures 102 *actual* nested-Niri PNG frames across
+three independently isolated **logical output scales 1.0, 1.5 and 2.0**,
+attested by private Niri IPC, with the real Winit physical 1280×800 PNG
+dimensions and bounded 34-frame sequences per scale. Varying only
+Weston's outer size does not resize Niri's hard-coded Winit output,
+so the original 800×600 attempt failed rather than falsely passing.
+This checks limited Top Bar and toast visual predicates. This complements the fast
 Core/IPC and GTK compile/Clippy/test jobs. It does not test keyboard
 focus, fractional scales, multi-output geometry, full widget content
 or paired source/main TENET trajectories. Those scenarios still require

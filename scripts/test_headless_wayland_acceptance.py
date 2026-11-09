@@ -122,10 +122,20 @@ class HeadlessAcceptanceTests(unittest.TestCase):
         self.assertIn("--package-dir", cmd)
         self.assertIn("--output", cmd)
         self.assertEqual(cmd[cmd.index("--profile") + 1], "smoke")
-        self.assertEqual(accept_command(
+        full = accept_command(
             Path("/repo/scripts/accept_nested.py"),
             Path("/repo/result"), Path("/out/capture"), profile="full",
-        )[-1], "full")
+        )
+        self.assertEqual(full[full.index("--profile") + 1], "full")
+        self.assertEqual(full[full.index("--scale") + 1], "1.0")
+        scaled = accept_command(
+            Path("/repo/accept.py"), Path("/repo/result"),
+            Path("/out/capture"), scale=2.0,
+        )
+        self.assertEqual(scaled[scaled.index("--scale") + 1], "2.0")
+        with self.assertRaises(PreviewError):
+            accept_command(Path("/repo/accept.py"), Path("/repo/result"),
+                           Path("/out/capture"), scale=0.8)
         with self.assertRaises(PreviewError):
             accept_command(Path("/repo/accept.py"), Path("/result"),
                            Path("/out"), profile="unknown")

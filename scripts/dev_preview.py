@@ -38,10 +38,38 @@ def nested_display_path(nested: str, parent: str, runtime: Path) -> Path:
     return candidate
 
 
-def preview_config(python: Path, script: Path, ready: Path, nonce: str) -> str:
+ACCEPTANCE_OUTPUT_SCALES = (1.0, 1.5, 2.0)
+
+
+def acceptance_output_scale(outputs: dict[str, dict], expected: float) -> float:
+    """Attest actual nested Niri scale from IPC, not our generated KDL."""
+    if expected not in ACCEPTANCE_OUTPUT_SCALES or len(outputs) != 1:
+        raise PreviewError("Unsupported or ambiguous nested acceptance scale")
+    output = next(iter(outputs.values()))
+    logical = output.get("logical")
+    actual = logical.get("scale") if isinstance(logical, dict) else None
+    if not isinstance(actual, (int, float)) or isinstance(actual, bool):
+        raise PreviewError("Nested Niri reported no numeric output scale")
+    if abs(actual - expected) > 0.001:
+        raise PreviewError(
+            f"Nested Niri scale {actual} differs from requested {expected}"
+        )
+    return float(actual)
+
+
+def preview_config(
+    python: Path, script: Path, ready: Path, nonce: str,
+    *, acceptance_scale: float = 1.0,
+) -> str:
+    if acceptance_scale not in ACCEPTANCE_OUTPUT_SCALES:
+        raise PreviewError("Unsafe or unsupported Niri acceptance scale")
     # JSON-quoted strings are also valid KDL strings.
     args = " ".join(json.dumps(str(value)) for value in
                     (python, script, "report", ready, nonce))
+    scale_node = (
+        f'output "winit" {{\n    scale {acceptance_scale:.1f}\n}}\n'
+        if acceptance_scale != 1.0 else ""
+    )
     return (
         "// Kira temporary nested Niri config (no host autostart)\n"
         "hotkey-overlay {\n    skip-at-startup\n}\n"
@@ -57,6 +85,7 @@ def preview_config(python: Path, script: Path, ready: Path, nonce: str) -> str:
         "    Mod+Ctrl+1 repeat=false { move-window-to-workspace focus=false 1; }\n"
         "    Mod+Ctrl+2 repeat=false { move-window-to-workspace focus=false 2; }\n"
         "}\n"
+        f"{scale_node}"
         f"spawn-at-startup {args}\n"
     )
 
@@ -276,11 +305,16 @@ def run_preview(
     evidence_dir: Path | None = None,
     accept_display_crash: bool = False,
     acceptance_profile: str = "full",
+    acceptance_scale: float = 1.0,
 ) -> None:
     runtime_value = os.environ.get("XDG_RUNTIME_DIR")
     parent_display = os.environ.get("WAYLAND_DISPLAY")
     if not runtime_value or not parent_display:
         raise PreviewError("An existing Wayland session is required (XDG_RUNTIME_DIR / WAYLAND_DISPLAY)")
+    if acceptance_scale not in ACCEPTANCE_OUTPUT_SCALES:
+        raise PreviewError("Unsupported nested output scale")
+    if acceptance_scale != 1.0 and not acceptance_notifications:
+        raise PreviewError("Output scaling is reserved for private-bus acceptance")
     if acceptance_notifications and accept_display_crash:
         raise PreviewError("Display-crash QA and notification capture are separate runs")
     if acceptance_notifications:
@@ -327,7 +361,10 @@ def run_preview(
             raise PreviewError("KIRA_CONFIG_FILE must be an absolute path")
         active_config = Path(requested) if requested else demo_config
         config.write_text(
-            preview_config(Path(sys.executable), Path(__file__).resolve(), ready, nonce),
+            preview_config(
+                Path(sys.executable), Path(__file__).resolve(), ready, nonce,
+                acceptance_scale=acceptance_scale,
+            ),
             encoding="utf-8",
         )
 
@@ -412,6 +449,14 @@ def run_preview(
                 nested_output_snapshot(niri_path, isolated)
                 if accept_display_crash else None
             )
+            if acceptance_notifications:
+                observed = nested_output_snapshot(niri_path, isolated)
+                scale = acceptance_output_scale(observed, acceptance_scale)
+                print(
+                    f"[preview] Verified actual nested Niri output scale "
+                    f"{scale:.1f} from independent IPC",
+                    flush=True,
+                )
             shell = launch("shell", [str(binaries["shell"])], isolated)
             if accept_display_crash:
                 print(f"[preview:crash] GTK Shell PID: {shell.pid}", flush=True)
@@ -550,6 +595,8 @@ def main() -> int:
     )
     parser.add_argument("--acceptance-profile", choices=("smoke", "full"), default="full",
                         help=argparse.SUPPRESS)
+    parser.add_argument("--acceptance-scale", type=float, default=1.0,
+                        choices=ACCEPTANCE_OUTPUT_SCALES, help=argparse.SUPPRESS)
     parser.add_argument(
         "--evidence-dir", type=Path,
         help="NEW output directory for unreviewed nested PNG captures",
@@ -570,6 +617,7 @@ def main() -> int:
                 evidence_dir=args.evidence_dir,
                 accept_display_crash=args.accept_display_crash,
                 acceptance_profile=args.acceptance_profile,
+                acceptance_scale=args.acceptance_scale,
             )
         else:
             parser.error("Unknown preview mode")

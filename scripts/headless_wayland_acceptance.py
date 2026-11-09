@@ -111,24 +111,29 @@ def verify_virtual_socket(env: dict[str, str], socket: str) -> Path:
 
 
 def accept_command(
-    script: Path, package: Path, output: Path, *, profile: str = "smoke",
+    script: Path, package: Path, output: Path, *,
+    profile: str = "smoke", scale: float = 1.0,
 ) -> list[str]:
     if profile not in ("smoke", "full"):
         raise PreviewError("Unknown headless capture profile")
+    if scale not in (1.0, 1.5, 2.0):
+        raise PreviewError("Unknown nested output scale")
     return [
         sys.executable, str(script), "--package-dir", str(package),
-        "--output", str(output), "--profile", profile,
+        "--output", str(output), "--profile", profile, "--scale", str(scale),
     ]
 
 
 def run_virtual(
     package: Path, output: Path, width: int, height: int,
     *, timeout_seconds: int = MAX_SECONDS, profile: str = "smoke",
-    ambient: dict[str, str] | None = None,
+    scale: float = 1.0, ambient: dict[str, str] | None = None,
 ) -> Path:
     ambient = os.environ if ambient is None else ambient
     if profile not in ("smoke", "full"):
         raise PreviewError("Unknown headless capture profile")
+    if scale not in (1.0, 1.5, 2.0):
+        raise PreviewError("Unsupported nested output scale")
     if not 30 <= timeout_seconds <= MAX_SECONDS:
         raise PreviewError("Acceptance timeout outside safe bounds")
     if ambient.get("WAYLAND_DISPLAY") or ambient.get("NIRI_SOCKET"):
@@ -165,7 +170,7 @@ def run_virtual(
             # D-Bus, nested Niri IPC and Wayland display before launching Kira.
             script = Path(__file__).resolve().parent / "accept_nested.py"
             result = subprocess.run(
-                accept_command(script, package, output, profile=profile),
+                accept_command(script, package, output, profile=profile, scale=scale),
                 env=env, text=True, capture_output=True,
                 check=False, timeout=timeout_seconds,
             )
@@ -221,13 +226,14 @@ def main() -> int:
     parser.add_argument("--width", type=int, default=1280)
     parser.add_argument("--height", type=int, default=800)
     parser.add_argument("--profile", choices=("smoke", "full"), default="smoke")
+    parser.add_argument("--scale", type=float, choices=(1.0, 1.5, 2.0), default=1.0)
     parser.add_argument("--timeout-seconds", type=int, default=MAX_SECONDS)
     args = parser.parse_args()
     try:
         run_virtual(
             args.package_dir.resolve(), args.output.resolve(),
             args.width, args.height, timeout_seconds=args.timeout_seconds,
-            profile=args.profile,
+            profile=args.profile, scale=args.scale,
         )
         return 0
     except (PreviewError, OSError, subprocess.TimeoutExpired) as error:

@@ -19,10 +19,10 @@ class GraphicalSmokeGateTests(unittest.TestCase):
         self.assertIn("workflow_dispatch:", source)
         self.assertIn("nix build .#default -L", source)
         self.assertIn("nix develop .#graphical-ci", source)
-        self.assertIn("scripts/graphical_viewport_matrix.py", source)
+        self.assertIn("scripts/graphical_scale_matrix.py", source)
         self.assertIn("--package-dir result --output artifacts/virtual-niri", source)
         self.assertIn("102 actual PNG frames", source)
-        self.assertIn("800x600, 1280x800 and 1920x1080", source)
+        self.assertIn("Niri output scales 100, 150 and 200 percent", source)
         self.assertIn("scripts/visual_contract_checks.py", source)
         self.assertIn("timeout-minutes: 45", source)
 

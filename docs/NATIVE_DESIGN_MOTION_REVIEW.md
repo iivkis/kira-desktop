@@ -31,6 +31,7 @@ certificate. All 15 widgets remain unverified until paired graphical evidence.
 | **P1** | A popup changing physical output mid-flight could keep partially played TENET progress from the old output after updating the contact position. | Cancel and hide the old GDK scene **before** writing new monitor/scale/Wayland hints; the fresh output opens from its first painted frame. Same geometry preserves genuine interrupted reversal. Add a pure mid-flight regression. | Paired nested-Niri captures of move, resize and scale transitions remain missing |
 | **P1** | GTK compilation cannot prove that the Nix desktop starts or paints actual Wayland pixels. | Add independently triggered Nix package + Weston/nested-Niri 34-frame smoke with real top-bar/toast pixel predicates; keep full manual evidence review. | Smoke is not whole-widget content, focus, fractional scale or main visual parity |
 | **P1** | A real Wayland smoke that checks only 1280×800 can let narrow and wide layout regressions pass; trusting Weston CLI dimensions is not evidence of Niri's actual framebuffer. | Add three isolated genuine-compositor viewports (800×600, 1280×800, 1920×1080), verify dimensions of every captured grim PNG against the requested viewport, require exactly 34 frames per scenario, fail closed on reused evidence and mark the aggregate manifest **unreviewed**. | Not yet 360px compact display, fractional scaling, keyboard focus, or paired TENET motion/frame parity |
+| **P1** | The first real viewport matrix failed: the outer Weston ran at 800×600, but the nested Niri Winit framebuffer remained hard-coded to 1280×800. Merely varying Weston CLI sizes created fictitious viewport claims. | Preserve the exact-PNG dimension guard, switch the three isolated scenarios to true Niri output scale values 1.0/1.5/2.0 configured in temporary KDL and **attested by Niri IPC** before Kira starts, with 34 real frames per scale. | Winit physical 800×600/1920×1080 remains unavailable in the locked backend; fractional logical scale and real focus/motion still need independent review |
 | **P2** | Source philosophy was documented but there was no fast automated guard against a sixth CSS color, CSS-only motion/filters, suppressed outline, Top Bar/exclusive-zone drift or loss of the GTK frame/reduced-motion hook. | Introduce `scripts/check_native_design.py` and negative `scripts/test_native_design.py` fixtures in the already-bounded normal CI. Check active theme rules and native boundary invariants; reject browser animation and invalid accent foreground. | Source gate is **not** a GTK parser/build, a contrast analyser, an event simulator or a motion/frame screenshot comparison |
 
 ## Explicitly not claimed
@@ -42,9 +43,9 @@ dependencies on native code changes. Its result
    must be checked independently: it does not prove actual Wayland
    pointer/focus behavior or lack of runtime faults. Full nested-Niri
    acceptance is still manual. The separate automatic
-   `graphical-smoke.yml` now builds the package and validates 102 actual PNGs over three separately isolated 800×600,
-   1280×800 and 1920×1080 nested-Niri sessions on native changes,
-   including verification of actual grim image sizes. These predicates are
+   `graphical-smoke.yml` now builds the package and validates 102 actual PNGs over three separately isolated Niri
+   **logical scales 1.0, 1.5 and 2.0** with Niri IPC attestation,
+   checking the real 1280×800 physical Winit framebuffer dimensions. These predicates are
    **not** an independent 15-widget parity proof.
 2. No source/native screenshot pairs or 60fps motion paths have been
    captured and reviewed. In particular, notifications, popup inversion,

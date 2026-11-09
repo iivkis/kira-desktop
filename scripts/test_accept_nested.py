@@ -109,6 +109,21 @@ class PrivateBusAcceptanceTests(unittest.TestCase):
             )
             self.assertIn("--acceptance-notifications", command)
             self.assertEqual(command[command.index("--acceptance-profile") + 1], "full")
+            self.assertEqual(command[command.index("--acceptance-scale") + 1], "1.0")
+            self.assertEqual(
+                acceptance_command(
+                    Path("/repo/scripts/dev_preview.py"),
+                    Path("/repo/result"), Path("/tmp/scale"),
+                    "/dbus/run", config, scale=1.5,
+                )[-1],
+                "1.5",
+            )
+            with self.assertRaises(PreviewError):
+                acceptance_command(
+                    Path("/repo/scripts/dev_preview.py"),
+                    Path("/repo/result"), Path("/tmp/scale"),
+                    "/dbus/run", config, scale=0.75,
+                )
             self.assertEqual(command[command.index("--evidence-dir") + 1], "/tmp/new-evidence")
             self.assertEqual(command[command.index("--package-dir") + 1], "/repo/result")
             self.assertEqual(command[command.index("--bin-dir") + 1], "/repo/target/debug")

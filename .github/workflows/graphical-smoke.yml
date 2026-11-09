@@ -15,7 +15,7 @@ on:
       - "nix/**"
       - "crates/**"
       - "scripts/headless_wayland_acceptance.py"
-      - "scripts/graphical_viewport_matrix.py"
+      - "scripts/graphical_scale_matrix.py"
       - "scripts/accept_nested.py"
       - "scripts/acceptance_scenarios.py"
       - "scripts/validate_nested_evidence.py"
@@ -34,7 +34,7 @@ on:
       - "nix/**"
       - "crates/**"
       - "scripts/headless_wayland_acceptance.py"
-      - "scripts/graphical_viewport_matrix.py"
+      - "scripts/graphical_scale_matrix.py"
       - "scripts/accept_nested.py"
       - "scripts/acceptance_scenarios.py"
       - "scripts/validate_nested_evidence.py"
@@ -65,12 +65,14 @@ jobs:
         run: nix build .#default -L
       - name: Validate real pixel predicates, not synthetic screenshot claims
         run: nix develop .#graphical-ci --command python3 scripts/visual_contract_checks.py -v
-      - name: Validate 102 actual PNG frames across 800x600, 1280x800 and 1920x1080
+      - name: Validate 102 real PNG frames at Niri output scales 100, 150 and 200 percent
         run: |
-          nix develop .#graphical-ci --command python3 scripts/graphical_viewport_matrix.py \
+          nix develop .#graphical-ci --command python3 scripts/graphical_scale_matrix.py \
             --package-dir result --output artifacts/virtual-niri
-      # Each viewport receives an isolated outer Weston, nested Niri and D-Bus.
-      # Real PNG sizes are verified against each requested viewport, not
-      # merely inferred from the outer compositor CLI. Captures are private
-      # and unreviewed; source/main parity still requires manual comparison.
+      # Niri Winit itself has a fixed 1280x800 physical viewport, unrelated
+      # to outer Weston --width/--height. Each private scenario configures
+      # and independently verifies its Niri output logical scale through
+      # the real Niri IPC before any capture. Actual PNG dimensions must
+      # remain 1280x800; no false claims of 800x600 or 1920x1080 viewports.
+      # Captures are unreviewed and not automatically uploaded.
       # The manual graphical.yml retains opt-in artifact uploads.
