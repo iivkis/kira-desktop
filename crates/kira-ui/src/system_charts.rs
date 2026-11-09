@@ -1268,7 +1268,10 @@ mod tests {
         assert_eq!(usable[0].cpu, Some(0.0));
         assert_eq!(usable[1].gpu, Some(70.0));
         let empty = inspectable_history(&points[..1]);
-        assert_eq!(inspection_target(&empty, None, InspectionAction::First), None);
+        assert_eq!(
+            inspection_target(&empty, None, InspectionAction::First),
+            None
+        );
         assert!(chart_inspection_report(&empty, None, t).is_none());
     }
 
