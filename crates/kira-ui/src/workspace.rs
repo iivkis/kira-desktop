@@ -250,7 +250,11 @@ impl WorkspaceStrip {
                 .unwrap_or_else(|| item.index.to_string());
             let index_label = item.index.to_string();
             button.set_label(if show_names { &name } else { &index_label });
-            button.set_sensitive(workspace_focus_enabled(connected, self.pending.get(), item.focused));
+            button.set_sensitive(workspace_focus_enabled(
+                connected,
+                self.pending.get(),
+                item.focused,
+            ));
             let on_output = item
                 .output
                 .as_deref()
