@@ -69,6 +69,20 @@ model and headless protocol tests. The 15-widget ledger remains 0 verified;
 native Wayland motion, scale, hotplug, keyboard focus, TENET/pixel evidence,
 and full parallel multi-output toast queues remain unaccepted.
 
+## G6: revoke stale native Tray menu actions across owner changes
+
+From a freshly confirmed green HEAD `45732c8a262c89d455937f2de3230180ec8d0120`
+(CI `42554001490`), Shell-issued UI epochs have been added to the native
+Tray leaf/expand/back/dismiss intents. Every publish of the current
+owner-verified `com.canonical.dbusmenu` layout changes its epoch, and the
+Shell rejects stale GTK controls before any D-Bus call. This prevents an
+old callback with the same numeric handle/ID from operating on a new owner,
+or `LayoutUpdated` tree. Pure Rust model tests cover the revision boundary.
+
+**Do not declare this step accepted without checking the newest HEAD CI.**
+Native nested-Niri owner churn, focus, geometry, TENET and paired frozen-main
+pixel capture still have no evidence. All 15 parity entries remain partial.
+
 ## Что уже реализовано в native-gtk
 
 | Функция | Важные файлы и действующее поведение |
