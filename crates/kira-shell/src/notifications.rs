@@ -177,10 +177,7 @@ fn toast_intent_authorized(owned: bool, painted: bool, current_target: bool) -> 
 /// A D-Bus ownership epoch is a real trust boundary. Once the name is
 /// gone, do not replay a foreign daemon's previous notifications or accept
 /// stale sender leases if this process later reacquires the name.
-fn revoke_notification_session(
-    queue: &mut NotificationQueue,
-    senders: &mut NotificationOwnership,
-) {
+fn revoke_notification_session(queue: &mut NotificationQueue, senders: &mut NotificationOwnership) {
     *queue = NotificationQueue::default();
     senders.clear();
 }
@@ -319,11 +316,9 @@ impl Service {
     fn release_name(&self) {
         self.owned.set(false);
         self.bus.borrow_mut().take();
-        self.timer_revision.set(self.timer_revision.get().wrapping_add(1));
-        revoke_notification_session(
-            &mut self.queue.borrow_mut(),
-            &mut self.senders.borrow_mut(),
-        );
+        self.timer_revision
+            .set(self.timer_revision.get().wrapping_add(1));
+        revoke_notification_session(&mut self.queue.borrow_mut(), &mut self.senders.borrow_mut());
         if let Some(host) = self.host.borrow().as_ref() {
             host.hide_all();
         }
@@ -679,7 +674,9 @@ pub fn start(app: &gtk::Application, popup: Rc<PopupHost>) {
             if let Some(service) = lost.upgrade() {
                 service.owned.set(false);
                 service.bus.borrow_mut().take();
-                service.timer_revision.set(service.timer_revision.get().wrapping_add(1));
+                service
+                    .timer_revision
+                    .set(service.timer_revision.get().wrapping_add(1));
                 revoke_notification_session(
                     &mut service.queue.borrow_mut(),
                     &mut service.senders.borrow_mut(),
