@@ -51,7 +51,7 @@ painted snapshot; a replaced/removed or pre-paint button cannot dispatch.
 Previously started 180ms entrance motion settles if unrelated list updates
 interrupt it; a disappearing painted card alone takes the original 180ms
 inverted same-path exit without regaining input.
-This maintains temporal identity without forging process/notification data.
+This maintains temporal identity without forging process/notification data. Already painted unchanged siblings remain visible during a new two-frame ACK even while shaped input is revoked, and newcomers begin at the real y=12px/opacity-zero start pose.
 Nested-Niri focus, pointer and 60fps motion capture are required.
 
 ## Native keyed FLIP and scroll (unverified)

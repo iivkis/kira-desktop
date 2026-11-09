@@ -236,6 +236,12 @@ pub fn bounded_notifications(cards: &[NotificationView]) -> bool {
 /// Keep only genuinely identical view models with the same geometry. A
 /// Freedesktop replacement using an old ID but new text/actions must build
 /// new controls and invalidate the old buttons, not mutate their leases.
+/// A reused GTK card remains visibly painted while a new revision waits
+/// for the next ACK; a completely new stack is hidden until first paint.
+pub fn toast_presentation_visibility(retained: usize, departing: usize) -> (bool, bool) {
+    (retained > 0, retained > 0 || departing > 0)
+}
+
 pub fn retained_toast_ids(
     previous: &[NotificationView],
     next: &[NotificationView],
@@ -539,9 +545,14 @@ impl NotificationHost {
         }
 
         *self.current.borrow_mut() = cards.to_vec();
-        self.root.set_opacity(0.0);
+        let (keep_visible, window_visible) =
+            toast_presentation_visibility(kept_frames.len(), exiting.len());
+        // The old action region is revoked synchronously, but unchanged
+        // cards no longer flash away for two GTK paint ticks while another
+        // notification is admitted. The new card starts invisible below.
+        self.root.set_opacity(if keep_visible { 1.0 } else { 0.0 });
         self.window
-            .set_opacity(if exiting.is_empty() { 0.0 } else { 1.0 });
+            .set_opacity(if window_visible { 1.0 } else { 0.0 });
         self.clear_input();
         self.window.set_default_size(layout.width, layout.height);
 
@@ -638,9 +649,13 @@ impl NotificationHost {
                 content.set_size_request(layout.width - INNER_MARGIN * 2, layout.card_height);
                 frame.put(&content, 0.0, 0.0);
                 self.root.append(&frame);
-                // Actual new notification IDs receive one source TENET
-                // entrance. Replacements by ID update immediately.
+                // If a retained sibling keeps the root visible while this
+                // snapshot waits for its paint ACK, a new card cannot flash
+                // fully opaque before its first GDK animation frame.
                 if !old_ids.contains(&notice.id) {
+                    let (y, alpha) = toast_entry_frame(0.0);
+                    frame.move_(&content, 0.0, y);
+                    content.set_opacity(alpha);
                     let motion = MotionToken::default();
                     self.pending_entrances.borrow_mut().push(CardEntrance {
                         id: notice.id,
@@ -1076,6 +1091,16 @@ mod tests {
         item.actions = vec![("k".into(), "v".into()); 9];
         assert!(!bounded_notification(&item));
     }
+    #[test]
+    fn retained_toasts_keep_visual_continuity_without_admitting_input() {
+        assert_eq!(toast_presentation_visibility(0, 0), (false, false));
+        assert_eq!(toast_presentation_visibility(0, 1), (false, true));
+        assert_eq!(toast_presentation_visibility(1, 0), (true, true));
+        assert_eq!(toast_presentation_visibility(2, 1), (true, true));
+        assert_eq!(toast_entry_frame(0.0), (12.0, 0.0));
+        assert_eq!(toast_entry_frame(1.0), (0.0, 1.0));
+    }
+
     #[test]
     fn retains_only_unmodified_notification_ids_at_identical_geometry() {
         let layout = toast_layout(1280, 800, 800).unwrap();

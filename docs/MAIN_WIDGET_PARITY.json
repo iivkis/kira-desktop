@@ -479,7 +479,8 @@
       ],
       "animation_requirements": [
         "Reversible notification arrival and removal, bounded stagger",
-        "Retained unchanged cards settle interrupted entrance to the actual final frame and do not replay 180ms arrival on unrelated notifications; only removed already-painted cards animate along the saved inverse path, non-targetable. Real compositor frame and focus capture still missing."
+        "Retained unchanged cards settle interrupted entrance to the actual final frame and do not replay 180ms arrival on unrelated notifications; only removed already-painted cards animate along the saved inverse path, non-targetable. Real compositor frame and focus capture still missing.",
+        "Preserved painted siblings stay visible while a new revision waits two GTK frame ACK ticks; all shaped input and per-card action permission remain revoked until actual paint. New cards are explicitly positioned at y=12px/opacity=0 before first animation frame, so retained siblings cannot reveal a flashed fully opaque newcomer. Pure visibility and entrance endpoint tests added; nested-Niri pixel/focus review pending."
       ],
       "verified": {
         "content": false,
