@@ -122,7 +122,8 @@ fn run_probe(address: &str) -> Result<(), String> {
     // singleton session connection. The unique sender names MUST differ.
     let owner = connect_private_bus(address).map_err(|error| error.to_string())?;
     let foreign = connect_private_bus(address).map_err(|error| error.to_string())?;
-    if owner.unique_name().is_none() || foreign.unique_name().is_none()
+    if owner.unique_name().is_none()
+        || foreign.unique_name().is_none()
         || owner.unique_name() == foreign.unique_name()
     {
         return Err("Protocol probe did not obtain two distinct D-Bus peers".into());
