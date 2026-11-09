@@ -44,6 +44,24 @@ See [MAIN_WIDGET_PARITY.md](MAIN_WIDGET_PARITY.md) and the [pinned JSON ledger](
 6. **G4 Visual fidelity:** canonical design tokens, native charts and TENET timelines, reduced motion, visual regression and scaling acceptance at 100/125/150/200%.
 7. **G5 Shipping:** Nix build, packaged isolated nested Niri smoke, documented feature parity, accessibility and memory/perf comparison to main. No blanket release claim before these pass.
 
+## G4/G5 experimental graphical smoke and paired review
+
+- `.github/workflows/graphical.yml` now attempts an actual
+  packaged GTK Shell in a fully disposable headless Weston → nested Niri
+  environment with a private D-Bus session and validated `grim`
+  PNG frames. A software Mesa EGL driver is explicitly provisioned for
+  Niri under the non-NixOS GitHub runner. **Experimental until verified
+  green**: the first attempt failed closed on missing EGL rather than
+  publishing synthetic screenshots. The normal Rust/Nix jobs remain
+  independent.
+- `scripts/compare_visual_evidence.py` pairs genuine, intact
+  source-main and native manifests of one named stimulus into a standalone
+  HTML review with both timelines and exactly matched viewport dimensions.
+  It cannot attest which binary made a manually supplied frame; reviewer
+  provenance, interaction and visual sign-off are still mandatory.
+- No collected native-only artifact, paired HTML page, or headless smoke
+  may silently change any of the 15 false `verified` flags.
+
 ## Non-negotiable behavior
 
 - Core IPC is not a generic execution bridge.

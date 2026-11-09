@@ -4,6 +4,66 @@
 `305139949f49176487ef9759fc32c228eadff408`. Native branch: `native-gtk`.
 This document does not certify any of the 15 widgets in `MAIN_WIDGET_PARITY.json`.
 
+## Experimental virtual Wayland CI (native-only, real pixels)
+
+`graphical.yml` now has an independent, experimental native
+graphical run on `native-gtk`. It is deliberately separate from
+mandatory Rust/Nix CI while software-rendered Niri stability is established.
+
+- `nix build .#default` packages the real Rust/GTK Shell, Core,
+  SNI and Notifications acceptance clients.
+- `nix develop .#graphical-ci` invokes
+  `scripts/headless_wayland_acceptance.py`. It refuses an already
+  active Wayland/Niri session, and allocates new mode-0700 HOME, XDG and
+  Wayland runtime directories. A headless Weston creates the **outer**
+  Wayland socket, with Mesa llvmpipe software EGL/OpenGL for Niri.
+- `accept_nested.py` launches a fresh private D-Bus bus;
+  `dev_preview.py` creates its **own** Niri IPC and inner
+  Wayland socket before starting the package. Actual D-Bus notification
+  calls, genuine SNI registration and `grim` frame captures are
+  validated by `validate_nested_evidence.py`.
+- When it succeeds, the workflow uploads `review-index.html`,
+  unreviewed PNGs and raw capture metadata. When EGL, compositor, Core,
+  D-Bus or PNG validation fails, the job **fails**; no image is
+  generated as a stand-in.
+
+On a non-graphical Linux shell with the dependencies from this repo:
+
+```sh
+nix build .#default
+nix develop .#graphical-ci --command python3 \
+  scripts/headless_wayland_acceptance.py \
+  --package-dir result --output artifacts/virtual-niri \
+  --width 1280 --height 800
+```
+
+The virtual run is **native-only**, does not provide keyboard or fractional
+scale acceptance, and does not compare frozen main. The first experimental
+run reached real Weston but failed to initialize nested Niri EGL; the runner
+now provisions Nix Mesa llvmpipe/GLVND explicitly. A green future run
+still cannot set any widget `verified` flags by itself.
+
+## Paired source/native frame review (manual provenance required)
+
+After obtaining captures of the **same action** on the pinned main and
+native-gtk inside *independent* isolated compositors, compare them:
+
+```sh
+python3 scripts/compare_visual_evidence.py \
+  --main-manifest /tmp/main/launcher/rapid-filter-manifest.json \
+  --native-manifest /tmp/native/launcher/rapid-filter-manifest.json \
+  --output /tmp/kira-paired/launcher-rapid-filter
+```
+
+This tool rejects symlinked, corrupted or incomplete PNGs, mismatched
+viewport dimensions, unequal frame counts, mismatched labels and unsupported
+timestamps. It creates a self-contained, side-by-side static HTML index
+alongside both sets of real frames and capture timing. The bundle is
+**UNREVIEWED**: manifest labels cannot prove the main binary's identity,
+sampling times are not presentation timestamps, and a human must still
+check input, focus, all states, motion and pixels against frozen main.
+No code in either tool writes the parity ledger.
+
 ## Reproducible, isolated capture
 
 In an existing local Wayland session (never on the active desktop's Niri KDL):

@@ -8,3 +8,17 @@ For the new native System Monitor and Display Settings, use the explicit
 [ACCEPTANCE_NATIVE_G2.md](ACCEPTANCE_NATIVE_G2.md) test matrix at all supported
 GTK scale factors. Do not take production-output Apply/Confirm screenshots on
 the live user's compositor.
+
+## Reproducible experimental native Wayland and paired main/native evidence
+
+The opt-in GitHub workflow `graphical.yml` runs a real but
+experimental, software-rendered headless Weston → nested Niri → Kira Shell
+capture. Follow `docs/NATIVE_MOTION_ACCEPTANCE.md` to retrieve
+its unreviewed output or run locally without a live desktop.
+
+For manually captured source and native sequences use
+`scripts/compare_visual_evidence.py`. It rejects unmatched frame
+count, viewport size, stimulus, unsafe paths, and malformed PNGs; the
+static comparison index is **not** a parity certificate. Never mark an
+item as visually matched before verified main provenance and human motion,
+focus, a11y and pixel review.
