@@ -1,6 +1,8 @@
 """Private D-Bus acceptance protocol tests without Niri or a user session."""
 from pathlib import Path
+import json
 import sys
+import tempfile
 from types import SimpleNamespace
 import unittest
 
@@ -10,6 +12,7 @@ from smoke_sni_fixture_bus import menu_call
 from acceptance_scenarios import (
     await_native_server, await_real_sni_fixture, close_notification,
     gdbus_args, notification_id, notify, sni_property_get_all,
+    verify_notification_sender_probe,
 )
 
 
@@ -103,6 +106,69 @@ class RealProtocolAcceptanceTests(unittest.TestCase):
         self.assertTrue(all(argv[argv.index("--dest") + 1] == "org.kira.AcceptanceSNI" for argv in calls))
         with self.assertRaises(PreviewError):
             menu_call("org.freedesktop.DBus.StopServiceByName", self.env)
+
+    def test_notification_sender_probe_needs_private_bus_and_full_proof(self):
+        env = {
+            **self.env,
+            "KIRA_PREVIEW": "1",
+            "KIRA_ISOLATED_SESSION_BUS": "1",
+            "KIRA_NOTIFICATIONS_PREVIEW": "1",
+            "KIRA_ACCEPTANCE_TOKEN": "a" * 32,
+            "KIRA_ACCEPTANCE_PARENT_BUS": "unix:path=/tmp/parent-dbus",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            probe = Path(tmp) / "kira-notification-acceptance"
+            probe.write_text("test fixture binary", encoding="utf-8")
+            probe.chmod(0o700)
+            called = []
+
+            def runner(argv, *, env, text, capture_output, check, timeout):
+                self.assertEqual(argv, [str(probe)])
+                self.assertEqual((text, capture_output, check, timeout), (True, True, False, 15))
+                called.append(env)
+                return self.reply(json.dumps({
+                    "same_sender_replaced": True, "foreign_sender_isolated": True,
+                    "stale_id_rejected": True, "private_bus": True,
+                }))
+
+            success = verify_notification_sender_probe(probe, env, runner=runner)
+            self.assertEqual(len(called), 1)
+            self.assertEqual(success, {
+                "same_sender_replaced": True, "foreign_sender_isolated": True,
+                "stale_id_rejected": True, "private_bus": True,
+            })
+
+            for missing in (
+                "KIRA_PREVIEW", "KIRA_ISOLATED_SESSION_BUS",
+                "KIRA_NOTIFICATIONS_PREVIEW", "KIRA_ACCEPTANCE_TOKEN",
+            ):
+                with self.subTest(missing=missing), self.assertRaises(PreviewError):
+                    verify_notification_sender_probe(probe, {k: v for k, v in env.items() if k != missing}, runner=runner)
+            with self.assertRaises(PreviewError):
+                verify_notification_sender_probe(
+                    probe, {**env, "DBUS_SESSION_BUS_ADDRESS": env["KIRA_ACCEPTANCE_PARENT_BUS"]},
+                    runner=runner,
+                )
+            with self.assertRaises(PreviewError):
+                verify_notification_sender_probe(probe.with_name("missing"), env, runner=runner)
+
+            def incomplete(argv, **kwargs):
+                return self.reply('{"same_sender_replaced":true,"private_bus":true}')
+
+            with self.assertRaises(PreviewError):
+                verify_notification_sender_probe(probe, env, runner=incomplete)
+
+            def invalid(argv, **kwargs):
+                return self.reply("not json")
+
+            with self.assertRaises(PreviewError):
+                verify_notification_sender_probe(probe, env, runner=invalid)
+
+            def failed(argv, **kwargs):
+                return self.reply("", returncode=1, stderr="fixture failure")
+
+            with self.assertRaisesRegex(PreviewError, "fixture failure"):
+                verify_notification_sender_probe(probe, env, runner=failed)
 
     def test_fixture_must_register_through_real_watcher_and_publish_pixmap(self):
         def fixture(argv, **kwargs):
