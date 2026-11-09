@@ -269,14 +269,11 @@ impl Service {
                     }
                     "CloseNotification" => {
                         let id = params.child_value(0).get::<u32>().unwrap_or(0);
-                        if !sender.is_some_and(|sender| {
-                            service.senders.borrow().is_owner(id, sender)
-                        }) {
-                            invocation.return_dbus_error(
-                                "org.freedesktop.Notifications.Error.InvalidId",
-                                "Unknown notification ID for this D-Bus sender",
-                            );
-                        } else if service.queue.borrow_mut().close(id) {
+                        // CloseNotification is an ID-based Freedesktop
+                        // operation. Keep cross-process clients compatible;
+                        // unlike Notify(replaces_id), it cannot inject
+                        // replacement content or new action keys.
+                        if service.queue.borrow_mut().close(id) {
                             service.senders.borrow_mut().forget(id);
                             invocation.return_value(None);
                             service.signal_closed(id, 3);
